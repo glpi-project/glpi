@@ -1,0 +1,60 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro display_folder(folder, input_id) %}
+   {% set name = folder.getLocalName|convert_encoding('UTF-8', 'UTF7-IMAP') %}
+   {% set global_name = folder.getGlobalName|convert_encoding('UTF-8', 'UTF7-IMAP') %}
+   <li class="cursor-pointer" data-input-id="{{ input_id }}">
+      <i class="ti ti-folder"></i>
+      <span class="folder-name" data-globalname="{{ global_name }}">{{ name }}</span>
+      <ul>
+         {% for subfolder in folder %}
+            {{ _self.display_folder(subfolder, input_id) }}
+         {% endfor %}
+      </ul>
+   </li>
+{% endmacro %}
+
+{% if connected %}
+   <ul class="select_folder">
+      {% set has_folders = folders|length > 0 %}
+      {% for folder in folders %}
+         {{ _self.display_folder(folder, input_id) }}
+      {% endfor %}
+      {% if not has_folders and item.fields['server_mailbox'] is not empty %}
+         <li>{{ __("No child found for folder '%s'.")|format(item.fields['server_mailbox']) }}</li>
+      {% endif %}
+   </ul>
+{% else %}
+   <div class="alert alert-danger">{{ __('An error occurred trying to connect to collector.') }}</div>
+{% endif %}

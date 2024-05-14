@@ -34,7 +34,7 @@
  */
 
 use Glpi\Features\Clonable;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Search\SearchOption;
 
 /**
  * Class that manages all the massive actions
@@ -131,10 +131,10 @@ class MassiveAction
     private $timeout_delay;
 
     /**
-     * Current process timer.
-     * @var int
+     * Current process start time.
+     * @var float
      */
-    private $timer;
+    private float $start_time;
 
     /**
      * Item used to check rights.
@@ -410,9 +410,7 @@ class MassiveAction
 
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
-            $this->timer = new Timer();
-            $this->timer->start();
-            $this->fields_to_remove_when_reload[] = 'timer';
+            $this->start_time = microtime(true);
 
             $max_time = (get_cfg_var("max_execution_time") == 0) ? 60
                                                               : get_cfg_var("max_execution_time");
@@ -429,7 +427,7 @@ class MassiveAction
 
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'action':
@@ -457,7 +455,6 @@ class MassiveAction
             case 'redirect':
             case 'remainings':
             case 'timeout_delay':
-            case 'timer':
                 Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
@@ -474,7 +471,7 @@ class MassiveAction
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'display_progress_bars':
                 $this->$property = $value;
@@ -495,7 +492,6 @@ class MassiveAction
             case 'redirect':
             case 'remainings':
             case 'timeout_delay':
-            case 'timer':
                 Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
@@ -631,9 +627,7 @@ class MassiveAction
 
         foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
-                // Value will be sanitized again when massive action form will be submitted.
-                // It have to be unsanitized here to prevent double sanitization.
-                echo Html::hidden($field, ['value' => Sanitizer::unsanitize($this->POST[$field])]);
+                echo Html::hidden($field, ['value' => $this->POST[$field]]);
             }
         }
     }
@@ -771,10 +765,11 @@ class MassiveAction
                 $actions[$self_pref . 'update'] = _x('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>" . _x('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
                 }
             }
 
+            Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
             CommonDBConnexity::getMassiveActionsForItemtype(
@@ -809,6 +804,7 @@ class MassiveAction
 
             Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+            Reservation::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
            // Amend comment for objects with a 'comment' field
             $item->getEmpty();
@@ -837,6 +833,7 @@ class MassiveAction
         }
 
         Lock::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+        Consumable::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
        // Manage forbidden actions : try complete action name or MassiveAction:action_name
         $forbidden_actions = $item->getForbiddenStandardMassiveAction();
@@ -1157,7 +1154,7 @@ class MassiveAction
                         $so_item->checkGlobal(UPDATE);
                     }
 
-                    $itemtype_search_options = Search::getOptions($so_itemtype);
+                    $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
                         exit();
                     }
@@ -1238,7 +1235,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                    $submitname = stripslashes($ma->POST['submitname']);
+                    $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',
@@ -1267,7 +1264,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                      $submitname = stripslashes($ma->POST['submitname']);
+                      $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',
@@ -1336,7 +1333,7 @@ class MassiveAction
             return;
         }
 
-        if ($this->timer->getTime() > 1) {
+        if ((microtime(true) - $this->start_time) > 1000) {
            // If the action's delay is more than one second, the display progress bars
             $this->display_progress_bars = true;
         }
@@ -1815,12 +1812,13 @@ class MassiveAction
      * Update the progress if necessary.
      *
      * @param string  $itemtype    the type of the item that has been done
-     * @param integer $id          id or array of ids of the item(s) that have been done.
+     * @param integer|array $id    id or array of ids of the item(s) that have been done.
      * @param integer $result
      *                self::NO_ACTION      in case of no specific action (used internally for older actions)
      *                MassiveAction::ACTION_OK      everything is OK for the action
      *                MassiveAction::ACTION_KO      something went wrong for the action
      *                MassiveAction::ACTION_NORIGHT not anough right for the action
+     * @phpstan-param array<integer>|integer $id
      **/
     public function itemDone($itemtype, $id, $result)
     {
@@ -1866,7 +1864,7 @@ class MassiveAction
         $this->nb_done += $number;
 
        // If delay is to big, then reload !
-        if ($this->timer->getTime() > $this->timeout_delay) {
+        if ((microtime(true) - $this->start_time) > ($this->timeout_delay * 1000)) {
             Html::redirect($_SERVER['PHP_SELF'] . '?identifier=' . $this->identifier);
         }
 

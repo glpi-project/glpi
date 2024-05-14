@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 {
     public static $itemtype_1 = 'Item_DeviceCamera';
@@ -59,7 +61,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
                         ]
                     );
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -88,10 +90,9 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
     public static function showItems(DeviceCamera $camera)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $ID = $camera->getID();
         $rand = mt_rand();
@@ -105,76 +106,43 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
         $canedit = $camera->canEdit($ID);
 
         $items = $DB->request([
-            'FROM'   => Item_DeviceCamera_ImageFormat::getTable(),
+            'SELECT' => ['id', 'imageformats_id', 'is_dynamic'],
+            'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_devicecameras_id' => $camera->getID()
             ]
         ]);
-        $link = new self();
 
-        echo "<div>";
-
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            Session::initNavigateListItems(
-                self::getType(),
-                //TRANS : %1$s is the itemtype name,
-                //        %2$s is the name of the item (used for headings of a list)
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $camera->getTypeName(1),
-                    $camera->getName()
-                )
-            );
-
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
-                ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . ImageFormat::getTypeName(1) . "</th>";
-            $header .= "<th>" . __('Is dynamic') . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                $item = new ImageFormat();
-                $item->getFromDB($row['imageformats_id']);
-                echo "<tr lass='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "<td>{$row['is_dynamic']}</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
-            }
+        $entries = [];
+        foreach ($items as $row) {
+            $item = new ImageFormat();
+            $item->getFromDB($row['imageformats_id']);
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $row['id'],
+                'imageformats_id' => $item->getLink(),
+                'is_dynamic' => $row['is_dynamic']
+            ];
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'imageformats_id' => ImageFormat::getTypeName(1),
+                'is_dynamic' => __('Is dynamic')
+            ],
+            'formatters' => [
+                'imageformats_id' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 }

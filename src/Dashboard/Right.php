@@ -35,6 +35,8 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\DBAL\QueryParam;
+
 class Right extends \CommonDBChild
 {
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
@@ -93,9 +95,9 @@ class Right extends \CommonDBChild
         $query_rights = $DB->buildInsert(
             self::getTable(),
             [
-                'dashboards_dashboards_id' => new \QueryParam(),
-                'itemtype' => new \QueryParam(),
-                'items_id' => new \QueryParam(),
+                'dashboards_dashboards_id' => new QueryParam(),
+                'itemtype' => new QueryParam(),
+                'items_id' => new QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_rights);

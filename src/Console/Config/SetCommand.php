@@ -80,8 +80,8 @@ class SetCommand extends AbstractCommand
     {
 
         $context = $input->getOption('context');
-        $key     = Toolbox::addslashes_deep($input->getArgument('key'));
-        $value   = Toolbox::addslashes_deep($input->getArgument('value'));
+        $key     = $input->getArgument('key');
+        $value   = $input->getArgument('value');
 
         if (!preg_match('/^core|inventory|plugin:[a-z]+$/', $context)) {
             $output->writeln(

@@ -108,5 +108,16 @@ if ($template->fields['requesttypes_id']) {
     }
 }
 
+if ($template->fields['pendingreasons_id'] ?? 0 > 0) {
+    $pendingReason = new PendingReason();
+    if ($pendingReason->getFromDB($template->fields['pendingreasons_id'])) {
+        $template->fields = array_merge($template->fields, [
+            'pendingreasons_name'         => $pendingReason->fields['name'],
+            'followup_frequency'          => $pendingReason->fields['followup_frequency'],
+            'followups_before_resolution' => $pendingReason->fields['followups_before_resolution'],
+        ]);
+    }
+}
+
 // Return json response with the template fields
 echo json_encode($template->fields);

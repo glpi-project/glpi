@@ -179,7 +179,7 @@ class Problem extends CommonITILObject
                 case __CLASS__:
                     $ong = [];
                     if ($item->canUpdate()) {
-                        $ong[1] = __('Statistics');
+                        $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
                     }
 
                     return $ong;
@@ -217,8 +217,6 @@ class Problem extends CommonITILObject
         if ($this->hasImpactTab()) {
             $this->addStandardTab('Impact', $ong, $options);
         }
-        $this->addStandardTab('Change_Problem', $ong, $options);
-        $this->addStandardTab('Problem_Ticket', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
@@ -236,13 +234,14 @@ class Problem extends CommonITILObject
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Change_Problem::class,
-            // Done by parent: Group_Problem::class,
+                // Done by parent: Group_Problem::class,
                 Item_Problem::class,
-            // Done by parent: ITILSolution::class,
-            // Done by parent: Problem_Supplier::class,
+                // Done by parent: ITILSolution::class,
+                // Done by parent: Problem_Supplier::class,
                 Problem_Ticket::class,
-            // Done by parent: Problem_User::class,
+                // Done by parent: Problem_User::class,
                 ProblemCost::class,
+                Problem_Problem::class,
             ]
         );
 
@@ -300,6 +299,8 @@ class Problem extends CommonITILObject
             return false;
         }
 
+        $this->processRules(RuleCommonITILObject::ONADD, $input);
+
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
             $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
@@ -320,13 +321,14 @@ class Problem extends CommonITILObject
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
         $input = $this->transformActorsInput($input);
 
-        $input = parent::prepareInputForUpdate($input);
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        $this->processRules(RuleCommonITILObject::ONUPDATE, $input, $entid);
 
+        $input = parent::prepareInputForUpdate($input);
         return $input;
     }
 
@@ -369,7 +371,7 @@ class Problem extends CommonITILObject
                      unset($row['tickets_id']);
                      unset($row['id']);
                      $row['problems_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }
@@ -388,8 +390,6 @@ class Problem extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
     /**
@@ -552,103 +552,128 @@ class Problem extends CommonITILObject
     }
 
 
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(string $itemtype)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         $tab = [];
 
-        $tab[] = [
-            'id'                 => 'problem',
-            'name'               => __('Problems')
-        ];
+        if ($itemtype == "Ticket") {
+            $tab[] = [
+                'id'                 => 'problem',
+                'name'               => __('Problems')
+            ];
 
-        $tab[] = [
-            'id'                 => '200',
-            'table'              => 'glpi_problems_tickets',
-            'field'              => 'id',
-            'name'               => _x('quantity', 'Number of problems'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
+            //FIXME: Fix the search options for linked ITIL objects
+            $tab[] = [
+                'id'                 => '200',
+                'table'              => 'glpi_problems_tickets',
+                'field'              => 'id',
+                'name'               => _x('quantity', 'Number of problems'),
+                'forcegroupby'       => true,
+                'usehaving'          => true,
+                'datatype'           => 'count',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'child'
+                ]
+            ];
 
-        $tab[] = [
-            'id'                 => '201',
-            'table'              => Problem::getTable(),
-            'field'              => 'name',
-            'name'               => Problem::getTypeName(1),
-            'datatype'           => 'dropdown',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => Problem_Ticket::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
+            $tab[] = [
+                'id'                 => '201',
+                'table'              => Problem::getTable(),
+                'field'              => 'name',
+                'name'               => Problem::getTypeName(1),
+                'datatype'           => 'dropdown',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => Problem_Ticket::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'child',
+                        ]
                     ]
                 ]
-            ]
-        ];
+            ];
 
-        $tab[] = [
-            'id'                  => '202',
-            'table'               => Problem::getTable(),
-            'field'               => 'status',
-            'name'                => __('Status'),
-            'datatype'            => 'specific',
-            'searchtype'          => 'equals',
-            'searchequalsonfield' => true,
-            'massiveaction'       => false,
-            'forcegroupby'        => true,
-            'joinparams'          => [
-                'beforejoin'          => [
-                    'table'               => Problem_Ticket::getTable(),
-                    'joinparams'          => [
-                        'jointype'            => 'child',
+            $tab[] = [
+                'id'                  => '202',
+                'table'               => Problem::getTable(),
+                'field'               => 'status',
+                'name'                => __('Status'),
+                'datatype'            => 'specific',
+                'searchtype'          => 'equals',
+                'searchequalsonfield' => true,
+                'massiveaction'       => false,
+                'forcegroupby'        => true,
+                'joinparams'          => [
+                    'beforejoin'          => [
+                        'table'               => Problem_Ticket::getTable(),
+                        'joinparams'          => [
+                            'jointype'            => 'child',
+                        ]
                     ]
                 ]
-            ]
-        ];
+            ];
 
-        $tab[] = [
-            'id'                 => '203',
-            'table'              => Problem::getTable(),
-            'field'              => 'solvedate',
-            'name'               => __('Resolution date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => Problem_Ticket::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
+            $tab[] = [
+                'id'                 => '203',
+                'table'              => Problem::getTable(),
+                'field'              => 'solvedate',
+                'name'               => __('Resolution date'),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => Problem_Ticket::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'child',
+                        ]
                     ]
                 ]
-            ]
-        ];
+            ];
 
-        $tab[] = [
-            'id'                 => '204',
-            'table'              => Problem::getTable(),
-            'field'              => 'date',
-            'name'               => __('Opening date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => Problem_Ticket::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
+            $tab[] = [
+                'id'                 => '204',
+                'table'              => Problem::getTable(),
+                'field'              => 'date',
+                'name'               => __('Opening date'),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => Problem_Ticket::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'child',
+                        ]
                     ]
                 ]
-            ]
-        ];
+            ];
+        } elseif (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $tab[] = [
+                'id'            => 140,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of problems'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
 
         return $tab;
     }
@@ -994,7 +1019,7 @@ class Problem extends CommonITILObject
                         $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
                         $row['values'][] = [
-                            'class' => 'priority_block',
+                            'class' => 'badge_block',
                             'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
                         ];
 
@@ -1222,7 +1247,7 @@ class Problem extends CommonITILObject
             $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
             echo "<tr class='tab_bg_2'>";
             echo "<td>
-            <div class='priority_block' style='border-color: $bgcolor'>
+            <div class='badge_block' style='border-color: $bgcolor'>
                <span style='background: $bgcolor'></span>&nbsp;$name
             </div>
          </td>";
@@ -1403,9 +1428,9 @@ class Problem extends CommonITILObject
                 '_add_fromitem',
                 __('New problem for this item...'),
                 [
-                    '_from_itemtype' => $item->getType(),
-                    '_from_items_id' => $item->getID(),
-                    'entities_id'    => $item->fields['entities_id']
+                    'itemtype'    => $item::class,
+                    'items_id'    => $item->getID(),
+                    'entities_id' => $item->fields['entities_id']
                 ]
             );
             echo "</div>";
@@ -1553,7 +1578,7 @@ class Problem extends CommonITILObject
             'actiontime'                 => 0,
             'date'                      => 'NULL',
             '_add_validation'            => 0,
-            'users_id_validate'          => [],
+            '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
             '_actors'                     => [],

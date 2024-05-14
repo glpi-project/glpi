@@ -32,6 +32,7 @@
  #}
 
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
+{% set massive_action_form_id = massive_action_form_id ?? "" %}
 
 <div class="table-responsive-lg">
    <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "table-striped" }}"
@@ -43,7 +44,8 @@
                <div>
                   <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}', '.massive_action_checkbox');" />
+                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}', '.massive_action_checkbox');"
+                        form="{{ massive_action_form_id }}" />
                </div>
             </th>
             {% endif %}
@@ -122,7 +124,8 @@
                               {% set checked = session('glpimassiveactionselected')[row_itemtype][row['id']] ?? false %}
                               <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
                                  value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
-                                 name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
+                                 name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]"
+                                 form="{{ massive_action_form_id }}" />
                            {% endif %}
                         {% endif %}
                      </div>
@@ -135,7 +138,8 @@
                      {% if col['meta'] is defined and col['meta'] %}
                         {{ showItem(0, row[colkey]['displayname'], 0, 0,)|raw }}
                      {% else %}
-                        {{ showItem(0, row[colkey]['displayname'], 0, 0, call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                        {# Add a data-searchopt-content-id to each td to allow easy css selectors for a whole column #}
+                        {{ showItem(0, row[colkey]['displayname'], 0, 0, "data-searchopt-content-id=\"" ~ col['id'] ~ "\" " ~ call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
                      {% endif %}
                   {% endfor %}
 

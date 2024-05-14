@@ -395,7 +395,7 @@ export default class SearchInput {
         } else if (token.exclusion) {
             tag_color_override = '#80000080';
         }
-        const dark_mode = $('html').css('--is-dark').trim() === 'true';
+        const dark_mode = document.documentElement.getAttribute('data-glpi-theme-dark') === '1';
         const text_color = $(document.body).css('color');
         let style_overrides = '';
         if (!token.tag) {
@@ -411,7 +411,7 @@ export default class SearchInput {
         } else {
             style_overrides = tag_color_override ? `style="background-color: ${tag_color_override} !important"` : '';
         }
-        return `<span class="search-input-tag badge bg-secondary me-1" contenteditable="false" data-tag="${token.tag}" ${style_overrides}>
+        return `<span class="search-input-tag badge bg-secondary text-secondary-fg me-1" contenteditable="false" data-tag="${token.tag}" ${style_overrides}>
                   <span class="search-input-tag-value" contenteditable="false">${tag_display}${escapeMarkupText(token.term) || ''}</span>
                   <i class="ti ti-x cursor-pointer ms-1" title="${__('Delete')}" contenteditable="false"></i>
                </span>`;

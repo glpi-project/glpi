@@ -69,53 +69,28 @@ composer update nothing --ansi --no-interaction --ignore-platform-reqs --no-dev 
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)
 find $WORKING_DIR/files -depth -mindepth 2 -exec rm -rf {} \;
 
-# Remove hidden files and directory, except .htaccess files
-find $WORKING_DIR -depth \( -iname ".*" ! -iname ".htaccess" \) -exec rm -rf {} \;
+# Remove hidden files and directories
+find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 
 # Remove useless dev files and directories
 dev_nodes=(
     "composer.json"
     "composer.lock"
-    "ISSUE_TEMPLATE.md"
     "locales/glpi.pot"
     "node_modules"
     "package.json"
     "package-lock.json"
     "phpstan.neon"
-    "PULL_REQUEST_TEMPLATE.md"
     "stubs"
     "tests"
     "tools"
-    "vendor/bin"
-    "vendor/donatj/phpuseragentparser/.helpers"
-    "vendor/donatj/phpuseragentparser/bin"
-    "vendor/donatj/phpuseragentparser/tests"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
-    "vendor/htmlawed/htmlawed/htmLawedTest.php"
-    "vendor/html2text/html2text/test"
-    "vendor/league/oauth2-google/examples"
-    "vendor/mexitek/phpcolors/demo"
-    "vendor/mexitek/phpcolors/tests"
-    "vendor/michelf/php-markdown/test"
-    "vendor/phplang/scope-exit/tests"
-    "vendor/rlanvin/php-rrule/bin"
-    "vendor/rlanvin/php-rrule/tests"
-    "vendor/sabre/dav/bin"
-    "vendor/sabre/event/bin"
-    "vendor/sabre/http/bin"
-    "vendor/sabre/http/examples"
-    "vendor/sabre/http/tests"
-    "vendor/sabre/vobject/bin"
-    "vendor/sabre/xml/bin"
-    "vendor/scssphp/scssphp/bin"
-    "vendor/seld/jsonlint/bin"
-    "vendor/tecnickcom/tcpdf/examples"
-    "vendor/tecnickcom/tcpdf/tools"
-    "vendor/wapmorgan/unified-archive/bin"
-    "vendor/wapmorgan/unified-archive/tests"
 )
 for node in "${dev_nodes[@]}"
 do
     rm -rf $WORKING_DIR/$node
 done
+
+echo "Generating file manifest..."
+$WORKING_DIR/bin/console build:generate_code_manifest -a crc32c

@@ -37,7 +37,6 @@ namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
@@ -57,31 +56,39 @@ class TemplateManager
     /**
      * Boiler plate code to render a template
      *
-     * @param string $content  Template content (html + twig)
-     * @param array $params    Variables to be exposed to the templating engine
+     * @param string    $content        Template content (html + twig)
+     * @param array     $params         Variables to be exposed to the templating engine
+     * @param bool      $expect_html    Is content expected to be HTML content ?
      *
      * @return string The rendered HTML
      */
     public static function render(
         string $content,
-        array $params
+        array $params,
+        bool $expect_html = true,
+        array $extra_extensions = []
     ): string {
-        $content = Sanitizer::getVerbatimValue($content);
-
-       // Init twig
+        // Init twig
         $loader = new ArrayLoader(['template' => $content]);
         $twig = new Environment($loader);
 
-       // Use sandbox extension to restrict code execution
+        // Use sandbox extension to restrict code execution
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 
-       // Render the template
-        $html = $twig->render('template', $params);
+        // Add extra extensions
+        foreach ($extra_extensions as $extension) {
+            $twig->addExtension($extension);
+        }
 
-       // Clean generated HTML to ensure both template and values are cleaned.
-        $html = RichText::getSafeHtml($html);
+        // Render the template
+        $result = $twig->render('template', $params);
 
-        return $html;
+        if ($expect_html) {
+            // Clean generated HTML to ensure both template and values are cleaned.
+            $result = RichText::getSafeHtml($result);
+        }
+
+        return $result;
     }
 
     /**
@@ -125,8 +132,6 @@ class TemplateManager
      */
     public static function validate(string $content, ?string &$err_msg = null): bool
     {
-        $content = Sanitizer::getVerbatimValue($content);
-
         $twig = new Environment(new ArrayLoader(['template' => $content]));
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 
@@ -161,8 +166,12 @@ class TemplateManager
      */
     public static function getSecurityPolicy(): SecurityPolicy
     {
-        $tags = ['if', 'for'];
-        $filters = ['escape', 'upper', 'date', 'length', 'round', 'lower', 'trim', 'raw'];
+        $tags = ['apply', 'autoescape', 'block', 'if', 'for', 'macro', 'set'];
+        $filters = [
+            'abs', 'batch', 'capitalize', 'column', 'date', 'default', 'escape', 'filter', 'first', 'format', 'join',
+            'json_encode', 'keys', 'last', 'length', 'lower', 'map', 'merge', 'nl2br', 'raw', 'reduce', 'replace',
+            'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode'
+        ];
         $methods = [];
         $properties = [];
         $functions = ['date', 'max', 'min','random', 'range'];

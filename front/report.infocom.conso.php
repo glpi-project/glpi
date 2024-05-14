@@ -126,7 +126,7 @@ function display_infocoms_report($itemtype, $begin, $end)
                 ]
             ]
         ],
-        'WHERE'        => []
+        'WHERE'        => $itemtype::getSystemSQLCriteria(),
     ];
 
     switch ($itemtype) {
@@ -137,7 +137,7 @@ function display_infocoms_report($itemtype, $begin, $end)
                     'glpi_softwares'        => 'id'
                 ]
             ];
-            $criteria['WHERE'] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
+            $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
             break;
         default:
             if (is_a($itemtype, CommonDBChild::class, true)) {
@@ -148,7 +148,7 @@ function display_infocoms_report($itemtype, $begin, $end)
                         $childitemtype::getTable() => 'id'
                     ]
                 ];
-                $criteria['WHERE'] =  getEntitiesRestrictCriteria($itemtable);
+                $criteria['WHERE'][] =  getEntitiesRestrictCriteria($itemtable);
             }
             break;
     }

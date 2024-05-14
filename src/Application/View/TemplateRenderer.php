@@ -35,6 +35,7 @@
 
 namespace Glpi\Application\View;
 
+use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
@@ -81,7 +82,7 @@ class TemplateRenderer
 
         $env_params = [
             'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-            'auto_reload' => true, // Force refresh
+            'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
@@ -187,5 +188,26 @@ class TemplateRenderer
         } finally {
             Profiler::getInstance()->stop($template);
         }
+    }
+
+    /**
+     * Renders a template from a string.
+     *
+     * @param string $template
+     * @param array  $variables
+     *
+     * @return string
+     */
+    public function renderFromStringTemplate(string $template, array $variables = []): string
+    {
+        try {
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
+            return $this->environment->createTemplate($template)->render($variables);
+        } catch (\Twig\Error\Error $e) {
+            ErrorHandler::getInstance()->handleTwigError($e);
+        } finally {
+            Profiler::getInstance()->stop($template);
+        }
+        return '';
     }
 }

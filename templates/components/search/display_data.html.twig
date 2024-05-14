@@ -36,59 +36,81 @@
 {% if not is_ajax %}
    <div class="ajax-container search-display-data">
 {% endif %}
+{% set push_history = push_history is defined and push_history %}
+{% set hide_controls = data['search']['hide_controls'] or (hide_controls is defined and hide_controls) %}
 
 {# Remove namespace separators for use in HTML attributes #}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
-<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
-      data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once>
-   <div class="card card-sm mt-0 search-card">
-      <div class="card-header d-flex justify-content-between search-header pe-0">
-         {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
-            <h2>{{ itemtype|itemtype_name }}</h2>
+<div class="card search-card">
+    {% if not hide_controls %}
+        {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
+            <div class="card-header d-flex justify-content-between search-header">
+                <h3>{{ itemtype|itemtype_name }}</h3>
 
-            {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
-               <a href="{{ href }}">
-                  <i class="far fa-eye"></i>
-                  {{ __('View all') }}
-               </a>
-            {% endif %}
-         {% else %}
-            {{ include('components/search/controls.html.twig') }}
-         {% endif %}
-      </div>
-
-      {% if data['search']['as_map'] == 0 %}
-         {{ include('components/search/table.html.twig') }}
-      {% endif %}
-      {% if count > 0 %}
-         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-            <div class="card-footer search-footer">
-               {{ include('components/pager.html.twig') }}
+                {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
+                    <a class="btn btn-ghost-secondary" href="{{ href }}">
+                        <i class="far fa-eye"></i>
+                        <span>{{ __('View all') }}</span>
+                    </a>
+                {% endif %}
             </div>
-         {% endif %}
-      {% elseif data['search']['as_map'] == 1 %}
-         <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
-            {{ __('No item found') }}
-         </div>
-      {% endif %}
-   </div>
-</form>
+        {% else %}
+            {{ include('components/search/controls.html.twig') }}
+        {% endif %}
+    {% endif %}
 
+    {% set massive_action_form_id = "massform" ~ normalized_itemtype ~ rand %}
+    <form id="{{ massive_action_form_id }}" method="get" action="{{ path('front/massiveaction.php') }}"
+          data-search-itemtype="{{ data['itemtype'] }}"
+          data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once
+          class="masssearchform">
+
+        {% if data['search']['as_map'] == 0 %}
+            {{ include('components/search/table.html.twig') }}
+        {% elseif count > 0 %}
+            {{ include('components/search/map.html.twig') }}
+        {% endif %}
+        {% if count > 0 %}
+            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+                <div class="card-footer search-footer {{ not user_pref('search_pagination_on_top') ? "d-block" : "d-block d-xxl-none" }}">
+                    {{ include('components/pager.html.twig') }}
+                </div>
+            {% endif %}
+        {% elseif data['search']['as_map'] == 1 %}
+            <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+            {{ __('No item found') }}
+            </div>
+        {% endif %}
+    </form>
+</div>
 {% if not is_ajax %}
    </div>
 
    {% if data['search']['as_map'] == 0 %}
       <script>
-          if (typeof initFluidSearch !== "function") {
-             window.initFluidSearch = () => {
-                 new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
-             };
-          }
+          window.initFluidSearch{{ rand }}  = () => {
+             const allowed_forced_params = ['hide_controls', 'usesession', 'forcetoview', 'criteria'];
+             let forced_params = {};
+             let all_params = {{ data['search']|default({})|json_encode|raw }};
+
+             $.each(all_params, (k, v) => {
+                if (allowed_forced_params.includes(k)) {
+                   forced_params[k] = v;
+                }
+             });
+
+             new GLPI.Search.ResultsView(
+                "{{ massive_action_form_id }}",
+                GLPI.Search.Table,
+                {{ push_history ? "true" : "false" }},
+                forced_params
+             );
+          };
           if (document.readyState === 'complete') {
-              initFluidSearch();
+              initFluidSearch{{ rand }}();
           } else {
-              $(document).on('ready', initFluidSearch);
+              $(document).on('ready', initFluidSearch{{ rand }});
           }
       </script>
    {% endif %}

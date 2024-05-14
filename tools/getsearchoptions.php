@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
@@ -68,7 +70,7 @@ if (isset($_GET['lang'])) {
     Session::loadLanguage($_GET['lang']);
 }
 
-$opts = Search::getOptions($_GET['type']);
+$opts = SearchOption::getOptionsForItemtype($_GET['type']);
 $sort = [];
 $group = 'N/A';
 

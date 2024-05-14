@@ -34,6 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
 /**
@@ -61,11 +62,15 @@ class RuleMatchedLog extends CommonDBTM
         return __('Matched rules');
     }
 
+    public static function getIcon()
+    {
+        return Rule::getIcon();
+    }
 
     /**
      * Count number of elements
      *
-     * @param object $item
+     * @param CommonDBTM $item
      *
      * @return integer
      */
@@ -80,40 +85,31 @@ class RuleMatchedLog extends CommonDBTM
         );
     }
 
-
-    /**
-     * Get the tab name used for item
-     *
-     * @param object $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return string|array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $array_ret = [];
 
-        if ($item->getType() == 'Agent') {
-            $array_ret[0] = self::createTabEntry(__('Import information'));
+        if ($item::class === Agent::class) {
+            $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
         } else {
             $continue = true;
 
-            switch ($item->getType()) {
-                case 'Agent':
-                    $array_ret[0] = self::createTabEntry(__('Import information'));
+            switch ($item::class) {
+                case Agent::class:
+                    $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
                     break;
 
-                case 'Unmanaged':
+                case Unmanaged::class:
                     $cnt = self::countForItem($item);
-                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
                     break;
 
-                case 'Computer':
-                case 'Monitor':
-                case 'NetworkEquipment':
-                case 'Peripheral':
-                case 'Phone':
-                case 'Printer':
+                case Computer::class:
+                case Monitor::class:
+                case NetworkEquipment::class:
+                case Peripheral::class:
+                case Phone::class:
+                case Printer::class:
                     $continue = $item->isDynamic();
                     break;
                 default:
@@ -123,39 +119,20 @@ class RuleMatchedLog extends CommonDBTM
                 return [];
             } else if (empty($array_ret)) {
                 $cnt = self::countForItem($item);
-                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
+                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
             }
         }
         return $array_ret;
     }
 
-
-    /**
-     * Display the content of the tab
-     *
-     * @param object $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        $rulematched = new self();
-        if ($tabnum == '0') {
-            if ($item->getID() > 0) {
-                $rulematched->showFormAgent($item->getID());
-                return true;
-            }
-        } else if ($tabnum == '1') {
-            if ($item->getID() > 0) {
-                $rulematched->showItemForm($item->getID(), $item->getType());
-                return true;
-            }
+        if (($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
+            self::showForItem($item);
+            return true;
         }
         return false;
     }
-
 
     /**
      * Clean old data
@@ -185,177 +162,66 @@ class RuleMatchedLog extends CommonDBTM
         }
     }
 
-
     /**
-     * Display form
+     * Display logs for item.
      *
-     * @param integer $items_id
-     * @param string $itemtype
-     * @return true
+     * @param CommonDBTM $item
+     *
+     * @return void
      */
-    public function showItemForm($items_id, $itemtype)
+    private static function showForItem(CommonDBTM $item): void
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
-        $rule    = new RuleImportAsset();
-        $agent = new Agent();
-
-        if (isset($_GET["start"])) {
-            $start = $_GET["start"];
+        $criteria = [
+            'FROM' => self::getTable(),
+        ];
+        if ($item instanceof Agent) {
+            $criteria['WHERE'] = [
+                'agents_id' => $item->getID(),
+                'itemtype'  => $CFG_GLPI['inventory_types']
+            ];
         } else {
-            $start = 0;
+            $criteria['WHERE'] = [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ];
         }
 
-        $params = [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                'items_id'  => intval($items_id)
-            ],
-            'COUNT'  => 'cpt'
-        ];
-        $iterator = $DB->request($params);
-        $number   = $iterator->current()['cpt'];
+        $start = (int)($_GET['start'] ?? 0);
+        $count = $DB->request($criteria + ['COUNT' => 'cpt'])->current()['cpt'];
+        $limit = (int)$_SESSION['glpilist_limit'];
 
-       // Display the pager
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
+        $iterator = $DB->request(
+            $criteria + [
+                'ORDER'  => 'date DESC',
+                'START'  => $start,
+                'LIMIT'  => $limit
+            ]
+        );
 
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='4'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo Agent::getTypeName(1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "</tr>";
-
-        $params = [
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                'items_id'  => intval($items_id)
-            ],
-            'ORDER'  => 'date DESC',
-            'START'  => (int)$start,
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
-        ];
-        foreach ($DB->request($params) as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td>";
-            if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
-            }
-            echo "</td>";
-            echo "<td>";
-            if ($agent->getFromDB($data['agents_id'])) {
-                echo $agent->getLink(1);
-            }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "</tr>";
+        $rows = [];
+        foreach ($iterator as $data) {
+            $rows[] = [
+                'date'       => $data['date'],
+                'rules_id'   => $data['rules_id'],
+                'agents_id'  => $data['agents_id'],
+                'itemtype'   => $data['itemtype'],
+                'items_id'   => $data['items_id'],
+                'modulename' => Request::getModuleName($data['method']),
+                'input'      => json_decode($data['input'] ?? '[]', true),
+            ];
         }
-        echo "</table>";
 
-       // Display the pager
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
-        return true;
-    }
-
-
-    /**
-     * Display form for agent
-     *
-     * @param integer $agents_id
-     */
-    public function showFormAgent($agents_id)
-    {
-
-        $rule = new RuleImportAsset();
-
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='5'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Item type');
-
-        echo "</th>";
-        echo "<th>";
-        echo _n('Item', 'Items', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "</tr>";
-
-        $allData = $this->find(['agents_id' => $agents_id], ['date DESC']);
-        foreach ($allData as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td align='center'>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td align='center'>";
-            if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
-            }
-            echo "</td>";
-            echo "<td align='center'>";
-            $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            echo $item->getTypeName();
-            echo "</td>";
-            echo "<td align='center'>";
-            if ($item->getFromDB($data['items_id'])) {
-                echo $item->getLink(1);
-            }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
+        TemplateRenderer::getInstance()->display('components/form/rulematchedlogs.html.twig', [
+            'item'  => $item,
+            'start' => $start,
+            'count' => $count,
+            'rows'  => $rows,
+        ]);
     }
 }

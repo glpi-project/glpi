@@ -37,14 +37,37 @@ use Glpi\Application\ErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 /**
  *  GLPI (instantiation and so on)
  **/
 class GLPI
 {
+    /**
+     * Production environment.
+     */
+    public const ENV_PRODUCTION  = 'production';
+
+    /**
+     * Staging environment.
+     * Suitable for pre-production servers and customer acceptance tests.
+     */
+    public const ENV_STAGING     = 'staging';
+
+    /**
+     * Testing environment.
+     * Suitable for quality control and internal acceptance tests.
+     */
+    public const ENV_TESTING     = 'testing';
+
+    /**
+     * Development environment.
+     * Suitable for developer machines and servers and CI tests runners.
+     */
+    public const ENV_DEVELOPMENT = 'development';
+
     private $error_handler;
-    private $log_level;
 
     /**
      * Init logger
@@ -59,21 +82,33 @@ class GLPI
          */
         global $PHPLOGGER, $SQLLOGGER;
 
-        $this->log_level = Logger::WARNING;
         if (defined('GLPI_LOG_LVL')) {
-            $this->log_level = GLPI_LOG_LVL;
-        } else if (
-            !isset($_SESSION['glpi_use_mode'])
-            || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-        ) {
-            $this->log_level = Logger::DEBUG;
+            $log_level = GLPI_LOG_LVL;
+        } else {
+            switch (GLPI_ENVIRONMENT_TYPE) {
+                case self::ENV_DEVELOPMENT:
+                    // All error/messages are logs, including deprecations.
+                    $log_level = LogLevel::DEBUG;
+                    break;
+                case self::ENV_TESTING:
+                    // Silent deprecation and info, as they should have no functional impact.
+                    // Keep notices as they have may indicate that code is not correctly handling a specific case.
+                    $log_level = LogLevel::NOTICE;
+                    break;
+                case self::ENV_STAGING:
+                case self::ENV_PRODUCTION:
+                default:
+                    // Keep only warning/error messages.
+                    $log_level = LogLevel::WARNING;
+                    break;
+            }
         }
 
         foreach (['php', 'sql'] as $type) {
             $logger = new Logger('glpi' . $type . 'log');
             $handler = new StreamHandler(
                 GLPI_LOG_DIR . "/{$type}-errors.log",
-                $this->log_level
+                $log_level
             );
             $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
             $handler->setFormatter($formatter);
@@ -87,17 +122,6 @@ class GLPI
                     break;
             }
         }
-    }
-
-    /**
-     * Get log level
-     *
-     * @return string
-     */
-    public function getLogLevel()
-    {
-        Toolbox::deprecated();
-        return $this->log_level;
     }
 
     /**

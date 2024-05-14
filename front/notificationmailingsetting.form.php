@@ -36,20 +36,12 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;
-use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-if (isset($_POST["test_smtp_send"])) {
-    NotificationMailing::testNotification();
-    Html::back();
-} else if (isset($_POST["update"])) {
-    if (array_key_exists('smtp_passwd', $_POST)) {
-        // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-        $_POST['smtp_passwd'] = Sanitizer::unsanitize($_POST['smtp_passwd']);
-    }
+if (isset($_POST["update"])) {
     $config = new Config();
     $config->update($_POST);
     Event::log(0, "system", 3, "setup", sprintf(

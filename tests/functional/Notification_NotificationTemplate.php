@@ -65,11 +65,11 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $this->login();
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>1</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>1</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span>");
 
         $toadd = $n_nt->fields;
         unset($toadd['id']);
@@ -78,28 +78,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>2</span>');
-    }
-
-    public function testShowForNotification()
-    {
-        $notif = new \Notification();
-        $this->boolean($notif->getFromDB(1))->isTrue();
-
-       //not logged, no ACLs
-        $this->output(
-            function () use ($notif) {
-                \Notification_NotificationTemplate::showForNotification($notif);
-            }
-        )->isEmpty();
-
-        $this->login();
-
-        $this->output(
-            function () use ($notif) {
-                \Notification_NotificationTemplate::showForNotification($notif);
-            }
-        )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>2</span>");
     }
 
     public function testGetName()
@@ -118,18 +97,6 @@ class Notification_NotificationTemplate extends DbTestCase
                 $n_nt->showForm(1);
             }
         )->isEmpty();
-    }
-
-    public function testShowForForm()
-    {
-
-        $this->login();
-        $this->output(
-            function () {
-                $n_nt = new \Notification_NotificationTemplate();
-                $n_nt->showForm(1);
-            }
-        )->matches('/_glpi_csrf/');
     }
 
     public function testGetMode()

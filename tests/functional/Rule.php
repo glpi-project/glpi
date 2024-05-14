@@ -249,7 +249,7 @@ class Rule extends DbTestCase
         $this->array($rule->criterias)->hasSize(2);
         $this->array($rule->actions)->hasSize(1);
 
-        $this->boolean($rule->getRuleWithCriteriasAndActions(100))->isFalse();
+        $this->boolean($rule->getRuleWithCriteriasAndActions(10000))->isFalse();
     }
 
     public function testMaxActionsCount()
@@ -258,7 +258,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(36);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(41);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -292,7 +292,7 @@ class Rule extends DbTestCase
     public function testGetCriteriaName()
     {
         $ruleTicket = new \RuleTicket();
-        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
+        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Location');
         $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 
@@ -308,8 +308,8 @@ class Rule extends DbTestCase
             [__('Technician')             , '_users_id_assign'],
             [__('Technician group')       , '_groups_id_assign'],
             [__('Assigned to a supplier') , '_suppliers_id_assign'],
-            [_n('Watcher', 'Watchers', 1)                , '_users_id_observer'],
-            [_n('Watcher group', 'Watcher groups', 1)          , '_groups_id_observer'],
+            [_n('Observer', 'Observers', 1)                , '_users_id_observer'],
+            [_n('Observer group', 'Observer groups', 1)          , '_groups_id_observer'],
             [__('Urgency')                , 'urgency'],
             [__('Impact')                 , 'impact'],
             [__('Priority')               , 'priority'],
@@ -341,7 +341,7 @@ class Rule extends DbTestCase
             [sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
-                \Group::getTypeName(1)
+                __('Group users')
             )           , 'groups_id_validate'
             ],
             [sprintf(
@@ -608,7 +608,7 @@ class Rule extends DbTestCase
         //rename rule with a quote, then clone
         $rules_id = $cloned;
         $rule = new \RuleAsset(); //needed to reset last_clone_index...
-        $this->boolean($rule->update(['id' => $rules_id, 'name' => addslashes("User's assigned")]))->isTrue();
+        $this->boolean($rule->update(['id' => $rules_id, 'name' => "User's assigned"]))->isTrue();
         $this->boolean($rule->getFromDB($rules_id))->isTrue();
 
         $cloned = $rule->clone();
@@ -675,6 +675,55 @@ class Rule extends DbTestCase
         $this->integer($second_rule->fields['ranking'])->isGreaterThan($first_rule->fields['ranking']);
     }
 
+    /**
+     * Updating a rule with a specific ranking should not allow direct changing of the ranking and instead trigger
+     * {@link \RuleCollection::moveRule()} to handle the ranking.
+     * @return void
+     */
+    public function testUpdateRanking()
+    {
+        global $DB;
+
+        $rule = new \RuleSoftwareCategory();
+        $rules_id_1 = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => __FUNCTION__
+        ]);
+        $ranking_start = $rule->fields['ranking'];
+        $rules_id_2 = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => __FUNCTION__
+        ]);
+        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 1);
+        $rules_id_3 = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => __FUNCTION__
+        ]);
+        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 2);
+        $rules_id_4 = $rule->add([
+            'sub_type'  => 'RuleSoftwareCategory',
+            'name'      => __FUNCTION__
+        ]);
+        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 3);
+
+        $rule->update([
+            'id'      => $rules_id_1,
+            'ranking' => $ranking_start + 2
+        ]);
+        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 2);
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isIdenticalTo(
+                match ($data['id']) {
+                    $rules_id_1 => $ranking_start + 2,
+                    $rules_id_2 => $ranking_start,
+                    $rules_id_3 => $ranking_start + 1,
+                    $rules_id_4 => $ranking_start + 3
+                }
+            );
+        }
+    }
+
     public function testAllCriteria()
     {
         $classes = $this->getClasses('getCriterias');
@@ -719,4 +768,208 @@ class Rule extends DbTestCase
             }
         }
     }
+
+    public function testGetNextRanking()
+    {
+        // Test with a rule type which a single rule
+        $softcat_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleSoftwareCategory']);
+        // Make sure this test is still valid
+        $this->integer($softcat_rule_count)->isEqualTo(1);
+
+        $rule = new \RuleSoftwareCategory();
+        $rule->add([
+            'sub_type' => 'RuleSoftwareCategory',
+            'name'     => 'test'
+        ]);
+        $ranking_start = $rule->fields['ranking'];
+        $rule->add([
+            'sub_type' => 'RuleSoftwareCategory',
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 1);
+        $rule->add([
+            'sub_type' => 'RuleSoftwareCategory',
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 2);
+
+        // Test with a rule type which already has more than 1 rule
+        $ticket_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleTicket']);
+        // Make sure this test is still valid
+        $this->integer($ticket_rule_count)->isGreaterThan(1);
+
+        $rule = new \RuleTicket();
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => 'test'
+        ]);
+        $ranking_start = $rule->fields['ranking'];
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 1);
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 2);
+
+        // Test with a rule type which has no rules
+        $rule = new RuleTest();
+        $rule->add([
+            'sub_type' => RuleTest::class,
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo(0);
+        $rule->add([
+            'sub_type' => RuleTest::class,
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+        $rule->add([
+            'sub_type' => RuleTest::class,
+            'name'     => 'test'
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo(2);
+    }
+
+    public function testMoveRule()
+    {
+        $rule = new \RuleTicket();
+        $rules_id_1 = $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__
+        ]);
+        $ranking_start = $rule->fields['ranking'];
+        $rules_id_2 = $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__
+        ]);
+        $rules_id_3 = $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__
+        ]);
+        $rules_id_4 = $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__
+        ]);
+        $collection = new \RuleTicketCollection();
+
+        // Move to specific position
+        $collection->moveRule($rules_id_1, 0, $ranking_start + 2);
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isEqualTo(
+                match ($data['id']) {
+                    $rules_id_1 => $ranking_start + 2,
+                    $rules_id_2 => $ranking_start,
+                    $rules_id_3 => $ranking_start + 1,
+                    $rules_id_4 => $ranking_start + 3
+                }
+            );
+        }
+
+        // Move before another rule
+        $collection->moveRule($rules_id_3, $rules_id_2, 'before');
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isEqualTo(
+                match ($data['id']) {
+                    $rules_id_1 => $ranking_start + 2,
+                    $rules_id_2 => $ranking_start + 1,
+                    $rules_id_3 => $ranking_start,
+                    $rules_id_4 => $ranking_start + 3
+                }
+            );
+        }
+
+        // Move after another rule
+        $collection->moveRule($rules_id_1, $rules_id_4, 'after');
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isEqualTo(
+                match ($data['id']) {
+                    $rules_id_1 => $ranking_start + 3,
+                    $rules_id_2 => $ranking_start + 1,
+                    $rules_id_3 => $ranking_start,
+                    $rules_id_4 => $ranking_start + 2
+                }
+            );
+        }
+
+        // Move to first position
+        $collection->moveRule($rules_id_1, 0, 'before');
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isEqualTo(
+                match ($data['id']) {
+                    $rules_id_1 => 0, // Before all makes it rank 0 always
+                    $rules_id_2 => $ranking_start + 2,
+                    $rules_id_3 => $ranking_start + 1,
+                    $rules_id_4 => $ranking_start + 3
+                }
+            );
+        }
+
+        // Move to last position
+        $collection->moveRule($rules_id_1, 0, 'after');
+        $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
+        foreach ($rules as $data) {
+            $this->integer($data['ranking'])->isEqualTo(
+                match ($data['id']) {
+                    $rules_id_1 => $ranking_start + 3,
+                    $rules_id_2 => $ranking_start + 1,
+                    $rules_id_3 => $ranking_start,
+                    $rules_id_4 => $ranking_start + 2
+                }
+            );
+        }
+    }
+
+    public function testInvalidRankingOnAdd()
+    {
+        $rule = new \RuleTicket();
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__,
+            'ranking'  => -1
+        ]);
+        $this->integer($rule->fields['ranking'])->isNotEqualTo(-1);
+        $last_ranking = $rule->fields['ranking'];
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__,
+            'ranking'  => -1
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo($last_ranking + 1);
+    }
+
+    public function testValidRankingOnAdd()
+    {
+        $rule = new \RuleTicket();
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__,
+            'ranking'  => 1
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+        $rule->add([
+            'sub_type' => 'RuleTicket',
+            'name'     => __FUNCTION__,
+            'ranking'  => 1
+        ]);
+        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+    }
+}
+
+// @codingStandardsIgnoreStart
+class RuleTest extends \Rule
+{
+}
+
+// @codingStandardsIgnoreStart
+/** @used-by RuleTest */
+class RuleTestCollection extends \RuleCollection
+{
 }

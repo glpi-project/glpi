@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Firewall;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
+global $CFG_GLPI, $GLPI_CACHE;
 
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
@@ -45,9 +49,6 @@ if (!defined('GLPI_ROOT')) {
 
 include_once GLPI_ROOT . '/inc/based_config.php';
 
-// Init Timer to compute time of display
-$TIMER_DEBUG = new Timer();
-$TIMER_DEBUG->start();
 \Glpi\Debug\Profiler::getInstance()->start('php_request');
 
 
@@ -74,12 +75,6 @@ if (
 ) {
     // Start the debug profile
     $profile = \Glpi\Debug\Profile::getCurrent();
-    $SQL_TOTAL_REQUEST    = 0;
-    $DEBUG_SQL = [
-        'queries' => [],
-        'errors'  => [],
-        'times'   => [],
-    ];
 }
 
 // Mark if Header is loaded or not :
@@ -88,6 +83,9 @@ $FOOTER_LOADED = false;
 if (isset($AJAX_INCLUDE)) {
     $HEADER_LOADED = true;
 }
+
+// Assets classes autoload
+AssetDefinitionManager::getInstance()->registerAssetsAutoload();
 
 /* On startup, register all plugins configured for use. */
 if (!isset($PLUGINS_INCLUDED)) {
@@ -98,29 +96,9 @@ if (!isset($PLUGINS_INCLUDED)) {
     $plugin->init(true, $PLUGINS_EXCLUDED);
 }
 
-// Security system
-if (count($_POST) > 0) {
-    $_UPOST = $_POST; //keep raw, as a workaround
-    if (isset($_POST['_glpi_simple_form'])) {
-        $_POST = array_map('urldecode', $_POST);
-    }
-    $_POST = Sanitizer::sanitize($_POST);
-}
-if (count($_GET) > 0) {
-    $_UGET = $_GET; //keep raw, as a workaround
-    $_GET  = Sanitizer::sanitize($_GET);
-}
-if (count($_REQUEST) > 0) {
-    $_UREQUEST = $_REQUEST; //keep raw, as a workaround
-    $_REQUEST  = Sanitizer::sanitize($_REQUEST);
-}
-if (count($_FILES) > 0) {
-    $_UFILES = $_FILES; //keep raw, as a workaround
-    foreach ($_FILES as &$file) {
-        $file['name'] = Sanitizer::sanitize($file['name']);
-    }
-}
-unset($file);
+// Assets classes bootstraping.
+// Must be done after plugins initialization, to allow plugin to register new capacities.
+AssetDefinitionManager::getInstance()->boostrapAssets();
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
     $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
@@ -128,23 +106,15 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 
 // Manage force tab
 if (isset($_REQUEST['forcetab'])) {
-    if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = 'plugin' . $matches[1] . $matches[2];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = $matches[1];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = 'plugin' . $matches[1] . $matches[2];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = $matches[1];
+    $itemtype = URL::extractItemtypeFromUrlPath($_SERVER['PHP_SELF']);
+    if ($itemtype !== null) {
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
     }
 }
+
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-    Session::setActiveTab($_REQUEST['itemtype'], Sanitizer::unsanitize($_REQUEST['glpi_tab']));
+    Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {
@@ -152,11 +122,7 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : check CSRF token
-if (
-    GLPI_USE_CSRF_CHECK
-    && !isAPI()
-    && count($_POST) > 0
-) {
+if (!isAPI() && count($_POST) > 0) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
        // Keep CSRF token as many AJAX requests may be made at the same time.
        // This is due to the fact that read operations are often made using POST method (see #277).
@@ -181,4 +147,15 @@ if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?
 // Manage entity change
 if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
     Session::changeActiveEntities($_REQUEST["force_entity"], true);
+}
+
+// The user's current groups are stored in his session
+// If there was any change regarding groups membership and/or configuration, we
+// need to reset the data stored in his session
+$last_group_change = $GLPI_CACHE->get('last_group_change');
+if (
+    isset($_SESSION['glpigroups'])
+    && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change
+) {
+    Session::loadGroups();
 }

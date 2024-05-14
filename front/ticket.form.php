@@ -69,8 +69,8 @@ foreach ($date_fields as $date_field) {
 }
 
 // as _actors virtual field stores json, bypass automatic escaping
-if (isset($_UPOST['_actors'])) {
-    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+if (isset($_POST['_actors'])) {
+    $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
@@ -96,10 +96,10 @@ if (isset($_POST["add"])) {
             'itemtype'         => $track->getType(),
             'items_id'         => $track->getID()
         ];
-        $existing = $DB->request(
-            'glpi_knowbaseitems_items',
-            $params
-        );
+        $existing = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_items',
+            'WHERE' => $params
+        ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
@@ -199,7 +199,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
-    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
+    $input = array_merge($track->fields, [
         'id' => $id,
         '_itil_' . $_POST['actortype'] => [
             '_type' => "user",
@@ -228,7 +228,7 @@ if (isset($_POST["add"])) {
             'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
-            $document_item->delete(Toolbox::addslashes_deep($item), true);
+            $document_item->delete($item, true);
         }
     }
     Html::back();

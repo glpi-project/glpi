@@ -53,7 +53,6 @@ var GLPIPlanning  = {
                 'dayGrid', 'interaction', 'list', 'timeGrid',
                 'resourceTimeline', 'rrule', 'bootstrap'
             ],
-            license_key: "",
             resources: [],
             now: null,
             can_create: false,
@@ -96,7 +95,7 @@ var GLPIPlanning  = {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
             maxTime:     CFG_GLPI.planning_end,
-            schedulerLicenseKey: options.license_key,
+            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
             editable: true, // we can drag / resize items
             droppable: false, // we cant drop external items by default

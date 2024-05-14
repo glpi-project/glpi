@@ -57,9 +57,42 @@ class Controller extends CommonGLPI
     public static $rightname = 'config';
     public static $api       = null;
 
+    /**
+     * Prompt to replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_ASK   = 1;
+    /**
+     * Replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_YES   = 2;
+    /**
+     * Do not replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_NEVER = 3;
+
+    /**
+     * Disable all access to the Marketplace.
+     * @var int
+     */
+    const MP_MODE_DISABLED = 0;
+    /**
+     * Allow access to the Marketplace via the CLI only.
+     * @var int
+     */
+    const MP_MODE_CLI_ONLY = 1;
+    /**
+     * Allow access to the Marketplace via the web interface only.
+     * @var int
+     */
+    const MP_MODE_WEB_ONLY = 2;
+    /**
+     * Allow access to the Marketplace via both the CLI and the web interface.
+     * @var int
+     */
+    const MP_MODE_FULL     = 3;
 
     public function __construct(string $plugin_key = "")
     {
@@ -73,6 +106,24 @@ class Controller extends CommonGLPI
     }
 
     /**
+     * Check if the Marketplace can be used via the CLI.
+     * @return bool
+     */
+    public static function isCLIAllowed(): bool
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_CLI_ONLY) === self::MP_MODE_CLI_ONLY;
+    }
+
+    /**
+     * Check if the Marketplace can be used via the web interface.
+     * @return bool
+     */
+    public static function isWebAllowed(): bool
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_WEB_ONLY) === self::MP_MODE_WEB_ONLY;
+    }
+
+    /**
      * singleton return the current api instance
      *
      * @return PluginsApi
@@ -82,13 +133,32 @@ class Controller extends CommonGLPI
         return self::$api ?? (self::$api = new PluginsApi());
     }
 
+    /**
+     * Get the version information of the plugin
+     *
+     * @param array $plugin plugin data
+     * @param string $version version to check
+     * @return array|null Version information or null if no information about the specified version is available
+     */
+    private static function getPluginVersionInfo(array $plugin, string $version): ?array
+    {
+        $versions = $plugin['versions'] ?? [];
+        foreach ($versions as $v) {
+            if ($v['num'] === $version) {
+                return $v;
+            }
+        }
+        return null;
+    }
 
     /**
      * Download and uncompress plugin archive
      *
+     * @param bool $auto_install Automatically install the plugin after download
+     * @param ?string $version Download a specific version of the plugin
      * @return bool
      */
-    public function downloadPlugin($auto_install = true): bool
+    public function downloadPlugin($auto_install = true, string $version = null): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -97,7 +167,23 @@ class Controller extends CommonGLPI
         $api      = self::getAPI();
         $plugin   = $api->getPlugin($this->plugin_key, true);
 
-        $url      = $plugin['installation_url'] ?? "";
+        if ($version === null) {
+            $url = $plugin['installation_url'] ?? "";
+        } else {
+            $specific_version = self::getPluginVersionInfo($plugin, $version);
+            $url = null;
+            if ($specific_version !== null) {
+                $url = $specific_version['download_url'] ?? null;
+            }
+            if ($url === null) {
+                Session::addMessageAfterRedirect(
+                    __('Cannot find the specified version of the plugin.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
         $filename = basename(parse_url($url, PHP_URL_PATH));
         $dest     = GLPI_TMP_DIR . '/' . $filename;
 
@@ -377,12 +463,21 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function canBeDownloaded()
+    public function canBeDownloaded(string $version = null)
     {
         $api        = self::getAPI();
         $api_plugin = $api->getPlugin($this->plugin_key);
 
-        return strlen($api_plugin['installation_url'] ?? "") > 0;
+        $url = '';
+        if ($version !== null) {
+            $specific_version = self::getPluginVersionInfo($api_plugin, $version);
+            if ($specific_version !== null) {
+                $url = $specific_version['download_url'] ?? '';
+            }
+        } else {
+            $url = $api_plugin['installation_url'] ?? '';
+        }
+        return strlen($url) > 0;
     }
 
     /**

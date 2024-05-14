@@ -113,7 +113,7 @@ class KnowbaseItem_Revision extends DbTestCase
             $kb1->update(
                 [
                     'id'     => $kb1->getID(),
-                    'answer' => \Toolbox::addslashes_deep('Don\'t use paths with spaces, like C:\\Program Files\\MyApp')
+                    'answer' => 'Don\'t use paths with spaces, like C:\\Program Files\\MyApp'
                 ]
             )
         )->isTrue();
@@ -135,7 +135,7 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $nrev_id = null;
         $data = $DB->request([
-            'SELECT' => new \QueryExpression('MAX(id) AS id'),
+            'SELECT' => new \Glpi\DBAL\QueryExpression('MAX(id) AS id'),
             'FROM'   => 'glpi_knowbaseitems_revisions'
         ])->current();
         $nrev_id = $data['id'];
@@ -180,7 +180,7 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Revision <span class=\'badge\'>1</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-history me-2'></i>Revision</span> <span class='badge glpi-badge'>1</span>");
 
         $this->boolean(
             $kb1->update(
@@ -192,11 +192,11 @@ class KnowbaseItem_Revision extends DbTestCase
         )->isTrue();
 
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Revisions <span class=\'badge\'>2</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-history me-2'></i>Revisions</span> <span class='badge glpi-badge'>2</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Revisions');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-history me-2'></i>Revisions</span>");
     }
 
     private function getNewKbItem()

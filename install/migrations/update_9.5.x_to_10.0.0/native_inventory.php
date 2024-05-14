@@ -33,13 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
 
 $migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
 
@@ -422,7 +423,7 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     if (!$DB->tableExists('glpi_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
-    $default_types = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
+    $default_types = NetworkPortType::getDefaults();
     $reference = array_replace(
         $default_types[0],
         array_fill_keys(
@@ -519,7 +520,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
 
     if (!isIndex('glpi_printerlogs', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new \QueryExpression(
+        $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),
@@ -599,7 +600,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
 
     if (!isIndex('glpi_networkportmetrics', 'unicity')) {
         // Preserve only last insert for a given date.
-        $to_preserve_sql = new \QueryExpression(
+        $to_preserve_sql = new QueryExpression(
             sprintf(
                 'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
                 $DB->quoteName('id'),

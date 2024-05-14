@@ -259,7 +259,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 unset($relation_input['id']);
                 $relation_input['itemtype'] = DatabaseInstance::class;
                 $relation_input['items_id'] = $database_id;
-                $relation_input = Toolbox::addslashes_deep($relation_input);
 
                 $item = new $relation_itemtype();
                 if ($item->add($relation_input) === false) {
@@ -314,12 +313,10 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             $category = $this->storeItem(
                 DatabaseInstanceCategory::class,
                 $core_category_id,
-                Toolbox::addslashes_deep(
-                    [
-                        'name'      => $category_data['name'],
-                        'comment'   => $category_data['comment']
-                    ]
-                )
+                [
+                    'name'      => $category_data['name'],
+                    'comment'   => $category_data['comment']
+                ]
             );
 
             if ($category !== null) {
@@ -406,16 +403,14 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             $database = $this->storeItem(
                 Database::class,
                 $core_database_id,
-                Toolbox::addslashes_deep(
-                    [
-                        'entities_id'           => $database_data['entities_id'],
-                        'is_recursive'          => $database_data['is_recursive'],
-                        'name'                  => $database_data['name'],
-                        'is_deleted'            => 0,
-                        'is_active'             => 1,
-                        'databaseinstances_id'  => $mapped_instance !== null ? $mapped_instance->getID() : 0,
-                    ]
-                )
+                [
+                    'entities_id'           => $database_data['entities_id'],
+                    'is_recursive'          => $database_data['is_recursive'],
+                    'name'                  => $database_data['name'],
+                    'is_deleted'            => 0,
+                    'is_active'             => 1,
+                    'databaseinstances_id'  => $mapped_instance !== null ? $mapped_instance->getID() : 0,
+                ]
             );
 
             if ($database !== null) {
@@ -541,9 +536,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             $instance = $this->storeItem(
                 DatabaseInstance::class,
                 $core_instance_id,
-                Toolbox::addslashes_deep(
-                    $databaseinstance_data
-                )
+                $databaseinstance_data
             );
 
             if ($instance !== null) {
@@ -599,10 +592,10 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $type_input = Toolbox::addslashes_deep([
+            $type_input = [
                 'name'      => $type_data['name'],
                 'comment'   => $type_data['comment'],
-            ]);
+            ];
 
             $type = $this->storeItem(DatabaseInstanceType::class, $core_type_id, $type_input);
 

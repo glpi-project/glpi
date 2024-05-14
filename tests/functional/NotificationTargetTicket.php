@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use NotificationTarget;
 
 /* Test for inc/notificationtargetticket.class.php */
@@ -50,6 +49,19 @@ class NotificationTargetTicket extends DbTestCase
         $tkt = getItemByTypeName('Ticket', '_ticket01');
         $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
         $notiftargetticket->getTags();
+
+        // basic test for ##ticket.externalid## tag
+        $expected = [
+            'tag'             => 'ticket.externalid',
+            'value'           => true,
+            'label'           => 'External ID',
+            'events'          => 0,
+            'foreach'         => false,
+            'lang'            => true,
+            'allowed_values'  => [],
+        ];
+        $this->array($notiftargetticket->tag_descriptions['lang']['##lang.ticket.externalid##'])
+         ->isIdenticalTo($expected);
 
        // basic test for ##task.categorycomment## tag
         $expected = [
@@ -82,17 +94,25 @@ class NotificationTargetTicket extends DbTestCase
         $this->array($notiftargetticket->tag_descriptions['tag']['##task.categoryid##'])
          ->isIdenticalTo($expected);
 
+        // advanced test for ##ticket.externalid## tag
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => \NotificationTarget::GLPI_USER,
+            ]
+        ];
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+        $this->string($ret['##ticket.externalid##'])->isIdenticalTo("external_id");
+
        // advanced test for ##task.categorycomment## and ##task.categoryid## tags
        // test of the getDataForObject for default language en_GB
         $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
-        $encoded_sep = Sanitizer::sanitize('>');
         $expected = [
             [
                 '##task.id##'              => 1,
                 '##task.isprivate##'       => 'No',
                 '##task.author##'          => '_test_user',
                 '##task.categoryid##'      => $taskcat->getID(),
-                '##task.category##'        => '_cat_1 ' . $encoded_sep . ' _subcat_1',
+                '##task.category##'        => '_cat_1 > _subcat_1',
                 '##task.categorycomment##' => 'Comment for sub-category _subcat_1',
                 '##task.date##'            => '2016-10-19 11:50',
                 '##task.description##'     => 'Task to be done',
@@ -105,14 +125,53 @@ class NotificationTargetTicket extends DbTestCase
             ]
         ];
 
-        $basic_options = [
-            'additionnaloption' => [
-                'usertype' => ''
-            ]
-        ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
         $this->array($ret['tasks'])->isIdenticalTo($expected);
+
+        //add validation for TU_USER
+        $ticket_validation = new \TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "itemtype_target" => \User::class,
+            "items_id_target" => getItemByTypeName(\User::class, TU_USER, true),
+        ]);
+        $this->integer($ticket_validation_id)->isGreaterThan(0);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
+
+        //add another validation for jsmith123
+        $ticket_validation = new \TicketValidation();
+        $ticket_validation_id = $ticket_validation->add([
+            "tickets_id" => $tkt->getID(),
+            "status" => \CommonITILValidation::WAITING,
+            "itemtype_target" => \User::class,
+            "items_id_target" => getItemByTypeName(\User::class, 'jsmith123', true),
+        ]);
+        $this->integer($ticket_validation_id)->isGreaterThan(0);
+
+        $basic_options['validation_id'] = $ticket_validation_id;
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+
+        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+            sprintf(
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                $CFG_GLPI['url_base'],
+                $tkt->getID(),
+                $ticket_validation_id
+            )
+        );
 
        // test of the getDataForObject for default language fr_FR
         $CFG_GLPI['translate_dropdowns'] = 1;
@@ -134,7 +193,7 @@ class NotificationTargetTicket extends DbTestCase
                 '##task.isprivate##'       => 'Non',
                 '##task.author##'          => '_test_user',
                 '##task.categoryid##'      => $taskcat->getID(),
-                '##task.category##'        => 'FR - _cat_1 ' . $encoded_sep . ' FR - _subcat_1',
+                '##task.category##'        => 'FR - _cat_1 > FR - _subcat_1',
                 '##task.categorycomment##' => 'FR - Commentaire pour sous-catégorie _subcat_1',
                 '##task.date##'            => '2016-10-19 11:50',
                 '##task.description##'     => 'Task to be done',
@@ -416,5 +475,78 @@ class NotificationTargetTicket extends DbTestCase
         ];
 
         $this->array($ret['timelineitems'])->isIdenticalTo($expected);
+    }
+
+
+    /**
+     * Test url tags are correctly replaced in function of entity url_base setup
+     */
+    public function testUrlTag()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['url_base'] = 'root.tld';
+
+        $root    = getItemByTypeName("Entity", "Root entity", true);
+        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // test entity url (with default url)
+        $ticket = new \Ticket();
+        $root_tickets_id = $ticket->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'entities_id' => $root,
+        ]);
+
+        $expected_raw_url = "%base_url%/index.php?redirect=ticket_%ticket_id%&noAUTO=1";
+
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private'    => true,
+            ]
+        ];
+        $notiftargetticket = new \NotificationTargetTicket($root, 'new', $ticket);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+
+        $root_expected_url = str_replace([
+            '%base_url%',
+            '%ticket_id%'
+        ], [
+            "root.tld",
+            $root_tickets_id
+        ], $expected_raw_url);
+        $this->string($ret['##ticket.url##'])->isEqualTo($root_expected_url);
+
+        // test sub entity with changed url
+        $entity  = new \Entity();
+        $this->boolean($entity->update([
+            'id'       => $parent,
+            'url_base' => "parent.tld",
+            'mailing_signature' => 'test',
+        ]))->isTrue();
+        $entity->getFromDB($parent);
+
+        $parent_tickets_id = $ticket->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'entities_id' => $parent,
+        ]);
+
+        $notiftargetticket = new \NotificationTargetTicket($parent, 'new', $ticket);
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+
+        $parent_expected_url = str_replace([
+            '%base_url%',
+            '%ticket_id%'
+        ], [
+            "parent.tld",
+            $parent_tickets_id
+        ], $expected_raw_url);
+        $this->string($ret['##ticket.url##'])->isEqualTo($parent_expected_url);
     }
 }

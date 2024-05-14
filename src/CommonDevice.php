@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * CommonDevice Class
  * for Device*class
@@ -218,7 +220,11 @@ abstract class CommonDevice extends CommonDropdown
             [
                 'SELECT'    => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'      => $linktable,
                 'WHERE'     => [
@@ -422,15 +428,19 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         if (static::canView()) {
-            $content = $this->getLink();
+            $content = $this->getLink([
+                'icon' => $this->getIcon()
+            ]);
         } else {
-            $content = $this->getName();
+            $content = $this->getName([
+                'icon' => $this->getIcon()
+            ]);
         }
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . $this->getType() . '_' . $this->getID();
             $content .= "&nbsp;<span class='fa fa-plus pointer' title='" . __s('Add') . "'
-                      onClick=\"" . Html::jsShow($field_name) . "\"
+                      onClick=\"$('#" . $field_name . "').show();\"
                       ><span class='sr-only'>" .  __s('Add') . "</span></span>";
             $content .= "<span id='$field_name' style='display:none'><br>";
             $content .= __('Add') . "&nbsp;";
@@ -498,6 +508,20 @@ abstract class CommonDevice extends CommonDropdown
                         ];
                         break;
                 }
+            }
+        }
+
+        $model_fk = getForeignKeyFieldForItemType(static::class . 'Model');
+        if ($DB->fieldExists(static::getTable(), $model_fk)) {
+            if (isset($input[$model_fk])) {
+                $where[$model_fk] = $input[$model_fk];
+            } else {
+                $where[] = [
+                    'OR' => [
+                        [$model_fk => null],
+                        [$model_fk => 0]
+                    ]
+                ];
             }
         }
 

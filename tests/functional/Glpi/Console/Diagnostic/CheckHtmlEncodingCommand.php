@@ -50,6 +50,7 @@ class CheckHtmlEncodingCommand extends DbTestCase
             ],
             \ChangeValidation::class => [
                 'fields' => ['comment_submission', 'comment_validation'],
+                'additional_input' => ['itemtype_target' => \User::class],
             ],
             \ITILFollowup::class => [
                 'fields' => ['content'],
@@ -90,6 +91,7 @@ class CheckHtmlEncodingCommand extends DbTestCase
             ],
             \TicketValidation::class => [
                 'fields' => ['comment_submission', 'comment_validation'],
+                'additional_input' => ['itemtype_target' => \User::class],
             ],
         ];
 
@@ -107,7 +109,7 @@ class CheckHtmlEncodingCommand extends DbTestCase
                 ),
                 'output'   => array_fill_keys(
                     $fields,
-                    '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot;100%`""&gt;'
+                    '<td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot;100%`"">'
                 ),
             ];
 
@@ -121,15 +123,11 @@ class CheckHtmlEncodingCommand extends DbTestCase
                 ),
                 'output'   => array_fill_keys(
                     $fields,
-                    '&lt;td&gt;&quot;&lt;/td&gt;'
+                    '<td>&quot;</td>'
                 ),
             ];
 
             // Triple encoding of emails
-            // only fixed on tickets/followups
-            $output = in_array($itemtype, [\Ticket::class, \ITILFollowup::class])
-                ? '&#38;lt;helpdesk@some-domain.com&#38;gt;'
-                : '&#38;amp;lt;helpdesk@some-domain.com&#38;amp;gt;';
             yield [
                 'itemtype' => $itemtype,
                 'fields'   => $fields,
@@ -139,7 +137,7 @@ class CheckHtmlEncodingCommand extends DbTestCase
                 ),
                 'output'   => array_fill_keys(
                     $fields,
-                    $output
+                    '&amp;lt;helpdesk@some-domain.com&amp;gt;' // double encoding is expected here
                 ),
             ];
         }

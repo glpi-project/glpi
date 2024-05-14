@@ -43,26 +43,19 @@ class NetworkPort_Vlan extends CommonDBRelation
     public static $items_id_2          = 'vlans_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-
-    /**
-     * @since 0.84
-     **/
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-
     /**
-     * @param $portID
-     * @param $vlanID
+     * @param integer $portID
+     * @param integer $vlanID
      **/
     public function unassignVlan($portID, $vlanID)
     {
-
         $this->getFromDBByCrit([
             'networkports_id' => $portID,
             'vlans_id'        => $vlanID
@@ -71,15 +64,16 @@ class NetworkPort_Vlan extends CommonDBRelation
         return $this->delete($this->fields);
     }
 
-
     /**
-     * @param $port
-     * @param $vlan
-     * @param $tagged
+     * @param integer $port
+     * @param integer $vlan
+     * @param bool|int $tagged
+     * @return bool|int
      **/
     public function assignVlan($port, $vlan, $tagged)
     {
-        $input = ['networkports_id' => $port,
+        $input = [
+            'networkports_id' => $port,
             'vlans_id'        => $vlan,
             'tagged'          => $tagged
         ];
@@ -88,15 +82,15 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
     /**
-     * @param $port   NetworkPort object
-     **/
+     * @param NetworkPort $port
+     * @return false|void
+     */
     public static function showForNetworkPort(NetworkPort $port)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $ID = $port->getID();
         if (!$port->can($ID, READ)) {
@@ -213,14 +207,12 @@ class NetworkPort_Vlan extends CommonDBRelation
         echo "</div>";
     }
 
-
     public static function showForVlan(Vlan $vlan)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $ID = $vlan->getID();
         if (!$vlan->can($ID, READ)) {
@@ -311,9 +303,11 @@ class NetworkPort_Vlan extends CommonDBRelation
         }
         echo "</div>";
     }
+
     /**
-     * @param $portID
-     **/
+     * @param integer $portID
+     * @return array
+     */
     public static function getVlansForNetworkPort($portID)
     {
         /** @var \DBmysql $DB */
@@ -333,73 +327,58 @@ class NetworkPort_Vlan extends CommonDBRelation
         return $vlans;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'NetworkPort':
+            switch ($item::class) {
+                case NetworkPort::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             ["networkports_id" => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb);
-                case 'Vlan':
+                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::class);
+                case Vlan::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             ["vlans_id" => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(NetworkPort::getTypeName(), $nb);
+                    return self::createTabEntry(NetworkPort::getTypeName(), $nb, $item::class);
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'NetworkPort':
-                return self::showForNetworkPort($item);
-            case 'Vlan':
-                return self::showForVlan($item);
-        }
-        return true;
+        return match ($item::class) {
+            NetworkPort::class => self::showForNetworkPort($item),
+            Vlan::class => self::showForVlan($item),
+            default => true,
+        };
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-     **/
     public static function getRelationMassiveActionsSpecificities()
     {
         $specificities = parent::getRelationMassiveActionsSpecificities();
 
-       // Set the labels for add_item and remove_item
+        // Set the labels for add_item and remove_item
         $specificities['button_labels']['add']    = _sx('button', 'Associate');
         $specificities['button_labels']['remove'] = _sx('button', 'Dissociate');
 
         return $specificities;
     }
 
-
     public static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number)
     {
-
-        if ($ma->getAction() == 'add') {
-            echo "<br><br>" . __('Tagged') . Html::getCheckbox(['name' => 'tagged']);
+        if ($ma->getAction() === 'add') {
+            echo "<br><br>" . __s('Tagged') . Html::getCheckbox(['name' => 'tagged']);
         }
     }
-
 
     public static function getRelationInputForProcessingOfMassiveActions(
         $action,
@@ -407,7 +386,7 @@ class NetworkPort_Vlan extends CommonDBRelation
         array $ids,
         array $input
     ) {
-        if ($action == 'add') {
+        if ($action === 'add') {
             return ['tagged' => $input['tagged']];
         }
         return [];

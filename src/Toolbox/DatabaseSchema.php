@@ -46,7 +46,7 @@ class DatabaseSchema
      */
     public static function getEmptySchemaPath(string $version): ?string
     {
-        $normalized_version = VersionParser::getNormalizedVersion($version, false, true);
+        $normalized_version = VersionParser::getNormalizedVersion($version, false);
         $latest_version     = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
 
         $schema_path = $normalized_version === $latest_version

@@ -1,0 +1,86 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="spaced">
+   {% if canedit %}
+      <form method="post" name="form" action="{{ action }}" data-track-changes="true">
+   {% endif %}
+   <table class="tab_cadre_fixe">
+      {{ call_plugin_hook('pre_item_form', {
+         'item': item,
+         'options': {}
+      }) }}
+      <tr>
+         <th colspan="2">{{ __('Two-factor authentication (2FA)') }}</th>
+      </tr>
+      <tr class="tab_bg_1">
+         <td colspan="2">
+            <div class="alert alert-info">
+               {{ __('If 2FA is enforced, users with access to this %s will be required to use 2FA at login even if this is not their default')|format(item.getTypeName(1)) }}
+            </div>
+         </td>
+      </tr>
+      <tr class="tab_bg_1">
+         <td>{{ __('Enforce 2FA') }}</td>
+         <td>
+            {% if item.getType() == 'Entity' %}
+               {{ fields.dropdownArrayField('2fa_enforcement_strategy', item.fields['2fa_enforcement_strategy'], {
+                  (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity'),
+                  '0': __('No'),
+                  '1': __('Yes'),
+               }, '', {
+                  'no_label': true,
+               }) }}
+            {% else %}
+               {{ fields.dropdownYesNo('2fa_enforced', item.fields['2fa_enforced'], '', {
+                  'no_label': true,
+               }) }}
+            {% endif %}
+         </td>
+      </tr>
+      {{ call_plugin_hook('post_item_form', {
+         'item': item,
+         'options': {}
+      }) }}
+   </table>
+   {% if canedit %}
+         <input type="hidden" name="id" value="{{ item.fields['id'] }}">
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         <button type="submit" name="update" class="btn btn-primary">
+            {{ _x('button', 'Save') }}
+         </button>
+      </form>
+   {% endif %}
+</div>

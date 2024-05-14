@@ -1,0 +1,100 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
+<div class="list-group-item border-0 metacriteria p-2" id="{{ row_id }}">
+   <div class="row g-1">
+      <div class="col-auto">
+         <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ row_id }}">
+            <i class="ti ti-square-rounded-minus" alt="-" title="{{ __('Delete a global rule') }}"></i>
+         </button>
+      </div>
+      <div class="col-auto">
+         {% set dropdown_name = "criteria" ~ prefix ~ "[" ~ num ~ "][link]" %}
+         {% set dropdown_value = metacriteria['link'] is defined ? metacriteria['link'] : '' %}
+         {{ fields.dropdownArrayField(dropdown_name, dropdown_value, call('Glpi\\Search\\SearchEngine::getLogicalOperators'), '', {
+            full_width: true,
+            input_class: 'col-12',
+            full_width_adapt_column: false,
+            no_label: true,
+            mb: 'mb-0',
+         }) }}
+      </div>
+      {% set rand = random() %}
+      <div class="col-auto">
+         {% set dropdown_name = "criteria" ~ prefix ~ "[" ~ num ~ "][itemtype]" %}
+         {% set dropdown_value = metacriteria['itemtype'] is defined ? metacriteria['itemtype'] : '' %}
+         {{ fields.dropdownItemTypes(dropdown_name, dropdown_value, '', {
+            types: linked,
+            rand: rand,
+            full_width: true,
+            input_class: 'col-12',
+            full_width_adapt_column: false,
+            no_label: true,
+            mb: 'mb-0',
+         }) }}
+      </div>
+      <input type="hidden" name="criteria{{ prefix ~ "[" ~ num ~ "][meta]" }}" value="true">
+      {% set clean_id_prefix = call('Html::cleanId', [prefix]) %}
+      {% set field_id = "dropdown_criteria" ~ clean_id_prefix ~ "[" ~ num ~ "][itemtype]" ~ rand %}
+      {% set span_id = "show_" ~ normalized_itemtype ~ "_" ~ clean_id_prefix ~ num ~ "_" ~ rand %}
+      {% set params = {
+         action: 'display_criteria',
+         itemtype: '__VALUE__',
+         parent_itemtype: itemtype,
+         from_meta: true,
+         num: num,
+         p: p,
+         _idor_token: idor_token('', {
+            parent_itemtype: itemtype,
+         })
+      } %}
+      {% do call('Ajax::updateItemOnSelectEvent', [
+         field_id,
+         span_id,
+         config('root_doc') ~ "/ajax/search.php",
+         params
+      ]) %}
+      <div class="col-auto" id="{{ span_id }}">
+         <div class="row">
+            {% if metacriteria['itemtype'] is defined and metacriteria['itemtype'] is not empty %}
+               {% set params = params|merge({itemtype: metacriteria['itemtype']}) %}
+
+               {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [params]) }}
+            {% endif %}
+         </div>
+      </div>
+   </div>
+</div>

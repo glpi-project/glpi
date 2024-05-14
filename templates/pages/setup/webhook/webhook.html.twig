@@ -1,0 +1,141 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% block more_fields %}
+
+    {{ fields.nullField() }}
+
+    {{ fields.dropdownArrayField(
+        'itemtype',
+        item.fields['itemtype'],
+        item.getItemtypesDropdownValues(),
+        __('Itemtype'),
+        field_options|merge({
+            display_emptychoice: item.isNewItem(),
+            rand: rand_field,
+        })
+    ) }}
+
+    {{ fields.dropdownArrayField(
+        'event',
+        item.fields['event'],
+        item.getGlpiEventsList(item.fields['itemtype']),
+        _n('Event', 'Events', 1),
+        field_options|merge({
+            display_emptychoice: item.isNewItem(),
+            container_id: 'show_event_field',
+        })
+    ) }}
+
+    {% do call('Ajax::updateItemOnSelectEvent', [
+        'dropdown_itemtype' ~ rand_field,
+        'show_event_field',
+        config('root_doc') ~ '/ajax/webhook.php',
+        {
+        'itemtype': '__VALUE__',
+        'action': 'get_events_from_itemtype'
+        }
+    ]) %}
+
+    {{ fields.numberField(
+        'sent_try',
+        item.fields['sent_try'],
+        __('Number of retries'),
+        {
+            'min': 0,
+            'max': 255
+        }
+    ) }}
+
+    {{ fields.largeTitle(_n('Target', 'Targets', 1), 'ti ti-viewfinder') }}
+
+    {% set url_editor_container_id = 'url_' ~ random() %}
+    {% set url_editor_container %}
+        <div id="{{ url_editor_container_id }}" class="webhook_url form-control overflow-hidden" style="height: 36px"></div>
+    {% endset %}
+    {{ fields.htmlField('url', url_editor_container, __('URL'), field_options|merge({
+        wrapper_class: 'd-flex flex-grow-1',
+        helper: __('It is strongly advised to use the HTTPS protocol.') ~ ' ' ~ __('You may use the same placeholder tags as in the payload content and header values.')
+    })) }}
+    <script>
+        const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
+        window.GLPI.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', '{{ item.fields['url']|raw }}', {{ response_schema|json_encode|raw }}, editor_options).then(() => {
+            $('#{{ url_editor_container_id }}').closest('form').on('formdata', (e) => {
+                const editors = window.monaco.editor.getEditors().filter((editor) => {
+                    return editor._domElement.classList.contains('webhook_url');
+                });
+                if (editors.length) {
+                    e.originalEvent.formData.delete('url');
+                    e.originalEvent.formData.append('url', editors[0].getValue());
+                }
+            });
+            $('#{{ url_editor_container_id }}').closest('form').find('select[name="itemtype"]').on('change', (e) => {
+                // Get new Monaco suggestions from the server and then recreate the editor while preserving the value
+                $.ajax({
+                    url: '{{ config('root_doc') }}/ajax/webhook.php',
+                    data: {
+                        action: 'get_monaco_suggestions',
+                        itemtype: e.target.value
+                    },
+                    success: (data) => {
+                        const editors = window.monaco.editor.getEditors().filter((editor) => {
+                            return editor._domElement.classList.contains('webhook_url');
+                        });
+                        const url_field_editor = editors[0];
+                        const url_field_value = url_field_editor.getValue();
+                        url_field_editor.dispose();
+                        window.GLPI.Monaco.createEditor('{{ url_editor_container_id }}', 'twig', url_field_value, data, editor_options);
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{ fields.dropdownArrayField(
+        'http_method',
+        item.fields['http_method'],
+        item.getHttpMethod(),
+        __('HTTP method'),
+        field_options
+    ) }}
+
+    {{ fields.dropdownYesNo('save_response_body', item.fields['save_response_body'], __('Save response body')) }}
+
+    {{ fields.dropdownYesNo('log_in_item_history', item.fields['log_in_item_history'], __('Log in item history')) }}
+
+{% endblock %}

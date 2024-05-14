@@ -164,7 +164,7 @@
                 flex-direction: column;
                 flex: 1 0 auto;
                 text-align: center;
-                border-top: 5px solid $header-border-color;
+                border-top: 5px solid var(--glpi-form-header-border-color);
 
                 &[data-drop-only="true"] .kanban-body {
                     background: #fffa90;
@@ -450,20 +450,6 @@
         display: inline-block;
         margin-right: 5px;
         vertical-align: middle;
-    }
-
-    .sortable-placeholder {
-        border: 2px dashed #dad55e;
-        background: #fff99038;
-        color: #777620;
-        height: 40px;
-        margin-top: 5px;
-
-        &.invalid-position {
-            border: 2px dashed #d3413c;
-            background: #ff7370;
-            color: #792220;
-        }
     }
 
     .item-details-panel {

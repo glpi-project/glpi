@@ -38,7 +38,6 @@ namespace Glpi\System\Status;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
-use DBmysql;
 use MailCollector;
 use Plugin;
 use Toolbox;
@@ -115,12 +114,10 @@ final class StatusChecker
      * @param string|null $service The name of the service or if null/'all' all services will be checked
      * @param bool $public_only True if only public information should be available in the status check.
      *    If true, assume the data is being viewed by an anonymous user.
-     * @param bool $as_array True if the service check result should be returned as an array instead of a plain-text string.
-     * @return array|string An array or string with the result based on the $as_array parameter value.
+     * @return array An array with the status information
      * @since 10.0.0
-     * @FIXME Remove deprecated plain text output in GLPI 10.1.
      */
-    public static function getServiceStatus(?string $service, $public_only = true, $as_array = true)
+    public static function getServiceStatus(?string $service, $public_only = true)
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {
@@ -130,31 +127,23 @@ final class StatusChecker
                 ]
             ];
             foreach ($services as $name => $service_check_method) {
-                $service_status = self::getServiceStatus($name, $public_only, true);
+                $service_status = self::getServiceStatus($name, $public_only);
                 $status[$name] = $service_status;
             }
 
             $status['glpi']['status'] = self::calculateGlobalStatus($status);
 
-            if ($as_array) {
-                return $status;
-            } else {
-                return self::getPlaintextOutput($status);
-            }
+            return $status;
         }
 
         if (!array_key_exists($service, $services)) {
-            return $as_array ? [] : '';
+            return [];
         }
         $service_check_method = $services[$service];
         if (method_exists($service_check_method[0], $service_check_method[1])) {
-            $service_status = $service_check_method($public_only);
-            if ($as_array) {
-                return $service_status;
-            }
-            return strtoupper($service) . '_' . $service_status['status'];
+            return $service_check_method($public_only);
         }
-        return $as_array ? [] : '';
+        return [];
     }
 
     /**
@@ -168,10 +157,10 @@ final class StatusChecker
         if ($status === null) {
             $status = [
                 'status' => self::STATUS_OK,
-                'master' => [
+                'main' => [
                     'status' => self::STATUS_OK,
                 ],
-                'slaves' => [
+                'replicas' => [
                     'status' => self::STATUS_NO_DATA,
                     'servers' => []
                 ]
@@ -186,29 +175,29 @@ final class StatusChecker
                 }
 
                 if (count($hosts)) {
-                    $status['slaves']['status'] = self::STATUS_OK;
+                    $status['replicas']['status'] = self::STATUS_OK;
                 }
 
                 foreach ($hosts as $num => $name) {
                     $diff = DBConnection::getReplicateDelay($num);
                     if (abs($diff) > 1000000000) {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
                             'replication_delay'  => '-1',
                             'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
-                        $status['slaves']['status'] = self::STATUS_PROBLEM;
+                        $status['replicas']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
                     } else if (abs($diff) > HOUR_TIMESTAMP) {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_PROBLEM,
                             'replication_delay'  => abs($diff),
                             'status_msg'           => _x('glpi_status', 'Replication delay is too high')
                         ];
-                        $status['slaves']['status'] = self::STATUS_PROBLEM;
+                        $status['replicas']['status'] = self::STATUS_PROBLEM;
                         $status['status'] = self::STATUS_PROBLEM;
                     } else {
-                        $status['slaves']['servers'][$num] = [
+                        $status['replicas']['servers'][$num] = [
                             'status'             => self::STATUS_OK,
                             'replication_delay'  => abs($diff)
                         ];
@@ -218,17 +207,13 @@ final class StatusChecker
 
            // Check main server connection
             if (!@DBConnection::establishDBConnection(false, true, false)) {
-                $status['master'] = [
+                $status['main'] = [
                     'status' => self::STATUS_PROBLEM,
                     'status_msg' => _x('glpi_status', 'Unable to connect to the main database')
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             }
         }
-
-        // Set new properties. Master and slave are deprecated given their implications in English.
-        $status['main'] = $status['master'];
-        $status['replicas'] = $status['slaves'];
 
         return $status;
     }
@@ -485,26 +470,14 @@ final class StatusChecker
                 'stuck' => []
             ];
             if (self::isDBAvailable()) {
+                /** @var \DBmysql $DB */
+                global $DB;
+
                 $crontasks = getAllDataFromTable('glpi_crontasks');
                 $running = count(array_filter($crontasks, static function ($crontask) {
                     return $crontask['state'] === CronTask::STATE_RUNNING;
                 }));
-                $stuck_crontasks = getAllDataFromTable(
-                    'glpi_crontasks',
-                    [
-                        'state'  => CronTask::STATE_RUNNING,
-                        'OR'     => [
-                            new \QueryExpression(
-                                '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
-                                DBmysql::quoteName('frequency') . ' < unix_timestamp(now()))'
-                            ),
-                            new \QueryExpression(
-                                '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * ' .
-                                HOUR_TIMESTAMP . ' < unix_timestamp(now()))'
-                            )
-                        ]
-                    ]
-                );
+                $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                       $status['stuck'][] = $ct['name'];
                 }
@@ -531,19 +504,24 @@ final class StatusChecker
                     'status' => self::STATUS_OK
                 ]
             ];
-           // Check session dir (useful when NFS mounted))
-            if (!is_dir(GLPI_SESSION_DIR)) {
-                $status['session_dir'] = [
-                    'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not a directory'), 'GLPI_SESSION_DIR')
-                ];
-                $status['status'] = self::STATUS_PROBLEM;
-            } else if (!is_writable(GLPI_SESSION_DIR)) {
-                $status['session_dir'] = [
-                    'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not writable'), 'GLPI_SESSION_DIR')
-                ];
-                $status['status'] = self::STATUS_PROBLEM;
+            $session_handler = ini_get('session.save_handler');
+            if ($session_handler !== false && strtolower($session_handler) === 'files') {
+                // Check session dir (useful when NFS mounted))
+                if (!is_dir(GLPI_SESSION_DIR)) {
+                    $status['session_dir'] = [
+                        'status' => self::STATUS_PROBLEM,
+                        'status_msg'   => sprintf(_x('glpi_status', '%s variable is not a directory'), 'GLPI_SESSION_DIR')
+                    ];
+                    $status['status'] = self::STATUS_PROBLEM;
+                } else if (!is_writable(GLPI_SESSION_DIR)) {
+                    $status['session_dir'] = [
+                        'status' => self::STATUS_PROBLEM,
+                        'status_msg'   => sprintf(_x('glpi_status', '%s variable is not writable'), 'GLPI_SESSION_DIR')
+                    ];
+                    $status['status'] = self::STATUS_PROBLEM;
+                }
+            } else {
+                $status['session_dir']['status_msg'] = _x('glpi_status', 'PHP is not configured to use the "files" session save handler');
             }
         }
 
@@ -599,79 +577,5 @@ final class StatusChecker
         }
 
         return $status;
-    }
-
-    /**
-     * @param bool $public_only True if only public status information should be given.
-     * @param bool $as_array
-     * @return array|string
-     * @deprecated 10.0.0 Use {@link self::getServiceStatus} instead
-     */
-    public static function getFullStatus($public_only = true, $as_array = true)
-    {
-        Toolbox::deprecated('Use StatusChecker::getServiceStatus for service checks instead');
-        return self::getServiceStatus(null, $public_only, $as_array);
-    }
-
-    /**
-     * Format the given full service status result as a plain-text output compatible with previous versions of GLPI.
-     * @param array $status
-     * @return string
-     */
-    private static function getPlaintextOutput(array $status): string
-    {
-       // Deprecated notices are done on the /status.php endpoint and CLI commands to give better migration hints
-        $output = '';
-       // Plain-text output
-        if (count($status['db']['slaves'])) {
-            foreach ($status['db']['slaves']['servers'] as $num => $slave_info) {
-                $output .= "GLPI_DBSLAVE_{$num}_{$slave_info['status']}\n";
-            }
-        } else {
-            $output .= "No slave DB\n"; // Leave as "slave" since plain text is already deprecated
-        }
-        $output .= "GLPI_DB_{$status['db']['master']['status']}\n";
-        $output .= "GLPI_SESSION_DIR_{$status['filesystem']['session_dir']['status']}\n";
-        if (count($status['ldap']['servers'])) {
-            $output .= 'Check LDAP servers:';
-            foreach ($status['ldap']['servers'] as $name => $ldap_info) {
-                $output .= " {$name}_{$ldap_info['status']}\n";
-            }
-        } else {
-            $output .= "No LDAP server\n";
-        }
-        if (count($status['imap']['servers'])) {
-            $output .= 'Check IMAP servers:';
-            foreach ($status['imap']['servers'] as $name => $imap_info) {
-                $output .= " {$name}_{$imap_info['status']}\n";
-            }
-        } else {
-            $output .= "No IMAP server\n";
-        }
-        if (isset($status['cas']['status']) && $status['cas']['status'] !== self::STATUS_NO_DATA) {
-            $output .= "CAS_SERVER_{$status['cas']['status']}\n";
-        } else {
-            $output .= "No CAS server\n";
-        }
-        if (count($status['mail_collectors']['servers'])) {
-            $output .= 'Check mail collectors:';
-            foreach ($status['mail_collectors']['servers'] as $name => $collector_info) {
-                $output .= " {$name}_{$collector_info['status']}\n";
-            }
-        } else {
-            $output .= "No mail collector\n";
-        }
-        if (count($status['crontasks']['stuck'])) {
-            $output .= 'Check crontasks:';
-            foreach ($status['crontasks']['stuck'] as $name) {
-                $output .= " {$name}_PROBLEM\n";
-            }
-        } else {
-            $output .= "Crontasks_OK\n";
-        }
-
-       // Overall Status
-        $output .= "\nGLPI_{$status['glpi']['status']}\n";
-        return $output;
     }
 }

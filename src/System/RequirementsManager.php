@@ -35,7 +35,6 @@
 
 namespace Glpi\System;
 
-use Glpi\System\Requirement\DataDirectoriesProtectedPath;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -47,10 +46,8 @@ use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
-use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
-use Glpi\System\Requirement\SafeDocumentRoot;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -72,12 +69,11 @@ class RequirementsManager
         $requirements = [];
 
         $requirements[] = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $requirements[] = new IntegerSize();
 
         $requirements[] = new SessionsConfiguration();
 
         $requirements[] = new MemoryLimit(64 * 1024 * 1024);
-
-        $requirements[] = new MysqliMysqlnd();
 
         // Mandatory PHP extensions that are defaultly enabled but can be disabled
         $requirements[] = new ExtensionGroup(
@@ -96,6 +92,11 @@ class RequirementsManager
 
         // Mandatory PHP extensions that are NOT defaultly enabled
         $requirements[] = new Extension(
+            'mysqli',
+            false,
+            __('Required for database access.')
+        );
+        $requirements[] = new Extension(
             'curl',
             false,
             __('Required for remote access to resources (inventory agent requests, marketplace, RSS feeds, ...).')
@@ -111,6 +112,11 @@ class RequirementsManager
             __('Required for internationalization.')
         );
         $requirements[] = new Extension(
+            'mbstring',
+            false,
+            __('Required for multibyte chars support and charset conversion.')
+        );
+        $requirements[] = new Extension(
             'zlib',
             false,
             __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
@@ -120,6 +126,11 @@ class RequirementsManager
             'SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES',
             false,
             __('Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is provided by libsodium 1.0.12 and newer.')
+        );
+        $requirements[] = new Extension(
+            'openssl',
+            false,
+            __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
         );
 
         if ($db instanceof \DBmysql) {
@@ -148,13 +159,7 @@ class RequirementsManager
 
         $requirements[] = new PhpSupportedVersion();
 
-        $safe_doc_root_requirement = new SafeDocumentRoot();
-        $requirements[] = $safe_doc_root_requirement;
-        if (!$safe_doc_root_requirement->isValidated()) {
-            $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
-        }
         $requirements[] = new SessionsSecurityConfiguration();
-        $requirements[] = new IntegerSize();
         $requirements[] = new Extension(
             'exif',
             true,
@@ -183,7 +188,7 @@ class RequirementsManager
         );
         $requirements[] = new ExtensionGroup(
             __('PHP emulated extensions'),
-            ['ctype', 'iconv', 'mbstring', 'sodium'],
+            ['ctype', 'iconv', 'sodium'],
             true,
             __('Slightly enhance performances.')
         );

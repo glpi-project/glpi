@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use InventoryTestCase;
 use Item_OperatingSystem;
 use Lockedfield;
@@ -136,11 +137,20 @@ class Inventory extends InventoryTestCase
         ]);
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
-        $monitor_link = $iterator->current();
-        unset($monitor_link['date_mod']);
-        unset($monitor_link['date_creation']);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
+        $connection = $connections[array_key_first($connections)];
+        $monitor = new \Monitor();
+        $this->boolean($monitor->getFromDB($connection['items_id_peripheral']))->isTrue();
+        $monitor_fields = $monitor->fields;
+        unset($monitor_fields['date_mod'], $monitor_fields['date_creation']);
 
         $mmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($mmanuf);
@@ -151,7 +161,7 @@ class Inventory extends InventoryTestCase
         $models_id = $mmodel['id'];
 
         $expected = [
-            'id' => $monitor_link['id'],
+            'id' => $monitor_fields['id'],
             'entities_id' => 0,
             'name' => 'DJCP6',
             'contact' => 'trasher/root',
@@ -185,17 +195,9 @@ class Inventory extends InventoryTestCase
             'is_dynamic' => 1,
             'autoupdatesystems_id' => 0,
             'uuid' => null,
-            'is_recursive' => 0,
-            'linkid' => $monitor_link['linkid'],
-            'glpi_computers_items_is_dynamic' => 1,
-            'entity' => 0,
+            'is_recursive' => 0
         ];
-        $this->array($monitor_link)->isIdenticalTo($expected);
-
-        $monitor = new \Monitor();
-        $this->boolean($monitor->getFromDB($monitor_link['id']))->isTrue();
-        $this->boolean((bool)$monitor->fields['is_dynamic'])->isTrue();
-        $this->string($monitor->fields['name'])->isIdenticalTo('DJCP6');
+        $this->array($monitor_fields)->isIdenticalTo($expected);
 
         //check network ports
         $iterator = $DB->request([
@@ -843,13 +845,23 @@ class Inventory extends InventoryTestCase
         }
 
         //check printer
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
-        $this->integer(count($iterator))->isIdenticalTo(1);
-        $printer_link = $iterator->current();
-        unset($printer_link['date_mod'], $printer_link['date_creation']);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Printer',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
+        $connection = $connections[array_key_first($connections)];
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDB($connection['items_id_peripheral']))->isTrue();
+        $printer_fields = $printer->fields;
+        unset($printer_fields['date_mod'], $printer_fields['date_creation']);
 
         $expected = [
-            'id' => $printer_link['id'],
+            'id' => $printer_fields['id'],
             'entities_id' => 0,
             'is_recursive' => 0,
             'name' => 'Officejet_Pro_8600_34AF9E_',
@@ -886,17 +898,9 @@ class Inventory extends InventoryTestCase
             'sysdescr' => null,
             'last_inventory_update' => $_SESSION['glpi_currenttime'],
             'snmpcredentials_id' => 0,
-            'autoupdatesystems_id' => $autoupdatesystems_id,
-            'linkid' => $printer_link['linkid'],
-            'glpi_computers_items_is_dynamic' => 1,
-            'entity' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id
         ];
-        $this->array($printer_link)->isIdenticalTo($expected);
-
-        $printer = new \Printer();
-        $this->boolean($printer->getFromDB($printer_link['id']))->isTrue();
-        $this->boolean((bool)$printer->fields['is_dynamic'])->isTrue();
-        $this->string($printer->fields['name'])->isIdenticalTo('Officejet_Pro_8600_34AF9E_');
+        $this->array($printer_fields)->isIdenticalTo($expected);
 
         return $computer;
     }
@@ -1379,8 +1383,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
 
         //check network ports
         $iterator = $DB->request([
@@ -1548,8 +1559,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
 
         //check network ports
         $iterator = $DB->request([
@@ -1715,8 +1733,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(0);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(0);
 
         //check network ports
         $iterator = $DB->request([
@@ -4491,7 +4516,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4508,7 +4533,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //change config to import vms as computers
         $this->login();
@@ -4531,7 +4556,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //one does not have an uuid, so no computer is created.
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //partial inventory: postgres vm has been stopped
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json'));
@@ -4539,25 +4564,25 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         $iterator = $DB->request([
             'SELECT' => [
-                \ComputerVirtualMachine::getTable() . '.id',
-                \ComputerVirtualMachine::getTable() . '.name AS vm_name',
+                \ItemVirtualMachine::getTable() . '.id',
+                \ItemVirtualMachine::getTable() . '.name AS vm_name',
                 \VirtualMachineState::getTable() . '.name AS state_name',
             ],
-            'FROM' => \ComputerVirtualMachine::getTable(),
+            'FROM' => \ItemVirtualMachine::getTable(),
             'INNER JOIN' => [
                 \VirtualMachineState::getTable() => [
                     'ON' => [
                         \VirtualMachineState::getTable() => 'id',
-                        \ComputerVirtualMachine::getTable() => 'virtualmachinestates_id'
+                        \ItemVirtualMachine::getTable() => 'virtualmachinestates_id'
                     ]
                 ]
             ],
             'WHERE' => [
-                \ComputerVirtualMachine::getTable() . '.name' => 'db',
+                \ItemVirtualMachine::getTable() . '.name' => 'db',
                 \VirtualMachineState::getTable() . '.name' => 'off'
             ]
         ]);
@@ -4573,7 +4598,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(1);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4602,10 +4627,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-        $cvms = new \ComputerVirtualMachine();
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $cvms = new \ItemVirtualMachine();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4623,7 +4648,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
 
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4640,7 +4665,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
 
         //change config to import vms as computers
@@ -4716,7 +4741,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
 
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($count_vms);
 
         //check we add main computer and one computer per vm
         //one does not have an uuid, so no computer is created.
@@ -5512,6 +5537,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'lines_id' => 0,
                     'users_id' => 0,
                     'groups_id' => 0,
+                    'users_id_tech' => 0,
+                    'groups_id_tech' => 0,
                     'pin' => '',
                     'pin2' => '',
                     'puk' => '',
@@ -5530,6 +5557,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'entities_id' => 0,
                     'is_recursive' => 0,
                     'locations_id' => 0,
+                    'states_id' => 0,
                 ], [
                     'items_id' => $phones_id,
                     'itemtype' => 'Phone',
@@ -5539,6 +5567,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'entities_id' => 0,
                     'is_recursive' => 0,
                     'locations_id' => 0,
+                    'states_id' => 0,
                 ]
             ]
         ];
@@ -5553,7 +5582,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     }
                 }
             }
-            $this->array($component)->isIdenticalTo($expected);
+            $this->array($component)->isEqualTo($expected);
         }
 
         //software

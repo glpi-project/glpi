@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  *
  * Relation between Changes and Tickets
  **/
-class Change_Ticket extends CommonDBRelation
+class Change_Ticket extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
@@ -48,16 +48,6 @@ class Change_Ticket extends CommonDBRelation
 
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
-
-
-
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
 
 
     public static function getTypeName($nb = 0)
@@ -79,7 +69,7 @@ class Change_Ticket extends CommonDBRelation
                             ['changes_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case Ticket::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -88,7 +78,7 @@ class Change_Ticket extends CommonDBRelation
                             ['tickets_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -270,12 +260,15 @@ class Change_Ticket extends CommonDBRelation
             $used[$data['id']]    = $data['id'];
         }
 
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Change::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Ticket::class,
                 'dropdown_options' => [
                     'entity'      => $change->getEntityID(),
@@ -397,12 +390,15 @@ class Change_Ticket extends CommonDBRelation
             $used[$data['id']]    = $data['id'];
         }
 
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Ticket::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Change::class,
                 'dropdown_options' => [
                     'entity'      => $ticket->getEntityID(),
@@ -459,24 +455,5 @@ class Change_Ticket extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
-    }
-
-    public function post_addItem()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $change = new Change();
-            $ticket  = new Ticket();
-            if ($change->getFromDB($this->input["changes_id"]) && $ticket->getFromDB($this->input["tickets_id"])) {
-                NotificationEvent::raiseEvent("update", $change);
-                NotificationEvent::raiseEvent('update', $ticket);
-            }
-        }
-
-        parent::post_addItem();
     }
 }

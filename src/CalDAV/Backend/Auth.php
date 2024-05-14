@@ -49,6 +49,7 @@ class Auth extends AbstractBasic
     protected function validateUserPass($username, $password)
     {
         $auth = new \Auth();
-        return $auth->login($username, $password, true);
+        // TODO Enforce security by accepting here only CalDAV application dedicated password
+        return $auth->validateLogin($username, $password, true);
     }
 }

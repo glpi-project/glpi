@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
+use Glpi\Features\AssignableAsset;
 
 //!  ConsumableItem Class
 /**
@@ -47,6 +50,7 @@ class ConsumableItem extends CommonDBTM
     use Glpi\Features\Clonable;
 
     use AssetImage;
+    use AssignableAsset;
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Consumable', 'Infocom'];
@@ -350,7 +354,15 @@ class ConsumableItem extends CommonDBTM
                             'glpi_consumableitems.entities_id'     => $entity,
                             'OR'                                  => [
                                 ['glpi_alerts.date' => null],
-                                ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                                [
+                                    'glpi_alerts.date' => ['<',
+                                        QueryFunction::dateSub(
+                                            date: QueryFunction::now(),
+                                            interval: $repeat,
+                                            interval_unit: 'SECOND'
+                                        )
+                                    ]
+                                ],
                             ],
                         ],
                     ]
@@ -456,16 +468,6 @@ class ConsumableItem extends CommonDBTM
         $options['entities_id'] = $this->getEntityID();
         $options['items']       = [$item];
         NotificationEvent::debugEvent($this, $options);
-    }
-
-
-    public function canUpdateItem()
-    {
-
-        if (!$this->checkEntity(true)) { //check entities recursively
-            return false;
-        }
-        return true;
     }
 
     public function showForm($ID, array $options = [])

@@ -42,7 +42,6 @@ use Datacenter;
 use DB;
 use DCRoom;
 use Glpi\Console\AbstractCommand;
-use Glpi\Toolbox\Sanitizer;
 use Item_Rack;
 use Monitor;
 use MonitorModel;
@@ -405,7 +404,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->doQuery('TRUNCATE ' . $this->db->quoteName($table));
+            $result = $this->db->delete($table, [1]);
 
             if (!$result) {
                 throw new \Symfony\Component\Console\Exception\RuntimeException(
@@ -588,10 +587,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $new_model = new $new_model_itemtype();
-                $new_model_fields = Sanitizer::sanitize([
+                $new_model_fields = [
                     'name'    => $othermodel['name'],
                     'comment' => $othermodel['comment'],
-                ]);
+                ];
 
                 if (
                     !($new_model_id = $new_model->getFromDBByCrit($new_model_fields))
@@ -640,13 +639,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     foreach ($otheritems_iterator as $otheritem) {
                         $progress_bar->advance(1);
 
-                        $new_item_fields = Sanitizer::sanitize([
+                        $new_item_fields = [
                             'name'        => strlen($otheritem['name'])
-                                     ? $otheritem['name']
-                                     : $otheritem['id'],
+                                 ? $otheritem['name']
+                                 : $otheritem['id'],
                             'entities_id' => $otheritem['entities_id'],
                             $fk_new_model => $new_model_id
-                        ]);
+                        ];
 
                         $new_item = new $new_itemtype();
 
@@ -820,12 +819,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 );
 
                 $rackmodel = new RackModel();
-                $rackmodel_fields = Sanitizer::sanitize(
-                    [
-                        'name'    => $old_model['name'],
-                        'comment' => $old_model['comment'],
-                    ]
-                );
+                $rackmodel_fields = [
+                    'name'    => $old_model['name'],
+                    'comment' => $old_model['comment'],
+                ];
 
                 if (
                     !($rackmodel_id = $rackmodel->getFromDBByCrit($rackmodel_fields))
@@ -901,14 +898,12 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 );
 
                 $racktype = new RackType();
-                $racktype_fields = Sanitizer::sanitize(
-                    [
-                        'name'         => $old_type['name'],
-                        'entities_id'  => $old_type['entities_id'],
-                        'is_recursive' => $old_type['is_recursive'],
-                        'comment'      => $old_type['comment'],
-                    ]
-                );
+                $racktype_fields = [
+                    'name'         => $old_type['name'],
+                    'entities_id'  => $old_type['entities_id'],
+                    'is_recursive' => $old_type['is_recursive'],
+                    'comment'      => $old_type['comment'],
+                ];
 
                 if (
                     !($racktype_id = $racktype->getFromDBByCrit($racktype_fields))
@@ -984,12 +979,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 );
 
                 $state = new State();
-                $state_fields = Sanitizer::sanitize(
-                    [
-                        'name'      => $old_state['name'],
-                        'states_id' => 0,
-                    ]
-                );
+                $state_fields = [
+                    'name'      => $old_state['name'],
+                    'states_id' => 0,
+                ];
 
                 if (!($state_id = $state->getFromDBByCrit($state_fields))) {
                      $state_fields['comment']      = $old_state['comment'];
@@ -1068,16 +1061,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 );
 
                 $room = new DCRoom();
-                $room_fields = Sanitizer::sanitize(
-                    [
-                        'name'           => $old_room['completename'],
-                        'entities_id'    => $old_room['entities_id'],
-                        'is_recursive'   => 1,
-                        'datacenters_id' => $this->datacenter_id,
-                        'vis_cols'       => 10,
-                        'vis_rows'       => 10,
-                    ]
-                );
+                $room_fields = [
+                    'name'           => $old_room['completename'],
+                    'entities_id'    => $old_room['entities_id'],
+                    'is_recursive'   => 1,
+                    'datacenters_id' => $this->datacenter_id,
+                    'vis_cols'       => 10,
+                    'vis_rows'       => 10,
+                ];
 
                 if (
                     !($room_id = $room->getFromDBByCrit($room_fields))
@@ -1180,32 +1171,30 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $rack = new Rack();
-                $rack_fields = Sanitizer::sanitize(
-                    [
-                        'name'             => $old_rack['name'],
-                        'comment'          => "Imported from rack plugin",
-                        'entities_id'      => $old_rack['entities_id'],
-                        'is_recursive'     => $old_rack['is_recursive'],
-                        'locations_id'     => $old_rack['locations_id'],
-                        'serial'           => $old_rack['serial'],
-                        'rackmodels_id'    => null !== $rackmodel ? $rackmodel->fields['id'] : 0,
-                        'manufacturers_id' => $old_rack['manufacturers_id'],
-                        'racktypes_id'     => null !== $racktype ? $racktype->fields['id'] : 0,
-                        'states_id'        => null !== $rackstate ? $rackstate->fields['id'] : 0,
-                        'users_id_tech'    => $old_rack['users_id_tech'],
-                        'groups_id_tech'   => $old_rack['groups_id_tech'],
-                        'width'            => (int) $old_rack['width'],
-                        'height'           => (int) $old_rack['height'],
-                        'depth'            => (int) $old_rack['depth'],
-                        'max_weight'       => (int) $old_rack['weight'],
-                        'number_units'     => $old_rack['rack_size'],
-                        'is_template'      => $old_rack['is_template'],
-                        'template_name'    => $old_rack['template_name'],
-                        'is_deleted'       => $old_rack['is_deleted'],
-                        'dcrooms_id'       => $room_id,
-                        'bgcolor'          => "#FEC95C",
-                    ]
-                );
+                $rack_fields = [
+                    'name'             => $old_rack['name'],
+                    'comment'          => "Imported from rack plugin",
+                    'entities_id'      => $old_rack['entities_id'],
+                    'is_recursive'     => $old_rack['is_recursive'],
+                    'locations_id'     => $old_rack['locations_id'],
+                    'serial'           => $old_rack['serial'],
+                    'rackmodels_id'    => null !== $rackmodel ? $rackmodel->fields['id'] : 0,
+                    'manufacturers_id' => $old_rack['manufacturers_id'],
+                    'racktypes_id'     => null !== $racktype ? $racktype->fields['id'] : 0,
+                    'states_id'        => null !== $rackstate ? $rackstate->fields['id'] : 0,
+                    'users_id_tech'    => $old_rack['users_id_tech'],
+                    'groups_id_tech'   => $old_rack['groups_id_tech'],
+                    'width'            => (int) $old_rack['width'],
+                    'height'           => (int) $old_rack['height'],
+                    'depth'            => (int) $old_rack['depth'],
+                    'max_weight'       => (int) $old_rack['weight'],
+                    'number_units'     => $old_rack['rack_size'],
+                    'is_template'      => $old_rack['is_template'],
+                    'template_name'    => $old_rack['template_name'],
+                    'is_deleted'       => $old_rack['is_deleted'],
+                    'dcrooms_id'       => $room_id,
+                    'bgcolor'          => "#FEC95C",
+                ];
 
                 if (!($rack_id = $rack->getFromDBByCrit($rack_fields))) {
                      $rack_fields['position'] = "9999999999999,-" . (++$i);

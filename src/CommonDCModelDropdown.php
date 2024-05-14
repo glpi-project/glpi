@@ -33,12 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssetImage;
+use Glpi\Features\Clonable;
 
 /// CommonDCModelDropdown class - dropdown for datacenter items models
 abstract class CommonDCModelDropdown extends CommonDropdown
 {
     use AssetImage;
+    use Clonable;
 
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
@@ -203,10 +206,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         switch ($field) {
             case 'picture_front':
             case 'picture_rear':
-                if (isset($options['html']) && $options['html']) {
+                if (isset($values['name']) && strlen($values['name']) > 0 && isset($options['html']) && $options['html']) {
                     return Html::image(Toolbox::getPictureUrl($values[$field]), [
                         'alt'   => $options['searchopt']['name'],
-                        'style' => 'height: 30px;',
+                        'style' => 'max-height: 60px;',
                     ]);
                 }
         }
@@ -437,10 +440,50 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         }
     }
 
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $soptions = [];
+
+        $soptions[] = [
+            'id'   => 'pictures',
+            'name' => _n('Picture', 'Pictures', Session::getPluralNumber())
+        ];
+
+        $soptions[] = [
+            'id'                 => '250',
+            'table'              => self::getTable(),
+            'field'              => 'picture_front',
+            'name'               => __('Front picture'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'           => true,
+            'massiveaction'      => false,
+        ];
+
+        $soptions[] = [
+            'id'                 => '251',
+            'table'              => self::getTable(),
+            'field'              => 'picture_rear',
+            'name'               => __('Rear picture'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'           => true,
+            'massiveaction'      => false,
+        ];
+
+        return $soptions;
+    }
+
     public static function getIcon()
     {
         $model_class  = get_called_class();
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

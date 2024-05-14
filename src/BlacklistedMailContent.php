@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * BlacklistedMailContent Class
  *
@@ -40,6 +42,8 @@
  **/
 class BlacklistedMailContent extends CommonDropdown
 {
+    use Clonable;
+
    // From CommonDBTM
     public $dohistory       = false;
 
@@ -99,5 +103,10 @@ class BlacklistedMailContent extends CommonDropdown
     public static function getIcon()
     {
         return "fas fa-envelope-square";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

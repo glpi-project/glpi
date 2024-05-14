@@ -40,7 +40,6 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
-use Glpi\Toolbox\Sanitizer;
 use SoftwareVersion;
 
 /* Test for inc/commondbtm.class.php */
@@ -436,6 +435,7 @@ class CommonDBTM extends DbTestCase
         );
         $this->boolean($res)->isTrue();
     }
+
     /**
      * Check right on Recursive object
      *
@@ -478,12 +478,12 @@ class CommonDBTM extends DbTestCase
         ]);
         $this->integer($id[3])->isGreaterThan(0);
 
-       // Super admin
+        // Super admin
         $this->login('glpi', 'glpi');
         $this->variable($_SESSION['glpiactiveprofile']['id'])->isEqualTo(4);
-        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(255);
+        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(4095);
 
-       // See all
+        // See all
         $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
@@ -496,20 +496,20 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
 
-       // See only in main entity
+        // See only in main entity
         $this->boolean(\Session::changeActiveEntities($ent0))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
         $this->boolean($printer->can($id[1], READ))->isTrue("Fail can read Printer 2");
         $this->boolean($printer->can($id[2], READ))->isFalse("Fail can't read Printer 3");
-        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 1");
+        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isTrue("Fail can write Printer 1");
         $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 1");
+        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 1 + parent if recursive
+        // See only in child entity 1 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent1))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");
@@ -518,11 +518,11 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
+        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 2 + parent if recursive
+        // See only in child entity 2 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent2))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");
@@ -531,7 +531,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isTrue("Fail can read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
         $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
     }
@@ -865,12 +865,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -883,10 +883,10 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
        //test with default date
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -909,12 +909,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -924,7 +924,7 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->boolean(
-            $computer->update(['id' => $computerID, 'name' => \Toolbox::addslashes_deep('Computer01 \'')])
+            $computer->update(['id' => $computerID, 'name' => 'Computer01 \''])
         )->isTrue();
         $this->string($computer->fields['name'])->isIdenticalTo('Computer01 \'');
         $this->boolean($computer->getFromDB($computerID))->isTrue();
@@ -945,6 +945,21 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo('renamed');
     }
 
+    public function testEmptyUpdateInDB()
+    {
+        // Simulate a call to `updateInDB()` that pass an invalid list of fields.
+        // This is only possible if `pre_updateInDB()` modifies the entries of either `$this->updates` and `$this->fields`
+        // and results in having an entry in `$this->updates` that does not corresponds to a valid key of `$this->fields`.
+        $computer = getItemByTypeName(\Computer::class, '_test_pc01');
+        $this->when(
+            function () use ($computer) {
+                $this->boolean($computer->updateInDB(['_not_a_real_field']))->isFalse();
+            }
+        )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage('The `_not_a_real_field` field cannot be updated as its value is not defined.')
+            ->exists();
+    }
 
     public function testTimezones()
     {
@@ -1344,7 +1359,7 @@ class CommonDBTM extends DbTestCase
         // value that have a `\` as 255th char
         yield [
             'value'     => str_repeat('a', 254) . '\\abcdefg',
-            'truncated' => str_repeat('a', 254),
+            'truncated' => str_repeat('a', 254) . '\\',
             'length'    => 262,
         ];
 
@@ -1426,7 +1441,7 @@ class CommonDBTM extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]))->isNotTrue();
 
-        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity > _test_root_entity]";
         $this->hasSessionMessages(1, [$err_msg]);
 
         $this->variable($computer->add([
@@ -1741,14 +1756,212 @@ class CommonDBTM extends DbTestCase
     {
         $item = new $itemtype();
 
-        $item_id = $item->add(Sanitizer::sanitize($add_input));
+        $item_id = $item->add($add_input);
         $this->integer($item_id)->isGreaterThan(0);
 
-        $updated = $item->update(['id' => $item_id] + Sanitizer::sanitize($update_input));
+        $updated = $item->update(['id' => $item_id] + $update_input);
         $this->boolean($updated)->isTrue(0);
 
         sort($item->updates);
         sort($expected_updates);
         $this->array($item->updates)->isEqualTo($expected_updates);
+    }
+
+    protected function assignableAssetsProvider()
+    {
+        return [
+            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+        ];
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanViewAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+        $this->boolean($itemtype::canView())->isFalse();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanViewItemAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        // Add the user to a test group
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        // Create the item
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        // User cannot access the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->boolean($item->canViewItem())->isFalse();
+
+        // User can access the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ;
+        $this->boolean($item->canViewItem())->isTrue();
+
+        // User can access the item with the assigned right, but only if item is assigned to himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->boolean($item->canViewItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+        ]));
+        $this->boolean($item->canViewItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+
+        // User can access the item with the own right, but only if item is owned by himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->boolean($item->canViewItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->boolean($item->canViewItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id' => $groups_id,
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanUpdateAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+        $this->boolean($itemtype::canUpdate())->isFalse();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanUpdateItemAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        // Add the user to a test group
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        // Create the item
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        // User cannot update the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        // User can update the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE;
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        // User can update the item with the assigned right, but only if item is assigned to himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+        ]));
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        // User can update the item with the own right, but only if item is owned by himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id' => $groups_id,
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
     }
 }

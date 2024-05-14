@@ -36,15 +36,14 @@
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (
-    version_compare(PHP_VERSION, '7.4.0', '<') ||
-    version_compare(PHP_VERSION, '8.4.0', '>=')
+    version_compare(PHP_VERSION, '8.2.0', '<') ||
+    version_compare(PHP_VERSION, '8.3.999', '>')
 ) {
-    die('PHP 7.4.0 - 8.4.0 (exclusive) required');
+    die('PHP version must be between 8.2 and 8.3.');
 }
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -84,12 +83,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
     die();
 } else {
+    /** @var array $CFG_GLPI */
+    global $CFG_GLPI;
     include(GLPI_ROOT . "/inc/includes.php");
     $_SESSION["glpicookietest"] = 'testcookie';
 
     //Try to detect GLPI agent calls
     $rawdata = file_get_contents("php://input");
-    if (!empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         include_once(GLPI_ROOT . '/front/inventory.php');
         die();
     }
@@ -103,25 +104,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Auth::redirectIfAuthenticated();
     }
 
-    $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
+    $redirect = $_GET['redirect'] ?? '';
 
     Auth::checkAlternateAuthSystems(true, $redirect);
 
-    $theme = $_SESSION['glpipalette'] ?? 'auror';
-
-    $errors = "";
+    $errors = [];
     if (isset($_GET['error']) && $redirect !== '') {
         switch ($_GET['error']) {
             case 1: // cookie error
-                $errors .= __('You must accept cookies to reach this application');
+                $errors[] = __('You must accept cookies to reach this application');
                 break;
 
             case 2: // GLPI_SESSION_DIR not writable
-                $errors .= __('Checking write permissions for session files');
+                $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
                 break;
 
             case 3:
-                $errors .= __('Invalid use of session ID');
+                $errors[] = __('Your session has expired. Please log in again.');
                 break;
         }
     }
@@ -131,40 +130,73 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Toolbox::manageRedirect($redirect);
     }
 
-    // Random number for html id/label
-    $rand = mt_rand();
+    if (count($errors)) {
+        TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
+            'errors'    => $errors,
+            'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . str_replace("?", "&", $redirect),
+        ]);
+    } else {
+        if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
+            Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
+        }
+        if (isset($_SESSION['mfa_pre_auth'])) {
+            if (isset($_GET['mfa_setup'])) {
+                if (isset($_POST['secret'], $_POST['totp_code'])) {
+                    $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
+                    $totp = new \Glpi\Security\TOTPManager();
+                    if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
+                        $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+                    } else {
+                        Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
+                    }
+                    Html::redirect(Preference::getSearchURL());
+                } else {
+                    // Login started. 2FA needs configured.
+                    $totp = new \Glpi\Security\TOTPManager();
+                    $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
+                }
+            } else {
+                // Login started. Need to ask for the TOTP code.
+                $totp = new \Glpi\Security\TOTPManager();
+                $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
+            }
+        } else {
+            // Random number for html id/label
+            $rand = mt_rand();
 
-    TemplateRenderer::getInstance()->display('pages/login.html.twig', [
-        'rand'                => $rand,
-        'card_bg_width'       => true,
-        'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-        'title'               => __('Authentication'),
-        'noAuto'              => $_GET["noAUTO"] ?? 0,
-        'redirect'            => $redirect,
-        'text_login'          => $CFG_GLPI['text_login'],
-        'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
-        'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
-        'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
-        'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
-                              && countElementsInTable('glpi_notifications', [
-                                  'itemtype'  => 'User',
-                                  'event'     => 'passwordforget',
-                                  'is_active' => 1
-                              ]),
-        'languages_dropdown'  => Dropdown::showLanguages('language', [
-            'display'             => false,
-            'rand'                => $rand,
-            'display_emptychoice' => true,
-            'emptylabel'          => __('Default (from user profile)'),
-            'width'               => '100%'
-        ]),
-        'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
-                               || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
-                               || $CFG_GLPI["use_public_faq"],
-        'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
-        'copyright_message'   => Html::getCopyrightMessage(false),
-        'errors'              => $errors
-    ]);
+            // Regular login
+            TemplateRenderer::getInstance()->display('pages/login.html.twig', [
+                'rand'                => $rand,
+                'card_bg_width'       => true,
+                'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+                'title'               => __('Authentication'),
+                'noAuto'              => $_GET["noAUTO"] ?? 0,
+                'redirect'            => $redirect,
+                'text_login'          => $CFG_GLPI['text_login'],
+                'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
+                'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
+                'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
+                'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
+                    && countElementsInTable('glpi_notifications', [
+                        'itemtype' => 'User',
+                        'event' => 'passwordforget',
+                        'is_active' => 1
+                    ]),
+                'languages_dropdown'  => Dropdown::showLanguages('language', [
+                    'display'             => false,
+                    'rand'                => $rand,
+                    'display_emptychoice' => true,
+                    'emptylabel'          => __('Default (from user profile)'),
+                    'width'               => '100%'
+                ]),
+                'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
+                    || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
+                    || $CFG_GLPI["use_public_faq"],
+                'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
+                'copyright_message'   => Html::getCopyrightMessage(false)
+            ]);
+        }
+    }
 }
 // call cron
 if (!GLPI_DEMO_MODE) {

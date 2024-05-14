@@ -119,7 +119,9 @@ class APIRest extends API
         //parse http request and find parts
         $this->request_uri  = $_SERVER['REQUEST_URI'];
         $this->verb         = $_SERVER['REQUEST_METHOD'];
-        $path_info          = (isset($_SERVER['PATH_INFO'])) ? str_replace("api/", "", trim($_SERVER['PATH_INFO'], '/')) : '';
+        $path_info          = (isset($_SERVER['PATH_INFO'])) ? str_replace("api/", "", $_SERVER['PATH_INFO']) : '';
+        $path_info          = str_replace('v1/', '', $path_info);
+        $path_info          = trim($path_info, '/');
         $this->url_elements = explode('/', $path_info);
 
         // retrieve requested resource
@@ -553,32 +555,13 @@ class APIRest extends API
         }
 
        // retrieve HTTP headers
-        $headers = [];
-        if (function_exists('getallheaders')) {
-           //apache specific
-            $headers = getallheaders();
-            if (false !== $headers && count($headers) > 0) {
-                $fixedHeaders = [];
-                foreach ($headers as $key => $value) {
-                    $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
-                }
-                $headers = $fixedHeaders;
+        $headers = getallheaders();
+        if (false !== $headers && count($headers) > 0) {
+            $fixedHeaders = [];
+            foreach ($headers as $key => $value) {
+                $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
             }
-        } else {
-           // other servers
-            foreach ($_SERVER as $server_key => $server_value) {
-                if (substr($server_key, 0, 5) == 'HTTP_') {
-                    $headers[str_replace(
-                        ' ',
-                        '-',
-                        ucwords(strtolower(str_replace(
-                            '_',
-                            ' ',
-                            substr($server_key, 5)
-                        )))
-                    )] = $server_value;
-                }
-            }
+            $headers = $fixedHeaders;
         }
 
        // try to retrieve basic auth
@@ -678,16 +661,5 @@ class APIRest extends API
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
         exit;
-    }
-
-    /**
-     * Read X-GLPI-Sanitized-Content header value (default: true)
-     *
-     * @return bool
-     */
-    public function returnSanitizedContent(): bool
-    {
-        $sanitized_content = $_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT'] ?? true;
-        return filter_var($sanitized_content, FILTER_VALIDATE_BOOLEAN);
     }
 }

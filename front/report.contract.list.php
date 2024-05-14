@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * @var array $CFG_GLPI
  * @var \DBmysql $DB
@@ -150,9 +153,9 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                 $ors = [];
                 foreach ($_POST["year"] as $val2) {
-                    $ors[] = new QueryExpression('YEAR(' . $DB->quoteName('glpi_contracts.begin_date') . ') = ' . $DB->quote($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB->quote($val2));
                     if ($val == 'SoftwareLicense') {
-                        $ors[] = new QueryExpression('YEAR(' . $DB->quoteName('glpi_infocoms.buy_date') . ') = ' . $DB->quote($val2));
+                        $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB->quote($val2));
                     }
                 }
                 if (count($ors)) {
@@ -194,8 +197,8 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                 $ors = [];
                 foreach ($_POST["year"] as $val2) {
-                    $ors[] = new QueryExpression('YEAR(' . $DB->quoteName('glpi_infocoms.buy_date') . ') = ' . $DB->quoteValue($val2));
-                    $ors[] = new QueryExpression('YEAR(' . $DB->quoteName('glpi_contracts.begin_date') . ') = ' . $DB->quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB::quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB::quoteValue($val2));
                 }
                 if (count($ors)) {
                     $criteria['WHERE'][] = ['OR' => $ors];

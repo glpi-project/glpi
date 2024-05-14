@@ -42,6 +42,7 @@ use Glpi\Features\AssetImage;
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
 
    // From CommonDBTM
@@ -78,7 +79,7 @@ class Appliance extends CommonDBTM
          ->addStandardTab('Certificate_Item', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
@@ -222,7 +223,7 @@ class Appliance extends CommonDBTM
             'id'            => '10',
             'table'         => ApplianceEnvironment::getTable(),
             'field'         => 'name',
-            'name'          => __('Environment'),
+            'name'          => _n('Environment', 'Environments', 1),
             'datatype'      => 'dropdown'
         ];
 
@@ -291,11 +292,11 @@ class Appliance extends CommonDBTM
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_appliance' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());

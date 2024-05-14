@@ -221,7 +221,7 @@ class Contract_Item extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
 
                 default:
                     if (
@@ -230,7 +230,7 @@ class Contract_Item extends CommonDBRelation
                     ) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

@@ -70,7 +70,7 @@ final class Firewall
     /**
      * Security strategy to apply by default on core ajax/front scripts.
      *
-     * @TODO In GLPI 10.1, raise default level to `self::STRATEGY_CENTRAL_ACCESS`.
+     * @TODO In GLPI 11.0, raise default level to `self::STRATEGY_CENTRAL_ACCESS`.
      *       It will require to explicitely declare `$SECURITY_STRATEGY = 'authenticated';` or `$SECURITY_STRATEGY = 'helpdesk_access';`
      *       on endpoints that do not require a central access.
      */
@@ -79,7 +79,7 @@ final class Firewall
     /**
      * Security strategy to apply by default on plugin ajax/front scripts.
      *
-     * @TODO In GLPI 10.1, raise default level to `self::STRATEGY_AUTHENTICATED`.
+     * @TODO In GLPI 11.0, raise default level to `self::STRATEGY_AUTHENTICATED`.
      */
     private const STRATEGY_DEFAULT_FOR_PLUGINS = self::STRATEGY_NO_CHECK;
 

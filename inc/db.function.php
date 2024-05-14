@@ -112,7 +112,7 @@ function getItemTypeForTable($table)
  *
  * @param string $fkname
  *
- * @return string ItemType name for the fkname parameter
+ * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
  */
 function getItemtypeForForeignKeyField($fkname)
 {
@@ -139,9 +139,11 @@ function getTableForItemType($itemtype)
  *
  * @since 0.83
  *
- * @param $itemtype   string   itemtype
- *
+ * @param string $itemtype itemtype
  * @return CommonDBTM|false itemtype object or false if class does not exists
+ * @template T
+ * @phpstan-param class-string<T> $itemtype
+ * @phpstan-return T|false
  **/
 function getItemForItemtype($itemtype)
 {
@@ -403,20 +405,6 @@ function contructListFromTree($tree, $parent = 0)
 {
     $dbu = new DbUtils();
     return $dbu->constructListFromTree($tree, $parent);
-}
-
-
-/**
- * Compute all completenames of Dropdown Tree table
- *
- * @param $table : dropdown tree table to compute
- *
- * @return void
- **/
-function regenerateTreeCompleteName($table)
-{
-    $dbu = new DbUtils();
-    return $dbu->regenerateTreeCompleteName($table);
 }
 
 

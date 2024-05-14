@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Psr\Log\LogLevel;
 
 /* Test for inc/ticket_ticket.class.php */
 
@@ -79,7 +80,7 @@ class Ticket_Ticket extends DbTestCase
         $lid = (int)$link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
-            'link'         => \Ticket_Ticket::LINK_TO
+            'link'         => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
         $this->integer($lid)->isGreaterThan(0);
 
@@ -88,7 +89,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
             ])
         )->isIdenticalTo(0);
 
@@ -97,10 +98,9 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
             ])
         )->isGreaterThan(0);
-       //original link has been removed
         $this->boolean($link->getFromDB($lid))->isFalse();
 
        //cannot eclass from duplicate to simple link
@@ -108,7 +108,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
             ])
         )->isIdenticalTo(0);
     }
@@ -124,7 +124,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::SON_OF
+                'link'         => \CommonITILObject_CommonITILObject::SON_OF
             ])
         )->isGreaterThan(0);
 
@@ -134,7 +134,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::SON_OF
+                'link'         => \CommonITILObject_CommonITILObject::SON_OF
             ])
         )->isIdenticalTo(0);
 
@@ -147,7 +147,7 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::PARENT_OF
+                'link'         => \CommonITILObject_CommonITILObject::PARENT_OF
             ])
         )->isGreaterThan(0);
         $this->boolean($link->getFromDB($link->getID()))->isTrue();
@@ -156,7 +156,7 @@ class Ticket_Ticket extends DbTestCase
         $this->array($link->fields)
          ->integer['tickets_id_1']->isIdenticalTo($ttwo->getID())
          ->integer['tickets_id_2']->isIdenticalTo($tone->getID())
-         ->integer['link']->isEqualTo(\Ticket_Ticket::SON_OF);
+         ->integer['link']->isEqualTo(\CommonITILObject_CommonITILObject::SON_OF);
     }
 
     public function testNumberOpen()
@@ -171,20 +171,30 @@ class Ticket_Ticket extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
             ])
         )->isGreaterThan(0);
 
        //not a SON_OF => no child
-        $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
+        $this->when(
+            function () use ($link) {
+                $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
+            }
+        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
+
 
         $this->boolean(
             $link->update([
                 'id'     => $link->getID(),
-                'link'   => \Ticket_Ticket::SON_OF
+                'link'   => \CommonITILObject_CommonITILObject::SON_OF
             ])
         )->isTrue();
-        $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
+
+        $this->when(
+            function () use ($ttwo) {
+                $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
+            }
+        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
 
         $this->boolean(
             $tone->update([
@@ -192,7 +202,59 @@ class Ticket_Ticket extends DbTestCase
                 'status' => \Ticket::CLOSED
             ])
         )->isTrue();
-        $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
+
+        $this->when(
+            function () use ($ttwo) {
+                $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
+            }
+        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
+    }
+
+    /**
+     * BC Test for getLinkedTicketsTo
+     * @return void
+     */
+    public function testGetLinkedTicketsTo()
+    {
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'     => 'test',
+            'content'  => 'test',
+            'status'   => \Ticket::INCOMING
+        ]);
+        $this->integer((int)$tickets_id)->isGreaterThan(0);
+
+        // Create 5 other tickets
+        $tickets = [];
+        for ($i = 0; $i < 5; $i++) {
+            $linked_tickets_id = $ticket->add([
+                'name'     => 'test' . $i,
+                'content'  => 'test' . $i,
+                'status'   => \Ticket::INCOMING
+            ]);
+            $this->integer((int)$linked_tickets_id)->isGreaterThan(0);
+            $tickets[] = $linked_tickets_id;
+        }
+
+        // Link the first ticket to the others
+        $link = new \Ticket_Ticket();
+        foreach ($tickets as $linked_ticket_id) {
+            $this->integer(
+                (int)$link->add([
+                    'tickets_id_1' => $tickets_id,
+                    'tickets_id_2' => $linked_ticket_id,
+                    'link'         => \CommonITILObject_CommonITILObject::LINK_TO
+                ])
+            )->isGreaterThan(0);
+        }
+
+        $linked = @\Ticket_Ticket::getLinkedTicketsTo((int) $tickets_id);
+        $this->array($linked)->hasSize(5);
+        for ($i = 0; $i < 5; $i++) {
+            $linked = @\Ticket_Ticket::getLinkedTicketsTo((int) $tickets[$i]);
+            $this->array($linked)->hasSize(1);
+        }
     }
 
     public function testRestrictedGetLinkedTicketsTo()
@@ -222,17 +284,17 @@ class Ticket_Ticket extends DbTestCase
             'link'         => \Ticket_Ticket::LINK_TO
         ]))->isGreaterThan(0);
 
-        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
+        $linked = @\Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
         $this->integer(count($linked))->isEqualTo(2);
         $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID(), $other_tickets_id]);
 
         // Remove READALL ticket permission
         $_SESSION['glpiactiveprofile']['ticket'] = READ;
-        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
+        $linked = @\Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
         $this->integer(count($linked))->isEqualTo(2);
         $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID(), $other_tickets_id]);
         // Get linked tickets using view restrictions
-        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID(), true);
+        $linked = @\Ticket_Ticket::getLinkedTicketsTo($this->tone->getID(), true);
         $this->integer(count($linked))->isEqualTo(1);
         $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID()]);
     }

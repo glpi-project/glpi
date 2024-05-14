@@ -45,6 +45,7 @@ class HardDrive extends Device
         $mapping = [
             'disksize'      => 'capacity',
             'interface'     => 'interfacetypes_id',
+            'type'          => 'deviceharddrivetypes_id',
             'manufacturer'  => 'manufacturers_id',
             'model'         => 'designation'
         ];

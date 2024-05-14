@@ -37,7 +37,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
-use Glpi\Toolbox\Sanitizer;
 use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
@@ -208,7 +207,7 @@ class Unmanaged extends MainAsset
                 $input = $this->handleInput($val, $this->item);
                 unset($input['ap_port']);
                 unset($input['firmware']);
-                $items_id = $this->item->add(Sanitizer::sanitize($input));
+                $items_id = $this->item->add($input);
                 $this->setNew();
             }
         }
@@ -269,7 +268,7 @@ class Unmanaged extends MainAsset
         $this->handlePorts();
 
         $input = $this->handleInput($val, $this->item);
-        $this->item->update(Sanitizer::sanitize($input));
+        $this->item->update($input);
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

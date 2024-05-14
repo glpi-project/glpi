@@ -795,4 +795,38 @@ class Log extends DbTestCase
         $CFG_GLPI['names_format'] = \User::REALNAME_BEFORE;
         $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
     }
+
+    /**
+     * `Log::getHistoryData` should return `date_mod` properties as-is without formatting them based on the current user's preference.
+     * @return void
+     */
+    public function testGetHistoryDataRawTimestamp()
+    {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2023-11-01 00:00:00';
+        $computer = new \Computer();
+        $this->integer($computers_id = $computer->add([
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => __FUNCTION__
+        ]))->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->string($entry['date_mod'])->isIdenticalTo('2023-11-01 00:00:00');
+        }
+
+        // Test DD-MM-YYYY format
+        $_SESSION["glpidate_format"] = 1;
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->string($entry['date_mod'])->isIdenticalTo('2023-11-01 00:00:00');
+        }
+
+        // Test MM-DD-YYYY format
+        $_SESSION["glpidate_format"] = 2;
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->string($entry['date_mod'])->isIdenticalTo('2023-11-01 00:00:00');
+        }
+    }
 }

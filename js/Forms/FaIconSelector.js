@@ -38,6 +38,7 @@ GLPI.Forms = GLPI.Forms || {};
  * Font-Awesome icon selector component.
  *
  * @since 10.0.0
+ * @deprecated 11.0.0 Use `modules/Form/WebIconSelector.js` instead.
  */
 GLPI.Forms.FaIconSelector = class {
 

@@ -39,7 +39,6 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 use Location;
 use User;
 use UserCategory;
@@ -80,7 +79,7 @@ class UserParameters extends AbstractParameters
             new AttributeParameter("mobile", __('Mobile')),
             new AttributeParameter("firstname", __('First name')),
             new AttributeParameter("realname", __('Surname')),
-            new AttributeParameter("responsible", __('Responsible')),
+            new AttributeParameter("responsible", __('Supervisor')),
             new ObjectParameter(new LocationParameters()),
             new ObjectParameter(new UserTitleParameters()),
             new ObjectParameter(new UserCategoryParameters()),
@@ -93,8 +92,7 @@ class UserParameters extends AbstractParameters
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($user->fields);
+        $fields = $user->fields;
 
         $values = [
             'id'        => $fields['id'],
@@ -135,7 +133,8 @@ class UserParameters extends AbstractParameters
         $values['used_items'] = [];
         foreach ($CFG_GLPI["asset_types"] as $asset_type) {
             $item = new $asset_type();
-            foreach ($item->find(['users_id' => $fields['id']]) as $asset_item_data) {
+            $asset_items_data = $item->find(['users_id' => $fields['id']] + $item->getSystemSQLCriteria());
+            foreach ($asset_items_data as $asset_item_data) {
                 $asset_parameters = new AssetParameters();
                 if ($asset_item = $item::getById($asset_item_data['id'])) {
                     $values['used_items'][] = $asset_parameters->getValues($asset_item);

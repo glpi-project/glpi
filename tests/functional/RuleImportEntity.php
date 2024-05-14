@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Asset_PeripheralAsset;
 
 /* Test for inc/ruleimportlocation.class.php */
 
@@ -408,17 +409,23 @@ class RuleImportEntity extends DbTestCase
         $this->integer($computer->fields['entities_id'])->isIdenticalTo($entities_id_a);
 
         //get connected items
-        $iterator = $DB->request(\Computer_Item::getTable(), ['computers_id' => $computer->fields['id']]);
+        $iterator = $DB->request([
+            'FROM' => Asset_PeripheralAsset::getTable(),
+            'WHERE' => [
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id']
+            ]
+        ]);
         $this->integer(count($iterator))->isIdenticalTo(2); //1 printer, 1 monitor
         foreach ($iterator as $item) {
-            $asset = new $item['itemtype']();
-            $this->boolean($asset->getFromDb($item['items_id']))->isTrue();
+            $asset = new $item['itemtype_peripheral']();
+            $this->boolean($asset->getFromDb($item['items_id_peripheral']))->isTrue();
             $this->integer($asset->fields['entities_id'])->isIdenticalTo(
                 $entities_id_a,
                 sprintf(
                     '%s #%s does not have the correct entity (%s expected, got %s)',
-                    $item['itemtype'],
-                    $item['items_id'],
+                    $item['itemtype_peripheral'],
+                    $item['items_id_peripheral'],
                     $entities_id_a,
                     $asset->fields['entities_id']
                 )

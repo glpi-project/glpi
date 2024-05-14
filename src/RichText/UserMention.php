@@ -40,7 +40,6 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
-use Glpi\Toolbox\Sanitizer;
 use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
@@ -123,7 +122,7 @@ final class UserMention
                 'validation_status' => $item->fields['status']
             ];
 
-            $main_item = getItemForItemtype($item->getItilObjectItemType());
+            $main_item = getItemForItemtype($item::getItilObjectItemType());
             $main_item->getFromDB($item->fields[$item::$items_id]);
         } else if ($item instanceof ITILFollowup) {
             $options = [
@@ -141,7 +140,7 @@ final class UserMention
        // Send a "you have been mentioned" notification
         foreach ($mentionned_actors_ids as $user_id) {
             $options['users_id'] = $user_id;
-            NotificationEvent::raiseEvent('user_mention', $main_item, $options);
+            NotificationEvent::raiseEvent('user_mention', $main_item, $options, $item);
         }
 
         if ($main_item instanceof CommonITILObject) {
@@ -193,11 +192,10 @@ final class UserMention
         }
 
         try {
-            $content = Sanitizer::getVerbatimValue($content);
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);
-            // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
+            // TODO In GLPI 11.0, find a way to remove usage of this `@` operator
             // that was added to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
             // with bad HTML content.
             $content_as_xml = @simplexml_import_dom($dom);

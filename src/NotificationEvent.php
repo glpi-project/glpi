@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Class which manages notification events
  **/
@@ -103,14 +105,17 @@ class NotificationEvent extends CommonDBTM
     /**
      * Raise a notification event
      *
-     * @param string     $event   the event raised for the itemtype
-     * @param CommonGLPI $item    the object which raised the event
-     * @param array      $options array   of options used
-     * @param string     $label   used for debugEvent() (default '')
+     * @param string            $event   the event raised for the itemtype
+     * @param CommonGLPI        $item    the object which raised the event
+     * @param array             $options array of options used
+     * @param CommonDBTM|null   $trigger item that raises the notification (in case notification was raised by a child item)
+     * @param string            $label   used for debugEvent()
      *
      * @return boolean
+     *
+     * @since 11.0.0 Param `$trigger` has been added.
      **/
-    public static function raiseEvent($event, $item, $options = [], $label = '')
+    public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -128,23 +133,29 @@ class NotificationEvent extends CommonDBTM
            //Foreach notification
             $notifications = Notification::getNotificationsByEventAndType(
                 $event,
-                addslashes($item->getType()),
+                $item->getType(),
                 $notificationtarget->getEntity()
             );
 
             $processed = []; // targets list
             foreach ($notifications as $data) {
-                 $notificationtarget->clearAddressesList();
-                 $notificationtarget->setMode($data['mode']);
-                 $notificationtarget->setAllowResponse($data['allow_response']);
+                // Check notification filter
+                $notification = Notification::getById($data['id']);
+                if (!$notification->itemMatchFilter($item)) {
+                    continue;
+                }
 
-                 //Get template's information
-                 $template = new NotificationTemplate();
-                 $template->getFromDB($data['notificationtemplates_id']);
-                 $template->resetComputedTemplates();
+                $notificationtarget->clearAddressesList();
+                $notificationtarget->setMode($data['mode']);
+                $notificationtarget->setAllowResponse($data['allow_response']);
 
-                 $notify_me = false;
-                 $emitter = null;
+                // Get template's information
+                $template = new NotificationTemplate();
+                $template->getFromDB($data['notificationtemplates_id']);
+                $template->resetComputedTemplates();
+
+                $notify_me = false;
+                $emitter = null;
 
                 if (Session::isCron()) {
                    // Cron notify me
@@ -193,7 +204,8 @@ class NotificationEvent extends CommonDBTM
                         $notificationtarget->setEvent($eventclass),
                         $template,
                         $notify_me,
-                        $emitter
+                        $emitter,
+                        $trigger
                     );
                 } else {
                     trigger_error(
@@ -224,29 +236,14 @@ class NotificationEvent extends CommonDBTM
      **/
     public static function debugEvent($item, $options = [])
     {
-
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='3'>" . _n('Notification', 'Notifications', Session::getPluralNumber()) .
-            "</th><th colspan='2'><font color='blue'> (" . $item->getTypeName(1) . ")</font></th></tr>";
-
         $events = [];
         if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
             $events = $target->getAllEvents();
-
-            if (count($events) > 0) {
-                echo "<tr><th>" . self::getTypeName(Session::getPluralNumber()) . '</th><th>' . _n('Recipient', 'Recipients', Session::getPluralNumber()) . "</th>";
-                echo "<th>" . _n('Notification template', 'Notification templates', Session::getPluralNumber()) . "</th>" .
-                 "<th>" . __('Mode') . "</th>" .
-                 "<th>" . _n('Recipient', 'Recipients', 1) . "</th></tr>";
-
-                foreach ($events as $event => $label) {
-                    self::raiseEvent($event, $item, $options, $label);
-                }
-            } else {
-                echo "<tr class='tab_bg_2 center'><td colspan='4'>" . __('No item to display') . "</td></tr>";
-            }
         }
-        echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/setup/notification/event_debug.html.twig', [
+            'item' => $item,
+            'events' => $events,
+            'options' => $options
+        ]);
     }
 }

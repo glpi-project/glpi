@@ -1,0 +1,149 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+
+    {% if not item.isNewItem() and item.isActive() and not has_rights_enabled %}
+        <div class="alert alert-warning" role="alert">
+            {{ __('There is currently no profile with access to assets with current definition.') }}
+        </div>
+    {% endif %}
+
+    {% if item.isNewItem() %}
+        {% set helper %}
+            {{ __('The system name corresponds to the customizable part of the asset class which will correspond to the current definition. For example, assets linked to the system name "%s" will have the class "%s".')|format('Laptop', 'Glpi\\CustomAsset\\Laptop') }}
+            {{ __('The value must contains only letters and must not end by "Model" or "Type".') }}
+            {{ __('Also, the value must not be one of the following reserved names: %s.')|format('"' ~ reserved_system_names|join('", "') ~ '"') }}
+        {% endset %}
+        {{ fields.textField(
+            'system_name',
+            item.fields['system_name'],
+            __('System name'),
+            {
+                'required': true,
+                'pattern': '^(?!(' ~ reserved_system_names|join('|') ~ ')$)[A-Za-z]+(?<!Model|Type)$',
+                'helper': helper
+            }
+        ) }}
+    {% else %}
+        {% set helper_html %}
+            <em class="text-muted">
+                {{ __('The class of assets related to current definition is "%s".')|format('Glpi\\CustomAsset\\%s'|format(item.fields['system_name'])) }}
+            </em>
+        {% endset %}
+        {{ fields.textField(
+            'system_name',
+            item.fields['system_name'],
+            __('System name'),
+            {
+                'disabled': true,
+                'add_field_html': helper_html,
+            }
+        ) }}
+    {% endif %}
+
+    {% if not item.isNewItem() %}
+        <div class="modal fade" id="deletionWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></a>
+                    <div class="modal-status bg-danger"></div>
+                    <div class="modal-body text-center py-4">
+                        {# SVG Icon corresponding to the ti-alert-triangle icon #}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
+
+                        <h3>{{ _x('button', 'Are you sure?') }}</h3>
+                        <div class="text-muted">
+                            {% if asset_count > 0 %}
+                                {{ __('This asset definition is used by %d assets.')|format(asset_count) }}
+                                <br>
+                                {{ __('All assets that are using this definition will be deleted.') }}
+                            {% else %}
+                                {{ __('This asset definition is not used by any assets.') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col">
+                                    <a class="btn w-100" data-bs-dismiss="modal">
+                                        {{ _x('button', 'Cancel') }}
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger w-100" name="save">
+                                        {{ _x('button', 'Yes, delete it!') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#mainformtable button[name="purge"]').on('click', { is_from_modal: false }, (event, data) => {
+                data = data || event.data;
+
+                if (data.is_from_modal !== true) {
+                    event.preventDefault();
+                    $('#deletionWarningModal').modal('show');
+                }
+            });
+
+            $('#deletionWarningModal button[name="save"]').on('click', () => {
+                $('#deletionWarningModal').modal('hide');
+                $('#mainformtable button[name="purge"]').trigger(
+                    'click',
+                    {
+                        'is_from_modal': true,
+                    }
+                );
+            });
+        </script>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block more_fields %}
+    {{ fields.dropdownWebIcons(
+        'icon',
+        item.fields['icon'],
+        __('Icon'),
+    ) }}
+{% endblock %}

@@ -191,6 +191,6 @@ class DeviceDrive extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-hdd";
+        return "far fa-hdd";
     }
 }

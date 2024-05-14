@@ -50,6 +50,7 @@ final class Profiler
     public const CATEGORY_PLUGINS = 'plugins';
     public const CATEGORY_DB = 'db';
     public const CATEGORY_TWIG = 'twig';
+    public const CATEGORY_SEARCH = 'search';
 
     private static $instance;
 
@@ -89,11 +90,45 @@ final class Profiler
     }
 
     /**
-     * Stops a section started with Profiler::start()
-     * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
+     * Pauses a section started with Profiler::start()
+     * @param string $name The name of the section to pause. This name must be the same as the one used in Profiler::start()
      * @return void
      */
-    public function stop(string $name): void
+    public function pause(string $name): void
+    {
+        // get the last section with the given name and stop it
+        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
+            return $section->getName() === $name;
+        });
+        if (count($section)) {
+            $section = array_pop($section);
+            $section->pause();
+        }
+    }
+
+    /**
+     * Resumes a section started with Profiler::start()
+     * @param string $name The name of the section to resume. This name must be the same as the one used in Profiler::start()
+     * @return void
+     */
+    public function resume(string $name): void
+    {
+        // get the last section with the given name and stop it
+        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
+            return $section->getName() === $name;
+        });
+        if (count($section)) {
+            $section = array_pop($section);
+            $section->resume();
+        }
+    }
+
+    /**
+     * Stops a section started with Profiler::start()
+     * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
+     * @return int The duration of the section in milliseconds
+     */
+    public function stop(string $name): int
     {
         // get the last section with the given name and stop it
         $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
@@ -103,9 +138,28 @@ final class Profiler
             $k = array_key_last($section);
             $section = array_pop($section);
             $section->end(microtime(true) * 1000);
+            $duration = $section->getDuration();
             unset($this->current_sections[$k]);
             Profile::getCurrent()->setData('profiler', $section->toArray());
         }
+        return $duration ?? 0;
+    }
+
+    /**
+     * Get the current duration of a running section by name without stopping it.
+     * @param string $name The name of the section to get the duration of.
+     * @return int The duration of the section in milliseconds
+     */
+    public function getCurrentDuration(string $name): int
+    {
+        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
+            return $section->getName() === $name;
+        });
+        if (count($section)) {
+            $section = array_pop($section);
+            return $section->getDuration();
+        }
+        return 0;
     }
 
     /**

@@ -151,36 +151,6 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["addgroup"])) {
-    $groupuser->check(-1, CREATE, $_POST);
-    if ($groupuser->add($_POST)) {
-        Event::log(
-            $_POST["users_id"],
-            "users",
-            4,
-            "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"])
-        );
-    }
-    Html::back();
-} else if (isset($_POST["deletegroup"])) {
-    if (count($_POST["item"])) {
-        foreach (array_keys($_POST["item"]) as $key) {
-            if ($groupuser->can($key, DELETE)) {
-                $groupuser->delete(['id' => $key]);
-            }
-        }
-    }
-    Event::log(
-        $_POST["users_id"],
-        "users",
-        4,
-        "setup",
-        //TRANS: %s is the user login
-        sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"])
-    );
-    Html::back();
 } else if (isset($_POST["change_auth_method"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
 
@@ -213,6 +183,10 @@ if (isset($_GET['getvcard'])) {
     }
 
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
+} else if (isset($_POST['disable_2fa'])) {
+    Session::checkRight('user', User::UPDATEAUTHENT);
+    (new \Glpi\Security\TOTPManager())->disable2FAForUser($_POST['id']);
+    Html::back();
 } else {
     if (isset($_GET["ext_auth"])) {
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
@@ -249,9 +223,9 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
     } else {
+        $options = $_GET;
+        $options['formoptions'] = "data-track-changes=true";
         $menus = ["admin", "user"];
-        User::displayFullPageForItem($_GET["id"], $menus, [
-            'formoptions'  => "data-track-changes=true"
-        ]);
+        User::displayFullPageForItem($_GET["id"], $menus, $options);
     }
 }

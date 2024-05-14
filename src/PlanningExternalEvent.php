@@ -49,7 +49,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     public $dohistory = true;
     public static $rightname = 'externalevent';
 
-    const MANAGE_BG_EVENTS =   1024;
+    public const MANAGE_BG_EVENTS =   1024;
 
     public static function getTypeName($nb = 0)
     {
@@ -68,8 +68,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public static function canUpdate()
     {
-       // we permits globally to update this object,
-       // as users can update their onw items
+        // we permits globally to update this object,
+        // as users can update their onw items
         return Session::haveRightsOr(self::$rightname, [
             CREATE,
             UPDATE,
@@ -83,10 +83,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             return false;
         }
 
-       // the current user can update only this own events without UPDATE right
-       // but not bg one, see above
+        // the current user can update only this own events without UPDATE right
+        // but not bg one, see above
         if (
-            $this->fields['users_id'] != Session::getLoginUserID()
+            (int) $this->fields['users_id'] !== Session::getLoginUserID()
             && !Session::haveRight(self::$rightname, UPDATE)
         ) {
             return false;
@@ -94,7 +94,6 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
         return parent::canUpdateItem();
     }
-
 
     public function canPurgeItem()
     {
@@ -105,7 +104,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
        // the current user can update only this own events without PURGE right
        // but not bg one, see above
         if (
-            $this->fields['users_id'] != Session::getLoginUserID()
+            (int) $this->fields['users_id'] !== Session::getLoginUserID()
             && !Session::haveRight(self::$rightname, PURGE)
         ) {
             return false;
@@ -121,22 +120,14 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      */
     public function canUpdateBGEvents()
     {
-        if (
-            $this->fields["background"]
-            && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS)
-        ) {
-            return false;
-        }
-
-        return true;
+        return !($this->fields["background"]
+            && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS));
     }
-
 
     public function post_getFromDB()
     {
         $this->fields['users_id_guests'] = importArrayFromDB($this->fields['users_id_guests']);
     }
-
 
     public function showForm($ID, array $options = [])
     {
@@ -158,14 +149,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $this->showFormHeader($options);
 
         $is_ajax  = isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax'];
-        $is_rrule = strlen($this->fields['rrule'] ?? '') > 0;
+        $is_rrule = ($this->fields['rrule'] ?? '') !== '';
 
-       // set event for another user
-        if (
-            isset($options['res_itemtype'])
-            && isset($options['res_items_id'])
-            && strtolower($options['res_itemtype']) == "user"
-        ) {
+        // set event for another user
+        if (isset($options['res_itemtype'], $options['res_items_id']) && strtolower($options['res_itemtype']) === "user") {
             $this->fields['users_id'] =  $options['res_items_id'];
         }
 
@@ -360,16 +347,22 @@ JAVASCRIPT;
 
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
+            $options['addbuttons'] = [];
+            if ($this->can(-1, CREATE)) {
+                $options['addbuttons']['save_instance'] = [
+                    'text'  => __("Detach instance"),
+                    'icon'  => 'ti ti-unlink',
+                    'title' => __("Detach this instance from the series to create an independent event"),
+                ];
+            }
             if ($this->can($ID, PURGE)) {
-                $options['addbuttons'] = [
-                    'purge'          => [
-                        'text' => __("Delete serie"),
-                        'icon' => 'fas fa-trash-alt',
-                    ],
-                    'purge_instance' => [
-                        'text' => __("Delete instance"),
-                        'icon' => 'far fa-trash-alt',
-                    ],
+                $options['addbuttons']['purge'] = [
+                    'text' => __("Delete serie"),
+                    'icon' => 'fas fa-trash-alt',
+                ];
+                $options['addbuttons']['purge_instance'] = [
+                    'text' => __("Delete instance"),
+                    'icon' => 'far fa-trash-alt',
                 ];
             }
         }
@@ -390,13 +383,11 @@ JAVASCRIPT;
 
     public static function getGroupItemsAsVCalendars($groups_id)
     {
-
         return self::getItemsAsVCalendars([self::getTableField('groups_id') => $groups_id]);
     }
 
     public static function getUserItemsAsVCalendars($users_id)
     {
-
         return self::getItemsAsVCalendars([
             'OR' => [
                 self::getTableField('users_id')        => $users_id,
@@ -414,7 +405,6 @@ JAVASCRIPT;
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -440,7 +430,6 @@ JAVASCRIPT;
 
     public function getAsVCalendar()
     {
-
         if (!$this->canViewItem()) {
             return null;
         }
@@ -459,7 +448,6 @@ JAVASCRIPT;
 
     public function getInputFromVCalendar(VCalendar $vcalendar)
     {
-
         $vcomp = $vcalendar->getBaseComponent();
 
         $input = $this->getCommonInputFromVcomponent($vcomp, $this->isNewItem());
@@ -475,12 +463,10 @@ JAVASCRIPT;
         return $input;
     }
 
-
     public function rawSearchOptions()
     {
         return $this->trait_rawSearchOptions();
     }
-
 
     public static function getVisibilityCriteria(): array
     {
@@ -508,22 +494,5 @@ JAVASCRIPT;
         }
 
         return $condition;
-    }
-
-
-    public static function addVisibilityRestrict()
-    {
-        $criteria = self::getVisibilityCriteria();
-        if (!count($criteria)) {
-            return;
-        }
-        $criteria['FROM'] = self::getTable();
-
-        $it = new \DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
     }
 }

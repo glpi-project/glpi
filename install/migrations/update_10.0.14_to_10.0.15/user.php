@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
@@ -56,7 +54,7 @@ foreach ($users_iterator as $user_data) {
         $DB->buildUpdate(
             'glpi_users',
             [
-                'user_dn_hash' => md5(Sanitizer::decodeHtmlSpecialChars($user_data['user_dn'])),
+                'user_dn_hash' => md5($user_data['user_dn']),
             ],
             [
                 'id' => $user_data['id'],

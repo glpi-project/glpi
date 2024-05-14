@@ -136,7 +136,7 @@ class Filter extends \CommonDBChild
      *
      * @return array of filters
      *
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function getAll(): array
     {
@@ -152,7 +152,7 @@ class Filter extends \CommonDBChild
      *
      * @return string
      *
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function dates($values = "", string $fieldname = 'dates'): string
     {
@@ -166,7 +166,7 @@ class Filter extends \CommonDBChild
      *
      * @return string
      *
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function dates_mod($values): string
     {
@@ -175,7 +175,7 @@ class Filter extends \CommonDBChild
 
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function itilcategory(string $value = ""): string
     {
@@ -183,7 +183,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function requesttype(string $value = ""): string
     {
@@ -191,7 +191,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function location(string $value = ""): string
     {
@@ -199,7 +199,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function manufacturer(string $value = ""): string
     {
@@ -207,7 +207,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function group_tech(string $value = ""): string
     {
@@ -215,7 +215,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function user_tech(string $value = ""): string
     {
@@ -231,7 +231,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function tickettype(string $value = ""): string
     {
@@ -239,7 +239,7 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function displayList(
         string $value = "",
@@ -268,7 +268,7 @@ class Filter extends \CommonDBChild
          var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
          var selected    = dom_elem.find(':selected').val();
 
-         Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+         GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
 
          $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
       };
@@ -289,7 +289,7 @@ JAVASCRIPT;
      *
      * @return string the html for the complete field
      *
-     * @FIXME Deprecate/remove in GLPI 10.1.
+     * @FIXME Deprecate/remove in GLPI 11.0.
      */
     public static function field(
         string $id = "",

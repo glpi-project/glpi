@@ -57,25 +57,11 @@ function isCommandLine()
  */
 function isAPI()
 {
-    /** @var array $CFG_GLPI */
-    global $CFG_GLPI;
-
-    $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
-                     ? 'https'
-                     : 'http') .
-                 '://' . ($_SERVER['HTTP_HOST'] ?? "") .
-                 ($_SERVER['REQUEST_URI'] ?? "");
-
-    $base_api_url = $CFG_GLPI['url_base_api'] ?? ""; // $CFG_GLPI may be not defined if DB is not available
-    if (!empty($base_api_url) && strpos($called_url, $base_api_url) !== false) {
-        return true;
-    }
-
     $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
-    if (strpos($script, 'apirest.php') !== false) {
+    if (str_contains($script, 'api.php')) {
         return true;
     }
-    if (strpos($script, 'apixmlrpc.php') !== false) {
+    if (str_contains($script, 'apirest.php')) {
         return true;
     }
 
@@ -297,26 +283,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
  */
 function glpi_autoload($classname)
 {
-
-    if (
-        $classname === 'phpCAS'
-        && file_exists(stream_resolve_include_path("CAS.php"))
-    ) {
-        include_once('CAS.php');
-        return true;
-    }
-
-    // Deprecation warn for RuleImportComputer* classes
-    if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
-        Toolbox::deprecated(
-            sprintf(
-                '%s has been replaced by %s.',
-                $classname,
-                str_replace('Computer', 'Asset', $classname)
-            )
-        );
-    }
-
     $plug = isPluginItemType($classname);
     if (!$plug) {
         // PSR-4 styled autoloading for classes without namespace

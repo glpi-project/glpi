@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     /**
      * @var \DBmysql $DB

@@ -71,8 +71,8 @@
       }
 
       h3 {
-         background: $header-bg;
-         color: $header-fg;
+         background: var(--glpi-form-header-bg);
+         color: var(--glpi-form-header-fg);
          margin: 2px 0 0 0;
          padding: .5em .5em .5em .7em;
          font-weight: normal;
@@ -110,7 +110,7 @@
                white-space: nowrap;
 
                > i {
-                  color: $warning;
+                  color: var(--tblr-warning);
                   float: right;
                }
             }

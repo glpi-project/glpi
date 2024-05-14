@@ -82,6 +82,15 @@ if (isset($_POST["add"])) {
         unset($input['from_logical_number']);
         unset($input['to_logical_number']);
 
+        if ($_POST["to_logical_number"] < $_POST["from_logical_number"]) {
+            Session::addMessageAfterRedirect(
+                __("'To' should not be smaller than 'From'"),
+                false,
+                ERROR
+            );
+            Html::back();
+        }
+
         for ($i = $_POST["from_logical_number"]; $i <= $_POST["to_logical_number"]; $i++) {
             $add = "";
             if ($i < 10) {

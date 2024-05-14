@@ -40,7 +40,7 @@
       {% set title = '' %}
       {% if type == constant('ERROR') %}
          {% set class = 'alert-danger' %}
-         {% set title = __('Error') %}
+         {% set title = _n('Error', 'Errors', 1) %}
       {% elseif type == constant('WARNING') %}
          {% set class = 'alert-warning' %}
          {% set title = __('Warning') %}

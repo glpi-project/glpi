@@ -40,4 +40,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-echo Html::fuzzySearch($_REQUEST['action']);
+try {
+    echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);
+} catch (JsonException $e) {
+    die(500);
+}

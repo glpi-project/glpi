@@ -37,7 +37,6 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Abstract parameters class for "CommonDropdown" items.
@@ -56,9 +55,7 @@ abstract class DropdownParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $item): array
     {
-
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($item->fields);
+        $fields = $item->fields;
 
         return [
             'id'   => $fields['id'],

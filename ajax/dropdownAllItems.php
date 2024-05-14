@@ -60,7 +60,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 
-    $displaywith = ['otherserial', 'serial'];
+    $displaywith = is_a($_POST['idtable'], CommonITILObject::class, true) ? ['id'] : ['otherserial', 'serial'];
     $p = [
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,
@@ -73,6 +73,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     ];
     if (isset($_POST['value'])) {
         $p['value'] = $_POST['value'];
+    }
+    if (isset($_POST['valuename'])) {
+        $p['valuename'] = $_POST['valuename'];
     }
     if (isset($_POST['entity_restrict'])) {
         $p['entity_restrict']           = $_POST['entity_restrict'];

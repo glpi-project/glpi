@@ -1,0 +1,140 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+<form action="{{ 'Glpi\\Socket'|itemtype_form_path }}" method="post" data-submit-once>
+    <div>
+        {% if _add_fromitem['_from_itemtype'] == 'Location' %}
+            {{ inputs.hidden('locations_id', _add_fromitem['_from_items_id']) }}
+        {% else %}
+            {{ inputs.hidden('items_id', _add_fromitem['_from_items_id']) }}
+            {{ inputs.hidden('itemtype', _add_fromitem['_from_itemtype']) }}
+        {% endif %}
+        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+        <div>
+            {{ fields.sliderField('_add_multiple', 0, __('Add several sockets')) }}
+            <script>
+                $(document).on('change', 'input[type="checkbox"][name="_add_multiple"]', (e) => {
+                    const chkbox = $(e.target);
+                    const form = chkbox.closest('form');
+                    if (chkbox.prop('checked')) {
+                        form.find('.single-add-inputs').addClass('d-none');
+                        form.find('.multi-add-inputs').removeClass('d-none');
+                        form.find('button[type="submit"]').attr('name', 'execute_multi');
+                    } else {
+                        form.find('.single-add-inputs').removeClass('d-none');
+                        form.find('.multi-add-inputs').addClass('d-none');
+                        form.find('button[type="submit"]').attr('name', 'execute_single');
+                    }
+                });
+            </script>
+        </div>
+        <div>
+            <div class="single-add-inputs">
+                {{ fields.textField('name', '', __('Name'), {
+                    label_class: 'col-xxl-2',
+                    field_class: 'col-xxl-10',
+                    full_width: true
+                }) }}
+            </div>
+            <div class="multi-add-inputs d-none">
+                {% set name_fields %}
+                    {{ fields.textField('_before', '', null, {
+                        no_label: true,
+                        'mb': '',
+                        field_class: '',
+                        additional_attributes: {
+                            placeholder: __('Prefix')
+                        }
+                    }) }}
+                    {{ fields.dropdownNumberField('_from', 0, null, {
+                        no_label: true,
+                        'mb': '',
+                        field_class: '',
+                        min: 0,
+                        max: 400
+                    }) }}
+                    <span class="mx-1 mt-2" style="white-space: nowrap">--&gt;</span>
+                    {{ fields.dropdownNumberField('_to', 0, null, {
+                        no_label: true,
+                        'mb': '',
+                        field_class: '',
+                        min: 0,
+                        max: 400
+                    }) }}
+                    {{ fields.textField('_after', '', null, {
+                        no_label: true,
+                        'mb': '',
+                        field_class: '',
+                        additional_attributes: {
+                            placeholder: __('Suffix')
+                        }
+                    }) }}
+                {% endset %}
+                {{ fields.htmlField('', name_fields, __('Name'), {
+                    wrapper_class: 'd-flex',
+                    label_class: 'col-xxl-2',
+                    field_class: 'col-xxl-10',
+                    full_width: true
+                }) }}
+            </div>
+            <div class="common-inputs d-flex flex-wrap">
+                {{ fields.dropdownField('Glpi\\SocketModel', 'socketmodels_id', 0, 'Glpi\\SocketModel'|itemtype_name, {
+                    label_class: 'col-xxl-4',
+                }) }}
+                {% set wiring_side_field %}
+                    {% do call('Glpi\\Socket::dropdownWiringSide', ['wiring_side']) %}
+                {% endset %}
+                {{ fields.htmlField('', wiring_side_field, __('Wiring side'), {
+                    label_class: 'col-xxl-3',
+                }) }}
+                {% if _add_fromitem['_from_itemtype'] == 'Location' %}
+                    {{ fields.dropdownItemsFromItemtypes('', __('Itemtype'), {
+                        label_class: 'col-xxl-4',
+                        itemtype: socket_itemtypes,
+                        default_itemtype: 'Computer',
+                        display_emptychoice: false
+                    }) }}
+                {% else %}
+                    {{ fields.dropdownField('Location', 'locations_id', 0, 'Location'|itemtype_name, {
+                        label_class: 'col-xxl-4',
+                    }) }}
+                {% endif %}
+            </div>
+            <div class="d-flex flex-row-reverse px-4 mb-4">
+                {{ inputs.submit('execute_single', _x('button', 'Add'), 1) }}
+            </div>
+        </div>
+    </div>
+</form>

@@ -33,11 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * LevelAgreement base Class for OLA & SLA
  * @since 9.2
  **/
-
 abstract class LevelAgreement extends CommonDBChild
 {
    // From CommonDBTM
@@ -50,7 +52,9 @@ abstract class LevelAgreement extends CommonDBChild
 
     protected static $prefix            = '';
     protected static $prefixticket      = '';
+    /** @var class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
+    /** @var class-string<CommonDBTM> */
     protected static $levelticketclass  = '';
 
 
@@ -65,9 +69,9 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Return the text needed for a confirmation of adding level agreement to a ticket
      *
-     * @return array of strings
+     * @return string[]
      */
-    abstract public function getAddConfirmation();
+    abstract public function getAddConfirmation(): array;
 
     /**
      * Get table fields
@@ -78,7 +82,6 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function getFieldNames($subtype)
     {
-
         $dateField = null;
         $laField  = null;
 
@@ -103,12 +106,11 @@ abstract class LevelAgreement extends CommonDBChild
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(static::$levelclass, $ong, $options);
         $this->addStandardTab('Rule', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
 
         return $ong;
     }
@@ -120,7 +122,6 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function setTicketCalendar($calendars_id)
     {
-
         if ($this->fields['use_ticket_calendar']) {
             $this->fields['calendars_id'] = $calendars_id;
         }
@@ -132,16 +133,6 @@ abstract class LevelAgreement extends CommonDBChild
         $this->fields['definition_time'] = 'hour';
     }
 
-    /**
-     * Print the form
-     *
-     * @param $ID        integer  ID of the item
-     * @param $options   array    of possible options:
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     *@return boolean item found
-     **/
     public function showForm($ID, array $options = [])
     {
         $rowspan = 3;
@@ -149,7 +140,7 @@ abstract class LevelAgreement extends CommonDBChild
             $rowspan = 5;
         }
 
-       // Get SLM object
+        // Get SLM object
         $slm = new SLM();
         if (isset($options['parent'])) {
             $slm = $options['parent'];
@@ -160,10 +151,10 @@ abstract class LevelAgreement extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $slm->getField('id');
 
-           //force itemtype of parent
+            // force itemtype of parent
             static::$itemtype = get_class($slm);
 
             $this->check(-1, CREATE, $options);
@@ -249,7 +240,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Get possibles keys and labels for the definition_time field
      *
-     * @return string
+     * @return array<string, string>
      *
      * @since 10.0.0
      */
@@ -277,7 +268,6 @@ abstract class LevelAgreement extends CommonDBChild
         return self::getDefinitionTimeValues()[$value] ?? "";
     }
 
-
     /**
      * Get a level for a given action
      *
@@ -286,6 +276,7 @@ abstract class LevelAgreement extends CommonDBChild
      * @param mixed $nextaction
      *
      * @return false|LevelAgreementLevel
+     * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getLevelFromAction($nextaction)
     {
@@ -302,7 +293,6 @@ abstract class LevelAgreement extends CommonDBChild
         return $nextlevel;
     }
 
-
     /**
      * Get then next levelagreement action for a given ticket and "LA" type
      *
@@ -312,6 +302,7 @@ abstract class LevelAgreement extends CommonDBChild
      * @param int $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
+     * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
@@ -323,7 +314,6 @@ abstract class LevelAgreement extends CommonDBChild
         return $nextaction;
     }
 
-
     /**
      * Print the HTML for a SLM
      *
@@ -331,9 +321,6 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function showForSLM(SLM $slm)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (!$slm->can($slm->fields['id'], READ)) {
             return false;
         }
@@ -342,125 +329,93 @@ abstract class LevelAgreement extends CommonDBChild
         $la       = new static();
         $calendar = new Calendar();
         $rand     = mt_rand();
-        $canedit  = ($slm->canEdit($instID)
-                   && Session::getCurrentInterface() == "central");
+        $canedit  = $slm->canEdit($instID) && Session::getCurrentInterface() === 'central';
 
         if ($canedit) {
-            echo "<div id='showLa$instID$rand'></div>\n";
-
-            echo "<script type='text/javascript' >";
-            echo "function viewAddLa$instID$rand() {";
-            $params = ['type'                     => $la->getType(),
-                'parenttype'               => $slm->getType(),
-                $slm->getForeignKeyField() => $instID,
-                'id'                       => -1
+            $twig_params = [
+                'instID' => $instID,
+                'rand'   => $rand,
+                'la'     => $la,
+                'slm'    => $slm,
+                'btn_msg' => __('Add a new item'),
             ];
-            Ajax::updateItemJsCode(
-                "showLa$instID$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "}";
-            echo "</script>";
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddLa$instID$rand();'>";
-            echo __('Add a new item') . "</a></div>\n";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div id="showLa{{ instID }}{{ rand }}"></div>
+                <script>
+                    function viewAddEditLa{{ instID }}{{ rand }}(item_id = -1) {
+                        $('#showLa{{ instID }}{{ rand }}').load("{{ config('root_doc') }}/ajax/viewsubitem.php", {
+                            type: "{{ la.getType() }}",
+                            parenttype: "{{ slm.getType() }}",
+                            {{ slm.getForeignKeyField() }}: {{ instID }},
+                            id: item_id,
+                        });
+                    }
+                    $(() => {
+                        $('#levelagreement{{ instID }}').on('click', 'tbody tr', function () {
+                            viewAddEditLa{{ instID }}{{ rand }}($(this).data('id'));
+                        });
+                    });
+                </script>
+                <div class="text-center mb-3">
+                    <button name="new_la" type="button" class="btn btn-primary" onclick="viewAddEditLa{{ instID }}{{ rand }}();">{{ btn_msg }}</button>
+                </div>
+TWIG, $twig_params);
         }
 
-       // list
+        // list
         $laList = $la->find(['slms_id' => $instID]);
-        Session::initNavigateListItems(
-            __CLASS__,
-            sprintf(
-                __('%1$s = %2$s'),
-                $slm::getTypeName(1),
-                $slm->getName()
-            )
-        );
-        echo "<div class='spaced'>";
-        if (count($laList)) {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-                Html::showMassiveActions($massiveactionparams);
-            }
 
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_top .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_top .= "</th>";
-                $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= "</th>";
+        $entries = [];
+        foreach ($laList as $val) {
+            $la->getFromResultSet($val);
+            $link = '';
+            if ($slm->fields['use_ticket_calendar']) {
+                $link = __s('Calendar of the ticket');
+            } else if (!$slm->fields['calendars_id']) {
+                 $link =  __s('24/7');
+            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
+                $link = $calendar->getLink();
             }
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-            $header_end .= "<th>" . __('Maximum time') . "</th>";
-            $header_end .= "<th>" . _n('Calendar', 'Calendars', 1) . "</th>";
-
-            echo $header_begin . $header_top . $header_end;
-            foreach ($laList as $val) {
-                $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditLa" .
-                        $instID . $val["id"] . "$rand();\""
-                        : '');
-                echo "<script type='text/javascript' >";
-                echo "function viewEditLa" . $instID . $val["id"] . "$rand() {";
-                $params = ['type'                     => $la->getType(),
-                    'parenttype'               => $slm->getType(),
-                    $slm->getForeignKeyField() => $instID,
-                    'id'                       => $val["id"]
-                ];
-                Ajax::updateItemJsCode(
-                    "showLa$instID$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                    $params
-                );
-                echo "};";
-                echo "</script>\n";
-
-                echo "<tr class='tab_bg_1'>";
-                echo "<td width='10' $edit>";
-                if ($canedit) {
-                     Html::showMassiveActionCheckBox($la->getType(), $val['id']);
-                }
-                echo "</td>";
-                $la->getFromDB($val['id']);
-                echo "<td $edit>" . $la->getLink() . "</td>";
-                echo "<td $edit>" . $la->getSpecificValueToDisplay('type', $la->fields['type']) . "</td>";
-                echo "<td $edit>";
-                echo $la->getSpecificValueToDisplay(
-                    'number_time',
-                    ['number_time'     => $la->fields['number_time'],
-                        'definition_time' => $la->fields['definition_time']
-                    ]
-                );
-                echo "</td>";
-                $link = '';
-                if ($slm->fields['use_ticket_calendar']) {
-                    $link = __('Calendar of the ticket');
-                } else if (!$slm->fields['calendars_id']) {
-                     $link =  __('24/7');
-                } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
-                    $link = $calendar->getLink();
-                }
-                echo "<td $edit>" . $link . "</td>";
-                echo "</tr>";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo __('No item to display');
+            $entries[] = [
+                'itemtype' => static::class,
+                'id'       => $val['id'],
+                'row_class' => 'cursor-pointer',
+                'name'     => $la->getLink(),
+                'type'     => $la::getSpecificValueToDisplay('type', $la->fields['type']),
+                'maximum_time' => $la::getSpecificValueToDisplay('number_time', [
+                    'number_time'     => $la->fields['number_time'],
+                    'definition_time' => $la->fields['definition_time']
+                ]),
+                'calendar' => $link
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'levelagreement' . $instID,
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'type' => _n('Type', 'Types', 1),
+                'maximum_time' => __('Maximum time'),
+                'calendar' => _n('Calendar', 'Calendars', 1)
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'calendar' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ]
+        ]);
     }
 
     /**
@@ -474,7 +429,6 @@ abstract class LevelAgreement extends CommonDBChild
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
         $rule    = new RuleTicket();
-        $rand    = mt_rand();
         $canedit = self::canUpdate();
 
         $rules_id_list = iterator_to_array($DB->request([
@@ -488,84 +442,48 @@ abstract class LevelAgreement extends CommonDBChild
         ]));
         $nb = count($rules_id_list);
 
-        echo "<div class='spaced'>";
-        if (!$nb) {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><th>" . __('No item found') . "</th>";
-            echo "</tr>\n";
-            echo "</table>\n";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('massRuleTicket' . $rand);
-                $massiveactionparams
-                 = ['num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                     'specific_actions' => ['update' => _x('button', 'Update'),
-                         'purge'  => _x('button', 'Delete permanently')
-                     ]
-                 ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('massRuleTicket' . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('massRuleTicket' . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . RuleTicket::getTypeName($nb) . "</th>";
-            $header_end .= "<th>" . __('Active') . "</th>";
-            $header_end .= "<th>" . __('Description') . "</th>";
-            $header_end .= "</tr>\n";
-            echo $header_begin . $header_top . $header_end;
-
-            Session::initNavigateListItems(
-                get_class($this),
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $rule->getTypeName(1),
-                    $rule->getName()
-                )
-            );
-
-            foreach ($rules_id_list as $data) {
-                $rule->getFromDB($data['rules_id']);
-                Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox("RuleTicket", $rule->fields["id"]);
-                    echo "</td>";
-                    $ruleclassname = get_class($rule);
-                    echo "<td><a href='" . $ruleclassname::getFormURLWithID($rule->fields["id"])
-                       . "&amp;onglet=1'>" . $rule->fields["name"] . "</a></td>";
-                } else {
-                    echo "<td>" . $rule->fields["name"] . "</td>";
-                }
-
-                echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
-                echo "<td>" . $rule->fields["description"] . "</td>";
-                echo "</tr>\n";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>\n";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
+        $entries = [];
+        foreach ($rules_id_list as $data) {
+            $rule->getFromDB($data['rules_id']);
+            $entries[] = [
+                'itemtype' => RuleTicket::class,
+                'id'       => $rule->getID(),
+                'rule'     => $canedit ? $rule->getLink() : htmlspecialchars($rule->fields["name"]),
+                'active'   => Dropdown::getYesNo($rule->fields["is_active"]),
+                'description' => $rule->fields["description"]
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'rule' => RuleTicket::getTypeName($nb),
+                'active' => __('Active'),
+                'description' => __('Description')
+            ],
+            'formatters' => [
+                'rule' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . RuleTicket::class . mt_rand(),
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ]
+        ]);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
@@ -576,16 +494,14 @@ abstract class LevelAgreement extends CommonDBChild
                             ['slms_id' => $item->getField('id')]
                         );
                     }
-                    return self::createTabEntry(static::getTypeName($nb), $nb);
+                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         switch ($item->getType()) {
             case 'SLM':
                 self::showForSLM($item);
@@ -594,19 +510,20 @@ abstract class LevelAgreement extends CommonDBChild
         return true;
     }
 
-
     /**
      * Get data by type and ticket
      *
      * @param $tickets_id
      * @param $type
+     * @return false|iterable
+     * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getDataForTicket($tickets_id, $type)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        list($dateField, $field) = static::getFieldNames($type);
+        [, $field] = static::getFieldNames($type);
 
         $iterator = $DB->request([
             'SELECT'       => [static::getTable() . '.id'],
@@ -624,11 +541,10 @@ abstract class LevelAgreement extends CommonDBChild
         ]);
 
         if (count($iterator)) {
-            return $this->getFromIter($iterator);
+            return self::getFromIter($iterator);
         }
         return false;
     }
-
 
     public function rawSearchOptions()
     {
@@ -641,7 +557,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
@@ -650,7 +566,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -659,7 +575,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'number_time',
             'name'               => _x('hour', 'Time'),
             'datatype'           => 'specific',
@@ -670,7 +586,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'end_of_working_day',
             'name'               => __('End of working day'),
             'datatype'           => 'bool',
@@ -679,7 +595,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'specific'
@@ -695,7 +611,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -704,15 +620,8 @@ abstract class LevelAgreement extends CommonDBChild
         return $tab;
     }
 
-
-    /**
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -721,10 +630,8 @@ abstract class LevelAgreement extends CommonDBChild
                 switch ($values['definition_time']) {
                     case 'minute':
                         return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
-
                     case 'hour':
                         return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
-
                     case 'day':
                         return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
                 }
@@ -736,18 +643,8 @@ abstract class LevelAgreement extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
-    /**
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
-     *
-     * @return string
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -760,7 +657,6 @@ abstract class LevelAgreement extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
     /**
      * Get computed resolution time
      *
@@ -768,24 +664,17 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function getTime()
     {
-
         if (isset($this->fields['id'])) {
-            if ($this->fields['definition_time'] == "minute") {
-                return $this->fields['number_time'] * MINUTE_TIMESTAMP;
-            }
-            if ($this->fields['definition_time'] == "hour") {
-                return $this->fields['number_time'] * HOUR_TIMESTAMP;
-            }
-            if ($this->fields['definition_time'] == "day") {
-                return $this->fields['number_time'] * DAY_TIMESTAMP;
-            }
-            if ($this->fields['definition_time'] == "month") {
-                return $this->fields['number_time'] * MONTH_TIMESTAMP;
-            }
+            return match ($this->fields['definition_time']) {
+                'minute' => $this->fields['number_time'] * MINUTE_TIMESTAMP,
+                'hour'   => $this->fields['number_time'] * HOUR_TIMESTAMP,
+                'day'    => $this->fields['number_time'] * DAY_TIMESTAMP,
+                'month'  => $this->fields['number_time'] * MONTH_TIMESTAMP,
+                default   => 0
+            };
         }
         return 0;
     }
-
 
     /**
      * Get active time between to date time for the active calendar
@@ -797,7 +686,6 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function getActiveTimeBetween($start, $end)
     {
-
         if ($end < $start) {
             return 0;
         }
@@ -805,7 +693,7 @@ abstract class LevelAgreement extends CommonDBChild
         if (isset($this->fields['id'])) {
             $cal          = new Calendar();
 
-           // Based on a calendar
+            // Based on a calendar
             if ($this->fields['calendars_id'] > 0) {
                 if ($cal->getFromDB($this->fields['calendars_id'])) {
                     return $cal->getActiveTimeBetween($start, $end);
@@ -819,7 +707,6 @@ abstract class LevelAgreement extends CommonDBChild
         return 0;
     }
 
-
     /**
      * Get date for current agreement
      *
@@ -830,13 +717,12 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function computeDate($start_date, $additional_delay = 0)
     {
-
         if (isset($this->fields['id'])) {
             $delay = $this->getTime();
-           // Based on a calendar
+            // Based on a calendar
             if ($this->fields['calendars_id'] > 0) {
                 $cal          = new Calendar();
-                $work_in_days = ($this->fields['definition_time'] == 'day' || $this->fields['definition_time'] == 'month');
+                $work_in_days = ($this->fields['definition_time'] === 'day' || $this->fields['definition_time'] === 'month');
 
                 if ($cal->getFromDB($this->fields['calendars_id']) && $cal->hasAWorkingDay()) {
                     return $cal->computeEndDate(
@@ -849,7 +735,7 @@ abstract class LevelAgreement extends CommonDBChild
                 }
             }
 
-           // No calendar defined or invalid calendar
+            // No calendar defined or invalid calendar
             if ($this->fields['number_time'] >= 0) {
                 $starttime = strtotime($start_date);
                 $endtime   = $starttime + $delay + (int) $additional_delay;
@@ -869,8 +755,8 @@ abstract class LevelAgreement extends CommonDBChild
     public function shouldUseWorkInDayMode(): bool
     {
         return
-            $this->fields['definition_time'] == 'day'
-            || $this->fields['definition_time'] == 'month'
+            $this->fields['definition_time'] === 'day'
+            || $this->fields['definition_time'] === 'month'
         ;
     }
 
@@ -885,13 +771,12 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
     {
-
         if (isset($this->fields['id'])) {
             $level = new static::$levelclass();
-            $fk = getForeignKeyFieldForItemType(get_called_class());
+            $fk = getForeignKeyFieldForItemType(static::class);
 
             if ($level->getFromDB($levels_id)) { // level exists
-                if ($level->fields[$fk] == $this->fields['id']) { // correct level
+                if ((int) $level->fields[$fk] === (int) $this->fields['id']) { // correct level
                     $delay        = $this->getTime();
 
                     // Based on a calendar
@@ -935,7 +820,6 @@ abstract class LevelAgreement extends CommonDBChild
         return null;
     }
 
-
     /**
      * Get types
      *
@@ -943,11 +827,11 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public static function getTypes()
     {
-        return [SLM::TTO => __('Time to own'),
+        return [
+            SLM::TTO => __('Time to own'),
             SLM::TTR => __('Time to resolve')
         ];
     }
-
 
     /**
      * Get types name
@@ -957,15 +841,9 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public static function getOneTypeName($type)
     {
-
         $types = self::getTypes();
-        $name  = null;
-        if (isset($types[$type])) {
-            $name = $types[$type];
-        }
-        return $name;
+        return $types[$type] ?? null;
     }
-
 
     /**
      * Get SLA types dropdown
@@ -976,23 +854,14 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function getTypeDropdown($options)
     {
-
-        $params = ['name'  => 'type'];
-
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-
-        return Dropdown::showFromArray($params['name'], self::getTypes(), $options);
+        return Dropdown::showFromArray($options['name'] ?? 'type', self::getTypes(), $options);
     }
-
 
     public function prepareInputForAdd($input)
     {
-
         if (
-            $input['definition_time'] != 'day'
-            && $input['definition_time'] != 'month'
+            $input['definition_time'] !== 'day'
+            && $input['definition_time'] !== 'month'
         ) {
             $input['end_of_working_day'] = 0;
         }
@@ -1007,13 +876,11 @@ abstract class LevelAgreement extends CommonDBChild
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
-
         if (
-            isset($input['definition_time']) && ($input['definition_time'] != 'day'
-            && $input['definition_time'] != 'month')
+            isset($input['definition_time']) && ($input['definition_time'] !== 'day'
+            && $input['definition_time'] !== 'month')
         ) {
             $input['end_of_working_day'] = 0;
         }
@@ -1022,7 +889,7 @@ abstract class LevelAgreement extends CommonDBChild
         $slm = new SLM();
         if (
             array_key_exists('slms_id', $input)
-            && $input['slms_id'] != $this->fields['slms_id']
+            && (int) $input['slms_id'] !== (int) $this->fields['slms_id']
             && $slm->getFromDB($input['slms_id'])
         ) {
             $input['use_ticket_calendar'] = $slm->fields['use_ticket_calendar'];
@@ -1031,7 +898,6 @@ abstract class LevelAgreement extends CommonDBChild
 
         return $input;
     }
-
 
     /**
      * Add a level to do for a ticket
@@ -1043,7 +909,6 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public function addLevelToDo(Ticket $ticket, $levels_id = 0)
     {
-
         $pre = static::$prefix;
 
         if (!$levels_id && isset($ticket->fields[$pre . 'levels_id_ttr'])) {
@@ -1082,7 +947,7 @@ abstract class LevelAgreement extends CommonDBChild
                 $levels_id,
                 $ticket->fields[$pre . '_waiting_duration']
             );
-            if ($date != null) {
+            if ($date !== null) {
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
@@ -1092,11 +957,10 @@ abstract class LevelAgreement extends CommonDBChild
         }
     }
 
-
     /**
      * remove a level to do for a ticket
      *
-     * @param $ticket Ticket object
+     * @param Ticket $ticket object
      *
      * @return void
      **/
@@ -1121,20 +985,18 @@ abstract class LevelAgreement extends CommonDBChild
         }
     }
 
-
     public function cleanDBonPurge()
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Clean levels
-        $classname = get_called_class();
-        $fk        = getForeignKeyFieldForItemType($classname);
+        // Clean levels
+        $fk        = getForeignKeyFieldForItemType(static::class);
         $level     = new static::$levelclass();
         $level->deleteByCriteria([$fk => $this->getID()]);
 
        // Update tickets : clean SLA/OLA
-        list($dateField, $laField) = static::getFieldNames($this->fields['type']);
+        [, $laField] = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_tickets',
@@ -1144,7 +1006,7 @@ abstract class LevelAgreement extends CommonDBChild
         if (count($iterator)) {
             $ticket = new Ticket();
             foreach ($iterator as $data) {
-                $ticket->deleteLevelAgreement($classname, $data['id'], $this->fields['type']);
+                $ticket->deleteLevelAgreement(static::class, $data['id'], $this->fields['type']);
             }
         }
 
@@ -1154,7 +1016,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Getter for the protected $levelclass static property
      *
-     * @return string
+     * @return class-string<LevelAgreementLevel>
      */
     public function getLevelClass(): string
     {
@@ -1164,7 +1026,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Getter for the protected $levelticketclass static property
      *
-     * @return string
+     * @return class-string<CommonDBTM>
      */
     public function getLevelTicketClass(): string
     {

@@ -77,6 +77,9 @@ if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
             case 'Predefined':
                 $fieldtype_name = __('predefined');
                 break;
+            case 'Readonly':
+                $fieldtype_name = __('readonly');
+                break;
         }
 
         Event::log(

@@ -80,6 +80,18 @@ if (isset($_POST['add'])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
+} else if (isset($_POST["delete_document"])) {
+    $doc = new Document();
+    $doc->getFromDB(intval($_POST['documents_id']));
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $document_item = new Document_Item();
+        $document_item->deleteByCriteria([
+            'itemtype'     => "Notepad",
+            'items_id'     => (int)$_POST['id'],
+            'documents_id' => $doc->getID()
+        ]);
+    }
+    Html::back();
 }
 
 if (isset($_GET['id']) && $note->getFromDB($_GET['id'])) {

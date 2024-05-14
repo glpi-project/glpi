@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryUnion;
 use Glpi\Socket;
 
 /**
@@ -346,7 +347,7 @@ class NetworkPortInstantiation extends CommonDBChild
             $virtual_header = $row->getHeaderByName('Instantiation', 'VirtualPorts');
 
             $iterator = $DB->request([
-                'FROM' => new \QueryUnion(
+                'FROM' => new QueryUnion(
                     [
                         [
                             'SELECT' => 'networkports_id',
@@ -613,7 +614,6 @@ class NetworkPortInstantiation extends CommonDBChild
                      // No gettext here
                         $deviceInformations[] = "$field: '" . $availableDevice[$field] . "'";
                     }
-                     //addslashes_deep($deviceInformations);
                      // Fill the javascript array
                      echo "  deviceAttributs[$linkid] = {" . implode(', ', $deviceInformations) . "};\n";
                 }
@@ -860,11 +860,12 @@ class NetworkPortInstantiation extends CommonDBChild
             if ($instantiation !== false) {
                 $log = new Log();
                 //TRANS: %1$s is a type, %2$s is a table
-                return sprintf(
+
+                return $log::createTabEntry(sprintf(
                     __('%1$s - %2$s'),
-                    $instantiation->getTypeName(),
-                    $log->getTabNameForItem($instantiation)
-                );
+                    $log->getTypeName(),
+                    $instantiation->getTypeName()
+                ), 0, $item::getType());
             }
         }
         return '';

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -49,9 +47,6 @@ if (isset($_GET["id"])) {
 }
 
 Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
-
-// Clean for search
-$_GET = Sanitizer::dbUnescapeRecursive($_GET);
 
 // Search a solution
 if (

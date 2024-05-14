@@ -74,7 +74,7 @@ class OperatingSystemKernelVersion extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemKernelVersion$main' => 'Kernel version',
+            'OperatingSystemKernelVersion$main' => "<span><i class='ti ti-edit me-2'></i>Kernel version</span>",
         ];
     }
 

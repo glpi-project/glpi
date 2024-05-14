@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $_UREQUEST */
-global $_UREQUEST;
-
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -58,11 +55,6 @@ if (isset($_REQUEST['action'])) {
 
            // Update fields with input values
             $input = $_REQUEST;
-            if (array_key_exists('passwd', $input)) {
-               // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-                $input['passwd'] = $_UREQUEST['passwd'];
-            }
-            $input['login'] = stripslashes($input['login']);
 
             if (isset($input["passwd"])) {
                 if (empty($input["passwd"])) {

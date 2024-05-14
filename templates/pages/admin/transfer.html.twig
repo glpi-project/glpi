@@ -1,0 +1,192 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% set params  = params ?? [] %}
+{% set edit_mode = edit_mode|default(false) %}
+{% set no_header = not edit_mode %}
+{% set no_form_buttons = not edit_mode %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      {% if not edit_mode %}
+         {% set execute_btn %}
+            {{ inputs.button('transfer', __('Execute'), 'submit', 1, {
+               icon: 'ti ti-player-play',
+               class: 'ms-2 btn btn-primary',
+            }) }}
+         {% endset %}
+         {{ fields.dropdownField('Entity', 'to_entity', 0, __('Target entity'), {
+            input_class: 'col-xxl-7 d-flex',
+            add_field_html: execute_btn,
+         }) }}
+         {# The regular form buttons aren't added so the CSRF token isn't added either. Need to add it manually here #}
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      {% endif %}
+
+      {% if edit_mode %}
+         {{ fields.textField('name', item.fields['name'], __('Name')) }}
+         {{ fields.textareaField('comments', item.fields['comments'], __('Comments')) }}
+         {% set displayed_last_update = item.fields['date_mod'] ? item.fields['date_mod']|formatted_datetime : __('Never') %}
+         {{ fields.htmlField('date_mod', displayed_last_update, __('Last update')) }}
+      {% endif %}
+
+      {% set keep_options = {
+         0: _x('button', 'Delete permanently'),
+         1: __('Preserve')
+      } %}
+      {% set clean_options = {
+         0: __('Preserve'),
+         1: _x('button', 'Put in trashbin'),
+         2: _x('button', 'Delete permanently')
+      } %}
+      {% set connection_options = {
+         0: _x('button', 'Delete permanently'),
+         1: _x('button', 'Disconnect'),
+         2: __('Keep')
+      } %}
+
+      {{ fields.smallTitle(__('General')) }}
+      {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
+         readonly: not can_change_options,
+      }) }}
+      {% set location_options = {
+         0: __('Empty the location'),
+         1: __('Preserve')
+      } %}
+      {{ fields.dropdownArrayField('keep_location', item.fields['keep_location'], location_options, 'Location'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+
+      {{ fields.smallTitle(_n('Asset', 'Assets', get_plural_number())) }}
+      {{ fields.dropdownArrayField('keep_networklink', item.fields['keep_networklink'], connection_options, 'NetworkPort'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_ticket', item.fields['keep_ticket'], connection_options, 'Ticket'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_software', item.fields['keep_software'], keep_options, __('Software of items'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_software', item.fields['clean_software'], clean_options, __('If software are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_reservation', item.fields['keep_reservation'], keep_options, 'Reservation'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_device', item.fields['keep_device'], keep_options, 'CommonDevice'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_cartridgeitem', item.fields['keep_cartridgeitem'], keep_options, __('Links between printers and cartridge types and cartridges'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_cartridgeitem', item.fields['clean_cartridgeitem'], clean_options, __('If the cartridge types are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_cartridge', item.fields['keep_cartridge'], keep_options, __('Links between cartridge types and cartridges'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_infocom', item.fields['keep_infocom'], keep_options, 'Infocom'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_consumable', item.fields['keep_consumable'], keep_options, __('Links between consumable types and consumables'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_disk', item.fields['keep_disk'], keep_options, __('Links between computers and volumes'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownYesNo('lock_updated_fields', item.fields['lock_updated_fields'], __('Lock fields updated during transfer'), {
+         readonly: not can_change_options,
+      }) }}
+
+      {{ fields.smallTitle(__('Direct connections')) }}
+      {{ fields.dropdownArrayField('keep_dc_monitor', item.fields['keep_dc_monitor'], keep_options, 'Monitor'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_dc_monitor', item.fields['clean_dc_monitor'], clean_options, __('If monitors are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_dc_printer', item.fields['keep_dc_printer'], keep_options, 'Printer'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_dc_printer', item.fields['clean_dc_printer'], clean_options, __('If printers are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_dc_peripheral', item.fields['keep_dc_peripheral'], keep_options, 'Peripheral'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_dc_peripheral', item.fields['clean_dc_peripheral'], clean_options, __('If devices are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_dc_phone', item.fields['keep_dc_phone'], keep_options, 'Phone'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_dc_phone', item.fields['clean_dc_phone'], clean_options, __('If phones are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+
+      {{ fields.smallTitle(__('Management')) }}
+      {{ fields.dropdownArrayField('keep_supplier', item.fields['keep_supplier'], keep_options, 'Supplier'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_supplier', item.fields['clean_supplier'], clean_options, __('If suppliers are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_contact', item.fields['keep_contact'], keep_options, __('Links between suppliers and contacts'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_contact', item.fields['clean_contact'], clean_options, __('If contacts are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_document', item.fields['keep_document'], keep_options, 'Document'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_document', item.fields['clean_document'], clean_options, __('If documents are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_contract', item.fields['keep_contract'], keep_options, 'Contract'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_contract', item.fields['clean_contract'], clean_options, __('If contracts are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('keep_certificate', item.fields['keep_certificate'], keep_options, 'Certificate'|itemtype_name(get_plural_number()), {
+         readonly: not can_change_options,
+      }) }}
+      {{ fields.dropdownArrayField('clean_certificate', item.fields['clean_certificate'], clean_options, __('If certificates are no longer used'), {
+         readonly: not can_change_options,
+      }) }}
+   {% endblock %}
+{% endblock %}

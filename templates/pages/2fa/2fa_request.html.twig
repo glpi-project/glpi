@@ -1,0 +1,73 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+{% import 'pages/2fa/macros.html.twig' as tfa %}
+
+{% block header_block %}
+   <span class="card-title">{{ __('Please enter the code from your authenticator app') }}</span>
+{% endblock %}
+
+{% block content_block %}
+   <form method="post" action="front/login.php" data-submit-once autocomplete="off" class="m-n4">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <div id="code_input">
+         {{ tfa.tfa_code_input() }}
+      </div>
+      <div id="backup_code_input" class="d-none">
+         <input type="text" name="backup_code" class="form-control" placeholder="{{ __('Backup code') }}"/>
+      </div>
+      <div class="border-top mt-2 pt-2 mx-n2 d-flex">
+         <div class="ms-auto pe-2">
+            <button type="button" id="switch_code_type" class="btn btn-link px-1">{{ __('Use a backup code') }}</button>
+            <script>
+                $('#switch_code_type').on('click', (e) => {
+                    const btn = $(e.currentTarget);
+                    const card_title = btn.closest('.card').find('.card-title');
+                    $('#code_input').toggleClass('d-none');
+                    $('#backup_code_input').toggleClass('d-none');
+                    if ($('#code_input').hasClass('d-none')) {
+                        btn.text('{{ __('Use a code from your authenticator app') }}');
+                        card_title.text('{{ __('Please enter a backup code') }}');
+                    } else {
+                        btn.text('{{ __('Use a backup code') }}');
+                        card_title.text('{{ __('Please enter the code from your authenticator app') }}');
+                    }
+                });
+            </script>
+            <button type="submit" formnovalidate name="totp_cancel" class="btn btn-outline-secondary">{{ __('Cancel') }}</button>
+            <button type="submit" formnovalidate name="continue" class="btn btn-primary ms-1">{{ __('Verify') }}</button>
+         </div>
+      </div>
+   </form>
+{% endblock %}

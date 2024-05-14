@@ -37,13 +37,11 @@
 class RuleLocation extends Rule
 {
     public static $rightname = 'rule_location';
-    public $can_sort  = true;
 
     public function getTitle()
     {
         return __('Location rules');
     }
-
 
     public function maxActionsCount()
     {
@@ -58,7 +56,7 @@ class RuleLocation extends Rule
                     $output[$action->fields["field"]] = $action->fields["value"];
                     break;
                 case 'regex_result':
-                    if ($action->fields["field"] == "locations_id") {
+                    if ($action->fields["field"] === "locations_id") {
                         foreach ($this->regex_results as $regex_result) {
                             $regexvalue          = RuleAction::getRegexResultById(
                                 $action->fields["value"],
@@ -113,7 +111,6 @@ class RuleLocation extends Rule
         ];
     }
 
-
     public function getActions()
     {
         return [
@@ -128,7 +125,6 @@ class RuleLocation extends Rule
             ]
         ];
     }
-
 
     public static function getIcon()
     {

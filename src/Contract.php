@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  *  Contract class
@@ -41,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Contract extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -176,9 +179,6 @@ class Contract extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $tab = [];
 
         $joinparams = [
@@ -354,10 +354,9 @@ class Contract extends CommonDBTM
             'datatype'           => 'decimal',
             'massiveaction'      => false,
             'joinparams'         => $joinparamscost,
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -480,9 +479,6 @@ class Contract extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -527,11 +523,11 @@ class Contract extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_contract' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -796,10 +792,9 @@ class Contract extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.cost') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')) * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -897,6 +892,17 @@ class Contract extends CommonDBTM
             return;
         }
 
+        $end_date = QueryFunction::dateAdd(
+            date: 'begin_date',
+            interval: new QueryExpression($DB::quoteName('duration')),
+            interval_unit: 'MONTH'
+        );
+
+        $end_date_diff_now = QueryFunction::dateDiff(
+            expression1: $end_date,
+            expression2: QueryFunction::curDate()
+        );
+
        // No recursive contract, not in local management
        // contrats echus depuis moins de 30j
         $table = self::getTable();
@@ -905,8 +911,8 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>-30'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<0')
+                new QueryExpression("$end_date_diff_now  > -30"),
+                new QueryExpression("$end_date_diff_now < 0"),
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract0 = $result['cpt'];
@@ -917,8 +923,8 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>0'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<=7')
+                new QueryExpression("$end_date_diff_now > 0"),
+                new QueryExpression("$end_date_diff_now  <= 7")
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract7 = $result['cpt'];
@@ -929,11 +935,22 @@ class Contract extends CommonDBTM
             'FROM'   => $table,
             'WHERE'  => [
                 'is_deleted'   => 0,
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())>7'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL ' . $DB->quoteName("duration") . ' MONTH),CURDATE())<30')
+                new QueryExpression("$end_date_diff_now > 7"),
+                new QueryExpression("$end_date_diff_now < 30")
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contract30 = $result['cpt'];
+
+        $notice_date = QueryFunction::dateAdd(
+            date: 'begin_date',
+            interval: new QueryExpression($DB::quoteName('duration') . ' - ' . $DB::quoteName('notice')),
+            interval_unit: 'MONTH'
+        );
+
+        $end_date_diff_notice = QueryFunction::dateDiff(
+            expression1: $notice_date,
+            expression2: QueryFunction::curDate()
+        );
 
        // contrats avec pr??avis echeance j-7
         $result = $DB->request([
@@ -942,8 +959,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>0'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<=7')
+                new QueryExpression("$end_date_diff_notice > 0"),
+                new QueryExpression("$end_date_diff_notice <= 7")
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contractpre7 = $result['cpt'];
@@ -955,8 +972,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())>7'),
-                new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName("begin_date") . ', INTERVAL (' . $DB->quoteName("duration") . '-' . $DB->quoteName('notice') . ') MONTH),CURDATE())<30')
+                new QueryExpression("$end_date_diff_notice > 7"),
+                new QueryExpression("$end_date_diff_notice < 30")
             ] + getEntitiesRestrictCriteria($table)
         ])->current();
         $contractpre30 = $result['cpt'];
@@ -1104,6 +1121,28 @@ class Contract extends CommonDBTM
         ];
         $contract_messages = [];
 
+        $end_date = QueryFunction::dateAdd(
+            date: 'glpi_contracts.begin_date',
+            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+            interval_unit: 'MONTH'
+        );
+
+        $end_date_diff_now = QueryFunction::dateDiff(
+            expression1: $end_date,
+            expression2: QueryFunction::curDate()
+        );
+
+        $notice_date = QueryFunction::dateAdd(
+            date: 'glpi_contracts.begin_date',
+            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration') . ' - ' . $DB::quoteName('glpi_contracts.notice')),
+            interval_unit: 'MONTH'
+        );
+
+        $end_date_diff_notice = QueryFunction::dateDiff(
+            expression1: $notice_date,
+            expression2: QueryFunction::curDate()
+        );
+
         foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
             $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
 
@@ -1140,31 +1179,8 @@ class Contract extends CommonDBTM
                     'glpi_contracts.duration'    => ['!=', 0],
                     'glpi_contracts.notice'      => ['!=', 0],
                     'glpi_contracts.entities_id' => $entity,
-                    [
-                        'RAW' => [
-                            'DATEDIFF(
-                         ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
-                         ),
-                         CURDATE()
-                      )' => ['>', 0]
-                        ]
-                    ],
-                    [
-                        'RAW' => [
-                            'DATEDIFF(
-                         ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL (
-                               ' . DBmysql::quoteName('glpi_contracts.duration') . '
-                               - ' . DBmysql::quoteName('glpi_contracts.notice') . '
-                            ) MONTH
-                         ),
-                         CURDATE()
-                      )' => ['<', $before]
-                        ]
-                    ],
+                    new QueryExpression("$end_date_diff_now > 0"),
+                    new QueryExpression("$end_date_diff_notice <= $before"),
                 ],
             ];
 
@@ -1200,17 +1216,7 @@ class Contract extends CommonDBTM
                     ],
                     'glpi_contracts.duration'    => ['!=', 0],
                     'glpi_contracts.entities_id' => $entity,
-                    [
-                        'RAW' => [
-                            'DATEDIFF(
-                         ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
-                         ),
-                         CURDATE()
-                      )' => ['<', $before]
-                        ]
-                    ],
+                    new QueryExpression("$end_date_diff_now <= $before"),
                 ],
             ];
 
@@ -1826,17 +1832,26 @@ class Contract extends CommonDBTM
     }
 
     /**
-     * @FIXME Rename method in GLPI 10.1. Method returns criteria to find NOT expired contracts.
+     * @FIXME Rename method in GLPI 11.0. Method returns criteria to find NOT expired contracts.
      */
     public static function getExpiredCriteria()
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        return ['OR' => [
-            'glpi_contracts.renewal' => 1,
-            new \QueryExpression('DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_contracts.begin_date') . ', INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH), CURDATE()) > 0'),
-        ]
+        return [
+            'OR' => [
+                'glpi_contracts.renewal' => 1,
+                new QueryExpression(
+                    QueryFunction::dateDiff(
+                        expression1: QueryFunction::dateAdd(
+                            date: 'glpi_contracts.begin_date',
+                            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curDate()
+                    ) . ' > 0'
+                ),
+            ]
         ];
     }
 }

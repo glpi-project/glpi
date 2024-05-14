@@ -292,6 +292,7 @@ var glpi_confirm = function({
     confirm_label = _x('button', 'Confirm'),
     cancel_callback  = () => {},
     cancel_label  = _x('button', 'Cancel'),
+    close_callback  = () => {},
 } = {}) {
 
     glpi_html_dialog({
@@ -308,7 +309,8 @@ var glpi_confirm = function({
             click: function(event) {
                 cancel_callback(event);
             }
-        }]
+        }],
+        close: close_callback
     });
 
     return id;
@@ -346,7 +348,13 @@ const glpi_toast = (title, message, css_class, options = {}) => {
     }, options);
 
     const animation_classes = options.animated ? `animate__animated ${options.animation} ${options.animation_extra_classes}` : '';
-    const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+    let location = CFG_GLPI.toast_location || 'bottom-right';
+    const valid_locations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+    // If location is not valid, change it to bottom-right
+    if (!valid_locations.includes(location)) {
+        location = 'bottom-right';
+    }
+    const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
       <div id='toast_js_${toast_id}' class='toast ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header ${css_class}'>
             <strong class='me-auto'>${title}</strong>
@@ -372,7 +380,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_success = (message, caption, options = {}) => {
+const glpi_toast_success = (message, caption = undefined, options = {}) => {
     glpi_toast(caption || __('Success'), message, 'bg-success text-white border-0', options);
 };
 
@@ -383,7 +391,7 @@ const glpi_toast_success = (message, caption, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_info = function(message, caption, options = {}) {
+const glpi_toast_info = function(message, caption = undefined, options = {}) {
     glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
 };
 
@@ -394,7 +402,7 @@ const glpi_toast_info = function(message, caption, options = {}) {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_warning = (message, caption, options = {}) => {
+const glpi_toast_warning = (message, caption = undefined, options = {}) => {
     glpi_toast(caption || __('Warning'), message, 'bg-warning text-white border-0', options);
 };
 
@@ -405,7 +413,7 @@ const glpi_toast_warning = (message, caption, options = {}) => {
  * @param {string} caption       Caption for the toast
  * @param {ToastOptions} options Toast options
  */
-const glpi_toast_error = (message, caption, options = {}) => {
-    glpi_toast(caption || __('Error'), message, 'bg-danger text-white border-0', options);
+const glpi_toast_error = (message, caption = undefined, options = {}) => {
+    glpi_toast(caption || _n('Error', 'Errors', 1), message, 'bg-danger text-white border-0', options);
 };
 

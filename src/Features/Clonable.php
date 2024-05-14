@@ -38,7 +38,6 @@ namespace Glpi\Features;
 use CommonDBConnexity;
 use CommonDBTM;
 use Session;
-use Toolbox;
 
 /**
  * Clonable objects
@@ -77,6 +76,7 @@ trait Clonable
             'date_creation',
             'template_name',
             'is_template',
+            'is_default',
             'sons_cache',
         ];
         foreach ($properties_to_clean as $property) {
@@ -223,9 +223,9 @@ trait Clonable
             return false;
         }
         $new_item = new static();
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         foreach ($override_input as $key => $value) {
-            $input[$key] = Toolbox::addslashes_deep($value);
+            $input[$key] = $value;
         }
         $input = $new_item->cleanCloneInput($input);
 

@@ -80,8 +80,7 @@ interface RequirementInterface
      *
      * @return bool
      */
-    // TODO Uncomment this in GLPI 10.1
-    // public function isRecommendedForSecurity(): bool;
+    public function isRecommendedForSecurity(): bool;
 
     /**
      * Indicates if requirement is considered as out of context

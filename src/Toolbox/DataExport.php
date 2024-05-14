@@ -40,8 +40,7 @@ use Glpi\RichText\RichText;
 class DataExport
 {
     /**
-     * Normalize a value for text export (PDF, CSV, SYLK, ...).
-     * Assume value cames from DB and has been processed by GLPI sanitize process.
+     * Normalize a value for text export (PDF, CSV, ...).
      *
      * @param string $value
      *
@@ -49,8 +48,6 @@ class DataExport
      */
     public static function normalizeValueForTextExport(string $value): string
     {
-        $value = Sanitizer::unsanitize($value);
-
         if (RichText::isRichTextHtmlContent($value)) {
             libxml_use_internal_errors(true); // Silent errors
             $document = new \DOMDocument();

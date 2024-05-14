@@ -38,6 +38,7 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
+      {# Item displayed in timeline #}
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
@@ -120,6 +121,7 @@
          {% endif %}
       </div>
    {% elseif form_mode == 'answer' %}
+      {# Form displayed when user updates its answer #}
       <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
             action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
 
@@ -169,6 +171,7 @@
          </div>
       </form>
    {% else %}
+      {# Form displayed when user creates/edits an approval request #}
       <div class="itilvalidation card mt-4">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
@@ -179,6 +182,19 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
+               {{ fields.dropdownField(
+                  'ITILValidationTemplate',
+                  'itilvalidationtemplates_id',
+                  '',
+                  _n('Template', 'Templates', 1),
+                  {
+                     'full_width': true,
+                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                     'entity': item.fields['entities_id'],
+                     'rand': rand,
+                  },
+                ) }}
+
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -190,54 +206,38 @@
                 ) }}
 
                 {% if subitem.isNewItem() %}
-                    {{ fields.dropdownArrayField('validatortype', subitem.fields['validatortype'], {
-                    'User': 'User'|itemtype_name,
-                    'Group': 'Group'|itemtype_name
-                    }, __('Approver'), {
-                    'display_emptychoice': true,
-                    'rand': rand,
-                    'field_class': 'col-12',
-                    'label_class': 'col-xxl-4',
-                    'input_class': 'col-xxl-8 flex-wrap',
-                    'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
-                    }) }}
-                    {% set right = 'validate' %}
-                    {% if (item.getType() is same as 'Ticket') %}
-                        {% set right = item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' %}
+                    {% set validation_right = 'validate' %}
+                    {% if item.getType() == 'Ticket' %}
+                       {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                          {% set validation_right = 'validate_incident' %}
+                       {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                          {% set validation_right = 'validate_request' %}
+                       {% endif %}
                     {% endif %}
-                    {% if subitem.fields['validatortype'] is not null %}
-                    <script type="application/javascript">
-                        $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                            id: {{ subitem.fields['id'] }},
-                            entity: {{ item.fields['entities_id'] }},
-                            right: '{{ right }}',
-                            validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
-                        });
-                    </script>
-                    {% else %}
-                        {% do call('Ajax::updateItemOnSelectEvent', [
-                            'dropdown_validatortype' ~ rand,
-                            'show_validator_field' ~ rand,
-                            config('root_doc') ~ '/ajax/dropdownValidator.php',
-                            {
-                                'id': 0,
-                                'entity': item.fields['entities_id'],
-                                'right': right,
-                                'validatortype': '__VALUE__',
-                                'groups_id': 0
-                            }
-                        ]) %}
-                    {% endif %}
+                    {{ fields.field(
+                        '_add_validation',
+                        subitem.dropdownValidator({
+                            'parents_id': item.fields['id'],
+                            'entity': item.fields['entities_id'],
+                            'itemtype_target': subitem.fields['itemtype_target'],
+                            'items_id_target': subitem.fields['items_id_target'] ?? '',
+                            'right': validation_right,
+                            'display': false,
+                            'rand': rand,
+                        }),
+                        __('Approver'),
+                        {
+                            'full_width': true,
+                        }
+                    ) }}
                 {% else %}
-                    {{ fields.dropdownField(
-                    'User',
-                    'users_id_validate',
-                    subitem.fields['users_id_validate'],
-                    __('Approver'),
-                    {
-                       'disabled': true,
-                       'full_width': true,
-                    }
+                    {{ fields.readOnlyField(
+                        '',
+                        get_item_name(subitem.fields['itemtype_target'], subitem.fields['items_id_target']),
+                        __('Approver'),
+                        {
+                           'full_width': true,
+                        }
                     ) }}
                 {% endif %}
 
@@ -300,5 +300,65 @@
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
+
+      <script type="text/javascript">
+         function itilvalidationtemplate_update{{ rand }}(value) {
+            $.ajax({
+               url: '{{ path('/ajax/itilvalidation.php') }}',
+               type: 'POST',
+               data: {
+                  validationtemplates_id: value,
+                  items_id: '{{ item.fields['id'] }}',
+                  itemtype: '{{ item.getType() }}'
+               }
+            }).done(function (data) {
+               if (data.content !== undefined) {
+                  // set textarea content
+                  setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
+               }
+
+               if (data.validatortype !== undefined) {
+                  // set validator type
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
+                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
+
+                  if (data.groups_id !== undefined && data.groups_id !== null) {
+                     waitForElement("#dropdown_groups_id{{ rand }}").then((elm) => {
+                        // set groups_id
+                        $("#dropdown_groups_id{{ rand }}").ready(function() {
+                           $("#dropdown_groups_id{{ rand }}").trigger('setValue', data.groups_id);
+                        });
+
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  } else if (data.items_id_target !== undefined) {
+                     new Promise((resolve) => {
+                        // if dropdown_items_id_target exists, wait for it to be removed
+                        // is required because the dropdown is removed and recreated when the setValue is triggered
+                        if ($("#dropdown_items_id_target{{ rand }}").length > 0) {
+                           $("#dropdown_items_id_target{{ rand }}").on('remove', function() {
+                              resolve();
+                           });
+                        } else {
+                           resolve();
+                        }
+                     }).then(() => {
+                        waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
+                           // set items_id_target
+                           $("#dropdown_items_id_target{{ rand }}").ready(function() {
+                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                           });
+                        });
+                     });
+                  }
+               }
+            });
+         }
+      </script>
    {% endif %}
 {% endblock %}

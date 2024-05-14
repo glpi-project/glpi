@@ -71,5 +71,19 @@
             "notequals"
         ],
         "uid": "TicketFollowup.User.name"
+    },
+    "7": {
+        "name": "ID",
+        "table": "glpi_ticketfollowups",
+        "field": "id",
+        "datatype": "number",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "TicketFollowup.id"
     }
 }

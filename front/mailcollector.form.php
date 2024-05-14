@@ -35,9 +35,6 @@
 
 use Glpi\Event;
 
-/** @var array $_UPOST */
-global $_UPOST;
-
 include('../inc/includes.php');
 
 Session::checkRight("config", READ);
@@ -53,7 +50,7 @@ if (isset($_POST["add"])) {
 
     if (array_key_exists('passwd', $_POST)) {
        // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-        $_POST['passwd'] = $_UPOST['passwd'];
+        $_POST['passwd'] = $_POST['passwd'];
     }
 
     if ($newID = $mailgate->add($_POST)) {
@@ -87,7 +84,7 @@ if (isset($_POST["add"])) {
 
     if (array_key_exists('passwd', $_POST)) {
        // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-        $_POST['passwd'] = $_UPOST['passwd'];
+        $_POST['passwd'] = $_POST['passwd'];
     }
 
     $mailgate->update($_POST);

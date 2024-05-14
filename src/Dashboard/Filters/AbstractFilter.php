@@ -122,7 +122,7 @@ abstract class AbstractFilter
      *
      * @return string the html for the complete field
      *
-     * @FIXME Make it protected in GLPI 10.1.
+     * @FIXME Make it protected in GLPI 11.0.
      */
     final public static function field(
         string $id,
@@ -131,10 +131,10 @@ abstract class AbstractFilter
         bool $filled = false
     ): string {
 
-         $rand  = mt_rand();
-         $class = $filled ? "filled" : "";
+        $rand  = mt_rand();
+        $class = $filled ? "filled" : "";
 
-         $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
             $(function () {
                 $('#filter-{$rand} input')
                     .on('input', function() {
@@ -156,13 +156,15 @@ abstract class AbstractFilter
                     });
                 });
 JAVASCRIPT;
-         $js = Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
-         $html  = <<<HTML
+        $html  = <<<HTML
             <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
                 $field
                 <legend>$label</legend>
-                <i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash delete-filter'></i>
+                <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
+                    <i class='ti ti-trash'></i>
+                </button>
                 {$js}
             </fieldset>
 HTML;
@@ -197,7 +199,7 @@ HTML;
                 var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
                 var selected    = dom_elem.find(':selected').val();
 
-                Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+                GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
 
                 $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
             };

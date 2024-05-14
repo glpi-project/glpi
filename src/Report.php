@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  *  Report class
  *
@@ -210,7 +214,7 @@ class Report extends CommonGLPI
                 'FROM'   => $table_item,
                 'WHERE'  => [
                     "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item)
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria()
             ];
 
             $itemtype_object = new $itemtype();
@@ -219,13 +223,14 @@ class Report extends CommonGLPI
             }
 
             if (in_array($itemtype, $linkitems)) {
+                $relation_table = Asset_PeripheralAsset::getTable();
                 $criteria['LEFT JOIN'] = [
-                    'glpi_computers_items' => [
+                    $relation_table => [
                         'ON' => [
-                            'glpi_computers_items'  => 'items_id',
-                            $table_item             => 'id', [
+                            $relation_table => 'items_id_peripheral',
+                            $table_item     => 'id', [
                                 'AND' => [
-                                    'glpi_computers_items.itemtype' => $itemtype
+                                    $relation_table . '.itemtype_peripheral' => $itemtype
                                 ]
                             ]
                         ]
@@ -278,13 +283,13 @@ class Report extends CommonGLPI
             echo "<tr class='tab_bg_1'><td colspan='2' class='b'>" . $itemtype::getTypeName(Session::getPluralNumber()) .
               "</td></tr>";
 
-            //no type for unmanaged
-            if ($itemtype == Unmanaged::class) {
+            $typeclass  = $itemtype . "Type";
+
+            if (!class_exists($typeclass)) {
                 continue;
             }
 
             $table_item = getTableForItemType($itemtype);
-            $typeclass  = $itemtype . "Type";
             $type_table = getTableForItemType($typeclass);
             $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
 
@@ -304,7 +309,7 @@ class Report extends CommonGLPI
                 ],
                 'WHERE'     => [
                     "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item),
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria($table_item),
                 'GROUPBY'   => "$type_table.name"
             ];
 
@@ -314,12 +319,13 @@ class Report extends CommonGLPI
             }
 
             if (in_array($itemtype, $linkitems)) {
-                $criteria['LEFT JOIN']['glpi_computers_items'] = [
+                $relation_table = Asset_PeripheralAsset::getTable();
+                $criteria['LEFT JOIN'][$relation_table] = [
                     'ON' => [
-                        'glpi_computers_items'  => 'items_id',
-                        $table_item             => 'id', [
+                        $relation_table => 'items_id_peripheral',
+                        $table_item     => 'id', [
                             'AND' => [
-                                'glpi_computers_items.itemtype'  => $itemtype
+                                $relation_table . '.itemtype_peripheral' => $itemtype
                             ]
                         ]
                     ]
@@ -388,13 +394,21 @@ class Report extends CommonGLPI
                 'PORT_1.name AS port_1',
                 'PORT_1.mac AS mac_1',
                 'PORT_1.logical_number AS logical_1',
-                new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_1.name') . ' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_1')),
+                QueryFunction::groupConcat(
+                    expression: 'ADDR_1.name',
+                    separator: ', ',
+                    alias: 'ip_1'
+                ),
                 'PORT_2.itemtype AS itemtype_2',
                 'PORT_2.items_id AS items_id_2',
                 'PORT_2.id AS id_2',
                 'PORT_2.name AS port_2',
                 'PORT_2.mac AS mac_2',
-                new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_2.name') . ' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_2'))
+                QueryFunction::groupConcat(
+                    expression: 'ADDR_2.name',
+                    separator: ', ',
+                    alias: 'ip_2'
+                ),
             ], $select),
             'FROM'         => $from,
             'INNER JOIN'   => $innerjoin + [
@@ -438,11 +452,11 @@ class Report extends CommonGLPI
                 'glpi_networkports AS PORT_2' => [
                     'ON'  => [
                         'PORT_2' => 'id',
-                        new QueryExpression(
-                            'IF(' . $DB->quoteName('LINK.networkports_id_1') . ' = ' . $DB->quoteName('PORT_1.id') . ', ' .
-                            $DB->quoteName('LINK.networkports_id_2') . ', ' .
-                            $DB->quoteName('LINK.networkports_id_1') . ')'
-                        )
+                        QueryFunction::if(
+                            condition: new QueryExpression($DB::quoteName("LINK.networkports_id_1") . ' = ' . $DB::quoteName("PORT_1.id")),
+                            true_expression: "LINK.networkports_id_2",
+                            false_expression: "LINK.networkports_id_1"
+                        ),
                     ]
                 ],
                 'glpi_networknames AS NAME_2' => [

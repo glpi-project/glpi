@@ -41,8 +41,6 @@ if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
     $splitter = explode("_", $_POST["my_items"]);
     if (count($splitter) == 2) {
@@ -61,8 +59,9 @@ if (
     }
 
     $days   = 3;
+
     $ticket = new Ticket();
-    $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem(
+    $data   = $ticket->getActiveOrSolvedLastDaysForItem(
         $_POST['itemtype'],
         $_POST['items_id'],
         $days

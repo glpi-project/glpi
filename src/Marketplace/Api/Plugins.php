@@ -37,6 +37,8 @@ namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
 use GuzzleHttp\Client as Guzzle_Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Session;
@@ -68,25 +70,11 @@ class Plugins
 
     public function __construct()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $options = [
+        // init guzzle client with base options
+        $this->httpClient = Toolbox::getGuzzleClient([
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
             'connect_timeout' => self::TIMEOUT,
-        ];
-
-        // add proxy string if configured in glpi
-        if (!empty($CFG_GLPI["proxy_name"])) {
-            $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new \GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-            $options['proxy'] = $proxy_string;
-        }
-
-        // init guzzle client with base options
-        $this->httpClient = new Guzzle_Client($options);
+        ]);
     }
 
 
@@ -123,13 +111,13 @@ class Plugins
         try {
             $response = $this->httpClient->request($method, $endpoint, $options);
             $this->last_error = null; // Reset error buffer
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
+        } catch (RequestException | ConnectException $e) {
             $this->last_error = [
                 'title'     => "Plugins API error",
                 'exception' => $e->getMessage(),
                 'request'   => Message::toString($e->getRequest()),
             ];
-            if ($e->hasResponse()) {
+            if ($e instanceof RequestException && $e->hasResponse()) {
                 $this->last_error['response'] = Message::toString($e->getResponse());
             }
 

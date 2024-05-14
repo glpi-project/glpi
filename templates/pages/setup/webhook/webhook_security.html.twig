@@ -1,0 +1,174 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% block form_fields %}
+   {% block more_fields %}
+
+      {{ fields.passwordField(
+         'secret',
+         item.fields['secret'],
+         __('Secret'),
+         field_options|merge({
+            is_disclosable: true,
+            can_regenerate: true,
+            helper: __('The webhook secret can be shared with a target server to allow it to validate requests are actually coming from the GLPI server and that the content was not modified between GLPI and the target.')
+         })
+      ) }}
+
+      {{ fields.dropdownTimestampField(
+         'expiration',
+         item.fields['expiration'],
+         __('Expiration delay'),
+         field_options|merge({
+            'emptylabel': __('Disabled'),
+            'min': 0,
+            'max': constant('HOUR_TIMESTAMP') * 23,
+            'step': constant('HOUR_TIMESTAMP'),
+            'toadd': [
+               constant('MINUTE_TIMESTAMP'),
+               constant('MINUTE_TIMESTAMP') * 2,
+               constant('MINUTE_TIMESTAMP') * 5,
+               constant('MINUTE_TIMESTAMP') * 10,
+               constant('MINUTE_TIMESTAMP') * 15,
+               constant('MINUTE_TIMESTAMP') * 20,
+               constant('MINUTE_TIMESTAMP') * 30,
+               constant('HOUR_TIMESTAMP'),
+               constant('HOUR_TIMESTAMP') * 2,
+               constant('HOUR_TIMESTAMP') * 6,
+               constant('HOUR_TIMESTAMP') * 12,
+            ],
+            'width': 'auto',
+         })
+      ) }}
+
+      {{ fields.smallTitle(__('Target authentication'), 'ti ti-fingerprint') }}
+
+      {{ fields.checkboxField(
+         'use_cra_challenge',
+         item.fields['use_cra_challenge'],
+         __('Use CRA Challenge ?'),
+         field_options|merge({
+            helper: __('Challenge–response authentication can be used to validate the identity of the target server before any data is sent from GLPI. This uses the shared secret that was generated in the above section.')
+         })
+      ) }}
+
+      {% set cra_btn %}
+         <button class="btn btn-primary me-2" type="button" name="validate_challenge" value="1">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <span>{{ _x('button', 'Validate') }}</span>
+         </button>
+      {% endset %}
+
+      {{ fields.htmlField(
+         '',
+         cra_btn,
+         __('CRA Challenge'),
+         field_options|merge({
+            add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
+         })
+      ) }}
+
+      {% set cra_challenge_infi %}
+         <span name="cra_result">
+         </span>
+      {% endset %}
+
+      {{ fields.htmlField(
+         '',
+         cra_challenge_infi,
+         __('CRA result'),
+         field_options|merge({
+            add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
+         })
+      ) }}
+
+      {{ fields.smallTitle(__('OAuth Authentication'), 'ti ti-key') }}
+      {{ fields.checkboxField('use_oauth', item.fields['use_oauth'], __('Use OAuth')) }}
+      {{ fields.textField('oauth_url', item.fields['oauth_url'], __('URL')) }}
+      {{ fields.textField('clientid', item.fields['clientid'], __('Client ID')) }}
+      {# The autocomplete, readonly, and onfocus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
+      {{ fields.passwordField('clientsecret', item.fields['clientsecret'], __('Client Secret'), {
+         is_disclosable: true,
+         readonly: true,
+         more_atributes: 'autocomplete=off onfocus=this.removeAttribute(\"readonly\");',
+      }) }}
+
+      <script>
+          $('input[name="use_cra_challenge"]').change(function () {
+              if ($('input[name="use_cra_challenge"]').is(":checked")) {
+                  $('button[name="validate_challenge"]').parent().parent().parent().removeClass('d-none');
+                  $('span[name="cra_result"]').parent().parent().parent().removeClass('d-none');
+                  $('button[name="validate_challenge"]').trigger('click');
+              } else {
+                  $('button[name="validate_challenge"]').parent().parent().parent().addClass('d-none');
+                  $('span[name="cra_result"]').parent().parent().parent().addClass('d-none');
+              }
+          });
+
+          $('button[name="validate_challenge"]').click(function () {
+              secret = $('input[name="secret"]').val();
+
+              $.ajax({
+                  type: 'POST',
+                  url: '{{ path('/ajax/webhook.php') }}',
+                  data: {
+                      action: 'valide_cra_challenge',
+                      webhook_id: {{ item.fields['id'] }},
+                      secret: secret,
+                  },
+                  success: function(json_response) {
+                      if (json_response.status) {
+                          $('input[name="is_cra_challenge_valid"]').val(1);
+                          $('span[name="cra_result"]').html('<i class="fa-solid fa-circle-check fa-beat fa-lg" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                      } else {
+                          $('input[name="is_cra_challenge_valid"]').val(0);
+                          $('span[name="cra_result"]').html('<i class="fa-solid fa-triangle-exclamation fa-beat fa-lg" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                      }
+                  },
+              });
+          });
+
+          $(function() {
+              if ($('input[name="use_cra_challenge"]').is(":checked") ) {
+                  $('button[name="validate_challenge"]').click();
+              }
+          });
+      </script>
+
+   {% endblock %}
+{% endblock %}

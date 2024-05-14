@@ -37,6 +37,8 @@
  * @since 0.85
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /** @var \DBmysql $DB */
 global $DB;
 

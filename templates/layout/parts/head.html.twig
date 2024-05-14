@@ -33,9 +33,10 @@
 
 <!DOCTYPE html>
 <html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}
+      data-glpi-theme="{{ theme.getKey() }}" data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
       {{ glpi_request_id is defined ? 'data-glpi-request-id=' ~ glpi_request_id : '' }}>
 <head>
-   <title>{{ title }} - GLPI</title>
+   <title>{{ title }} - {{ config('app_name') }}</title>
 
    <meta charset="utf-8" />
 

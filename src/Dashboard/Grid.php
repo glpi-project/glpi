@@ -38,7 +38,9 @@ namespace Glpi\Dashboard;
 use Config;
 use DateInterval;
 use Dropdown;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
@@ -56,6 +58,7 @@ class Grid
     protected $grid_cols       = 26;
     protected $grid_rows       = 24;
     protected $current         = "";
+    /** @var Dashboard|null */
     protected $dashboard       = null;
     protected $items           = [];
     protected $context            = '';
@@ -270,11 +273,6 @@ HTML;
             }
         }
 
-        // Force clear the cards cache in debug mode
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $GLPI_CACHE->delete(self::getAllDashboardCardsCacheKey());
-        }
-
         // prepare all available cards
         $cards = $this->getAllDasboardCards();
 
@@ -289,7 +287,7 @@ HTML;
         $fs_label         = __("Toggle fullscreen");
         $clone_label      = __("Clone this dashboard");
         $edit_label       = __("Toggle edit mode");
-        $add_filter_lbl   = __("Add filter");
+        $filter_label     = __("Toggle filter mode");
         $add_dash_label   = __("Add a new dashboard");
         $save_label       = _x('button', "Save");
 
@@ -317,28 +315,30 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-outline-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
             }
             if (!$mini && $can_edit) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-outline-secondary far fa-save save-dashboard-name' title='{$save_label}'></i>
+               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
             }
             if (!$mini && $can_purge) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
             }
             if ($can_edit) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            } elseif (!$mini) {
+                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-filter fs-toggle filter-dashboard' title='$filter_label'></i>";
             }
 
             if (!$mini) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
             }
 
             if (!$mini) {
@@ -363,24 +363,60 @@ HTML;
         $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="btn btn-outline-secondary fas fa-history auto-refresh" title="$history_label"></i>
-            <i class="btn btn-outline-secondary fas fa-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-refresh auto-refresh" title="$history_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
 
         $filters = "";
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         if (!$mini) {
-            $filters = <<<HTML
-         <div class='filters_toolbar'>
-            <span class='filters'></span>
-            <span class='filters-control'>
-               <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-plus plus-sign add-filter">
-                  <span class='add-filter-lbl'>{$add_filter_lbl}</span>
-               </i>
-            </span>
-         </div>
-HTML;
+            $params = [
+                'is_placeholder' => $CFG_GLPI['is_demo_dashboards'] ?? 0,
+                'messages' => [
+                    'add_filter' => __("Add filter"),
+                    'placeholder_main' => __("You are viewing demonstration data."),
+                    'disable_demo_msg' => __('Disable demonstration'),
+                ],
+                'can_disable_demo' => Session::haveRight(Config::$rightname, UPDATE) ? 1 : 0,
+            ];
+            $filters = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class='filters_toolbar m-2 {{ is_placeholder ? "d-none" : "" }}'>
+                    <span class='filters'></span>
+                    <span class='filters-control'>
+                        <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
+                            <span class='add-filter-lbl'>{{ messages['add_filter'] }}</span>
+                        </i>
+                    </span>
+                </div>
+                <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <i class="ti ti-info-circle fa-2x me-3"></i>
+                            <div>
+                                <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
+                                <div class="mt-2">
+                                    <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
+                                        <i class="ti ti-presentation-off"></i>
+                                        <span>{{ messages['disable_demo_msg'] }}</span>
+                                    </button>
+                                    <script>
+                                        $('button.disable-dashboard-demo').on('click', function() {
+                                            $.post(CFG_GLPI.root_doc + '/ajax/dashboard.php', {
+                                                action: 'disable_placeholders'
+                                            }).then(() => {
+                                                window.location.reload();
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+TWIG, $params);
         }
 
        // display the grid
@@ -545,6 +581,9 @@ JAVASCRIPT;
      */
     public function getGridItemsHtml(bool $with_lock = true, bool $embed = false): string
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         if ($embed) {
             self::$embed = true;
         }
@@ -692,7 +731,10 @@ HTML;
         $widgettype   = $cardopt['widgettype'] ?? "";
         $widget_def   = $widgettypes[$widgettype] ?? [];
         $use_gradient = $cardopt['use_gradient'] ?? 0;
-        $point_labels = $cardopt['point_labels'] ?? 0;
+        $palette      = $cardopt['palette'] ?? '';
+        $labels       = $cardopt['labels'] ?? 0;
+        $point_labels = $cardopt['point_labels'] ?? 1;
+        $legend       = $cardopt['legend'] ?? 1;
         $limit        = $cardopt['limit'] ?? 7;
         $color        = $cardopt['color'];
         $edit         = $params['action'] === "display_edit_widget";
@@ -709,11 +751,6 @@ HTML;
             $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
         });
 
-       // manage autoescaping
-        if (isset($cardopt['markdown_content'])) {
-            $cardopt['markdown_content'] = Html::cleanPostForTextArea($cardopt['markdown_content']);
-        }
-
         TemplateRenderer::getInstance()->display('components/dashboard/widget_form.html.twig', [
             'gridstack_id' => $gridstack_id,
             'old_id'       => $old_id,
@@ -727,7 +764,10 @@ HTML;
             'color'        => $color,
             'card_id'      => $card_id,
             'use_gradient' => $use_gradient,
+            'palette'      => $palette,
+            'labels'       => $labels,
             'point_labels' => $point_labels,
+            'legend'       => $legend,
             'limit'        => $limit,
             'list_cards'   => $list_cards,
             'widget_types' => Widget::getAllTypes(),
@@ -903,6 +943,7 @@ HTML;
             "</div>";
 
         $start = microtime(true);
+        Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {
             $cards = $this->getAllDasboardCards();
             if (!isset($cards[$card_id])) {
@@ -911,7 +952,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+                && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 
@@ -932,10 +973,20 @@ HTML;
                         'label' => $card['label'] ?? ""
                     ]
                 ];
-                if (isset($card_options['args']['apply_filters'])) {
-                    $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+
+                /** @var array $CFG_GLPI */
+                global $CFG_GLPI;
+                Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
+                if ($CFG_GLPI['is_demo_dashboards'] ?? 0) {
+                    $fake_provider_func = FakeProvider::class . '::' . explode('::', $card['provider'])[1];
+                    $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
+                } else {
+                    if (isset($card_options['args']['apply_filters'])) {
+                        $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+                    }
+                    $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
                 }
-                $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+                Profiler::getInstance()->stop($card['provider'] . ' (Provider function)');
             }
             $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
 
@@ -943,13 +994,13 @@ HTML;
             $all_widgets = Widget::getAllTypes();
             $widgettype = $card_options['args']['widgettype'] ?? "";
             $widgetfct = $all_widgets[$widgettype]['function'] ?? "";
-            if (strlen($widgetfct)) {
+            if ($widgetfct !== '') {
                 // clean urls in embed mode
                 if (isset($card_options['embed']) && $card_options['embed']) {
                     unset($widget_args['url']);
 
                     if (isset($widget_args['data'])) {
-                        $unset_url = function (&$array) use (&$unset_url) {
+                        $unset_url = static function (&$array) use (&$unset_url) {
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
@@ -966,28 +1017,30 @@ HTML;
                 }
 
                 // call widget function
-                $html = call_user_func($widgetfct, $widget_args);
+                Profiler::getInstance()->start($widgetfct . ' (Widget function)');
+                $html = $widgetfct($widget_args);
+                Profiler::getInstance()->stop($widgetfct . ' (Widget function)');
             }
 
             // display a warning for empty card
-            if (strlen($html) === 0) {
+            if ($html === '') {
                 return $notfound_html;
             }
-
-            $execution_time = round(microtime(true) - $start, 3);
         } catch (\Throwable $e) {
             $html = $render_error_html;
-            $execution_time = round(microtime(true) - $start, 3);
             // Log the error message without exiting
             /** @var \GLPI $GLPI */
             global $GLPI;
             $GLPI->getErrorHandler()->handleException($e, true);
         }
+        Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            // Use the current PHP request duration as the execution time for a more accurate card loading time
+            $execution_time = Profiler::getInstance()->getCurrentDuration('php_request');
             $html .= <<<HTML
          <span class='debug-card'>
-            {$execution_time}s
+            {$execution_time}ms
          </span>
 HTML;
         }
@@ -1108,6 +1161,7 @@ HTML;
          */
         global $CFG_GLPI, $GLPI_CACHE;
 
+        Profiler::getInstance()->start(__METHOD__);
         $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
 
         if ($cards === null || $force) {
@@ -1355,7 +1409,7 @@ HTML;
 
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
-                'label'      => __("List of reminders"),
+                'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
                 'group'      => __('Tools'),
                 'provider'   => "Glpi\\Dashboard\\Provider::getArticleListReminder",
                 'filters'    => Filter::getAppliableFilters(Reminder::getTable()),
@@ -1369,13 +1423,18 @@ HTML;
                     'content' => __("Toggle edit mode to edit content"),
                 ]
             ];
-            $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+
+            if (GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT) {
+                // Do not cache dashboard cards on `development` envs
+                $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
+            }
         }
 
         $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
         if (is_array($more_cards)) {
             $cards = array_merge($cards, $more_cards);
         }
+        Profiler::getInstance()->stop(__METHOD__);
 
         return $cards;
     }

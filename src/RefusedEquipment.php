@@ -67,7 +67,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '3',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'date_creation',
             'name'          => _n('Date', 'Dates', 1),
             'datatype'      => 'datetime',
@@ -76,7 +76,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '4',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'itemtype',
             'name'          => __('Item type'),
             'massiveaction' => false,
@@ -94,7 +94,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '6',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'serial',
             'name'          => __('Serial number'),
             'datatype'      => 'string',
@@ -103,7 +103,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '7',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'uuid',
             'name'          => __('UUID'),
             'datatype'      => 'string',
@@ -112,7 +112,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '8',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'ip',
             'name'          => __('IP'),
             'datatype'      => 'text',
@@ -121,7 +121,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '9',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'mac',
             'name'          => __('MAC'),
             'datatype'      => 'text',
@@ -130,7 +130,7 @@ class RefusedEquipment extends CommonDBTM
 
         $tab[] = [
             'id'            => '10',
-            'table'         => $this->getTable(),
+            'table'         => static::getTable(),
             'field'         => 'method',
             'name'          => __('Method'),
             'datatype'      => 'string',
@@ -258,26 +258,26 @@ class RefusedEquipment extends CommonDBTM
     {
         $status = $request->getInventoryStatus();
 
-        if ($status['itemtype'] === RefusedEquipment::class) {
+        if ($status['itemtype'] === self::class) {
             Session::addMessageAfterRedirect(
                 __('Inventory is still refused.')
             );
-            return $this->getSearchURL();
-        } else {
-            $this->delete(['id' => $this->fields['id']], true);
-            Session::addMessageAfterRedirect(
-                __('Inventory is successful, refused entry log has been removed.')
-            );
-
-            $item = new $status['itemtype']();
-            if (isset($status['items_id'])) {
-                $item->getFromDB($status['items_id']);
-                $redirect_url = $item->getLinkURL();
-            } else {
-                $redirect_url = $item->getSearchURL();
-            }
-
-            return $redirect_url;
+            return static::getSearchURL();
         }
+
+        $this->delete(['id' => $this->fields['id']], true);
+        Session::addMessageAfterRedirect(
+            __s('Inventory is successful, refused entry log has been removed.')
+        );
+
+        $item = new $status['itemtype']();
+        if (isset($status['items_id'])) {
+            $item->getFromDB($status['items_id']);
+            $redirect_url = $item->getLinkURL();
+        } else {
+            $redirect_url = $item->getSearchURL();
+        }
+
+        return $redirect_url;
     }
 }

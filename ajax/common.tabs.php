@@ -33,13 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
-/**
- * @var array $CFG_GLPI
- * @var array $_UGET
- */
-global $CFG_GLPI, $_UGET;
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
 
 $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
 
@@ -60,7 +55,6 @@ if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/hel
 if (!isset($_GET['_glpi_tab'])) {
     exit();
 }
-$_GET['_glpi_tab'] = Sanitizer::unsanitize($_GET['_glpi_tab']);
 
 if (!isset($_GET['_itemtype']) || empty($_GET['_itemtype'])) {
     exit();
@@ -82,7 +76,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     $_GET['id'] = (int)$_GET['id'];
 }
 
-if ($item = getItemForItemtype($_UGET['_itemtype'])) {
+if ($item = getItemForItemtype($_GET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {
        // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {

@@ -39,9 +39,6 @@ Session::checkRight("user", READ);
 
 Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
 
-$user = new User();
-$user->title();
-
 Search::show('User');
 
 Html::footer();

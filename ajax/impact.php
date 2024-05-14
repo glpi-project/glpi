@@ -126,7 +126,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (!is_array($data)) {
             Response::sendError(400, "Payload should be an array");
         }
-        $data = Toolbox::addslashes_deep($data);
 
         $readonly = true;
 

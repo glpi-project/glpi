@@ -64,6 +64,7 @@ $path       = preg_replace(
 require $glpi_root . '/src/Http/ProxyRouter.php';
 
 $proxy = new \Glpi\Http\ProxyRouter($glpi_root, $path);
+$proxy->handleRedirects($uri_prefix);
 
 if ($proxy->isTargetAPhpScript() && $proxy->isPathAllowed() && ($target_file = $proxy->getTargetFile()) !== null) {
     // Ensure `getcwd()` and inclusion path is based on requested file FS location.

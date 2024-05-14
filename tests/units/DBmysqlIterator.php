@@ -36,8 +36,9 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use Psr\Log\LogLevel;
-use QueryExpression;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -52,61 +53,12 @@ class DBmysqlIterator extends DbTestCase
         $this->it = new \DBmysqlIterator(null);
     }
 
-    public function testQuery()
-    {
-        $req = 'SELECT Something FROM Somewhere';
-        $this->when($this->it->execute($req))
-            ->error()
-            ->withType(E_USER_DEPRECATED)
-            ->withMessage('Direct query usage is strongly discouraged!')
-            ->exists();
-        $this->string($this->it->getSql())->isIdenticalTo($req);
-
-        $req = 'SELECT @@sql_mode as mode';
-        $this->when($this->it->execute($req))
-            ->error()
-            ->withType(E_USER_DEPRECATED)
-            ->withMessage('Direct query usage is strongly discouraged!')
-            ->exists();
-        $this->string($this->it->getSql())->isIdenticalTo($req);
-    }
-
-    protected function legacyQueryProvider(): iterable
-    {
-        yield [
-            'input'  => 'SELECT * FROM glpi_computers',
-            'output' => 'SELECT * FROM glpi_computers',
-        ];
-
-        yield [
-            'input'  => <<<SQL
-                SELECT * FROM glpi_computers
-SQL
-            ,
-            'output' => ' SELECT * FROM glpi_computers',
-        ];
-    }
-
-    /**
-     * @dataProvider legacyQueryProvider
-     */
-    public function testBuildQueryLegacy(string $input, string $output): void
-    {
-        $this->when($this->it->buildQuery($input))
-            ->error()
-            ->withType(E_USER_DEPRECATED)
-            ->withMessage('Direct query usage is strongly discouraged!')
-            ->exists();
-
-        $this->string($this->it->getSql())->isIdenticalTo($output);
-    }
-
     public function testSqlError()
     {
         global $DB;
 
         $expected_error = "Table '{$DB->dbdefault}.fakeTable' doesn't exist";
-        $DB->request('fakeTable');
+        $DB->request(['FROM' => 'fakeTable']);
         $this->hasSqlLogRecordThatContains($expected_error, LogLevel::ERROR);
     }
 
@@ -114,25 +66,25 @@ SQL
     public function testOnlyTable()
     {
 
-        $it = $this->it->execute('foo');
+        $it = $this->it->execute(['FROM' => 'foo']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-        $it = $this->it->execute('`foo`');
+        $it = $this->it->execute(['FROM' => '`foo`']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-        $it = $this->it->execute(['foo', '`bar`']);
+        $it = $this->it->execute(['FROM' => ['foo', '`bar`']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar`');
     }
 
 
     /**
-     * This is really an error, no table but a WHERE clase
+     * This is really an error, no table but a WHERE clause
      */
     public function testNoTableWithWhere()
     {
         $this->exception(
             function () {
-                $it = $this->it->execute('', ['foo' => 1]);
+                $it = $this->it->execute(['FROM' => [], 'WHERE' => ['foo' => 1]]);
                 $this->string($it->getSql())->isIdenticalTo('SELECT * WHERE `foo` = \'1\'');
             }
         )->isInstanceOf(\LogicException::class)
@@ -147,7 +99,7 @@ SQL
     {
         $this->exception(
             function () {
-                $it = $this->it->execute('');
+                $it = $this->it->execute(['']);
                 $this->string($it->getSql())->isIdenticalTo('SELECT *');
             }
         )->isInstanceOf(\LogicException::class)
@@ -175,7 +127,7 @@ SQL
         define('GLPI_SQL_DEBUG', true);
 
         $id = mt_rand();
-        $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . $id]);
+        $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'name', 'id = ' . $id]);
 
         $this->hasSqlLogRecordThatContains(
             'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
@@ -186,46 +138,46 @@ SQL
 
     public function testFields()
     {
-        $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'DISTINCT' => true]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'bar', 'DISTINCT' => true]);
         $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['bar', 'baz'], 'DISTINCT' => true]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['bar', 'baz'], 'DISTINCT' => true]);
         $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'bar']);
         $this->string($it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['bar', '`baz`']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['bar', '`baz`']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['b' => 'bar']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['b' => 'bar', '`c`' => '`baz`']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['a' => ['`bar`', 'baz']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `a`.`bar`, `a`.`baz` FROM `foo`');
 
-        $it = $this->it->execute(['foo', 'bar'], ['FIELDS' => ['foo' => ['*']]]);
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'FIELDS' => ['foo' => ['*']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.* FROM `foo`, `bar`');
 
-        $it = $this->it->execute(['foo', 'bar'], ['FIELDS' => ['foo.*']]);
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'FIELDS' => ['foo.*']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.* FROM `foo`, `bar`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['SUM' => 'bar AS cpt']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['SUM' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT SUM(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['AVG' => 'bar AS cpt']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['AVG' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT AVG(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['MIN' => 'bar AS cpt']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['MIN' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT MIN(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['MAX' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => new \QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => new \Glpi\DBAL\QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
         $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
     }
 
@@ -240,70 +192,70 @@ SQL
         $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
         $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`, `baz`');
 
-        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \Glpi\DBAL\QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
         $this->string($this->it->getSql())->isIdenticalTo("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t");
     }
 
 
     public function testOrder()
     {
-        $it = $this->it->execute('foo', ['ORDERBY' => 'bar']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`');
 
-        $it = $this->it->execute('foo', ['ORDER' => 'bar']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => '`baz`']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => '`baz`']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `baz`');
 
-        $it = $this->it->execute('foo', ['ORDER' => '`baz`']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => '`baz`']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `baz`');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => 'bar ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` ASC');
 
-        $it = $this->it->execute('foo', ['ORDER' => 'bar ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` ASC');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => 'bar DESC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar DESC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC');
 
-        $it = $this->it->execute('foo', ['ORDER' => 'bar DESC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar DESC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => ['`a`', 'b ASC', 'c DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => ['`a`', 'b ASC', 'c DESC']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
 
-        $it = $this->it->execute('foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => ['`a`', 'b ASC', 'c DESC']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => 'bar, baz ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar, baz ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
 
-        $it = $this->it->execute('foo', ['ORDER' => 'bar, baz ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar, baz ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
 
-        $it = $this->it->execute('foo', ['ORDERBY' => 'bar DESC, baz ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar DESC, baz ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
 
-        $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar DESC, baz ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
 
-        $it = $this->it->execute('foo', ['ORDER' => new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
 
         $this->exception(
             function () {
-                $this->it->execute('foo', ['ORDER' => [new \stdClass()]]);
+                $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \stdClass()]]);
             }
         )->isInstanceOf(\LogicException::class)
          ->hasMessage('Invalid order clause.');
@@ -312,54 +264,54 @@ SQL
 
     public function testCount()
     {
-        $it = $this->it->execute('foo', ['COUNT' => 'cpt']);
+        $it = $this->it->execute(['FROM' => 'foo', 'COUNT' => 'cpt']);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
-        $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT' => 'bar', 'DISTINCT' => true]);
+        $it = $this->it->execute(['FROM' => 'foo', 'COUNT' => 'cpt', 'SELECT' => 'bar', 'DISTINCT' => true]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
-        $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt, `name`, `version` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT' => 'bar']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar AS cpt']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => 'foo.baz']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['foo.bar', 'COUNT' => 'foo.baz']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => ['bar', 'baz']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT' => ['bar', 'baz']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`), COUNT(`baz`) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => ['bar AS cpt', 'baz AS cpt2']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT' => ['bar AS cpt', 'baz AS cpt2']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) AS `cpt`, COUNT(`baz`) AS `cpt2` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`), COUNT(`foo`.`qux`) FROM `foo`');
     }
 
     public function testCountDistinct()
     {
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT DISTINCT' => 'bar']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT DISTINCT' => 'bar']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT(`bar`)) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT DISTINCT' => ['bar', 'baz']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT DISTINCT' => ['bar', 'baz']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT(`bar`)), COUNT(DISTINCT(`baz`)) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['COUNT DISTINCT' => ['bar AS cpt', 'baz AS cpt2']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['COUNT DISTINCT' => ['bar AS cpt', 'baz AS cpt2']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT(`bar`)) AS `cpt`, COUNT(DISTINCT(`baz`)) AS `cpt2` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT DISTINCT' => ['foo.baz', 'foo.qux']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['foo.bar', 'COUNT DISTINCT' => ['foo.baz', 'foo.qux']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(DISTINCT(`foo`.`baz`)), COUNT(DISTINCT(`foo`.`qux`)) FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'COUNT' => 'cpt', 'DISTINCT' => true]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'bar', 'COUNT' => 'cpt', 'DISTINCT' => true]);
         $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
         $this->exception(
             function () {
-                $this->it->execute('foo', ['COUNT' => 'cpt', 'DISTINCT' => true]);
+                $this->it->execute(['FROM' => 'foo', 'COUNT' => 'cpt', 'DISTINCT' => true]);
             }
         )->isInstanceOf(\LogicException::class)
          ->hasMessage("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'.");
@@ -368,25 +320,25 @@ SQL
 
     public function testJoins()
     {
-        $it = $this->it->execute('foo', ['LEFT JOIN' => []]);
+        $it = $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => []]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-        $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
        //old JOIN alias for LEFT JOIN
-        $it = $this->it->execute('foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
-        $it = $this->it->execute('foo', ['LEFT JOIN' => [['TABLE' => 'bar', 'FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => [['TABLE' => 'bar', 'FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
-        $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['ON' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => ['bar' => ['ON' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
         $it = $this->it->execute(
-            'foo',
             [
+                'FROM' => 'foo',
                 'LEFT JOIN' => [
                     'bar' => [
                         'FKEY' => [
@@ -408,21 +360,21 @@ SQL
             'LEFT JOIN `baz` ON (`baz`.`id` = `foo`.`baz_id`)'
         );
 
-        $it = $this->it->execute('foo', ['INNER JOIN' => []]);
+        $it = $this->it->execute(['FROM' => 'foo', 'INNER JOIN' => []]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-        $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
-        $it = $this->it->execute('foo', ['RIGHT JOIN' => []]);
+        $it = $this->it->execute(['FROM' => 'foo', 'RIGHT JOIN' => []]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-        $it = $this->it->execute('foo', ['RIGHT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'RIGHT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` RIGHT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
         $this->exception(
             function () {
-                $this->it->execute('foo', ['LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+                $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
             }
         )->isInstanceOf(\LogicException::class)
          ->hasMessage('BAD JOIN');
@@ -430,22 +382,22 @@ SQL
 
         $this->exception(
             function () {
-                $this->it->execute('foo', ['LEFT JOIN' => 'bar']);
+                $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => 'bar']);
             }
         )->isInstanceOf(\LogicException::class)
          ->hasMessage('BAD JOIN, value must be [ table => criteria ].');
 
         $this->exception(
             function () {
-                $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
+                $this->it->execute(['FROM' => 'foo', 'INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
             }
         )->isInstanceOf(\LogicException::class)
          ->hasMessage('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
 
        //test conditions
         $it = $this->it->execute(
-            'foo',
             [
+                'FROM' => 'foo',
                 'LEFT JOIN' => [
                     'bar' => [
                         'FKEY' => [
@@ -463,8 +415,8 @@ SQL
         );
 
         $it = $this->it->execute(
-            'foo',
             [
+                'FROM' => 'foo',
                 'LEFT JOIN' => [
                     'bar' => [
                         'FKEY' => [
@@ -481,13 +433,56 @@ SQL
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
         );
 
-       //test derived table in JOIN statement
+        //order in fkey should not matter
         $it = $this->it->execute(
-            'foo',
             [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    'bar' => [
+                        'FKEY' => [
+                            [
+                                'AND'  => ['field' => 42]
+                            ],
+                            'bar' => 'id',
+                            'foo' => 'fk'
+                        ]
+                    ]
+                ]
+            ]
+        );
+        $this->string($it->getSql())->isIdenticalTo(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        );
+
+        //condition set as associative array should work also
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    'bar' => [
+                        'FKEY' => [
+                            'bar' => 'id',
+                            'foo' => 'fk',
+                            'acondition' => [
+                                'AND'  => ['field' => 42]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
+        $this->string($it->getSql())->isIdenticalTo(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        );
+
+
+        //test derived table in JOIN statement
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
                 'LEFT JOIN' => [
                     [
-                        'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
+                        'TABLE'  => new \Glpi\DBAL\QuerySubQuery(['FROM' => 'bar'], 't2'),
                         'FKEY'   => [
                             't2'  => 'id',
                             'foo' => 'fk'
@@ -515,16 +510,16 @@ SQL
 
         // QueryExpression
         $expression = "LEFT JOIN xxxx";
-        $join = $this->it->analyseJoins(['LEFT JOIN' => [new QueryExpression($expression)]]);
+        $join = $this->it->analyseJoins(['LEFT JOIN' => [new \Glpi\DBAL\QueryExpression($expression)]]);
         $this->string($join)->isIdenticalTo($expression);
     }
 
     public function testHaving()
     {
-        $it = $this->it->execute('foo', ['HAVING' => ['bar' => 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => 1]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` HAVING `bar` = \'1\'');
 
-        $it = $this->it->execute('foo', ['HAVING' => ['bar' => ['>', 0]]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => ['>', 0]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` HAVING `bar` > \'0\'');
     }
 
@@ -532,79 +527,79 @@ SQL
 
     public function testOperators()
     {
-        $it = $this->it->execute('foo', ['a' => 1]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => 1]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = \'1\'');
 
-        $it = $this->it->execute('foo', ['a' => ['=', 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['=', 1]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = \'1\'');
 
-        $it = $this->it->execute('foo', ['a' => ['>', 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['>', 1]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` > \'1\'');
 
-        $it = $this->it->execute('foo', ['a' => ['LIKE', '%bar%']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['LIKE', '%bar%']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'');
 
-        $it = $this->it->execute('foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => ['LIKE', '%bar%']]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')');
 
-        $it = $this->it->execute('foo', ['a' => ['NOT LIKE', '%bar%']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['NOT LIKE', '%bar%']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'');
 
-        $it = $this->it->execute('foo', ['a' => ['<>', 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['<>', 1]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` <> \'1\'');
 
-        $it = $this->it->execute('foo', ['a' => ['&', 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['&', 1]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & \'1\'');
 
-        $it = $this->it->execute('foo', ['a' => ['|', 1]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['|', 1]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` | \'1\'');
     }
 
 
     public function testWhere()
     {
-        $it = $this->it->execute('foo', 'id=1');
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => 'id=1']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE id=1');
 
-        $it = $this->it->execute('foo', ['WHERE' => ['bar' => null]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => null]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-        $it = $this->it->execute('foo', ['bar' => null]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => null]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-        $it = $this->it->execute('foo', ['`bar`' => null]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['`bar`' => null]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-        $it = $this->it->execute('foo', ['bar' => 1]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 1]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'1\'');
 
         $this->exception(
             function () {
-                $it = $this->it->execute('foo', ['bar' => []]);
+                $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => []]]);
             }
         )
          ->isInstanceOf('RuntimeException')
          ->hasMessage('Empty IN are not allowed');
 
-        $it = $this->it->execute('foo', ['bar' => [1, 2, 4]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => [1, 2, 4]]]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')");
 
-        $it = $this->it->execute('foo', ['bar' => ['a', 'b', 'c']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => ['a', 'b', 'c']]]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')");
 
-        $it = $this->it->execute('foo', ['bar' => 'val']);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 'val']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'val'");
 
-        $it = $this->it->execute('foo', ['bar' => new \QueryExpression('`field`')]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \Glpi\DBAL\QueryExpression('`field`')]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = `field`');
 
-        $it = $this->it->execute('foo', ['bar' => '?']);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => '?']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'?\'');
 
-        $it = $this->it->execute('foo', ['bar' => new \QueryParam()]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \Glpi\DBAL\QueryParam()]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
-        /*$it = $this->it->execute('foo', ['bar' => new \QueryParam('myparam')]);
+        /*$it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \QueryParam('myparam')]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = :myparam');*/
     }
 
@@ -612,35 +607,35 @@ SQL
     public function testFkey()
     {
 
-        $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['id', 'fk']]);
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['id', 'fk']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `id` = `fk`');
 
-        $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]);
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`');
 
-        $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`');
     }
 
     public function testGroupBy()
     {
 
-        $it = $this->it->execute(['foo'], ['GROUPBY' => ['id']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUPBY' => ['id']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-        $it = $this->it->execute(['foo'], ['GROUP' => ['id']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => ['id']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-        $it = $this->it->execute(['foo'], ['GROUPBY' => 'id']);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUPBY' => 'id']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-        $it = $this->it->execute(['foo'], ['GROUP' => 'id']);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => 'id']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-        $it = $this->it->execute(['foo'], ['GROUPBY' => ['id', 'name']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUPBY' => ['id', 'name']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
 
-        $it = $this->it->execute(['foo'], ['GROUP' => ['id', 'name']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => ['id', 'name']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
     }
 
@@ -648,7 +643,7 @@ SQL
     {
         $this->exception(
             function () {
-                $it = $this->it->execute(['foo'], ['GROUPBY' => []]);
+                $it = $this->it->execute(['FROM' => 'foo', 'GROUPBY' => []]);
                 $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
             }
         )->isInstanceOf(\LogicException::class)
@@ -656,7 +651,7 @@ SQL
 
         $this->exception(
             function () {
-                $it = $this->it->execute(['foo'], ['GROUP' => []]);
+                $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => []]);
                 $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
             }
         )->isInstanceOf(\LogicException::class)
@@ -666,29 +661,30 @@ SQL
     public function testRange()
     {
 
-        $it = $this->it->execute('foo', ['START' => 5, 'LIMIT' => 10]);
+        $it = $this->it->execute(['FROM' => 'foo', 'START' => 5, 'LIMIT' => 10]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
 
-        $it = $this->it->execute('foo', ['OFFSET' => 5, 'LIMIT' => 10]);
+        $it = $this->it->execute(['FROM' => 'foo', 'OFFSET' => 5, 'LIMIT' => 10]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
     }
 
 
     public function testLogical()
     {
-        $it = $this->it->execute(['foo'], [['a' => 1, 'b' => 2]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [['a' => 1, 'b' => 2]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')');
 
-        $it = $this->it->execute(['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['AND' => ['a' => 1, 'b' => 2]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')');
 
-        $it = $this->it->execute(['foo'], ['OR' => ['a' => 1, 'b' => 2]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['OR' => ['a' => 1, 'b' => 2]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' OR `b` = \'2\')');
 
-        $it = $this->it->execute(['foo'], ['NOT' => ['a' => 1, 'b' => 2]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => 1, 'b' => 2]]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` = \'1\' AND `b` = \'2\')');
 
         $crit = [
+            'FROM' => 'foo',
             'WHERE' => [
                 'OR' => [
                     [
@@ -703,10 +699,11 @@ SQL
             ],
         ];
         $sql = "SELECT * FROM `foo` WHERE ((`items_id` = '15' AND `itemtype` = 'Computer') OR (`items_id` = '3' AND `itemtype` = 'Document'))";
-        $it = $this->it->execute(['foo'], $crit);
+        $it = $this->it->execute($crit);
         $this->string($it->getSql())->isIdenticalTo($sql);
 
         $crit = [
+            'FROM' => 'foo',
             'WHERE' => [
                 'a'  => 1,
                 'OR' => [
@@ -722,10 +719,6 @@ SQL
             ],
         ];
         $sql = "SELECT * FROM `foo` WHERE `a` = '1' AND (`b` = '2' OR NOT (`c` IN ('2', '3') AND (`d` = '4' AND `e` = '5')))";
-        $it = $this->it->execute(['foo'], $crit);
-        $this->string($it->getSql())->isIdenticalTo($sql);
-
-        $crit['FROM'] = 'foo';
         $it = $this->it->execute($crit);
         $this->string($it->getSql())->isIdenticalTo($sql);
 
@@ -778,19 +771,19 @@ SQL
     {
         global $DB;
 
-        $it = $this->it->execute('foo');
+        $it = $this->it->execute(['FROM' => 'foo']);
         $this->integer($it->numrows())->isIdenticalTo(0);
         $this->integer(count($it))->isIdenticalTo(0);
         $this->variable($it->current())->isNull();
 
-        $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
+        $it = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core', 'name' => 'version']]);
         $this->integer($it->numrows())->isIdenticalTo(1);
         $this->integer(count($it))->isIdenticalTo(1);
         $row = $it->current();
         $key = $it->key();
         $this->integer($row['id'])->isIdenticalTo($key);
 
-        $it = $DB->request('glpi_configs', ['context' => 'core']);
+        $it = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core']]);
         $this->integer($it->numrows())->isGreaterThan(100);
         $this->integer(count($it))->isGreaterThan(100);
         $this->boolean($it->numrows() == count($it))->isTrue();
@@ -798,9 +791,6 @@ SQL
 
     public function testAlias()
     {
-        $it = $this->it->execute('foo AS f');
-        $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` AS `f`');
-
         $it = $this->it->execute(['FROM' => 'foo AS f']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` AS `f`');
 
@@ -843,10 +833,10 @@ SQL
 
     public function testExpression()
     {
-        $it = $this->it->execute('foo', [new \QueryExpression('a LIKE b')]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [new \Glpi\DBAL\QueryExpression('a LIKE b')]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE a LIKE b');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \QueryExpression('1 AS `myfield`')]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \Glpi\DBAL\QueryExpression('1 AS `myfield`')]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`');
     }
 
@@ -855,25 +845,25 @@ SQL
         $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
         $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
 
-        $sub_query = new \QuerySubQuery($crit);
+        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit);
         $this->string($sub_query->getQuery())->isIdenticalTo($raw_subq);
 
-        $it = $this->it->execute('foo', ['bar' => $sub_query]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $sub_query]]);
         $this->string($it->getSql())
            ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq");
 
-        $it = $this->it->execute('foo', ['bar' => ['<>', $sub_query]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => ['<>', $sub_query]]]);
         $this->string($it->getSql())
            ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> $raw_subq");
 
-        $it = $this->it->execute('foo', ['NOT' => ['bar' => $sub_query]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['bar' => $sub_query]]]);
         $this->string($it->getSql())
            ->isIdenticalTo("SELECT * FROM `foo` WHERE NOT (`bar` IN $raw_subq)");
 
-        $sub_query = new \QuerySubQuery($crit, 'thesubquery');
+        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit, 'thesubquery');
         $this->string($sub_query->getQuery())->isIdenticalTo("$raw_subq AS `thesubquery`");
 
-        $it = $this->it->execute('foo', ['bar' => $sub_query]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $sub_query]]);
         $this->string($it->getSql())
            ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq AS `thesubquery`");
 
@@ -891,24 +881,24 @@ SQL
             ['FROM' => 'table1'],
             ['FROM' => 'table2']
         ];
-        $union = new \QueryUnion($union_crit);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit);
         $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, true);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, false, 'theunion');
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, false, 'theunion');
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $crit = [
             'SELECT'    => 'theunion.field',
@@ -918,7 +908,7 @@ SQL
         $it = $this->it->execute($crit);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, true);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $crit = [
@@ -938,7 +928,7 @@ SQL
         $users_table = 'glpi_ticket_users';
         $groups_table = 'glpi_groups_tickets';
 
-        $subquery1 = new \QuerySubQuery([
+        $subquery1 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'tu.type AS type'
@@ -956,7 +946,7 @@ SQL
                 "tu.$fk" => 42
             ]
         ]);
-        $subquery2 = new \QuerySubQuery([
+        $subquery2 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'gt.type AS type'
@@ -994,7 +984,7 @@ SQL
                      . " WHERE `gt`.`$fk` = '42')"
                      . ") AS `allactors`";
 
-        $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+        $union = new \Glpi\DBAL\QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $it = $this->it->execute([
             'FIELDS'          => [
                 'users_id',
@@ -1160,7 +1150,7 @@ SQL
                 'NAME.id AS name_id',
                 'PORT.id AS port_id',
                 'ITEM.id AS item_id',
-                new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+                new \Glpi\DBAL\QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
                 'glpi_networknames AS NAME'   => [
@@ -1197,8 +1187,8 @@ SQL
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
             'PORT.id AS port_id',
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1229,9 +1219,9 @@ SQL
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
-            new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1249,15 +1239,15 @@ SQL
 
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
-            new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('name_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
         ]);
         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
 
-        $union = new \QueryUnion($queries);
+        $union = new \Glpi\DBAL\QueryUnion($queries);
         $criteria = [
             'FROM'   => $union,
         ];
@@ -1268,10 +1258,10 @@ SQL
 
     public function testAnalyseCrit()
     {
-        $crit = [new \QuerySubQuery([
+        $crit = [new \Glpi\DBAL\QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
             'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+            'WHERE'  => ['groups_id' => new \Glpi\DBAL\QueryExpression('glpi_groups.id')]
         ])
         ];
         $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
@@ -1428,9 +1418,9 @@ SQL
     /**
      * Returns a fake users table that can be used to test iterator.
      *
-     * @return \QueryExpression
+     * @return \Glpi\DBAL\QueryExpression
      */
-    private function getUsersFakeTable(): \QueryExpression
+    private function getUsersFakeTable(): \Glpi\DBAL\QueryExpression
     {
         global $DB;
 
@@ -1441,15 +1431,295 @@ SQL
             sprintf($user_pattern, 6, $DB->quoteName('id'), $DB->quoteValue('acain'), $DB->quoteName('name')),
         ];
 
-        return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+        return new \Glpi\DBAL\QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+    }
+
+    public function testInCriteria()
+    {
+        global $DB;
+        $iterator = new \DBmysqlIterator($DB);
+        $to_sql_array = static function ($values) use ($DB) {
+            $str = '(';
+            foreach ($values as $value) {
+                $str .= $DB->quoteValue($value) . ', ';
+            }
+            return rtrim($str, ', ') . ')';
+        };
+
+        // Reguar IN
+        $criteria = [
+            'id' => [1, 2, 3]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit IN (array form)
+        $criteria = [
+            'id' => ['IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit NOT IN (array form)
+        $criteria = [
+            'id' => ['NOT IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+    }
+
+    protected function resultProvider(): iterable
+    {
+        // Data from GLPI 9.5- (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '&lt;p&gt;Test&lt;/p&gt;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 10.0.x (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&#38;B',
+                'content' => '&#60;p&#62;Test&#60;/p&#62;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 11.0+ (not autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider resultProvider
+     */
+    public function testAutoUnsanitize(array $db_data, array $result): void
+    {
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $this->calling($mysqli_result)->fetch_assoc = $db_data;
+        $this->calling($mysqli_result)->data_seek   = true;
+        $this->calling($mysqli_result)->free        = true;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+        $this->calling($db)->doQuery = $mysqli_result;
+        $this->calling($db)->numrows = 1;
+
+        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+
+        $this->array($iterator->current())->isEqualTo($result);
     }
 
     public function testRawFKeyCondition()
     {
         $this->string(
             $this->it->analyseCrit([
-                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
             ])
         )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
+    }
+
+    protected function requestArgsProvider(): iterable
+    {
+        // Table name as first param, default value for criteria argument
+        yield [
+            'params'   => ['glpi_computers', ''],
+            'expected' => [
+                'criteria' => [
+                    'FROM' => 'glpi_computers',
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers`',
+        ];
+
+        // Table name as first param, criteria as a string
+        yield [
+            'params'   => ['glpi_computers', 'is_deleted = 0'],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'WHERE' => [new QueryExpression('is_deleted = 0')]
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
+        ];
+
+        // Table name as first param, criteria as an array
+        yield [
+            'params'   => ['glpi_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'WHERE' => ['is_deleted' => 0],
+                    'ORDER' => 'id DESC'
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
+        ];
+
+        // Table name as first param, criteria as an array but not encapsulated inside a `WHERE` key
+        yield [
+            'params'   => ['glpi_computers', ['is_deleted' => 1]],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'is_deleted' => 1,
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
+        ];
+
+        // First argument is a QueryUnion
+        $union = new QueryUnion(
+            [
+                ['SELECT' => 'serial', 'FROM' => 'glpi_computers'],
+                ['SELECT' => 'serial', 'FROM' => 'glpi_printers']
+            ],
+            false,
+            'testalias'
+        );
+        yield [
+            'params'   => [$union, ''],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => $union,
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `glpi_computers`) UNION ALL (SELECT `serial` FROM `glpi_printers`)) AS `testalias`',
+        ];
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testConvertOldRequestArgsToCriteria(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+
+        $result = null;
+        $this->when(
+            function () use ($iterator, $params, &$result) {
+                $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
+            }
+        )
+         ->error
+         ->withMessage('The `test()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->array($result)->isEqualTo($expected);
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testExecuteWithOldSignature(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $this->calling($mysqli_result)->fetch_assoc = [];
+        $this->calling($mysqli_result)->data_seek   = true;
+        $this->calling($mysqli_result)->free        = true;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+        $this->calling($db)->doQuery = $mysqli_result;
+        $this->calling($db)->numrows = 1;
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->when(
+            function () use ($iterator, $params) {
+                $iterator = $iterator->execute(...$params);
+            }
+        )
+         ->error
+         ->withMessage('The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->string($iterator->getSql())->isEqualTo($sql);
+    }
+
+    public function testExecuteWithRawDirectQuery(): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->exception(
+            function () use ($iterator) {
+                $iterator->execute('SELECT * FROM `glpi_computers`');
+            }
+        )
+         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testBuildQueryWithOldSignature(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->when(
+            function () use ($iterator, $params) {
+                $iterator = $iterator->buildQuery(...$params);
+            }
+        )
+         ->error
+         ->withMessage('The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->string($iterator->getSql())->isEqualTo($sql);
+    }
+
+    public function testBuildQueryWithRawDirectQuery(): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->exception(
+            function () use ($iterator) {
+                $iterator->buildQuery('SELECT * FROM `glpi_computers`');
+            }
+        )
+         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
     }
 }

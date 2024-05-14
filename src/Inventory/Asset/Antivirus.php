@@ -35,16 +35,18 @@
 
 namespace Glpi\Inventory\Asset;
 
-use ComputerAntivirus;
+use ItemAntivirus;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 
 class Antivirus extends InventoryAsset
 {
     public function prepare(): array
     {
-        if ($this->item->getType() != 'Computer') {
-            throw new \RuntimeException('Antivirus are handled for computers only.');
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!in_array($this->item->getType(), $CFG_GLPI['itemantivirus_types'])) {
+            throw new \RuntimeException('Antivirus are not handled for ' . $this->item->getType());
         }
         $mapping = [
             'company'      => 'manufacturers_id',
@@ -96,8 +98,11 @@ class Antivirus extends InventoryAsset
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
-            'FROM'   => ComputerAntivirus::getTable(),
-            'WHERE'  => ['computers_id' => $this->item->fields['id']]
+            'FROM'   => ItemAntivirus::getTable(),
+            'WHERE'  => [
+                'itemtype' => $this->item->getType(),
+                'items_id' => $this->item->fields['id']
+            ]
         ]);
 
         foreach ($iterator as $data) {
@@ -114,7 +119,7 @@ class Antivirus extends InventoryAsset
     {
         $db_antivirus = $this->getExisting();
         $value = $this->data;
-        $computerAntivirus = new ComputerAntivirus();
+        $itemAntivirus = new ItemAntivirus();
 
        //check for existing
         foreach ($value as $k => $val) {
@@ -123,11 +128,11 @@ class Antivirus extends InventoryAsset
             foreach ($db_antivirus as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
-                    $computerAntivirus->getFromDB($keydb);
-                    $input = $this->handleInput($val, $computerAntivirus) + [
+                    $itemAntivirus->getFromDB($keydb);
+                    $input = $this->handleInput($val, $itemAntivirus) + [
                         'id'           => $keydb
                     ];
-                    $computerAntivirus->update(Sanitizer::sanitize($input));
+                    $itemAntivirus->update($input);
                     unset($value[$k]);
                     unset($db_antivirus[$keydb]);
                     break;
@@ -138,17 +143,18 @@ class Antivirus extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) !== 0) {
             foreach ($db_antivirus as $idtmp => $data) {
                 if ($data['is_dynamic'] == 1) {
-                    $computerAntivirus->delete(['id' => $idtmp], true);
+                    $itemAntivirus->delete(['id' => $idtmp], true);
                 }
             }
         }
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $val->computers_id = $this->item->fields['id'];
+                $val->itemtype = $this->item->getType();
+                $val->items_id = $this->item->fields['id'];
                 $val->is_dynamic = 1;
-                $input = $this->handleInput($val, $computerAntivirus);
-                $computerAntivirus->add(Sanitizer::sanitize($input));
+                $input = $this->handleInput($val, $itemAntivirus);
+                $itemAntivirus->add($input);
             }
         }
     }
@@ -160,6 +166,6 @@ class Antivirus extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \ComputerAntivirus::class;
+        return \ItemAntivirus::class;
     }
 }

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  Class KnowbaseItem_Item
  *
@@ -59,21 +61,19 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (static::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getCountForItem($item);
             }
 
-            $type_name = null;
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item::class === KnowbaseItem::class) {
                 $type_name = _n('Associated element', 'Associated elements', $nb);
             } else {
                 $type_name = __('Knowledge base');
             }
 
-            return self::createTabEntry($type_name, $nb);
+            return self::createTabEntry($type_name, $nb, $item::class);
         }
         return '';
     }
@@ -87,17 +87,16 @@ class KnowbaseItem_Item extends CommonDBRelation
     /**
      * Show linked items of a knowbase item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param CommonDBTM $item
+     * @param integer $withtemplate withtemplate param (default 0)
      *
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $item_id = $item->getID();
-        $item_type = $item::getType();
 
         if (isset($_GET["start"])) {
-            $start = intval($_GET["start"]);
+            $start = (int)$_GET["start"];
         } else {
             $start = 0;
         }
@@ -109,152 +108,78 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $ok_state = true;
         if ($item instanceof CommonITILObject) {
-            $ok_state = !in_array(
-                $item->fields['status'],
-                array_merge(
-                    $item->getClosedStatusArray(),
-                    $item->getSolvedStatusArray()
-                )
-            );
+            $ok_state = !in_array($item->fields['status'], array_merge(
+                $item->getClosedStatusArray(),
+                $item->getSolvedStatusArray()
+            ), true);
         }
 
         $rand = mt_rand();
         if ($canedit && $ok_state) {
-            echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
-            echo "<div class='center'>";
-            echo "<table class=\"tab_cadre_fixe\">";
-            echo "<tr><th colspan=\"2\">";
-            if ($item_type == KnowbaseItem::getType()) {
-                echo  __('Add a linked item');
-            } else {
-                echo __('Link a knowledge base entry');
-            }
-            echo "</th><tr>";
-            echo "<tr class='tab_bg_2'><td>";
-            if ($item_type == KnowbaseItem::getType()) {
-               //TODO: pass used array to restrict visible items in list
-                $rand = self::dropdownAllTypes($item, 'items_id');
-            } else {
+            if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
-                $rand = KnowbaseItem::dropdown([
-                    'entity'    => $item->getEntityID(),
-                    'used'      => self::getItems($item, 0, 0, true),
-                    'condition' => $condition
-                ]);
+                $used_knowbase_items = self::getItems($item, 0, 0, true);
             }
-            echo "</td><td>";
-            echo "<input type=\"submit\" name=\"add\" value=\"" . _sx('button', 'Add') . "\" class=\"btn btn-primary\">";
-            echo "</td></tr>";
-            echo "</table>";
-            if ($item_type == KnowbaseItem::getType()) {
-                echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
-            } else {
-                echo "<input type=\"hidden\" name=\"items_id\" value=\"" . $item->getID() . "\">";
-                echo "<input type=\"hidden\" name=\"itemtype\" value=\"" . $item::getType() . "\">";
-            }
-            echo "</div>";
-            Html::closeForm();
+            TemplateRenderer::getInstance()->display('pages/tools/kb/knowbaseitem_item.html.twig', [
+                'item' => $item,
+                'visibility_condition' => $condition ?? [],
+                'used_knowbase_items' => $used_knowbase_items ?? [],
+            ]);
         }
 
-       // No Events in database
-        if ($number < 1) {
-            $no_txt = ($item_type == KnowbaseItem::getType()) ?
-            __('No linked items') :
-            __('No knowledge base entries linked');
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>$no_txt</th></tr>";
-            echo "</table>";
-            echo "</div>";
-            return;
-        }
-
-       // Display the pager
-        $type_name = null;
-        if ($item->getType() == KnowbaseItem::getType()) {
-            $type_name = _n('Linked item', 'Linked items', 1);
-        } else {
-            $type_name = self::getTypeName(1);
-        }
-        Html::printAjaxPager($type_name, $start, $number);
-
-       // Output events
-        echo "<div class='center table-responsive'>";
-
-        if ($canedit) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams
-            = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], $number),
-                'container'
-                        => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-
-        $header = '<tr>';
-
-        if ($canedit) {
-            $header    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
-        }
-
-        $header .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
-        $header .= "<th>" . __('Creation date') . "</th>";
-        $header .= "<th>" . __('Update date') . "</th>";
-        $header .= "</tr>";
-        echo $header;
-
-        foreach (self::getItems($item, $start, $_SESSION['glpilist_limit']) as $data) {
+        $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+        $entries = [];
+        foreach ($linked_items as $data) {
             $linked_item = null;
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item::class === KnowbaseItem::class) {
                 $linked_item = getItemForItemtype($data['itemtype']);
                 $linked_item->getFromDB($data['items_id']);
             } else {
                 $linked_item = getItemForItemtype(KnowbaseItem::getType());
                 $linked_item->getFromDB($data['knowbaseitems_id']);
             }
-
-            $name = $linked_item->fields['name'];
-            if (
-                $_SESSION["glpiis_ids_visible"]
-                || empty($name)
-            ) {
-                $name = sprintf(__('%1$s (%2$s)'), $name, $linked_item->getID());
-            }
-
-            $link = $linked_item::getFormURLWithID($linked_item->getID());
-
-            // show line
-            echo "<tr class='tab_bg_2'>";
-
-            if ($canedit) {
-                echo "<td width='10'>";
-                Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
-                echo "</td>";
-            }
-
-            $type = $linked_item->getTypeName(1);
+            $type = $linked_item::getTypeName(1);
             if (isset($linked_item->fields['is_template']) && $linked_item->fields['is_template'] == 1) {
                 $type .= ' (' . __('template') . ')';
             }
 
-            echo "<td>" . $type . "</td>" .
-                 "<td><a href=\"" . $link . "\">" . $name . "</a></td>" .
-                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_creation']) . "</td>" .
-                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_mod']) . "</td>";
-            echo "</tr>";
+            $entries[] = [
+                'itemtype'      => self::class,
+                'id'            => $data['id'],
+                'type'          => $type,
+                'item'          => $linked_item->getLink(),
+                'date_creation' => $linked_item->fields['date_creation'],
+                'date_mod'      => $linked_item->fields['date_mod']
+            ];
         }
-        echo $header;
-        echo "</table>";
 
-        $massiveactionparams['ontop'] = false;
-        Html::showMassiveActions($massiveactionparams);
-
-        echo "</div>";
-        Html::printAjaxPager($type_name, $start, $number);
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'type' => _n('Type', 'Types', 1),
+                'item' => _n('Item', 'Items', 1),
+                'date_creation' => __('Creation date'),
+                'date_mod' => __('Update date')
+            ],
+            'formatters' => [
+                'item' => 'raw_html',
+                'date_creation' => 'datetime',
+                'date_mod' => 'datetime',
+            ],
+            'entries' => $entries,
+            'total_number' => $number,
+            'filtered_number' => $number,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     /**
@@ -264,6 +189,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      * @param string     $name Field name
      *
      * @return string
+     * @used-by 'templates/tools/kb/knowbaseitem_item.html.twig'
      */
     public static function dropdownAllTypes(CommonDBTM $item, $name)
     {
@@ -274,15 +200,13 @@ class KnowbaseItem_Item extends CommonDBRelation
         $entity_restrict = -1;
         $checkright = true;
 
-        $rand = Dropdown::showSelectItemFromItemtypes([
+        return Dropdown::showSelectItemFromItemtypes([
             'items_id_name'   => $name,
             'entity_restrict' => $entity_restrict,
             'itemtypes'       => $CFG_GLPI['kb_types'],
             'onlyglobal'      => $onlyglobal,
             'checkright'      => $checkright
         ]);
-
-        return $rand;
     }
 
     /**
@@ -314,7 +238,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             ]
         ];
 
-        if ($item::getType() == KnowbaseItem::getType()) {
+        if ($item::class === KnowbaseItem::class) {
             $criteria['WHERE'][] = [
                 'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
             ];
@@ -322,13 +246,13 @@ class KnowbaseItem_Item extends CommonDBRelation
             $criteria = array_merge_recursive($criteria, self::getVisibilityCriteriaForItem($item));
             $criteria['WHERE'][] = [
                 'glpi_knowbaseitems_items.items_id' => $item->getID(),
-                'glpi_knowbaseitems_items.itemtype' => $item->getType()
+                'glpi_knowbaseitems_items.itemtype' => $item::class
             ];
         }
 
         if ($limit) {
-            $criteria['START'] = intval($start);
-            $criteria['LIMIT'] = intval($limit);
+            $criteria['START'] = (int)$start;
+            $criteria['LIMIT'] = (int)$limit;
         }
 
         $linked_items = [];
@@ -337,7 +261,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             if ($used === false) {
                 $linked_items[] = $data;
             } else {
-                $key = $item::getType() == KnowbaseItem::getType() ? 'items_id' : 'knowbaseitems_id';
+                $key = $item::class === KnowbaseItem::class ? 'items_id' : 'knowbaseitems_id';
                 $linked_items[$data[$key]] = $data[$key];
             }
         }
@@ -376,16 +300,56 @@ class KnowbaseItem_Item extends CommonDBRelation
         return KnowbaseItem::getIcon();
     }
 
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'items_id':
+                if (!empty($values['itemtype'])) {
+                    $options['name']  = $name;
+                    $options['value'] = $values[$field];
+                    return Dropdown::show($values['itemtype'], $options);
+                }
+                break;
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype'])) {
+                    if ($values[$field] > 0) {
+                        $item = new $values['itemtype']();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . htmlspecialchars($item->getLinkURL()) . "'>" . htmlspecialchars($item->fields['name']) . "</a>";
+                    }
+                }
+                return ' ';
+            break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
     private static function getCountForItem(CommonDBTM $item): int
     {
-        if ($item->getType() == KnowbaseItem::getType()) {
+        if ($item::class === KnowbaseItem::class) {
             $criteria['WHERE'] = [
                 'glpi_knowbaseitems_items.knowbaseitems_id' => $item->getID(),
             ];
         } else {
             $criteria = self::getVisibilityCriteriaForItem($item);
             $criteria['WHERE'][] = [
-                'glpi_knowbaseitems_items.itemtype' => $item::getType(),
+                'glpi_knowbaseitems_items.itemtype' => $item::class,
                 'glpi_knowbaseitems_items.items_id' => $item->getId(),
             ];
         }
@@ -412,12 +376,13 @@ class KnowbaseItem_Item extends CommonDBRelation
             KnowbaseItem::getVisibilityCriteria()
         );
 
-        $entity_criteria = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
+        $item_table = $item::getTable();
+        $entity_criteria = getEntitiesRestrictCriteria($item_table, '', '', $item->maybeRecursive());
         if (!empty($entity_criteria)) {
-            $criteria['INNER JOIN'][$item->getTable()] = [
+            $criteria['INNER JOIN'][$item_table] = [
                 'ON' => [
                     'glpi_knowbaseitems_items' => 'items_id',
-                    $item->getTable()          => 'id'
+                    $item_table                => 'id'
                 ]
             ];
             $criteria['WHERE'][] = $entity_criteria;

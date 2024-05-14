@@ -39,8 +39,9 @@ use CommonDBTM;
 use Computer;
 use DbTestCase;
 use Generator;
+use Glpi\Features\Clonable;
+use Glpi\Features\AssignableAsset;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 use Item_DeviceSimcard;
 use Session;
 use State;
@@ -140,23 +141,24 @@ class Dropdown extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $encoded_sep = Sanitizer::sanitize(' > ');
+        $separator         = ' > ';
+        $encoded_separator = ' &gt; ';
 
         $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
-        $this->string($ret)->isIdenticalTo('&nbsp;');
+        $this->string($ret)->isIdenticalTo('');
 
         $cat = getItemByTypeName('TaskCategory', '_cat_1');
 
         $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
        // basic test returns string only
-        $expected = $cat->fields['name'] . $encoded_sep . $subCat->fields['name'];
+        $expected = $cat->fields['name'] . $separator . $subCat->fields['name'];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
         $this->string($ret)->isIdenticalTo($expected);
 
        // test of return with comments
-        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
-            'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_sep
+        $expected = ['name'    => $cat->fields['name'] . $separator . $subCat->fields['name'],
+            'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_separator
                                     . $subCat->fields['name'] . "<br><span class='b'>&nbsp;Comments&nbsp;</span>"
                                     . $subCat->fields['comment']
         ];
@@ -164,7 +166,7 @@ class Dropdown extends DbTestCase
         $this->array($ret)->isIdenticalTo($expected);
 
        // test of return without $tooltip
-        $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
+        $expected = ['name'    => $cat->fields['name'] . $separator . $subCat->fields['name'],
             'comment' => $subCat->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
@@ -181,7 +183,7 @@ class Dropdown extends DbTestCase
         ]);
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-        $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
+        $expected = ['name'    => 'FR - _cat_1' . $separator . 'FR - _subcat_1',
             'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
@@ -273,6 +275,71 @@ class Dropdown extends DbTestCase
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
         $this->array($ret)->isIdenticalTo($expected);
+
+        ///////////
+        // Location
+        $location = getItemByTypeName('Location', '_location01');
+        $expected = $location->getName();
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => $location->getName(),
+            'comment' => "<span class='b'>Complete name</span>: _location01<br>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _location01"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with code only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation02');
+        $expected = "_location02 > _sublocation02 - code_sublocation02";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "_location02 > _sublocation02 - code_sublocation02",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation02<br>" .
+                        "<span class='b'>Code:</span> code_sublocation02<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation02"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation03');
+        $expected = "alias_sublocation03";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation03",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation03<br>" .
+                        "<span class='b'>Alias:</span> alias_sublocation03<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation03"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias and code:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation04');
+        $expected = "alias_sublocation04 - code_sublocation04";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation04 - code_sublocation04",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &gt; _sublocation04<br>" .
+                        "<span class='b'>Alias:</span> alias_sublocation04<br/>" .
+                        "<span class='b'>Code:</span> code_sublocation04<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation04"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
     }
 
     public function dataGetValueWithUnit()
@@ -346,7 +413,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -422,7 +489,7 @@ class Dropdown extends DbTestCase
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&D' // raw value
+                    'searchText'            => 'R&D'
                 ],
                 'expected'  => [
                     'results' => [
@@ -436,37 +503,7 @@ class Dropdown extends DbTestCase
                                     'disabled' => true
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&#38;D' // sanitized value from front file
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -508,7 +545,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -545,7 +582,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -639,15 +676,22 @@ class Dropdown extends DbTestCase
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'toadd'                 => ['key' => 'value']
+                    'toadd'                 => [
+                        'key'  => 'value',
+                        'key2' => "value with unescaped \t and escaped \\t"
+                    ]
                 ],
                 'expected'  => [
                     'results' => [
-                        0 => [
+                        [
                             'id'     => 'key',
                             'text'   => 'value'
                         ],
-                        1 => [
+                        [
+                            'id'     => 'key2',
+                            'text'   => "value with unescaped \t and escaped \\t"
+                        ],
+                        [
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
@@ -721,7 +765,7 @@ class Dropdown extends DbTestCase
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
                                     'text'           => '_cat_1 > R&D',
                                     'level'          => 0,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
@@ -946,8 +990,6 @@ class Dropdown extends DbTestCase
 
     protected function getDropdownConnectProvider()
     {
-        $encoded_sep = Sanitizer::sanitize('>');
-
         return [
             [
                 'params'    => [
@@ -961,7 +1003,7 @@ class Dropdown extends DbTestCase
                             'text' => '-----',
                         ],
                         1 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -974,7 +1016,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         2 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
+                            'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -983,7 +1025,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         3 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_2",
+                            'text' => "Root entity > _test_root_entity > _test_child_2",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
@@ -1011,7 +1053,7 @@ class Dropdown extends DbTestCase
                             'text' => '-----',
                         ],
                         1 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
@@ -1020,7 +1062,7 @@ class Dropdown extends DbTestCase
                             ]
                         ],
                         2 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
+                            'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
@@ -1039,7 +1081,7 @@ class Dropdown extends DbTestCase
                 'expected'  => [
                     'results' => [
                         0 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
@@ -1058,7 +1100,7 @@ class Dropdown extends DbTestCase
                 'expected'  => [
                     'results' => [
                         0 => [
-                            'text' => "Root entity {$encoded_sep} _test_root_entity",
+                            'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
@@ -1210,19 +1252,26 @@ class Dropdown extends DbTestCase
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'toadd'  => [5 => 'five']
+                    'toadd'  => [
+                        5 => 'five',
+                        6 => "value with unescaped \t and escaped \\t",
+                    ]
                 ],
                 'expected'  => [
                     'results'   => [
-                        0 => [
+                        [
                             'id'     => 5,
                             'text'   => 'five'
                         ],
-                        1 => [
+                        [
+                            'id'     => 6,
+                            'text'   => "value with unescaped \t and escaped \\t",
+                        ],
+                        [
                             'id'     => 10,
                             'text'   => '10'
                         ],
-                        2 => [
+                        [
                             'id'     => 30,
                             'text'   => '30'
                         ]
@@ -1481,7 +1530,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 
@@ -1495,7 +1544,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 
@@ -1823,6 +1872,294 @@ class Dropdown extends DbTestCase
 
             $this->variable($dropdown_entry['id'])->isEqualTo($expected[$key]);
         }
+    }
+
+    protected function cloneProvider()
+    {
+        $this->login();
+        $dropdowns = \Dropdown::getStandardDropdownItemTypes();
+        foreach ($dropdowns as $items) {
+            foreach ($items as $item => $n) {
+                if (is_subclass_of($item, \CommonDropdown::class) && \Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
+                    yield [$item];
+                }
+            }
+        }
+    }
+
+    /**
+     * @dataProvider cloneProvider
+     */
+    public function testClone($dropdown_class)
+    {
+        $this->login();
+
+        /** @var \CommonDropdown&Clonable $item */
+        $item = new $dropdown_class();
+
+        $extra_fields = $item->getAdditionalFields();
+        $input = [
+            'name' => __FUNCTION__
+        ];
+        $parent_id = null;
+        foreach ($extra_fields as $field) {
+            if (!isset($field['type'])) {
+                continue;
+            }
+            if ($field['type'] === 'parent' && $parent_id === null) {
+                $this->integer($parent_id = $item->add([
+                    'name' => __FUNCTION__ . '_parent'
+                ]))->isGreaterThan(0);
+            }
+            $value = match ($field['type']) {
+                'text' => $field['name'],
+                'bool' => 1,
+                'tinymce' => '<p>' . $field['name'] . '</p>',
+                'parent' => $parent_id,
+                default => null
+            };
+            if ($value !== null && isset($field['name']) && is_string($field['name'])) {
+                $input[$field['name']] = $value;
+            }
+        }
+        if ($dropdown_class === \NetworkName::class) {
+            $input['itemtype'] = 'Computer';
+            $input['items_id'] = 1;
+        }
+        $this->integer($original_items_id = $item->add($input))->isGreaterThan(0);
+        $original_fields = $item->fields;
+        $this->integer($item->clone())->isNotEqualTo($original_items_id);
+        foreach ($original_fields as $field => $value) {
+            $this->variable($item->fields[$field])->isEqualTo($value);
+        }
+    }
+
+    protected function assignableAssetsProvider()
+    {
+        return [
+            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+        ];
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testGetDropdownValueAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+
+        Session::loadGroups();
+
+        // Create three items. One with the user assigned, one without, and one with a group assigned.
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '1',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id_tech' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '3',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id_tech' => $groups_id
+        ]))->isGreaterThan(0);
+
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        // get optgroup id (key in the results array) for the test root entity "_test_root_entity"
+        $optgroup_id = array_search("Root _test_root_entity", array_column($results, 'text'));
+
+        $expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
+
+        // Remove permission to read all items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        $expected = [
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1'
+        ];
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->notContainsValues($not_expected);
+
+        // Remove permission to read assigned items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $children = $results[$optgroup_id]['children'] ?? null;
+        if ($children === null) {
+            $children = [];
+        }
+        $this->array($children)->notContainsValues($not_expected);
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testGetDropdownFindNumAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+
+        Session::loadGroups();
+
+        // Create three items. One with the user assigned, one without, and one with a group assigned.
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '1',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id_tech' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '3',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id_tech' => $groups_id
+        ]))->isGreaterThan(0);
+        // Create two items. One with the user as the owner, and one with a group as the owner.
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '4',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '5',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => $groups_id
+        ]))->isGreaterThan(0);
+
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+
+        $expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+
+        // Remove permission to read all items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+        $expected = [
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3',
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+        $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+        $expected = [
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3',
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+        $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        // Remove permission to read assigned items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+        $expected = [
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+        $this->array($results)->notContainsValues($not_expected);
     }
 
     protected function displayWithProvider(): iterable

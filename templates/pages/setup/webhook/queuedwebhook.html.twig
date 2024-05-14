@@ -1,0 +1,104 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% set params = params|merge({
+   addbuttons: {
+      send: {
+         icon: 'ti ti-send',
+         text: item.fields['last_status_code'] is null or item.fields['last_status_code'] >= 300 ? __('Send') : __('Resend'),
+         type: 'button'
+      }
+   }
+}) %}
+
+{% block form_fields %}
+   {{ fields.htmlField('itemtype', item.fields['itemtype'], _n('Type', 'Types', 1)) }}
+   {{ fields.htmlField('items_id', get_item_link(item.fields['itemtype'], item.fields['items_id']), _n('Item', 'Items', 1)) }}
+   {{ fields.htmlField('webhooks_id', get_item_link(webhook), 'Webhook'|itemtype_name) }}
+   {{ fields.nullField() }}
+   {{ fields.htmlField('create_time', item.fields['create_time'], __('Creation date')) }}
+   {{ fields.htmlField('send_time', item.fields['send_time'], __('Expected send date')) }}
+   {{ fields.htmlField('sent_time', item.fields['sent_time'], __('Send date')) }}
+   {{ fields.htmlField('sent_try', item.fields['sent_try'], __('Number of tries of sent')) }}
+   {{ fields.htmlField('last_status_code', item.getStatusCodeBadge(item.fields['last_status_code']), __('Last status code')) }}
+
+   {{ fields.smallTitle(__('Request')) }}
+
+   {{ fields.htmlField('url', item.fields['url'], __('URL')) }}
+   {{ fields.textareaField('body', item.fields['body'], '', {
+      full_width: true,
+      readonly: true,
+      rows: 10,
+      no_label: true,
+   }) }}
+
+   {{ fields.smallTitle(__('Headers')) }}
+   {% for header_name, header_value in headers %}
+      {{ fields.htmlField('headers_' ~ header_name, header_value, header_name) }}
+   {% endfor %}
+
+   {{ fields.smallTitle(__('Last response')) }}
+   {{ fields.textareaField('response_body', item.fields['response_body'], '', {
+      full_width: true,
+      readonly: true,
+      rows: 10,
+      no_label: true,
+   }) }}
+
+   <script>
+      $(() => {
+          $('button[name="send"]').click((e) => {
+              const btn = $(e.target);
+              $.ajax({
+                  url: '{{ path('/ajax/webhook.php') }}',
+                  type: 'POST',
+                  data: {
+                      'action': 'resend',
+                      'id': {{ item.fields['id'] }}
+                  },
+                  beforeSend: () => {
+                      btn.attr('disabled', true);
+                  },
+                  complete: () => {
+                      window.location.reload();
+                  }
+              });
+          });
+      })
+   </script>
+{% endblock %}

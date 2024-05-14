@@ -56,6 +56,7 @@ class ProblemTemplate extends ITILTemplate
             ProblemTemplateHiddenField::class,
             ProblemTemplateMandatoryField::class,
             ProblemTemplatePredefinedField::class,
+            ProblemTemplateReadonlyField::class,
         ];
     }
 

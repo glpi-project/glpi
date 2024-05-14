@@ -33,10 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'faq_access';
 
 include('../inc/includes.php');
 Html::header_nocache();
+
+Toolbox::deprecated();
+
+if (
+    !$CFG_GLPI["use_public_faq"]
+    && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])
+) {
+    exit;
+}
 
 $_SESSION['kb_cat_id'] = $_REQUEST['cat_id'] ?? 0;
 

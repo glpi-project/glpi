@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 
 /**
@@ -52,66 +53,56 @@ class ProjectTask_Ticket extends CommonDBRelation
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
 
-
-
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'ProjectTask':
+            switch ($item::class) {
+                case ProjectTask::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
-                case 'Ticket':
+                case Ticket::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'ProjectTask':
+        switch ($item::class) {
+            case ProjectTask::class:
                 self::showForProjectTask($item);
                 break;
-
-            case 'Ticket':
+            case Ticket::class:
                 self::showForTicket($item);
                 break;
         }
         return true;
     }
 
-
     /**
      * Get total duration of tickets linked to a project task
      *
-     * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
+     * @param integer $projecttasks_id ID of the project task
      *
      * @return integer total actiontime
      **/
@@ -121,7 +112,12 @@ class ProjectTask_Ticket extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'       => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: 'glpi_tickets.actiontime',
+                    alias: 'duration'
+                )
+            ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
                 'glpi_tickets' => [
@@ -134,17 +130,13 @@ class ProjectTask_Ticket extends CommonDBRelation
             'WHERE'        => ['projecttasks_id' => $projecttasks_id]
         ]);
 
-        if ($row = $iterator->current()) {
-            return $row['duration'];
-        }
-        return 0;
+        return count($iterator) ? $iterator->current()['duration'] : 0;
     }
-
 
     /**
      * Show tickets for a projecttask
      *
-     * @param $projecttask ProjectTask object
+     * @param ProjectTask $projecttask object
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
@@ -240,11 +232,10 @@ class ProjectTask_Ticket extends CommonDBRelation
         echo "</div>";
     }
 
-
     /**
      * Show projecttasks for a ticket
      *
-     * @param $ticket Ticket object
+     * @param Ticket $ticket object
      **/
     public static function showForTicket(Ticket $ticket)
     {

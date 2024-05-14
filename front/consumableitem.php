@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("consumable", READ);
+Session::checkRightsOr(Consumable::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 Html::header(Consumable::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "consumableitem");
 

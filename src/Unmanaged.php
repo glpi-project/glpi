@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Unmanaged extends CommonDBTM
 {
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -186,11 +187,11 @@ class Unmanaged extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_unmanaged' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         return $tab;
@@ -313,14 +314,14 @@ class Unmanaged extends CommonDBTM
         //do not keep Unmanaged ID
         unset($asset_data['id']);
 
-        $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
+        $assets_id = $asset->add($asset_data);
 
         foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $netport->update(Toolbox::addslashes_deep($row));
+            $netport->update($row);
         }
 
         foreach ($iterator_rml as $row) {
@@ -328,7 +329,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $rulematch->update(Toolbox::addslashes_deep($row));
+            $rulematch->update($row);
         }
 
         foreach ($iterator_lf as $row) {
@@ -336,7 +337,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $lockfield->update(Toolbox::addslashes_deep($row));
+            $lockfield->update($row);
         }
         $this->deleteFromDB(1);
     }

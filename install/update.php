@@ -77,37 +77,6 @@ if (isset($_POST['update_end'])) {
     header('Location: ../index.php');
 }
 
-/* ----------------------------------------------------------------- */
-
-/*---------------------------------------------------------------------*/
-/**
- * To be conserved to migrations before 0.80
- * since 0.80, migration is a new class
- **/
-function displayMigrationMessage($id, $msg = "")
-{
-    static $created = 0;
-    static $deb;
-
-    if ($created != $id) {
-        if (empty($msg)) {
-            $msg = __('Work in progress...');
-        }
-        echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
-        $created = $id;
-        $deb     = time();
-    } else {
-        if (empty($msg)) {
-            $msg = __('Task completed.');
-        }
-        $fin = time();
-        $tps = Html::timestampToString($fin - $deb);
-        echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML =
-             '<p class=\"center\" >$msg ($tps)</p>';</script>\n";
-    }
-    Html::glpi_flush();
-}
-
 
 //test la connection a la base de donn???.
 function test_connect()

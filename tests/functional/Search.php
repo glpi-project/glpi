@@ -35,11 +35,14 @@
 
 namespace tests\units;
 
+use Change;
 use CommonDBTM;
 use CommonITILActor;
 use DBConnection;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
+use Document;
+use Document_Item;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Group_User;
 use Psr\Log\LogLevel;
 use Ticket;
@@ -54,7 +57,7 @@ class Search extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
     {
-        global $DEBUG_SQL, $CFG_GLPI;
+        global $CFG_GLPI;
 
        // check param itemtype exists (to avoid search errors)
         if ($itemtype !== 'AllAssets') {
@@ -72,26 +75,12 @@ class Search extends DbTestCase
             $CFG_GLPI["lock_item_list"] = [$itemtype];
         }
 
-       // force session in debug mode (to store & retrieve sql errors)
-        $glpi_use_mode             = $_SESSION['glpi_use_mode'];
-        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
-
        // don't compute last request from session
         $params['reset'] = 'reset';
 
        // do search
         $params = \Search::manageParams($itemtype, $params);
         $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
-
-       // append existing errors to returned data
-        $data['last_errors'] = [];
-        if (isset($DEBUG_SQL['errors'])) {
-            $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
-            unset($DEBUG_SQL['errors']);
-        }
-
-       // restore glpi mode to previous
-        $_SESSION['glpi_use_mode'] = $glpi_use_mode;
 
        // do not store this search from session
         \Search::resetSaveSearch();
@@ -127,7 +116,7 @@ class Search extends DbTestCase
          . "LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
          . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
          . "AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
-         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*'0'\s*\)\s*"
          . "LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
          . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
          . "/im");
@@ -169,7 +158,7 @@ class Search extends DbTestCase
             . 'LEFT JOIN\s*`glpi_items_softwareversions`\s*AS\s*`glpi_items_softwareversions_[^`]+_Software`\s*ON\s*\('
             . '`glpi_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`glpi_computers`.`id`'
             . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
-            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*0'
+            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*\'0\''
             . '\)/im');
     }
 
@@ -343,9 +332,9 @@ class Search extends DbTestCase
         $data = $this->doSearch('Computer', $search_params);
 
         $this->string($data['sql']['search'])
-         ->contains("LEFT JOIN  `glpi_users`")
-         ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
-         ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
+         ->contains("LEFT JOIN `glpi_users`")
+         ->contains("LEFT JOIN `glpi_profiles` AS `glpi_profiles_")
+         ->contains("LEFT JOIN `glpi_entities` AS `glpi_entities_");
     }
 
     public function testNestedAndMetaComputer()
@@ -373,12 +362,12 @@ class Search extends DbTestCase
                     'criteria'   => [
                         [
                             'link'       => 'AND',
-                            'field'      => 2,
+                            'field'      => 5, //serial
                             'searchtype' => 'contains',
                             'value'      => 'test',
                         ], [
                             'link'       => 'OR',
-                            'field'      => 2,
+                            'field'      => 5, //serial
                             'searchtype' => 'contains',
                             'value'      => 'test2',
                         ], [
@@ -429,22 +418,22 @@ class Search extends DbTestCase
          ->matches('/LEFT JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
          ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*AS\s*`glpi_infocoms_Budget`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms_Budget`\.`items_id`\s*AND\s*`glpi_infocoms_Budget`.`itemtype`\s*=\s*\'Computer\'\)/im')
          ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms_Budget`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`/im')
-         ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im')
-         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`/im')
+         ->matches('/LEFT JOIN\s*`glpi_assets_assets_peripheralassets`\s*AS `glpi_assets_assets_peripheralassets_Printer`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`glpi_printers`\.`id`/im')
          // match where parts
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("`glpi_computers`.`entities_id` IN ('2', '3', '4')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
-         ->contains("`glpi_computers`.`name`  LIKE '%test%'")
-         ->contains("AND (`glpi_softwares`.`id` = '10784')")
-         ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
+         ->contains("`glpi_computers`.`name` LIKE '%test%'")
+         ->contains("AND `glpi_softwares`.`id` = '10784'")
+         ->contains("OR (`glpi_computers`.`serial` LIKE '%test2%'")
          ->contains("AND (`glpi_locations`.`id` = '11')")
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches("/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
     }
 
     public function testViewCriterion()
@@ -469,10 +458,10 @@ class Search extends DbTestCase
         $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("`glpi_computers`.`entities_id` IN ('2', '3', '4')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
-         ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
+         ->matches("/`glpi_computers`\.`name` LIKE '%test%'/")
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/")
@@ -480,7 +469,7 @@ class Search extends DbTestCase
          ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
+         ->matches("/OR\s*\(1=0\s*\)/")->notmatches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
     }
 
     public function testSearchOnRelationTable()
@@ -589,11 +578,13 @@ class Search extends DbTestCase
                 \CommonDBTM::class, // should be abstract
                 \CommonImplicitTreeDropdown::class, // should be abstract
                 \CommonITILRecurrentCron::class, // not searchable
+                \CommonITILValidationCron::class, // not searchable
                 \Item_Devices::class, // should be abstract
                 \NetworkPortMigration::class, // has no table by default
                 \NetworkPortInstantiation::class, // should be abstract
                 \NotificationSettingConfig::class, // not searchable
                 \PendingReasonCron::class, // not searchable
+                '/^[A-z]+Stencil/', // not searchable
             ]
         );
         foreach ($classes as $class) {
@@ -622,7 +613,7 @@ class Search extends DbTestCase
                 }
 
                 $this->boolean(in_array($so['datatype'], $valid_datatypes))
-                    ->isTrue(sprintf('Unexpected `%s` search option datatype.', $so['datatype']));
+                    ->isTrue(sprintf('Unexpected `%s` search option datatype in `%s` class.', $so['datatype'], $class));
             }
         }
     }
@@ -928,6 +919,146 @@ class Search extends DbTestCase
          ->exists();
     }
 
+    public function testEmptyOrNot()
+    {
+        $fname = __FUNCTION__;
+
+        // Create 1 computer with data not empty
+        $computer = new \Computer();
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+            'users_id' => 2,
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'comment' => 'This is a test comment',
+            'last_inventory_update' => date('Y-m-d H:i:00'),
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+
+        $cvm = new \ItemVirtualMachine();
+        $cvm_id = $cvm->add([
+            'itemtype' => 'Computer',
+            'items_id' => $computer_id,
+            'name'         => $fname,
+            'vcpu'         => 1,
+        ]);
+        $this->integer($cvm_id)->isGreaterThan(0);
+
+        // Create 2 computers with empty data
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+        $cvm_id = $cvm->add([
+            'itemtype' => 'Computer',
+            'items_id' => $computer_id,
+            'name'         => $fname,
+        ]);
+        $this->integer($cvm_id)->isGreaterThan(0);
+
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+
+        // Create 1 monitor with data not empty
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+            'size' => 54.4,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        // Create 2 monitors with empty data
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        $expected_counters = [
+            [
+                'field'    => 70, //user (itemlink)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 47, //uuid (varchar)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 16, //comment (text)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 9, //last inventory date (timestamp)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 164, //VCPU (integer)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 11, //Size (decimal)
+                'itemtype' => 'Monitor',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+        ];
+
+        foreach ($expected_counters as $expected) {
+            $search_params = [
+                'is_deleted'   => 0,
+                'start'        => 0,
+                'criteria'     => [
+                    0 => [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => $fname
+                    ],
+                    1 => [
+                        'field'      => $expected['field'],
+                        'searchtype' => 'empty',
+                        'value'      => 'null'
+                    ]
+                ]
+            ];
+            $data = $this->doSearch($expected['itemtype'], $search_params);
+            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['empty']);
+
+            //negate previous search
+            $search_params['criteria'][1]['link'] = 'AND NOT';
+            $data = $this->doSearch($expected['itemtype'], $search_params);
+            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['notempty']);
+        }
+    }
+
     public function testManageParams()
     {
        // let's use TU_USER
@@ -953,6 +1084,7 @@ class Search extends DbTestCase
             'metacriteria' => [],
             'as_map'       => 0,
             'browse'       => 0,
+            'unpublished'  => 1,
         ]);
 
        // now add a bookmark on Ticket view
@@ -1000,6 +1132,7 @@ class Search extends DbTestCase
             'savedsearches_id' => $bk_id,
             'as_map'           => 0,
             'browse'           => 0,
+            'unpublished'      => 1,
         ]);
 
        // let's test for Computers
@@ -1007,21 +1140,24 @@ class Search extends DbTestCase
         $this->array(
             $search
         )->isEqualTo([
-            'reset'        => 1,
-            'start'        => 0,
-            'order'        => 'ASC',
-            'sort'         => 1,
-            'is_deleted'   => 0,
-            'criteria'     => [
-                0 => [
-                    'field' => 'view',
-                    'link'  => 'contains',
-                    'value' => '',
+            'reset'      => 1,
+            'start'      => 0,
+            'order'      => 'ASC',
+            'sort'       => 0,
+            'is_deleted' => 0,
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
                 ]
             ],
-            'metacriteria' => [],
-            'as_map'       => 0,
-            'browse'       => 0,
+            'metacriteria'              => [],
+            'as_map'                    => 0,
+            'browse'                    => 0,
+            'disable_order_by_fallback' => true,
+            'unpublished'               => true,
         ]);
 
        // now add a bookmark on Computer view
@@ -1059,16 +1195,18 @@ class Search extends DbTestCase
             'is_deleted'   => 0,
             'criteria'     => [
                 0 => [
-                    'field' => 'view',
+                    'field'      => 'view',
                     'searchtype' => 'contains',
-                    'value' => 'test'
+                    'value'      => 'test'
                 ],
             ],
-            'metacriteria' => [],
-            'itemtype' => 'Computer',
-            'savedsearches_id' => $bk_id,
-            'as_map'           => 0,
-            'browse'           => 0,
+            'metacriteria'              => [],
+            'itemtype'                  => 'Computer',
+            'savedsearches_id'          => $bk_id,
+            'as_map'                    => 0,
+            'browse'                    => 0,
+            'unpublished'               => 1,
+            'disable_order_by_fallback' => true,
         ]);
     }
 
@@ -1124,12 +1262,10 @@ class Search extends DbTestCase
                     ]
                 ],
                 'sql' => "LEFT JOIN `glpi_projectteams`
-                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`
-                            )
+                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`)
                       LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
-                        AND `glpi_projectteams`.`itemtype` = 'Contact'
-                         )"
+                        AND `glpi_projectteams`.`itemtype` = 'Contact')"
             ]
             ],
             'special_fk' => [[
@@ -1140,7 +1276,7 @@ class Search extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )"
+                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id`)"
             ]
             ],
             'regular_fk' => [[
@@ -1151,7 +1287,7 @@ class Search extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
+                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)"
             ]
             ],
 
@@ -1184,13 +1320,13 @@ class Search extends DbTestCase
                 ],
                 // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see glpi_users_users_id_validate)
                 'sql' => "LEFT JOIN `glpi_ticketvalidations` "
-                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id` )"
+                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`) "
                 . "LEFT JOIN `glpi_users` AS `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4` "
-                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` ) "
+                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id`) "
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
-                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id` )"
+                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id`) "
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
-                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id` )"
+                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id`)"
             ]
             ],
         ];
@@ -1219,42 +1355,6 @@ class Search extends DbTestCase
            ->isEqualTo($this->cleanSQL($lj_provider['sql']));
     }
 
-    protected function addOrderByBCProvider(): array
-    {
-        return [
-         // Generic examples
-            [
-                'Computer', 5, 'ASC',
-                ' ORDER BY `ITEM_Computer_5` ASC '
-            ],
-            [
-                'Computer', 5, 'DESC',
-                ' ORDER BY `ITEM_Computer_5` DESC '
-            ],
-            [
-                'Computer', 5, 'INVALID',
-                ' ORDER BY `ITEM_Computer_5` DESC '
-            ],
-         // Simple Hard-coded cases
-            [
-                'IPAddress', 1, 'ASC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
-            ],
-            [
-                'IPAddress', 1, 'DESC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
-            ],
-            [
-                'User', 1, 'ASC',
-                ' ORDER BY `glpi_users`.`name` ASC '
-            ],
-            [
-                'User', 1, 'DESC',
-                ' ORDER BY `glpi_users`.`name` DESC '
-            ],
-        ];
-    }
-
     protected function addOrderByProvider(): array
     {
         return [
@@ -1266,7 +1366,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC'
             ],
             [
                 'Computer',
@@ -1275,7 +1375,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` DESC'
             ],
             [
                 'Computer',
@@ -1284,7 +1384,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'INVALID'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` DESC'
             ],
             [
                 'Computer',
@@ -1292,7 +1392,7 @@ class Search extends DbTestCase
                     [
                         'searchopt_id' => 5,
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC'
             ],
          // Simple Hard-coded cases
             [
@@ -1302,7 +1402,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC'
             ],
             [
                 'IPAddress',
@@ -1311,7 +1411,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC'
             ],
             [
                 'User',
@@ -1320,7 +1420,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY `glpi_users`.`name` ASC '
+                ], ' ORDER BY `glpi_users`.`name` ASC'
             ],
             [
                 'User',
@@ -1329,7 +1429,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY `glpi_users`.`name` DESC '
+                ], ' ORDER BY `glpi_users`.`name` DESC'
             ],
          // Multiple sort cases
             [
@@ -1343,7 +1443,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 6,
                         'order'        => 'ASC'
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC'
             ],
             [
                 'Computer',
@@ -1356,116 +1456,9 @@ class Search extends DbTestCase
                         'searchopt_id' => 6,
                         'order'        => 'DESC'
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC'
             ],
         ];
-    }
-
-    /**
-     * @dataProvider addOrderByBCProvider
-     */
-    public function testAddOrderByBC($itemtype, $id, $order, $expected)
-    {
-        $result = null;
-        $this->when(
-            function () use (&$result, $itemtype, $id, $order) {
-                $result = \Search::addOrderBy($itemtype, $id, $order);
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($result)->isEqualTo($expected);
-
-       // Complex cases
-        $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
-        $table_ticket_user = 'glpi_tickets_users_019878060c6d5f06cbe3c4d7c31dec24';
-
-        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
-        $user_order_1 = null;
-        $this->when(
-            function () use (&$user_order_1) {
-                $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_1)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC ");
-
-        $user_order_2 = null;
-        $this->when(
-            function () use (&$user_order_2) {
-                $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_2)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC ");
-
-        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
-        $user_order_3 = null;
-        $this->when(
-            function () use (&$user_order_3) {
-                $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_3)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC ");
-
-        $user_order_4 = null;
-        $this->when(
-            function () use (&$user_order_4) {
-                $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_4)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC ");
     }
 
     /**
@@ -1497,7 +1490,7 @@ class Search extends DbTestCase
                                     IFNULL(`$table_addtable`.`realname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC ");
+                                ) ASC");
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1514,7 +1507,7 @@ class Search extends DbTestCase
                                     IFNULL(`$table_addtable`.`realname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC ");
+                                ) DESC");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
@@ -1533,7 +1526,7 @@ class Search extends DbTestCase
                                     IFNULL(`$table_addtable`.`firstname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC ");
+                                ) ASC");
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1550,7 +1543,7 @@ class Search extends DbTestCase
                                     IFNULL(`$table_addtable`.`firstname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC ");
+                                ) DESC");
     }
 
     /**
@@ -1558,11 +1551,15 @@ class Search extends DbTestCase
      */
     protected function testAddOrderByUserProvider(): iterable
     {
+        global $DB;
+
         $this->login('glpi', 'glpi');
 
         $user_1 = getItemByTypeName('User', TU_USER)->getID();
         $user_2 = getItemByTypeName('User', 'glpi')->getID();
         $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
+
+        $this->boolean($DB->delete(Change::getTable(), [1]))->isTrue();
 
         // Creates Changes with different requesters
         $this->createItems('Change', [
@@ -1918,6 +1915,73 @@ class Search extends DbTestCase
         }
     }
 
+    public function testTickets()
+    {
+        $tech_users_id = getItemByTypeName('User', "tech", true);
+
+       // reduce the right of tech profile
+       // to have only the right of display their own tickets
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+            'Ticket' => (\Ticket::READMY)
+        ]);
+
+       // add a group for tech user
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => "test group for tech user"
+        ]);
+        $this->integer((int)$groups_id)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
+                'groups_id' => $groups_id,
+                'users_id'  => $tech_users_id
+            ])
+        )->isGreaterThan(0);
+
+       // create a ticket
+        $ticket = new \Ticket();
+        $this->integer((int)$ticket->add([
+            'name'         => "test ticket visibility for tech user with READNEWTICKET right",
+            'content'      => "test ticket visibility for tech user with READNEWTICKET right",
+        ]))->isGreaterThan(0);
+
+       // let's use tech user
+        $this->login('tech', 'tech');
+
+       // do search and check presence of the created problem
+        $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
+
+        $this->integer($data['data']['totalcount'])->isEqualTo(0);
+
+       // update the right of tech profile
+       // to have only the right of display their own tickets and tickets with incoming status
+        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+            'Ticket' => (\Ticket::READMY + \Ticket::READNEWTICKET)
+        ]);
+
+        // reload current profile to take into account the new rights
+        $this->login('tech', 'tech');
+
+       // do search and check presence of the created problem
+        $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);
+        \Search::constructSQL($data);
+        \Search::constructData($data);
+
+        foreach ($data['data']['rows'][0]['raw'] as $key => $value) {
+            if (str_ends_with($key, 'status')) {
+                $this->array($data)
+                 ->array['data']
+                 ->array['rows']
+                 ->array[0]
+                 ->array['raw']
+                 ->integer[$key]->isEqualTo(\Ticket::INCOMING);
+            }
+        }
+    }
+
     public function testProblems()
     {
         $tech_users_id = getItemByTypeName('User', "tech", true);
@@ -2139,14 +2203,11 @@ class Search extends DbTestCase
             ['rtim this   $', '%rtim this'],
             ['  extra spaces ', '%extra spaces%'],
             ['^ exactval $', 'exactval'],
-            ['snake_case', '%snake\\_case%'], // _ is a wildcard that must be escaped
-            ['quot\'ed', '%quot\\\'ed%'],
-            ['quot\\\'ed', '%quot\\\'ed%'], // already escaped value should not produce double escaping
-            ['^&#60;PROD-15&#62;', '<PROD-15>%'],
+            ['snake_case', '%snake\_case%'], // _ is a wildcard that must be escaped
+            ['quot\'ed', '%quot\'ed%'], // quotes should not be escaped by this method
             ['<PROD-15>$', '%<PROD-15>'],
-            ['A&#38;B', '%A&#38;B%'],
-            ['A&B', '%A&#38;B%'],
-            ["backslashes \\ \\\\ are twice escaped when not used in ', \n, \r, ... ", "%backslashes \\\\\\\\ \\\\\\\\\\\\\\\\ are twice escaped when not used in \', \\n, \\r, ...%"],
+            ['A&B', '%A&B%'],
+            ["backslashes \\ \\\\ are twice escaped when not used in ', \n, \r, ... ", "%backslashes \\\\ \\\\\\\\ are twice escaped when not used in ', \n, \r, ...%"],
         ];
     }
 
@@ -2204,20 +2265,10 @@ class Search extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Monitor::class,
-                'ID' => 11, // Search ID 11 (size field)
-                'searchtype' => 'contains',
-                'val' => '70.5%',
-                'meta' => false,
-                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.5%')",
-            ],
-            [
-                'link' => ' AND ',
-                'nott' => 0,
                 'itemtype' => \Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('>2022-10-25'),
+                'val' => '>2022-10-25',
                 'meta' => false,
                 'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) > '2022-10-25'",
             ],
@@ -2227,7 +2278,7 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('<2022-10-25'),
+                'val' => '<2022-10-25',
                 'meta' => false,
                 'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) < '2022-10-25'",
             ],
@@ -2237,9 +2288,9 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('>100'),
+                'val' => '>100',
                 'meta' => false,
-                'expected' => "AND (`glpi_items_disks`.`freesize` > 100)",
+                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
             ],
             [
                 'link' => ' AND ',
@@ -2247,9 +2298,9 @@ class Search extends DbTestCase
                 'itemtype' => \Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('<10000'),
+                'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND (`glpi_items_disks`.`freesize` < 10000)",
+                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
             ],
             [
                 'link' => ' AND ',
@@ -2257,7 +2308,7 @@ class Search extends DbTestCase
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('< 192.168.1.10'),
+                'val' => '< 192.168.1.10',
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
             ],
@@ -2267,7 +2318,7 @@ class Search extends DbTestCase
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
-                'val' => Sanitizer::sanitize('> 192.168.1.10'),
+                'val' => '> 192.168.1.10',
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
             ],
@@ -2367,8 +2418,8 @@ class Search extends DbTestCase
 
         $this->string($data['sql']['search'])
          // Check that we have two different joins
-         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_lastupdater`")
-         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_recipient`")
+         ->contains("LEFT JOIN `glpi_users` AS `glpi_users_users_id_lastupdater`")
+         ->contains("LEFT JOIN `glpi_users` AS `glpi_users_users_id_recipient`")
 
          // Check that SELECT criteria applies on corresponding table alias
          ->contains("`glpi_users_users_id_lastupdater`.`realname` AS `ITEM_Ticket_64_realname`")
@@ -2420,15 +2471,18 @@ class Search extends DbTestCase
             $this->string($data['sql']['search'])
             ->contains("`$type`.`is_deleted` = 0")
             ->contains("AND `$type`.`is_template` = 0")
-            ->contains("`$type`.`entities_id` IN ('1', '2', '3')")
+            ->contains("`$type`.`entities_id` IN ('2', '3', '4')")
             ->contains("OR (`$type`.`is_recursive`='1'" .
                         " AND `$type`.`entities_id` IN (0))")
-             ->matches("/`$type`\.`name`  LIKE '%test%'/");
+             ->matches("/`$type`\.`name` LIKE '%test%'/");
         }
     }
 
     public function testSearchWithNamespacedItem()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $search_params = [
             'is_deleted'   => 0,
             'start'        => 0,
@@ -2437,6 +2491,7 @@ class Search extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
+        $CFG_GLPI['state_types'][] = 'SearchTest\\Computer';
         $data = $this->doSearch('SearchTest\\Computer', $search_params);
 
         $this->string($data['sql']['search'])
@@ -2500,10 +2555,6 @@ class Search extends DbTestCase
         $this->array($result['data']['rows']);
         $this->array($result['data']['items']);
 
-       // No errors
-        $this->array($result)->hasKey('last_errors');
-        $this->array($result['last_errors'])->isIdenticalTo([]);
-
         $this->array($result)->hasKey('sql');
         $this->array($result['sql'])->hasKey('search');
         $this->string($result['sql']['search']);
@@ -2523,7 +2574,8 @@ class Search extends DbTestCase
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
                 'NetworkPortMigration', // Tables only exists in specific cases
                 'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-                'PendingReasonCron'
+                'PendingReasonCron',
+                '/^[A-z]+Stencil/'
             ]
         );
         $searchable_classes = [];
@@ -2598,12 +2650,12 @@ class Search extends DbTestCase
         $names = ob_get_contents();
         ob_end_clean();
 
-       // Convert results to array and remove last row (always empty)
-        $names = explode("\n", $names);
-        array_pop($names);
+       // Convert results to array
+        $names = explode("\n", trim($names));
 
        // Check results
-        $this->array($names)->isEqualTo($expected);
+        $this->array($names)->size->isEqualTo(count($expected));
+        $this->array($names)->containsValues($expected);
     }
 
     protected function testMyselfSearchCriteriaProvider(): array
@@ -2727,932 +2779,25 @@ class Search extends DbTestCase
         $this->array($names)->isEqualTo($expected);
     }
 
-    /**
-     * Test all possible combination of operators for a given criteria
-     *
-     * @param string     $itemtype       Itemtype being searched for
-     * @param array      $base_condition Common condition for all searches
-     * @param array      $all            Search results for the base condition
-     * @param array      $expected       Items names that must be found if the condition is positive
-     * @param int        $field          Search option id
-     * @param string     $searchtype     Positive searchtype (equals, under, contains, ...)
-     * @param mixed      $value          Value being searched
-     * @param null|array $not_expected   Optional, item expected to be found is the condition is negative
-     *                               If null, will be computed from $all and $expected
-     */
-    protected function testCriteriaWithSubqueriesProvider_getAllCombination(
-        string $itemtype,
-        array $base_condition,
-        array $all,
-        array $expected,
-        int $field,
-        string $searchtype,
-        $value,
-        ?array $not_expected = null
-    ): iterable {
-        if (is_null($not_expected)) {
-            // Invert expected items
-            $not_expected = array_diff($all, $expected);
-        }
-
-        // Inverted criteria
-        $not_searchtype = "not$searchtype";
-
-        // All possible combinations of operators leading to a positive condition
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link'       => 'AND',
-                    'field'      => $field,
-                    'searchtype' => $searchtype,
-                    'value'      => $value,
-                ]
-            ],
-            'expected' => $expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link'       => 'AND NOT',
-                    'field'      => $field,
-                    'searchtype' => $not_searchtype,
-                    'value'      => $value,
-                ]
-            ],
-            'expected' => $expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND',
-                            'field'      => $field,
-                            'searchtype' => $searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND NOT',
-                            'field'      => $field,
-                            'searchtype' => $not_searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND',
-                            'field'      => $field,
-                            'searchtype' => $not_searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND NOT',
-                            'field'      => $field,
-                            'searchtype' => $searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $expected,
-        ];
-
-        // All possible combinations of operators leading to a negative condition
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link'       => 'AND NOT',
-                    'field'      => $field,
-                    'searchtype' => $searchtype,
-                    'value'      => $value,
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link'       => 'AND',
-                    'field'      => $field,
-                    'searchtype' => $not_searchtype,
-                    'value'      => $value,
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND NOT',
-                            'field'      => $field,
-                            'searchtype' => $not_searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'AND NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND',
-                            'field'      => $field,
-                            'searchtype' => $searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'AND NOT',
-                            'field'      => $field,
-                            'searchtype' => $searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-        yield [
-            'itemtype' => $itemtype,
-            'criteria' => [
-                $base_condition,
-                [
-                    'link' => 'NOT',
-                    'criteria' => [
-                        [
-                            'link'       => 'NOT',
-                            'field'      => $field,
-                            'searchtype' => $not_searchtype,
-                            'value'      => $value,
-                        ]
-                    ]
-                ]
-            ],
-            'expected' => $not_expected,
-        ];
-    }
-
-    protected function testCriteriaWithSubqueriesProvider(): iterable
+    protected function isVirtualFieldProvider(): array
     {
-        $this->login();
-        $root = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // All our test set will be assigned to this category
-        $category = $this->createItem('ITILCategory', [
-            'name' => 'Test Criteria With Subqueries',
-            'entities_id' => $root,
-        ])->getId();
-
-        // Check that our test set is empty
-        yield [
-            'itemtype' => 'Ticket',
-            'criteria' => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 7, // Category
-                    'searchtype' => 'equals',
-                    'value'      => $category,
-                ]
-            ],
-            'expected' => [],
+        return [
+            ['name', false],
+            ['name_virtual', false],
+            ['_virtual', true],
+            ['_virtual_name', true]
         ];
-
-        // Get tests users
-        $user_1 = getItemByTypeName('User', TU_USER, true);
-        $user_2 = getItemByTypeName('User', 'glpi', true);
-
-        // Set name to user_1 so we can test searching for ticket on firstname / lastname
-        $this->updateItem('User', $user_1, [
-            'firstname' => 'Firstname',
-            'realname'  => 'Lastname',
-        ]);
-
-        // Create test groups
-        $this->createItems('Group', [
-            [
-                'name' => 'Group 1',
-                'entities_id' => $root,
-            ],
-            [
-                'name' => 'Group 2',
-                'entities_id' => $root,
-            ],
-        ]);
-        $group_1 = getItemByTypeName('Group', 'Group 1', true);
-        $group_2 = getItemByTypeName('Group', 'Group 2', true);
-
-        $this->createItem('Group', [
-            'name' => 'Group 1A',
-            'entities_id' => $root,
-            'groups_id' => getItemByTypeName('Group', 'Group 1', true),
-        ]);
-        $group_1A = getItemByTypeName('Group', 'Group 1A', true);
-
-        // Assign ourself to group 2 (special case to valide "mygroups" criteria)
-        $this->createItem('Group_User', [
-            'users_id'  => getItemByTypeName('User', TU_USER, true),
-            'groups_id' => $group_1,
-        ]);
-        $_SESSION['glpigroups'] = [$group_1];
-
-        // Create test suppliers
-        $this->createItems('Supplier', [
-            [
-                'name' => 'Supplier 1',
-                'entities_id' => $root,
-            ],
-            [
-                'name' => 'Supplier 2',
-                'entities_id' => $root,
-            ],
-        ]);
-        $supplier_1 = getItemByTypeName('Supplier', 'Supplier 1', true);
-        $supplier_2 = getItemByTypeName('Supplier', 'Supplier 2', true);
-
-        $this->createItems('Ticket', [
-            // Test set on watcher group
-            [
-                'name' => 'Ticket group 1 (W)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
-            ],
-            [
-                'name' => 'Ticket group 2 (W)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_2]]
-                ]
-            ],
-            [
-                'name' => 'Ticket group 1 (W) + group 2 (W)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'observer' => [
-                        ['itemtype' => 'Group', 'items_id' => $group_1],
-                        ['itemtype' => 'Group', 'items_id' => $group_2],
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Ticket group 1A (W) + group 2 (W)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'observer' => [
-                        ['itemtype' => 'Group', 'items_id' => $group_1A],
-                        ['itemtype' => 'Group', 'items_id' => $group_2],
-                    ]
-                ]
-            ],
-
-            // Test set on assigned group
-            [
-                'name' => 'Ticket group 1 (A)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'assign' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
-            ],
-
-            // Test set on requester group
-            [
-                'name' => 'Ticket group 1 (R)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'requester' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
-            ],
-
-            // Test set on supplier
-            [
-                'name' => 'Ticket supplier 1',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'assign' => [['itemtype' => 'Supplier', 'items_id' => $supplier_1]],
-                ]
-            ],
-            [
-                'name' => 'Ticket supplier 2',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'assign' => [['itemtype' => 'Supplier', 'items_id' => $supplier_2]],
-                ]
-            ],
-            [
-                'name' => 'Ticket supplier 1 + supplier 2',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'assign' => [
-                        ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
-                        ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
-                    ],
-                ]
-            ],
-
-            // Test set on requester
-            [
-                'name' => 'Ticket user 1 (R)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'requester' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
-            ],
-            [
-                'name' => 'Ticket user 2 (R)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'requester' => [['itemtype' => 'User', 'items_id' => $user_2]],
-                ]
-            ],
-            [
-                'name' => 'Ticket user 1 (R) + user 2 (R)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'requester' => [
-                        ['itemtype' => 'User', 'items_id' => $user_1],
-                        ['itemtype' => 'User', 'items_id' => $user_2],
-                    ],
-                ]
-            ],
-            [
-                'name' => 'Ticket anonymous user (R)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'requester' => [
-                        [
-                            'itemtype' => 'User',
-                            'items_id' => 0,
-                            "alternative_email" => "myemail@email.com",
-                            'use_notification' => true
-                        ]
-                    ],
-                ]
-            ],
-
-            // Test set on watcher
-            [
-                'name' => 'Ticket user 1 (W)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'observer' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
-            ],
-
-            // Test set on assigned
-            [
-                'name' => 'Ticket user 1 (A)',
-                'content' => '',
-                'entities_id' => $root,
-                'itilcategories_id' => $category,
-                '_actors' => [
-                    'assign' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
-            ],
-        ]);
-
-        // Validate all items are here as expected
-        $base_condition = [
-            'link'       => 'AND',
-            'field'      => 7, // Category
-            'searchtype' => 'equals',
-            'value'      => $category,
-        ];
-        $all_tickets = [
-            // Test set on watcher group
-            'Ticket group 1 (W)',
-            'Ticket group 2 (W)',
-            'Ticket group 1 (W) + group 2 (W)',
-            'Ticket group 1A (W) + group 2 (W)',
-
-            // Test set on assigned group
-            'Ticket group 1 (A)',
-
-            // Test set on requester group
-            'Ticket group 1 (R)',
-
-            // Test set on supplier
-            'Ticket supplier 1',
-            'Ticket supplier 2',
-            'Ticket supplier 1 + supplier 2',
-
-            // Test set on requester
-            'Ticket user 1 (R)',
-            'Ticket user 2 (R)',
-            'Ticket user 1 (R) + user 2 (R)',
-            'Ticket anonymous user (R)',
-
-            // Test set on watcher
-            'Ticket user 1 (W)',
-
-            // Test set on assigned
-            'Ticket user 1 (A)',
-        ];
-        yield [
-            'itemtype' => 'Ticket',
-            'criteria' => [$base_condition],
-            'expected' => $all_tickets,
-        ];
-
-        // Run tests for watcher group
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (W)', 'Ticket group 1 (W) + group 2 (W)'],
-            65, // Watcher group
-            'equals',
-            $group_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (W)', 'Ticket group 1 (W) + group 2 (W)', 'Ticket group 1A (W) + group 2 (W)'],
-            65, // Watcher group
-            'contains',
-            "group 1"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (W)', 'Ticket group 1 (W) + group 2 (W)', 'Ticket group 1A (W) + group 2 (W)'],
-            65, // Watcher group
-            'under',
-            $group_1
-        );
-
-        // Run test for assigned groups
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (A)'],
-            8, // Assigned group
-            'equals',
-            $group_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (A)'],
-            8, // Assigned group
-            'contains',
-            "group 1"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (A)'],
-            8, // Assigned group
-            'under',
-            $group_1
-        );
-
-        // Run test for requester group
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (R)'],
-            71, // Requester group
-            'equals',
-            $group_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (R)'],
-            71, // Requester group
-            'contains',
-            "group 1"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (R)'],
-            71, // Requester group
-            'under',
-            $group_1
-        );
-
-        // Run tests for 'mygroup'
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (R)'],
-            71, // Requester group
-            'equals',
-            'mygroups'
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (A)'],
-            8, // Assigned group
-            'equals',
-            'mygroups'
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (W)', 'Ticket group 1 (W) + group 2 (W)'],
-            65, // Watcher group
-            'equals',
-            'mygroups'
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (R)'],
-            71, // Requester group
-            'under',
-            'mygroups'
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (A)'],
-            8, // Assigned group
-            'under',
-            'mygroups'
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket group 1 (W)', 'Ticket group 1 (W) + group 2 (W)', 'Ticket group 1A (W) + group 2 (W)'],
-            65, // Watcher group
-            'under',
-            'mygroups'
-        );
-
-        // Run tests for suppliers
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket supplier 1', 'Ticket supplier 1 + supplier 2'],
-            6, // Supplier
-            'equals',
-            $supplier_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket supplier 1', 'Ticket supplier 1 + supplier 2'],
-            6, // Supplier
-            'contains',
-            "Supplier 1"
-        );
-
-        // Test empty group search
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            // Every ticket without a watcher group
-            array_diff($all_tickets, ['Ticket group 1 (W)', 'Ticket group 2 (W)', 'Ticket group 1 (W) + group 2 (W)', 'Ticket group 1A (W) + group 2 (W)']),
-            65, // Watcher group
-            'equals',
-            0
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            // Every tickets (note that it isn't consistent with the previous criteria "equals 0")
-            $all_tickets,
-            65, // Watcher group
-            'contains',
-            "",
-            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
-            $all_tickets
-        );
-
-        // Run tests for requester
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'equals',
-            $user_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'contains',
-            TU_USER
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'contains',
-            "Firstname"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'contains',
-            "Lastname"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'contains',
-            "Lastname Firstname"
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket anonymous user (R)'],
-            4, // Requester
-            'contains',
-            "myemail@email.com"
-        );
-
-        // Run tests for watcher
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (W)'],
-            66, // Watcher
-            'equals',
-            $user_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (W)'],
-            66, // Watcher
-            'contains',
-            TU_USER
-        );
-
-        // Run tests for requester
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (A)'],
-            5, // Assign
-            'equals',
-            $user_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (A)'],
-            5, // Assign
-            'contains',
-            TU_USER
-        );
-
-        // Run test for "myself" special criteria
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            ['Ticket user 1 (R)', 'Ticket user 1 (R) + user 2 (R)'],
-            4, // Requester
-            'equals',
-            'myself'
-        );
-
-        // Test empty requester search
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            // Every ticket without a requester group
-            array_diff($all_tickets, ['Ticket user 1 (R)', 'Ticket user 2 (R)', 'Ticket user 1 (R) + user 2 (R)', 'Ticket anonymous user (R)']),
-            4, // Requester
-            'equals',
-            0
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'Ticket',
-            $base_condition,
-            $all_tickets,
-            // Every tickets (note that it isn't consistent with the previous criteria "equals 0")
-            $all_tickets,
-            4, // Requester
-            'contains',
-            "",
-            // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
-            $all_tickets
-        );
-
-        // Data set for tests on user searches
-        list (
-            $user_without_groups,
-            $user_group_1,
-            $user_group_1_and_2
-        ) = $this->createItems(User::class, [
-            ['name' => 'user_without_groups'],
-            ['name' => 'user_group_1'],
-            ['name' => 'user_group_1_and_2'],
-        ]);
-        $this->createItems(Group_User::class, [
-            ['users_id' => $user_group_1->getID(), 'groups_id' => $group_1],
-            ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_1],
-            ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_2],
-        ]);
-        $all_users = ['user_without_groups', 'user_group_1', 'user_group_1_and_2'];
-        $base_condition = [
-            'link'       => 'AND',
-            'field'      => 1, // Name
-            'searchtype' => 'contains',
-            'value'      => "user_",
-        ];
-
-        // Search users by groups
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'User',
-            $base_condition,
-            $all_users,
-            ['user_group_1', 'user_group_1_and_2'],
-            13, // Groups
-            'equals',
-            $group_1
-        );
-        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
-            'User',
-            $base_condition,
-            $all_users,
-            ['user_group_1', 'user_group_1_and_2'],
-            13, // Groups
-            'contains',
-            "Group 1"
-        );
     }
 
     /**
-     * @dataprovider testCriteriaWithSubqueriesProvider
+     * @param string $field
+     * @param bool $expected
+     * @return void
+     * @dataProvider isVirtualFieldProvider
      */
-    public function testCriteriaWithSubqueries(
-        string $itemtype,
-        array $criteria,
-        array $expected
-    ): void {
-        // Run search
-        $data = \Search::getDatas($itemtype, [
-            'criteria' => $criteria
-        ]);
-
-        // Parse results
-        $names = [];
-        foreach ($data['data']['rows'] as $row) {
-            $name = $row['raw']["ITEM_{$itemtype}_1"];
-
-            // Clear extra data that is sometimes added by the search engine to handle display
-            if (strpos($name, "$#$") !== false) {
-                $name = substr($name, 0, strpos($name, "$#$"));
-            }
-
-            $names[] = $name;
-        }
-
-        // Sort both array as atoum is "position sensitive"
-        sort($names);
-        sort($expected);
-
-        // Debug, print the last failed request
-        // As there is a lot of test sets, some extra context on failure can go a long way
-        $this->executeOnFailure(
-            function () use ($data, $names, $expected) {
-                if ($names != $expected) {
-                    var_dump($data['sql']['raw']['WHERE']);
-                }
-            }
-        );
-
-        // Validate results
-        $this->array($names)->isEqualTo($expected);
+    public function testIsVirtualField(string $field, bool $expected): void
+    {
+        $this->boolean(\Search::isVirtualField($field))->isEqualTo($expected);
     }
 
     protected function containsCriterionProvider(): iterable
@@ -3666,13 +2811,7 @@ class Search extends DbTestCase
         // required, because there is no search option that corresponds to it yet.
 
         global $DB;
-        $version_string = $DB->getVersion();
-        $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
-        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
-        $is_mariadb      = $server === 'MariaDB';
-        $is_mariadb_10_2 = $is_mariadb && version_compare($version, '10.3', '<');
-        $is_mysql_5_7    = $server === 'MySQL' && version_compare($version, '8.0', '<');
-
+        $is_mariadb = preg_match('/-MariaDB/', $DB->getVersion()) === 1;
 
         // Check simple values search.
         // Usage is only relevant for textual fields, so it is not tested on other fields.
@@ -3736,15 +2875,15 @@ class Search extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => 'test',
-            'expected_and'      => "(`glpi_authldaps`.`port` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_authldaps`.`port` NOT LIKE '%test%' OR `glpi_authldaps`.`port` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => '123',
-            'expected_and'      => "(`glpi_authldaps`.`port` = 123)",
-            'expected_and_not'  => "(`glpi_authldaps`.`port` <> 123)",
+            'expected_and'      => "`glpi_authldaps`.`port` = 123",
+            'expected_and_not'  => "`glpi_authldaps`.`port` <> 123",
         ];
 
         // datatype=number
@@ -3752,15 +2891,15 @@ class Search extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 32, // timeout
             'value'             => 'test',
-            'expected_and'      => "(`glpi_authldaps`.`timeout` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_authldaps`.`timeout` NOT LIKE '%test%' OR `glpi_authldaps`.`timeout` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 32, // timeout
             'value'             => '30',
-            'expected_and'      => "(`glpi_authldaps`.`timeout` = 30)",
-            'expected_and_not'  => "(`glpi_authldaps`.`timeout` <> 30)",
+            'expected_and'      => "`glpi_authldaps`.`timeout` = 30",
+            'expected_and_not'  => "`glpi_authldaps`.`timeout` <> 30",
         ];
 
         // datatype=number (usehaving=true)
@@ -3775,8 +2914,8 @@ class Search extends DbTestCase
             'itemtype'          => \Computer::class,
             'search_option'     => 115, // harddrive capacity
             'value'             => '512',
-            'expected_and'      => "(`ITEM_Computer_115` < 1512 AND `ITEM_Computer_115` > -488)",
-            'expected_and_not'  => "(`ITEM_Computer_115` > 1512 OR `ITEM_Computer_115` < -488)",
+            'expected_and'      => "(`ITEM_Computer_115` < '1512') AND (`ITEM_Computer_115` > '-488')",
+            'expected_and_not'  => "((`ITEM_Computer_115` > '1512') OR (`ITEM_Computer_115` < '-488'))",
         ];
 
         // datatype=decimal
@@ -3784,8 +2923,8 @@ class Search extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => 'test',
-            'expected_and'      => "(`glpi_budgets`.`value` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%test%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -3814,8 +2953,8 @@ class Search extends DbTestCase
             'itemtype'          => \Contract::class,
             'search_option'     => 11, // totalcost
             'value'             => '250',
-            'expected_and'      => "(`ITEM_Contract_11` = 250)",
-            'expected_and_not'  => "(`ITEM_Contract_11` <> 250)",
+            'expected_and'      => "`ITEM_Contract_11` = '250'",
+            'expected_and_not'  => "`ITEM_Contract_11` <> '250'",
         ];
 
         // datatype=count (usehaving=true)
@@ -3830,8 +2969,8 @@ class Search extends DbTestCase
             'itemtype'          => \Ticket::class,
             'search_option'     => 27, // number of followups
             'value'             => '10',
-            'expected_and'      => "(`ITEM_Ticket_27` = 10)",
-            'expected_and_not'  => "(`ITEM_Ticket_27` <> 10)",
+            'expected_and'      => "`ITEM_Ticket_27` = '10'",
+            'expected_and_not'  => "`ITEM_Ticket_27` <> '10'",
         ];
 
         // datatype=mio (usehaving=true)
@@ -3846,8 +2985,8 @@ class Search extends DbTestCase
             'itemtype'          => \Computer::class,
             'search_option'     => 111, // memory size
             'value'             => '512',
-            'expected_and'      => "(`ITEM_Computer_111` < 612 AND `ITEM_Computer_111` > 412)",
-            'expected_and_not'  => "(`ITEM_Computer_111` > 612 OR `ITEM_Computer_111` < 412)",
+            'expected_and'      => "(`ITEM_Computer_111` < '612') AND (`ITEM_Computer_111` > '412')",
+            'expected_and_not'  => "((`ITEM_Computer_111` > '612') OR (`ITEM_Computer_111` < '412'))",
         ];
 
         // datatype=progressbar (with computation)
@@ -3855,15 +2994,15 @@ class Search extends DbTestCase
             'itemtype'          => \Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => 'test',
-            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) LIKE '%test%')",
-            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) NOT LIKE '%test%' OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) IS NULL)",
+            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') LIKE '%test%')",
+            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') NOT LIKE '%test%' OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
         ];
         yield [
             'itemtype'          => \Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => '50',
-            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) >= 48 AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) <= 52)",
-            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) < 48 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) > 52 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) IS NULL)",
+            'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') >= 48 AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <= 52)",
+            'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') < 48 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') > 52 OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
         ];
 
         // datatype=timestamp
@@ -3871,15 +3010,15 @@ class Search extends DbTestCase
             'itemtype'          => \CronTask::class,
             'search_option'     => 6, // frequency
             'value'             => 'test',
-            'expected_and'      => "(`glpi_crontasks`.`frequency` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_crontasks`.`frequency` NOT LIKE '%test%' OR `glpi_crontasks`.`frequency` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \CronTask::class,
             'search_option'     => 6, // frequency
             'value'             => '3600',
-            'expected_and'      => "(`glpi_crontasks`.`frequency` = 3600)",
-            'expected_and_not'  => "(`glpi_crontasks`.`frequency` <> 3600)",
+            'expected_and'      => "`glpi_crontasks`.`frequency` = 3600",
+            'expected_and_not'  => "`glpi_crontasks`.`frequency` <> 3600",
         ];
 
         // datatype=timestamp (usehaving=true)
@@ -3894,8 +3033,8 @@ class Search extends DbTestCase
             'itemtype'          => \Ticket::class,
             'search_option'     => 49, // actiontime
             'value'             => '3600',
-            'expected_and'      => "(`ITEM_Ticket_49` = 3600)",
-            'expected_and_not'  => "(`ITEM_Ticket_49` <> 3600)",
+            'expected_and'      => "`ITEM_Ticket_49` = '3600'",
+            'expected_and_not'  => "`ITEM_Ticket_49` <> '3600'",
         ];
 
         // datatype=datetime
@@ -3903,8 +3042,8 @@ class Search extends DbTestCase
             'itemtype'          => \Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => 'test',
-            'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE '%test%')",
-            'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE '%test%' OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Computer::class,
@@ -3935,8 +3074,8 @@ class Search extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => 'test',
-            'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) LIKE '%test%')",
-            'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) NOT LIKE '%test%' OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -3951,26 +3090,16 @@ class Search extends DbTestCase
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
             'value'             => 'test',
-            'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) LIKE '%test%')",
-            'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) NOT LIKE '%test%' OR ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
-        if ($is_mysql_5_7) {
-            // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%test%'", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%test%'", LogLevel::WARNING);
-        }
         yield [
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
             'value'             => '2023-12',
-            'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) LIKE '%2023-12%')",
-            'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) NOT LIKE '%2023-12%' OR ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) IS NULL)",
+            'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) LIKE '%2023-12%')",
+            'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) NOT LIKE '%2023-12%' OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NULL)",
         ];
-        if ($is_mysql_5_7) {
-            // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%2023-12%'", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect date value: '%2023-12%'", LogLevel::WARNING);
-        }
 
         // datatype=email
         yield [
@@ -4011,8 +3140,8 @@ class Search extends DbTestCase
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => 'test',
-            'expected_and'      => "(`glpi_cables`.`color` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%test%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and'      => "(1=0)",
+            'expected_and_not'  => "(1=0)",
         ];
         yield [
             'itemtype'          => \Cable::class,
@@ -4034,8 +3163,8 @@ class Search extends DbTestCase
             'itemtype'          => \User::class,
             'search_option'     => 17, // language
             'value'             => 'en_',
-            'expected_and'      => "(`glpi_users`.`language` LIKE '%en\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%en\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`glpi_users`.`language` LIKE '%en\\\\_%')",
+            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%en\\\\_%' OR `glpi_users`.`language` IS NULL)",
         ];
 
         // Check `NULL` special value
@@ -4103,10 +3232,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL AND `glpi_authldaps`.`port` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -4120,10 +3246,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL AND `glpi_authldaps`.`timeout` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -4167,10 +3290,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`ITEM_Ticket_27` IS NOT NULL AND `ITEM_Ticket_27` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -4189,8 +3309,8 @@ class Search extends DbTestCase
                 'itemtype'          => \Computer::class,
                 'search_option'     => 152, // harddrive freepercent
                 'value'             => $null_value,
-                'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) = '')",
-                'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) <> '')",
+                'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
+                'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <> '')",
             ];
 
             // datatype=timestamp
@@ -4202,10 +3322,7 @@ class Search extends DbTestCase
                 'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL AND `glpi_crontasks`.`frequency` <> '')",
             ];
             // log for both AND and AND NOT cases
-            if ($is_mariadb_10_2) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DOUBLE value: ''", LogLevel::WARNING);
-            } elseif ($is_mariadb) {
+            if ($is_mariadb) {
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
                 $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
@@ -4253,8 +3370,8 @@ class Search extends DbTestCase
                 'itemtype'          => \Contract::class,
                 'search_option'     => 20, // end_date
                 'value'             => $null_value,
-                'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration ) MONTH) IS  NULL  OR ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration ) MONTH) = '')",
-                'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration ) MONTH) IS NOT NULL  OR ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration ) MONTH) = '')",
+                'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS  NULL  OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) = '')",
+                'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) IS NOT NULL  OR DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) = '')",
             ];
             */
 
@@ -4542,22 +3659,22 @@ class Search extends DbTestCase
             'itemtype'          => \User::class,
             'search_option'     => 17, // language
             'value'             => '^en_',
-            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_%')",
+            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_%' OR `glpi_users`.`language` IS NULL)",
         ];
         yield [
             'itemtype'          => \User::class,
             'search_option'     => 17, // language
             'value'             => '_GB$',
-            'expected_and'      => "(`glpi_users`.`language` LIKE '%\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`glpi_users`.`language` LIKE '%\\\\_GB')",
+            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%\\\\_GB' OR `glpi_users`.`language` IS NULL)",
         ];
         yield [
             'itemtype'          => \User::class,
             'search_option'     => 17, // language
             'value'             => '^en_GB$',
-            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_GB')",
+            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_GB' OR `glpi_users`.`language` IS NULL)",
         ];
 
         // Check `>`, `>=`, `<` and `<=` operators on textual fields.
@@ -4652,8 +3769,8 @@ class Search extends DbTestCase
                     'itemtype'          => \Cable::class,
                     'search_option'     => 15, // color
                     'value'             => $searched_value,
-                    'expected_and'      => "(`glpi_cables`.`color` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%{$searched_value}%' OR `glpi_cables`.`color` IS NULL)",
+                    'expected_and'      => "(1=0)", // invalid pattern
+                    'expected_and_not'  => "(1=0)", // invalid pattern
                 ];
 
                 // datatype=language
@@ -4690,8 +3807,8 @@ class Search extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 4, // port
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_authldaps`.`port` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`glpi_authldaps`.`port` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`glpi_authldaps`.`port` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`glpi_authldaps`.`port` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=number
@@ -4699,8 +3816,8 @@ class Search extends DbTestCase
                         'itemtype'          => \AuthLDAP::class,
                         'search_option'     => 32, // timeout
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_authldaps`.`timeout` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`glpi_authldaps`.`timeout` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`glpi_authldaps`.`timeout` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`glpi_authldaps`.`timeout` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=number (usehaving=true)
@@ -4708,8 +3825,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Computer_115` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`ITEM_Computer_115` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
+                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} '{$signed_value}'",
                     ];
 
                     // datatype=decimal
@@ -4717,8 +3834,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 7, // value
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_budgets`.`value` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`glpi_budgets`.`value` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`glpi_budgets`.`value` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`glpi_budgets`.`value` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal (usehaving=true)
@@ -4726,8 +3843,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Contract_11` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`ITEM_Contract_11` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`ITEM_Contract_11` {$operator} '{$signed_value}'",
+                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} '{$signed_value}'",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4735,8 +3852,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Ticket_27` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`ITEM_Ticket_27` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
+                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} '{$signed_value}'",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4744,8 +3861,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Computer_111` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`ITEM_Computer_111` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
+                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} '{$signed_value}'",
                     ];
 
                     // datatype=progressbar (with computation)
@@ -4753,8 +3870,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
-                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$operator} {$signed_value})",
-                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.totalsize, 0)), 3, 0) {$not_operator} {$signed_value})",
+                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
+                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value})",
                     ];
 
                     // datatype=timestamp
@@ -4762,8 +3879,8 @@ class Search extends DbTestCase
                         'itemtype'          => \CronTask::class,
                         'search_option'     => 6, // frequency
                         'value'             => $searched_value,
-                        'expected_and'      => "(`glpi_crontasks`.`frequency` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`glpi_crontasks`.`frequency` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`glpi_crontasks`.`frequency` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`glpi_crontasks`.`frequency` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=timestamp (usehaving=true)
@@ -4771,8 +3888,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "(`ITEM_Ticket_49` {$operator} {$signed_value})",
-                        'expected_and_not'  => "(`ITEM_Ticket_49` {$not_operator} {$signed_value})",
+                        'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
+                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} '{$signed_value}'",
                     ];
                 }
             }
@@ -4801,8 +3918,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Computer::class,
                         'search_option'     => 9, // last_inventory_update
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=datetime computed field
@@ -4820,8 +3937,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Budget::class,
                         'search_option'     => 5, // begin_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
 
                     // datatype=date_delay
@@ -4829,8 +3946,8 @@ class Search extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 20, // end_date
                         'value'             => $searched_value,
-                        'expected_and'      => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
-                        'expected_and_not'  => "(ADDDATE(`glpi_contracts`.begin_date, INTERVAL (`glpi_contracts`.duration) MONTH) {$not_operator} ADDDATE(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and'      => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
+                        'expected_and_not'  => "(DATE_ADD(`glpi_contracts`.`begin_date`, INTERVAL `glpi_contracts`.`duration` MONTH) {$not_operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
                     ];
                 }
             }
@@ -4874,6 +3991,245 @@ class Search extends DbTestCase
 
             $this->string($this->cleanSQL($data['sql']['search']))->contains($expected_where);
         }
+    }
+
+    protected function customAssetsProvider(): iterable
+    {
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $document_1 = $this->createTxtDocument();
+        $document_2 = $this->createTxtDocument();
+        $document_3 = $this->createTxtDocument();
+
+        $definition_1  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $asset_class_1 = $definition_1->getAssetClassName();
+
+        $definition_2  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $asset_class_2 = $definition_2->getAssetClassName();
+
+        // Assets for first class
+        $asset_1_1 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.1',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_1_2 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.2',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_1_3 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.3 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+
+        // Assets for second class
+        $asset_2_1 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.1 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+        $asset_2_2 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.2',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_2_3 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.3 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+
+        // Attached documents
+        $this->createItems(
+            Document_Item::class,
+            [
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_1_1->getType(),
+                    'items_id'     => $asset_1_1->getID(),
+                ],
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_1_2->getType(),
+                    'items_id'     => $asset_1_2->getID(),
+                ],
+                [
+                    'documents_id' => $document_2->getID(),
+                    'itemtype'     => $asset_1_2->getType(),
+                    'items_id'     => $asset_1_2->getID(),
+                ],
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_2_1->getType(),
+                    'items_id'     => $asset_2_1->getID(),
+                ],
+            ]
+        );
+
+        // Check search on custom assets.
+        // Validates that searching on assets of class A will not return some assets of class B in results.
+        $asset_search_params = [
+            'criteria' => [
+                [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => 'Asset'
+                ]
+            ]
+        ];
+
+        yield [
+            'class'    => $asset_class_1,
+            'params'   => $asset_search_params + ['is_deleted' => 0],
+            'expected' => [$asset_1_1, $asset_1_2],
+        ];
+        yield [
+            'class'    => $asset_class_1,
+            'params'   => $asset_search_params + ['is_deleted' => 1],
+            'expected' => [$asset_1_3],
+        ];
+        yield [
+            'class'    => $asset_class_2,
+            'params'   => $asset_search_params + ['is_deleted' => 0],
+            'expected' => [$asset_2_2],
+        ];
+        yield [
+            'class'    => $asset_class_2,
+            'params'   => $asset_search_params + ['is_deleted' => 1],
+            'expected' => [$asset_2_1, $asset_2_3],
+        ];
+
+        // Check search on documents using a custom assets as meta criteria.
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1, $document_2],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND NOT',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_3],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ],
+                    [
+                        'link'       => 'OR',
+                        'itemtype'   => $asset_class_2,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1, $document_2],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_2,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1],
+        ];
+    }
+
+    /**
+     * @dataProvider customAssetsProvider
+     */
+    public function testCustomAssetSearch(string $class, array $params, array $expected): void
+    {
+        $data = $this->doSearch($class, $params);
+        foreach ($expected as $key => $item) {
+            $this->string($data['data']['rows'][$key]['raw'][sprintf('ITEM_%s_1', $class)])->isEqualTo($item->fields['name']);
+            $this->integer($data['data']['rows'][$key]['raw']['id'])->isEqualTo($item->getID());
+        }
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(count($expected));
     }
 
     public function testDCRoomSearchOption()
@@ -4949,9 +4305,6 @@ class Search extends DbTestCase
             'content' => '<p>This is a task with &amp; in description</p>'
         ]);
 
-        // When user searches for a `&`, the criteria is sanitized and its value is therefore `&#38;`
-        $sanitized_ampersand_criteria = '&#38;';
-
         yield [
             'search_params' => [
                 'is_deleted' => 0,
@@ -4961,12 +4314,12 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 1, // title
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
+                        'value'      => '&'
                     ]
                 ],
             ],
             'expected' => [
-                'Ticket &#38; 5'
+                'Ticket & 5'
             ]
         ];
 
@@ -4979,7 +4332,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 21, // ticket content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
+                        'value'      => '&'
                     ]
                 ],
             ],
@@ -4997,7 +4350,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 25, // followup content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
+                        'value'      => '&'
                     ]
                 ],
             ],
@@ -5015,7 +4368,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 26, // task content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
+                        'value'      => '&'
                     ]
                 ],
             ],
@@ -5033,7 +4386,7 @@ class Search extends DbTestCase
                         'link' => 'AND',
                         'field' => 'view', // items seen
                         'searchtype' => 'contains',
-                        'value' => $sanitized_ampersand_criteria
+                        'value'      => '&'
                     ],
                     1 => [
                         'link' => 'AND',
@@ -5065,7 +4418,7 @@ class Search extends DbTestCase
                 'Ticket 2',
                 'Ticket 3',
                 'Ticket 4',
-                'Ticket &#38; 5'
+                'Ticket & 5'
             ]
         ];
     }

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice
 {
@@ -222,9 +225,6 @@ class DeviceProcessor extends CommonDevice
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -254,9 +254,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbcores') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum('TABLE.nbcores') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+                distinct: true
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -270,9 +271,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum('TABLE.nbthreads') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+                distinct: true
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -288,9 +290,9 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.frequency') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => QueryFunction::sum('TABLE.frequency') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

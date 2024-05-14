@@ -60,7 +60,7 @@ class ClearCommand extends Command
         $this->setAliases(
             [
                 // Old command alias
-                // FIXME Remove it in GLPI 10.1.
+                // FIXME Remove it in GLPI 11.0.
                 'system:clear_cache'
             ]
         );

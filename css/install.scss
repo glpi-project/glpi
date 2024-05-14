@@ -33,16 +33,16 @@
 
 $is-dark: false !default;
 
-@import "palettes/defaults";
-@import "includes/palette_light";
+@import "includes/tabler_compat";
 @import "includes/base";
-@import "includes/global-variables";
 @import "includes/components/select2";
 
-/*  ############# Definition des styles de l'install et de l'update ############# */
+/*  ############# Definition of install and update styles ############# */
 
-body {
-    background-color: #1b2f62;
+:root {
+    --tblr-body-bg: #1b2f62 !important;
+    --tblr-body-color: #fff !important;
+    --tblr-link-color: #fec95c !important;
 }
 
 #principal {
@@ -50,11 +50,9 @@ body {
     text-align: center;
     margin: auto;
     padding: 40px;
-    color: #fff;
 }
 
 a {
-    color: #fec95c;
     font-weight: bold;
 }
 
@@ -152,7 +150,7 @@ h3 {
 
 /** Tabler override for install **/
 .form-selectgroup-boxes .form-selectgroup-label {
-    color: 000;
+    color: #000;
 }
 
 .form-control {

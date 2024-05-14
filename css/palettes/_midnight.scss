@@ -1,0 +1,71 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$is-dark: true;
+
+.btn-primary,
+.btn-outline-primary,
+.btn-ghost-primary {
+    --tblr-btn-color-text: red;
+}
+
+:root[data-glpi-theme="midnight"] {
+    --tblr-dark: #000;
+    --tblr-light: #e6e6e6;
+    --tblr-body-bg: #000;
+    --tblr-primary-rgb: 182, 195, 224; // #b6c3e0
+    --tblr-primary-fg: #232e3c;
+    --tblr-secondary: #b0bbd4;
+    --tblr-secondary-fg: #262d3d;
+    --tblr-link-color-rgb: 136, 136, 136;
+    --tblr-link-hover-color-rgb: 200, 200, 200;
+    --tblr-code-color: #B4B4B4;
+    --tblr-muted: #c6cad2;
+    --tblr-muted-rgb: 198, 202, 210; // #c6cad2
+    --tblr-badge-bg: var(--tblr-light);
+    --tblr-badge-color: var(--tblr-dark);
+    --glpi-mainmenu-bg: var(--tblr-body-bg);
+    --glpi-mainmenu-fg: var(--tblr-body-color);
+    --glpi-form-header-fg: #6ba8f3;
+    --glpi-form-header-border-color: transparent;
+    --glpi-tabs-bg: #1a1a1a;
+    --glpi-tabs-fg: var(--tblr-light);
+    --glpi-tabs-border-color: transparent;
+    --glpi-tabs-active-bg: #3a3938;
+    --glpi-tabs-active-fg: var(--tblr-muted);
+    --glpi-tabs-active-border-color: transparent;
+    --glpi-itil-secondary-bg: #1d2531;
+    --glpi-timeline-fup-bg: #1c2430;
+    --glpi-timeline-fup-fg: #8892a8;
+    --glpi-timeline-fup-border: #2f3d50;
+}

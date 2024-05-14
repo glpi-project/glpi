@@ -83,7 +83,7 @@
 }
 
 .network-parent {
-   border  : 1px solid var(--input-border);
+   border  : 1px solid var(--tblr-border-color);
    position: relative;
    padding : 0 !important;
 }
@@ -370,17 +370,17 @@ i.fa-impact-manipulation {
    position        : absolute;
    top             : 0;
    right           : 0;
-   background-color: var(--table-head-bg);
-   color: var(--table-head-color);
+   background-color: var(--tblr-bg-surface-tertiary);
+   color: inherit;
    z-index         : 1000;
-   border-left     : 1px solid var(--table-head-border-color);
-   border-right    : 1px solid var(--table-head-border-color);
+   border-left     : 1px solid var(--tblr-border-color);
+   border-right    : 1px solid var(--tblr-border-color);
    display         : flex;
    justify-content: space-between;
 
    ul {
       list-style : none;
-      border-left: 1px solid var(--table-head-border-color);
+      border-left: 1px solid var(--tblr-border-color);
       text-align: center;
       margin: 0;
       padding: 0;
@@ -404,7 +404,7 @@ i.fa-impact-manipulation {
       }
 
       &:hover {
-         background-color: var(--hover-bg);
+         background-color: var(--glpi-hover-bg);
       }
 
       &.active {
@@ -415,11 +415,11 @@ i.fa-impact-manipulation {
 
       &.impact-disabled {
          cursor: not-allowed !important;
-         opacity: var(--btn-disabled-opacity);
+         opacity: var(--tblr-btn-disabled-opacity);
       }
 
       &.impact-separator {
-         border-top: 2px solid var(--header-border-color);
+         border-top: 2px solid var(--glpi-form-header-border-color);
       }
    }
 
@@ -509,10 +509,10 @@ i.fa-impact-manipulation {
 
 .impact-side-toggle {
    display         : none;
-   background-color: var(--table-head-bg);
+   background-color: var(--tblr-bg-surface-tertiary);
    position        : absolute;
    bottom          : 0;
-   color           :var(--table-head-color);
+   color           : inherit;
    width           : 100%;
    text-align      : center;
    cursor          : pointer;

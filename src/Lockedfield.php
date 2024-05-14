@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 
 /**
  *  Locked fields for inventory
@@ -385,7 +386,7 @@ class Lockedfield extends CommonDBTM
         }
 
         foreach ($itemtypes as $itemtype) {
-            $search_options = Search::getOptions($itemtype);
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field

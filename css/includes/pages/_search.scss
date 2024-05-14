@@ -34,11 +34,19 @@
 // TODO Encapsulate into a class
 
 .form-check-input[name="as_map"]:checked {
-    background-color: $info;
+    background-color: var(--tblr-info);
 }
 
 .form-check-input[name="is_deleted"]:checked {
-    background-color: $danger;
+    background-color: var(--tblr-danger)
+}
+
+// Prevent search results from filling all available vertical space
+// Useful when displaying multipler search results on the same page
+.search-no-forced-height {
+    .search-container {
+        height: unset !important;
+    }
 }
 
 .search_page {
@@ -50,9 +58,10 @@
     .search-container {
         @include media-breakpoint-up(lg) {
             overflow: auto;
-            height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             padding: 0;
             margin-left: calc(var(--tblr-gutter-x) / 2);
+            margin-right: calc(var(--tblr-gutter-x) / 2);
             width: 100%;
 
             .dashboard-card {
@@ -73,10 +82,12 @@
                 left: 0;
             }
 
-            .search-form {
-                background-color: $search_bg;
-                color: $search_fg;
-                border-color: $search_border;
+            .search-form, .sort-container {
+                background-color: var(--glpi-search-bg);
+                color: var(--glpi-search-fg);
+                border-color: var(--glpi-search-border-color);
+                max-height: 60vh;
+                overflow-y: auto;
 
                 // try having same width on link dropdowns
                 .select2-container {
@@ -84,26 +95,65 @@
                 }
 
                 .sub_criteria {
-                    background-color: darken($search_bg, 1%);
+                    background-color: color-mix(in srgb, var(--glpi-search-bg), black 1%);
+                }
+
+                .search_actions, .sort_actions {
+                    position: sticky;
+                    bottom: 0;
                 }
             }
         }
 
         .search-card {
-            @include media-breakpoint-up(lg) {
-                min-width: 100%;
-                width: fit-content;
+            display: grid;
+            min-width: 100%;
+            width: fit-content;
 
-                .search-header {
-                    border-bottom: 0;
-                    position: sticky;
-                    top: -1px;
-                    background-color: inherit;
-                    z-index: #{$zindex-sticky + 1};
+            .massiveactions-control {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                z-index: #{$zindex-sticky + 2} !important;
+            }
 
-                    .search-controls {
+            .search-header {
+                grid-column: 1;
+                grid-row: 1;
+                height: 45px;
+                border-bottom: 0;
+                position: sticky;
+                top: -1px;
+                left: 0;
+                background-color: inherit;
+                border-radius: var(--tblr-border-radius);
+                z-index: #{$zindex-sticky + 1};
+
+                .search-controls {
+                    width: 100%;
+
+                    .primary-controls {
                         position: sticky;
-                        left: 22px;
+                        left: 18px;
+                    }
+
+                    .btn-active-search {
+                        background-color: #cff5d1;
+                        color: rgb(77, 77, 77);
+                    }
+
+                    .btn-active-sort {
+                        background-color: #ffe0cc;
+                        color: rgb(77, 77, 77);
+                    }
+
+                    .secondary-controls {
+                        position: sticky;
+                        right: 23px;
+
+                        @include media-breakpoint-down(lg) {
+                            right: 0;
+                        }
                     }
                 }
             }
@@ -127,11 +177,10 @@
                         th {
                             z-index: $zindex-sticky;
                             position: sticky;
-                            top: 59px;
-                            border: 1px solid $card-border-color;
+                            top: 44px;
+                            border: 1px solid var(--tblr-border-color);
                             border-left: 0;
                             border-right: 0;
-                            background-color: $table_header_bg;
                             min-width: max-content;
                             vertical-align: top;
                         }
@@ -202,19 +251,19 @@ body.horizontal-layout {
     .search_page:not(.search_page_global) {
         .search-container {
             @include media-breakpoint-up(lg) {
-                height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+                height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             }
         }
     }
 
     .search_page_global {
         @include media-breakpoint-up(lg) {
-            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         }
     }
 }
 
-.priority_block {
+.badge_block {
     white-space: nowrap;
     border: 1px solid transparent;
     padding-right: 6px;

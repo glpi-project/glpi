@@ -38,7 +38,6 @@ namespace tests\units\Glpi\RichText;
 use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;
@@ -124,7 +123,7 @@ HTML
                     'add_expected_observers' => [$tech_id],
                     'add_expected_notified'  => [$tech_id],
 
-               // Same mentions on update => mentionned users are not notified
+               // Same mentions on update => mentioned users are not notified
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
 HTML
@@ -263,7 +262,7 @@ HTML
         }
 
        // Create item
-        $item_id = $item->add(Sanitizer::sanitize($input));
+        $item_id = $item->add($input);
         $this->integer($item_id)->isGreaterThan(0);
 
        // Check observers on creation
@@ -288,7 +287,7 @@ HTML
         $this->array($notifications)->hasSize(count($add_expected_notified));
 
        // Update item
-        $update = $item->update(Sanitizer::sanitize(['id' => $item->getID(), 'content' => $update_content]));
+        $update = $item->update(['id' => $item->getID(), 'content' => $update_content]);
         $this->boolean($update)->isTrue();
 
        // Check observers on update
@@ -497,17 +496,19 @@ HTML
 
        // Create TicketValidation
         $input = [
-            'tickets_id'        => $ticket_id,
-            'users_id_validate' => Session::getLoginUserID(),
+            'tickets_id'      => $ticket_id,
+            'itemtype_target' => 'User',
+            'items_id_target' => Session::getLoginUserID(),
         ];
         if ($submission_add !== null) {
             $input['comment_submission'] = $submission_add;
         }
         if ($validation_add !== null) {
             $input['comment_validation'] = $validation_add;
+            $input['users_id_validate']  = Session::getLoginUserID();
         }
         $ticket_validation = new TicketValidation();
-        $ticket_validation_id = $ticket_validation->add(Sanitizer::sanitize($input));
+        $ticket_validation_id = $ticket_validation->add($input);
         $this->integer($ticket_validation_id)->isGreaterThan(0);
 
        // Check observers on creation
@@ -541,7 +542,7 @@ HTML
         if ($validation_update !== null) {
             $input['comment_validation'] = $validation_update;
         }
-        $update = $ticket_validation->update(Sanitizer::sanitize($input));
+        $update = $ticket_validation->update($input);
         $this->boolean($update)->isTrue();
 
        // Check observers on update

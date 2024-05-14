@@ -67,7 +67,7 @@ class Item_RemoteManagement extends CommonDBChild
                         ]
                     );
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -279,7 +279,7 @@ class Item_RemoteManagement extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '180',
+            'id'                 => '1220',
             'table'              => self::getTable(),
             'field'              => 'remoteid',
             'name'               => __('ID'),
@@ -292,7 +292,7 @@ class Item_RemoteManagement extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '181',
+            'id'                 => '1221',
             'table'              => self::getTable(),
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
@@ -395,6 +395,6 @@ class Item_RemoteManagement extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-laptop-house";
+        return "ti ti-screen-share";
     }
 }

@@ -33,5 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-// FIXME Deprecate current script usage in GLPI 10.1
+// FIXME Deprecate current script usage in GLPI 11.0
 include('./actorinformation.php');

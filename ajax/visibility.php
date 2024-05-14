@@ -98,9 +98,11 @@ if (
 
         case 'Entity':
             echo "<td>";
-            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
-                'value'  => $_SESSION['glpiactive_entity'],
-                'name'   => $prefix . 'entities_id' . $suffix
+            Entity::dropdown([
+                'value'       => $_SESSION['glpiactive_entity'],
+                'name'        => $prefix . 'entities_id' . $suffix,
+                'entity'      => $_POST['entity'] ?? -1,
+                'entity_sons' => $_POST['is_recursive'] ?? false,
             ]);
             echo "</td><td>";
             echo __('Child entities');

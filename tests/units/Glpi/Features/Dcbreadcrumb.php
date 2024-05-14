@@ -45,7 +45,6 @@ use Item_Rack;
 use PDU;
 use PDU_Rack;
 use Rack;
-use Toolbox;
 
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
@@ -76,9 +75,9 @@ class DCBreadcrumb extends DbTestCase
     /**
      * @dataProvider itemtypeProvider
      */
-    public function testDCBreadcrumbProvider(string $class)
+    public function testClassUsesTrait($class)
     {
-        $this->boolean(Toolbox::hasTrait($class, \Glpi\Features\DCBreadcrumb::class))->isTrue;
+        $this->boolean(in_array(\Glpi\Features\DCBreadcrumb::class, class_uses($class, true)));
     }
 
     protected function rackableTypeDcBreadcrumbProvider(): iterable
@@ -150,7 +149,7 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $item_for_rack,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;(U7)",
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U7)",
                 ],
             ];
 
@@ -176,7 +175,7 @@ class DCBreadcrumb extends DbTestCase
                 yield [
                     'item' => $item_for_enclosure,
                     'breadcrumbs' => [
-                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)"
+                        "<i class=\"ti ti-columns\"></i> Enclosure test&nbsp;(U1)"
                     ],
                 ];
 
@@ -193,8 +192,8 @@ class DCBreadcrumb extends DbTestCase
                 yield [
                     'item' => $item_for_enclosure,
                     'breadcrumbs' => [
-                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)",
-                        "<i class='ti ti-server'></i> Rack #1&nbsp;(U3)",
+                        "<i class=\"ti ti-columns\"></i> Enclosure test&nbsp;(U1)",
+                        "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U3)",
                     ],
                 ];
             }
@@ -206,8 +205,8 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $item_for_rack,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;(U7)",
-                    "<i class='ti ti-building'></i> DC room",
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U7)",
+                    "<i class=\"ti ti-building\"></i> DC room",
                 ],
             ];
 
@@ -216,9 +215,9 @@ class DCBreadcrumb extends DbTestCase
                 yield [
                     'item' => $item_for_enclosure,
                     'breadcrumbs' => [
-                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)",
-                        "<i class='ti ti-server'></i> Rack #1&nbsp;(U3)",
-                        "<i class='ti ti-building'></i> DC room",
+                        "<i class=\"ti ti-columns\"></i> Enclosure test&nbsp;(U1)",
+                        "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U3)",
+                        "<i class=\"ti ti-building\"></i> DC room",
                     ],
                 ];
             }
@@ -230,9 +229,9 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $item_for_rack,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;(U7)",
-                    "<i class='ti ti-building'></i> DC room",
-                    "<i class='ti ti-building-warehouse'></i> Main DC",
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U7)",
+                    "<i class=\"ti ti-building\"></i> DC room",
+                    "<i class=\"ti ti-building-warehouse\"></i> Main DC",
                 ],
             ];
 
@@ -241,10 +240,10 @@ class DCBreadcrumb extends DbTestCase
                 yield [
                     'item' => $item_for_enclosure,
                     'breadcrumbs' => [
-                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)",
-                        "<i class='ti ti-server'></i> Rack #1&nbsp;(U3)",
-                        "<i class='ti ti-building'></i> DC room",
-                        "<i class='ti ti-building-warehouse'></i> Main DC",
+                        "<i class=\"ti ti-columns\"></i> Enclosure test&nbsp;(U1)",
+                        "<i class=\"ti ti-server\"></i> Rack #1&nbsp;(U3)",
+                        "<i class=\"ti ti-building\"></i> DC room",
+                        "<i class=\"ti ti-building-warehouse\"></i> Main DC",
                     ],
                 ];
             }
@@ -256,7 +255,7 @@ class DCBreadcrumb extends DbTestCase
      */
     public function testGetDcBreadcrumbForRackableType(CommonDBTM $item, array $breadcrumbs): void
     {
-        $this->array($item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
+        $this->array(@$item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
     }
 
     protected function pduAsideRackDcBreadcrumbProvider(): iterable
@@ -320,7 +319,7 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $pdu,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;{$text} (12)"
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;{$text} (12)"
                 ],
             ];
         }
@@ -334,8 +333,8 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $pdu,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;{$text} (12)",
-                    "<i class='ti ti-building'></i> DC room",
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;{$text} (12)",
+                    "<i class=\"ti ti-building\"></i> DC room",
                 ],
             ];
         }
@@ -349,9 +348,9 @@ class DCBreadcrumb extends DbTestCase
             yield [
                 'item' => $pdu,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;{$text} (12)",
-                    "<i class='ti ti-building'></i> DC room",
-                    "<i class='ti ti-building-warehouse'></i> Main DC",
+                    "<i class=\"ti ti-server\"></i> Rack #1&nbsp;{$text} (12)",
+                    "<i class=\"ti ti-building\"></i> DC room",
+                    "<i class=\"ti ti-building-warehouse\"></i> Main DC",
                 ],
             ];
         }
@@ -362,7 +361,7 @@ class DCBreadcrumb extends DbTestCase
      */
     public function testGetDcBreadcrumbPduAsideRack(CommonDBTM $item, array $breadcrumbs): void
     {
-        $this->array($item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
+        $this->array(@$item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
     }
 
     public function testGetDcBreadcrumbForADcRoom(): void
@@ -385,11 +384,11 @@ class DCBreadcrumb extends DbTestCase
         );
 
         // Room NOT attached to a datacenter
-        $this->array($room->getDcBreadcrumb())->isEqualTo([]);
+        $this->array(@$room->getDcBreadcrumb())->isEqualTo([]);
 
         // Room attached to a datacenter
         $this->updateItem(DCRoom::class, $room->getID(), ['datacenters_id' => $datacenter->getID()]);
         $this->boolean($room->getFromDB($room->getID()))->isTrue();
-        $this->array($room->getDcBreadcrumb())->isEqualTo(["<i class='ti ti-building-warehouse'></i> Main DC"]);
+        $this->array(@$room->getDcBreadcrumb())->isEqualTo(["<i class=\"ti ti-building-warehouse\"></i> Main DC"]);
     }
 }

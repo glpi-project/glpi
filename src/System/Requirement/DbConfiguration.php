@@ -60,17 +60,7 @@ class DbConfiguration extends AbstractRequirement
 
     protected function check()
     {
-        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
-
-       // "innodb_large_prefix" was required for "utf8mb4" indexes of VARCHAR(255) on older DB versions.
-       // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
-        $check_large_prefix = version_compare($version, '8.0', '<') // MySQL
-         || (version_compare($version, '10.0', '>=') && version_compare($version, '10.3', '<')); // MariaDB
-
         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
-        if ($check_large_prefix) {
-            $query .= ', @@GLOBAL.' . $this->db->quoteName('innodb_large_prefix as innodb_large_prefix');
-        }
 
         if (($db_config_res = $this->db->doQuery($query)) === false) {
             $this->validated = false;
@@ -80,9 +70,6 @@ class DbConfiguration extends AbstractRequirement
         $db_config = $db_config_res->fetch_assoc();
 
         $incompatibilities = [];
-        if ($check_large_prefix && (int)$db_config['innodb_large_prefix'] == 0) {
-            $incompatibilities[] = __('"innodb_large_prefix" must be enabled.');
-        }
         if ((int)$db_config['innodb_page_size'] < 8192) {
             $incompatibilities[] = '"innodb_page_size" must be >= 8KB.';
         }

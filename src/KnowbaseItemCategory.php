@@ -67,7 +67,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
-                KnowbaseItem_KnowbaseItemCategory::class
+                KnowbaseItem_KnowbaseItemCategory::class,
             ]
         );
     }

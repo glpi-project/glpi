@@ -37,7 +37,6 @@ namespace tests\units;
 
 use Config;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
@@ -79,6 +78,7 @@ class MailCollector extends DbTestCase
                    'requester_field'      => '',
                    'add_cc_to_observer'   => '',
                    'collect_only_unread'  => '',
+                   'create_user_from_email' => '',
                    'last_collect_date'    => '',
                ]);
     }
@@ -112,21 +112,6 @@ class MailCollector extends DbTestCase
          ->then
             ->string($this->testedInstance->cleanSubject($raw))
                ->isIdenticalTo($expected);
-    }
-
-    public function testListEncodings()
-    {
-        $this->newTestedInstance;
-
-        $this->when(
-            function () {
-                $this->array($this->testedInstance->listEncodings())
-                    ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
-            }
-        )->error()
-           ->withType(E_USER_DEPRECATED)
-           ->withMessage('Called method is deprecated')
-           ->exists();
     }
 
     public function testPrepareInput()
@@ -657,7 +642,7 @@ class MailCollector extends DbTestCase
         $this->integer(
             $doctype->add([
                 'name'   => 'Type test',
-                'ext'    => '/^1234567890(_\\\d+)?$/'
+                'ext'    => '/^1234567890(_\d+)?$/'
             ])
         )->isGreaterThan(0);
 
@@ -778,7 +763,7 @@ class MailCollector extends DbTestCase
                     '25 - Test attachment with invalid chars for OS',
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
-                    '30 - &#60;GLPI&#62; Special &#38; chars',
+                    '30 - <GLPI> Special & chars',
                     '31 - HTML message without body',
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
@@ -931,7 +916,7 @@ PLAINTEXT,
                 $name = $data['name'];
 
                 if (array_key_exists($name, $tickets_contents)) {
-                    $this->string(Sanitizer::unsanitize($data['content']))->isEqualTo($tickets_contents[$name]);
+                    $this->string($data['content'])->isEqualTo($tickets_contents[$name]);
                 }
 
                 $this->string($data['content'])->notContains('cid:'); // check that image were correctly imported
@@ -945,8 +930,7 @@ PLAINTEXT,
        // Check creation of expected documents
         $expected_docs = [
             '00-logoteclib.png' => 'image/png',
-         // Space is missing between "France" and "très" due to a bug in laminas-mail
-            '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png' => 'image/png',
+            '01-screenshot-2018-4-12-observatoire-france-tres-haut-debit.png' => 'image/png',
             '01-test.JPG' => 'image/jpeg',
             '15-image001.png' => 'image/png',
             '18-blank.gif' => 'image/gif',
@@ -1018,10 +1002,57 @@ PLAINTEXT,
                 'users_id' => $tuid,
                 'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
             ],
+            [
+                // 29.1-ticket-followup-above-header-and-under-footer-lines.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above header line...' . "\r\n" . '...and finishes under footer line.',
+            ],
+            [
+                // 29.2-ticket-followup-above-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line.',
+            ],
+            [
+                // 29.3-ticket-followup-under-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line.',
+            ],
+            [
+                // 29.4-ticket-followup-above-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line, and there is no footer line.',
+            ],
+            [
+                // 29.5-ticket-followup-under-footer-line-without-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line, and there is no header line.',
+            ],
+            [
+                // 29.6-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts under header line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no footer line.',
+            ],
+            [
+                // 29.7-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above footer line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no header line.',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
-            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))->isEqualTo(1);
+            $this->integer(countElementsInTable(ITILFollowup::getTable(), $expected_followup))
+                ->isEqualTo(1, sprintf("Followup not found:\n> %s", $expected_followup['content']));
         }
     }
 

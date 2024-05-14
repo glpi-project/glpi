@@ -41,6 +41,7 @@ use Html;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigTest;
 
 /**
  * @since 10.0.0
@@ -51,7 +52,9 @@ class DataHelpersExtension extends AbstractExtension
     {
         return [
             new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
+            new TwigFilter('formatted_date', [$this, 'getFormattedDate']),
             new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
+            new TwigFilter('formatted_integer', [$this, 'getFormattedInteger']),
             new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
             new TwigFilter('formatted_size', [$this, 'getFormattedSize']),
             new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
@@ -63,6 +66,13 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
             new TwigFilter('truncate_left', [$this, 'truncateLeft']),
+        ];
+    }
+
+    public function getTests(): array
+    {
+        return [
+            new TwigTest('url_safe', Toolbox::isUrlSafe(...)),
         ];
     }
 
@@ -80,6 +90,21 @@ class DataHelpersExtension extends AbstractExtension
             return null;
         }
         return Html::convDateTime($datetime, null, $with_seconds);
+    }
+
+    /**
+     * Return date formatted to user preferred format.
+     *
+     * @param mixed $date
+     *
+     * @return string|null
+     */
+    public function getFormattedDate($date): ?string
+    {
+        if (!is_string($date)) {
+            return null;
+        }
+        return Html::convDate($date);
     }
 
     /**
@@ -116,9 +141,21 @@ class DataHelpersExtension extends AbstractExtension
     }
 
     /**
+     * Return integer formatted to user preferred format.
+     *
+     * @param mixed $number Number to display
+     *
+     * @return string
+     */
+    public function getFormattedInteger($number): string
+    {
+        return Html::formatNumber($number, forcedecimal: 0);
+    }
+
+    /**
      * Return number formatted to user preferred format.
      *
-     * @param mixed $number
+     * @param mixed $number Number to display
      *
      * @return string
      */
@@ -238,14 +275,18 @@ class DataHelpersExtension extends AbstractExtension
      * @param mixed  $string
      *
      * @return mixed
+     *
+     * @deprecated 11.0
      */
     public function getVerbatimValue($string)
     {
+        Toolbox::deprecated();
+
         if (!is_string($string)) {
             return $string;
         }
 
-        return Sanitizer::getVerbatimValue($string);
+        return Sanitizer::unsanitize($string);
     }
 
 

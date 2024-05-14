@@ -39,9 +39,6 @@ Session::checkRight("group", READ);
 
 Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
 
-$group = new Group();
-$group->title();
-
 Search::show('Group');
 
 Html::footer();

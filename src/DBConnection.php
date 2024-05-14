@@ -441,8 +441,10 @@ class DBConnection extends CommonDBTM
             $DBread = new DBSlave();
 
             if ($DBread->connected) {
-                $sql = "SELECT MAX(`id`) AS maxid
-                    FROM `glpi_logs`";
+                $sql = [
+                    'SELECT' => ['MAX' => 'id AS maxid'],
+                    'FROM'   => Log::getTable(),
+                ];
 
                 switch ($CFG_GLPI['use_slave_for_search']) {
                     case 3: // If synced or read-only account
@@ -563,6 +565,86 @@ class DBConnection extends CommonDBTM
                     - self::getHistoryMaxDate(new DBSlave($choice)));
     }
 
+    /**
+     * Get replication status information
+     *
+     * @return array
+     */
+    public static function getReplicationStatus(): array
+    {
+
+        $data = [];
+
+        // Get master status
+        include_once(GLPI_CONFIG_DIR . "/config_db.php");
+        $db_main = new DB();
+        if ($db_main->connected) {
+            $global_vars = $db_main->getGlobalVariables([
+                'server_id',
+                'read_only',
+                'gtid_binlog_pos',
+                'version'
+            ]);
+            foreach ($global_vars as $var_name => $var_value) {
+                $data['primary'][strtolower($var_name)] = $var_value;
+            }
+
+            $result = $db_main->doQuery("SHOW MASTER STATUS");
+            if ($result && $db_main->numrows($result)) {
+                foreach (['File', 'Position'] as $var_name) {
+                    $data['primary'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
+                }
+            } else {
+                $data['primary']['error'] = $db_main->error();
+            }
+        } else {
+            $data['primary']['error'] = $db_main->error();
+        }
+
+        // Get slave status
+        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        $db_replica_config = new DBSlave();
+
+        $hosts = is_array($db_replica_config->dbhost) ? $db_replica_config->dbhost : [$db_replica_config->dbhost];
+        foreach ($hosts as $num => $host) {
+            $data['replica'][$num]['host'] = $host;
+            $db_replica = new DBSlave($num);
+            if ($db_replica->connected) {
+                $global_vars = $db_main->getGlobalVariables([
+                    'server_id',
+                    'read_only',
+                    'gtid_slave_pos',
+                    'version'
+                ]);
+                foreach ($global_vars as $var_name => $var_value) {
+                    $data['replica'][$num][strtolower($var_name)] = $var_value;
+                }
+
+                $result = $db_replica->doQuery("SHOW SLAVE STATUS");
+                if ($result && $db_replica->numrows($result)) {
+                    $replica_vars = [
+                        'Slave_IO_Running',
+                        'Slave_SQL_Running',
+                        'Master_Log_File',
+                        'Read_Master_Log_Pos',
+                        'Seconds_Behind_Master',
+                        'Last_IO_Error',
+                        'Last_SQL_Error'
+                    ];
+
+                    foreach ($replica_vars as $var_name) {
+                        $data['replica'][$num][strtolower($var_name)] = $db_replica->result($result, 0, $var_name);
+                    }
+                } else {
+                    $data['replica'][$num]['error'] = $db_replica->error();
+                }
+            } else {
+                $data['replica'][$num]['error'] = $db_replica->error();
+            }
+        }
+
+        return $data;
+    }
 
     /**
      *  Get history max date of a GLPI DB
@@ -687,56 +769,61 @@ class DBConnection extends CommonDBTM
     /**
      * Display in HTML, delay between master and slave
      * 1 line per slave is multiple
+     * @param boolean $no_display if true, the function returns the HTML string to display
+     * @return string|null
+     * @phpstan-return $no_display ? string : null
      **/
-    public static function showAllReplicateDelay()
+    public static function showAllReplicateDelay($no_display = false)
     {
-
         $DBslave = self::getDBSlaveConf();
-
-        if (is_array($DBslave->dbhost)) {
-            $hosts = $DBslave->dbhost;
-        } else {
-            $hosts = [$DBslave->dbhost];
-        }
+        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $output = '';
 
         foreach ($hosts as $num => $name) {
             $diff = self::getReplicateDelay($num);
-           //TRANS: %s is namez of server Mysql
-            printf(__('%1$s: %2$s'), __('SQL server'), $name);
-            echo " - ";
+            //TRANS: %s is namez of server Mysql
+            $output .= sprintf(__('%1$s: %2$s'), __('SQL server'), $name);
+            $output .= " - ";
             if ($diff > 1000000000) {
-                echo __("can't connect to the database") . "<br>";
+                $output .= __("can't connect to the database") . "<br>";
             } else if ($diff) {
-                printf(
+                $output .= sprintf(
                     __('%1$s: %2$s') . "<br>",
                     __('Difference between main and replica'),
                     Html::timestampToString($diff, 1)
                 );
             } else {
-                printf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
+                $output .= sprintf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
             }
         }
+        if ($no_display) {
+            return $output;
+        }
+        echo $output;
     }
 
 
     /**
-     * @param $width
+     * Get system information
+     *
+     * @return array
+     * @phpstan-return array{label: string, content: string}
      **/
-    public function showSystemInformations($width)
+    public function getSystemInformation(): array
     {
-
-       // No need to translate, this part always display in english (for copy/paste to forum)
-
-        echo "<tr class='tab_bg_2'><th class='section-header'>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
+        // No need to translate, this part always display in english (for copy/paste to forum)
+        $content = '';
         if (self::isDBSlaveActive()) {
-            echo "Active\n";
-            self::showAllReplicateDelay();
+            $content .= "Active\n";
+            $content .= self::showAllReplicateDelay(true);
         } else {
-            echo "Not active\n";
+            $content .= "Not active\n";
         }
-        echo "\n</pre></td></tr>";
+
+        return [
+            'label' => self::getTypeName(Session::getPluralNumber()),
+            'content' => $content
+        ];
     }
 
 

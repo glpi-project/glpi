@@ -34,104 +34,110 @@
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
-   <form action="{{ path('front/login.php') }}" method="post" autocomplete="off"  data-submit-once>
-      <input type="hidden" name="noAUTO" value="{{ noAuto }}" />
-      <input type="hidden" name="redirect" value="{{ redirect }}" />
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-
-      <div class="row justify-content-center">
-         <div class="col-md-5">
-            <div class="card-header mb-4">
-               <h2 class="mx-auto">{{ __('Login to your account') }}</h2>
+    <form action="{{ path('front/login.php') }}" method="post" autocomplete="off" data-submit-once>
+        <input type="hidden" name="noAUTO" value="{{ noAuto }}"/>
+        <input type="hidden" name="redirect" value="{{ redirect }}"/>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+        {% if text_login|length > 0 %}
+            <div class="rich_text_container text-center">
+                {{ text_login|safe_html }}
             </div>
-            <div class="mb-3">
-               <label class="form-label" for="login_name">{{ __('Login') }}</label>
-               <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1" />
-            </div>
-            <div class="mb-4">
-               <label class="form-label" for="login_password">
-                  {{ __('Password') }}
+        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card-header mb-4">
+                    <h2 class="mx-auto">{{ __('Login to your account') }}</h2>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="login_name">{{ __('Login') }}</label>
+                    <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1"/>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="login_password">
+                        {{ __('Password') }}
 
-                  {% if show_lost_password %}
-                     <span class="form-label-description">
-                        <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
-                           {{ __('Forgotten password?') }}
-                        </a>
-                     </span>
-                  {% endif %}
-               </label>
-               <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2" />
+                        {% if show_lost_password %}
+                            <span class="form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
+                                <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
+                                    {{ __('Forgotten password?') }}
+                                </a>
+                            </span>
+                            {% if config('display_login_source') %}
+                                <script>
+                                    $(() => {
+                                        if ($('select[name="auth"]').val() === 'local') {
+                                            $('.forgot_password').removeClass('d-none');
+                                        }
+                                        $('select[name="auth"]').on('change', function () {
+                                            if ($(this).val() === 'local') {
+                                                $('.forgot_password').removeClass('d-none');
+                                            } else {
+                                                $('.forgot_password').addClass('d-none');
+                                            }
+                                        });
+                                    });
+                                </script>
+                            {% endif %}
+                        {% endif %}
+                    </label>
+                    <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
+                </div>
+
+                {% if constant('GLPI_DEMO_MODE') %}
+                    <div class="mb-3">
+                        <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
+                        {{ languages_dropdown|raw }}
+                    </div>
+                {% endif %}
+
+                {% if config('display_login_source') %}
+                    <div class="mb-3">
+                        <label class="form-label" for="dropdown_auth{{ rand }}">{{ __('Login source') }}</label>
+                        {{ auth_dropdown_login|raw }}
+                    </div>
+                {% endif %}
+
+                {% if config('login_remember_time') %}
+                    <div class="mb-2">
+                        <label class="form-check" for="login_remember">
+                            <input type="checkbox" class="form-check-input" id="login_remember" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }}/>
+                            <span class="form-check-label">{{ __('Remember me') }}</span>
+                        </label>
+                    </div>
+                {% endif %}
+
+                <div class="form-footer">
+                    <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
+                        {{ __('Sign in') }}
+                    </button>
+                </div>
             </div>
 
-            {% if constant('GLPI_DEMO_MODE') %}
-               <div class="mb-3">
-                  <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
-                  {{ languages_dropdown|raw }}
-               </div>
+            {% if right_panel %}
+                <div class="col-auto px-2 text-center">
+                    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_LOGIN')) }}
+                </div>
             {% endif %}
-
-            {% if config('display_login_source') %}
-               <div class="mb-3">
-                  <label class="form-label" for="dropdown_auth{{ rand }}">{{ __('Login source') }}</label>
-                  {{ auth_dropdown_login|raw }}
-               </div>
-            {% endif %}
-
-            {% if config('login_remember_time') %}
-               <div class="mb-2">
-                  <label class="form-check" for="login_remember">
-                     <input type="checkbox" class="form-check-input" id="login_remember" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }} />
-                     <span class="form-check-label">{{ __('Remember me') }}</span>
-                  </label>
-               </div>
-            {% endif %}
-
-            <div class="form-footer">
-               <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
-                  {{ __('Sign in') }}
-               </button>
+        </div>
+        {% if config('use_public_faq') %}
+            <div class="text-center mt-4 border-top">
+                <a class="btn btn-outline-secondary mt-4" href="{{ path('front/helpdesk.faq.php') }}">
+                    <i class="fas fa-question"></i>&nbsp;
+                    {{ __('FAQ') }}
+                </a>
             </div>
-
-            {% if errors|length > 0 %}
-               <hr />
-               <div class="alert alert-danger" role="alert">
-                  {{ errors }}
-               </div>
-            {% endif %}
-         </div>
-
-         {% if right_panel %}
-            <div class="col-auto px-2 text-center">
-               {% if text_login|length > 0 %}
-                  <div class="rich_text_container">
-                     {{ text_login|safe_html }}
-                  </div>
-               {% endif %}
-
-               {% if config('use_public_faq') %}
-                  <hr />
-
-                  <a class="btn btn-outline-secondary btn-icon" href="front/helpdesk.faq.php">
-                     <i class="fas fa-question"></i>&nbsp;
-                     {{ __('FAQ') }}
-                  </a>
-               {% endif %}
-
-               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_LOGIN')) }}
-            </div>
-         {% endif %}
-      </div>
-   </form>
+        {% endif %}
+    </form>
 {% endblock %}
 
 {% block footer_block %}
-   {{ copyright_message|raw }}
+    {{ copyright_message|raw }}
 {% endblock %}
 
 {% block javascript_block %}
-<script type="text/javascript">
-   $(function () {
-$('#login_name').focus();
-});
-</script>
+    <script type="text/javascript">
+        $(function () {
+            $('#login_name').focus();
+        });
+    </script>
 {% endblock %}

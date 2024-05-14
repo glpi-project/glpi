@@ -52,7 +52,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Model check : need to check using manufacturer extra data so specific function
+        // Model check : need to check using manufacturer extra data so specific function
         if (strpos($this->item_table, 'models')) {
             return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
         }
@@ -71,7 +71,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         $nb         = count($iterator) + $offset;
         $i          = $offset;
         if ($nb > $offset) {
-           // Step to refresh progressbar
+            // Step to refresh progressbar
             $step              = (($nb > 20) ? floor($nb / 20) : 1);
             $send              = [];
             $send["tablename"] = $this->item_table;
@@ -86,13 +86,13 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     }
                 }
 
-               //Replay Type dictionnary
+                // Replay Type dictionnary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
-                    addslashes($data["name"]),
+                    $data["name"],
                     -1,
                     [],
-                    addslashes($data["comment"])
+                    $data["comment"]
                 );
                 if ($data['id'] != $ID) {
                      $tomove[$data['id']] = $ID;
@@ -123,12 +123,11 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         return (($i == $nb) ? -1 : $i);
     }
 
-
     /**
      * Replay collection rules on an existing DB for model dropdowns
      *
-     * @param $offset    offset used to begin (default 0)
-     * @param $maxtime   maximum time of process (reload at the end) (default 0)
+     * @param integer $offset    offset used to begin (default 0)
+     * @param integer $maxtime   maximum time of process (reload at the end) (default 0)
      *
      * @return int|boolean current offset or -1 on completion or false on failure
      **/
@@ -142,7 +141,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         }
 
        // Model check : need to check using manufacturer extra data
-        if (strpos($this->item_table, 'models') === false) {
+        if (!str_contains($this->item_table, 'models')) {
             echo __('Error replaying rules');
             return false;
         }
@@ -203,16 +202,16 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
                // Model case
                 if (isset($data["manufacturer"])) {
-                    $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
+                    $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
                 }
 
                //Replay Type dictionnary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
-                    addslashes($data["name"]),
+                    $data["name"],
                     -1,
                     $data,
-                    addslashes($data["comment"])
+                    $data["comment"]
                 );
 
                 if ($data['id'] != $ID) {
@@ -269,7 +268,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                 }
 
                // Manage cartridge assoc Update items
-                if ($this->getRuleClassName() == 'RuleDictionnaryPrinterModel') {
+                if ($this->getRuleClassName() === RuleDictionnaryPrinterModel::class) {
                     $iterator2 = $DB->request([
                         'FROM'   => 'glpi_cartridgeitems_printermodels',
                         'WHERE'  => ['printermodels_id' => $ID]

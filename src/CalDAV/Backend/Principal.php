@@ -38,6 +38,7 @@ namespace Glpi\CalDAV\Backend;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Glpi\DBAL\QuerySubQuery;
 use Sabre\DAV\PropPatch;
 use Sabre\DAVACL\PrincipalBackend\AbstractBackend;
 
@@ -204,7 +205,7 @@ class Principal extends AbstractBackend
                         \Group_User::getTable()  => 'groups_id',
                         [
                             'AND' => [
-                                \Group_User::getTableField('users_id') => new \QuerySubQuery(
+                                \Group_User::getTableField('users_id') => new QuerySubQuery(
                                     [
                                         'SELECT' => 'id',
                                         'FROM'   => \User::getTable(),
