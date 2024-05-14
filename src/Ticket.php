@@ -5260,7 +5260,10 @@ JAVASCRIPT;
                 return ['description' => __('Not solved tickets')];
 
             case 'purgeticket':
-                return ['description' => __('Automatic closed tickets purge')];
+                return [
+                    'description' => __('Automatic closed tickets purge'),
+                    'parameter' => __('Maximum number of tickets purged per entity (0 = unlimited)'),
+                ];
         }
         return parent::cronInfo($name);
     }
@@ -5447,6 +5450,8 @@ JAVASCRIPT;
             ]
         );
 
+        $max = $task->fields['param'] ?? 0;
+
         foreach ($entities as $entity) {
             $delay  = Entity::getUsedConfig('autopurge_delay', $entity['id'], '', Entity::CONFIG_NEVER);
             if ($delay >= 0) {
@@ -5467,6 +5472,10 @@ JAVASCRIPT;
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
                     );
+                }
+
+                if ($max > 0) {
+                    $criteria['LIMIT'] = $max;
                 }
 
                 $iterator = $DB->request($criteria);
