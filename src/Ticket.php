@@ -5450,7 +5450,7 @@ JAVASCRIPT;
             ]
         );
 
-        $max = $task->fields['param'] ?? 0;
+        $max = (int)($task->fields['param'] ?? 0);
 
         foreach ($entities as $entity) {
             $delay  = Entity::getUsedConfig('autopurge_delay', $entity['id'], '', Entity::CONFIG_NEVER);
