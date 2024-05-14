@@ -70,8 +70,10 @@
             const cat_colors = getProfilerCategoryColor(section.category);
             const duration = section.duration || (section.end - section.start);
             let percent_of_parent = 100;
-            if (props.nest_level > 0) {
-                percent_of_parent = (duration / props.parent_duration * 100).toFixed(2);
+            if (props.nest_level > 0 && props.parent_duration > 0) {
+                percent_of_parent = ((duration / props.parent_duration) * 100).toFixed(2);
+            } else if (props.parent_duration <= 0) {
+                percent_of_parent = (100 / sections.length).toFixed(2);
             }
 
             const data = {
@@ -127,16 +129,16 @@
             <template v-for="section in top_level_data">
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td class="nesting-spacer" v-for="i in nest_level" :key="i"></td>
-                    <td>
+                    <td data-prop="category">
                         <span class="category-badge" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
                             {{ section.category }}
                         </span>
                     </td>
-                    <td>{{ section.name }}</td>
-                    <td>{{ section.start }}</td>
-                    <td>{{ section.end }}</td>
-                    <td>{{ section.duration.toFixed(0) }} ms</td>
-                    <td>{{ section.percent_of_parent }}%</td>
+                    <td data-prop="name">{{ section.name }}</td>
+                    <td data-prop="start">{{ section.start }}</td>
+                    <td data-prop="end">{{ section.end }}</td>
+                    <td data-prop="duration">{{ section.duration.toFixed(0) }} ms</td>
+                    <td data-prop="percent_of_parent">{{ section.percent_of_parent }}%</td>
                 </tr>
                 <tr v-if="section.has_children" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td :colspan="col_count">
