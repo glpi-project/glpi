@@ -141,7 +141,7 @@ The present file will list all changes made to the project; according to the
 - `showInstantiationForm()` method for Network Port classes are now expected to output HTML for a flex form instead of a table.
 - `NetworkName::showFormForNetworkPort()` now outputs HTML for a flex form instead of a table.
 - `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
-- Many methods now have strict type hints for their parameters and return types.
+- `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
