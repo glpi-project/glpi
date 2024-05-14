@@ -1543,7 +1543,7 @@ class Rule extends CommonDBTM
                 if ($this instanceof RuleTicket) {
                     foreach ($this->actions as $action) {
                         if ($action->fields['field'] === 'status') {
-                            $output['_status_changed'] = true;
+                            $output['_do_not_compute_status'] = true;
                         }
                     }
                 }

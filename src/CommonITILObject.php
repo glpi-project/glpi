@@ -8707,7 +8707,6 @@ abstract class CommonITILObject extends CommonDBTM
                     )
                     && in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))
                     && !$this->isStatusComputationBlocked($this->input)
-                    && !isset($this->input['_status_changed']) // If the status has been changed by rules, do not update it
                 ) {
                     $self = new static();
                     $self->update(
