@@ -70,7 +70,7 @@ class TicketValidation extends CommonITILValidation
     /**
      * @since 0.85
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if ($this->canChildItem('canViewItem', 'canView')) {

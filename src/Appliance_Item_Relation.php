@@ -76,13 +76,13 @@ class Appliance_Item_Relation extends CommonDBRelation
         return $types;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Appliance_Item::canUpdate();
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $app_item = new Appliance_Item();
         $app_item->getFromDB($this->fields[Appliance_Item::getForeignKeyField()]);

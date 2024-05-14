@@ -57,7 +57,7 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
        // Try to load the contract

@@ -66,27 +66,27 @@ final class ValidatorSubstitute extends CommonDBTM
         return false;
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return true;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return true;
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return true;
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return true;
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (!isset($this->fields['users_id'])) {
             return false;
@@ -94,7 +94,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (!isset($this->fields['users_id'])) {
             return false;
@@ -103,7 +103,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!isset($this->fields['users_id'])) {
             return false;
@@ -111,7 +111,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         if (!isset($this->fields['users_id'])) {
             return false;
@@ -119,7 +119,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if (!isset($this->fields['users_id'])) {
             return false;

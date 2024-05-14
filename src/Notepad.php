@@ -67,7 +67,7 @@ class Notepad extends CommonDBChild
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (
@@ -80,7 +80,7 @@ class Notepad extends CommonDBChild
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (

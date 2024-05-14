@@ -44,13 +44,13 @@ class TicketTask extends CommonITILTask
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
               || Session::haveRight('ticket', Ticket::OWN));
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return (Session::haveRight(self::$rightname, parent::UPDATEALL)
               || Session::haveRight('ticket', Ticket::OWN));
@@ -74,7 +74,7 @@ class TicketTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -118,7 +118,7 @@ class TicketTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -148,7 +148,7 @@ class TicketTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -179,7 +179,7 @@ class TicketTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         $ticket = new Ticket();
         if (

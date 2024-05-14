@@ -348,22 +348,22 @@ class Reservation extends CommonDBChild
               && (strtotime($this->fields["begin"]) < strtotime($this->fields["end"])));
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return self::canCreate();
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }

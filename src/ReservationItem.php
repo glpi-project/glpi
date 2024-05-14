@@ -57,7 +57,7 @@ class ReservationItem extends CommonDBChild
 
     public $taborientation           = 'horizontal';
 
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
     }

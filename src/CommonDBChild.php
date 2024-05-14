@@ -105,7 +105,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public static function canCreate()
+    public static function canCreate(): bool
     {
 
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
@@ -118,7 +118,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public static function canView()
+    public static function canView(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
             return false;
@@ -130,7 +130,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
             return false;
@@ -142,7 +142,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
             return false;
@@ -154,7 +154,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.85
      **/
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
             return false;
@@ -166,7 +166,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
@@ -175,7 +175,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return $this->canChildItem('canViewItem', 'canView');
     }
@@ -184,7 +184,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
@@ -193,7 +193,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }

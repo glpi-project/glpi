@@ -99,14 +99,14 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function canView()
+    public static function canView(): bool
     {
         // Must be able to view forms
         return Form::canView();
     }
 
     #[Override]
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
@@ -118,14 +118,14 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // Must be able to update parent form
         return Form::canUpdate();
     }
 
     #[Override]
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $form = Form::getByID($this->input['forms_forms_id']);
         if (!$form) {
@@ -137,14 +137,14 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         // Must be able to update forms
         return Form::canUpdate();
     }
 
     #[Override]
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
@@ -156,28 +156,28 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         // Never deleted from the UX
         return false;
     }
 
     #[Override]
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         // Never deleted from the UX
         return false;
     }
 
     #[Override]
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         // Never purged from the UX
         return false;
     }
 
     #[Override]
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         // Never purged from the UX
         return false;

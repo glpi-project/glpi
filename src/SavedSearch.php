@@ -151,7 +151,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if ($this->fields['is_private'] == 1) {
@@ -161,7 +161,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::canCreateItem();
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
             return (Session::haveRight('config', READ)

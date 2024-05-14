@@ -49,12 +49,12 @@ class PlanningRecall extends CommonDBChild
         return _n('Planning reminder', 'Planning reminders', $nb);
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return true;
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return (int) $this->fields['users_id'] === Session::getLoginUserID();
     }

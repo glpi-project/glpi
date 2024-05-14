@@ -50,7 +50,7 @@ class NetworkPortMigration extends CommonDBChild
         return __('Network port migration');
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return false;
     }

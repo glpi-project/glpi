@@ -105,7 +105,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(static::$rightname, static::getCreateRights());
     }
@@ -116,7 +116,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (
@@ -129,7 +129,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
 
         return Session::haveRightsOr(
@@ -143,7 +143,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
 
         return Session::haveRightsOr(
@@ -161,7 +161,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (
@@ -179,7 +179,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      */
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         $is_target = static::canValidate($this->fields[static::$items_id]);
         if (

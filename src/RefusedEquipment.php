@@ -244,7 +244,7 @@ class RefusedEquipment extends CommonDBTM
         return true;
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }

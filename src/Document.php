@@ -99,14 +99,14 @@ class Document extends CommonDBTM
         return 'd';
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
         return (Session::haveRight('document', CREATE)
               || Session::haveRight('followup', ITILFollowup::ADDMYTICKET));
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (isset($this->input['itemtype'], $this->input['items_id'])) {
             if ($item = getItemForItemtype($this->input['itemtype'])) {

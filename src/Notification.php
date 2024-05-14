@@ -535,7 +535,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (
@@ -554,7 +554,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (

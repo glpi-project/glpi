@@ -122,14 +122,14 @@ abstract class CommonITILActor extends CommonDBRelation
         return count($iterator) > 0;
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return (parent::canUpdateItem()
               || (isset($this->fields['users_id'])
                   && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         return (parent::canDeleteItem()
               || (isset($this->fields['users_id'])

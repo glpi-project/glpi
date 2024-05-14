@@ -71,7 +71,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
     {
         return "ti ti-filter";
     }
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }

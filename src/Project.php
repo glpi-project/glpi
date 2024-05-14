@@ -88,7 +88,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Project', 'Projects', $nb);
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }
@@ -98,7 +98,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (!parent::canViewItem()) {
             return false;
@@ -117,7 +117,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (!Session::haveAccessToEntity($this->getEntityID())) {
             return false;

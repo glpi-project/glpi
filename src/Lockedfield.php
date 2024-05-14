@@ -54,17 +54,17 @@ class Lockedfield extends CommonDBTM
         return _n('Locked field', 'Locked fields', $nb);
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return self::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE);
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE);
     }

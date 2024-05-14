@@ -44,20 +44,20 @@ class ProblemTask extends CommonITILTask
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('problem', UPDATE)
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return Session::haveRight('problem', UPDATE)
           || Session::haveRight(self::$rightname, parent::UPDATEALL);
     }
 
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return Session::haveRight('problem', UPDATE);
     }
@@ -80,7 +80,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return $this->canReadITILItem();
     }
@@ -91,7 +91,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (!$this->canReadITILItem()) {
             return false;
@@ -118,7 +118,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -142,7 +142,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return $this->canUpdateItem();
     }
