@@ -1538,6 +1538,15 @@ class Rule extends CommonDBTM
                 $hook_params["output"]   = $output;
                 Plugin::doHook(Hooks::RULE_MATCHED, $hook_params);
                 $output["_rule_process"] = true;
+
+                //If the rule has changed the ticket status, add a param to avoid another status change
+                if ($this instanceof RuleTicket) {
+                    foreach ($this->actions as $action) {
+                        if ($action->fields['field'] === 'status') {
+                            $output['_status_changed'] = true;
+                        }
+                    }
+                }
             }
         }
     }
