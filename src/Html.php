@@ -4144,6 +4144,7 @@ JAVASCRIPT
             !empty($item_type_output)
             && isset($_SESSION["glpiactiveprofile"])
             && (Session::getCurrentInterface() == "central")
+            && $numrows > 0
         ) {
             echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
             echo "<form method='GET' action='" . $CFG_GLPI["root_doc"] . "/front/report.dynamic.php'>";

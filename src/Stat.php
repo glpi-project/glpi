@@ -431,26 +431,28 @@ class Stat extends CommonGLPI
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
+        $numrows = count($value);
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
         $is_html_output = is_a($output, HTMLSearchOutput::class);
+        $html_output = '';
 
-        $numrows = count($value);
         if ($numrows === 0) {
-            echo $output::showHeader(0, 0);
             if ($is_html_output) {
+                echo $output::showHeader(0, 0);
                 echo '<div class="alert alert-info">' . __s('No statistics are available') . '</div>';
+                echo $output::showFooter('', 0);
+                return;
             } else {
-                echo __('No statistics are available');
+                throw new \RuntimeException(__('No statistics are available'));
             }
-            echo $output::showFooter('', 0);
-            return;
         }
 
-        $end_display = $start + $_SESSION['glpilist_limit'];
-        $numrows     = count($value);
+        $headers = [];
+        $rows = [];
 
+        $end_display = $start + $_SESSION['glpilist_limit'];
         if (isset($_GET['export_all'])) {
             $start       = 0;
             $end_display = $numrows;
@@ -461,7 +463,7 @@ class Stat extends CommonGLPI
             $nbcols--;
         }
 
-        echo $output::showHeader($end_display - $start + 1, $nbcols);
+        $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
         $subname = match ($type) {
             'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('glpi_groups', $value2),
             'itilcategories_tree' => Dropdown::getDropdownName('glpi_itilcategories', $value2),
@@ -470,7 +472,7 @@ class Stat extends CommonGLPI
         };
 
         if ($is_html_output) {
-            echo $output::showNewLine();
+            $html_output .= $output::showNewLine();
             $header_num = 1;
 
             if (str_contains($type, '_tree') && $value2) {
@@ -484,123 +486,112 @@ class Stat extends CommonGLPI
                     ],
                     '&amp;'
                 );
-                echo $output::showHeaderItem("<a href='$url'>" . __s('Back') . "</a>", $header_num);
+                $html_output .= $output::showHeaderItem("<a href='$url'>" . __s('Back') . "</a>", $header_num);
             } else {
-                echo $output::showHeaderItem("&nbsp;", $header_num);
+                $html_output .= $output::showHeaderItem("&nbsp;", $header_num);
             }
-            echo $output::showHeaderItem('', $header_num);
+            $html_output .= $output::showHeaderItem('', $header_num);
 
-            echo $output::showHeaderItem(
+            $html_output .= $output::showHeaderItem(
                 value: _sx('quantity', 'Number'),
                 num: $header_num,
                 options: "colspan='4'"
             );
             if ($itemtype === Ticket::class) {
-                 echo $output::showHeaderItem(
-                     value: __s('Satisfaction'),
-                     num: $header_num,
-                     options: "colspan='3'"
-                 );
+                $html_output .= $output::showHeaderItem(
+                    value: __s('Satisfaction'),
+                    num: $header_num,
+                    options: "colspan='3'"
+                );
             }
-            echo $output::showHeaderItem(
+            $html_output .= $output::showHeaderItem(
                 value: __s('Average time'),
                 num: $header_num,
                 options: $itemtype === Ticket::class ? "colspan='3'" : "colspan='2'"
             );
-            echo $output::showHeaderItem(
+            $html_output .= $output::showHeaderItem(
                 value: __s('Real duration of treatment of the ticket'),
                 num: $header_num,
                 options: "colspan='2'"
             );
         }
 
-        echo $output::showNewLine();
+        $html_output .= $output::showNewLine();
         $header_num    = 1;
-        echo $output::showHeaderItem($subname, $header_num);
+
+        if ($is_html_output) {
+            $html_output .= $output::showHeaderItem($subname, $header_num);
+        } else {
+            $headers[] = $subname;
+        }
 
         if ($is_html_output) { // HTML display
-            echo $output::showHeaderItem('', $header_num);
+            $html_output .= $output::showHeaderItem('', $header_num);
         }
         if (!$is_html_output) {
-            echo $output::showHeaderItem(__('Number of opened tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of solved tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of late tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of closed tickets'), $header_num);
+            $headers[] = __('Number of opened tickets');
+            $headers[] = __('Number of solved tickets');
+            $headers[] = __('Number of late tickets');
+            $headers[] = __('Number of closed tickets');
         } else {
-            echo $output::showHeaderItem(htmlspecialchars(_nx('ticket', 'Opened', 'Opened', Session::getPluralNumber())), $header_num);
-            echo $output::showHeaderItem(
+            $html_output .= $output::showHeaderItem(htmlspecialchars(_nx('ticket', 'Opened', 'Opened', Session::getPluralNumber())), $header_num);
+            $html_output .= $output::showHeaderItem(
                 htmlspecialchars(_nx('ticket', 'Solved', 'Solved', Session::getPluralNumber())),
                 $header_num
             );
-            echo $output::showHeaderItem(__s('Late'), $header_num);
-            echo $output::showHeaderItem(__s('Closed'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Late'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Closed'), $header_num);
         }
 
         if ($itemtype === Ticket::class) {
             if (!$is_html_output) {
-                echo $output::showHeaderItem(
-                    __('Number of opened satisfaction survey'),
-                    $header_num
-                );
-                echo $output::showHeaderItem(
-                    __('Number of answered satisfaction survey'),
-                    $header_num
-                );
-                echo $output::showHeaderItem(
-                    __('Average satisfaction'),
-                    $header_num
-                );
+                $headers[] = __('Number of opened satisfaction survey');
+                $headers[] = __('Number of answered satisfaction survey');
+                $headers[] = __('Average satisfaction');
             } else {
-                echo $output::showHeaderItem(
+                $html_output .= $output::showHeaderItem(
                     htmlspecialchars(_nx('survey', 'Opened', 'Opened', Session::getPluralNumber())),
                     $header_num
                 );
-                echo $output::showHeaderItem(
+                $html_output .= $output::showHeaderItem(
                     htmlspecialchars(_nx('survey', 'Answered', 'Answered', Session::getPluralNumber())),
                     $header_num
                 );
-                echo $output::showHeaderItem(__s('Average'), $header_num);
+                $html_output .= $output::showHeaderItem(__s('Average'), $header_num);
             }
         }
 
         if (!$is_html_output) {
             if ($itemtype === Ticket::class) {
-                echo $output::showHeaderItem(
-                    __('Average time to take into account'),
-                    $header_num
-                );
+                $headers[] = __('Average time to take into account');
             }
-            echo $output::showHeaderItem(__('Average time to resolution'), $header_num);
-            echo $output::showHeaderItem(__('Average time to closure'), $header_num);
+            $headers[] = __('Average time to resolution');
+            $headers[] = __('Average time to closure');
         } else {
             if ($itemtype === Ticket::class) {
-                echo $output::showHeaderItem(__s('Take into account'), $header_num);
+                $html_output .= $output::showHeaderItem(__s('Take into account'), $header_num);
             }
-            echo $output::showHeaderItem(__s('Resolution'), $header_num);
-            echo $output::showHeaderItem(__s('Closure'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Resolution'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Closure'), $header_num);
         }
 
         if (!$is_html_output) {
-            echo $output::showHeaderItem(
-                __('Average real duration of treatment of the ticket'),
-                $header_num
-            );
-            echo $output::showHeaderItem(
-                __('Total real duration of treatment of the ticket'),
-                $header_num
-            );
+            $headers[] = __('Average real duration of treatment of the ticket');
+            $headers[] = __('Total real duration of treatment of the ticket');
         } else {
-            echo $output::showHeaderItem(__s('Average'), $header_num);
-            echo $output::showHeaderItem(__s('Total duration'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Average'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Total duration'), $header_num);
         }
         // End Line for column headers
-        echo $output::showEndLine($output_type);
+        $html_output .= $output::showEndLine($output_type);
         $row_num = 1;
 
         for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
             $row_num++;
+            $current_row = [];
             $item_num = 1;
-            echo $output::showNewLine($i % 2);
+            $colnum = 0;
+            $html_output .= $output::showNewLine($i % 2);
             if (
                 $is_html_output
                 && str_contains($type, '_tree')
@@ -617,9 +608,13 @@ class Stat extends CommonGLPI
                     ],
                     '&amp;'
                 );
-                echo $output::showItem("<a href='$url'>" . htmlspecialchars($value[$i]['link']) . "</a>", $item_num, $row_num);
+                $html_output .= $output::showItem("<a href='$url'>" . htmlspecialchars($value[$i]['link']) . "</a>", $item_num, $row_num);
             } else {
-                echo $output::showItem($value[$i]['link'], $item_num, $row_num);
+                if ($is_html_output) {
+                    $html_output .= $output::showItem($value[$i]['link'], $item_num, $row_num);
+                } else {
+                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $value[$i]['link']];
+                }
             }
 
             if ($is_html_output) {
@@ -640,10 +635,10 @@ class Stat extends CommonGLPI
                       "<i class='ti ti-graph fs-1'></i>" .
                       "</a>";
                 }
-                echo $output::showItem($link, $item_num, $row_num);
+                $html_output .= $output::showItem($link, $item_num, $row_num);
             }
 
-            $fn_show_entry_values = static function (int $i, string $data_type) use ($itemtype, $date1, $date2, $type, $value, $value2, &$item_num, $row_num, $output) {
+            $fn_show_entry_values = static function (int $i, string $data_type) use ($itemtype, $date1, $date2, $type, $value, $value2, &$item_num, $row_num, $output, &$html_output, $is_html_output, &$current_row, &$colnum) {
                 $values = self::constructEntryValues(
                     $itemtype,
                     $data_type,
@@ -654,7 +649,11 @@ class Stat extends CommonGLPI
                     $value2
                 );
                 $sum = array_sum($values);
-                echo $output::showItem($sum, $item_num, $row_num);
+                if ($is_html_output) {
+                    $html_output .= $output::showItem($sum, $item_num, $row_num);
+                } else {
+                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $sum];
+                }
                 return [$values, $sum];
             };
 
@@ -706,9 +705,13 @@ class Stat extends CommonGLPI
                         $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                     }
                 } else {
-                    $avgsatisfaction = '&nbsp;';
+                    $avgsatisfaction = ($is_html_output ? '&nbsp;' : '');
                 }
-                echo $output::showItem($avgsatisfaction, $item_num, $row_num);
+                if ($is_html_output) {
+                    $html_output .= $output::showItem($avgsatisfaction, $item_num, $row_num);
+                } else {
+                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $avgsatisfaction];
+                }
 
                 // The average time to take a ticket into account
                 $data = self::constructEntryValues(
@@ -734,7 +737,12 @@ class Stat extends CommonGLPI
                 if ($is_html_output) {
                     $timedisplay = htmlspecialchars($timedisplay);
                 }
-                echo $output::showItem($timedisplay, $item_num, $row_num);
+
+                if ($is_html_output) {
+                    $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                } else {
+                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
+                }
             }
 
             // The average time to resolve
@@ -764,7 +772,12 @@ class Stat extends CommonGLPI
             if ($is_html_output) {
                 $timedisplay = htmlspecialchars($timedisplay);
             }
-            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            if ($is_html_output) {
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+            } else {
+                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
+            }
 
             // The average time to close
             $data = self::constructEntryValues(
@@ -793,7 +806,12 @@ class Stat extends CommonGLPI
             if ($is_html_output) {
                 $timedisplay = htmlspecialchars($timedisplay);
             }
-            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            if ($is_html_output) {
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+            } else {
+                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
+            }
 
             //the number of solved interventions with a duration time
             $solved_with_actiontime = self::constructEntryValues(
@@ -840,7 +858,12 @@ class Stat extends CommonGLPI
             if ($is_html_output) {
                 $timedisplay = htmlspecialchars($timedisplay);
             }
-            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            if ($is_html_output) {
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+            } else {
+                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
+            }
             // The total actiontime to resolve
             $timedisplay = $total_actiontime;
 
@@ -852,11 +875,57 @@ class Stat extends CommonGLPI
             if ($is_html_output) {
                 $timedisplay = htmlspecialchars($timedisplay);
             }
-            echo $output::showItem($timedisplay, $item_num, $row_num);
 
-            echo $output::showEndLine(false);
+            if ($is_html_output) {
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+            } else {
+                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
+            }
+
+            $rows[$row_num] = $current_row;
+            $html_output .= $output::showEndLine(false);
         }
-        $output::showFooter('', $numrows);
+        if ($is_html_output) {
+            $output::showFooter('', $numrows);
+        }
+
+        if ($is_html_output) {
+            echo $html_output;
+        } else {
+            $params = [
+                'start' => 0,
+                'is_deleted' => 0,
+                'as_map' => 0,
+                'browse' => 0,
+                'unpublished' => 1,
+                'criteria' => [],
+                'metacriteria' => [],
+                'display_type' => 0,
+                'hide_controls' => true
+            ];
+            $stats_data = SearchEngine::prepareDataForSearch($itemtype, $params);
+            $stats_data = array_merge($stats_data, [
+                'itemtype' => $itemtype,
+                'data' => [
+                    'totalcount' => $numrows,
+                    'count' => $numrows,
+                    'search' => '',
+                    'cols' => [],
+                    'rows' => $rows,
+                ],
+            ]);
+
+            $colid = 0;
+            foreach ($headers as $header) {
+                $stats_data['data']['cols'][] = [
+                    'name' => $header,
+                    'itemtype' => $itemtype,
+                    'id' => ++$colid,
+                ];
+            }
+
+            $output->displayData($stats_data, []);
+        }
     }
 
     /**
