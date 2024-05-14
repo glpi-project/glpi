@@ -432,21 +432,24 @@ class Stat extends CommonGLPI
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
         $numrows = count($value);
-        if ($numrows === 0) {
-            $output = SearchEngine::getOutputForLegacyKey(Search::HTML_OUTPUT);
-            echo $output::showHeader(0, 0);
-            echo '<div class="alert alert-info">' . __s('No statistics are available') . '</div>';
-            echo $output::showFooter('', 0);
-            return;
-        }
-
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
         $is_html_output = is_a($output, HTMLSearchOutput::class);
         $html_output = '';
 
-        $headers = [];
+        if ($numrows === 0) {
+            if ($is_html_output) {
+                echo $output::showHeader(0, 0);
+                echo '<div class="alert alert-info">' . __s('No statistics are available') . '</div>';
+                echo $output::showFooter('', 0);
+                return;
+            } else {
+                throw new \RuntimeException(__('No statistics are available'));
+            }
+        }
+
+       $headers = [];
         $rows = [];
 
         $end_display = $start + $_SESSION['glpilist_limit'];
