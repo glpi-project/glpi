@@ -125,7 +125,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             ) {
                 $updates['locations_id'] = $asset->fields['locations_id'];
                 Session::addMessageAfterRedirect(
-                    __('Location updated. The connected items have been moved in the same location.'),
+                    __s('Location updated. The connected items have been moved in the same location.'),
                     true
                 );
             }
@@ -142,7 +142,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                     $updates['groups_id'] = $asset->fields['groups_id'];
                 }
                 Session::addMessageAfterRedirect(
-                    __('User or group updated. The connected items have been moved in the same values.'),
+                    __s('User or group updated. The connected items have been moved in the same values.'),
                     true
                 );
             }
@@ -156,7 +156,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 $updates['contact_num'] = $asset->fields['contact_num'] ?? '';
                 $updates['is_dynamic']  = $asset->fields['is_dynamic'] ?? 0;
                 Session::addMessageAfterRedirect(
-                    __('Alternate username updated. The connected items have been updated using this alternate username.'),
+                    __s('Alternate username updated. The connected items have been updated using this alternate username.'),
                     true
                 );
             }
@@ -168,7 +168,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             ) {
                 $updates['states_id'] = $asset->fields['states_id'];
                 Session::addMessageAfterRedirect(
-                    __('Status updated. The connected items have been updated using this status.'),
+                    __s('Status updated. The connected items have been updated using this status.'),
                     true
                 );
             }

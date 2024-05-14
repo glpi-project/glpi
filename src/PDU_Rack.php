@@ -156,7 +156,7 @@ class PDU_Rack extends CommonDBRelation
         if (count($error_detected)) {
             foreach ($error_detected as $error) {
                 Session::addMessageAfterRedirect(
-                    $error,
+                    htmlspecialchars($error),
                     true,
                     ERROR
                 );

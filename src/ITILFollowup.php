@@ -391,7 +391,7 @@ class ITILFollowup extends CommonDBChild
             && !isset($input['add_reopen'])
         ) {
             Session::addMessageAfterRedirect(
-                __("You can't add a followup without description"),
+                __s("You can't add a followup without description"),
                 false,
                 ERROR
             );
@@ -429,14 +429,14 @@ class ITILFollowup extends CommonDBChild
                 if (isset($input["_add"])) {
                     // Reopen using add form
                     Session::addMessageAfterRedirect(
-                        __('If you want to reopen this item, you must specify a reason'),
+                        __s('If you want to reopen this item, you must specify a reason'),
                         false,
                         ERROR
                     );
                 } else {
                    // Refuse solution
                     Session::addMessageAfterRedirect(
-                        __('If you reject the solution, you must specify a reason'),
+                        __s('If you reject the solution, you must specify a reason'),
                         false,
                         ERROR
                     );

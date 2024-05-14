@@ -50,7 +50,7 @@ if (
     )
 ) {
     Session::addMessageAfterRedirect(
-        __('Sending password forget notification is not enabled.'),
+        __s('Sending password forget notification is not enabled.'),
         true,
         ERROR
     );

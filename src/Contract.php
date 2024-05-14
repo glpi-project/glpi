@@ -1362,11 +1362,11 @@ class Contract extends CommonDBTM
                             $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(sprintf(
+                            Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                                 __('%1$s: %2$s'),
                                 $entityname,
                                 $message
-                            ));
+                            )));
                         }
 
                         $alert = new Alert();
@@ -1387,7 +1387,7 @@ class Contract extends CommonDBTM
                         if ($task) {
                             $task->log($msg);
                         } else {
-                            Session::addMessageAfterRedirect($msg, false, ERROR);
+                            Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                         }
                     }
                 }

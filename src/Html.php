@@ -119,11 +119,11 @@ class Html
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e);
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('%1$s %2$s'),
                     $time,
                     _x('adjective', 'Invalid')
-                )
+                ))
             );
             return $time;
         }

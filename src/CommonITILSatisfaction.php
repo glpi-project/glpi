@@ -183,7 +183,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config' . $config_suffix, $entities_id, 'inquest_mandatory_comment' . $config_suffix);
             if ($inquest_mandatory_comment && ($satisfaction <= $inquest_mandatory_comment) && empty($comment)) {
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment),
+                    htmlspecialchars(sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment)),
                     false,
                     ERROR
                 );

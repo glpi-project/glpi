@@ -788,7 +788,7 @@ class User extends CommonDBTM
 
         if (empty($input['name']) || !Auth::isValidLogin($input['name'])) {
             Session::addMessageAfterRedirect(
-                __('The login is not valid. Unable to add the user.'),
+                __s('The login is not valid. Unable to add the user.'),
                 false,
                 ERROR
             );
@@ -821,7 +821,7 @@ class User extends CommonDBTM
 
         if (count($iterator)) {
             Session::addMessageAfterRedirect(
-                __('Unable to add. The user already exists.'),
+                __s('Unable to add. The user already exists.'),
                 false,
                 ERROR
             );
@@ -841,7 +841,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            $password_errors,
+                            array_map('htmlspecialchars', $password_errors),
                             false,
                             ERROR
                         );
@@ -850,7 +850,7 @@ class User extends CommonDBTM
                     unset($input["password2"]);
                 } else {
                     Session::addMessageAfterRedirect(
-                        __('Error: the two passwords do not match'),
+                        __s('Error: the two passwords do not match'),
                         false,
                         ERROR
                     );
@@ -965,7 +965,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, true);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             }
         }
     }
@@ -1018,7 +1018,7 @@ class User extends CommonDBTM
                     self::dropPictureFiles("{$sub}/{$filename}.{$extension}");
 
                     if (Document::renameForce($fullpath, $picture_path)) {
-                        Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
+                        Session::addMessageAfterRedirect(__s('The file is valid. Upload is successful.'));
                         // For display
                         $input['picture'] = "{$sub}/{$filename}.{$extension}";
 
@@ -1027,7 +1027,7 @@ class User extends CommonDBTM
                         Toolbox::resizePicture($picture_path, $thumb_path);
                     } else {
                         Session::addMessageAfterRedirect(
-                            __('Moving temporary file failed.'),
+                            __s('Moving temporary file failed.'),
                             false,
                             ERROR
                         );
@@ -1035,7 +1035,7 @@ class User extends CommonDBTM
                     }
                 } else {
                     Session::addMessageAfterRedirect(
-                        __('The file is not an image file.'),
+                        __s('The file is not an image file.'),
                         false,
                         ERROR
                     );
@@ -1073,7 +1073,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            $password_errors,
+                            array_map('htmlspecialchars', $password_errors),
                             false,
                             ERROR
                         );
@@ -1082,7 +1082,7 @@ class User extends CommonDBTM
                     unset($input["password2"]);
                 } else {
                     Session::addMessageAfterRedirect(
-                        __('Error: the two passwords do not match'),
+                        __s('Error: the two passwords do not match'),
                         false,
                         ERROR
                     );
@@ -1230,7 +1230,7 @@ class User extends CommonDBTM
         ) {
             unset($input['is_active']);
             Session::addMessageAfterRedirect(
-                __("Can't set user as inactive as it is the only remaining super administrator."),
+                __s("Can't set user as inactive as it is the only remaining super administrator."),
                 false,
                 ERROR
             );
@@ -1262,7 +1262,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, false);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             }
         } elseif (in_array('password', $this->updates)) {
             $alert = new Alert();
@@ -3521,7 +3521,7 @@ JAVASCRIPT;
                  unset($this->updates[$key]);
                  unset($this->oldvalues['name']);
                  Session::addMessageAfterRedirect(
-                     __('Unable to update login. A user already exists.'),
+                     __s('Unable to update login. A user already exists.'),
                      false,
                      ERROR
                  );
@@ -3532,7 +3532,7 @@ JAVASCRIPT;
                 unset($this->updates[$key]);
                 unset($this->oldvalues['name']);
                 Session::addMessageAfterRedirect(
-                    __('The login is not valid. Unable to update login.'),
+                    __s('The login is not valid. Unable to update login.'),
                     false,
                     ERROR
                 );
@@ -5603,7 +5603,7 @@ JAVASCRIPT;
         if (!empty($error_messages)) {
             echo '<tr class="tab_bg_2 center">';
             echo '<td colspan="2" class="red b">';
-            echo implode('<br/>', $error_messages);
+            echo implode('<br/>', array_map('htmlspecialchars', $error_messages));
             echo '</td>';
             echo '</tr>';
         }
@@ -5771,14 +5771,14 @@ JAVASCRIPT;
     {
         try {
             if ($this->updateForgottenPassword($input)) {
-                Session::addMessageAfterRedirect(__('Reset password successful.'));
+                Session::addMessageAfterRedirect(__s('Reset password successful.'));
             }
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
            // Force display on error
             foreach ($e->getMessages() as $message) {
-                Session::addMessageAfteRredirect($message, false, ERROR);
+                Session::addMessageAfteRredirect(htmlspecialchars($message), false, ERROR);
             }
         }
 
@@ -5801,10 +5801,10 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
+        Session::addMessageAfteRredirect(__s('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
 
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title'         => __('Forgotten password?'),
@@ -5824,10 +5824,10 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email, true);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfterRedirect(__('The given email address will receive the informations required to define password.'));
+        Session::addMessageAfterRedirect(__s('The given email address will receive the informations required to define password.'));
 
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title'         => __('Password initialization'),

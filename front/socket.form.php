@@ -74,7 +74,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
 
         if ($_POST["_to"] < $_POST["_from"]) {
             Session::addMessageAfterRedirect(
-                __("'To' should not be smaller than 'From'"),
+                __s("'To' should not be smaller than 'From'"),
                 false,
                 ERROR
             );

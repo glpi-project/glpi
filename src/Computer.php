@@ -283,25 +283,25 @@ class Computer extends CommonDBTM
             if ($update_done) {
                 if (isset($changes['contact']) || isset($changes['contact_num'])) {
                     Session::addMessageAfterRedirect(
-                        __('Alternate username updated. The connected items have been updated using this alternate username.'),
+                        __s('Alternate username updated. The connected items have been updated using this alternate username.'),
                         true
                     );
                 }
                 if (isset($changes['groups_id']) || isset($changes['users_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('User or group updated. The connected items have been moved in the same values.'),
+                        __s('User or group updated. The connected items have been moved in the same values.'),
                         true
                     );
                 }
                 if (isset($changes['states_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('Status updated. The connected items have been updated using this status.'),
+                        __s('Status updated. The connected items have been updated using this status.'),
                         true
                     );
                 }
                 if (isset($changes['locations_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('Location updated. The connected items have been moved in the same location.'),
+                        __s('Location updated. The connected items have been moved in the same location.'),
                         true
                     );
                 }

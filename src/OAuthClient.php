@@ -111,7 +111,7 @@ final class OAuthClient extends CommonDBTM
     {
         if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
             Session::addMessageAfterRedirect(
-                msg: __('Invalid IP address or CIDR range'),
+                msg: __s('Invalid IP address or CIDR range'),
                 message_type: ERROR
             );
             return false;
@@ -135,7 +135,7 @@ final class OAuthClient extends CommonDBTM
     {
         if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
             Session::addMessageAfterRedirect(
-                msg: __('Invalid IP address or CIDR range'),
+                msg: __s('Invalid IP address or CIDR range'),
                 message_type: ERROR
             );
             return false;

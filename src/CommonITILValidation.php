@@ -367,13 +367,13 @@ abstract class CommonITILValidation extends CommonDBChild
                     $user->getFromDB($this->fields["items_id_target"]);
                     $email   = $user->getDefaultEmail();
                     if (!empty($email)) {
-                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $user->getName()));
+                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $user->getName())));
                     } else {
                         Session::addMessageAfterRedirect(
-                            sprintf(
+                            htmlspecialchars(sprintf(
                                 __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
                                 $user->getName()
-                            ),
+                            )),
                             false,
                             ERROR
                         );
@@ -381,7 +381,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
                     $target = new $this->fields["itemtype_target"]();
                     if ($target->getFromDB($this->fields["items_id_target"])) {
-                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $target->getName()));
+                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $target->getName())));
                     }
                 }
             }
@@ -401,7 +401,7 @@ abstract class CommonITILValidation extends CommonDBChild
                  || ($input["comment_validation"] == ''))
             ) {
                 Session::addMessageAfterRedirect(
-                    __('If approval is denied, specify a reason.'),
+                    __s('If approval is denied, specify a reason.'),
                     false,
                     ERROR
                 );

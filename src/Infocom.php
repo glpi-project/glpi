@@ -453,7 +453,7 @@ class Infocom extends CommonDBChild
                     Html::convDate($budget->fields['begin_date']),
                     Html::convDate($budget->fields['end_date'])
                 );
-                Session::addMessageAfterRedirect($msg, false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
             }
         }
     }
@@ -587,14 +587,14 @@ class Infocom extends CommonDBChild
                     ));
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(sprintf(
+                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
                             $entity
                         ),
                         $message
-                    ));
+                    )));
                 }
 
                 $alert             = new Alert();
@@ -612,7 +612,7 @@ class Infocom extends CommonDBChild
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect($msg, false, ERROR);
+                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                 }
             }
         }
@@ -870,7 +870,7 @@ JS;
             $fiscaldate = new \DateTime($fiscaldate, new DateTimeZone($TZ));
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
-                __('Please fill you fiscal year date in preferences.'),
+                __s('Please fill you fiscal year date in preferences.'),
                 false,
                 ERROR
             );
@@ -889,7 +889,7 @@ JS;
             }
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
-                __('Please fill either buy or use date in preferences.'),
+                __s('Please fill either buy or use date in preferences.'),
                 false,
                 ERROR
             );

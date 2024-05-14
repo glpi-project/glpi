@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
 
         if ($_POST["to_logical_number"] < $_POST["from_logical_number"]) {
             Session::addMessageAfterRedirect(
-                __("'To' should not be smaller than 'From'"),
+                __s("'To' should not be smaller than 'From'"),
                 false,
                 ERROR
             );

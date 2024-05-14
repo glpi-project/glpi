@@ -330,7 +330,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         if (array_key_exists('content', $input) && empty($input['content'])) {
             Session::addMessageAfterRedirect(
-                __("You can't remove description of a task."),
+                __s("You can't remove description of a task."),
                 false,
                 ERROR
             );
@@ -374,7 +374,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             if (!$this->test_valid_date($input)) {
                 Session::addMessageAfterRedirect(
-                    __('Error in entering dates. The starting date is later than the ending date'),
+                    __s('Error in entering dates. The starting date is later than the ending date'),
                     false,
                     ERROR
                 );
@@ -402,14 +402,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ) {
                 if (!$calendar->isAWorkingHour(strtotime($input["begin"]))) {
                     Session::addMessageAfterRedirect(
-                        __('Start of the selected timeframe is not a working hour.'),
+                        __s('Start of the selected timeframe is not a working hour.'),
                         false,
                         ERROR
                     );
                 }
                 if (!$calendar->isAWorkingHour(strtotime($input["end"]))) {
                     Session::addMessageAfterRedirect(
-                        __('End of the selected timeframe is not a working hour.'),
+                        __s('End of the selected timeframe is not a working hour.'),
                         false,
                         ERROR
                     );
@@ -575,7 +575,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (empty($input['content'])) {
             Session::addMessageAfterRedirect(
-                __("You can't add a task without description."),
+                __s("You can't add a task without description."),
                 false,
                 ERROR
             );
@@ -600,7 +600,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             unset($input["plan"]);
             if (!$this->test_valid_date($input)) {
                 Session::addMessageAfterRedirect(
-                    __('Error in entering dates. The starting date is later than the ending date'),
+                    __s('Error in entering dates. The starting date is later than the ending date'),
                     false,
                     ERROR
                 );
@@ -679,14 +679,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ) {
                 if (!$calendar->isAWorkingHour(strtotime($this->fields["begin"]))) {
                     Session::addMessageAfterRedirect(
-                        __('Start of the selected timeframe is not a working hour.'),
+                        __s('Start of the selected timeframe is not a working hour.'),
                         false,
                         ERROR
                     );
                 }
                 if (!$calendar->isAWorkingHour(strtotime($this->fields["end"]))) {
                     Session::addMessageAfterRedirect(
-                        __('End of the selected timeframe is not a working hour.'),
+                        __s('End of the selected timeframe is not a working hour.'),
                         false,
                         ERROR
                     );

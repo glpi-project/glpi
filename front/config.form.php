@@ -40,7 +40,7 @@ Session::checkRight("config", READ);
 
 if (isset($_GET['check_version'])) {
     Session::addMessageAfterRedirect(
-        Toolbox::checkNewVersionAvailable()
+        htmlspecialchars(Toolbox::checkNewVersionAvailable())
     );
     Html::back();
 }
@@ -58,7 +58,7 @@ if (!empty($_POST["update"])) {
 if (!empty($_POST['reset_opcache'])) {
     $config->checkGlobal(UPDATE);
     if (opcache_reset()) {
-        Session::addMessageAfterRedirect(__('PHP OPcache reset successful'));
+        Session::addMessageAfterRedirect(__s('PHP OPcache reset successful'));
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
@@ -66,7 +66,7 @@ if (!empty($_POST['reset_core_cache'])) {
     $config->checkGlobal(UPDATE);
     $cache_manager = new CacheManager();
     if ($cache_manager->getCoreCacheInstance()->clear()) {
-        Session::addMessageAfterRedirect(__('GLPI cache reset successful'));
+        Session::addMessageAfterRedirect(__s('GLPI cache reset successful'));
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
@@ -74,7 +74,7 @@ if (!empty($_POST['reset_translation_cache'])) {
     $config->checkGlobal(UPDATE);
     $cache_manager = new CacheManager();
     if ($cache_manager->getTranslationsCacheInstance()->clear()) {
-        Session::addMessageAfterRedirect(__('Translation cache reset successful'));
+        Session::addMessageAfterRedirect(__s('Translation cache reset successful'));
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }

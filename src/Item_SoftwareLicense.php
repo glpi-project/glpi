@@ -238,7 +238,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                                 }
                             } else {
-                                Session::addMessageAfterRedirect(__('A version is required!'), false, ERROR);
+                                Session::addMessageAfterRedirect(__s('A version is required!'), false, ERROR);
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             }
                         } else {

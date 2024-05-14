@@ -455,8 +455,8 @@ class NotificationEventMailing extends NotificationEventAbstract
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $messageerror = __('Error in sending the email');
-        Session::addMessageAfterRedirect($messageerror . "<br/>" . $error, true, ERROR);
+        $messageerror = __s('Error in sending the email');
+        Session::addMessageAfterRedirect($messageerror . "<br/>" . htmlspecialchars($error), true, ERROR);
 
         $retries = $CFG_GLPI['smtp_max_retries'] - $notification->fields['sent_try'];
         Toolbox::logInFile(

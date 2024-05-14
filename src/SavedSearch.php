@@ -508,7 +508,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     && Session::getCurrentInterface() != "helpdesk"
                 ) {
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Partial load of the saved search: %s'), $this->getName()),
+                        htmlspecialchars(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
                         false,
                         ERROR
                     );
@@ -1186,7 +1186,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 'date_creation' => date('Y-m-d H:i:s')
             ]);
 
-            Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
+            Session::addMessageAfterRedirect(__s('Notification has been created!'), INFO);
         }
     }
 

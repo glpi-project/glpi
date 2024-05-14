@@ -1229,12 +1229,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
         unset($input['header_name'], $input['header_value']);
         if (isset($input["itemtype"]) && !$input["itemtype"]) {
-            Session::addMessageAfterRedirect(__('An item type is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('An item type is required'), false, ERROR);
             $valid_input = false;
         }
 
         if (isset($input["event"]) && !$input["event"]) {
-            Session::addMessageAfterRedirect(__('An event is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('An event is required'), false, ERROR);
             $valid_input = false;
         }
 

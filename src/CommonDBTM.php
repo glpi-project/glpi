@@ -1469,14 +1469,14 @@ class CommonDBTM extends CommonGLPI
                 );
             }
             $opt = [ 'forceid' => $this instanceof CommonITILObject ];
-            $display = (isset($this->input['_no_message_link']) ? $this->getNameID($opt)
+            $display = (isset($this->input['_no_message_link']) ? htmlspecialchars($this->getNameID($opt))
                                                             : $this->getLink($opt));
 
            // Do not display quotes
            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
-                __('%1$s: %2$s'),
-                __('Item successfully added'),
+                __s('%1$s: %2$s'),
+                __s('Item successfully added'),
                 $display
             ));
         }
@@ -1903,12 +1903,12 @@ class CommonDBTM extends CommonGLPI
     final public function formatSessionMessageAfterAction(string $message): string
     {
         if (isset($this->input['_no_message_link'])) {
-            $display = $this->getNameID();
+            $display = htmlspecialchars($this->getNameID());
         } else {
             $display = $this->getLink();
         }
 
-        return sprintf(__('%1$s: %2$s'), $message, $display);
+        return sprintf(__s('%1$s: %2$s'), htmlspecialchars($message), $display);
     }
 
     /**
@@ -4339,7 +4339,7 @@ class CommonDBTM extends CommonGLPI
                 __('At least one field has an incorrect value'),
                 implode(',', $fails)
             );
-            Session::addMessageAfterRedirect($message, INFO, true);
+            Session::addMessageAfterRedirect(htmlspecialchars($message), INFO, true);
         }
     }
 
@@ -4403,17 +4403,17 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($unicity['action_refuse']) {
-            $message_text = sprintf(
+            $message_text = htmlspecialchars(sprintf(
                 __('Impossible record for %s'),
-                implode('&nbsp;&amp;&nbsp;', $message)
-            );
+                implode(' & ', $message)
+            ));
         } else {
-            $message_text = sprintf(
+            $message_text = htmlspecialchars(sprintf(
                 __('Item successfully added but duplicate record on %s'),
-                implode('&nbsp;&amp;&nbsp;', $message)
-            );
+                implode(' & ', $message)
+            ));
         }
-        $message_text .= '<br>' . __('Other item exist');
+        $message_text .= '<br>' . __s('Other item exist');
 
         foreach ($doubles as $double) {
             if ($this instanceof CommonDBChild) {
@@ -4443,7 +4443,7 @@ class CommonDBTM extends CommonGLPI
                             $field_value
                         );
                     }
-                    $new_text = sprintf(__('%1$s: %2$s'), $value, $field_value);
+                    $new_text = htmlspecialchars(sprintf(__('%1$s: %2$s'), $value, $field_value));
                     if (empty($double_text)) {
                         $double_text = $new_text;
                     } else {
@@ -4453,10 +4453,10 @@ class CommonDBTM extends CommonGLPI
             }
            // Add information on item in trashbin
             if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-                $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the trashbin'));
+                $double_text = sprintf(__s('%1$s - %2$s'), $double_text, __s('Item in the trashbin'));
             }
 
-            $message_text .= "<br>[$double_text]";
+            $message_text .= "<br>[" . $double_text . "]";
         }
         return $message_text;
     }

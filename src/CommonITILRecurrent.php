@@ -423,7 +423,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
        // Check that anticipated creation delay is greater than periodicity.
         if ($create_before > $periodicity_in_seconds) {
             Session::addMessageAfterRedirect(
-                __('Invalid frequency. It must be greater than the preliminary creation.'),
+                __s('Invalid frequency. It must be greater than the preliminary creation.'),
                 false,
                 ERROR
             );

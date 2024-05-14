@@ -299,7 +299,7 @@ class State extends CommonTreeDropdown
         }
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                sprintf(__s('%1$s must be unique!'), static::getTypeName(1)),
+                htmlspecialchars(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
                 false,
                 ERROR
             );
@@ -740,7 +740,7 @@ class State extends CommonTreeDropdown
     {
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                sprintf(__s('%1$s must be unique per level!'), static::getTypeName(1)),
+                htmlspecialchars(sprintf(__s('%1$s must be unique per level!'), static::getTypeName(1))),
                 false,
                 ERROR
             );

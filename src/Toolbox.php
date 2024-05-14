@@ -1497,7 +1497,7 @@ class Toolbox
                 // redirect to full url -> check if it's based on glpi url
                 if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
                     if ($matches[1] !== $CFG_GLPI['url_base']) {
-                        Session::addMessageAfterRedirect('Redirection failed');
+                        Session::addMessageAfterRedirect(__s('Redirection failed'));
                         if (Session::getCurrentInterface() === "helpdesk") {
                             Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
                         } else {

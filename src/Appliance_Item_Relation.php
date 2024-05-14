@@ -116,19 +116,19 @@ class Appliance_Item_Relation extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input[self::$items_id_1]) || empty($input[self::$items_id_1])))
             || (isset($input[self::$items_id_1]) && empty($input[self::$items_id_1]))
         ) {
-            $error_detected[] = __('An appliance item is required');
+            $error_detected[] = __s('An appliance item is required');
         }
 
         if (count($error_detected)) {

@@ -3225,7 +3225,7 @@ JS
                     $ruleitem->update($input);
                 }
                 Session::addMessageAfterRedirect(
-                    __('Rules using the object have been disabled.'),
+                    __s('Rules using the object have been disabled.'),
                     true
                 );
             }

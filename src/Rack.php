@@ -786,7 +786,7 @@ JAVASCRIPT;
 
         if ($input['position'] == 0) {
             Session::addMessageAfterRedirect(
-                __('Position must be set'),
+                __s('Position must be set'),
                 true,
                 ERROR
             );
@@ -806,10 +806,10 @@ JAVASCRIPT;
 
         if ($existing > 0) {
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('%1$s position is not available'),
                     $input['position']
-                ),
+                )),
                 true,
                 ERROR
             );

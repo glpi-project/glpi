@@ -100,10 +100,10 @@ if (isset($_POST["purge"])) {
                 $np->delete($_POST);
             }
         } else {
-            Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
+            Session::addMessageAfterRedirect(__s('Cannot change a migration network port to an unknown one'));
         }
     } else {
-        Session::addMessageAfterRedirect(__('Network port is not available...'));
+        Session::addMessageAfterRedirect(__s('Network port is not available...'));
         $np->delete($_POST);
     }
 

@@ -339,7 +339,7 @@ class AuthLDAP extends CommonDBTM
                 unset($input['sync_field']);
             } else {
                 Session::addMessageAfterRedirect(
-                    __('Synchronization field cannot be changed once in use.'),
+                    __s('Synchronization field cannot be changed once in use.'),
                     false,
                     ERROR
                 );
@@ -3551,10 +3551,10 @@ class AuthLDAP extends CommonDBTM
                     }
                 }
             }
-            Session::addMessageAfterRedirect(__('User not found or several users found'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('User not found or several users found'), false, ERROR);
         } else {
             Session::addMessageAfterRedirect(
-                __('Unable to add. The user already exist.'),
+                __s('Unable to add. The user already exist.'),
                 false,
                 ERROR
             );
@@ -5003,7 +5003,7 @@ class AuthLDAP extends CommonDBTM
             && (!Filesystem::isFilepathSafe($input['tls_certfile']) || !file_exists($input['tls_certfile']))
         ) {
             Session::addMessageAfterRedirect(
-                __('TLS certificate path is incorrect'),
+                __s('TLS certificate path is incorrect'),
                 false,
                 ERROR
             );
@@ -5016,7 +5016,7 @@ class AuthLDAP extends CommonDBTM
             && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
         ) {
             Session::addMessageAfterRedirect(
-                __('TLS key file path is incorrect'),
+                __s('TLS key file path is incorrect'),
                 false,
                 ERROR
             );

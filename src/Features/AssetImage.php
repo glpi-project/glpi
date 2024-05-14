@@ -74,7 +74,7 @@ trait AssetImage
                 if ($dest = Toolbox::savePicture($src, $prefix)) {
                     $input[$name] = $dest;
                 } else {
-                    Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
+                    Session::addMessageAfterRedirect(__s('Unable to save picture file.'), true, ERROR);
                 }
 
                 if (array_key_exists($name, $this->fields)) {
@@ -120,7 +120,7 @@ trait AssetImage
                 if ($dest = Toolbox::savePicture($src, $prefix)) {
                     $new_pictures[$input_key] = $dest;
                 } else {
-                    Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
+                    Session::addMessageAfterRedirect(__s('Unable to save picture file.'), true, ERROR);
                 }
             }
         }

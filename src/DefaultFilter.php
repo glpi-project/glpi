@@ -177,10 +177,10 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 
         if ($this->getFromDBByCrit($criteria)) {
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('Itemtype %s is already in use'),
                     $input['itemtype']
-                ),
+                )),
                 true,
                 ERROR
             );
