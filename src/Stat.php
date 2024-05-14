@@ -449,7 +449,7 @@ class Stat extends CommonGLPI
             }
         }
 
-       $headers = [];
+        $headers = [];
         $rows = [];
 
         $end_display = $start + $_SESSION['glpilist_limit'];
