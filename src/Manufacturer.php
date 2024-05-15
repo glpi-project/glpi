@@ -55,6 +55,7 @@ class Manufacturer extends CommonDropdown
 
         switch ($field['type']) {
             case 'registeredIDChooser':
+                RegisteredID::showAddChildButtonForItemForm($this, '_registeredID');
                 RegisteredID::showChildsForItemForm($this, '_registeredID');
                 break;
         }
@@ -64,16 +65,12 @@ class Manufacturer extends CommonDropdown
     public function getAdditionalFields()
     {
 
-        return [['name'  => 'none',
-            'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
-                                       RegisteredID::showAddChildButtonForItemForm(
-                                           $this,
-                                           '_registeredID',
-                                           null,
-                                           false
-                                       ),
-            'type'  => 'registeredIDChooser'
-        ]
+        return [
+            [
+                'name'  => 'none',
+                'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
+                'type'  => 'registeredIDChooser'
+            ]
         ];
     }
 

@@ -293,25 +293,25 @@ class Item_Enclosure extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['enclosures_id']) || empty($input['enclosures_id'])))
             || (isset($input['enclosures_id']) && empty($input['enclosures_id']))
         ) {
-            $error_detected[] = __('An enclosure is required');
+            $error_detected[] = __s('An enclosure is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['position']) || empty($input['position'])))
             || (isset($input['position']) && empty($input['position']))
         ) {
-            $error_detected[] = __('A position is required');
+            $error_detected[] = __s('A position is required');
         }
 
         if (count($error_detected)) {

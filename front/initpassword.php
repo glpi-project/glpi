@@ -48,7 +48,7 @@ if (
     )
 ) {
     Session::addMessageAfterRedirect(
-        __('Sending password initialization notification is not enabled.'),
+        __s('Sending password initialization notification is not enabled.'),
         true,
         ERROR
     );

@@ -99,14 +99,14 @@ class Document extends CommonDBTM
         return 'd';
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
         return (Session::haveRight('document', CREATE)
               || Session::haveRight('followup', ITILFollowup::ADDMYTICKET));
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (isset($this->input['itemtype'], $this->input['items_id'])) {
             if ($item = getItemForItemtype($this->input['itemtype'])) {
@@ -152,10 +152,10 @@ class Document extends CommonDBTM
                 ) <= 1)
             ) {
                 if (unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"])) {
-                    Session::addMessageAfterRedirect(sprintf(
+                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                         __('Successful deletion of the file %s'),
                         $this->fields["filepath"]
-                    ));
+                    )));
                 } else {
                     trigger_error(
                         sprintf(
@@ -165,10 +165,10 @@ class Document extends CommonDBTM
                         E_USER_WARNING
                     );
                     Session::addMessageAfterRedirect(
-                        sprintf(
+                        htmlspecialchars(sprintf(
                             __('Failed to delete the file %s'),
                             $this->fields["filepath"]
-                        ),
+                        )),
                         false,
                         ERROR
                     );
@@ -262,7 +262,7 @@ class Document extends CommonDBTM
 
         if (!empty($input['link']) && !Toolbox::isValidWebUrl($input['link'])) {
             Session::addMessageAfterRedirect(
-                __('Invalid link'),
+                __s('Invalid link'),
                 false,
                 ERROR
             );
@@ -1039,7 +1039,7 @@ class Document extends CommonDBTM
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                sprintf(__('File %s not found.'), $filename),
+                htmlspecialchars(sprintf(__('File %s not found.'), $filename)),
                 false,
                 ERROR
             );
@@ -1066,10 +1066,10 @@ class Document extends CommonDBTM
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
-                Session::addMessageAfterRedirect(sprintf(
-                    __s('Successful deletion of the file %s'),
+                Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    __('Successful deletion of the file %s'),
                     $input['current_filename']
-                ));
+                )));
             } else {
                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
@@ -1081,10 +1081,10 @@ class Document extends CommonDBTM
                     E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
-                    sprintf(
-                        __s('Failed to delete the file %1$s'),
+                    htmlspecialchars(sprintf(
+                        __('Failed to delete the file %1$s'),
                         $input['current_filename']
-                    ),
+                    )),
                     false,
                     ERROR
                 );
@@ -1099,16 +1099,16 @@ class Document extends CommonDBTM
             && is_writable($fullpath)
         ) { // Move if allowed
             if (self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__('Document move succeeded.'));
+                Session::addMessageAfterRedirect(__s('Document move succeeded.'));
             } else {
-                Session::addMessageAfterRedirect(__('File move failed.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('File move failed.'), false, ERROR);
                 return false;
             }
         } else { // Copy (will overwrite dest file is present)
             if (copy($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__('Document copy succeeded.'));
+                Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
             } else {
-                Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
                 return false;
             }
         }
@@ -1481,14 +1481,14 @@ class Document extends CommonDBTM
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
                 $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-                                                _x('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = _x('button', 'Remove a document');
+                                                _sx('button', 'Add a document');
+                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a document');
             }
         }
 
         if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
-            $actions[$action_prefix . 'add_item']    = _x('button', 'Add an item');
-            $actions[$action_prefix . 'remove_item'] = _x('button', 'Remove an item');
+            $actions[$action_prefix . 'add_item']    = _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = _sx('button', 'Remove an item');
         }
     }
 

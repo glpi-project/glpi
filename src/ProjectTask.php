@@ -82,7 +82,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return 'ti ti-list-check';
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return (Session::haveRightsOr('project', [Project::READALL, Project::READMY])
               || Session::haveRight(self::$rightname, self::READMY));
@@ -93,7 +93,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
             return false;
@@ -112,12 +112,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return false;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return (Session::haveRight('project', UPDATE));
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return (parent::canUpdate()
               || Session::haveRight(self::$rightname, self::UPDATEMY));
@@ -128,7 +128,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!Session::haveAccessToEntity($this->getEntityID())) {
             return false;

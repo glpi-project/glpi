@@ -51,6 +51,7 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Api\HL\Router;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
@@ -2436,16 +2437,33 @@ abstract class API
     public function inlineDocumentation($file)
     {
         $this->header(true, __("API Documentation"));
-        echo Html::css("public/lib/prismjs.css");
-        echo Html::script("public/lib/prismjs.js");
 
-        echo "<div class='documentation'>";
         $documentation = file_get_contents(GLPI_ROOT . '/' . $file);
-
-        $md = new MarkdownRenderer();
-        echo $md->render($documentation);
-
-        echo "</div>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div class='documentation'>{{ md|raw }}</div>
+            <script type="module">
+                import('{{ path("js/modules/Monaco/MonacoEditor.js") }}').then(() => {
+                    const lang_elements = $('code[class^="language-"]');
+                    lang_elements.each((index, element) => {
+                        const el = $(element);
+                        const code = el.text();
+                        let lang = el.attr('class').replace('language-', '');
+                        switch (lang) {
+                            case 'bash':
+                                lang = 'shell';
+                                break;
+                            case 'json':
+                                lang = 'javascript';
+                                break;
+                        }
+                        window.GLPI.Monaco.colorizeText(code, lang).then((html) => {
+                            el.html(html);
+                        });
+                    });
+                });
+            </script>
+TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         Html::nullFooter();
         exit;

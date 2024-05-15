@@ -46,6 +46,7 @@
     --tblr-body-bg: #f5f7fb;
     --tblr-bg-surface: #fff;
     --tblr-bg-surface-tertiary: var(--tblr-gray-50);
+    --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
@@ -415,4 +416,8 @@ body .toast {
 
 .monaco-editor {
     outline: none !important;
+}
+
+.tooltip {
+    --tblr-tooltip-color: var(--tblr-body-color);
 }

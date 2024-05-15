@@ -72,12 +72,12 @@ class Socket extends CommonDBChild
         return NetworkPort::getIcon();
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return Session::haveRight(static::$rightname, CREATE);
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return Session::haveRight(static::$rightname, PURGE);
     }

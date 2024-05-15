@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             _n('Item', 'Items', 1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
         Html::back();
     }
     if ($_POST['softwarelicenses_id'] > 0) {

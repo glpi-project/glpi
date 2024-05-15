@@ -120,14 +120,14 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // Must be able to update forms
         return Form::canUpdate();
     }
 
     #[Override]
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
@@ -139,14 +139,14 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         // Must be able to update forms
         return Form::canUpdate();
     }
 
     #[Override]
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {

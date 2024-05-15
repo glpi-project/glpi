@@ -33,8 +33,9 @@
 
 /* global bootstrap */
 /* global L */
-/* global glpi_html_dialog */
 /* global fuzzy */
+/* global glpi_html_dialog */
+/* global glpi_toast_info */
 
 var timeoutglobalvar;
 
@@ -222,7 +223,7 @@ $.fn.shiftSelectable = function() {
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
 **/
-function showHideDiv(id, img_name, img_src_close, img_src_open) {
+function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
 
     if (img_name !== '') {
@@ -1152,7 +1153,7 @@ $(document).ready(function() {
 
     $(document).on('submit', 'form', (e) => {
         // if the submitter has a data-block-on-unsaved attribute, do not clear the unsaved changes flag
-        if ($(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
+        if (e.originalEvent && $(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
             return;
         }
         window.glpiUnsavedFormChanges = false;
@@ -1520,6 +1521,14 @@ $(() => {
         ) {
             $('.content-editable-tinymce').removeClass('simulate-focus');
         }
+    });
+
+    // General "copy to clipboard" handler.
+    // TODO: refactorate existing code to use this unique handler.
+    $(document).on('click', '[data-glpi-clipboard-text]', function() {
+        const text = $(this).data('glpi-clipboard-text');
+        navigator.clipboard.writeText(text);
+        glpi_toast_info(__("Copied to clipboard"));
     });
 });
 

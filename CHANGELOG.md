@@ -31,6 +31,7 @@ The present file will list all changes made to the project; according to the
 - With a clean install, dashboards now show fake/placeholder data by default with a message indicating you are viewing demonstration data and a button to disable it.
 - Assets that can be assigned to users/groups have new "View assigned" and "Update assigned" rights which give read/update access to users and groups assigned to the asset.
 - `ODS` and `XLS` export of search results.
+- Support for the well-known `change-password" URI which can be used by some password managers to automatically (or assist with) changing a user's password.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -62,6 +63,7 @@ The present file will list all changes made to the project; according to the
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
 - The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
+- List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -136,6 +138,10 @@ The present file will list all changes made to the project; according to the
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
 - `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods signatures changed.
 -  Some values for the `$type` parameters of several `Stat` methods have changed to match English spelling (technicien -> technician).
+- `showInstantiationForm()` method for Network Port classes are now expected to output HTML for a flex form instead of a table.
+- `NetworkName::showFormForNetworkPort()` now outputs HTML for a flex form instead of a table.
+- `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
+- `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 - Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 
 #### Deprecated
@@ -161,6 +167,7 @@ The present file will list all changes made to the project; according to the
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
+- `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
@@ -224,7 +231,11 @@ The present file will list all changes made to the project; according to the
 - `regenerateTreeCompleteName()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDBTM::getCacheKeyForFriendlyName()`
+- `CommonDBTM::getSNMPCredential()`
 - `CommonDropdown::displayHeader()`
+- `CommonITILActor::showUserNotificationForm()`
+- `CommonITILActor::showSupplierNotificationForm()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `Computer_Item::countForAll()`
@@ -235,10 +246,14 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
+- `Contract::commonListHeader()`
+- `Contract::getContractRenewalIDByName()`
+- `Contract::showShort()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`
 - `Document_Item::showSimpleAddForItem()`
+- `Entity::getDefaultContractValues()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
@@ -251,7 +266,14 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
+- `Html::autocompletionTextField()`
 - `Html::clean()`
+- `Html::closeArrowMassives()`
+- `Html::jsConfirmCallback()`
+- `Html::jsHide()`
+- `Html::jsShow()`
+- `Html::openArrowMassives()`
+- `Html::showTimeField()`
 - `Impact::buildNetwork()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`
@@ -271,6 +293,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkName::getInternetNameFromID()`
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
 - `NetworkPort::resetConnections()`
+- `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
@@ -284,6 +307,8 @@ The present file will list all changes made to the project; according to the
 - `Rule::$orderby` property.
 - `Rule::showMinimalActionForm()`
 - `RuleCollection::showTestResults()`
+- `RuleRightCollection::displayActionByName()`
+- `RuleRightCollection::showTestResults()`
 - `RuleImportComputer` class.
 - `RuleImportComputerCollection` class.
 - `RuleMatchedLog::showFormAgent()`.
@@ -299,7 +324,7 @@ The present file will list all changes made to the project; according to the
 - `Search::sylk_clean()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
-- `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
+- `SoftwareLicense::getSonsOf()`
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -329,7 +354,28 @@ The present file will list all changes made to the project; according to the
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 
 
-## [10.0.15] unreleased
+## [10.0.16] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.15] 2024-04-24
 
 ### Added
 

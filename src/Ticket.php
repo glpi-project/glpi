@@ -178,7 +178,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
 
        // To allow update of urgency and category for post-only
@@ -198,7 +198,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
         return (Session::haveRightsOr(
             self::$rightname,
@@ -217,7 +217,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (!Session::haveAccessToEntity($this->getEntityID())) {
             return false;
@@ -535,7 +535,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -550,7 +550,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->checkEntity()) {
             return false;
@@ -612,7 +612,7 @@ class Ticket extends CommonITILObject
     /**
      * @since 0.85
      **/
-    public static function canDelete()
+    public static function canDelete(): bool
     {
 
        // to allow delete for self-service only if no action on the ticket
@@ -641,7 +641,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -1507,7 +1507,7 @@ class Ticket extends CommonITILObject
                 }
             }
             if (!$can_delegatee_create_ticket) {
-                Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
+                Session::addMessageAfterRedirect(__s("You cannot create a ticket for this user"));
                 return false;
             }
         }
@@ -1599,7 +1599,7 @@ class Ticket extends CommonITILObject
             foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
                 if ($email && !NotificationMailing::isUserAddressValid($email)) {
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Invalid email address %s'), $email),
+                        htmlspecialchars(sprintf(__('Invalid email address %s'), $email)),
                         false,
                         ERROR
                     );
@@ -2005,13 +2005,13 @@ class Ticket extends CommonITILObject
     /**
      * Overloaded from commonDBTM
      *
-     * @since 0.83
-     *
-     * @param $type itemtype of object to add
+     * @param $type string of object to add
      *
      * @return boolean
-     **/
-    public function canAddItem($type)
+     **@since 0.83
+     *
+     */
+    public function canAddItem(string $type): bool
     {
 
         if ($type == 'Document') {
@@ -2145,69 +2145,62 @@ class Ticket extends CommonITILObject
         return $search;
     }
 
-
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-        if (Session::getCurrentInterface() == 'central') {
+        if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
                  = "<i class='fa-fw ti ti-git-merge'></i>" .
-                 __('Merge as Followup');
+                 __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
                 = "<i class='fa-fw fas fa-plus'></i>" .
-                 _x('button', 'Add an item');
+                 _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Add a new followup');
+                 __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Add a new task');
+                 __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Approval request');
+                 __s('Approval request');
             }
 
             if (Item_Ticket::canDelete()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
-                = _x('button', 'Remove an item');
+                = _sx('button', 'Remove an item');
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor']
-                = "<i class='fa-fw ti ti-user'></i>" .
-                 __('Add an actor');
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
-                = __('Set notifications for all actors');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='fa-fw ti ti-user'></i>" . __s('Add an actor');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                         = "<i class='fa-fw fas fa-link'></i>" .
-                        _x('button', 'Link project task');
+                        _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
                         = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
-                        _x('button', 'Add contract');
+                        _sx('button', 'Add contract');
                 }
 
                 KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
@@ -2216,7 +2209,7 @@ class Ticket extends CommonITILObject
             if (self::canUpdate()) {
                 $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
                 = "<i class='fa-fw fas fa-check'></i>" .
-                __("Resolve selected tickets");
+                __s("Resolve selected tickets");
             }
         }
 
@@ -5260,7 +5253,10 @@ JAVASCRIPT;
                 return ['description' => __('Not solved tickets')];
 
             case 'purgeticket':
-                return ['description' => __('Automatic closed tickets purge')];
+                return [
+                    'description' => __('Automatic closed tickets purge'),
+                    'parameter' => __('Maximum number of tickets purged per entity (0 = unlimited)'),
+                ];
         }
         return parent::cronInfo($name);
     }
@@ -5447,6 +5443,8 @@ JAVASCRIPT;
             ]
         );
 
+        $max = (int)($task->fields['param'] ?? 0);
+
         foreach ($entities as $entity) {
             $delay  = Entity::getUsedConfig('autopurge_delay', $entity['id'], '', Entity::CONFIG_NEVER);
             if ($delay >= 0) {
@@ -5467,6 +5465,10 @@ JAVASCRIPT;
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
                     );
+                }
+
+                if ($max > 0) {
+                    $criteria['LIMIT'] = $max;
                 }
 
                 $iterator = $DB->request($criteria);

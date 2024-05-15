@@ -47,14 +47,14 @@ if (isset($_POST["name"])) {
     $savedsearch->check(-1, CREATE, $_POST);
     if ($savedsearch->add($_POST)) {
         Session::addMessageAfterRedirect(
-            __('Search has been saved'),
+            __s('Search has been saved'),
             false,
             INFO
         );
         echo json_encode(['success' => true]);
     } else {
         Session::addMessageAfterRedirect(
-            __('Search has not been saved'),
+            __s('Search has not been saved'),
             false,
             ERROR
         );

@@ -74,7 +74,7 @@ class ITILSolution extends CommonDBChild
         return '';
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -88,31 +88,31 @@ class ITILSolution extends CommonDBChild
         return false;
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
        //always true, will rely on ITILSolution::canUpdateItem
         return true;
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return $this->item->maySolve();
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
        //always true, will rely on ITILSolution::canCreateItem
         return true;
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $item = new $this->fields['itemtype']();
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
     }
 
-    public function canEdit($ID)
+    public function canEdit($ID): bool
     {
         return $this->item->maySolve();
     }
@@ -238,7 +238,7 @@ class ITILSolution extends CommonDBChild
         // check itil object is not already solved
             if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
                 Session::addMessageAfterRedirect(
-                    __("The item is already solved, did anyone pushed a solution before you?"),
+                    __s("The item is already solved, did anyone pushed a solution before you?"),
                     false,
                     ERROR
                 );

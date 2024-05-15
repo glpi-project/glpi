@@ -64,7 +64,7 @@ class Document_Item extends CommonDBRelation
         return $forbidden;
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if ($this->fields['itemtype'] === 'Ticket') {
             $ticket = new Ticket();

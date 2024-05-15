@@ -38,12 +38,15 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
+use ReflectionClass;
 use Session;
 
 /**
@@ -83,6 +86,7 @@ final class Form extends CommonDBTM
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
+        $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
         return $tabs;
@@ -98,15 +102,25 @@ final class Form extends CommonDBTM
         }
         $this->initForm($id, $options);
 
-        // We will be editing forms from this page
-        echo Html::script("js/form_editor_controller.js");
+        $types_manager = QuestionTypesManager::getInstance();
+        $js_files = [
+            'js/form_editor_controller.js'
+        ];
+        foreach ($types_manager->getQuestionTypes() as $type) {
+            foreach ((new $type())->loadJavascriptFiles() as $file) {
+                if (!in_array($file, $js_files)) {
+                    $js_files[] = $file;
+                }
+            }
+        }
 
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/form_editor.html.twig', [
             'item'                   => $this,
             'params'                 => $options,
-            'question_types_manager' => QuestionTypesManager::getInstance(),
+            'question_types_manager' => $types_manager,
+            'js_files'               => $js_files,
         ]);
         return true;
     }
@@ -226,6 +240,7 @@ final class Form extends CommonDBTM
             [
                 Section::class,
                 FormDestination::class,
+                FormAccessControl::class,
             ]
         );
     }
@@ -294,6 +309,32 @@ final class Form extends CommonDBTM
         }
 
         return $destinations;
+    }
+
+    /**
+     * @return FormAccessControl[]
+     */
+    public function getAccessControls(): array
+    {
+        $controls = [];
+        $raw_controls = (new FormAccessControl())->find([
+            Form::getForeignKeyField() => $this->getID(),
+        ]);
+
+        // Make sure all returned data are valid (some data might come from
+        // disabled plugins).
+        foreach ($raw_controls as $row) {
+            if (!$this->isValidAccessControlType($row['strategy'])) {
+                continue;
+            }
+
+            $control = new FormAccessControl();
+            $control->getFromResultSet($row);
+            $control->post_getFromDB();
+            $controls[] = $control;
+        }
+
+        return $controls;
     }
 
     /**
@@ -538,7 +579,7 @@ final class Form extends CommonDBTM
                         'forms_forms_id' => $this->fields['id'],
                     ],
                 ]),
-                 // Was not found in the submitted data
+                // Was not found in the submitted data
                 'id' => ['NOT IN', $found_questions],
             ]);
 
@@ -552,5 +593,20 @@ final class Form extends CommonDBTM
         }
 
         unset($this->input['_found_questions']);
+    }
+
+    /**
+     * Check if the given class is a valid access control type.
+     *
+     * @param string $class
+     *
+     * @return bool
+     */
+    protected function isValidAccessControlType(string $class): bool
+    {
+        return
+            is_a($class, ControlTypeInterface::class, true)
+            && !(new ReflectionClass($class))->isAbstract()
+        ;
     }
 }

@@ -35,6 +35,7 @@
 
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Firewall;
+use Glpi\Toolbox\URL;
 
 /**
  * @var array $CFG_GLPI
@@ -105,20 +106,12 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 
 // Manage force tab
 if (isset($_REQUEST['forcetab'])) {
-    if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = 'plugin' . $matches[1] . $matches[2];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = $matches[1];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = 'plugin' . $matches[1] . $matches[2];
-        Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
-        $itemtype = $matches[1];
+    $itemtype = URL::extractItemtypeFromUrlPath($_SERVER['PHP_SELF']);
+    if ($itemtype !== null) {
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
     }
 }
+
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
     Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);

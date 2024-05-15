@@ -375,7 +375,7 @@ HTML;
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
+                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
@@ -446,7 +446,7 @@ HTML;
             // Restore href
             active_link.attr('href', currenthref);
          };
-         
+
          var loadAllTabs = () => {
              const tabs = $('#$tabdiv_id a[data-bs-toggle=\"tab\"]');
              tabs.each((index, tab) => {

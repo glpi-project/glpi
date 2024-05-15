@@ -79,14 +79,12 @@ if (isset($_POST["update"])) {
         Html::redirect($item->getFormURLWithID($link->fields['problems_id']));
     }
     Session::addMessageAfterRedirect(
-        __('You have been redirected because you no longer have access to this item'),
+        __s('You have been redirected because you no longer have access to this item'),
         true,
         ERROR
     );
 
     Html::redirect($CFG_GLPI["root_doc"] . "/front/problem.php");
-} else if (isset($_GET["id"])) {
-    $link->showUserNotificationForm($_GET["id"]);
 } else {
     Html::displayErrorAndDie('Lost');
 }

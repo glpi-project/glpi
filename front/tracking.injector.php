@@ -93,7 +93,7 @@ if (isset($_POST['add'])) {
         } else {
             echo "<div class='center b spaced'>";
             echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt='" . __s('OK') . "'>";
-            Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
+            Session::addMessageAfterRedirect(__s('Thank you for using our automatic helpdesk system.'));
             Html::displayMessageAfterRedirect();
             echo "</div>";
         }

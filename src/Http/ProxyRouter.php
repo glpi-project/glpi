@@ -328,4 +328,35 @@ final class ProxyRouter
         header(sprintf('Content-Length: %s', filesize($target_file)));
         readfile($target_file);
     }
+
+    public function handleRedirects(string $uri_prefix): void
+    {
+        if ($this->handleWellKnownURIs($uri_prefix)) {
+            exit();
+        }
+    }
+
+    /**
+     * Handle well-known URIs as defined in RFC 5785.
+     * https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
+     *
+     * @return bool True if the request was handled, false otherwise.
+     */
+    private function handleWellKnownURIs(string $uri_prefix): bool
+    {
+        // Handle well-known URIs
+        if (preg_match('/^\/\.well-known\//', $this->path) === 1) {
+            // Get the requested URI (the part after .well-known/)
+            $requested_uri = explode('/', $this->path);
+            $requested_uri = strtolower(end($requested_uri));
+
+            // Some password managers can use this URI to help with changing passwords
+            // Redirect to the change password page
+            if ($requested_uri === 'change-password') {
+                header('Location: ' . $uri_prefix . '/front/updatepassword.php', true, 307);
+                return true;
+            }
+        }
+        return false;
+    }
 }

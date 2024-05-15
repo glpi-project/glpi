@@ -53,7 +53,7 @@ if (isset($_POST['disable_2fa'])) {
     if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
         $totp->setSecretForUser($_SESSION['glpiID'], $_POST['secret'], $algorithm);
     } else {
-        Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
+        Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
     }
     Html::redirect(Preference::getSearchURL() . '?regenerate_backup_codes=1');
 }

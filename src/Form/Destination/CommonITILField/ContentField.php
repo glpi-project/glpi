@@ -54,25 +54,32 @@ class ContentField implements ConfigFieldInterface
     }
 
     #[Override]
-    public function renderConfigForm(?array $config): string
-    {
+    public function renderConfigForm(
+        ?array $config,
+        string $input_name,
+        array $display_options
+    ): string {
         $template = <<<TWIG
-            {% import 'components/form/basic_inputs_macros.html.twig' as fields %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.textarea(
-                "config[" ~ key ~ "][value]",
+            {{ fields.textareaField(
+                input_name,
                 value,
-                {
+                label,
+                options|merge({
                     'enable_richtext': true,
                     'enable_images': false,
-                }
+                })
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'key' => $this->getKey(),
-            'value' => $config['value'] ?? '',
+            'key'        => $this->getKey(),
+            'label'      => $this->getLabel(),
+            'value'      => $config['value'] ?? '',
+            'input_name' => $input_name,
+            'options'    => $display_options,
         ]);
     }
 

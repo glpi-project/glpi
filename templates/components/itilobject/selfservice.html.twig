@@ -100,6 +100,9 @@
                                     {% set user_fields = user.fields %}
                                     {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()}) %}
                                     {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                    {% if has_profile_right('user', constant('READ')) %}
+                                        {% set user_fields = user_fields|merge({login: entry_user.fields['name']}) %}
+                                    {% endif %}
                                     {{ include('components/user/info_card.html.twig', {
                                         'user': user_fields,
                                         'can_edit': true

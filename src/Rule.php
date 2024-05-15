@@ -571,7 +571,6 @@ class Rule extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -580,10 +579,10 @@ class Rule extends CommonDBTM
         }
         if ($isadmin) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='fas fa-arrows-alt-v'></i>"
-                . __('Move');
+                . __s('Move');
         }
         $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='fas fa-file-download'></i>"
-            . _x('button', 'Export');
+            . _sx('button', 'Export');
 
         return $actions;
     }
@@ -989,7 +988,7 @@ class Rule extends CommonDBTM
                 && (in_array('regex_result', $val['force_actions'])
                  || in_array('append_regex_result', $val['force_actions']))
             ) {
-                echo "<div class='alert alert-info'>" . __('It is possible to affect the result of a regular expression using the string #0') . "</div>";
+                echo "<div class='alert alert-info'>" . __s('It is possible to affect the result of a regular expression using the string #0') . "</div>";
                 return;
             }
         }
@@ -3225,7 +3224,7 @@ JS
                     $ruleitem->update($input);
                 }
                 Session::addMessageAfterRedirect(
-                    __('Rules using the object have been disabled.'),
+                    __s('Rules using the object have been disabled.'),
                     true
                 );
             }
@@ -3444,12 +3443,12 @@ JS
         echo "</div>";
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }

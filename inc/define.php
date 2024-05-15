@@ -68,6 +68,8 @@ define("UPDATENOTE", 64);
 define("UNLOCK", 128);
 define("READ_ASSIGNED", 256);
 define("UPDATE_ASSIGNED", 512);
+define("READ_OWNED", 1024);
+define("UPDATE_OWNED", 2048);
 
 // set the default app_name
 $CFG_GLPI['app_name'] = 'GLPI';
@@ -257,25 +259,14 @@ $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEqui
     'Peripheral', 'Phone', 'Printer', 'Software', 'Rack'
 ];
 
-$CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEquipment',
+// FIXME: Merge these configurations
+$CFG_GLPI["linkuser_types"]               = ['Computer', 'CartridgeItem', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
+    'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance', 'Item_DeviceSimcard', 'Line'
 ];
-
-$CFG_GLPI["linkgroup_types"]              = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
-];
-
-$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance'
-];
-
-$CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance'
-];
+$CFG_GLPI["linkgroup_types"]              = $CFG_GLPI["linkuser_types"];
+$CFG_GLPI["linkuser_tech_types"]          = $CFG_GLPI["linkuser_types"];
+$CFG_GLPI["linkgroup_tech_types"]         = $CFG_GLPI["linkuser_types"];
 
 $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
     'Computer', 'Monitor', "Glpi\\Socket",

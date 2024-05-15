@@ -507,19 +507,19 @@ class Item_Line extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['lines_id']) || empty($input['lines_id'])))
             || (isset($input['lines_id']) && empty($input['lines_id']))
         ) {
-            $error_detected[] = __('A line is required');
+            $error_detected[] = __s('A line is required');
         }
 
         if (count($error_detected)) {

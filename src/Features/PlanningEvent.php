@@ -158,7 +158,7 @@ trait PlanningEvent
                     && isset($this->fields['end'])
             ) {
                 Session::addMessageAfterRedirect(
-                    __('Error in entering dates. The starting date is later than the ending date'),
+                    __s('Error in entering dates. The starting date is later than the ending date'),
                     false,
                     ERROR
                 );
@@ -217,7 +217,7 @@ trait PlanningEvent
                     && isset($this->fields['end'])
             ) {
                 Session::addMessageAfterRedirect(
-                    __('Error in entering dates. The starting date is later than the ending date'),
+                    __s('Error in entering dates. The starting date is later than the ending date'),
                     false,
                     ERROR
                 );

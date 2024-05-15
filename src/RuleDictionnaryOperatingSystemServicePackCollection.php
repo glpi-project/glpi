@@ -38,9 +38,6 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
     public $item_table  = "glpi_operatingsystemservicepacks";
     public $menu_option = "os_sp";
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of service packs');

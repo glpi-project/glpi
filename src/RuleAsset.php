@@ -58,23 +58,20 @@ class RuleAsset extends Rule
         return true;
     }
 
-
     public function isEntityAssign()
     {
         return true;
     }
-
 
     public function canUnrecurs()
     {
         return true;
     }
 
-
     public static function getConditionsArray()
     {
-
-        return [static::ONADD                   => __('Add'),
+        return [
+            static::ONADD                   => __('Add'),
             static::ONUPDATE                => __('Update'),
             static::ONADD | static::ONUPDATE  => sprintf(
                 __('%1$s / %2$s'),
@@ -84,10 +81,8 @@ class RuleAsset extends Rule
         ];
     }
 
-
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -163,13 +158,24 @@ class RuleAsset extends Rule
             Rule::PATTERN_DATE_IS_NOT_EQUAL,
         ];
 
+        $criterias['_inventory_users']['name']            = __('User from inventory');
+        $criterias['_inventory_users']['allow_condition'] = [
+            Rule::REGEX_MATCH,
+            Rule::REGEX_NOT_MATCH,
+            Rule::PATTERN_EXISTS,
+            Rule::PATTERN_DOES_NOT_EXISTS,
+            Rule::PATTERN_BEGIN,
+            Rule::PATTERN_END,
+            Rule::PATTERN_IS_EMPTY,
+            Rule::PATTERN_CONTAIN,
+            Rule::PATTERN_NOT_CONTAIN
+        ];
+
         return $criterias;
     }
 
-
     public function getActions()
     {
-
         $actions                                = parent::getActions();
 
         $actions['states_id']['name']           = __('Status');
@@ -213,25 +219,38 @@ class RuleAsset extends Rule
         $actions['otherserial']['type']              = 'text';
         $actions['otherserial']['force_actions']     = ['regex_result'];
 
+        $actions['_affect_user_by_name_and_regex']['name']              = __('Assign user from name');
+        $actions['_affect_user_by_name_and_regex']['type']              = 'text';
+        $actions['_affect_user_by_name_and_regex']['force_actions']     = ['regex_result'];
+
+        $actions['_affect_user_by_email_and_regex']['name']              = __('Assign user from email');
+        $actions['_affect_user_by_email_and_regex']['type']              = 'text';
+        $actions['_affect_user_by_email_and_regex']['force_actions']     = ['regex_result'];
+
+        $actions['_affect_user_by_registration_number_and_regex']['name']              = __('Assign user from registration number');
+        $actions['_affect_user_by_registration_number_and_regex']['type']              = 'text';
+        $actions['_affect_user_by_registration_number_and_regex']['force_actions']     = ['regex_result'];
+
+        $actions['_affect_user_by_sync_field_and_regex']['name']              = __('Assign user from sync field');
+        $actions['_affect_user_by_sync_field_and_regex']['type']              = 'text';
+        $actions['_affect_user_by_sync_field_and_regex']['force_actions']     = ['regex_result'];
+
         return $actions;
     }
 
-
     public function getRights($interface = 'central')
     {
-
         $values = parent::getRights();
-        $values[self::PARENT] = ['short' => __('Parent business'),
+        $values[self::PARENT] = [
+            'short' => __('Parent business'),
             'long'  => __('Business rules (entity parent)')
         ];
 
         return $values;
     }
 
-
     public function executeActions($output, $params, array $input = [])
     {
-
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
@@ -256,16 +275,48 @@ class RuleAsset extends Rule
                     case "regex_result":
                         switch ($action->fields["field"]) {
                             case "_affect_user_by_regex":
+                            case "_affect_user_by_name_and_regex":
                                 foreach ($this->regex_results as $regex_result) {
-                                     $res = RuleAction::getRegexResultById(
-                                         $action->fields["value"],
-                                         $regex_result
-                                     );
-                                    if ($res != null) {
-                                          $user = User::getIdByName($res);
-                                        if ($user) {
-                                            $output['users_id'] = $user;
-                                        }
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByName($res)) {
+                                        $output['users_id'] = $user;
+                                    }
+                                }
+                                break;
+                            case "_affect_user_by_email_and_regex":
+                                foreach ($this->regex_results as $regex_result) {
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    $user = new User();
+                                    if ($res != null && $user->getFromDBbyEmail($res)) {
+                                        $output['users_id'] = $user->fields['id'];
+                                    }
+                                }
+                                break;
+                            case "_affect_user_by_registration_number_and_regex":
+                                foreach ($this->regex_results as $regex_result) {
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByField('registration_number', $res)) {
+                                        $output['users_id'] = $user;
+                                    }
+                                }
+                                break;
+                            case "_affect_user_by_sync_field_and_regex":
+                                foreach ($this->regex_results as $regex_result) {
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByField('sync_field', $res)) {
+                                        $output['users_id'] = $user;
                                     }
                                 }
                                 break;

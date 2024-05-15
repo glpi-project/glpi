@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * SoftwareVersion Class
  **/
@@ -109,37 +111,6 @@ class SoftwareVersion extends CommonDBChild
             $this->check(-1, CREATE, $options);
         }
 
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Software', 'Software', Session::getPluralNumber()) . "</td>";
-        echo "<td>";
-        if (static::isNewID($ID)) {
-            echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-        }
-        echo "<a href='" . Software::getFormURLWithID($softwares_id) . "'>" .
-             Dropdown::getDropdownName("glpi_softwares", $softwares_id) . "</a>";
-        echo "</td>";
-        echo "<td rowspan='4' class='middle'>" . __('Comments') . "</td>";
-        echo "<td class='center middle' rowspan='4'>";
-        echo "<textarea class='form-control' rows='3' name='comment' >" . $this->fields["comment"];
-        echo "</textarea></td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . OperatingSystem::getTypeName(1) . "</td><td>";
-        OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"]]);
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
-        State::dropdown(['value'     => $this->fields["states_id"],
-            'entity'    => $this->fields["entities_id"],
-            'condition' => $this->getStateVisibilityCriteria()
-        ]);
-        echo "</td></tr>\n";
-
         // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
         if (
             (SoftwareLicense::countForVersion($ID) > 0)
@@ -148,8 +119,25 @@ class SoftwareVersion extends CommonDBChild
             $options['candel'] = false;
         }
 
-        $this->showFormButtons($options);
+        $twig_params = [
+            'item' => $this,
+            'softwares_id' => $softwares_id,
+            'params' => $options
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% extends 'generic_show_form.html.twig' %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
 
+            {% block form_fields %}
+                {% if item.isNewItem() %}
+                    <input type="hidden" name="softwares_id" value="{{ softwares_id }}">
+                {% endif %}
+                {{ fields.htmlField('', get_item_link('Software', softwares_id), 'Software'|itemtype_name()) }}
+                {{ parent() }}
+                {{ fields.dropdownField('OperatingSystem', 'operatingsystems_id', item.fields['operatingsystems_id'], 'OperatingSystem'|itemtype_name()) }}
+            {% endblock %}
+TWIG, $twig_params);
         return true;
     }
 
@@ -296,30 +284,36 @@ class SoftwareVersion extends CommonDBChild
         $softwares_id = $soft->getField('id');
 
         if (!$soft->can($softwares_id, READ)) {
-            return false;
+            return;
         }
         $canedit = $soft->canEdit($softwares_id);
 
-        echo "<div class='spaced'>";
-
         if ($canedit) {
-            echo "<div class='center firstbloc'>";
-            echo "<a class='btn btn-primary' href='" . SoftwareVersion::getFormURL() . "?softwares_id=$softwares_id'>" .
-                _x('button', 'Add a version') . "</a>";
-            echo "</div>";
+            $twig_params = [
+                'btn_msg' => _x('button', 'Add a version'),
+                'softwares_id' => $softwares_id,
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="text-center mb-3">
+                    <a class="btn btn-primary" href="{{ 'SoftwareVersion'|itemtype_form_path }}?softwares_id={{ softwares_id }}">{{ btn_msg }}</a>
+                </div>
+TWIG, $twig_params);
         }
 
+        $sv_table = self::getTable();
+        $state_table = State::getTable();
         $iterator = $DB->request([
-            'SELECT'    => [
-                'glpi_softwareversions.*',
-                'glpi_states.name AS sname'
+            'SELECT' => [
+                "$sv_table.*",
+                "$state_table.name AS sname"
             ],
-            'FROM'      => 'glpi_softwareversions',
+            'FROM' => $sv_table,
             'LEFT JOIN' => [
-                State::getTable()  => [
+                $state_table  => [
                     'ON' => [
-                        'glpi_softwareversions' => 'states_id',
-                        State::getTable()           => 'id'
+                        $sv_table => 'states_id',
+                        $state_table => 'id'
                     ]
                 ]
             ],
@@ -329,61 +323,56 @@ class SoftwareVersion extends CommonDBChild
             'ORDERBY'   => 'name'
         ]);
 
-        Session::initNavigateListItems(
-            'SoftwareVersion',
-            //TRANS : %1$s is the itemtype name,
-            //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         Software::getTypeName(1),
-                                         $soft->getName()
-                                     )
-        );
+        $tot = 0;
+        $entries = [];
+        $sv = new self();
+        foreach ($iterator as $data) {
+            $sv->getFromResultSet($data);
+            $nb = Item_SoftwareVersion::countForVersion($data['id']);
 
-        if (count($iterator)) {
-            echo "<table class='table border table-striped'><tr>";
-            echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
-            echo "<th>" . __('Status') . "</th>";
-            echo "<th>" . OperatingSystem::getTypeName(1) . "</th>";
-            echo "<th>" . _n('Architecture', 'Architectures', 1) . "</th>";
-            echo "<th>" . _n('Installation', 'Installations', Session::getPluralNumber()) . "</th>";
-            echo "<th>" . __('Comments') . "</th>";
-            echo "</tr>\n";
-
-            $tot = 0;
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('SoftwareVersion', $data['id']);
-                $nb = Item_SoftwareVersion::countForVersion($data['id']);
-
-                echo "<tr class='tab_bg_2'>";
-                echo "<td><a href='" . SoftwareVersion::getFormURLWithID($data['id']) . "'>";
-                echo $data['name'] . (empty($data['name']) ? "(" . $data['id'] . ")" : "") . "</a></td>";
-                echo "<td>" . $data['sname'] . "</td>";
-                echo "<td>" . Dropdown::getDropdownName(
-                    'glpi_operatingsystems',
-                    $data['operatingsystems_id']
-                );
-                echo "</td>";
-                echo "<td>{$data['arch']}</td>";
-                echo "<td>$nb</td>";
-                echo "<td>" . nl2br($data['comment'] ?? "") . "</td></tr>\n";
-
-                $tot += $nb;
-            }
-
-            echo "<tfoot>";
-            echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='4'>" . __('Total') . "</td>";
-            echo "<td class='b'>$tot</td><td></td>";
-            echo "</tr>";
-            echo "</tfoot>";
-            echo "</table>";
-        } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>\n";
+            $tot += $nb;
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $sv->getID(),
+                'version' => $sv->getLink(),
+                'status' => $data['sname'],
+                'os' => Dropdown::getDropdownName('glpi_operatingsystems', $data['operatingsystems_id']),
+                'arch' => $data['arch'],
+                'installations' => $nb,
+                'comments' => nl2br(htmlspecialchars($data['comment'] ?? ''))
+            ];
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'version' => self::getTypeName(Session::getPluralNumber()),
+                'status' => __('Status'),
+                'os' => OperatingSystem::getTypeName(1),
+                'arch' => _n('Architecture', 'Architectures', 1),
+                'installations' => _n('Installation', 'Installations', Session::getPluralNumber()),
+                'comments' => __('Comments')
+            ],
+            'formatters' => [
+                'version' => 'raw_html',
+                'comments' => 'raw_html',
+            ],
+            'footers' => [
+                ['', '', '', __('Total'), $tot, '']
+            ],
+            'footer_class' => 'fw-bold',
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ]
+        ]);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

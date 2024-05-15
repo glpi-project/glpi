@@ -35,7 +35,7 @@
 
 class AllAssets extends CommonGLPI
 {
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::getCurrentInterface() == "central";
     }

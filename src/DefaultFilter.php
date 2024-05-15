@@ -71,7 +71,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
     {
         return "ti ti-filter";
     }
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
@@ -177,10 +177,10 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 
         if ($this->getFromDBByCrit($criteria)) {
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('Itemtype %s is already in use'),
                     $input['itemtype']
-                ),
+                )),
                 true,
                 ERROR
             );

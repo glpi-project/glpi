@@ -157,7 +157,7 @@ class IPAddress extends CommonDBChild
                 }
                 //TRANS: %s is the invalid address
                 $msg = sprintf(__('%1$s: %2$s'), __('Invalid IP address'), $input['name']);
-                Session::addMessageAfterRedirect($msg, false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                 return false;
             }
         }

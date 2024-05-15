@@ -106,7 +106,7 @@ class ManualLink extends CommonDBChild
     {
         if (!array_key_exists('url', $input) || empty($input['url'])) {
             Session::addMessageAfterRedirect(
-                __('URL is required'),
+                __s('URL is required'),
                 false,
                 ERROR
             );
@@ -130,7 +130,7 @@ class ManualLink extends CommonDBChild
     {
         if (array_key_exists('url', $input) && !empty($input['url']) && !Toolbox::isValidWebUrl($input['url'])) {
             Session::addMessageAfterRedirect(
-                __('Invalid URL'),
+                __s('Invalid URL'),
                 false,
                 ERROR
             );

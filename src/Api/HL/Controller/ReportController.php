@@ -449,7 +449,7 @@ class ReportController extends AbstractController
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get global assistance statistics',
+        description: 'Get assistance statistics',
         parameters: [
             [
                 'name' => 'date_start',
@@ -565,6 +565,99 @@ class ReportController extends AbstractController
         return new JSONResponse($results);
     }
 
+    #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics/Export', methods: ['GET'], requirements: [
+        'assistance_type' => 'Ticket|Change|Problem'
+    ], tags: ['Statistics', 'Assistance'])]
+    #[Doc\Route(
+        description: 'Export assistance statistics',
+        parameters: [
+            [
+                'name' => 'date_start',
+                'description' => 'The start date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'date_end',
+                'description' => 'The end date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'field',
+                'description' => 'The field to group the statistics by',
+                'location' => 'query',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+                'required' => true,
+            ],
+            [
+                'name' => 'Accept',
+                'description' => 'The format to export the statistics to',
+                'location' => 'header',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
+                ],
+            ]
+        ]
+    )]
+    public function exportITILStats(Request $request): Response
+    {
+        $format = match ($request->getHeaderLine('Accept')) {
+            'text/csv' => \Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
+            default => \Search::PDF_OUTPUT_LANDSCAPE,
+        };
+        $ext = match ($format) {
+            \Search::CSV_OUTPUT => 'csv',
+            \Search::ODS_OUTPUT => 'ods',
+            \Search::XLSX_OUTPUT => 'xlsx',
+            default => 'pdf',
+        };
+
+        $itemtype = $request->getAttribute('assistance_type');
+        $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
+        $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
+        $field = $request->getParameter('field');
+        $value = \Stat::getItems(
+            $itemtype,
+            $start,
+            $end,
+            $field
+        );
+        if (empty($start) && empty($end)) {
+            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $end = date("Y-m-d");
+        }
+
+        ob_start();
+        $_GET['display_type'] = $format;
+        $_GET['export_all'] = 1;
+        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        $export = ob_get_clean();
+        $filename = 'assistance_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
+        return new Response(200, [
+            'Content-Type' => match ($format) {
+                \Search::CSV_OUTPUT => 'text/csv',
+                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                default => 'application/pdf',
+            },
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ], $export);
+    }
+
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
@@ -628,6 +721,89 @@ class ReportController extends AbstractController
         }
 
         return new JSONResponse($results);
+    }
+
+    #[Route(path: '/Assistance/Stat/{assistance_type}/Asset/Export', methods: ['GET'], requirements: [
+        'assistance_type' => 'Ticket|Change|Problem'
+    ], tags: ['Statistics', 'Assistance'])]
+    #[Doc\Route(
+        description: 'Export assistance statistics by asset',
+        parameters: [
+            [
+                'name' => 'date_start',
+                'description' => 'The start date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'date_end',
+                'description' => 'The end date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'Accept',
+                'description' => 'The format to export the statistics to',
+                'location' => 'header',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
+                ],
+            ]
+        ]
+    )]
+    public function exportAssetStats(Request $request): Response
+    {
+        $format = match ($request->getHeaderLine('Accept')) {
+            'text/csv' => \Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
+            default => \Search::PDF_OUTPUT_LANDSCAPE,
+        };
+        $ext = match ($format) {
+            \Search::CSV_OUTPUT => 'csv',
+            \Search::ODS_OUTPUT => 'ods',
+            \Search::XLSX_OUTPUT => 'xlsx',
+            default => 'pdf',
+        };
+
+        $itemtype = $request->getAttribute('assistance_type');
+        $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
+        $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
+        $value = \Stat::getItems(
+            $itemtype,
+            $start,
+            $end,
+            'hardwares'
+        );
+        if (empty($start) && empty($end)) {
+            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $end = date("Y-m-d");
+        }
+
+        ob_start();
+        $_GET['display_type'] = $format;
+        $_GET['export_all'] = 1;
+        \Stat::showTable($itemtype, 'hardwares', $start, $end, 0, $value, 0);
+        $export = ob_get_clean();
+        $filename = 'assistance_asset_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
+        return new Response(200, [
+            'Content-Type' => match ($format) {
+                \Search::CSV_OUTPUT => 'text/csv',
+                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                default => 'application/pdf',
+            },
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ], $export);
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics', methods: ['GET'], requirements: [
@@ -759,5 +935,98 @@ class ReportController extends AbstractController
         }
 
         return new JSONResponse($results);
+    }
+
+    #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics/Export', methods: ['GET'], requirements: [
+        'assistance_type' => 'Ticket|Change|Problem'
+    ], tags: ['Statistics', 'Assistance'])]
+    #[Doc\Route(
+        description: 'Export assistance statistics by asset characteristics',
+        parameters: [
+            [
+                'name' => 'date_start',
+                'description' => 'The start date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'date_end',
+                'description' => 'The end date of the statistics',
+                'location' => 'query',
+                'example' => '2024-01-30',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE
+                ]
+            ],
+            [
+                'name' => 'field',
+                'description' => 'The field to group the statistics by',
+                'location' => 'query',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+                'required' => true,
+            ],
+            [
+                'name' => 'Accept',
+                'description' => 'The format to export the statistics to',
+                'location' => 'header',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
+                ],
+            ]
+        ]
+    )]
+    public function exportAssetCharacteristicsStats(Request $request): Response
+    {
+        $format = match ($request->getHeaderLine('Accept')) {
+            'text/csv' => \Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
+            default => \Search::PDF_OUTPUT_LANDSCAPE,
+        };
+        $ext = match ($format) {
+            \Search::CSV_OUTPUT => 'csv',
+            \Search::ODS_OUTPUT => 'ods',
+            \Search::XLSX_OUTPUT => 'xlsx',
+            default => 'pdf',
+        };
+
+        $itemtype = $request->getAttribute('assistance_type');
+        $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
+        $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
+        $field = $request->getParameter('field');
+        $value = \Stat::getItems(
+            $itemtype,
+            $start,
+            $end,
+            $field
+        );
+        if (empty($start) && empty($end)) {
+            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $end = date("Y-m-d");
+        }
+
+        ob_start();
+        $_GET['display_type'] = $format;
+        $_GET['export_all'] = 1;
+        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        $export = ob_get_clean();
+        $filename = 'assistance_asset_characteristics_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
+        return new Response(200, [
+            'Content-Type' => match ($format) {
+                \Search::CSV_OUTPUT => 'text/csv',
+                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                default => 'application/pdf',
+            },
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ], $export);
     }
 }

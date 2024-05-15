@@ -315,7 +315,7 @@ class Cartridge extends CommonDBRelation
                  return true;
             }
         } else {
-            Session::addMessageAfterRedirect(__('No free cartridge'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('No free cartridge'), false, ERROR);
         }
         return false;
     }

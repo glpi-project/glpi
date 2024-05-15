@@ -66,7 +66,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return $ong;
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         // we permits globally to update this object,
         // as users can update their onw items
@@ -77,7 +77,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         ]);
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->canUpdateBGEvents()) {
             return false;
@@ -95,7 +95,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return parent::canUpdateItem();
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if (!$this->canUpdateBGEvents()) {
             return false;

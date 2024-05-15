@@ -1548,32 +1548,23 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_ticketvalidations.status":
             case "glpi_changes.global_validation":
             case "glpi_changevalidations.status":
-                if ($val == 'all') {
+                if ($val !== 'can' && !is_numeric($val)) {
                     return [];
                 }
                 $tocheck = [];
-                switch ($val) {
-                    case 'can':
-                        $tocheck = \CommonITILValidation::getCanValidationStatusArray();
-                        break;
-
-                    case 'all':
-                        $tocheck = \CommonITILValidation::getAllValidationStatusArray();
-                        break;
-                }
-                if (count($tocheck) == 0) {
+                if ($val === 'can') {
+                    $tocheck = \CommonITILValidation::getCanValidationStatusArray();
+                } else {
                     $tocheck = [$val];
                 }
-                if (count($tocheck)) {
-                    if ($nott) {
-                        return [
-                            "$table.$field" => ['NOT IN', $tocheck]
-                        ];
-                    }
+                if ($nott) {
                     return [
-                        "$table.$field" => $tocheck
+                        "$table.$field" => ['NOT IN', $tocheck]
                     ];
                 }
+                return [
+                    "$table.$field" => $tocheck
+                ];
                 break;
 
             case "glpi_notifications.event":

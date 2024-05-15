@@ -44,7 +44,7 @@ include('../inc/includes.php');
 if (isset($_POST['language']) && !Session::getLoginUserID()) {
     // Offline lang change, keep it before session validity check
     $_SESSION["glpilanguage"] = $_POST['language'];
-    Session::addMessageAfterRedirect(__('Lang has been changed!'));
+    Session::addMessageAfterRedirect(__s('Lang has been changed!'));
     Html::back();
 }
 
@@ -165,11 +165,11 @@ if (isset($_GET['getvcard'])) {
             'language'  => $_POST['language']
         ]
     );
-    Session::addMessageAfterRedirect(__('Lang has been changed!'));
+    Session::addMessageAfterRedirect(__s('Lang has been changed!'));
     Html::back();
 } else if (isset($_POST['impersonate']) && $_POST['impersonate']) {
     if (!Session::startImpersonating($_POST['id'])) {
-        Session::addMessageAfterRedirect(__('Unable to impersonate user'), false, ERROR);
+        Session::addMessageAfterRedirect(__s('Unable to impersonate user'), false, ERROR);
         Html::back();
     }
 
@@ -178,7 +178,7 @@ if (isset($_GET['getvcard'])) {
     $impersonated_user_id = Session::getLoginUserID();
 
     if (!Session::stopImpersonating()) {
-        Session::addMessageAfterRedirect(__('Unable to stop impersonating user'), false, ERROR);
+        Session::addMessageAfterRedirect(__s('Unable to stop impersonating user'), false, ERROR);
         Html::back();
     }
 

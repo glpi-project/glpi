@@ -105,7 +105,7 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -123,7 +123,7 @@ class ITILFollowup extends CommonDBChild
         return false;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('change', UPDATE)
              || Session::haveRight('problem', UPDATE)
@@ -135,7 +135,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if ($this->isParentAlreadyLoaded()) {
@@ -166,7 +166,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (
             !isset($this->fields['itemtype'])
@@ -193,7 +193,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
@@ -212,7 +212,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (
@@ -391,7 +391,7 @@ class ITILFollowup extends CommonDBChild
             && !isset($input['add_reopen'])
         ) {
             Session::addMessageAfterRedirect(
-                __("You can't add a followup without description"),
+                __s("You can't add a followup without description"),
                 false,
                 ERROR
             );
@@ -429,14 +429,14 @@ class ITILFollowup extends CommonDBChild
                 if (isset($input["_add"])) {
                     // Reopen using add form
                     Session::addMessageAfterRedirect(
-                        __('If you want to reopen this item, you must specify a reason'),
+                        __s('If you want to reopen this item, you must specify a reason'),
                         false,
                         ERROR
                     );
                 } else {
                    // Refuse solution
                     Session::addMessageAfterRedirect(
-                        __('If you reject the solution, you must specify a reason'),
+                        __s('If you reject the solution, you must specify a reason'),
                         false,
                         ERROR
                     );

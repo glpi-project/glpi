@@ -79,7 +79,7 @@ class CalendarSegment extends CommonDBChild
             )) > 0
         ) {
             Session::addMessageAfterRedirect(
-                __('Can not add a range riding an existing period'),
+                __s('Can not add a range riding an existing period'),
                 false,
                 ERROR
             );

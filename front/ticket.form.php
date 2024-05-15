@@ -124,7 +124,7 @@ if (isset($_POST["add"])) {
         Html::redirect(Ticket::getFormURLWithID($_POST["id"]) . $toadd);
     }
     Session::addMessageAfterRedirect(
-        __('You have been redirected because you no longer have access to this ticket'),
+        __s('You have been redirected because you no longer have access to this ticket'),
         true,
         ERROR
     );

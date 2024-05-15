@@ -71,7 +71,6 @@ class Html
         return html_entity_decode($value, ENT_QUOTES, "UTF-8");
     }
 
-
     /**
      * Recursivly execute htmlentities on an array
      *
@@ -90,7 +89,6 @@ class Html
 
         return htmlentities($value, ENT_QUOTES, "UTF-8");
     }
-
 
     /**
      * Convert a date YY-MM-DD to DD-MM-YY for calendar
@@ -121,28 +119,22 @@ class Html
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e);
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('%1$s %2$s'),
                     $time,
                     _x('adjective', 'Invalid')
-                )
+                ))
             );
             return $time;
         }
-        $mask = 'Y-m-d';
-
-        switch ($format) {
-            case 1: // DD-MM-YYYY
-                $mask = 'd-m-Y';
-                break;
-            case 2: // MM-DD-YYYY
-                $mask = 'm-d-Y';
-                break;
-        }
+        $mask = match ($format) {
+            1 => 'd-m-Y', // DD-MM-YYYY
+            2 => 'm-d-Y', // MM-DD-YYYY
+            default => 'Y-m-d',
+        };
 
         return $date->format($mask);
     }
-
 
     /**
      * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
@@ -155,14 +147,12 @@ class Html
      **/
     public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
-
-        if (is_null($time) || ($time == 'NULL')) {
+        if (is_null($time) || ($time === 'NULL')) {
             return null;
         }
 
         return self::convDate($time, $format) . ' ' . substr($time, 11, $with_seconds ? 8 : 5);
     }
-
 
     /**
      * Clean string for input text field
@@ -183,7 +173,6 @@ class Html
         return preg_replace('/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
     }
 
-
     /**
      * Clean all parameters of an URL. Get a clean URL
      *
@@ -193,11 +182,9 @@ class Html
      **/
     public static function cleanParametersURL($url)
     {
-
         $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
         return preg_replace("/\?.*/", "", $url);
     }
-
 
     /**
      *  Resume text for followup
@@ -209,14 +196,12 @@ class Html
      **/
     public static function resume_text($string, $length = 255)
     {
-
         if (Toolbox::strlen($string) > $length) {
             $string = Toolbox::substr($string, 0, $length) . "&nbsp;(...)";
         }
 
         return $string;
     }
-
 
     /**
      * Clean post value for display in textarea
@@ -249,7 +234,6 @@ class Html
         return str_replace($order, $replace, $value);
     }
 
-
     /**
      * Convert a number to correct display
      *
@@ -265,13 +249,13 @@ class Html
         global $CFG_GLPI;
 
        // Php 5.3 : number_format() expects parameter 1 to be double,
-        if ($number == "") {
+        if ($number === '') {
             $number = 0;
-        } else if ($number == "-") { // used for not defines value (from Infocom::Amort, p.e.)
+        } else if ($number === "-") { // used for not defines value (from Infocom::Amort, p.e.)
             return "-";
         }
 
-        $number  = doubleval($number);
+        $number  = (float) $number;
         $decimal = $CFG_GLPI["decimal_number"];
         if ($forcedecimal >= 0) {
             $decimal = $forcedecimal;
@@ -282,25 +266,15 @@ class Html
             return number_format($number, $decimal, '.', '');
         }
 
-       // Display : clean display
-        switch ($_SESSION['glpinumber_format']) {
-            case 0: // French
-                return number_format($number, $decimal, '.', ' ');
-
-            case 2: // Other French
-                return number_format($number, $decimal, ',', ' ');
-
-            case 3: // No space with dot
-                return number_format($number, $decimal, '.', '');
-
-            case 4: // No space with comma
-                return number_format($number, $decimal, ',', '');
-
-            default: // English
-                return number_format($number, $decimal, '.', ',');
-        }
+        // Display : clean display
+        return match ((int) $_SESSION['glpinumber_format']) {
+            0 => number_format($number, $decimal, '.', ' '),
+            2 => number_format($number, $decimal, ',', ' '),
+            3 => number_format($number, $decimal, '.', ''),
+            4 => number_format($number, $decimal, ',', ''),
+            default => number_format($number, $decimal, '.', ','),
+        };
     }
-
 
     /**
      * Make a good string from the unix timestamp $sec
@@ -313,7 +287,6 @@ class Html
      **/
     public static function timestampToString($time, $display_sec = true, $use_days = true)
     {
-
         $time = (float)$time;
 
         $sign = '';
@@ -448,8 +421,8 @@ class Html
     /**
      * Redirection hack
      *
-     * @param $dest string: Redirection destination
-     * @param $http_response_code string: Forces the HTTP response code to the specified value
+     * @param string $dest Redirection destination
+     * @param string $http_response_code Forces the HTTP response code to the specified value
      *
      * @return never
      **/
@@ -526,24 +499,22 @@ class Html
      **/
     public static function displayNotFoundError(string $additional_info = '')
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var bool $HEADER_LOADED
-         */
-        global $CFG_GLPI, $HEADER_LOADED;
+        /** @var bool $HEADER_LOADED */
+        global $HEADER_LOADED;
 
         if (!$HEADER_LOADED) {
             if (!Session::getCurrentInterface()) {
                 self::nullHeader(__('Access denied'));
-            } else if (Session::getCurrentInterface() == "central") {
+            } else if (Session::getCurrentInterface() === "central") {
                 self::header(__('Access denied'));
-            } else if (Session::getCurrentInterface() == "helpdesk") {
+            } else if (Session::getCurrentInterface() === "helpdesk") {
                 self::helpHeader(__('Access denied'));
             }
         }
-        echo "<div class='center'><br><br>";
-        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
-        echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
+        TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
+            'message' => __('Item not found'),
+            'link'    => self::getBackUrl()
+        ]);
         $requested_url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
         $user_id = Session::getLoginUserID() ?? 'Anonymous';
         $internal_message = "User ID: $user_id tried to access a non-existent item $requested_url. Additional information: $additional_info\n";
@@ -566,7 +537,7 @@ class Html
     public static function displayRightError(string $additional_info = '')
     {
         Toolbox::handleProfileChangeRedirect();
-        $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
+        $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
         $user_id = Session::getLoginUserID() ?? 'Anonymous';
         if (empty($additional_info)) {
             $additional_info = __('No additional information given');
@@ -645,7 +616,7 @@ class Html
 
         if (is_array($ref_btts) && count($ref_btts)) {
             foreach ($ref_btts as $key => $val) {
-                echo "<a class='btn btn-outline-secondary' href='" . $key . "'>" . $val . "</a>";
+                echo "<a class='btn btn-outline-secondary' href='" . htmlspecialchars($key) . "'>" . htmlspecialchars($val) . "</a>";
             }
         }
         echo "</div>";
@@ -700,9 +671,9 @@ class Html
     {
         $url_referer = self::getBackUrl();
         if ($url_referer !== false) {
-            echo "<a href='$url_referer'>" . __('Back') . "</a>";
+            echo '<a href="' . htmlspecialchars($url_referer) . '">' . __s('Back') . "</a>";
         } else {
-            echo "<a href='javascript:history.back();'>" . __('Back') . "</a>";
+            echo "<a href='javascript:history.back();'>" . __s('Back') . "</a>";
         }
     }
 
@@ -720,17 +691,16 @@ class Html
     {
         if (
             isset($_SERVER['HTTP_REFERER'])
-            && strlen($url_in) == 0
+            && $url_in === ''
         ) {
             $url_in = $_SERVER['HTTP_REFERER'];
         }
-        if (strlen($url_in) > 0) {
+        if ($url_in !== '') {
             $url = parse_url($url_in);
 
             if (isset($url['query'])) {
                 parse_str($url['query'], $parameters);
-                unset($parameters['forcetab']);
-                unset($parameters['tab_params']);
+                unset($parameters['forcetab'], $parameters['tab_params']);
                 $new_query = http_build_query($parameters);
                 return str_replace($url['query'], $new_query, $url_in);
             }
@@ -778,15 +748,14 @@ class Html
     /**
      * Add confirmation on button or link before action
      *
-     * @param $string             string   to display or array of string for using multilines
-     * @param $additionalactions  string   additional actions to do on success confirmation
+     * @param string $string             to display or array of string for using multilines
+     * @param string $additionalactions  additional actions to do on success confirmation
      *                                     (default '')
      *
      * @return string
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
-
         return "onclick=\"" . htmlspecialchars(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
@@ -796,8 +765,8 @@ class Html
      *
      * @since 0.85
      *
-     * @param $string             string   to display or array of string for using multilines
-     * @param $additionalactions  string   additional actions to do on success confirmation
+     * @param string $string             to display or array of string for using multilines
+     * @param string $additionalactions  additional actions to do on success confirmation
      *                                     (default '')
      *
      * @return string confirmation script
@@ -839,8 +808,8 @@ class Html
      *
      * @since 0.85
      *
-     * @param $id                 HTML ID of the progress bar
-     * @param $options    array   progress status
+     * @param string $id HTML ID of the progress bar
+     * @param array $options progress status options
      *                    - create    do we have to create it ?
      *                    - message   add or change the message
      *                    - percent   current level
@@ -850,7 +819,6 @@ class Html
      **/
     public static function progressBar($id, array $options = [])
     {
-
         $params = [
             'create'    => false,
             'message'   => null,
@@ -938,17 +906,21 @@ HTML;
      * Create a Dynamic Progress Bar
      *
      * @param string $msg  initial message (under the bar)
+     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
-     * @return void
+     * @return string|void
      **/
-    public static function createProgressBar($msg = "&nbsp;")
+    public static function createProgressBar($msg = null, array $options = [])
     {
+        $options = array_replace([
+            'create' => true,
+            'display' => true
+        ], $options);
+        $options['message'] = $msg;
 
-        $options = ['create' => true];
-        if ($msg != "&nbsp;") {
-            $options['message'] = $msg;
+        if (!$options['display']) {
+            return self::progressBar('doaction_progress', $options);
         }
-
         self::progressBar('doaction_progress', $options);
     }
 
@@ -961,7 +933,6 @@ HTML;
      **/
     public static function changeProgressBarMessage($msg = "&nbsp;")
     {
-
         self::progressBar('doaction_progress', ['message' => $msg]);
         self::glpi_flush();
     }
@@ -978,7 +949,6 @@ HTML;
      **/
     public static function changeProgressBarPosition($crt, $tot, $msg = "")
     {
-
         $options = [];
 
         if (!$tot) {
@@ -1527,7 +1497,6 @@ HTML;
             }
 
             $_SESSION['glpimenu'] = $menu;
-           // echo 'menu load';
         } else {
             $menu = $_SESSION['glpimenu'];
         }
@@ -1729,7 +1698,7 @@ HTML;
             && !$DB->first_connection
         ) {
             echo "<div id='dbslave-float'>";
-            echo "<a href='#see_debug'>" . __('SQL replica: read only') . "</a>";
+            echo "<a href='#see_debug'>" . __s('SQL replica: read only') . "</a>";
             echo "</div>";
         }
 
@@ -1741,7 +1710,7 @@ HTML;
     /**
      * Print footer for every page
      *
-     * @param $keepDB boolean, closeDBConnections if false (false by default)
+     * @param boolean $keepDB closeDBConnections if false (false by default)
      **/
     public static function footer($keepDB = false)
     {
@@ -1767,8 +1736,8 @@ HTML;
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
-                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
+                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
+                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID()
             ];
@@ -2087,7 +2056,7 @@ HTML;
      *
      * @param string  $title    title of the page
      * @param string  $url      not used anymore
-     * @param boolean $iframed  indicate if page loaded in iframe - css target
+     * @param boolean $in_modal indicate if page loaded in modal - css target
      * @param string  $sector    sector in which the page displayed is (default 'none')
      * @param string  $item      item corresponding to the page displayed (default 'none')
      * @param string  $option    option corresponding to the page displayed (default '')
@@ -2192,99 +2161,17 @@ HTML;
      **/
     public static function header_nocache()
     {
-
         header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
     }
-
-
-
-    /**
-     * show arrow for massives actions : opening
-     *
-     * @param string  $formname
-     * @param boolean $fixed     used tab_cadre_fixe in both tables
-     * @param boolean $ontop     display on top of the list
-     * @param boolean $onright   display on right of the list
-     *
-     * @deprecated 0.84
-     **/
-    public static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        Toolbox::deprecated('openArrowMassives() method is deprecated');
-
-        if ($fixed) {
-            echo "<table width='950px'>";
-        } else {
-            echo "<table width='80%'>";
-        }
-
-        $arrow = "fas fa-level-down-alt";
-        if (!$ontop) {
-            $arrow = "fas fa-level-up-alt";
-        }
-
-        echo "<tr>";
-        if (!$onright) {
-            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
-        } else {
-            echo "<td class='left' width='80%'></td>";
-        }
-        echo "<td class='center' style='white-space:nowrap;'>";
-        echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
-             href='#'>" . __('Check all') . "</a></td>";
-        echo "<td>/</td>";
-        echo "<td class='center' style='white-space:nowrap;'>";
-        echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
-             href='#'>" . __('Uncheck all') . "</a></td>";
-
-        if ($onright) {
-            echo "<td><i class='$arrow fa-lg mx-2'></i>";
-        } else {
-            echo "<td class='left' width='80%'>";
-        }
-    }
-
-
-    /**
-     * show arrow for massives actions : closing
-     *
-     * @param $actions array of action : $name -> $label
-     * @param $confirm array of confirmation string (optional)
-     *
-     * @deprecated 0.84
-     **/
-    public static function closeArrowMassives($actions, $confirm = [])
-    {
-
-        Toolbox::deprecated('closeArrowMassives() method is deprecated');
-
-        if (count($actions)) {
-            foreach ($actions as $name => $label) {
-                if (!empty($name)) {
-                    echo "<input type='submit' name='$name' ";
-                    if (is_array($confirm) && isset($confirm[$name])) {
-                        echo self::addConfirmationOnAction($confirm[$name]);
-                    }
-                    echo "value=\"" . htmlspecialchars($label) . "\" class='btn btn-primary'>&nbsp;";
-                }
-            }
-        }
-        echo "</td></tr>";
-        echo "</table>";
-    }
-
 
     /**
      * Get "check All as" checkbox
      *
      * @since 0.84
      *
-     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
-     * @param $rand          string rand value to use (default is auto generated)(default '')
+     * @param string $container_id  html of the container of checkboxes link to this check all checkbox
+     * @param string $rand          rand value to use (default is auto generated)(default '')
      *
      * @return string
      **/
@@ -2466,7 +2353,7 @@ HTML;
      *
      * @since 0.85
      *
-     * @param $options   array
+     * @param array $options
      *
      * @return void
      **/
@@ -2572,7 +2459,7 @@ HTML;
      *
      * @todo replace 'hidden' by data-glpicore-ma-tags ?
      *
-     * @param $options   array    of parameters
+     * @param array $options  Array of parameters
      * must contains :
      *    - container       : DOM ID of the container of the item checkboxes (since version 0.85)
      * may contains :
@@ -2674,9 +2561,9 @@ HTML;
                 || (isset($p['forcecreate']) && $p['forcecreate'])
             ) {
                 $out .= "<span class='b'>";
-                $out .= __('Selection too large, massive action disabled.') . "</span>";
-                if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                    $out .= __('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+                $out .= __s('Selection too large, massive action disabled.') . "</span>";
+                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                    $out .= __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
                 }
             }
         } else {
@@ -3075,127 +2962,11 @@ JS;
     }
 
     /**
-     * Display TimeField form
-     *
-     * @param string $name
-     * @param array  $options
-     *   - value      : default value to display (default '')
-     *   - timestep   : step for time in minute (-1 use default config) (default -1)
-     *   - maybeempty : may be empty ? (true by default)
-     *   - canedit    : could not modify element (true by default)
-     *   - mintime    : minimum allowed time (default '')
-     *   - maxtime    : maximum allowed time (default '')
-     *   - display    : boolean display or get string (default true)
-     *   - rand       : specific random value (default generated one)
-     *   - required   : required field (will add required attribute)
-     *   - on_change  : function to execute when date selection changed
-     * @return void
-     */
-    public static function showTimeField($name, $options = [])
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $p = [
-            'value'      => '',
-            'maybeempty' => true,
-            'canedit'    => true,
-            'mintime'    => '',
-            'maxtime'    => '',
-            'timestep'   => -1,
-            'display'    => true,
-            'rand'       => mt_rand(),
-            'required'   => false,
-            'on_change'  => '',
-        ];
-
-        foreach ($options as $key => $val) {
-            if (isset($p[$key])) {
-                $p[$key] = $val;
-            }
-        }
-
-        if ($p['timestep'] < 0) {
-            $p['timestep'] = $CFG_GLPI['time_step'];
-        }
-
-        $hour_value = '';
-        if (!empty($p['value'])) {
-            $hour_value = $p['value'];
-        }
-
-        if (!empty($p['mintime'])) {
-           // Check time in interval
-            if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
-                $hour_value = $p['mintime'];
-            }
-        }
-        if (!empty($p['maxtime'])) {
-           // Check time in interval
-            if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
-                $hour_value = $p['maxtime'];
-            }
-        }
-       // reconstruct value to be valid
-        if (!empty($hour_value)) {
-            $p['value'] = $hour_value;
-        }
-
-        $required = $p['required'] == true
-         ? " required='required'"
-         : "";
-        $disabled = !$p['canedit']
-         ? " disabled='disabled'"
-         : "";
-        $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<a data-clear  title='" . __s('Clear') . "'>
-               <i class='input-group-text fas fa-times-circle pointer'></i>
-            </a>"
-         : "";
-
-        $output = <<<HTML
-         <div class="input-group flex-grow-1 flatpickr" id="showtime{$p['rand']}">
-            <input type="text" name="{$name}" value="{$p['value']}"
-                   {$required} {$disabled} data-input class="form-control rounded-start ps-2">
-            <a class="input-button" data-toggle>
-               <i class="input-group-text far fa-clock fa-lg pointer"></i>
-            </a>
-            $clear
-         </div>
-HTML;
-        $locale = Locale::parseLocale($_SESSION['glpilanguage']);
-        $js = <<<JS
-      $(function() {
-         $("#showtime{$p['rand']}").flatpickr({
-            dateFormat: 'H:i:S',
-            wrap: true, // permits to have controls in addition to input (like clear or open date buttons)
-            enableTime: true,
-            noCalendar: true, // only time picker
-            enableSeconds: true,
-            time_24hr: true,
-            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
-            minuteIncrement: "{$p['timestep']}",
-            onChange: function(selectedDates, dateStr, instance) {
-               {$p['on_change']}
-            }
-         });
-      });
-JS;
-        $output .= Html::scriptBlock($js);
-
-        if ($p['display']) {
-            echo $output;
-            return $p['rand'];
-        }
-        return $output;
-    }
-
-    /**
      * Show generic date search
      *
      * @param string $element  name of the html element
      * @param string $value    default value
-     * @param $options   array of possible options:
+     * @param array $options   Array of possible options:
      *      - with_time display with time selection ? (default false)
      *      - with_future display with future date selection ? (default false)
      *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
@@ -3609,8 +3380,8 @@ JS;
     /**
      * Show a tooltip on an item
      *
-     * @param $content   string   data to put in the tooltip
-     * @param $options   array    of possible options:
+     * @param string $content  data to put in the tooltip
+     * @param array $options   Array of possible options:
      *   - applyto : string / id of the item to apply tooltip (default empty).
      *                  If not set display an icon
      *   - title : string / title to display (default empty)
@@ -3753,63 +3524,6 @@ JS;
             return $out;
         }
     }
-
-
-    /**
-     * Show div with auto completion
-     *
-     * @param CommonDBTM $item    item object used for create dropdown
-     * @param string     $field   field to search for autocompletion
-     * @param array      $options array of possible options:
-     *    - name    : string / name of the select (default is field parameter)
-     *    - value   : integer / preselected value (default value of the item object)
-     *    - size    : integer / size of the text field
-     *    - entity  : integer / restrict to a defined entity (default entity of the object if define)
-     *                set to -1 not to take into account
-     *    - user    : integer / restrict to a defined user (default -1 : no restriction)
-     *    - option  : string / options to add to text field
-     *    - display : boolean / if false get string
-     *    - type    : string / html5 field type (number, date, text, ...) defaults to 'text'
-     *    - required: boolean / whether the field is required
-     *    - rand    : integer / pre-exsting random value
-     *    - attrs   : array of attributes to add (['name' => 'value']
-     *
-     * @return void|string
-     **/
-    public static function autocompletionTextField(CommonDBTM $item, $field, $options = [])
-    {
-        Toolbox::deprecated('Autocompletion feature has been removed.');
-
-        $params['name']   = $field;
-        $params['value']  = '';
-
-        if (array_key_exists($field, $item->fields)) {
-            $params['value'] = $item->fields[$field];
-        }
-        $params['option'] = '';
-        $params['type']   = 'text';
-        $params['required']  = false;
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
-
-        $rand = (isset($params['rand']) ? $params['rand'] : mt_rand());
-        $name    = "field_" . $params['name'] . $rand;
-
-        $output = "<input " . $params['option'] . " type='text' id='text$name' class='form-control' name='" . $params['name'] . "'
-                value=\"" . htmlspecialchars($params['value']) . "\"" .
-                ($params['required'] ? ' required="required"' : '') . ">";
-
-        if (!isset($options['display']) || $options['display']) {
-            echo $output;
-        } else {
-            return $output;
-        }
-    }
-
 
     /**
      * Init the Editor System to a textarea
@@ -4096,7 +3810,8 @@ JS;
     /**
      * Activate autocompletion for user templates in rich text editor.
      *
-     * @param string $editor_id
+     * @param string $selector Selector of the textarea to activate autocompletion for
+     * @param array  $values   Array of values to use for autocompletion
      *
      * @return void
      *
@@ -4124,7 +3839,7 @@ JAVASCRIPT
     /**
      * Insert an html link to the twig template variables documentation page
      *
-     * @param string $preset_traget Preset of parameters for which to show documentation (key)
+     * @param string $preset_target Preset of parameters for which to show documentation (key)
      * @param string|null $link_id  Useful if you need to interract with the link through client side code
      */
     public static function addTemplateDocumentationLink(
@@ -4156,7 +3871,7 @@ JAVASCRIPT
      * Useful if you don't have access to the form where you want to put this link at
      *
      * @param string $selector JQuery selector to find the target textarea
-     * @param string $preset_traget   Preset of parameters for which to show documentation (key)
+     * @param string $preset_target   Preset of parameters for which to show documentation (key)
      */
     public static function addTemplateDocumentationLinkJS(
         string $selector,
@@ -4429,6 +4144,7 @@ JAVASCRIPT
             !empty($item_type_output)
             && isset($_SESSION["glpiactiveprofile"])
             && (Session::getCurrentInterface() == "central")
+            && $numrows > 0
         ) {
             echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
             echo "<form method='GET' action='" . $CFG_GLPI["root_doc"] . "/front/report.dynamic.php'>";
@@ -4524,9 +4240,9 @@ JAVASCRIPT
     /**
      * Create a title for list, as  "List (5 on 35)"
      *
-     * @param $string String  text for title
-     * @param $num    Integer number of item displayed
-     * @param $tot    Integer number of item existing
+     * @param string $string Text for title
+     * @param integer $num   Number of item displayed
+     * @param integer $tot   Number of item existing
      *
      * @since 0.83.1
      *
@@ -4534,32 +4250,31 @@ JAVASCRIPT
      **/
     public static function makeTitle($string, $num, $tot)
     {
-
         if (($num > 0) && ($num < $tot)) {
            // TRANS %1$d %2$d are numbers (displayed, total)
             $cpt = "<span class='primary-bg primary-fg count'>" .
-            sprintf(__('%1$d on %2$d'), $num, $tot) . "</span>";
+            htmlspecialchars(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
         } else {
            // $num is 0, so means configured to display nothing
            // or $num == $tot
             $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
         }
-        return sprintf(__('%1$s %2$s'), $string, $cpt);
+        return sprintf(__s('%1$s %2$s'), htmlspecialchars($string), $cpt);
     }
 
 
     /**
      * create a minimal form for simple action
      *
-     * @param $action   String   URL to call on submit
-     * @param $btname   String   button name (maybe if name <> value)
-     * @param $btlabel  String   button label
-     * @param $fields   Array    field name => field  value
-     * @param $btimage  String   button image uri (optional)   (default '')
+     * @param string $action   URL to call on submit
+     * @param string $btname   Button name (maybe if name <> value)
+     * @param string $btlabel  Button label
+     * @param array $fields    Field name => field  value
+     * @param string $btimage  Button image uri (optional)   (default '')
      *                           If image name starts with "fa-", il will be turned into
      *                           a font awesome element rather than an image.
-     * @param $btoption String   optional button option        (default '')
-     * @param $confirm  String   optional confirm message      (default '')
+     * @param string $btoption Optional button option        (default '')
+     * @param string $confirm  Optional confirm message      (default '')
      *
      * @since 0.84
      **/
@@ -4623,13 +4338,13 @@ JAVASCRIPT
     /**
      * create a minimal form for simple action
      *
-     * @param $action   String   URL to call on submit
-     * @param $btname   String   button name
-     * @param $btlabel  String   button label
-     * @param $fields   Array    field name => field  value
-     * @param $btimage  String   button image uri (optional) (default '')
-     * @param $btoption String   optional button option (default '')
-     * @param $confirm  String   optional confirm message (default '')
+     * @param string $action   URL to call on submit
+     * @param string $btname   Button name
+     * @param string $btlabel  Button label
+     * @param array $fields    Field name => field  value
+     * @param string $btimage  Button image uri (optional) (default '')
+     * @param string $btoption Optional button option (default '')
+     * @param string $confirm  Optional confirm message (default '')
      *
      * @since 0.83.3
      **/
@@ -4650,17 +4365,16 @@ JAVASCRIPT
     /**
      * Create a close form part including CSRF token
      *
-     * @param $display boolean Display or return string (default true)
+     * @param boolean $display Display or return string (default true)
      *
      * @since 0.83.
      *
-     * @return string
+     * @return string|true
+     * @phpstan-return $display is true ? true : string
      **/
     public static function closeForm($display = true)
     {
-        $out = '';
-
-        $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+        $out = Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
         $out .= "</form>";
         if ($display) {
@@ -4670,41 +4384,10 @@ JAVASCRIPT
         return $out;
     }
 
-
-    /**
-     * Get javascript code for hide an item
-     *
-     * @param $id string id of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     **/
-    public static function jsHide($id)
-    {
-        return self::jsGetElementbyID($id) . ".hide();\n";
-    }
-
-
-    /**
-     * Get javascript code for hide an item
-     *
-     * @param $id string id of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     **/
-    public static function jsShow($id)
-    {
-        return self::jsGetElementbyID($id) . ".show();\n";
-    }
-
-
     /**
      * Clean ID used for HTML elements
      *
-     * @param $id string id of the dom element
+     * @param string $id ID of the dom element
      *
      * @since 0.85.
      *
@@ -4715,11 +4398,10 @@ JAVASCRIPT
         return str_replace(['[',']'], '_', $id);
     }
 
-
     /**
      * Get javascript code to get item by id
      *
-     * @param $id string id of the dom element
+     * @param string $id ID of the dom element
      *
      * @since 0.85.
      *
@@ -4730,12 +4412,11 @@ JAVASCRIPT
         return "$('#$id')";
     }
 
-
     /**
      * Set dropdown value
      *
-     * @param $id      string   id of the dom element
-     * @param $value   string   value to set
+     * @param string $id      ID of the dom element
+     * @param string $value   Value to set
      *
      * @since 0.85.
      *
@@ -4749,7 +4430,7 @@ JAVASCRIPT
     /**
      * Get item value
      *
-     * @param $id      string   id of the dom element
+     * @param string $id  ID of the dom element
      *
      * @since 0.85.
      *
@@ -4764,8 +4445,8 @@ JAVASCRIPT
     /**
      * Adapt dropdown to clean JS
      *
-     * @param $id       string   id of the dom element
-     * @param $params   array    of parameters
+     * @param string $id     ID of the dom element
+     * @param array $params  Array of parameters
      *
      * @since 0.85.
      *
@@ -4777,7 +4458,7 @@ JAVASCRIPT
         global $CFG_GLPI;
 
         $width = '';
-        if (isset($params["width"]) && !empty($params["width"])) {
+        if (!empty($params["width"])) {
             $width = $params["width"];
             unset($params["width"]);
         }
@@ -4810,10 +4491,10 @@ JS;
     /**
      * Create Ajax dropdown to clean JS
      *
-     * @param $name
-     * @param $field_id   string   id of the dom element
-     * @param $url        string   URL to get datas
-     * @param $params     array    of parameters
+     * @param string $name
+     * @param string $field_id  ID of the dom element
+     * @param string $url       URL to get datas
+     * @param array $params     Array of parameters
      *            must contains :
      *                if single select
      *                   - 'value'       : default value selected
@@ -4857,11 +4538,10 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
-        unset($params["on_change"]);
-        unset($params["width"]);
+        unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
-        if (strlen($placeholder) > 0 && !$params['display_emptychoice']) {
+        if ($placeholder !== '' && !$params['display_emptychoice']) {
             $allowclear = "true";
         }
 
@@ -4885,10 +4565,7 @@ JS;
         }
         $parent_id_field = $params['parent_id_field'];
 
-        unset($params['placeholder']);
-        unset($params['value']);
-        unset($params['valuename']);
-        unset($params['parent_id_field']);
+        unset($params['placeholder'], $params['value'], $params['valuename'], $params['parent_id_field']);
 
         foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {
@@ -5111,9 +4788,8 @@ JS;
      *
      * @since 9.3
      *
-     * @param string $ame      Name of the field
+     * @param string $name     Name of the field
      * @param array  $values   Array of the options
-     * @param mixed  $selected Current selected option
      * @param array  $options  Array of HTML attributes
      *
      * @return string
@@ -5270,9 +4946,11 @@ HTML;
      *
      * @since 0.85
      *
-     * @param $options Array of options.
+     * @param array $options Array of options.
      *
      * @return string Composed attributes.
+     * @used-by templates/components/form/fields_macros.html.twig
+     * @used-by templates/components/form/buttons.html.twig
      **/
     public static function parseAttributes($options = [])
     {
@@ -5470,7 +5148,7 @@ HTML;
      *
      * @since 9.2
      *
-     * @param $options       array of options
+     * @param array $options    Array of options
      *    - name                string   field name (default filename)
      *    - onlyimages          boolean  restrict to image files (default false)
      *    - filecontainer       string   DOM ID of the container showing file uploaded:
@@ -5558,7 +5236,7 @@ HTML;
 
         if (!$p['only_uploaded_files']) {
            // manage file upload without tinymce editor
-            $display .= "<span class='b'>" . __('Drag and drop your file here, or') . '</span><br>';
+            $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
         $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
                       class='form-control'
@@ -5742,13 +5420,13 @@ HTML;
      * Display uploaded files area
      * @see displayUploadedFile() in fileupload.js
      *
-     * @param $options       array of options
+     * @param array $options  Array of options
      *    - name                string   field name (default filename)
      *    - filecontainer       string   DOM ID of the container showing file uploaded:
      *    - editor_id           string   id attribute for the textarea
      *    - display             bool     display or return the generated html
      *    - uploads             array    uploads to display (done in a previous form submit)
-     * @return void|string   the html if display parameter is false
+     * @return string|true   The html if display parameter is false
      */
     private static function uploadedFiles($options = [])
     {
@@ -5836,14 +5514,14 @@ HTML;
      * Display choice matrix
      *
      * @since 0.85
-     * @param $columns   array   of column field name => column label
-     * @param $rows      array    of field name => array(
+     * @param array $columns  Array of column field name => column label
+     * @param array $rows     Array of field name => array(
      *      'label' the label of the row
      *      'columns' an array of specific information regaring current row
      *                and given column indexed by column field_name
      *                 * a string if only have to display a string
      *                 * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
-     * @param $options   array   possible:
+     * @param array $options Possible:
      *       'title'         of the matrix
      *       'first_cell'    the content of the upper-left cell
      *       'row_check_all' set to true to display a checkbox to check all elements of the row
@@ -6003,39 +5681,6 @@ HTML;
       };");
     }
 
-
-    /**
-     * Summary of confirmCallback
-     * Is a replacement for Javascript native confirm function
-     * Beware that native confirm is synchronous by nature (will block
-     * browser waiting an answer from user, but that this is emulating the confirm behaviour
-     * by using callbacks functions when user presses 'Yes' or 'No' buttons.
-     *
-     * @since 9.1
-     *
-     * @param $msg            string      message to be shown
-     * @param $title          string      title for dialog box
-     * @param $yesCallback    string      function that will be called when 'Yes' is pressed
-     *                                    (default null)
-     * @param $noCallback     string      function that will be called when 'No' is pressed
-     *                                    (default null)
-     **/
-    public static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null)
-    {
-        return "glpi_confirm({
-         title: " . json_encode($title) . ",
-         message: " . json_encode($msg) . ",
-         confirm_callback: function() {
-            " . ($yesCallback !== null ? '(' . $yesCallback . ')()' : '') . "
-         },
-         cancel_callback: function() {
-            " . ($noCallback !== null ? '(' . $noCallback . ')()' : '') . "
-         },
-      });
-      ";
-    }
-
-
     /**
      * In this function, we redefine 'window.confirm' javascript function
      * by a prettier dialog.
@@ -6105,9 +5750,9 @@ HTML;
      *
      * @since 9.1
      *
-     * @param $msg          string   message to be shown
-     * @param $title        string   title for dialog box
-     * @param $okCallback   string   function that will be called when 'Ok' is pressed
+     * @param string $msg          Message to be shown
+     * @param string $title        Title for dialog box
+     * @param string $okCallback   Function that will be called when 'Ok' is pressed
      *                               (default null)
      **/
     public static function jsAlertCallback($msg, $title, $okCallback = null)
@@ -6527,7 +6172,7 @@ HTML;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $prefix = $CFG_GLPI['root_doc'];
-        if (substr($url, 0, 1) != '/') {
+        if (!str_starts_with($url, '/')) {
             $prefix .= '/';
         }
         return $prefix . $url;
@@ -6633,16 +6278,16 @@ HTML;
      * @param  string  $hexcolor the color, you can pass hex color (prefixed or not by #)
      *                           You can also pass a short css color (ex #FFF)
      * @param  boolean $bw       default true, should we invert the color or return black/white function of the input color
-     * @param  boolean $sb       default true, should we soft the black/white to a dark/light grey
+     * @param  boolean $sbw      default true, should we soft the black/white to a dark/light grey
      * @return string            the inverted color prefixed by #
      */
     public static function getInvertedColor($hexcolor = "", $bw = true, $sbw = true)
     {
-        if (strpos($hexcolor, '#') !== false) {
+        if (str_contains($hexcolor, '#')) {
             $hexcolor = trim($hexcolor, '#');
         }
        // convert 3-digit hex to 6-digits.
-        if (strlen($hexcolor) == 3) {
+        if (strlen($hexcolor) === 3) {
             $hexcolor = $hexcolor[0] + $hexcolor[0]
                    + $hexcolor[1] + $hexcolor[1]
                    + $hexcolor[2] + $hexcolor[2];
@@ -6696,12 +6341,12 @@ HTML;
          */
         global $CFG_GLPI, $GLPI_CACHE;
 
-        if (!isset($args['file']) || empty($args['file'])) {
+        if (empty($args['file'])) {
             throw new \InvalidArgumentException('"file" argument is required.');
         }
 
         $ckey = 'css_';
-        $ckey .= isset($args['v']) ? $args['v'] : GLPI_VERSION;
+        $ckey .= $args['v'] ?? GLPI_VERSION;
 
         $scss = new Compiler();
         if (isset($args['debug'])) {
@@ -6895,7 +6540,7 @@ CSS;
      *
      * @param string $root_dir
      *
-     * @return array
+     * @return string
      *
      * @TODO GLPI 11.0 Handle SCSS compiled directory in plugins.
      */

@@ -52,7 +52,7 @@ class FormRenderer extends DbTestCase
      * It should be verified using a separate E2E test instead.
      *
      * Any error while rendering the form will still be caught by this tests so
-     * we must try to send a vey complex form.
+     * we must try to send a very complex form.
      *
      * @return void
      */
@@ -78,10 +78,25 @@ class FormRenderer extends DbTestCase
             );
         } while (count($questions) < 50);
 
+        // Extra data for some question types
+        $extra_datas = [
+            \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
+                'options' => [
+                    123 => 'Radio 1',
+                ]
+            ],
+            \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
+                'options' => [
+                    123 => 'Checkbox 1',
+                ]
+            ],
+        ];
+
         foreach ($questions as $type) {
             $form_builder->addQuestion(
                 name: "Question $i",
                 type: $type::class,
+                extra_data: isset($extra_datas[$type::class]) ? json_encode($extra_datas[$type::class]) : "",
                 description: $i % 4 === 0 ? "Description of question $i" : "", // Add a description every 4 questions
                 is_mandatory: $i % 2 === 0, // Half of the questions are mandatory
             );

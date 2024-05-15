@@ -66,6 +66,26 @@ enum QuestionTypeCategory: string
     case URGENCY = "urgency";
 
     /**
+     * Question that expect a request type
+     */
+    case REQUEST_TYPE = "request_type";
+
+    /**
+     * Question that expect a file upload
+     */
+    case FILE = "file";
+
+    /**
+     * Question that expect a single choice among a list of options
+     */
+    case RADIO = "radio";
+
+    /**
+     * Question that expect multiple choices among a list of options
+     */
+    case CHECKBOX = "checkbox";
+
+    /**
      * Get category label
      * @return string
      */
@@ -77,6 +97,10 @@ enum QuestionTypeCategory: string
             self::DATE_AND_TIME => __("Date and time"),
             self::ACTORS => __("Actors"),
             self::URGENCY => __("Urgency"),
+            self::REQUEST_TYPE => __("Request type"),
+            self::FILE => __("File"),
+            self::RADIO => __("Radio"),
+            self::CHECKBOX => __("Checkbox"),
         };
     }
 }

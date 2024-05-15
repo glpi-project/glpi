@@ -55,13 +55,13 @@ class NetworkPortWifi extends NetworkPortInstantiation
         if (!$options['several']) {
             echo "<tr class='tab_bg_1'>\n";
             $this->showNetworkCardField($netport, $options, $recursiveItems);
-            echo "<td>" . WifiNetwork::getTypeName(1) . "</td><td>";
+            echo "<td>" . htmlspecialchars(WifiNetwork::getTypeName(1)) . "</td><td>";
             WifiNetwork::dropdown(['value'  => $this->fields["wifinetworks_id"]]);
             echo "</td>";
             echo "</tr>\n";
 
             echo "<tr class='tab_bg_1'>\n";
-            echo "<td>" . __('Wifi mode') . "</td>";
+            echo "<td>" . __s('Wifi mode') . "</td>";
             echo "<td>";
 
             Dropdown::showFromArray(
@@ -71,7 +71,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
             );
 
             echo "</td>\n";
-            echo "<td>" . __('Wifi protocol version') . "</td><td>";
+            echo "<td>" . __s('Wifi protocol version') . "</td><td>";
 
             Dropdown::showFromArray(
                 'version',

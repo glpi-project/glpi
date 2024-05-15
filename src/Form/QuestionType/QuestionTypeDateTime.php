@@ -152,7 +152,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
     }
 
     #[Override]
-    public static function validateExtraDataInput(array $input): bool
+    public function validateExtraDataInput(array $input): bool
     {
         $allowed_keys = [
             'is_default_value_current_time',
@@ -324,7 +324,7 @@ TWIG;
             <input
                 type="{{ input_type|e('html_attr') }}"
                 class="form-control"
-                name="answers[{{ question.fields.id|e('html_attr') }}]"
+                name="{{ question.getEndUserInputName() }}"
                 value="{{ default_value|e('html_attr') }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >

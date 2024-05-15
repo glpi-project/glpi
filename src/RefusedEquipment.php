@@ -244,7 +244,7 @@ class RefusedEquipment extends CommonDBTM
         return true;
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }
@@ -260,7 +260,7 @@ class RefusedEquipment extends CommonDBTM
 
         if ($status['itemtype'] === self::class) {
             Session::addMessageAfterRedirect(
-                __('Inventory is still refused.')
+                __s('Inventory is still refused.')
             );
             return static::getSearchURL();
         }

@@ -46,15 +46,33 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
+    public function loadJavascriptFiles(): array
+    {
+        return []; // No extra JS files by default
+    }
+
+    #[Override]
+    public function formatDefaultValueForDB(mixed $value): ?string
     {
         return $value; // Default value is already formatted
     }
 
     #[Override]
-    public static function validateExtraDataInput(array $input): bool
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        return $answer;
+    }
+
+    #[Override]
+    public function validateExtraDataInput(array $input): bool
     {
         return empty($input); // No extra data by default
+    }
+
+    #[Override]
+    public function prepareExtraData(array $input): array
+    {
+        return $input; // No need to prepare the extra data
     }
 
     #[Override]

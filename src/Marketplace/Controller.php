@@ -177,7 +177,7 @@ class Controller extends CommonGLPI
             }
             if ($url === null) {
                 Session::addMessageAfterRedirect(
-                    __('Cannot find the specified version of the plugin.'),
+                    __s('Cannot find the specified version of the plugin.'),
                     false,
                     ERROR
                 );
@@ -189,7 +189,7 @@ class Controller extends CommonGLPI
 
         if (!$api->downloadArchive($url, $dest, $this->plugin_key)) {
             Session::addMessageAfterRedirect(
-                __('Unable to download plugin archive.'),
+                __s('Unable to download plugin archive.'),
                 false,
                 ERROR
             );
@@ -200,7 +200,7 @@ class Controller extends CommonGLPI
         if (!UnifiedArchive::canOpen($dest)) {
             $type = Formats::detectArchiveFormat($dest);
             Session::addMessageAfterRedirect(
-                sprintf(__('Plugin archive format is not supported by your system : %s.'), $type),
+                htmlspecialchars(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
                 false,
                 ERROR
             );
@@ -230,7 +230,7 @@ class Controller extends CommonGLPI
 
         if ($error) {
             Session::addMessageAfterRedirect(
-                __('Unable to extract plugin archive.'),
+                __s('Unable to extract plugin archive.'),
                 false,
                 ERROR
             );

@@ -78,14 +78,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
-        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
-                     = __('Unset as default');
-        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
-                     = __('Change count method');
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
+                     = __s('Unset as default');
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
+                     = __s('Change count method');
         if (Session::haveRight('transfer', READ)) {
-            $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = __('Change visibility');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
+                     = __s('Change visibility');
         }
         return $actions;
     }
@@ -152,7 +151,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if ($this->fields['is_private'] == 1) {
@@ -162,7 +161,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::canCreateItem();
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
             return (Session::haveRight('config', READ)
@@ -508,7 +507,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     && Session::getCurrentInterface() != "helpdesk"
                 ) {
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Partial load of the saved search: %s'), $this->getName()),
+                        htmlspecialchars(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
                         false,
                         ERROR
                     );
@@ -1186,7 +1185,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 'date_creation' => date('Y-m-d H:i:s')
             ]);
 
-            Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
+            Session::addMessageAfterRedirect(__s('Notification has been created!'), INFO);
         }
     }
 

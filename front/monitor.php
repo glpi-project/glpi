@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Monitor::$rightname, [READ, READ_ASSIGNED]);
+Session::checkRightsOr(Monitor::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 Html::header(Monitor::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "monitor");
 

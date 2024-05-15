@@ -49,7 +49,7 @@ if (isset($_FILES['inventory_files'])) {
     unset($_POST['update']);
     $conf->saveConf($_POST);
     Session::addMessageAfterRedirect(
-        __('Configuration has been updated'),
+        __s('Configuration has been updated'),
         false,
         INFO
     );

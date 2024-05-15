@@ -530,14 +530,6 @@ class Certificate extends CommonDBTM
         return true;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getSpecificMassiveActions()
-     * @param null $checkitem
-     * @return array
-     */
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -545,22 +537,14 @@ class Certificate extends CommonDBTM
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-                 = _x('button', 'Associate certificate');
+                 = _sx('button', 'Associate certificate');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-                 = _x('button', 'Dissociate certificate');
+                 = _sx('button', 'Dissociate certificate');
             }
         }
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     * @param MassiveAction $ma
-     * @return bool|false
-     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -800,7 +784,7 @@ class Certificate extends CommonDBTM
                         $task->log($msg);
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect($msg);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg));
                     }
 
                     // Add alert
@@ -824,7 +808,7 @@ class Certificate extends CommonDBTM
                     if ($task) {
                         $task->log($msg);
                     } else {
-                        Session::addMessageAfterRedirect($msg, false, ERROR);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                     }
                 }
             }

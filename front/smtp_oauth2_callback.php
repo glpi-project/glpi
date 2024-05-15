@@ -69,7 +69,7 @@ if (
 ) {
     // Got an error, probably user denied access
     Session::addMessageAfterRedirect(
-        sprintf(_x('oauth', 'Authorization failed with error: %s'), $_GET['error_description'] ?? $_GET['error']),
+        htmlspecialchars(sprintf(_x('oauth', 'Authorization failed with error: %s'), $_GET['error_description'] ?? $_GET['error'])),
         false,
         ERROR
     );
@@ -78,9 +78,9 @@ if (
     || !array_key_exists('smtp_oauth2_state', $_SESSION)
     || $_GET['state'] !== $_SESSION['smtp_oauth2_state']
 ) {
-    Session::addMessageAfterRedirect(_x('oauth', 'Unable to verify authorization code'), false, ERROR);
+    Session::addMessageAfterRedirect(_sx('oauth', 'Unable to verify authorization code'), false, ERROR);
 } elseif (!array_key_exists('code', $_GET)) {
-    Session::addMessageAfterRedirect(_x('oauth', 'Unable to get authorization code'), false, ERROR);
+    Session::addMessageAfterRedirect(_sx('oauth', 'Unable to get authorization code'), false, ERROR);
 } else {
     $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
 
@@ -94,7 +94,7 @@ if (
             $is_email_valid = !empty($email);
             if (!$is_email_valid) {
                 Session::addMessageAfterRedirect(
-                    _x('oauth', 'Access token does not provide an email address, please verify token claims configuration.'),
+                    _sx('oauth', 'Access token does not provide an email address, please verify token claims configuration.'),
                     false,
                     ERROR
                 );
@@ -103,7 +103,7 @@ if (
             $is_token_valid = !empty($refresh_token);
             if (!$is_token_valid) {
                 Session::addMessageAfterRedirect(
-                    _x('oauth', 'Access token does not provide a refresh token, please verify application configuration.'),
+                    _sx('oauth', 'Access token does not provide a refresh token, please verify application configuration.'),
                     false,
                     ERROR
                 );
@@ -124,13 +124,13 @@ if (
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                sprintf(_x('oauth', 'Unable to fetch authorization code. Error is: %s'), $e->getMessage()),
+                htmlspecialchars(sprintf(_x('oauth', 'Unable to fetch authorization code. Error is: %s'), $e->getMessage())),
                 false,
                 ERROR
             );
         }
     } else {
-        Session::addMessageAfterRedirect(_x('oauth', 'Invalid provider configuration'), false, ERROR);
+        Session::addMessageAfterRedirect(_sx('oauth', 'Invalid provider configuration'), false, ERROR);
     }
 }
 

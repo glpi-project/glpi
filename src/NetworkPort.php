@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
@@ -1344,82 +1345,21 @@ class NetworkPort extends CommonDBChild
             return false;
         }
 
-        $this->initForm($ID, $options);
-
         $recursiveItems = $this->recursivelyGetItems();
         if (count($recursiveItems) > 0) {
             $lastItem             = $recursiveItems[count($recursiveItems) - 1];
-            $lastItem_entities_id = $lastItem->getField('entities_id');
+            $options['entities_id'] = $lastItem->getField('entities_id');
         } else {
-            $lastItem_entities_id = $_SESSION['glpiactive_entity'];
+            $options['entities_id'] = $_SESSION['glpiactive_entity'];
         }
 
-        $options['entities_id'] = $lastItem_entities_id;
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>";
-        self::displayRecursiveItems($recursiveItems, 'Type');
-        echo "&nbsp;:</td>\n<td>";
-
-       // Need these to update information
-        echo "<input type='hidden' name='items_id' value='" . $this->fields["items_id"] . "'>\n";
-        echo "<input type='hidden' name='itemtype' value='" . $this->fields["itemtype"] . "'>\n";
-        echo "<input type='hidden' name='_create_children' value='1'>\n";
-        echo "<input type='hidden' name='instantiation_type' value='" .
-             $this->fields["instantiation_type"] . "'>\n";
-
-        $this->displayRecursiveItems($recursiveItems, "Link");
-        echo "</td>\n";
-        $colspan = 2;
-
-        if (!$options['several']) {
-            $colspan++;
-        }
-        echo "<td rowspan='$colspan'>" . __('Comments') . "</td>";
-        echo "<td rowspan='$colspan' class='middle'>";
-        echo "<textarea class='form-control' rows='$colspan' name='comment' >" .
-             $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>\n";
-
-        if (!$options['several']) {
-            echo "<tr class='tab_bg_1'><td>" . _n('Port number', 'Port numbers', 1) . "</td>\n";
-            echo "<td>";
-            echo Html::input('logical_number', ['value' => $this->fields['logical_number'], 'size' => 5]);
-            echo "</td></tr>\n";
-        } else {
-            echo "<tr class='tab_bg_1'><td>" . _n('Port number', 'Port numbers', Session::getPluralNumber()) . "</td>\n";
-            echo "<td>";
-            echo "<input type='hidden' name='several' value='yes'>";
-            echo "<input type='hidden' name='logical_number' value=''>\n";
-            echo __('from') . "&nbsp;";
-            Dropdown::showNumber('from_logical_number', ['value' => 0]);
-            echo "&nbsp;" . __('to') . "&nbsp;";
-            Dropdown::showNumber('to_logical_number', ['value' => 0]);
-            echo "</td></tr>\n";
-        }
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>\n";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Alias') . "</td>\n";
-        echo "<td>";
-        echo Html::input('ifalias', ['value' => $this->fields['ifalias']]);
-        echo "</td></tr>\n";
-
-        $instantiation = $this->getInstantiation();
-        if ($instantiation !== false) {
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . $instantiation::getTypeName(1) . "</th></tr>\n";
-            $instantiation->showInstantiationForm($this, $options, $recursiveItems);
-            unset($instantiation);
-        }
-
-        if (!$options['several']) {
-            NetworkName::showFormForNetworkPort($this->getID());
-        }
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/assets/networkport/form.html.twig', [
+            'item'   => $this,
+            'recursive_items' => $recursiveItems,
+            'instantiation' => $this->getInstantiation(),
+            'params' => $options,
+            'no_inventory_footer' => true
+        ]);
 
         return true;
     }
@@ -1512,13 +1452,13 @@ class NetworkPort extends CommonDBChild
         // add purge action if main item is not dynamic
         // NetworkPort delete / purge are handled a different way on dynamic asset (lock)
         if (!$checkitem->isDynamic()) {
-            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __('Delete permanently');
+            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __s('Delete permanently');
         }
 
         if ($isadmin) {
             $vlan_prefix                    = 'NetworkPort_Vlan' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$vlan_prefix . 'add']    = __('Associate a VLAN');
-            $actions[$vlan_prefix . 'remove'] = __('Dissociate a VLAN');
+            $actions[$vlan_prefix . 'add']    = __s('Associate a VLAN');
+            $actions[$vlan_prefix . 'remove'] = __s('Dissociate a VLAN');
         }
         return $actions;
     }
@@ -1782,7 +1722,7 @@ class NetworkPort extends CommonDBChild
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
 
@@ -1804,7 +1744,7 @@ class NetworkPort extends CommonDBChild
                 $aggregates = self::createTabEntry(
                     NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
                     $nbAggregates,
-                    $item::getType()
+                    $item::class
                 );
             } else {
                 $aggregates = '';
@@ -1855,7 +1795,7 @@ class NetworkPort extends CommonDBChild
         $specificities['itemtypes']              = ['Computer', 'NetworkEquipment'];
 
         $specificities['normalized']['unaffect'] = [];
-        $specificities['action_name']['affect']  = _x('button', 'Move');
+        $specificities['action_name']['affect']  = _sx('button', 'Move');
 
         return $specificities;
     }
@@ -1869,7 +1809,7 @@ class NetworkPort extends CommonDBChild
         }
 
         $itemtype = $this->fields['itemtype'];
-        /** @var CommonDBTM */
+        /** @var CommonDBTM $itemtype */
         $equipment = new $itemtype();
 
         if ($equipment->getFromDB($this->fields['items_id'])) {

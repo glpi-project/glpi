@@ -130,7 +130,8 @@ class GLPIMailer
                             ]
                         );
                         $password = $token->getToken();
-                        if (($new_refresh_token = $token->getRefreshToken()) !== $refresh_token) {
+                        $new_refresh_token = $token->getRefreshToken();
+                        if ($new_refresh_token !== null && $new_refresh_token !== $refresh_token) {
                             // The refresh token may be refreshed itself.
                             // Be sure to always store any new refresh token.
                             Config::setConfigurationValues(

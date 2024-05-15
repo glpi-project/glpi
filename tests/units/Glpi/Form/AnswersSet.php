@@ -43,13 +43,16 @@ use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
-use Glpi\Form\QuestionType\QuestionTypeTime;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -257,7 +260,27 @@ class AnswersSet extends DbTestCase
                 ->addQuestion("Observer", QuestionTypeObserver::class)
                 ->addQuestion("Assignee", QuestionTypeAssignee::class)
                 ->addQuestion("Urgency", QuestionTypeUrgency::class)
+                ->addQuestion("Request type", QuestionTypeRequestType::class)
+                ->addQuestion("Radio", QuestionTypeRadio::class, '123', json_encode([
+                    'options' => [
+                        123 => 'Radio 1'
+                    ]
+                ]))
+                ->addQuestion("Checkbox", QuestionTypeCheckbox::class, '123', json_encode([
+                    'options' => [
+                        123 => 'Checkbox 1'
+                    ]
+                ]))
+                ->addQuestion("File", QuestionTypeFile::class)
         );
+
+        // File question type requires an uploaded file
+        $unique_id = uniqid();
+        $filename = $unique_id . '-test-show-form-question-type-file.txt';
+        copy(__DIR__ . '/../../../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        $question = \Glpi\Form\Question::getById($this->getQuestionId($form, "File"));
+        $_POST['_prefix_' . $question->getEndUserInputName()] = $unique_id;
+
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
             $this->getQuestionId($form, "Age") => 20,
@@ -279,7 +302,11 @@ class AnswersSet extends DbTestCase
                 Group::getForeignKeyField() . '-1',
                 Supplier::getForeignKeyField() . '-1'
             ],
-            $this->getQuestionId($form, "Urgency") => 2
+            $this->getQuestionId($form, "Urgency") => 2,
+            $this->getQuestionId($form, "Request type") => 1,
+            $this->getQuestionId($form, "File") => [$filename],
+            $this->getQuestionId($form, "Radio") => 'Radio 1',
+            $this->getQuestionId($form, "Checkbox") => 'Checkbox 1'
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

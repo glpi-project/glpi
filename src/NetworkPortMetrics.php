@@ -44,49 +44,25 @@ class NetworkPortMetrics extends CommonDBChild
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
 
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Network port metrics');
     }
 
-    /**
-     * Get the tab name used for item
-     *
-     * @param object $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return string|array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $array_ret = [];
 
-        if ($item->getType() == 'NetworkPort') {
+        if ($item::class === NetworkPort::class) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
         }
         return $array_ret;
     }
 
-
-    /**
-     * Display the content of the tab
-     *
-     * @param object $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {
+        if ($item::class === NetworkPort::class && $item->getID() > 0) {
             $metrics = new self();
             $metrics->showMetrics($item);
             return true;
@@ -115,7 +91,7 @@ class NetworkPortMetrics extends CommonDBChild
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::$items_id  => $netport->fields['id']
             ] + $filters
@@ -133,11 +109,9 @@ class NetworkPortMetrics extends CommonDBChild
     {
         $raw_metrics = $this->getMetrics($netport);
 
-       //build graph data
+        // build graph data
         $params = [
-            'label'         => $this->getTypeName(),
             'icon'          => NetworkPort::getIcon(),
-            'apply_filters' => [],
         ];
 
         $bytes_series = [];
@@ -202,18 +176,15 @@ class NetworkPortMetrics extends CommonDBChild
         echo "</div>";
     }
 
-    private function getLabelFor($key)
+    private function getLabelFor($key): string
     {
-        switch ($key) {
-            case 'ifinbytes':
-                return __('Input megabytes');
-            case 'ifoutbytes':
-                return __('Output megabytes');
-            case 'ifinerrors':
-                return __('Input errors');
-            case 'ifouterrors':
-                return __('Output errors');
-        }
+        return match ($key) {
+            'ifinbytes' => __('Input megabytes'),
+            'ifoutbytes' => __('Output megabytes'),
+            'ifinerrors' => __('Input errors'),
+            'ifouterrors' => __('Output errors'),
+            default => $key,
+        };
     }
 
     public static function getIcon()

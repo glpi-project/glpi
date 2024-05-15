@@ -215,8 +215,8 @@ class Consumable extends CommonDBChild
         }
 
         $action_prefix = self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR;
-        $actions[$action_prefix . 'backtostock'] = __('Back to stock');
-        $actions[$action_prefix . 'give'] = _x('button', 'Give');
+        $actions[$action_prefix . 'backtostock'] = __s('Back to stock');
+        $actions[$action_prefix . 'give'] = _sx('button', 'Give');
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)

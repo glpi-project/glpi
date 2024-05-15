@@ -1855,7 +1855,7 @@ abstract class CommonITILObject extends CommonDBTM
                     __('Mandatory fields are not filled. Please correct: %s'),
                     implode(", ", $mandatory_missing)
                 );
-                Session::addMessageAfterRedirect($message, false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
                 return false;
             }
         }
@@ -1913,7 +1913,7 @@ abstract class CommonITILObject extends CommonDBTM
             if ($itil_itil->can(-1, CREATE, $link) && $itil_itil->add($link)) {
                 $input['_forcenotif'] = true;
             } else {
-                Session::addMessageAfterRedirect(__('Unknown ITIL Object'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Unknown ITIL Object'), false, ERROR);
             }
         }
     }
@@ -2015,7 +2015,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 && !NotificationMailing::isUserAddressValid($input['_itil_requester']['alternative_email'])
                             ) {
                                 $input['_itil_requester']['alternative_email'] = '';
-                                Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
+                                Session::addMessageAfterRedirect(__s('Invalid email address'), false, ERROR);
                             }
 
                             if (
@@ -2086,7 +2086,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 && !NotificationMailing::isUserAddressValid($input['_itil_observer']['alternative_email'])
                             ) {
                                 $input['_itil_observer']['alternative_email'] = '';
-                                Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
+                                Session::addMessageAfterRedirect(__s('Invalid email address'), false, ERROR);
                             }
                             if (
                                  (isset($input['_itil_observer']['alternative_email'])
@@ -2400,7 +2400,7 @@ abstract class CommonITILObject extends CommonDBTM
             && !is_null($this->fields["time_to_resolve"])
         ) { // Date set
             if ($this->fields["time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
@@ -2419,7 +2419,7 @@ abstract class CommonITILObject extends CommonDBTM
             && !is_null($this->fields["internal_time_to_resolve"])
         ) { // Date set
             if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
@@ -2440,7 +2440,7 @@ abstract class CommonITILObject extends CommonDBTM
            // Invalid dates : no change
            // closedate must be > solvedate
             if ($this->fields["closedate"] < $this->fields["solvedate"]) {
-                Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
                 if (($key = array_search('closedate', $this->updates)) !== false) {
                     unset($this->updates[$key]);
@@ -2450,7 +2450,7 @@ abstract class CommonITILObject extends CommonDBTM
 
            // closedate must be > create date
             if ($this->fields["closedate"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
                     unset($this->oldvalues['date']);
@@ -2478,7 +2478,7 @@ abstract class CommonITILObject extends CommonDBTM
            // Invalid dates : no change
            // solvedate must be > create date
             if ($this->fields["solvedate"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
@@ -2887,7 +2887,7 @@ abstract class CommonITILObject extends CommonDBTM
                                         ) == 0
                                     ) {
                                         Session::addMessageAfterRedirect(
-                                            __('You cannot use predefined description verbatim'),
+                                            __s('You cannot use predefined description verbatim'),
                                             false,
                                             ERROR
                                         );
@@ -2957,7 +2957,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 __('Mandatory fields are not filled. Please correct: %s'),
                                 implode(", ", $mandatory_missing)
                             );
-                            Session::addMessageAfterRedirect($message, false, ERROR);
+                            Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
                             return false;
                         }
                     }
@@ -3008,7 +3008,7 @@ abstract class CommonITILObject extends CommonDBTM
             array_key_exists('date', $input) && !empty($input['date']) && $input['date'] != 'NULL'
             && (!is_string($input['date']) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $input['date']))
         ) {
-            Session::addMessageAfterRedirect(__('Incorrect value for date field.'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('Incorrect value for date field.'), false, ERROR);
             return false;
         }
 
@@ -3937,10 +3937,9 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function getStatus($value)
     {
-
         $tab  = static::getAllStatusArray(true);
        // Return $value if not defined
-        return (isset($tab[$value]) ? $tab[$value] : $value);
+        return ($tab[$value] ?? $value);
     }
 
 
@@ -4055,20 +4054,19 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $actions = [];
 
-        if (Session::getCurrentInterface() == 'central') {
+        if (Session::getCurrentInterface() === 'central') {
             $can_update_itilobject = Session::haveRight(Ticket::$rightname, UPDATE)
                 || Session::haveRight(Change::$rightname, UPDATE)
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                     = "<i class='fa-fw fas fa-link'></i>" .
-                    _x('button', 'Link ITIL Object');
+                    _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                     = "<i class='fa-fw fas fa-link'></i>" .
-                    _x('button', 'Unlink ITIL Object');
+                    _sx('button', 'Unlink ITIL Object');
             }
         }
 
@@ -4998,7 +4996,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getStatusIcon($status)
     {
         $class = static::getStatusClass($status);
-        $label = static::getStatus($status);
+        $label = htmlspecialchars(static::getStatus($status));
         return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
     }
 
@@ -5065,7 +5063,7 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
         }
 
-        return $class == null
+        return $class === null
          ? ''
          : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class .
          " " . static::getStatusKey($status);
@@ -7252,7 +7250,8 @@ abstract class CommonITILObject extends CommonDBTM
                     if (!isset($user_cache[$d['users_id']])) {
                         $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
                     }
-                    $entry['assigned'] .= htmlspecialchars($user_cache[$d['users_id']]['name']) . '<br>';
+                    $user_name = is_array($user_cache[$d['users_id']]) ? htmlspecialchars($user_cache[$d['users_id']]['name']) : $user_cache[$d['users_id']];
+                    $entry['assigned'] .= $user_name . '<br>';
                 }
             }
             foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
@@ -11229,7 +11228,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->checkEntity()) {
             return false;
@@ -11238,7 +11237,7 @@ abstract class CommonITILObject extends CommonDBTM
         return self::canUpdate();
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (!$this->checkEntity()) {

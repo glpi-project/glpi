@@ -44,6 +44,7 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use RuleCriteria;
+use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends InventoryTestCase
@@ -5537,6 +5538,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'lines_id' => 0,
                     'users_id' => 0,
                     'groups_id' => 0,
+                    'users_id_tech' => 0,
+                    'groups_id_tech' => 0,
                     'pin' => '',
                     'pin2' => '',
                     'puk' => '',
@@ -5580,7 +5583,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     }
                 }
             }
-            $this->array($component)->isIdenticalTo($expected);
+            $this->array($component)->isEqualTo($expected);
         }
 
         //software
@@ -7850,5 +7853,242 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->doInventory($xml_source, true);
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
         $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
+
+    protected function getAssignUserByFieldAndRegexRules()
+    {
+        $glpi_id = \User::getIDByName('glpi');
+        $this->createItem(UserEmail::class, [
+            'users_id' => $glpi_id,
+            'is_default' => 1,
+            'email' => 'glpi@teclib.com'
+        ]);
+        $normal_id = \User::getIDByName('normal');
+        $this->updateItem(\User::class, $normal_id, [
+            'registration_number' => 'normal1234567890',
+        ]);
+        $test_id = \User::getIDByName('_test_user');
+        $this->updateItem(\User::class, $test_id, [
+            'realname' => '_test_user',
+            'authtype' => \Auth::EXTERNAL,
+            'sync_field' => '_test_user@toto'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0i',
+                'condition' => \Rule::PATTERN_NOT_CONTAIN,
+                'pattern' => 'admin'
+            ],
+            "xml_fields" => [
+                'name' => 'adminglp',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => 0,
+            ]
+        ];
+        $contain_test_user = $this->createItem(\User::class, [
+            'name' => 'contain_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'contain'
+            ],
+            "xml_fields" => [
+                'name' => 'logcontain_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $contain_test_user->fields['id'],
+            ]
+        ];
+        $begin_test_user = $this->createItem(\User::class, [
+            'name' => 'begin_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_BEGIN,
+                'pattern' => 'logbegin'
+            ],
+            "xml_fields" => [
+                'name' => 'logbegin_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $begin_test_user->fields['id'],
+            ]
+        ];
+        $end_test_user = $this->createItem(\User::class, [
+            'name' => 'end_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_END,
+                'pattern' => 'END'
+            ],
+            "xml_fields" => [
+                'name' => 'logend_test',
+                'domain' => 'END'
+            ],
+            'result' => [
+                'users_id'    => $end_test_user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0h',
+            ],
+            "xml_fields" => [
+                'name' => 'logtec',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => \User::getIDByName('tech'),
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by registration number',
+                'action' => '_affect_user_by_registration_number_and_regex',
+                'value' => '#0l1234567890',
+            ],
+            "xml_fields" => [
+                'name' => 'lognorma',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $normal_id,
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by email',
+                'action' => '_affect_user_by_email_and_regex',
+                'value' => '#0i@teclib.com',
+            ],
+            "xml_fields" => [
+                'name' => 'logglp',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $glpi_id,
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by sync field',
+                'action' => '_affect_user_by_sync_field_and_regex',
+                'value' => '#0r@toto',
+            ],
+            "xml_fields" => [
+                'name' => 'log_test_use',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $test_id,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getAssignUserByFieldAndRegexRules
+     */
+    public function testAssignUserByFieldAndRegex($rules_fields, $xml_fields, $result)
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => $rules_fields['name'],
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        if (isset($rules_fields['condition']) && isset($rules_fields['pattern'])) {
+            $input_criteria2 = [
+                'rules_id'  => $rules_id,
+                'criteria'      => '_inventory_users',
+                'condition' => $rules_fields['condition'],
+                'pattern' => $rules_fields['pattern'],
+            ];
+            $rule_criteria2 = new \RuleCriteria();
+            $rule_criteria2_id = $rule_criteria2->add($input_criteria2);
+            $this->integer($rule_criteria2_id)->isGreaterThan(0);
+        }
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_inventory_users',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern' => '/^log([^@]+)/'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'regex_result',
+            'field' => $rules_fields['action'],
+            'value' => $rules_fields['value']
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <USERS>
+            <DOMAIN>" . $xml_fields['domain'] . "</DOMAIN>
+            <LOGIN>" . $xml_fields['name'] . "</LOGIN>
+          </USERS>
+          <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_assign_user_by_field_and_regex</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        \SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_assign_user_by_field_and_regex']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['users_id'])->isIdenticalTo($result['users_id']);
     }
 }

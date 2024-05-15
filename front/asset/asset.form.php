@@ -60,7 +60,7 @@ if ($asset === null) {
     Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
 }
 
-Session::checkRightsOr($asset::$rightname, [READ, READ_ASSIGNED]);
+Session::checkRightsOr($asset::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (isset($_POST['add'])) {
     $asset->check(-1, CREATE, $_POST);

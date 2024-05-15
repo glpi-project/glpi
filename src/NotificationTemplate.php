@@ -71,7 +71,7 @@ class NotificationTemplate extends CommonDBTM
         return 'ti ti-template';
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
@@ -80,7 +80,7 @@ class NotificationTemplate extends CommonDBTM
     /**
      * @since 0.85
      **/
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }

@@ -77,7 +77,7 @@ class Profile_User extends CommonDBRelation
 
 
    // TODO CommonDBConnexity : check in details if we can replace canCreateItem by canRelationItem ...
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         $user = new User();
@@ -88,7 +88,7 @@ class Profile_User extends CommonDBRelation
              && Session::haveAccessToEntity($this->fields['entities_id']);
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         // We can't delete the last super admin profile authorization
         if ($this->isLastSuperAdminAuthorization()) {
@@ -107,7 +107,7 @@ class Profile_User extends CommonDBRelation
             || ($input['entities_id'] < 0)
         ) {
             Session::addMessageAfterRedirect(
-                __('No selected element or badly defined operation'),
+                __s('No selected element or badly defined operation'),
                 false,
                 ERROR
             );

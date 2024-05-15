@@ -56,10 +56,18 @@ interface ConfigFieldInterface
      * Render the input field for this configuration.
      *
      * @param array|null $config
+     * @param string     $input_name Input name supplied by the controller.
+     *                               Must be reused in the actual input field.
+     * @param array      $display_options Common twig options to display the
+     *                                    input.
      *
      * @return string
      */
-    public function renderConfigForm(?array $config): string;
+    public function renderConfigForm(
+        ?array $config,
+        string $input_name,
+        array $display_options
+    ): string;
 
     /**
      * Apply configurated value to the given input.

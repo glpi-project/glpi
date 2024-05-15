@@ -64,13 +64,13 @@ final class AssetDefinition extends CommonDBTM
         return 'ti ti-database-cog';
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // required due to usage of `config` rightname
         return static::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         // required due to usage of `config` rightname
         return static::canUpdate();
@@ -337,7 +337,7 @@ final class AssetDefinition extends CommonDBTM
     {
         if (!array_key_exists('system_name', $input)) {
             Session::addMessageAfterRedirect(
-                __('The system name is mandatory.'),
+                __s('The system name is mandatory.'),
                 false,
                 ERROR
             );
@@ -360,7 +360,7 @@ final class AssetDefinition extends CommonDBTM
             && $input['system_name'] !== $this->fields['system_name']
         ) {
             Session::addMessageAfterRedirect(
-                __('The system name cannot be changed.'),
+                __s('The system name cannot be changed.'),
                 false,
                 ERROR
             );
@@ -397,27 +397,27 @@ final class AssetDefinition extends CommonDBTM
         if (array_key_exists('system_name', $input)) {
             if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         __('System name')
-                    ),
+                    )),
                     false,
                     ERROR
                 );
                 $has_errors = true;
             } elseif (in_array($input['system_name'], AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames())) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('The system name must not be the reserved word "%s".'),
                         $input['system_name']
-                    ),
+                    )),
                     false,
                     ERROR
                 );
                 $has_errors = true;
             } elseif (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
                 Session::addMessageAfterRedirect(
-                    __('The system name must not end with the word "Model" or the word "Type".'),
+                    __s('The system name must not end with the word "Model" or the word "Type".'),
                     false,
                     ERROR
                 );
@@ -428,10 +428,10 @@ final class AssetDefinition extends CommonDBTM
         if (array_key_exists('capacities', $input)) {
             if (!$this->validateCapacityArray($input['capacities'])) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         __('Capacities')
-                    ),
+                    )),
                     false,
                     ERROR
                 );
@@ -444,10 +444,10 @@ final class AssetDefinition extends CommonDBTM
         if (array_key_exists('profiles', $input)) {
             if (!$this->validateProfileArray($input['profiles'])) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         _n('Profile', 'Profiles', Session::getPluralNumber())
-                    ),
+                    )),
                     false,
                     ERROR
                 );
@@ -460,10 +460,10 @@ final class AssetDefinition extends CommonDBTM
         if (array_key_exists('translations', $input)) {
             if (!$this->validateTranslationsArray($input['translations'])) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         _n('Translation', 'Translations', Session::getPluralNumber())
-                    ),
+                    )),
                     false,
                     ERROR
                 );
@@ -650,6 +650,10 @@ final class AssetDefinition extends CommonDBTM
      */
     public function getTranslatedName(int $count = 1): string
     {
+        if ($this->isNewItem()) {
+            return '';
+        }
+
         $translations = $this->getDecodedTranslationsField();
         $language = Session::getLanguage();
         $current_translation = $translations[$language] ?? null;

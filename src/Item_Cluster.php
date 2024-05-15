@@ -271,19 +271,19 @@ class Item_Cluster extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['clusters_id']) || empty($input['clusters_id'])))
             || (isset($input['clusters_id']) && empty($input['clusters_id']))
         ) {
-            $error_detected[] = __('A cluster is required');
+            $error_detected[] = __s('A cluster is required');
         }
 
         if (count($error_detected)) {

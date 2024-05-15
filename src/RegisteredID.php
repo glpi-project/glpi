@@ -97,7 +97,7 @@ class RegisteredID extends CommonDBChild
         $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
-            $result .= "<select name='$type_field'>";
+            $result .= "<select name='$type_field' class='form-select w-auto d-inline'>";
             $result .= "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
             foreach ($registeredIDTypes as $name => $label) {
                 $name = htmlspecialchars($name);
@@ -108,9 +108,9 @@ class RegisteredID extends CommonDBChild
                 }
                 $result .= ">$label</option>";
             }
-            $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value'>\n";
+            $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value' class='form-control'>\n";
         } else {
-            $result .= "<input type='hidden' name='$main_field' value='$value'>";
+            $result .= "<input type='hidden' name='$main_field' value='$value' class='form-control'>";
             if (!empty($this->fields['device_type'])) {
                 $result .= sprintf(
                     __s('%1$s: %2$s'),

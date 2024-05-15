@@ -98,7 +98,7 @@ class CronTask extends CommonDBTM
         return $ong;
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return false;
     }
@@ -1323,7 +1323,7 @@ TWIG, ['msg' => __('Last run list')]);
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __('Reset last run');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __s('Reset last run');
         }
         return $actions;
     }

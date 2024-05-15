@@ -98,4 +98,29 @@ class FormDestinationTicket extends AbstractFormDestinationType
         ]);
         $this->array($links)->hasSize(1);
     }
+
+    public function formatConfigInputNameProvider(): iterable
+    {
+        yield 'Simple field' => [
+            'field_key' => 'title',
+            'expected'  => 'config[title][value]',
+        ];
+        yield 'Array field' => [
+            'field_key' => 'my_values[]',
+            'expected'  => 'config[my_values][value][]',
+        ];
+    }
+
+    /**
+     * @dataProvider formatConfigInputNameProvider
+     */
+    public function testFormatConfigInputName(
+        string $field_key,
+        string $expected
+    ): void {
+        $input_name = $this->getTestedInstance()->formatConfigInputName(
+            $field_key,
+        );
+        $this->string($input_name)->isEqualTo($expected);
+    }
 }

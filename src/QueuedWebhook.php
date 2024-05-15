@@ -53,18 +53,18 @@ class QueuedWebhook extends CommonDBChild
         return __('Webhook queue');
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
        // Everybody can create : human and cron
         return Session::getLoginUserID(false);
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         // No standard update is allowed
         return false;
@@ -77,7 +77,6 @@ class QueuedWebhook extends CommonDBChild
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -85,12 +84,11 @@ class QueuedWebhook extends CommonDBChild
 
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _x('button', 'Send');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;

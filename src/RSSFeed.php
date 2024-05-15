@@ -60,17 +60,17 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return _n('Personal RSS feed', 'Personal RSS feed', $nb);
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         // Is my rssfeed or is in visibility
         return (($this->fields['users_id'] === Session::getLoginUserID())
@@ -78,13 +78,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                   && $this->haveVisibilityAccess()));
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         // Is my rssfeed
         return (int)$this->fields['users_id'] === Session::getLoginUserID();
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return (($this->fields['users_id'] === Session::getLoginUserID())
               || (Session::haveRight('rssfeed_public', UPDATE)
@@ -95,7 +95,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @since 0.85
      * for personal rss feed
      **/
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
@@ -104,12 +104,12 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @since 0.85
      * for personal rss feed
      **/
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return (($this->fields['users_id'] === Session::getLoginUserID())
               || (Session::haveRight(self::$rightname, PURGE)

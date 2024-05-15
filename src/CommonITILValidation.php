@@ -105,7 +105,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(static::$rightname, static::getCreateRights());
     }
@@ -116,7 +116,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (
@@ -129,7 +129,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
 
         return Session::haveRightsOr(
@@ -143,7 +143,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
 
         return Session::haveRightsOr(
@@ -161,7 +161,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (
@@ -179,7 +179,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      */
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         $is_target = static::canValidate($this->fields[static::$items_id]);
         if (
@@ -367,13 +367,13 @@ abstract class CommonITILValidation extends CommonDBChild
                     $user->getFromDB($this->fields["items_id_target"]);
                     $email   = $user->getDefaultEmail();
                     if (!empty($email)) {
-                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $user->getName()));
+                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $user->getName())));
                     } else {
                         Session::addMessageAfterRedirect(
-                            sprintf(
+                            htmlspecialchars(sprintf(
                                 __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
                                 $user->getName()
-                            ),
+                            )),
                             false,
                             ERROR
                         );
@@ -381,7 +381,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
                     $target = new $this->fields["itemtype_target"]();
                     if ($target->getFromDB($this->fields["items_id_target"])) {
-                        Session::addMessageAfterRedirect(sprintf(__('Approval request sent to %s'), $target->getName()));
+                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $target->getName())));
                     }
                 }
             }
@@ -401,7 +401,7 @@ abstract class CommonITILValidation extends CommonDBChild
                  || ($input["comment_validation"] == ''))
             ) {
                 Session::addMessageAfterRedirect(
-                    __('If approval is denied, specify a reason.'),
+                    __s('If approval is denied, specify a reason.'),
                     false,
                     ERROR
                 );

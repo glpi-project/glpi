@@ -67,7 +67,7 @@ if (isset($_POST['delete'])) {
         Html::redirect(Change::getFormURLWithID($link->fields['changes_id']));
     }
     Session::addMessageAfterRedirect(
-        __('You have been redirected because you no longer have access to this item'),
+        __s('You have been redirected because you no longer have access to this item'),
         true,
         ERROR
     );

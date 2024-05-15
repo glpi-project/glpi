@@ -113,7 +113,7 @@ class LineOperator extends CommonDropdown
 
         if ($result['cpt'] > 0) {
             Session::addMessageAfterRedirect(
-                __('Mobile country code and network code combination must be unique!'),
+                __s('Mobile country code and network code combination must be unique!'),
                 ERROR,
                 true
             );

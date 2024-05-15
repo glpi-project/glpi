@@ -57,19 +57,19 @@ if (isset($_POST["action"])) {
     $ruleclass = $rulecollection->getRuleClass();
     if ($ruleclass::initRules()) {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlspecialchars(sprintf(
             //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
-            )
+            ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlspecialchars(sprintf(
                 //TRANS: first parameter is the rule type name
                 __('%1$s reset failed.'),
                 $rulecollection->getTitle()
-            ),
+            )),
             false,
             ERROR
         );

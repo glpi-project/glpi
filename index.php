@@ -147,7 +147,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                     if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
                         $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
                     } else {
-                        Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
+                        Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
                     }
                     Html::redirect(Preference::getSearchURL());
                 } else {

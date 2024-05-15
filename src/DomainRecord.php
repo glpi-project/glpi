@@ -169,7 +169,7 @@ class DomainRecord extends CommonDBChild
         return $tab;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
             return true;
@@ -177,7 +177,7 @@ class DomainRecord extends CommonDBChild
         return parent::canCreate();
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
             return true;
@@ -185,7 +185,7 @@ class DomainRecord extends CommonDBChild
         return parent::canUpdate();
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
             return true;
@@ -193,7 +193,7 @@ class DomainRecord extends CommonDBChild
         return parent::canDelete();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
             return true;
@@ -201,12 +201,12 @@ class DomainRecord extends CommonDBChild
         return parent::canPurge();
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return parent::canUpdateItem()
          && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
@@ -214,7 +214,7 @@ class DomainRecord extends CommonDBChild
          );
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         return parent::canDeleteItem()
          && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
@@ -222,7 +222,7 @@ class DomainRecord extends CommonDBChild
          );
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return parent::canPurgeItem()
          && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
@@ -377,22 +377,15 @@ class DomainRecord extends CommonDBChild
         ]);
 
         if ($canedit) {
-            $used_iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => self::getTable(),
-                'WHERE'  => [
-                    'domains_id'   => ['>', 0],
-                    'NOT'          => ['domains_id' => null]
-                ]
-            ]);
-            $used = [];
-            foreach ($used_iterator as $row) {
-                $used[$row['id']] = $row['id'];
-            }
             $twig_params = [
                 'domains_id' => $instID,
                 'domain_record' => new self(),
-                'used' => $used,
+                'condition' => [
+                    'NOT' => [
+                        'domains_id'   => ['>', 0],
+                        'NOT'          => ['domains_id' => null]
+                    ]
+                ],
                 'label' => __('Link a record'),
                 'add_btn_msg' => _x('button', 'Add'),
                 'add_new_btn_msg' => sprintf(__("New %s for this item"), self::getTypeName(1)),
@@ -410,7 +403,7 @@ class DomainRecord extends CommonDBChild
                         
                         <div class="d-flex">
                             {{ fields.dropdownField('DomainRecord', 'domainrecords_id', 0, label, {
-                                'used': used
+                                'condition': condition
                             }) }}
                             {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1), null, {
                                 no_label: true,

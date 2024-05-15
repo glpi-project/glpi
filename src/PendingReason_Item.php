@@ -541,60 +541,60 @@ class PendingReason_Item extends CommonDBRelation
         return $timeline_item->input;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return ITILFollowup::canUpdate() || TicketTask::canUpdate() || ChangeTask::canUpdate() || ProblemTask::canUpdate();
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return ITILFollowup::canView() || TicketTask::canView() || ChangeTask::canView() || ProblemTask::canView();
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return ITILFollowup::canUpdate() || TicketTask::canUpdate() || ChangeTask::canUpdate() || ProblemTask::canUpdate();
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return ITILFollowup::canUpdate() || TicketTask::canUpdate() || ChangeTask::canUpdate() || ProblemTask::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return ITILFollowup::canUpdate() || TicketTask::canUpdate() || ChangeTask::canUpdate() || ProblemTask::canUpdate();
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
         return $item->canUpdateItem();
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
         return $item->canViewItem();
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
         return $item->canUpdateItem();
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
         return $item->canUpdateItem();
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);

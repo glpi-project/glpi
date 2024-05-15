@@ -59,7 +59,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
         return $matches[1];
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         $rule_class = (new static())->getRuleClassName();
         return Session::haveRightsOr(static::$rightname, [READ, $rule_class::PARENT]);
@@ -90,9 +90,6 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             && (count($_SESSION['glpiactiveentities']) > 1));
     }
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
     public function prepareInputDataForProcess($input, $params)
     {
         $input['_groups_id_of_requester'] = [];

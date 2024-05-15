@@ -699,9 +699,10 @@ $RELATION = [
     ],
 
     'glpi_forms_forms' => [
-        "_glpi_forms_answerssets"                   => "forms_forms_id",
-        "_glpi_forms_destinations_formdestinations" => "forms_forms_id",
-        "_glpi_forms_sections"                      => "forms_forms_id",
+        "_glpi_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
+        "_glpi_forms_answerssets"                       => "forms_forms_id",
+        "_glpi_forms_destinations_formdestinations"     => "forms_forms_id",
+        "_glpi_forms_sections"                          => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [
@@ -722,7 +723,10 @@ $RELATION = [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_cartridgeitems'        => 'groups_id_tech',
+        'glpi_cartridgeitems'        => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_certificates'          => [
             'groups_id_tech',
             'groups_id',
@@ -734,8 +738,14 @@ $RELATION = [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_consumableitems'       => 'groups_id_tech',
-        'glpi_databaseinstances'     => 'groups_id_tech',
+        'glpi_consumableitems'       => [
+            'groups_id_tech',
+            'groups_id',
+        ],
+        'glpi_databaseinstances'     => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_domains'               => 'groups_id_tech',
         'glpi_domainrecords'         => 'groups_id_tech',
         'glpi_enclosures'            => 'groups_id_tech',
@@ -746,9 +756,15 @@ $RELATION = [
         '_glpi_groups_rssfeeds'      => 'groups_id',
         '_glpi_groups_tickets'       => 'groups_id',
         '_glpi_groups_users'         => 'groups_id',
-        'glpi_items_devicesimcards'  => 'groups_id',
+        'glpi_items_devicesimcards'  => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_itilcategories'        => 'groups_id',
-        'glpi_lines'                 => 'groups_id',
+        'glpi_lines'                 => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_monitors'              => [
             'groups_id_tech',
             'groups_id',
@@ -1524,7 +1540,10 @@ $RELATION = [
             'users_id',
         ],
         'glpi_cables'                   => 'users_id_tech',
-        'glpi_cartridgeitems'           => 'users_id_tech',
+        'glpi_cartridgeitems'           => [
+            'users_id_tech',
+            'users_id',
+        ],
         'glpi_certificates'             => [
             'users_id_tech',
             'users_id',
@@ -1548,10 +1567,16 @@ $RELATION = [
             'users_id_tech',
             'users_id',
         ],
-        'glpi_consumableitems'          => 'users_id_tech',
+        'glpi_consumableitems'          => [
+            'users_id_tech',
+            'users_id',
+        ],
         '_glpi_dashboards_dashboards'   => 'users_id',
         'glpi_dashboards_filters'       => 'users_id',
-        'glpi_databaseinstances'        => 'users_id_tech',
+        'glpi_databaseinstances'        => [
+            'users_id_tech',
+            'users_id',
+        ],
         '_glpi_displaypreferences'      => 'users_id',
         'glpi_domains'                  => 'users_id_tech',
         'glpi_domainrecords'            => 'users_id_tech',
@@ -1560,7 +1585,10 @@ $RELATION = [
         'glpi_enclosures'               => 'users_id_tech',
         'glpi_forms_answerssets'        => 'users_id',
         '_glpi_groups_users'            => 'users_id',
-        'glpi_items_devicesimcards'     => 'users_id',
+        'glpi_items_devicesimcards'     => [
+            'users_id_tech',
+            'users_id',
+        ],
         '_glpi_items_kanbans'           => 'users_id',
         'glpi_itilcategories'           => 'users_id',
         'glpi_itilfollowups'            => [
@@ -1577,7 +1605,10 @@ $RELATION = [
         'glpi_knowbaseitems_revisions'  => 'users_id',
         '_glpi_knowbaseitems_users'     => 'users_id',
         'glpi_knowbaseitemtranslations' => 'users_id',
-        'glpi_lines'                    => 'users_id',
+        'glpi_lines'                    => [
+            'users_id_tech',
+            'users_id',
+        ],
         'glpi_monitors'                 => [
             'users_id_tech',
             'users_id',

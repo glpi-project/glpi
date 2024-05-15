@@ -43,7 +43,7 @@ abstract class RuleCommonITILObject extends Rule
 
     /**
      * Get the ITIL Object itemtype that this rule is for
-     * @return string
+     * @return class-string<CommonITILObject>
      */
     public static function getItemtype(): string
     {
@@ -90,7 +90,6 @@ abstract class RuleCommonITILObject extends Rule
 
     public static function getConditionsArray()
     {
-
         return [
             static::ONADD                       => __('Add'),
             static::ONUPDATE                    => __('Update'),
@@ -118,7 +117,7 @@ abstract class RuleCommonITILObject extends Rule
         if ($showwarning) {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><td>" .
-                __('Urgency or impact used in actions, think to add Priority: recompute action if needed.') .
+                __s('Urgency or impact used in actions, think to add Priority: recompute action if needed.') .
                 "</td></tr>\n";
             echo "</table><br>";
         }
@@ -573,14 +572,12 @@ abstract class RuleCommonITILObject extends Rule
 
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
             return $criterias;
         }
 
-        /** @var CommonDBTM $itemtype */
         $itemtype = static::getItemtype();
         $itil_table = $itemtype::getTable();
 
@@ -718,9 +715,7 @@ abstract class RuleCommonITILObject extends Rule
         $criterias['_contract_types']['name']                 = ContractType::getTypeName(1);
         $criterias['_contract_types']['type']                 = 'dropdown';
 
-        $validation_class = $itemtype . 'Validation';
-
-        if (class_exists($validation_class)) {
+        if ($itemtype::getValidationClassInstance() !== null) {
             $criterias['global_validation']['name'] = _n('Validation', 'Validations', 1);
             $criterias['global_validation']['type'] = 'dropdown_validation_status';
         }
@@ -863,9 +858,8 @@ abstract class RuleCommonITILObject extends Rule
         $actions['assign_appliance']['appendto']                    = 'items_id';
 
         $itemtype = static::getItemtype();
-        $validation_class = $itemtype . 'Validation';
 
-        if (class_exists($validation_class)) {
+        if ($itemtype::getValidationClassInstance() !== null) {
             $actions['users_id_validate']['name'] = sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
@@ -952,9 +946,9 @@ abstract class RuleCommonITILObject extends Rule
 
     public function getRights($interface = 'central')
     {
-
         $values = parent::getRights();
-        $values[self::PARENT] = ['short' => __('Parent business'),
+        $values[self::PARENT] = [
+            'short' => __('Parent business'),
             'long'  => __('Business rules (entity parent)')
         ];
 
@@ -963,7 +957,6 @@ abstract class RuleCommonITILObject extends Rule
 
     public static function getIcon()
     {
-        /** @var CommonITILObject $itemtype */
         $itemtype = static::getItemtype();
         return $itemtype::getIcon();
     }

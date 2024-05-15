@@ -283,25 +283,25 @@ class Computer extends CommonDBTM
             if ($update_done) {
                 if (isset($changes['contact']) || isset($changes['contact_num'])) {
                     Session::addMessageAfterRedirect(
-                        __('Alternate username updated. The connected items have been updated using this alternate username.'),
+                        __s('Alternate username updated. The connected items have been updated using this alternate username.'),
                         true
                     );
                 }
                 if (isset($changes['groups_id']) || isset($changes['users_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('User or group updated. The connected items have been moved in the same values.'),
+                        __s('User or group updated. The connected items have been moved in the same values.'),
                         true
                     );
                 }
                 if (isset($changes['states_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('Status updated. The connected items have been updated using this status.'),
+                        __s('Status updated. The connected items have been updated using this status.'),
                         true
                     );
                 }
                 if (isset($changes['locations_id'])) {
                     Session::addMessageAfterRedirect(
-                        __('Location updated. The connected items have been moved in the same location.'),
+                        __s('Location updated. The connected items have been moved in the same location.'),
                         true
                     );
                 }
@@ -364,7 +364,6 @@ class Computer extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -374,19 +373,19 @@ class Computer extends CommonDBTM
                 => OperatingSystem::getTypeName(),
                 Asset_PeripheralAsset::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw ti ti-plug'></i>" .
-                  _x('button', 'Connect'),
+                  _sx('button', 'Connect'),
                 'Item_SoftwareVersion' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw fas fa-laptop-medical'></i>" .
-                  _x('button', 'Install'),
+                  _sx('button', 'Install'),
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw " . SoftwareLicense::getIcon() . "'></i>" .
-                  _x('button', 'Add a license'),
+                  _sx('button', 'Add a license'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'
                 => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
-                    _x('button', 'Add a domain'),
+                    _sx('button', 'Add a domain'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_domain'
                 => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
-                    _x('button', 'Remove a domain'),
+                    _sx('button', 'Remove a domain'),
             ];
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);

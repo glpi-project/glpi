@@ -58,7 +58,7 @@ class RuleCriteria extends CommonDBChild
 
 
     /**
-     * @param string $rule_type (default 'Rule)
+     * @param class-string<Rule> $rule_type
      *
      * @return void
      **/
@@ -67,19 +67,16 @@ class RuleCriteria extends CommonDBChild
         static::$itemtype = $rule_type;
     }
 
-
     public function post_getFromDB()
     {
-
-       // Get correct itemtype if defult one is used
-        if (static::$itemtype == 'Rule') {
+        // Get correct itemtype if defult one is used
+        if (static::$itemtype === 'Rule') {
             $rule = new Rule();
             if ($rule->getFromDB($this->fields['rules_id'])) {
                 static::$itemtype = $rule->fields['sub_type'];
             }
         }
     }
-
 
     /**
      * Get title used in rule
@@ -100,7 +97,6 @@ class RuleCriteria extends CommonDBChild
 
     protected function computeFriendlyName()
     {
-
         if ($rule = getItemForItemtype(static::$itemtype)) {
             $criteria_row = $rule->getMinimalCriteriaText($this->fields);
             $criteria_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $criteria_row));
@@ -111,7 +107,6 @@ class RuleCriteria extends CommonDBChild
 
     public function post_addItem()
     {
-
         parent::post_addItem();
         if (
             isset($this->input['rules_id'])
@@ -123,10 +118,8 @@ class RuleCriteria extends CommonDBChild
         }
     }
 
-
     public function post_purgeItem()
     {
-
         parent::post_purgeItem();
         if (
             isset($this->fields['rules_id'])
@@ -138,16 +131,13 @@ class RuleCriteria extends CommonDBChild
         }
     }
 
-
     public function prepareInputForAdd($input)
     {
-
-        if (!isset($input['criteria']) || empty($input['criteria'])) {
+        if (empty($input['criteria'])) {
             return false;
         }
         return parent::prepareInputForAdd($input);
     }
-
 
     public function rawSearchOptions()
     {
@@ -155,7 +145,7 @@ class RuleCriteria extends CommonDBChild
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'criteria',
             'name'               => __('Name'),
             'massiveaction'      => false,
@@ -165,7 +155,7 @@ class RuleCriteria extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'condition',
             'name'               => __('Condition'),
             'massiveaction'      => false,
@@ -175,7 +165,7 @@ class RuleCriteria extends CommonDBChild
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'pattern',
             'name'               => __('Reason'),
             'massiveaction'      => false,
@@ -186,10 +176,8 @@ class RuleCriteria extends CommonDBChild
         return $tab;
     }
 
-
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -197,8 +185,7 @@ class RuleCriteria extends CommonDBChild
             case 'criteria':
                 $generic_rule = new Rule();
                 if (
-                    isset($values['rules_id'])
-                    && !empty($values['rules_id'])
+                    !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
@@ -210,8 +197,7 @@ class RuleCriteria extends CommonDBChild
             case 'condition':
                 $generic_rule = new Rule();
                 if (
-                    isset($values['rules_id'])
-                    && !empty($values['rules_id'])
+                    !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     $criterion = '';
@@ -244,7 +230,6 @@ class RuleCriteria extends CommonDBChild
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
-
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -311,7 +296,6 @@ class RuleCriteria extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
     /**
      * Get all criteria for a given rule
      *
@@ -325,7 +309,8 @@ class RuleCriteria extends CommonDBChild
         global $DB;
 
         $rules_list = [];
-        $params = ['FROM'  => $this->getTable(),
+        $params = [
+            'FROM'  => static::getTable(),
             'WHERE' => [static::$items_id => $rules_id],
             'ORDER' => 'id'
         ];
@@ -336,7 +321,6 @@ class RuleCriteria extends CommonDBChild
         }
         return $rules_list;
     }
-
 
     /**
      * Try to match a defined rule
@@ -564,7 +548,6 @@ class RuleCriteria extends CommonDBChild
         return false;
     }
 
-
     /**
      * Return the condition label by giving his ID
      *
@@ -576,24 +559,18 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function getConditionByID($ID, $itemtype, $criterion = '')
     {
-
         $conditions = self::getConditions($itemtype, $criterion);
-        if (isset($conditions[$ID])) {
-            return $conditions[$ID];
-        }
-        return "";
+        return $conditions[$ID] ?? "";
     }
-
 
     /**
      * @param class-string<Rule> $itemtype  itemtype
      * @param string $criterion (default '')
      *
-     * @return array of criteria
+     * @return array<int, string> array of criteria
      **/
     public static function getConditions($itemtype, $criterion = '')
     {
-
         $criteria =  [
             Rule::PATTERN_IS                => __('is'),
             Rule::PATTERN_IS_NOT            => __('is not'),
@@ -612,7 +589,7 @@ class RuleCriteria extends CommonDBChild
         ];
 
         if (in_array($criterion, ['ip', 'subnet'])) {
-            $criteria = $criteria + [
+            $criteria += [
                 Rule::PATTERN_CIDR     => __('is CIDR'),
                 Rule::PATTERN_NOT_CIDR => __('is not CIDR')
             ];
@@ -644,7 +621,6 @@ class RuleCriteria extends CommonDBChild
         return $criteria;
     }
 
-
     /**
      * Display a dropdown with all the criteria
      *
@@ -653,7 +629,6 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function dropdownConditions($itemtype, $params = [])
     {
-
         $p['name']             = 'condition';
         $p['criterion']        = '';
         $p['allow_conditions'] = [];
@@ -674,7 +649,6 @@ class RuleCriteria extends CommonDBChild
         }
         return Dropdown::showFromArray($p['name'], $elements, ['value' => $p['value']]);
     }
-
 
     /**
      * Show the form to add or update a criterion

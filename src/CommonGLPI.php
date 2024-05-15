@@ -103,7 +103,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     private static $othertabs = [];
 
-
     public function __construct()
     {
     }
@@ -121,7 +120,6 @@ class CommonGLPI implements CommonGLPIInterface
         return __('General');
     }
 
-
     /**
      * Return the simplified localized label of the current Type in the context of a form.
      * Avoid to recall the type in the label (Computer status -> Status)
@@ -134,7 +132,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return static::getTypeName();
     }
-
 
     /**
      * Return the type of the object : class name
@@ -152,32 +149,22 @@ class CommonGLPI implements CommonGLPIInterface
      * so, id and input parameters are unused.
      *
      * @param integer $ID    ID of the item (-1 if new item)
-     * @param mixed   $right Right to check : r / w / recursive / READ / UPDATE / DELETE
-     * @param array   $input array of input data (used for adding item) (default NULL)
+     * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
+     * @param ?array   $input array of input data (used for adding item) (default NULL)
      *
      * @return boolean
      **/
-    public function can($ID, $right, array &$input = null)
+    public function can($ID, int $right, array &$input = null): bool
     {
-        switch ($right) {
-            case READ:
-                return static::canView();
-
-            case UPDATE:
-                return static::canUpdate();
-
-            case DELETE:
-                return static::canDelete();
-
-            case PURGE:
-                return static::canPurge();
-
-            case CREATE:
-                return static::canCreate();
-        }
-        return false;
+        return match ($right) {
+            READ => static::canView(),
+            UPDATE => static::canUpdate(),
+            DELETE => static::canDelete(),
+            PURGE => static::canPurge(),
+            CREATE => static::canCreate(),
+            default => false,
+        };
     }
-
 
     /**
      * Have I the global right to "create" the Object
@@ -185,14 +172,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, CREATE);
         }
         return false;
     }
-
 
     /**
      * Have I the global right to "view" the Object
@@ -203,14 +189,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function canView()
+    public static function canView(): bool
     {
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, READ);
         }
         return false;
     }
-
 
     /**
      * Have I the global right to "update" the Object
@@ -220,14 +205,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, UPDATE);
         }
         return false;
     }
-
 
     /**
      * Have I the global right to "delete" the Object
@@ -236,14 +220,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, DELETE);
         }
         return false;
     }
-
 
     /**
      * Have I the global right to "purge" the Object
@@ -252,14 +235,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, PURGE);
         }
         return false;
     }
-
 
     /**
      * Register tab on an objet
@@ -282,7 +264,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
     }
 
-
     /**
      * Get the array of Tab managed by other types
      * Getter for plugin (ex PDF) to access protected property
@@ -302,7 +283,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
         return [];
     }
-
 
     /**
      * Define tabs to display
@@ -327,7 +307,6 @@ class CommonGLPI implements CommonGLPIInterface
 
         return $ong;
     }
-
 
     /**
      * return all the tabs for current object
@@ -373,7 +352,6 @@ class CommonGLPI implements CommonGLPIInterface
         return $onglets;
     }
 
-
     /**
      * Add standard define tab
      *
@@ -385,7 +363,6 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function addStandardTab($itemtype, array &$ong, array $options)
     {
-
         $withtemplate = 0;
         if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
@@ -453,7 +430,6 @@ class CommonGLPI implements CommonGLPIInterface
         $ong[static::getType() . '$main'] = '<span>' . $icon . static::getTypeName(1) . '</span>';
         return $this;
     }
-
 
     /**
      * get menu content
@@ -537,7 +513,6 @@ class CommonGLPI implements CommonGLPIInterface
         return false;
     }
 
-
     /**
      * get additional menu content
      *
@@ -549,7 +524,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return false;
     }
-
 
     /**
      * Get forbidden actions for menu : may be add / template
@@ -563,7 +537,6 @@ class CommonGLPI implements CommonGLPIInterface
         return [];
     }
 
-
     /**
      * Get additional menu options
      *
@@ -575,7 +548,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return false;
     }
-
 
     /**
      * Get additional menu links
@@ -589,7 +561,6 @@ class CommonGLPI implements CommonGLPIInterface
         return false;
     }
 
-
     /**
      * Get menu shortcut
      *
@@ -602,7 +573,6 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
-
     /**
      * Get menu name
      *
@@ -614,7 +584,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return static::getTypeName(Session::getPluralNumber());
     }
-
 
     /**
      * Get Tab Name used for itemtype
@@ -634,7 +603,6 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
-
     /**
      * show Tab content
      *
@@ -650,7 +618,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return false;
     }
-
 
     /**
      * display standard tab contents
@@ -782,7 +749,6 @@ class CommonGLPI implements CommonGLPIInterface
         return $text;
     }
 
-
     /**
      * Redirect to the list page from which the item was selected
      * Default to the search engine for the type
@@ -810,7 +776,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
     }
 
-
     /**
      * is the current object a new  one - Always false here (virtual Objet)
      *
@@ -822,7 +787,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return false;
     }
-
 
     /**
      * is the current object a new one - Always true here (virtual Objet)
@@ -838,7 +802,6 @@ class CommonGLPI implements CommonGLPIInterface
         return true;
     }
 
-
     /**
      * Get the search page URL for the current classe
      *
@@ -850,7 +813,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
     }
-
 
     /**
      * Get the search page URL for the current class
@@ -864,7 +826,6 @@ class CommonGLPI implements CommonGLPIInterface
         return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
     }
 
-
     /**
      * Get the form page URL for the current class
      *
@@ -876,7 +837,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return Toolbox::getItemTypeFormURL(get_called_class(), $full);
     }
-
 
     /**
      * Get the form page URL for the current class and point to a specific ID
@@ -896,7 +856,6 @@ class CommonGLPI implements CommonGLPIInterface
         $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . $id;
         return $link;
     }
-
 
     /**
      * Show tabs content
@@ -1010,7 +969,6 @@ class CommonGLPI implements CommonGLPIInterface
             );
         }
     }
-
 
     /**
      * Show tabs
@@ -1295,7 +1253,6 @@ class CommonGLPI implements CommonGLPIInterface
         echo "</div>";
     }
 
-
     /**
      * List infos in debug tab
      *
@@ -1330,7 +1287,6 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
     }
-
 
     /**
      * Update $_SESSION to set the display options.
@@ -1383,7 +1339,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
     }
 
-
     /**
      * Load display options to $_SESSION
      *
@@ -1432,8 +1387,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
         return $display_options;
     }
-
-
 
     /**
      * Show display options
@@ -1492,7 +1445,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
     }
 
-
     /**
      * Get available display options array
      *
@@ -1504,7 +1456,6 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return [];
     }
-
 
     /**
      * Get link for display options
@@ -1541,7 +1492,6 @@ class CommonGLPI implements CommonGLPIInterface
         return $link;
     }
 
-
     /**
      * Get error message for item
      *
@@ -1554,28 +1504,17 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function getErrorMessage($error, $object = '')
     {
-
         if (empty($object) && $this instanceof CommonDBTM) {
             $object = $this->getLink();
         }
-        switch ($error) {
-            case ERROR_NOT_FOUND:
-                return sprintf(__('%1$s: %2$s'), $object, __('Unable to get item'));
-
-            case ERROR_RIGHT:
-                return sprintf(__('%1$s: %2$s'), $object, __('Authorization error'));
-
-            case ERROR_COMPAT:
-                return sprintf(__('%1$s: %2$s'), $object, __('Incompatible items'));
-
-            case ERROR_ON_ACTION:
-                return sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action'));
-
-            case ERROR_ALREADY_DEFINED:
-                return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
-        }
-
-        return '';
+        return match ($error) {
+            ERROR_NOT_FOUND => sprintf(__('%1$s: %2$s'), $object, __('Unable to get item')),
+            ERROR_RIGHT => sprintf(__('%1$s: %2$s'), $object, __('Authorization error')),
+            ERROR_COMPAT => sprintf(__('%1$s: %2$s'), $object, __('Incompatible items')),
+            ERROR_ON_ACTION => sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action')),
+            ERROR_ALREADY_DEFINED => sprintf(__('%1$s: %2$s'), $object, __('Item already defined')),
+            default => '',
+        };
     }
 
     /**

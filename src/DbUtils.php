@@ -474,11 +474,6 @@ final class DbUtils
             return null;
         }
 
-        if ($itemtype === 'Event') {
-           //to avoid issues when pecl-event is installed...
-            $itemtype = 'Glpi\\Event';
-        }
-
         $classname = $this->fixItemtypeCase($itemtype);
 
         if (!is_subclass_of($classname, CommonGLPI::class, true)) {
@@ -1691,9 +1686,6 @@ final class DbUtils
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $before = "";
-        $after  = "";
-
         $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
         if (isset($_SESSION["glpinames_format"]) && !$force_config) {
             $order = $_SESSION["glpinames_format"];
@@ -1732,16 +1724,20 @@ final class DbUtils
             $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
         }
 
+        $username = $formatted;
+
         if (
             ($link == 1)
             && ($ID > 0)
         ) {
-            $before = "<a title=\"" . htmlspecialchars($formatted) . "\"
-                       href='" . User::getFormURLWithID($ID) . "'>";
-            $after  = "</a>";
+            $username = sprintf(
+                '<a title="%s" href="%s">%s</a>',
+                htmlspecialchars($formatted),
+                User::getFormURLWithID($ID),
+                htmlspecialchars($formatted)
+            );
         }
 
-        $username = $before . $formatted . $after;
         return $username;
     }
 

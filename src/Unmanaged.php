@@ -206,7 +206,7 @@ class Unmanaged extends CommonDBTM
     {
         $actions = [];
         if (self::canUpdate()) {
-            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
+            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __s('Convert');
         }
         return $actions;
     }
@@ -218,7 +218,7 @@ class Unmanaged extends CommonDBTM
         CommonDBTM $checkitem = null
     ) {
         if (self::canUpdate()) {
-            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
+            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __s('Convert');
         }
     }
 

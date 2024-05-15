@@ -52,7 +52,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 
     public static $rightname = 'knowbase';
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }

@@ -462,8 +462,8 @@ class Notification extends CommonDBTM implements FilterableInterface
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _x('button', 'Add notification template');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _x('button', 'Remove all notification templates');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _sx('button', 'Add notification template');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _sx('button', 'Remove all notification templates');
         }
 
         return $actions;
@@ -535,7 +535,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (
@@ -554,7 +554,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (
@@ -682,8 +682,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 
@@ -695,8 +694,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 

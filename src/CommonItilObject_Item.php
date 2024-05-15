@@ -58,7 +58,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return $forbidden;
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $obj = new static::$itemtype_1();
 
@@ -585,8 +585,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
         $restrict = $params['restrict'];
 
-        $restrict[static::getTable() . ".items_id"] = $item->getID();
-        $restrict[static::getTable() . ".itemtype"] = $item->getType();
         $params['criteria'][0]['field']      = 12;
         $params['criteria'][0]['searchtype'] = 'equals';
         $params['criteria'][0]['value']      = 'all';
@@ -1373,13 +1371,13 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
             }
 
-            $display = (isset($this->input['_no_message_link']) ? $item->getNameID()
+            $display = (isset($this->input['_no_message_link']) ? htmlspecialchars($item->getNameID())
                                                             : $item->getLink());
 
            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
-                __('%1$s: %2$s'),
-                __('Item successfully added'),
+                __s('%1$s: %2$s'),
+                __s('Item successfully added'),
                 $display
             ));
         }
@@ -1412,12 +1410,12 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item->getFromDB($this->fields['items_id']);
 
             if (isset($this->input['_no_message_link'])) {
-                $display = $item->getNameID();
+                $display = htmlspecialchars($item->getNameID());
             } else {
                 $display = $item->getLink();
             }
             //TRANS : %s is the description of the updated item
-            Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully deleted'), $display));
+            Session::addMessageAfterRedirect(sprintf(__s('%1$s: %2$s'), __s('Item successfully deleted'), $display));
         }
     }
 

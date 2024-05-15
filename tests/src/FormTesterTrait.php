@@ -35,6 +35,8 @@
 
 namespace Glpi\Tests;
 
+use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -98,6 +100,16 @@ trait FormTesterTrait
                     'config'         => $destination_data['config'],
                 ], ['config']);
             }
+        }
+
+        // Create access controls
+        foreach ($builder->getAccessControls() as $strategy_class => $config) {
+            $this->createItem(FormAccessControl::class, [
+                'forms_forms_id' => $form->getID(),
+                'strategy'       => $strategy_class,
+                '_config'        => $config,
+                'is_active'      => true,
+            ]);
         }
 
         // Reload form
@@ -184,5 +196,28 @@ trait FormTesterTrait
 
         $section = array_pop($filtered_sections);
         return $section->getID();
+    }
+
+    /**
+     * Get the given access control object of a form.
+     *
+     * @param Form   $form         Form to get the access control from
+     * @param string $control_type Type of access control to get
+     *
+     * @return FormAccessControl
+     */
+    protected function getAccessControl(
+        Form $form,
+        string $control_type
+    ): FormAccessControl {
+        $controls = $form->getAccessControls();
+
+        $controls = array_filter(
+            $controls,
+            fn($control) => $control->fields['strategy'] === $control_type
+        );
+
+        $control = array_pop($controls);
+        return $control;
     }
 }

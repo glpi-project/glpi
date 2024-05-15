@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Form\QuestionType;
 use DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeCategory;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
 
 class QuestionTypesManager extends DbTestCase
 {
@@ -82,6 +83,10 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::DATE_AND_TIME,
             QuestionTypeCategory::ACTORS,
             QuestionTypeCategory::URGENCY,
+            QuestionTypeCategory::REQUEST_TYPE,
+            QuestionTypeCategory::FILE,
+            QuestionTypeCategory::RADIO,
+            QuestionTypeCategory::CHECKBOX,
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -135,6 +140,34 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::URGENCY,
             [
                 new \Glpi\Form\QuestionType\QuestionTypeUrgency(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::REQUEST_TYPE,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeRequestType(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::FILE,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeFile(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::RADIO,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeRadio(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::CHECKBOX,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeCheckbox(),
             ]
         ];
     }

@@ -54,22 +54,29 @@ class TitleField implements ConfigFieldInterface
     }
 
     #[Override]
-    public function renderConfigForm(?array $config): string
-    {
+    public function renderConfigForm(
+        ?array $config,
+        string $input_name,
+        array $display_options
+    ): string {
         $template = <<<TWIG
-            {% import 'components/form/basic_inputs_macros.html.twig' as fields %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.input(
-                "config[" ~ key ~ "][value]",
+            {{ fields.textField(
+                input_name,
                 value,
-                {}
+                label,
+                options
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'key' => $this->getKey(),
-            'value' => $config['value'] ?? '',
+            'key'        => $this->getKey(),
+            'label'      => $this->getLabel(),
+            'value'      => $config['value'] ?? '',
+            'input_name' => $input_name,
+            'options'    => $display_options,
         ]);
     }
 

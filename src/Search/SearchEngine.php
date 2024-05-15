@@ -359,6 +359,10 @@ final class SearchEngine
             $p['start'] = 0;
         }
 
+        /** @var SearchInputInterface $search_input_class */
+        $search_input_class = self::getSearchInputClass($p);
+        $p = $search_input_class::cleanParams($p);
+
         $data             = [];
         $data['search']   = $p;
         $data['itemtype'] = $itemtype;

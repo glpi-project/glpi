@@ -359,7 +359,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                     $hasIssues = true;
                     Session::addMessageAfterRedirect(
                         sprintf(
-                            __(
+                            __s(
                                 'Unable to update model because it is used by an asset in the "%s" rack and the new required units do not fit into the rack'
                             ),
                             $rack->getLink()

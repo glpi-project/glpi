@@ -70,7 +70,7 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * Count number of elements
      *
-     * @param object $item
+     * @param CommonDBTM $item
      *
      * @return integer
      */
@@ -85,40 +85,31 @@ class RuleMatchedLog extends CommonDBTM
         );
     }
 
-
-    /**
-     * Get the tab name used for item
-     *
-     * @param object $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return string|array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $array_ret = [];
 
-        if ($item->getType() == 'Agent') {
-            $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::getType());
+        if ($item::class === Agent::class) {
+            $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
         } else {
             $continue = true;
 
-            switch ($item->getType()) {
-                case 'Agent':
-                    $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::getType());
+            switch ($item::class) {
+                case Agent::class:
+                    $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
                     break;
 
-                case 'Unmanaged':
+                case Unmanaged::class:
                     $cnt = self::countForItem($item);
-                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::getType());
+                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
                     break;
 
-                case 'Computer':
-                case 'Monitor':
-                case 'NetworkEquipment':
-                case 'Peripheral':
-                case 'Phone':
-                case 'Printer':
+                case Computer::class:
+                case Monitor::class:
+                case NetworkEquipment::class:
+                case Peripheral::class:
+                case Phone::class:
+                case Printer::class:
                     $continue = $item->isDynamic();
                     break;
                 default:
@@ -128,21 +119,12 @@ class RuleMatchedLog extends CommonDBTM
                 return [];
             } else if (empty($array_ret)) {
                 $cnt = self::countForItem($item);
-                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::getType());
+                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
             }
         }
         return $array_ret;
     }
 
-
-    /**
-     * Display the content of the tab
-     *
-     * @param object $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
@@ -151,7 +133,6 @@ class RuleMatchedLog extends CommonDBTM
         }
         return false;
     }
-
 
     /**
      * Clean old data
