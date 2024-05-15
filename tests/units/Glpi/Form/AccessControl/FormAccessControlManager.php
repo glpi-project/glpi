@@ -198,6 +198,10 @@ final class FormAccessControlManager extends DbTestCase
         $form = $this->getFormAccessibleOnlyToTechUserWithMandatoryToken();
 
         // Cases with an unanimous access decision strategy
+        $form = $this->setFormAccessDecisionStrategy(
+            $form,
+            AccessDecisionStrategy::Unanimous
+        );
         $this->setFormAccessDecisionStrategy(
             $form,
             AccessDecisionStrategy::Unanimous
