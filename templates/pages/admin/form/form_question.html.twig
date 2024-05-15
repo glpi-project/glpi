@@ -50,10 +50,11 @@
     class="mb-3"
     data-glpi-form-editor-question
 >
-    <div
+    <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        aria-label="{{ __("Question details") }}"
     >
         <div
             class="card-status-start bg-primary"
@@ -70,6 +71,7 @@
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
                 <input
+                    title="{{ __("Question name") }}"
                     class="form-control content-editable-h2 mb-0"
                     type="text"
                     name="name"
@@ -111,6 +113,7 @@
                     __('Description'),
                     base_field_options|merge({
                         'placeholder': __('Add a description...'),
+                        'aria_label': __("Question description"),
                         'enable_richtext': true,
                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
                         'editor_height': "0",
@@ -221,7 +224,7 @@
             name="rank"
             value="{{ question is not null ? question.fields.rank : 0 }}"
         />
-    </div>
+    </section>
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,

@@ -31,6 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
-import './commands.js';
-import './commands/form.js';
-import '@testing-library/cypress/add-commands';
+Cypress.Commands.add('createFormWithAPI', (
+    fields = {
+        name: "My test form",
+    }
+) => {
+    return cy.createWithAPI('Glpi\\Form\\Form', fields).then((form_id) => {
+        return form_id;
+    });
+});
+
+Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
+    form_id,
+    tab_key
+) => {
+    const fully_qualified_tabs = new Map([
+        ['Form', 'Glpi\\Form\\Form\\Form$main'],
+    ]);
+    const tab = fully_qualified_tabs.get(tab_key);
+
+    return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
+});

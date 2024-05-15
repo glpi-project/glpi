@@ -65,9 +65,52 @@ describe ('Form editor', () => {
             cy.findByRole('textbox', {'name': 'Form name'})
                 .should('have.value', 'My form name')
             ;
+            cy.findByRole('checkbox', {'name': 'Active'})
+                .should('be.checked')
+                .check()
+            ;
             cy.findByLabelText("Form description")
                 .awaitTinyMCE()
                 .should('have.text', 'My form description')
+            ;
+        });
+    });
+    it('can create a question an fill its main details', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+
+        // Edit form details
+        cy.focused().type("My question"); // Question name is focused by default
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('not.be.checked')
+                .check()
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("My question description")
+            ;
+        });
+
+        // Save form and reload page to force new data to be displayed.
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully updated')
+        ;
+        cy.reload();
+
+        // Validate that the new values are displayed
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', 'My question')
+                .click() // Click to make sure form focus is on the question
+            ;
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('be.checked')
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .should('have.text', 'My question description')
             ;
         });
     });
