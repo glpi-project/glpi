@@ -2483,6 +2483,24 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    public function canRecurs()
+    {
+
+        if (
+            $this->isEntityAssign()
+            && $this->maybeRecursive()
+        ) {
+            if (
+                static::canCreate()
+                && Session::haveAccessToEntity($this->getEntityID())
+            ) {
+                // Can make recursive if recursive access to entity
+                return Session::haveRecursiveAccessToEntity($this->getEntityID());
+            }
+        }
+        return false;
+    }
+
     /**
      * Can I change recursive flag to false
      * check if there is "linked" object in another entity
@@ -2966,21 +2984,6 @@ class CommonDBTM extends CommonGLPI
                     return true;
                 }
                 return (static::canCreate() && $this->canCreateItem());
-
-            case RECURSIVE:
-                if (
-                    $this->isEntityAssign()
-                    && $this->maybeRecursive()
-                ) {
-                    if (
-                        static::canCreate()
-                        && Session::haveAccessToEntity($this->getEntityID())
-                    ) {
-                       // Can make recursive if recursive access to entity
-                        return Session::haveRecursiveAccessToEntity($this->getEntityID());
-                    }
-                }
-                break;
         }
         return false;
     }
