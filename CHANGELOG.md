@@ -142,6 +142,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkName::showFormForNetworkPort()` now outputs HTML for a flex form instead of a table.
 - `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
 - `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
+- Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
