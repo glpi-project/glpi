@@ -63,7 +63,8 @@ echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 readOnly: true,
                 minimap: {
                     enabled: false
-                }
+                },
+                automaticLayout: true
             });
         });
     </script>
