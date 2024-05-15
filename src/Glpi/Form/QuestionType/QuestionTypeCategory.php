@@ -106,7 +106,7 @@ enum QuestionTypeCategory: string
             self::FILE => __("File"),
             self::RADIO => __("Radio"),
             self::CHECKBOX => __("Checkbox"),
-            self::DROPDOWN => __("Dropdown"),
+            self::DROPDOWN => _n('Dropdown', 'Dropdowns', 1),
         };
     }
 
