@@ -33,15 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
+namespace Glpi\Form\Tag;
 
-include('../../inc/includes.php');
+/**
+ * Simple data structure that will be json_encoded and sent to the
+ * GLPI.RichText.FormTags component.
+ */
+final readonly class Tag
+{
+    public string $label;
+    public string $html;
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
+    public function __construct(
+        string $label,
+        string $value,
+    ) {
+        $this->label = $label;
 
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags());
+        // Build HTML representation of the tag.
+        $properties = [
+            "contenteditable"     => "false",
+            "data-form-tag"       => "true",
+            "data-form-tag-value" => $value,
+        ];
+        $properties = implode(" ", array_map(
+            fn($key, $value) => "$key=\"$value\"",
+            array_keys($properties),
+            array_values($properties),
+        ));
+        $this->html = "<span $properties>$label</span>";
+    }
+}

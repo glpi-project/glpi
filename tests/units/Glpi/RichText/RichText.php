@@ -397,6 +397,11 @@ HTML,
             'encode_output_entities' => false,
             'expected_result' => '<span data-form-tag="true">Tag label</span>',
         ];
+        yield 'Do not remove data-form-tag-value property' => [
+            'content' => '<span data-form-tag-value="my-value">Tag label</span>',
+            'encode_output_entities' => false,
+            'expected_result' => '<span data-form-tag-value="my-value">Tag label</span>',
+        ];
     }
 
     /**

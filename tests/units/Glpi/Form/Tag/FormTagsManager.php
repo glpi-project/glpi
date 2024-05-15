@@ -33,15 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
+namespace tests\units\Glpi\Form\Tag;
 
-include('../../inc/includes.php');
+use GLPITestCase;
+use Glpi\Form\Tag\Tag;
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
+final class FormTagsManager extends GLPITestCase
+{
+    public function testGetTags()
+    {
+        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tags = $tag_manager->getTags();
+        $this->array($tags)->isNotEmpty();
 
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags());
+        foreach ($tags as $tag) {
+            $this->object($tag)->isInstanceOf(Tag::class);
+        }
+    }
+
+    public function testInsertTagsContent()
+    {
+        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tag_1 = new Tag(label: "Exemple tag 1", value: "exemple-tag-1");
+        $tag_2 = new Tag(label: "Exemple tag 2", value: "exemple-tag-2");
+        $tag_3 = new Tag(label: "Exemple tag 3", value: "exemple-tag-3");
+
+        $content_with_tag =
+            "My content: $tag_1->html, $tag_2->html and $tag_3->html"
+        ;
+        $computed_content = $tag_manager->insertTagsContent($content_with_tag);
+        $this->string($computed_content)->isEqualTo(
+            'My content: exemple-tag-1, exemple-tag-2 and exemple-tag-3'
+        );
+    }
+}

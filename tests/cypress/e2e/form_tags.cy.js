@@ -76,6 +76,7 @@ describe('Form tags', () => {
             .findByText("Exemple tag 3")
             .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
+            .should('have.attr', 'data-form-tag-value', 'exemple-tag-3')
         ;
 
         // Save form
@@ -86,6 +87,7 @@ describe('Form tags', () => {
             .findByText("Exemple tag 3")
             .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
+            .should('have.attr', 'data-form-tag-value', 'exemple-tag-3')
         ;
     });
 });

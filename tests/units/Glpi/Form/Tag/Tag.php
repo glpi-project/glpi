@@ -33,15 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
+namespace tests\units\Glpi\Form\Tag;
 
-include('../../inc/includes.php');
+use GLPITestCase;
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
-
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags());
+final class Tag extends GLPITestCase
+{
+    public function testTagCanBeExportedToJson(): void
+    {
+        $tag = new \Glpi\Form\Tag\Tag(
+            label: 'Example tag',
+            value: 'example-tag',
+        );
+        $this->string(json_encode($tag))->isEqualTo(
+            json_encode([
+                'label' => 'Example tag',
+                'html' => '<span contenteditable="false" data-form-tag="true" data-form-tag-value="example-tag">Example tag</span>'
+            ])
+        );
+    }
+}
