@@ -404,7 +404,8 @@ TWIG, $twig_params);
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
+            $label = sprintf('<i class="%s"></i> %s', htmlspecialchars($itemtype::getIcon()), htmlspecialchars($linkname));
+            $name = '<a href="' . htmlspecialchars($link) . '">' . $label . '</a>';
             $entry['name'] = $name;
 
             if (!isset($entity_cache[$data['entities_id']])) {
@@ -435,8 +436,8 @@ TWIG, $twig_params);
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
-                '_itemtype' => __('Item type'),
                 'name' => __('Name'),
+                '_itemtype' => __('Item type'),
                 'is_dynamic' => __('Automatic inventory'),
                 'entity' => Entity::getTypeName(1),
                 'serial' => __('Serial number'),
