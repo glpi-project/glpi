@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable */
+/* global sortable, GlpiFormQuestionTypeSelectable */
 
 class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
 
@@ -127,7 +127,7 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
 
         option
             .find('input[type="checkbox"], input[type="radio"]')
-            .on('change', (event) => {
+            .on('change', () => {
                 this.#updateDropdownOptions();
             });
     }
@@ -137,11 +137,11 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
         this.#updateOptionInputType(option);
     }
 
-    onEditOption(option) {
+    onEditOption() {
         this.#updateDropdownOptions();
     }
 
-    onRemoveOption(option) {
+    onRemoveOption() {
         this.#updateDropdownOptions();
     }
 }

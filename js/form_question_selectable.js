@@ -81,11 +81,26 @@ class GlpiFormQuestionTypeSelectable {
         }
     }
 
-    onAddOption(option) { }
+    /**
+     * Called when an option is added.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onAddOption(option) { } // eslint-disable-line no-unused-vars
 
-    onEditOption(option) { }
+    /**
+     * Called when an option is edited.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onEditOption(option) { } // eslint-disable-line no-unused-vars
 
-    onRemoveOption(option) { }
+    /**
+     * Called when an option is removed.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onRemoveOption(option) { } // eslint-disable-line no-unused-vars
 
     /**
      * Register listeners for the option elements.
