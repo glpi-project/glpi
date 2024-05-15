@@ -154,6 +154,9 @@ class ConsumableItem extends CommonDBTM
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
@@ -213,31 +216,37 @@ class ConsumableItem extends CommonDBTM
         $tab[] = [
             'id'                 => '17',
             'table'              => 'glpi_consumables',
-            'field'              => 'id',
+            'field'              => 'date_out',
             'name'               => __('Number of used consumables'),
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
+            'nometa'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
-            ]
+            ],
+            'computation' => new QueryExpression(
+                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NULL THEN 1 ELSE 0 END"))
+            )
         ];
 
         $tab[] = [
             'id'                 => '19',
             'table'              => 'glpi_consumables',
-            'field'              => 'id',
+            'field'              => 'date_out',
             'name'               => __('Number of new consumables'),
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
+            'nometa'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.date_out' => null]
-            ]
+            ],
+            'computation' => new QueryExpression(
+                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NOT NULL THEN 1 ELSE 0 END"))
+            )
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
