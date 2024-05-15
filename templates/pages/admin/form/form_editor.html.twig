@@ -81,9 +81,10 @@
                     data-glpi-form-editor-form
                     data-glpi-form-editor-active-form
                 >
-                    <div
+                    <section
                         data-glpi-form-editor-form-details
                         data-glpi-form-editor-on-click="set-active"
+                        aria-label="{{ __("Form details") }}"
                     >
                         {# Card containing the main form data: title, header and status #}
                         <div class="card form-details mb-3">
@@ -97,6 +98,7 @@
                                 <div class="d-flex">
                                     {# Form's name #}
                                     <input
+                                        title="{{ __("Form name") }}"
                                         type="text"
                                         class="form-control content-editable-h1"
                                         name="name"
@@ -131,12 +133,14 @@
                                             'rows' : 1,
                                             'toolbar_location': 'bottom',
                                             'mb': 'mb-0',
+                                            'aria_label': __("Form description"),
+                                            'placeholder': __("Add a description to your form..."),
                                         })
                                     ) }}
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     {# Display all questions here #}
                     <div data-glpi-form-editor-sections>

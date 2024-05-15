@@ -56,9 +56,9 @@ if (($_GET['id'] ?? 0) == 0) {
     // edit page which will contains more fields
     $form = new Form();
     $id = $form->add([
-        'name'     => __("Untitled form"),
-        "header"   => __("Form description..."),
-        'is_draft' => true,
+        'name'        => __("Untitled form"),
+        'entities_id' => $_SESSION['glpiactive_entity'],
+        'is_draft'    => true,
     ]);
     Html::redirect($form->getLinkURL());
     // Code stop here due to exit() in the Html::redirect() method
