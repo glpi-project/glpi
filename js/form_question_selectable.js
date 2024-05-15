@@ -159,6 +159,13 @@ class GlpiFormQuestionTypeSelectable {
             $(input).parent().next().find('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
         }
 
+        /**
+         * Compute the state to update the input names
+         * Required to link radio inputs between them in the same question
+         * and unlink them between questions
+         */
+        window.glpi_form_editor_controller.computeState();
+
         // Call the onAddOption method
         this.onAddOption($(input).parent().next());
     }
