@@ -309,6 +309,7 @@
         'init': true,
         'placeholder': "",
         'enable_form_tags': false,
+        'aria_label': "",
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -322,6 +323,9 @@
     <textarea class="form-control {{ options.input_addclass }}"
             id="{{ options.id }}" name="{{ name }}" rows="{{ options.rows }}"
             style="width: 100%;"
+            {% if not options.aria_label is empty %}
+                aria-label="{{ options.aria_label }}"
+            {% endif %}
             {{ options.disabled ? 'disabled' : '' }}
             {{ options.readonly ? 'readonly' : '' }}
             {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value }}</textarea>
