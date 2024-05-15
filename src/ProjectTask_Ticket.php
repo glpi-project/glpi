@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
-use Glpi\RichText\RichText;
 
 /**
  * ProjectTask_Ticket Class
@@ -149,7 +148,6 @@ class ProjectTask_Ticket extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = self::getListForItem($projecttask);
-        $numrows = count($iterator);
 
         $tickets = [];
         $used    = [];
@@ -423,10 +421,12 @@ class ProjectTask_Ticket extends CommonDBRelation
 
             $father = '';
             if ($data['projecttasks_id'] > 0) {
-                $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
-                ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
-                (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
+                $father_name = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+                $father = sprintf(
+                    '<a href="%s">%s</a>',
+                    ProjectTask::getFormURLWithID($data['projecttasks_id']),
+                    $father_name ?: "(" . $data['projecttasks_id'] . ")"
+                );
             }
 
             $status = $data['sname'];
