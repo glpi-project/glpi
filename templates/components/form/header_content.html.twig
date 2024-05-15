@@ -145,7 +145,7 @@
                {% if item is instanceof('CommonDBChild') %}
                   {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
                   {% set disabled = true %}
-               {% elseif not item.can(id, constant('UPDATE')) %}
+               {% elseif not item.can(id, constant('RECURSIVE')) %}
                   {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
                   {% set disabled = true %}
                {% elseif not item.canUnrecurs() %}

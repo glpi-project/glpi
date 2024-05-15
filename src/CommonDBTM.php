@@ -2967,7 +2967,7 @@ class CommonDBTM extends CommonGLPI
                 }
                 return (static::canCreate() && $this->canCreateItem());
 
-            case 'recursive':
+            case RECURSIVE:
                 if (
                     $this->isEntityAssign()
                     && $this->maybeRecursive()
