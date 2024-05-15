@@ -41,8 +41,7 @@
         role="group"
     >
         {# Add question action #}
-        <label
-            for="btn-radio-toolbar-1"
+        <button
             class="btn btn-icon flex-grow-0"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
@@ -52,12 +51,11 @@
             <span class="px-2 d-flex align-items-center">
                 <i class="ti ti-circle-plus"></i>
             </span>
-        </label>
+        </button>
 
         {# Add section action #}
         {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getQuestions()|length > 0 %}
-        <label
-            for="btn-radio-toolbar-1"
+        <button
             class="btn btn-icon flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
@@ -65,6 +63,6 @@
             data-glpi-form-editor-on-click="add-section"
         >
             <i class="ti ti-box-align-top"></i>
-        </label>
+        </button>
     </div>
 {% endif %}
