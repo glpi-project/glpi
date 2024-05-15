@@ -308,6 +308,7 @@
         'toolbar_location': 'top',
         'init': true,
         'placeholder': "",
+        'enable_form_tags': false,
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -339,6 +340,17 @@
             options.placeholder,
         ]) %}
    {% endif %}
+
+   {% if options.enable_form_tags %}
+        <script>
+            $(function() {
+                const form_tags = new GLPI.RichText.FormTags(
+                    tinymce.get('{{ options.id }}'),
+                );
+                form_tags.register();
+            });
+        </script>
+    {% endif %}
 
     {% if options.enable_mentions and config('use_notifications') %}
         <script>

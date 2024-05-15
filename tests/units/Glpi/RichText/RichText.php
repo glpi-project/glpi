@@ -386,6 +386,17 @@ HTML,
 </p>
 HTML,
         ];
+        yield 'Do not remove content editable on span' => [
+            'content' => '<span contenteditable="true">Editable content</span>',
+            'encode_output_entities' => false,
+            'expected_result' => '<span contenteditable="true">Editable content</span>',
+        ];
+
+        yield 'Do not remove data-form-tag property' => [
+            'content' => '<span data-form-tag="true">Tag label</span>',
+            'encode_output_entities' => false,
+            'expected_result' => '<span data-form-tag="true">Tag label</span>',
+        ];
     }
 
     /**

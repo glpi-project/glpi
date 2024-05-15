@@ -69,6 +69,7 @@ class ContentField implements ConfigFieldInterface
                 options|merge({
                     'enable_richtext': true,
                     'enable_images': false,
+                    'enable_form_tags': true,
                 })
             ) }}
 TWIG;
