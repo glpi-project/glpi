@@ -57,7 +57,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `header` longtext,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
-            `access_decision_strategy` varchar(255) NOT NULL DEFAULT 'unanimous',
+            `access_decision_strategy` varchar(255) NOT NULL DEFAULT 'affirmative',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
             KEY `entities_id` (`entities_id`),
@@ -219,6 +219,6 @@ if (GLPI_VERSION == "11.0.0-dev") {
         "glpi_forms_forms",
         "access_decision_strategy",
         "string",
-        ['value' => 'unanimous']
+        ['value' => 'affirmative']
     );
 }

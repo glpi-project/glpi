@@ -53,12 +53,12 @@ describe('Access Control', () => {
         // would make the test pointless
         cy.findByLabelText("Access strategy ?")
             .find('option:selected', {force: true})
-            .should('not.have.value', 'affirmative')
+            .should('not.have.value', 'unanimous')
         ;
 
         // Update value and refresh page
         cy.findByLabelText("Access strategy ?")
-            .select('affirmative', {force: true})
+            .select('unanimous', {force: true})
         ;
         cy.findByRole('button', {name: 'Save changes'}).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
@@ -66,7 +66,7 @@ describe('Access Control', () => {
         // Check value again
         cy.findByLabelText("Access strategy ?")
             .find('option:selected', {force: true})
-            .should('have.value', 'affirmative')
+            .should('have.value', 'unanimous')
         ;
     }),
     it('can configure the allow list policy', () => {

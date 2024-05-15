@@ -109,7 +109,7 @@ class FormBuilder
         $this->sections = [];
         $this->destinations = [];
         $this->access_control = [];
-        $this->access_decision_strategy = AccessDecisionStrategy::Unanimous;
+        $this->access_decision_strategy = AccessDecisionStrategy::Affirmative;
     }
 
     /**

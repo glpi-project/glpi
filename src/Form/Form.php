@@ -335,7 +335,7 @@ final class Form extends CommonDBTM
         $strategy = AccessDecisionStrategy::tryFrom(
             $this->fields['access_decision_strategy']
         );
-        return $strategy ?? AccessDecisionStrategy::Unanimous;
+        return $strategy ?? AccessDecisionStrategy::Affirmative;
     }
 
     /**
