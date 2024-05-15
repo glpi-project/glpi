@@ -39,7 +39,8 @@
     {% endif %}
 {% endif %}
 
-{% set href = href ~ "&start=%start%" ~ additional_params %}
+{% set href_separator = '?' in href ? '&' : '?' %}
+{% set href = href ~ href_separator ~ "start=%start%" ~ additional_params %}
 {% if is_tab is defined and is_tab == true %}
    {% set href = "javascript:reloadTab('start=%start%" ~ additional_params ~ "');" %}
 {% endif %}
@@ -71,6 +72,7 @@
     {% set limitdropdown = include('components/dropdown/limit.html.twig', {
         'no_onchange': fluid_search|default(false),
         'select_class': 'search-limit-dropdown',
+        'href': href|replace({'%start%': start}),
     }) %}
     <span class="search-limit d-none d-md-block">
         {{ __('%s rows / page')|format(limitdropdown)|raw }}
