@@ -114,6 +114,7 @@ final class FormDestination extends CommonDBChild
             'destinations'                 => $item->getDestinations(),
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
+            'can_update'                   => self::canUpdate(),
         ]);
 
         return true;
@@ -136,6 +137,13 @@ final class FormDestination extends CommonDBChild
 
         // Must be able to update the parent form
         return $form->canUpdateItem();
+    }
+
+    #[Override]
+    public static function canUpdate(): bool
+    {
+        // Must be able to update forms
+        return Form::canUpdate();
     }
 
     #[Override]

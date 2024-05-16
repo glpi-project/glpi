@@ -37,6 +37,7 @@
 {# @var \Glpi\Form\Form                               form #}
 {# @var \Glpi\Form\Desination\FormDestination         destinations #}
 {# @var int|null                                      active_destination #}
+{# @var boolean                                       can_update #}
 
 <div class="py-2 px-3">
     <h2 class="d-flex">
@@ -80,16 +81,18 @@
                                 </div>
 
                                 {# Submit button to delete the destination #}
-                                <div class="d-flex flex-row-reverse mt-3">
-                                    <button class="btn btn-primary ms-2" name="update" type="submit">
-                                        <i class="ti ti-device-floppy me-2"></i>
-                                        {{ __("Update item") }}
-                                    </button>
-                                    <button class="btn btn-ghost-danger" name="purge" type="submit">
-                                        <i class="ti ti-trash me-2"></i>
-                                        {{ __("Delete") }}
-                                    </button>
-                                </div>
+                                {% if can_update %}
+                                    <div class="d-flex flex-row-reverse mt-3">
+                                        <button class="btn btn-primary ms-2" name="update" type="submit">
+                                            <i class="ti ti-device-floppy me-2"></i>
+                                            {{ __("Update item") }}
+                                        </button>
+                                        <button class="btn btn-ghost-danger" name="purge" type="submit">
+                                            <i class="ti ti-trash me-2"></i>
+                                            {{ __("Delete") }}
+                                        </button>
+                                    </div>
+                                {% endif %}
 
                                 {# Hidden values #}
                                 <input type="hidden" name="id" value="{{ destination.getID() }}"/>
