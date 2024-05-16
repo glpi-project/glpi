@@ -777,12 +777,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $pages_printed    = 0;
         $nb_pages_printed = 0;
 
-        $total_number = countElementsInTable(
-            self::getTable(),
-            [
-                'WHERE'     => $where
-            ]
-        );
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_cartridges.*',
@@ -1136,7 +1130,9 @@ TWIG, ['printer_id' => $printer->getID()]);
 
         $entries = [];
         foreach ($iterator as $data) {
-            $model = '<a href="' . CartridgeItem::getFormURLWithID($data["tID"]) . '">' . htmlspecialchars(sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])) . '</a>';
+            $model = '<a href="' . htmlspecialchars(CartridgeItem::getFormURLWithID($data["tID"])) . '">'
+                . htmlspecialchars(sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"]))
+                . '</a>';
 
             $tmp_dbeg       = explode("-", $data["date_in"]);
             $tmp_dend       = explode("-", $data["date_use"]);

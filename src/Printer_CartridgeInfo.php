@@ -85,11 +85,11 @@ class Printer_CartridgeInfo extends CommonDBChild
             if (str_contains($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);
                 $value = sprintf(
-                    _x('%1$s remaining page', '%1$s remaining pages', $pages),
+                    _sx('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
             } else if ($value === 'OK') {
-                $value = __('OK');
+                $value = __s('OK');
             }
 
             if (is_numeric($value)) {

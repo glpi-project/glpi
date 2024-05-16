@@ -166,8 +166,6 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
 - `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
 - `Config::validatePassword()`
-- `Consumable::showAddForm()`
-- `Consumable::showForConsumableItem()`
 - `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
