@@ -49,7 +49,7 @@ final class FormTagsManager
     public function insertTagsContent(string $content): string
     {
         return preg_replace_callback(
-            '/<span[\S\s]*?data-form-tag="true"[\S\s]*?>[\S\s]*?<\/span>/m',
+            '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
             function ($match) {
                 $tag = $match[0];
 
