@@ -159,6 +159,11 @@ class GlpiFormQuestionTypeSelectable {
             $(input).parent().next().find('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
         }
 
+        // Update the uuid with a new random value (random number like mt_rand)
+        const uuid = getUUID();
+        $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
+        $(input).parent().next().find('input[type="text"]').attr('name', 'options[' + uuid + ']');
+
         /**
          * Compute the state to update the input names
          * Required to link radio inputs between them in the same question
@@ -244,11 +249,6 @@ class GlpiFormQuestionTypeSelectable {
 
         if (isLast) {
             this.#addOption(input);
-
-            // Update the uuid with a new random value (random number like mt_rand)
-            const uuid = getUUID();
-            $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
-            $(input).parent().next().find('input[type="text"]').attr('name', 'options[' + uuid + ']');
 
             // Move the current option in the drag and drop container
             $(input).parent().appendTo($(input).parent().siblings().filter('div[data-glpi-form-editor-selectable-question-options]').last());
