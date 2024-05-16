@@ -67,7 +67,7 @@ function header_html($etape)
     header("Content-Type: text/html; charset=UTF-8");
 
     echo "<!DOCTYPE html'>";
-    echo "<html lang='fr'>";
+    echo "<html lang='en_GB'>";
     echo "<head>";
     echo "<meta charset='utf-8'>";
     echo "<title>Setup GLPI</title>";
