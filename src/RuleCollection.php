@@ -545,6 +545,7 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'criteria' => 'raw_html',
                 'actions' => 'raw_html',
+                'entity' => 'raw_html',
                 'is_active' => 'raw_html',
                 'sort' => 'raw_html'
             ],

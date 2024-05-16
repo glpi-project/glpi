@@ -1386,7 +1386,7 @@ JS
     public function getActionName($ID)
     {
         $action = $this->getAction($ID);
-        return $action['name'] ?? "&nbsp;";
+        return $action['name'] ?? '';
     }
 
     /**
@@ -1886,7 +1886,9 @@ JS
             $data['criteria'] = '';
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
-                $data['criteria'] .= "<span class='glpi-badge mb-1'>" . implode('<i class="ti ti-caret-right-filled mx-1"></i>', $to_display) . '</span><br />';
+                $data['criteria'] .= '<span class="glpi-badge mb-1">'
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . '</span><br />';
             }
         }
         if (
@@ -1896,21 +1898,23 @@ JS
             $data['actions'] = '';
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
-                $data['actions'] .= "<span class='glpi-badge mb-1'>" . implode('<i class="ti ti-caret-right-filled mx-1"></i>', $to_display) . '</span><br />';
+                $data['actions'] .= '<span class="glpi-badge mb-1">'
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . '</span><br />';
             }
         }
 
         $active = $this->fields['is_active'];
         $data['is_active'] = sprintf(
-            "<i class='ti ti-circle-filled %s' title='%s'></i>",
+            '<i class="ti ti-circle-filled %s" title="%s"></i>',
             $active ? 'text-success' : 'text-danger',
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
 
         if ($display_entity) {
-            $entname = Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']);
+            $entname = htmlspecialchars(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {
-                $entname = sprintf(__s('%1$s %2$s'), htmlspecialchars($entname), "<span class='fw-bold'>(" . __('R') . ")</span>");
+                $entname = sprintf(__s('%1$s %2$s'), $entname, "<span class='fw-bold'>(" . __s('R') . ")</span>");
             }
 
             $data['entity'] = $entname;
@@ -2515,7 +2519,7 @@ JS
 
                    // $type == assign
                     $name = Dropdown::getDropdownName($action["table"], $value);
-                    return (($name === '&nbsp;') ? NOT_AVAILABLE : $name);
+                    return $name === '' ? NOT_AVAILABLE : $name;
 
                 case "dropdown_status":
                     if ($this instanceof RuleCommonITILObject) {
@@ -2532,7 +2536,7 @@ JS
 
                 case "dropdown_groups_validate":
                     $name = Dropdown::getDropdownName('glpi_groups', $value);
-                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
+                    return $name == '' ? NOT_AVAILABLE : $name;
 
                 case "dropdown_validation_percent":
                     return Dropdown::getValueWithUnit($value, '%');
