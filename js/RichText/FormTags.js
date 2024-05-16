@@ -81,26 +81,17 @@ GLPI.RichText.FormTags = class
         const data = await $.get(url);
 
         return data.map((tag) => ({
+            // The `tag` variable is a json encoded instance of Glpi\Form\Tag\Tag
             type: 'autocompleteitem',
-            value: JSON.stringify(tag),
+            value: tag.html,
             text: tag.label,
         }));
     }
 
     #insertTag(autocompleteApi, range, value) {
         this.#editor.selection.setRng(range);
-        this.#editor.insertContent(this.#generateTagHtml(value));
+        this.#editor.insertContent(value + "&nbsp;");
 
         autocompleteApi.hide();
-    }
-
-    #generateTagHtml(value) {
-        const tag = JSON.parse(value);
-        return `
-            <span
-                contenteditable="false"
-                data-form-tag="true"
-            >${tag.label}</span>&nbsp;
-        `;
     }
 };

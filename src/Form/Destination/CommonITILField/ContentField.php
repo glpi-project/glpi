@@ -37,6 +37,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Destination\ConfigFieldInterface;
+use Glpi\Form\Tag\FormTagsManager;
 use Override;
 
 class ContentField implements ConfigFieldInterface
@@ -91,7 +92,8 @@ TWIG;
             return $input;
         }
 
-        $input['content'] = $config['value'];
+        $tag_manager = new FormTagsManager();
+        $input['content'] = $tag_manager->insertTagsContent($config['value']);
 
         return $input;
     }

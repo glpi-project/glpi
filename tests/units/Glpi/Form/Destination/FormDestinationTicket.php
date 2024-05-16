@@ -36,7 +36,9 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\Tag;
 use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -61,6 +63,10 @@ class FormDestinationTicket extends AbstractFormDestinationType
         $answers_handler = AnswersHandler::getInstance();
 
         // Create a form with a single FormDestinationTicket destination
+        $tag = new Tag(
+            label: "Exemple tag 3",
+            value: "exemple-tag-3"
+        );
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
                 ->addQuestion("Name", QuestionTypeShortText::class)
@@ -69,7 +75,7 @@ class FormDestinationTicket extends AbstractFormDestinationType
                     'test',
                     [
                         'title'   => ['value' => 'Ticket title'],
-                        'content' => ['value' => 'Ticket content'],
+                        'content' => ['value' => "Ticket content: $tag->html"],
                     ]
                 )
         );
@@ -87,7 +93,9 @@ class FormDestinationTicket extends AbstractFormDestinationType
 
         // Check fields
         $ticket = current($tickets);
-        $this->string($ticket['content'])->isEqualTo('Ticket content');
+        $this->string($ticket['content'])
+            ->isEqualTo('Ticket content: exemple-tag-3')
+        ;
 
         // Make sure link with the form answers was created too
         $ticket = array_pop($tickets);
