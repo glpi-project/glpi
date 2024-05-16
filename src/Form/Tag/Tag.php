@@ -57,10 +57,10 @@ final readonly class Tag
             "data-form-tag-value" => $value,
         ];
         $properties = implode(" ", array_map(
-            fn($key, $value) => "$key=\"$value\"",
+            fn($key, $value) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)),
             array_keys($properties),
             array_values($properties),
         ));
-        $this->html = "<span $properties>$label</span>";
+        $this->html = sprintf('<span %s>%s</span>', $properties, htmlspecialchars($label));
     }
 }
