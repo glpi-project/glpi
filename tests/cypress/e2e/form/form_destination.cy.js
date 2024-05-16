@@ -54,7 +54,8 @@ describe('Form destination', () => {
         cy.findByRole("textbox", {name: "Form destination name"}).should('exist').and('have.value', 'Ticket');
 
         // Update the form destination name
-        cy.findByRole("textbox", {name: "Form destination name"}).clear().type('Updated ticket destination name');
+        cy.findByRole("textbox", {name: "Form destination name"}).clear();
+        cy.findByRole("textbox", {name: "Form destination name"}).type('Updated ticket destination name');
 
         // Save form
         cy.findByRole("button", {name: "Update item"}).click();
