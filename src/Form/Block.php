@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-.form-renderer {
-    /* Keep a bit of space at the end */
-    margin-bottom: 200px;
+namespace Glpi\Form;
 
-    /* Remove margin from tinymce generated content last child */
-    .form-description, .section-description, .block-description {
-        p:last-child {
-            margin-bottom: 0 !important;
-        }
-    }
+interface Block
+{
+    public function displayBlockForEditor(): void;
 }

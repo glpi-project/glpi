@@ -41,6 +41,7 @@ use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
@@ -112,6 +113,14 @@ class Form extends DbTestCase
             if ($i % 10 === 0) {
                 $form_builder->addSection("Section " . ($i / 10));
             }
+
+            // Add a comment every 5 questions
+            if ($i % 5 === 0) {
+                $form_builder->addComment(
+                    name: "Comment $i",
+                    description: "Description of comment $i",
+                );
+            }
         }
 
         $form = $this->createForm($form_builder);
@@ -136,9 +145,11 @@ class Form extends DbTestCase
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addComment('Comment 1', 'Comment 1 description')
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addSection('Section 2')
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
+                ->addComment('Comment 2', 'Comment 2 description')
         );
         $this
             ->integer(count($form->getSections()))
@@ -148,10 +159,17 @@ class Form extends DbTestCase
             ->integer(count($form->getQuestions()))
             ->isEqualTo(3)
         ;
+        $this
+            ->integer(count($form->getComments()))
+            ->isEqualTo(2)
+        ;
 
         foreach ($form->getSections() as $section) {
             foreach ($section->getQuestions() as $question) {
                 $this->deleteItem(Question::class, $question->getID());
+            }
+            foreach ($section->getComments() as $comment) {
+                $this->deleteItem(Comment::class, $comment->getID());
             }
             $this->deleteItem(Section::class, $section->getID());
         }
@@ -166,8 +184,12 @@ class Form extends DbTestCase
             ->integer(count($form->getQuestions()))
             ->isEqualTo(3)
         ;
+        $this
+            ->integer(count($form->getComments()))
+            ->isEqualTo(2)
+        ;
 
-        // Relaod form
+        // Reload form
         $form->getFromDB($form->getID());
         $this
             ->integer(count($form->getSections()))
@@ -175,6 +197,10 @@ class Form extends DbTestCase
         ;
         $this
             ->integer(count($form->getQuestions()))
+            ->isEqualTo(0)
+        ;
+        $this
+            ->integer(count($form->getComments()))
             ->isEqualTo(0)
         ;
     }
@@ -249,9 +275,23 @@ class Form extends DbTestCase
                     'type'                      => QuestionTypeShortText::class,
                 ],
             ],
+            '_comments' => [
+                [
+                    'id'                        => uniqid(),
+                    '_use_uuid'                 => true,
+                    'forms_sections_id'          => $section->getID(),
+                    '_use_uuid_for_sections_id' => false,
+                    'name'                      => 'Comment name',
+                    'description'               => 'Comment description',
+                ],
+            ],
         ]);
         $this
             ->integer(count($form->getQuestions()))
+            ->isEqualTo(1)
+        ;
+        $this
+            ->integer(count($form->getComments()))
             ->isEqualTo(1)
         ;
 
@@ -324,9 +364,10 @@ class Form extends DbTestCase
         $form = $this->createForm(new FormBuilder());
 
         // Submit one basic section
-        yield [
+        yield '1' => [
             'input' => [
                 'id'                        => $form->getID(),
+                '_delete_missing_comments'  => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
                 '_sections'                 => [
@@ -347,19 +388,31 @@ class Form extends DbTestCase
                         'type'                      => QuestionTypeShortText::class,
                     ],
                 ],
+                '_comments' => [
+                    [
+                        'id'                        => "comment_1",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "section_1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Comment 1',
+                        'description'               => 'Comment 1 description',
+                    ],
+                ],
             ],
             'expected_sections_content' => [
                 [
                     'name'    => 'Section 1',
                     'q_names' => ['Question 1'],
+                    'c_names' => ['Comment 1'],
                 ]
             ],
         ];
 
         // Submit multiple ordered sections while deleting the previous section
-        yield [
+        yield '2' => [
             'input' => [
                 'id'                        => $form->getID(),
+                '_delete_missing_comments'  => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
                 '_sections'                 => [
@@ -383,16 +436,18 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ]
             ],
         ];
 
         // Ensure no sections are deleted when "_delete_missing_questions" is not set
-        yield [
+        yield '3' => [
             'input' => [
                 'id'                        => $form->getID(),
                 '_sections'                 => [
@@ -409,20 +464,23 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 4',
                     'q_names' => [],
+                    'c_names' => [],
                 ]
             ],
         ];
 
         // Ensure an existing section can be updated
-        yield [
+        yield '4' => [
             'input' => [
                 'id'        => $form->getID(),
                 '_sections' => [
@@ -439,20 +497,23 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 4 (updated)',
                     'q_names' => [],
+                    'c_names' => [],
                 ]
             ],
         ];
 
         // Update using ID instead of UUID
-        yield [
+        yield '5' => [
             'input' => [
                 'id'        => $form->getID(),
                 '_sections' => [
@@ -469,22 +530,26 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 4 (updated two times)',
                     'q_names' => [],
+                    'c_names' => [],
                 ]
             ],
         ];
 
         // Add questions
-        yield [
+        yield '6' => [
             'input' => [
                 'id'                        => $form->getID(),
+                '_delete_missing_comments'  => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
                 '_sections'                 => [
@@ -553,20 +618,23 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => ['Question 2', 'Question 4', 'Question 3'],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 4 (updated two times)',
                     'q_names' => ["Question 5"],
+                    'c_names' => [],
                 ]
             ],
         ];
 
         // Update question using real id
-        yield [
+        yield '7' => [
             'input' => [
                 'id'         => $form->getID(),
                 '_questions' => [
@@ -585,22 +653,148 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 3',
                     'q_names' => ['Question 2', 'Question 4', 'Question 3'],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 4 (updated two times)',
                     'q_names' => ["Question 5 (updated)"],
+                    'c_names' => [],
+                ]
+            ],
+        ];
+
+        // Add comments
+        yield '8' => [
+            'input' => [
+                'id'                        => $form->getID(),
+                '_delete_missing_comments'  => true,
+                '_delete_missing_questions' => true,
+                '_delete_missing_sections'  => true,
+                '_sections'                 => [
+                    [
+                        'id'             => 'section_2',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 2",
+                        'rank'           => 1
+                    ],
+                    [
+                        'id'             => 'section_3',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 3",
+                        'rank'           => 0
+                    ],
+                    [
+                        'id'             => $this->getSectionId($form, 'Section 4 (updated two times)'),
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => false,
+                        'name'           => "Section 4 (updated two times)",
+                        'rank'           => 2
+                    ],
+                ],
+                '_comments' => [
+                    [
+                        'id'                        => "comment_2",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "section_3",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Comment 2',
+                        'description'               => 'Comment 2 description',
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "comment_3",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "section_3",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Comment 3',
+                        'description'               => 'Comment 3 description',
+                        'rank'                      => 2,
+                    ],
+                    [
+                        'id'                        => "comment_4",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "section_3",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Comment 4',
+                        'description'               => 'Comment 4 description',
+                        'rank'                      => 1,
+                    ],
+                    [
+                        'id'                        => "comment_5",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => $this->getSectionId($form, 'Section 4 (updated two times)'),
+                        '_use_uuid_for_sections_id' => false,
+                        'name'                      => 'Comment 5',
+                        'description'               => 'Comment 5 description',
+                        'rank'                      => 0,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 3',
+                    'q_names' => [],
+                    'c_names' => ['Comment 2', 'Comment 4', 'Comment 3'],
+                ],
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => [],
+                    'c_names' => [],
+                ],
+                [
+                    'name'    => 'Section 4 (updated two times)',
+                    'q_names' => [],
+                    'c_names' => ["Comment 5"],
+                ]
+            ],
+        ];
+
+        // Update comments using real id
+        yield '9' => [
+            'input' => [
+                'id'         => $form->getID(),
+                '_comments' => [
+                    [
+                        'id'                        => $this->getCommentId($form, 'Comment 5'),
+                        '_use_uuid'                 => false,
+                        'forms_sections_id'         => $this->getSectionId($form, 'Section 4 (updated two times)'),
+                        '_use_uuid_for_sections_id' => false,
+                        'name'                      => 'Comment 5 (updated)',
+                        'rank'                      => 0,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 3',
+                    'q_names' => [],
+                    'c_names' => ['Comment 2', 'Comment 4', 'Comment 3'],
+                ],
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => [],
+                    'c_names' => [],
+                ],
+                [
+                    'name'    => 'Section 4 (updated two times)',
+                    'q_names' => [],
+                    'c_names' => ["Comment 5 (updated)"],
                 ]
             ],
         ];
 
         // Clear all data
-        yield [
+        yield '10' => [
             'input' => [
                 'id'         => $form->getID(),
+                '_delete_missing_comments' => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
             ],
@@ -608,9 +802,10 @@ class Form extends DbTestCase
         ];
 
         // Create a form with two sections
-        yield [
+        yield '11' => [
             'input' => [
                 'id'         => $form->getID(),
+                '_delete_missing_comments' => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
                 '_questions' => [
@@ -663,18 +858,21 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 1',
                     'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                    'c_names' => [],
                 ],
                 [
                     'name'    => 'Section 2',
                     'q_names' => [],
+                    'c_names' => [],
                 ],
             ],
         ];
 
         // Delete first section and move its questions to the second section.
-        yield [
+        yield '12' => [
             'input' => [
                 'id'         => $form->getID(),
+                '_delete_missing_comments' => true,
                 '_delete_missing_questions' => true,
                 '_delete_missing_sections'  => true,
                 '_questions' => [
@@ -720,6 +918,7 @@ class Form extends DbTestCase
                 [
                     'name'    => 'Section 2',
                     'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                    'c_names' => [],
                 ],
             ],
         ];
@@ -774,6 +973,20 @@ class Form extends DbTestCase
                 ->array($questions_names)
                 ->isEqualTo($expected_question_names)
             ;
+
+            $comments = $section->getComments();
+            $comments = array_values($section->getComments()); // Strip keys
+
+            $comments_names = array_map(
+                fn($comment) => $comment->getName(),
+                $comments
+            );
+            $expected_comment_names = $expected_sections_content[$i]['c_names'];
+
+            $this
+                ->array($comments_names)
+                ->isEqualTo($expected_comment_names)
+            ;
         }
     }
 
@@ -801,6 +1014,7 @@ class Form extends DbTestCase
                 ->addSection('Section 2')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addSection('Section 3')
+                ->addComment('Comment 1', 'Comment 1 description')
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addSection('Section 4')
@@ -828,6 +1042,71 @@ class Form extends DbTestCase
         $this
             ->array($names)
             ->isEqualTo($expected_question_names)
+        ;
+    }
+
+    /**
+     * Data provider for the testGetComments method
+     *
+     * @return iterable
+     */
+    protected function testGetCommentsProvider(): iterable
+    {
+        $form_1 = $this->createForm(new FormBuilder());
+        yield [$form_1, [], []];
+
+        $form_2 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addSection('Section 3')
+        );
+        yield [$form_2, [], []];
+
+        $form_3 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addComment('Comment 1', 'Comment 1 description')
+                ->addSection('Section 3')
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addComment('Comment 2', 'Comment 2 description')
+                ->addSection('Section 4')
+                ->addComment('Comment 3', 'Comment 3 description')
+                ->addComment('Comment 4', 'Comment 4 description')
+        );
+        yield [$form_3, ["Comment 1", "Comment 2", "Comment 3", "Comment 4"], ["Comment 1 description", "Comment 2 description", "Comment 3 description", "Comment 4 description"]];
+    }
+
+    /**
+     * Test the getComments method
+     *
+     * @dataProvider testGetCommentsProvider
+     *
+     * @param \Glpi\Form\Form $form
+     * @param array           $expected_comment_names
+     * @param array           $expected_comment_descriptions
+     *
+     * @return void
+     */
+    public function testGetComments(
+        \Glpi\Form\Form $form,
+        array $expected_comment_names,
+        array $expected_comment_descriptions
+    ): void {
+        $comments = $form->getComments();
+        $names = array_map(fn($comment) => $comment->getName(), $comments);
+        $names = array_values($names); // Strip keys
+        $this
+            ->array($names)
+            ->isEqualTo($expected_comment_names)
+        ;
+        $descriptions = array_map(fn($comment) => $comment->fields['description'], $comments);
+        $descriptions = array_values($descriptions); // Strip keys
+        $this
+            ->array($descriptions)
+            ->isEqualTo($expected_comment_descriptions)
         ;
     }
 
@@ -860,6 +1139,19 @@ class Form extends DbTestCase
         );
         yield [$form_3, 7]; // Created + 3 sections + 3 questions
 
+        $form_4 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addComment('Comment 1', 'Comment 1 description')
+                ->addSection('Section 3')
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addComment('Comment 2', 'Comment 2 description')
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
+        );
+        yield [$form_4, 9]; // Created + 3 sections + 3 questions + 2 comments
+
         // Update two fields from a question
         $question_id = $this->getQuestionId($form_3, 'Question 1');
         $this->updateItem(Question::class, $question_id, [
@@ -871,6 +1163,18 @@ class Form extends DbTestCase
         // Delete question
         $this->deleteItem(Question::class, $question_id);
         yield [$form_3, 10]; // +1 update
+
+        // Update comments
+        $comment_id = $this->getCommentId($form_4, 'Comment 1');
+        $this->updateItem(Comment::class, $comment_id, [
+            'name'       => 'Comment 1 (updated)',
+            'description' => 'Comment 1 description (updated)',
+        ]);
+        yield [$form_4, 11]; // +2 update
+
+        // Delete comment
+        $this->deleteItem(Comment::class, $comment_id);
+        yield [$form_4, 12]; // +1 update
     }
 
     /**
@@ -926,7 +1230,9 @@ class Form extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addComment('Comment 1', 'Comment 1 description')
                 ->addSection('Section 2')
+                ->addComment('Comment 2', 'Comment 2 description')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
@@ -940,6 +1246,7 @@ class Form extends DbTestCase
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addComment('Comment 1', 'Comment 1 description')
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
@@ -956,6 +1263,10 @@ class Form extends DbTestCase
         $this
             ->integer(countElementsInTable(Section::getTable()))
             ->isEqualTo(3 + $sections) // 2 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Comment::getTable()))
+            ->isEqualTo(3) // 2 (to delete) + 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))
@@ -985,6 +1296,10 @@ class Form extends DbTestCase
         $this
             ->integer(countElementsInTable(Section::getTable()))
             ->isEqualTo(1 + $sections) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Comment::getTable()))
+            ->isEqualTo(1) // 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))

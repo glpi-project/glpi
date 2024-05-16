@@ -36,6 +36,7 @@ describe ('Form editor', () => {
         cy.login();
         cy.changeProfile('Super-Admin', true);
     });
+
     it('can create a form and fill its main details', () => {
         // Go to form creation page
         cy.visit('/front/form/form.php');

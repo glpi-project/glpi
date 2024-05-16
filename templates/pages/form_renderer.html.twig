@@ -83,30 +83,33 @@
                 </div>
             </div>
 
-            {% for question in section.getQuestions() %}
-                {# Compute question type  #}
-                {% set question_type = question.getQuestionType() %}
+            {% for form_block in section.getBlocks() %}
+                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                    {% set question_type = form_block.getQuestionType() %}
+                {% endif %}
 
                 {# Skip unknown types (may be a disabled plugin) #}
-                {% if question_type is not null %}
+                {% if form_block is not instanceof('Glpi\\Form\\Question') or question_type is not null %}
                     <div
                         class="card mb-3 {{ is_first_section ? "" : "d-none" }}"
                         data-glpi-form-renderer-parent-section="{{ section_index }}"
                     >
                         <div class="card-body">
                             <h3>
-                                {{ question.fields.name }}
-                                {% if question.fields.is_mandatory %}
+                                {{ form_block.fields.name }}
+                                {% if form_block.fields.is_mandatory %}
                                     <span class="text-danger">*</span>
                                 {% endif %}
                             </h3>
 
-                            <div class="mb-2">
-                                {{ question_type.renderEndUserTemplate(question)|raw }}
-                            </div>
+                            {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                <div class="mb-2">
+                                    {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                </div>
+                            {% endif %}
 
-                            <div class="text-muted question-description">
-                                {{ question.fields.description|safe_html }}
+                            <div class="text-muted block-description">
+                                {{ form_block.fields.description|safe_html }}
                             </div>
                         </div>
                     </div>

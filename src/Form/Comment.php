@@ -37,16 +37,14 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\ContentTemplates\TemplateManager;
 use Log;
 use Override;
-use ReflectionClass;
 
 /**
- * Question of a given helpdesk form's section
+ * Comment of a given helpdesk form's section
  */
-final class Question extends CommonDBChild
+final class Comment extends CommonDBChild
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -56,7 +54,7 @@ final class Question extends CommonDBChild
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return _n('Question', 'Questions', $nb);
+        return _n('Comment', 'Comments', $nb);
     }
 
     #[Override]
@@ -82,47 +80,12 @@ final class Question extends CommonDBChild
 
     public function displayBlockForEditor(): void
     {
-        TemplateRenderer::getInstance()->display('pages/admin/form/form_question.html.twig', [
-            'form'                   => $this->getForm(),
-            'question'               => $this,
-            'question_type'          => $this->getQuestionType(),
-            'question_types_manager' => QuestionTypesManager::getInstance(),
-            'section'                => $this->getItem(),
-            'can_update'             => $this->getForm()->canUpdate(),
+        TemplateRenderer::getInstance()->display('pages/admin/form/form_comment.html.twig', [
+            'form'       => $this->getForm(),
+            'comment'    => $this,
+            'section'    => $this->getItem(),
+            'can_update' => $this->getForm()->canUpdate(),
         ]);
-    }
-
-    /**
-     * Get type object for the current object.
-     *
-     * @return QuestionTypeInterface|null
-     */
-    public function getQuestionType(): ?QuestionTypeInterface
-    {
-        $type = $this->fields['type'] ?? "";
-
-        if (
-            !is_a($type, QuestionTypeInterface::class, true)
-            || (new ReflectionClass($type))->isAbstract()
-        ) {
-            return null;
-        }
-
-        return new $type();
-    }
-
-    /**
-     * Get the extra datas for the question.
-     *
-     * @return ?array
-     */
-    public function getExtraDatas(): ?array
-    {
-        if (!isset($this->fields['extra_data'])) {
-            return null;
-        }
-
-        return json_decode($this->fields['extra_data'] ?? "[]", true);
     }
 
     /**
@@ -133,68 +96,6 @@ final class Question extends CommonDBChild
     public function getForm(): Form
     {
         return $this->getItem()->getItem();
-    }
-
-    public function getEndUserInputName(): string
-    {
-        return (new EndUserInputNameProvider())->getEndUserInputName($this);
-    }
-
-    public function prepareInputForAdd($input)
-    {
-        $this->prepareInput($input);
-        return parent::prepareInputForUpdate($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        $this->prepareInput($input);
-        return parent::prepareInputForUpdate($input);
-    }
-
-    private function prepareInput(&$input)
-    {
-        $question_type = $this->getQuestionType();
-
-        // The question type can be null when the question is created
-        // We need to instantiate the question type to format and validate attributes
-        if (
-            $question_type === null
-            && isset($input['type'])
-            && class_exists($input['type'])
-        ) {
-            $question_type = new $input['type']();
-        }
-
-        if ($question_type) {
-            if (isset($input['default_value'])) {
-                $input['default_value'] = $question_type->formatDefaultValueForDB($input['default_value']);
-            }
-
-            $extra_data = $input['extra_data'] ?? [];
-            if (is_string($extra_data)) {
-                if (empty($extra_data)) {
-                    $extra_data = [];
-                } else {
-                    // Decode extra data as JSON
-                    $extra_data = json_decode($extra_data, true);
-                }
-            }
-
-            $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
-
-            if (!$is_extra_data_valid) {
-                throw new \InvalidArgumentException("Invalid extra data for question");
-            }
-
-            // Prepare extra data
-            $extra_data = $question_type->prepareExtraData($extra_data);
-
-            // Save extra data as JSON
-            if (!empty($extra_data)) {
-                $input['extra_data'] = json_encode($extra_data);
-            }
-        }
     }
 
     /**

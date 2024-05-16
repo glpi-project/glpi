@@ -204,17 +204,9 @@
 
     </div>
 
-    <div data-glpi-form-editor-section-questions class="mt-3">
-        {% for question in section.getQuestions() %}
-            {# Render admin template for the given question type #}
-            {{ include('pages/admin/form/form_question.html.twig', {
-                'form'                  : form,
-                'question_types_manager': question_types_manager,
-                'question_type'         : question.getQuestionType(),
-                'question'              : question,
-                'section'               : section,
-                'can_update'            : can_update,
-            }, with_context = false) }}
+    <div data-glpi-form-editor-section-blocks class="mt-3">
+        {% for form_block in section.getBlocks() %}
+            {{ form_block.displayBlockForEditor() }}
         {% endfor %}
     </div>
 

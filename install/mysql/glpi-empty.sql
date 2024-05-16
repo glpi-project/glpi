@@ -9517,6 +9517,18 @@ CREATE TABLE `glpi_forms_questions` (
     KEY `forms_sections_id` (`forms_sections_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_comments`;
+CREATE TABLE `glpi_forms_comments` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `description` longtext,
+    `rank` int NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `forms_sections_id` (`forms_sections_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_forms_answerssets`;
 CREATE TABLE `glpi_forms_answerssets` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
