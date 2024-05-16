@@ -308,6 +308,8 @@ The present file will list all changes made to the project; according to the
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
 - `Rule::showMinimalActionForm()`
+- `Rule::showMinimalCriteriaForm()`
+- `Rule::showMinimalForm()`
 - `RuleCollection::showTestResults()`
 - `RuleRightCollection::displayActionByName()`
 - `RuleRightCollection::showTestResults()`

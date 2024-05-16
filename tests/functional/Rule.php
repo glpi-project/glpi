@@ -300,7 +300,7 @@ class Rule extends DbTestCase
     {
         return [
             [\Location::getTypeName(1)               , 'locations_id'],
-            ["&nbsp;"                     , 'location'],
+            [""                     , 'location'],
             [_n('Type', 'Types', 1)                   , 'type'],
             [_n('Category', 'Categories', 1)               , 'itilcategories_id'],
             [_n('Requester', 'Requesters', 1)              , '_users_id_requester'],
