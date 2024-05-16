@@ -622,10 +622,10 @@ HTML;
                     $(() => {
                         $('button[name="reset_rules"]').on('click', () => {
                             glpi_confirm({
-                                title: '{{ reset_label }}',
-                                message: '{{ reset_warning }}',
+                                title: '{{ reset_label|e('js') }}',
+                                message: '{{ reset_warning|e('js') }}',
                                 confirm_callback: () => {
-                                    window.location.href = '{{ rule_class|itemtype_search_path }}?reinit=true&subtype={{ rule_class }}';
+                                    window.location.href = '{{ rule_class|itemtype_search_path|e('js') }}?reinit=true&subtype={{ rule_class|e('js') }}';
                                 }
                             });
                         });
