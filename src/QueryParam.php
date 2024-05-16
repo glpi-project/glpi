@@ -38,7 +38,7 @@
  */
 class QueryParam extends Glpi\DBAL\QueryParam
 {
-    public function __construct($expression)
+    public function __construct($expression = '?')
     {
         Toolbox::deprecated();
         parent::__construct($expression);
