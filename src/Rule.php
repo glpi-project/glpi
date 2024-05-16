@@ -1861,7 +1861,7 @@ JS
      * @return array
      * @see RuleCollection::showListRules()
      */
-    public function getDataForList(bool $display_criteria, bool $display_actions, bool $display_entity, bool $can_edit): array
+    final public function getDataForList(bool $display_criteria, bool $display_actions, bool $display_entity, bool $can_edit): array
     {
         // name, description, condition, criteria, actions, is_active, entities
         $data = [];
