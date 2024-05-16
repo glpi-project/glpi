@@ -47,13 +47,13 @@ class Consumable extends CommonDBChild
 {
     use Glpi\Features\Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     protected static $forward_entity_to = ['Infocom'];
     public $no_form_page                = true;
 
     public static $rightname                   = 'consumable';
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype             = 'ConsumableItem';
     public static $items_id             = 'consumableitems_id';
 
@@ -66,7 +66,6 @@ class Consumable extends CommonDBChild
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         $forbidden[] = 'ObjectLock:unlock';
@@ -82,22 +81,18 @@ class Consumable extends CommonDBChild
         return $forbidden;
     }
 
-
     public static function getNameField()
     {
         return 'id';
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Consumable', 'Consumables', $nb);
     }
 
-
     public function prepareInputForAdd($input)
     {
-
         $item = new ConsumableItem();
         if ($item->getFromDB($input["consumableitems_id"])) {
             return ["consumableitems_id" => $item->fields["id"],
@@ -110,8 +105,7 @@ class Consumable extends CommonDBChild
 
     public function post_addItem()
     {
-
-       // inherit infocom
+        // inherit infocom
         $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields[ConsumableItem::getForeignKeyField()]);
         if (count($infocoms)) {
             $infocom = reset($infocoms);
@@ -123,7 +117,6 @@ class Consumable extends CommonDBChild
 
         parent::post_addItem();
     }
-
 
     /**
      * send back to stock
@@ -139,7 +132,7 @@ class Consumable extends CommonDBChild
         global $DB;
 
         $result = $DB->update(
-            $this->getTable(),
+            static::getTable(),
             [
                 'date_out' => 'NULL'
             ],
@@ -153,17 +146,14 @@ class Consumable extends CommonDBChild
         return false;
     }
 
-
     public function getPreAdditionalInfosForName()
     {
-
         $ci = new ConsumableItem();
         if ($ci->getFromDB($this->fields['consumableitems_id'])) {
             return $ci->getName();
         }
         return '';
     }
-
 
     /**
      * UnLink a consumable linked to a printer
@@ -186,7 +176,7 @@ class Consumable extends CommonDBChild
             && ($items_id > 0)
         ) {
             $result = $DB->update(
-                $this->getTable(),
+                static::getTable(),
                 [
                     'date_out'  => date('Y-m-d'),
                     'itemtype'  => $itemtype,
@@ -210,7 +200,7 @@ class Consumable extends CommonDBChild
         CommonDBTM $checkitem = null
     ) {
         // Special actions only for self
-        if ($itemtype != self::getType()) {
+        if ($itemtype !== static::class) {
             return;
         }
 
@@ -257,7 +247,6 @@ class Consumable extends CommonDBChild
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -269,13 +258,13 @@ class Consumable extends CommonDBChild
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE)) {
                         if ($item->backToStock(["id" => $id])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -289,13 +278,13 @@ class Consumable extends CommonDBChild
                     foreach ($ids as $key) {
                         if ($item->can($key, UPDATE)) {
                             if ($item->out($key, $input['give_itemtype'], $input["give_items_id"])) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                              $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
@@ -308,13 +297,12 @@ class Consumable extends CommonDBChild
                         sprintf(__('%s gives a consumable'), $_SESSION["glpiname"])
                     );
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
-
 
     /**
      * count how many consumable for the consumable item $tID
@@ -335,7 +323,6 @@ class Consumable extends CommonDBChild
         ])->current();
         return (int)$result['cpt'];
     }
-
 
     /**
      * count how many old consumable for the consumable item $tID
@@ -359,7 +346,6 @@ class Consumable extends CommonDBChild
         ])->current();
         return (int)$result['cpt'];
     }
-
 
     /**
      * count how many consumable unused for the consumable item $tID
@@ -444,11 +430,10 @@ class Consumable extends CommonDBChild
      **/
     public static function getCount($tID, $alarm_threshold, $nohtml = false)
     {
-
-       // Get total
+        // Get total
         $total = self::getTotalNumber($tID);
 
-        if ($total != 0) {
+        if ($total !== 0) {
             $unused = self::getUnusedNumber($tID);
             $old    = self::getOldNumber($tID);
 
@@ -461,18 +446,17 @@ class Consumable extends CommonDBChild
             if ($nohtml) {
                 $out = $tmptxt;
             } else {
-                $out = "<div $highlight>" . $tmptxt . "</div>";
+                $out = "<div $highlight>" . htmlspecialchars($tmptxt) . "</div>";
             }
         } else {
             if ($nohtml) {
                 $out = __('No consumable');
             } else {
-                $out = "<div class='tab_bg_1_2'><i>" . __('No consumable') . "</i></div>";
+                $out = "<div class='tab_bg_1_2'><i>" . __s('No consumable') . "</i></div>";
             }
         }
         return $out;
     }
-
 
     /**
      * Check if a Consumable is New (not used, in stock)
@@ -494,9 +478,8 @@ class Consumable extends CommonDBChild
                 'date_out'  => null
             ]
         ])->current();
-        return $result['cpt'] == 1;
+        return $result['cpt'] === 1;
     }
-
 
     /**
      * Check if a consumable is Old (used, not in stock)
@@ -518,9 +501,8 @@ class Consumable extends CommonDBChild
                 'NOT'   => ['date_out' => null]
             ]
         ])->current();
-        return $result['cpt'] == 1;
+        return $result['cpt'] === 1;
     }
-
 
     /**
      * Get the localized string for the status of a consumable
@@ -531,202 +513,12 @@ class Consumable extends CommonDBChild
      **/
     public static function getStatus($cID)
     {
-
         if (self::isNew($cID)) {
             return _nx('consumable', 'New', 'New', 1);
         } else if (self::isOld($cID)) {
             return _nx('consumable', 'Used', 'Used', 1);
         }
         return '';
-    }
-
-
-    /**
-     * Print out a link to add directly a new consumable from a consumable item.
-     *
-     * @param ConsumableItem $consitem
-     *
-     * @return void
-     **/
-    public static function showAddForm(ConsumableItem $consitem)
-    {
-        Toolbox::deprecated('Replaced by Consumable::displayConsumableList()');
-
-        $ID = $consitem->getField('id');
-
-        if (!$consitem->can($ID, UPDATE)) {
-            return;
-        }
-
-        if ($ID > 0) {
-            echo "<div class='firstbloc'>";
-            echo "<form method='post' action=\"" . static::getFormURL() . "\">";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><td class='tab_bg_2 center'>";
-            echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
-            Dropdown::showNumber('to_add', ['value' => 1,
-                'min'   => 1,
-                'max'   => 100
-            ]);
-            echo " <input type='submit' name='add_several' value=\"" . _sx('button', 'Add consumables') . "\"
-                class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-    }
-
-
-    /**
-     * Print out the consumables of a defined type
-     *
-     * @param ConsumableItem $consitem
-     * @param boolean        $show_old show old consumables or not. (default 0)
-     *
-     * @return void
-     **/
-    public static function showForConsumableItem(ConsumableItem $consitem, $show_old = false)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        Toolbox::deprecated("Replaced by Consumable::displayConsumableList()");
-
-        $tID = $consitem->getField('id');
-        if (!$consitem->can($tID, READ)) {
-            return;
-        }
-
-        if (isset($_GET["start"])) {
-            $start = $_GET["start"];
-        } else {
-            $start = 0;
-        }
-
-        $canedit = $consitem->can($tID, UPDATE);
-        $rand = mt_rand();
-        $where = ['consumableitems_id' => $tID];
-        $order = ['date_in', 'id'];
-        if (!$show_old) { // NEW
-            $where += ['date_out' => 'NULL'];
-        } else { //OLD
-            $where += ['NOT'   => ['date_out' => 'NULL']];
-            $order = ['date_out DESC'] + $order;
-        }
-
-        $number = countElementsInTable("glpi_consumables", $where);
-
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => $where,
-            'ORDER'  => $order,
-            'START'  => (int)$start,
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
-        ]);
-
-        echo "<div class='spaced'>";
-
-       // Display the pager
-        Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $number);
-
-        if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $actions = [];
-            if ($consitem->can($tID, PURGE)) {
-                $actions['delete'] = _x('button', 'Delete permanently');
-            }
-            $actions['Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate']
-            = __('Enable the financial and administrative information');
-
-            if ($show_old) {
-                $actions['Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock']
-                     = __('Back to stock');
-            } else {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'give'] = _x('button', 'Give');
-            }
-            $entparam = ['entities_id' => $consitem->getEntityID()];
-            if ($consitem->isRecursive()) {
-                $entparam = ['entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID())];
-            }
-            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                'specific_actions' => $actions,
-                'container'        => 'mass' . __CLASS__ . $rand,
-                'extraparams'      => $entparam
-            ];
-            Html::showMassiveActions($massiveactionparams);
-            echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
-        }
-
-        echo "<table class='tab_cadre_fixehov'>";
-        if (!$show_old) {
-            echo "<tr><th colspan=" . ($canedit ? '5' : '4') . ">";
-            echo self::getCount($tID, -1);
-            echo "</th></tr>";
-        } else { // Old
-            echo "<tr><th colspan='" . ($canedit ? '7' : '6') . "'>" . __('Used consumables') . "</th></tr>";
-        }
-
-        if ($number) {
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . __('ID') . "</th>";
-            $header_end .= "<th>" . _x('item', 'State') . "</th>";
-            $header_end .= "<th>" . __('Add date') . "</th>";
-            if ($show_old) {
-                $header_end .= "<th>" . __('Use date') . "</th>";
-                $header_end .= "<th>" . __('Given to') . "</th>";
-            }
-            $header_end .= "<th width='200px'>" . __('Financial and administrative information') . "</th>";
-            $header_end .= "</tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            foreach ($iterator as $data) {
-                $date_in  = Html::convDate($data["date_in"]);
-                $date_out = Html::convDate($data["date_out"]);
-
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
-                echo "<td class='center'>" . $data["id"] . "</td>";
-                echo "<td class='center'>" . self::getStatus($data["id"]) . "</td>";
-                echo "<td class='center'>" . $date_in . "</td>";
-                if ($show_old) {
-                    echo "<td class='center'>" . $date_out . "</td>";
-                    echo "<td class='center'>";
-                    if ($item = getItemForItemtype($data['itemtype'])) {
-                        if ($item->getFromDB($data['items_id'])) {
-                             echo $item->getLink();
-                        }
-                    }
-                    echo "</td>";
-                }
-                echo "<td class='center'>";
-                Infocom::showDisplayLink('Consumable', $data["id"]);
-                echo "</td>";
-                echo "</tr>";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-        }
-        echo "</table>";
-        if ($canedit && $number) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-
-        echo "</div>";
     }
 
     /**
@@ -776,7 +568,7 @@ class Consumable extends CommonDBChild
         $twig->display('pages/assets/consumable_list.html.twig', [
             'item'            => new self(),
             'parent'          => $parent,
-            'itemtype'        => self::getType(),
+            'itemtype'        => self::class,
             'can_edit'        => $parent->canUpdate() && $parent->canUpdateItem(),
             'criteria_unused' => $criteria_unused,
             'criteria_used'   => $criteria_used,
@@ -784,15 +576,16 @@ class Consumable extends CommonDBChild
             'count_used'      => $count_used,
         ]);
     }
+
     public static function showForUser(User $user)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $itemtype = $user->getType();
+        $itemtype = $user::class;
         $items_id = $user->getField('id');
 
-        $start       = intval($_GET["start"] ?? 0);
+        $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");
         $filters     = $_GET['filters'] ?? [];
@@ -884,7 +677,6 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-
     /**
      * Show the usage summary of consumables by user
      *
@@ -895,7 +687,7 @@ class Consumable extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!Consumable::canView()) {
+        if (!self::canView()) {
             return;
         }
 
@@ -920,8 +712,7 @@ class Consumable extends CommonDBChild
         $used = [];
 
         foreach ($iterator as $data) {
-            $used[$data['itemtype'] . '####' . $data['items_id']][$data["consumableitems_id"]]
-            = $data["count"];
+            $used[$data['itemtype'] . '####' . $data['items_id']][$data["consumableitems_id"]] = $data["count"];
         }
 
         $iterator = $DB->request([
@@ -950,6 +741,11 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumableitems',
             'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
         ]);
+        $columns = [
+            'give_to' => __('Give to')
+        ];
+        $formatters = [];
+        $entries = [];
         $types = [];
 
         foreach ($iterator as $data) {
@@ -957,92 +753,90 @@ class Consumable extends CommonDBChild
         }
 
         asort($types);
-        $total = [];
-        if (count($types) > 0) {
-           // Produce headline
-            echo "<div class='center'><table class='tab_cadrehov'><tr>";
-
-           // Type
-            echo "<th>" . __('Give to') . "</th>";
-
-            foreach ($types as $key => $type) {
-                echo "<th>$type</th>";
-                $total[$key] = 0;
-            }
-            echo "<th>" . __('Total') . "</th>";
-            echo "</tr>";
-
-           // new
-            echo "<tr class='tab_bg_2'><td class='b'>" . __('In stock') . "</td>";
-            $tot = 0;
-            foreach ($types as $id_type => $type) {
-                if (!isset($new[$id_type])) {
-                    $new[$id_type] = 0;
-                }
-                echo "<td class='center'>" . $new[$id_type] . "</td>";
-                $total[$id_type] += $new[$id_type];
-                $tot             += $new[$id_type];
-            }
-            echo "<td class='numeric'>" . $tot . "</td>";
-            echo "</tr>";
-
-            foreach ($used as $itemtype_items_id => $val) {
-                echo "<tr class='tab_bg_2'><td>";
-                list($itemtype,$items_id) = explode('####', $itemtype_items_id);
-                $item = new $itemtype();
-                if ($item->getFromDB($items_id)) {
-                   //TRANS: %1$s is a type name - %2$s is a name
-                    printf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getNameID());
-                }
-                echo "</td>";
-                $tot = 0;
-                foreach ($types as $id_type => $type) {
-                    if (!isset($val[$id_type])) {
-                        $val[$id_type] = 0;
-                    }
-                    echo "<td class='center'>" . $val[$id_type] . "</td>";
-                    $total[$id_type] += $val[$id_type];
-                    $tot             += $val[$id_type];
-                }
-                echo "<td class='numeric'>" . $tot . "</td>";
-                echo "</tr>";
-            }
-            echo "<tr class='tab_bg_1'><td class='b'>" . __('Total') . "</td>";
-            $tot = 0;
-            foreach ($types as $id_type => $type) {
-                $tot += $total[$id_type];
-                echo "<td class='numeric'>" . $total[$id_type] . "</td>";
-            }
-            echo "<td class='numeric'>" . $tot . "</td>";
-            echo "</tr>";
-            echo "</table></div>";
-        } else {
-            echo "<div class='center b'>" . __('No consumable found') . "</div>";
+        foreach ($types as $key => $type) {
+            $columns[$key] = $type;
+            $formatters[$key] = 'integer';
         }
-    }
+        $columns['total'] = __('Total');
+        $formatters['total'] = 'integer';
 
+        $new_entry = [
+            'give_to' => __('In stock'),
+            'total'   => 0
+        ];
+        foreach ($types as $id_type => $type) {
+            if (!isset($new[$id_type])) {
+                $new[$id_type] = 0;
+            }
+            $new_entry[$id_type] = $new[$id_type];
+            $new_entry['total'] += $new[$id_type];
+        }
+        $entries[] = $new_entry;
+
+        foreach ($used as $itemtype_items_id => $val) {
+            [$itemtype, $items_id] = explode('####', $itemtype_items_id);
+            $item = new $itemtype();
+            $item_name = '';
+            if ($item->getFromDB($items_id)) {
+                //TRANS: %1$s is a type name - %2$s is a name
+                $item_name = sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getNameID());
+            }
+            $entry = [
+                'give_to' => $item_name,
+                'total'   => 0
+            ];
+
+            foreach ($types as $id_type => $type) {
+                if (!isset($val[$id_type])) {
+                    $val[$id_type] = 0;
+                }
+                $entry[$id_type] = $val[$id_type];
+                $entry['total'] += $val[$id_type];
+            }
+            $entries[] = $entry;
+        }
+
+        $footer = [__('Total')];
+        foreach ($types as $id_type => $type) {
+            $footer[] = array_sum(array_column($entries, $id_type));
+        }
+        $footer[] = array_sum(array_column($entries, 'total'));
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => $formatters,
+            'entries' => $entries,
+            'footers' => [$footer],
+            'footer_class' => 'fw-bold',
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false
+        ]);
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if (!$withtemplate && Consumable::canView()) {
+        if (!$withtemplate && self::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'ConsumableItem':
+            switch ($item::class) {
+                case ConsumableItem::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  self::countForConsumableItem($item);
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-                case 'User':
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                case User::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForUser($item);
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
     }
-
 
     /**
      * @param ConsumableItem $item
@@ -1051,10 +845,8 @@ class Consumable extends CommonDBChild
      **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
-
         return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
     }
-
 
     /**
      * @param User $item
@@ -1063,7 +855,6 @@ class Consumable extends CommonDBChild
      **/
     public static function countForUser(User $item)
     {
-
         return countElementsInTable(['glpi_consumables'], [
             'glpi_consumables.itemtype' => 'User',
             'glpi_consumables.items_id' => $item->getField('id'),
@@ -1071,15 +862,13 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'ConsumableItem':
+        switch ($item::class) {
+            case ConsumableItem::class:
                 self::displayConsumableList($item);
                 break;
-            case 'User':
+            case User::class:
                 self::showForUser($item);
                 break;
         }
@@ -1090,7 +879,6 @@ class Consumable extends CommonDBChild
     {
         return (new ConsumableItem())->getRights($interface);
     }
-
 
     public static function getIcon()
     {
@@ -1109,7 +897,7 @@ class Consumable extends CommonDBChild
             'date_out'  => 'glpi_consumables.date_out',
         ];
         foreach ($like_filters as $filter_key => $filter_field) {
-            if (strlen(($filters[$filter_key] ?? ""))) {
+            if (($filters[$filter_key] ?? "") !== '') {
                 $sql_filters[$filter_field] = ['LIKE', '%' . $filters[$filter_key] . '%'];
             }
         }
@@ -1123,7 +911,7 @@ class Consumable extends CommonDBChild
 
         $options[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -1132,7 +920,7 @@ class Consumable extends CommonDBChild
 
         $options[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_out',
             'name'               => _n('State', 'States', 1),
             'massiveaction'      => false,
@@ -1142,7 +930,7 @@ class Consumable extends CommonDBChild
 
         $options[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_in',
             'name'               => __('Add date'),
             'massiveaction'      => false,
@@ -1151,7 +939,7 @@ class Consumable extends CommonDBChild
 
         $options[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_out',
             'name'               => __('Use date'),
             'massiveaction'      => false,
@@ -1160,7 +948,7 @@ class Consumable extends CommonDBChild
 
         $options[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'items_id',
             'name'               => __('Given to'),
             'massiveaction'      => false,
@@ -1172,7 +960,7 @@ class Consumable extends CommonDBChild
         $infocom_label = Infocom::getTypeName();
         $options[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => $infocom_label,
             'massiveaction'      => false,
@@ -1220,7 +1008,7 @@ class Consumable extends CommonDBChild
             case '7': // Infocom shortcut
                 $id = $values['id'];
                 ob_start();
-                Infocom::showDisplayLink(Consumable::getType(), $id);
+                Infocom::showDisplayLink(self::class, $id);
                 return ob_get_clean();
         }
 

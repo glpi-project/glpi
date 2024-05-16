@@ -294,7 +294,7 @@
                                 <td></td>
                             {% endif %}
                             {% for footer_col, footerval in footer %}
-                                <td>{{ footerval }}</td>
+                                <td>{{ footerval|nl2br }}</td>
                             {% endfor %}
                             {% if nofilter is not defined %}
                                 <td></td>

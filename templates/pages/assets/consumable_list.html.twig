@@ -64,40 +64,41 @@
                                 }
                             ) }}
 
-                        {% if can_edit %}
-                            <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
-                            {{ fields.numberField(
-                                'to_add',
-                                1,
-                                '',
-                                {
-                                    min: 1,
-                                    step: 1,
-                                    field_class: 'col-12 col-sm-2',
-                                    label_class: 'col-xxl-5',
-                                }
-                            ) }}
+                            {% if can_edit %}
+                                <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
+                                {{ fields.numberField(
+                                    'to_add',
+                                    1,
+                                    '',
+                                    {
+                                        min: 1,
+                                        step: 1,
+                                        field_class: 'col-12 col-sm-2',
+                                        label_class: 'col-xxl-5',
+                                    }
+                                ) }}
 
-                            {% set add_several %}
-                                <input
-                                    type="submit"
-                                    name="add_several"
-                                    value="{{ _x('button', 'Add consumables') }}"
-                                    class='btn btn-primary'
-                                />
-                            {% endset %}
+                                {% set add_several %}
+                                    <input
+                                        type="submit"
+                                        name="add_several"
+                                        value="{{ _x('button', 'Add consumables') }}"
+                                        class='btn btn-primary'
+                                    />
+                                {% endset %}
 
-                            {{ fields.htmlField(
-                                '',
-                                add_several,
-                                '',
-                                {
-                                    field_class: 'col-12 col-sm-1',
-                                    label_class: 'col-xxl-1',
-                                }
-                            ) }}
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                        {% endif %}
+                                {{ fields.htmlField(
+                                    '',
+                                    add_several,
+                                    '',
+                                    {
+                                        field_class: 'col-12 col-sm-1',
+                                        label_class: 'col-xxl-1',
+                                    }
+                                ) }}
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

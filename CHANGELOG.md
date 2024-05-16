@@ -166,8 +166,6 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
 - `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
 - `Config::validatePassword()`
-- `Consumable::showAddForm()`
-- `Consumable::showForConsumableItem()`
 - `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
@@ -231,6 +229,7 @@ The present file will list all changes made to the project; according to the
 - `X-GLPI-Sanitized-Content` REST API header support.
 - Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
+- `Cartridge::getNotificationParameters()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDBTM::getCacheKeyForFriendlyName()`
@@ -248,6 +247,8 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
+- `Consumable::showAddForm()`
+- `Consumable::showForConsumableItem()`
 - `Contract::commonListHeader()`
 - `Contract::getContractRenewalIDByName()`
 - `Contract::showShort()`
