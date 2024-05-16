@@ -1167,11 +1167,6 @@ HTML;
                 Html::requireJs('masonry');
             }
 
-            if (in_array('prism', $jslibs)) {
-                Html::requireJs('prismjs');
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/prismjs.css'];
-            }
-
             if (in_array('tinymce', $jslibs)) {
                 Html::requireJs('tinymce');
             }
@@ -5947,9 +5942,6 @@ HTML;
                 break;
             case 'leaflet':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
-                break;
-            case 'prismjs':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/prismjs.js';
                 break;
             case 'log_filters':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
