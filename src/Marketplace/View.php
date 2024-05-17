@@ -811,11 +811,22 @@ HTML;
                     __s("A new version (%s) is available, update?", 'marketplace'),
                     $web_update_version
                 );
-                $buttons .= "<button class='modify_plugin'
-                                     data-action='update_plugin'
-                                     title='{$update_title}'>
-                        <i class='ti ti-cloud-download'></i>
-                    </button>";
+
+                $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
+                    'plugin_name' => $plugin_inst->getField('name'),
+                    'to_version' => $web_update_version,
+                    'modal_id' => 'updateModal' . $plugin_inst->getField('directory'),
+                    'open_btn' => '<button data-bs-toggle="modal"
+                                           data-bs-target="#updateModal' . $plugin_inst->getField('directory') . '"
+                                           title="' . $update_title . '">
+                                       <i class="ti ti-cloud-download"></i>
+                                   </button>',
+                    'update_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
+                                           data-action="update_plugin"
+                                           data-bs-dismiss="modal">
+                                           ' . _x("button", "Update") . '
+                                       </a>',
+                ]);
             }
         }
 
@@ -839,11 +850,21 @@ HTML;
                 $title = __s("Update");
                 $icon  =  "far fa-caret-square-up";
             }
-            $buttons .= "<button class='modify_plugin'
-                                 data-action='install_plugin'
-                                 title='$title'>
-                    <i class='$icon'></i>
-                </button>";
+            $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
+                'plugin_name' => $plugin_inst->getField('name'),
+                'to_version' => $plugin_inst->getField('version'),
+                'modal_id' => 'updateModal' . $plugin_inst->getField('directory'),
+                'open_btn' => '<button data-bs-toggle="modal"
+                                       data-bs-target="#updateModal' . $plugin_inst->getField('directory') . '"
+                                       title="' . $title . '">
+                                   <i class="' . $icon . '"></i>
+                               </button>',
+                'update_btn' => '<a href="#" class="btn btn-info w-100 modify_plugin"
+                                       data-action="install_plugin"
+                                       data-bs-dismiss="modal">
+                                       ' . _x("button", "Update") . '
+                                   </a>',
+            ]);
         }
 
         if ($is_installed) {
