@@ -319,7 +319,7 @@
    {% endif %}
 
    {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
-      {{ fields.smallTitle(__('Dashboards'), 'ti ti-dashboard', '', 'section-dashboards') }}
+      {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
       {% macro dropdownDashboard(name, config, context = 'core', disabled_option = false) %}
          {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],

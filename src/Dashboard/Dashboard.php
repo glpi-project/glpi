@@ -622,4 +622,9 @@ class Dashboard extends \CommonDBTM
         }
         return $this->fields['users_id'] != Session::getLoginUserID();
     }
+
+    public static function getIcon()
+    {
+        return "ti ti-dashboard";
+    }
 }
