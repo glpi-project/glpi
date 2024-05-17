@@ -46,12 +46,13 @@ use Override;
 abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
 {
     #[Override]
-    final public function renderConfigForm(array $config): string
+    final public function renderConfigForm(Form $form, array $config): string
     {
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/form_destination_commonitil_config.html.twig',
             [
+                'form'   => $form,
                 'item'   => $this,
                 'config' => $config,
             ]
@@ -82,9 +83,10 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
 
         // Compute input from fields configuration
         foreach ($this->getConfigurableFields() as $field) {
-            $input = $field->applyConfiguratedValue(
+            $input = $field->applyConfiguratedValueToInputUsingAnswers(
+                $config[$field->getKey()] ?? null,
                 $input,
-                $config[$field->getKey()] ?? null
+                $answers_set
             );
         }
 

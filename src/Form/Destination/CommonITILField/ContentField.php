@@ -36,7 +36,9 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\ConfigFieldInterface;
+use Glpi\Form\Form;
 use Glpi\Form\Tag\FormTagsManager;
 use Override;
 
@@ -56,6 +58,7 @@ class ContentField implements ConfigFieldInterface
 
     #[Override]
     public function renderConfigForm(
+        Form $form,
         ?array $config,
         string $input_name,
         array $display_options
@@ -71,12 +74,14 @@ class ContentField implements ConfigFieldInterface
                     'enable_richtext': true,
                     'enable_images': false,
                     'enable_form_tags': true,
+                    'form_tags_form_id': form_id
                 })
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
+            'form_id'    => $form->fields['id'],
             'key'        => $this->getKey(),
             'label'      => $this->getLabel(),
             'value'      => $config['value'] ?? '',
@@ -86,14 +91,20 @@ TWIG;
     }
 
     #[Override]
-    public function applyConfiguratedValue(array $input, ?array $config): array
-    {
+    public function applyConfiguratedValueToInputUsingAnswers(
+        ?array $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
         if (is_null($config)) {
             return $input;
         }
 
         $tag_manager = new FormTagsManager();
-        $input['content'] = $tag_manager->insertTagsContent($config['value']);
+        $input['content'] = $tag_manager->insertTagsContent(
+            $config['value'],
+            $answers_set
+        );
 
         return $input;
     }

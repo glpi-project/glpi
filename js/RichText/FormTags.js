@@ -50,10 +50,18 @@ GLPI.RichText.FormTags = class
     #editor;
 
     /**
-     * @param {Editor} editor
+     * Target form's id.
+     * @type {Number}}
      */
-    constructor(editor) {
+    #form_id;
+
+    /**
+     * @param {Editor} editor
+     * @param {Number} form_id
+     */
+    constructor(editor, form_id) {
         this.#editor = editor;
+        this.#form_id = form_id;
     }
 
     /**
@@ -78,7 +86,9 @@ GLPI.RichText.FormTags = class
 
     async #fetchItems() {
         const url = CFG_GLPI.root_doc + '/ajax/form/form_tags.php';
-        const data = await $.get(url);
+        const data = await $.get(url, {
+            form_id: this.#form_id,
+        });
 
         return data.map((tag) => ({
             // The `tag` variable is a json encoded instance of Glpi\Form\Tag\Tag

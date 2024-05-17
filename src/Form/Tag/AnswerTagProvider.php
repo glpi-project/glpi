@@ -33,22 +33,49 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Form\Tag;
+
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
-use Glpi\Http\Response;
+use Glpi\Form\Question;
+use Override;
 
-include('../../inc/includes.php');
+final class AnswerTagProvider implements TagProviderInterface
+{
+    #[Override]
+    public function getTags(Form $form): array
+    {
+        $tags = [];
+        foreach ($form->getQuestions() as $questions) {
+            $tags[] = new Tag(
+                label: "Answer: {$questions->fields['name']}",
+                value: $questions->getId(),
+                provider: self::class,
+            );
+        }
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
+        return $tags;
+    }
 
-// Get mandatory form parameter
-$form = Form::getById($_GET['form_id'] ?? null);
-if (!$form) {
-    Response::sendError(400, __('Form not found'));
+    #[Override]
+    public function getTagContentForValue(
+        string $value,
+        AnswersSet $answers_set
+    ): string {
+        $id = (int) $value;
+
+        // TODO: create a proper readonly class for answers object to avoid using
+        // arbitrary array indexes.
+        $answers = array_filter(
+            $answers_set->fields['answers'] ?? [],
+            fn ($answer) => $answer['question'] === $id
+        );
+
+        if (count($answers) !== 1) {
+            return "";
+        }
+
+        $answer = array_pop($answers);
+        return $answer['value'] ?? "";
+    }
 }
-
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags($form));

@@ -33,22 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Form\Tag;
+
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
-use Glpi\Http\Response;
 
-include('../../inc/includes.php');
+interface TagProviderInterface
+{
+    /**
+     * @return Tag[]
+     */
+    public function getTags(Form $form): array;
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
-
-// Get mandatory form parameter
-$form = Form::getById($_GET['form_id'] ?? null);
-if (!$form) {
-    Response::sendError(400, __('Form not found'));
+    public function getTagContentForValue(
+        string $value,
+        AnswersSet $answers_set
+    ): string;
 }
-
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags($form));

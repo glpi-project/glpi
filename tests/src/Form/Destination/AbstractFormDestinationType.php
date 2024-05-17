@@ -252,7 +252,13 @@ abstract class AbstractFormDestinationType extends DbTestCase
     final public function testRenderConfigForm(): void
     {
         $destination = $this->getTestedInstance();
-        $html = $destination->renderConfigForm([]);
+        $html = $destination->renderConfigForm($this->getSimpleForm(), []);
         $this->string($html)->isNotEmpty();
+    }
+
+    private function getSimpleForm(): Form
+    {
+        $builder = new FormBuilder();
+        return $this->createForm($builder);
     }
 }

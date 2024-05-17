@@ -309,6 +309,7 @@
         'init': true,
         'placeholder': "",
         'enable_form_tags': false,
+        'form_tags_form_id': null,
         'aria_label': "",
     }|merge(options) %}
 
@@ -350,6 +351,7 @@
             $(function() {
                 const form_tags = new GLPI.RichText.FormTags(
                     tinymce.get('{{ options.id }}'),
+                    {{ options.form_tags_form_id }},
                 );
                 form_tags.register();
             });

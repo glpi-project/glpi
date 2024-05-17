@@ -35,17 +35,26 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
-use GLPITestCase;
+use DbTestCase;
+use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\Tag\Tag;
 
-final class FormTagsManager extends GLPITestCase
+final class FormTagsManager extends DbTestCase
 {
+    use FormTesterTrait;
+
     public function testGetTags()
     {
         $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
-        $tags = $tag_manager->getTags();
-        $this->array($tags)->isNotEmpty();
+        $form = $this->getFormWithQuestions();
 
+        $tags = $tag_manager->getTags($form);
+
+        $this->array($tags)->isNotEmpty();
         foreach ($tags as $tag) {
             $this->object($tag)->isInstanceOf(Tag::class);
         }
@@ -54,16 +63,58 @@ final class FormTagsManager extends GLPITestCase
     public function testInsertTagsContent()
     {
         $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
-        $tag_1 = new Tag(label: "Exemple tag 1", value: "exemple-tag-1");
-        $tag_2 = new Tag(label: "Exemple tag 2", value: "exemple-tag-2");
-        $tag_3 = new Tag(label: "Exemple tag 3", value: "exemple-tag-3");
+        $answers_handler = AnswersHandler::getInstance();
+
+        $form = $this->getFormWithQuestions();
+        $answers = $answers_handler->saveAnswers($form, [
+            $this->getQuestionId($form, "First name") => "John",
+            $this->getQuestionId($form, "Last name") => "Smith",
+        ], 0 /* Invalid user id but we dont care for this here */);
+
+        $tags = $tag_manager->getTags($form);
+        $first_name_question_tag = $this->getTagByName(
+            $tags,
+            'Question: First name'
+        );
+        $first_name_answer_tag = $this->getTagByName(
+            $tags,
+            'Answer: First name'
+        );
+        $last_name_question_tag = $this->getTagByName(
+            $tags,
+            'Question: Last name'
+        );
+        $last_name_answer_tag = $this->getTagByName(
+            $tags,
+            'Answer: Last name'
+        );
 
         $content_with_tag =
-            "My content: $tag_1->html, $tag_2->html and $tag_3->html"
+            "$first_name_question_tag->html: $first_name_answer_tag->html, "
+            . "$last_name_question_tag->html: $last_name_answer_tag->html"
         ;
-        $computed_content = $tag_manager->insertTagsContent($content_with_tag);
-        $this->string($computed_content)->isEqualTo(
-            'My content: exemple-tag-1, exemple-tag-2 and exemple-tag-3'
+        $computed_content = $tag_manager->insertTagsContent(
+            $content_with_tag,
+            $answers
         );
+
+        $this->string($computed_content)->isEqualTo(
+            'First name: John, Last name: Smith'
+        );
+    }
+
+    public function testGetTagProviders(): void
+    {
+        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $providers = $tag_manager->getTagProviders();
+        $this->array($providers)->isNotEmpty();
+    }
+
+    private function getFormWithQuestions(): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion("First name", QuestionTypeShortText::class);
+        $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        return $this->createForm($builder);
     }
 }

@@ -32,12 +32,14 @@
  #}
 
 {# @var Glpi\Form\Destination\AbstractCommonITILFormDestination item #}
+{# @var Glpi\Form\Form\                                         form #}
 {# @var array                                                   config #}
 
 <div>
     {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
     {% for field in item.getConfigurableFields() %}
         {{ field.renderConfigForm(
+            form,
             config[field.getKey()],
             item.formatConfigInputName(field.getKey()),
             {

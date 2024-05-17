@@ -61,9 +61,11 @@ interface FormDestinationInterface
     /**
      * Render the configuration form for this destination type.
      *
+     * @param Form  $form
+     * @param array $config
      * @return string The rendered HTML content
      */
-    public function renderConfigForm(array $config): string;
+    public function renderConfigForm(Form $form, array $config): string;
 
     /**
      * Get itemtype to create

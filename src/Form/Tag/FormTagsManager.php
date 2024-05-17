@@ -35,38 +35,79 @@
 
 namespace Glpi\Form\Tag;
 
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Form;
+
 final class FormTagsManager
 {
-    public function getTags(): array
+    public function getTags(Form $form): array
     {
-        return [
-            new Tag(label: "Exemple tag 1", value: "exemple-tag-1"),
-            new Tag(label: "Exemple tag 2", value: "exemple-tag-2"),
-            new Tag(label: "Exemple tag 3", value: "exemple-tag-3"),
-        ];
+        $tags = [];
+        foreach ($this->getTagProviders() as $provider) {
+            $tags = array_merge($tags, $provider->getTags($form));
+        }
+
+        return $tags;
     }
 
-    public function insertTagsContent(string $content): string
-    {
+    public function insertTagsContent(
+        string $content,
+        AnswersSet $answers_set
+    ): string {
         return preg_replace_callback(
             '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
-            function ($match) {
+            function ($match) use ($answers_set) {
                 $tag = $match[0];
 
-                // Extract  value.
+                // Extract value.
                 preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
                 if (empty($value_match)) {
                     return "";
                 }
 
-                // For now, we return the raw value.
-                // In futures improvements, the value will be an id and we will
-                // need to call some kind of object here to transform the id into
-                // the right string value (for exemple, transforming a question
-                // id into its name).
-                return $value_match[1];
+                // Extract provider.
+                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
+                if (
+                    empty($provider_match)
+                    || !is_a(
+                        $provider_match[1],
+                        TagProviderInterface::class,
+                        true
+                    )
+                ) {
+                    return "";
+                }
+
+                $provider = new $provider_match[1]();
+                return $provider->getTagContentForValue(
+                    $value_match[1],
+                    $answers_set
+                );
             },
             $content
         );
+    }
+
+    public function getTagProviders(): array
+    {
+        return $this->removeInvalidProviders([
+            new QuestionTagProvider(),
+            new AnswerTagProvider(),
+        ]);
+    }
+
+    private function removeInvalidProviders(array $providers): array
+    {
+        return array_filter($providers, function ($provider) {
+            if (!($provider instanceof TagProviderInterface)) {
+                trigger_error(
+                    "Provider must implement TagProviderInterface",
+                    E_USER_WARNING
+                );
+                return false;
+            }
+
+            return true;
+        });
     }
 }
