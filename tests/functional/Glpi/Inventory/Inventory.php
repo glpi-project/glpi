@@ -2673,6 +2673,154 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($iterator))->isIdenticalTo(43);
     }
 
+    public function testImportStackedNetworkEquipment2()
+    {
+        $xml = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/stacked_switch_name.xml');
+
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $inventory = $this->doInventory($xml, true);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+
+        $this->array($metadata)->hasSize(5)
+            ->string['deviceid']->isIdenticalTo('it-2024-05-11-14-34-10')
+            ->string['version']->isIdenticalTo('6.1')
+            ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+            ->variable['port']->isIdenticalTo(null)
+            ->string['action']->isIdenticalTo('netinventory');
+
+        global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $this->array($inventory->getAgent()->fields)
+            ->string['deviceid']->isIdenticalTo('it-2024-05-11-14-34-10')
+            ->string['name']->isIdenticalTo('it-2024-05-11-14-34-10')
+            ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+        //get model, manufacturer, ...
+        $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
+        $this->array($autoupdatesystems);
+        $autoupdatesystems_id = $autoupdatesystems['id'];
+
+        $cmodels = $DB->request(['FROM' => \NetworkEquipmentModel::getTable(), 'WHERE' => ['name' => 'JG937A']])->current();
+        $this->array($cmodels);
+        $models_id = $cmodels['id'];
+
+        $ctypes = $DB->request(['FROM' => \NetworkEquipmentType::getTable(), 'WHERE' => ['name' => 'Networking']])->current();
+        $this->array($ctypes);
+        $types_id = $ctypes['id'];
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Hewlett-Packard']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $cloc = $DB->request(['FROM' => \Location::getTable(), 'WHERE' => ['name' => 'office']])->current();
+        $this->array($cloc);
+        $locations_id = $cloc['id'];
+
+        //check created equipments
+        $expected_eq_count = 2;
+        $iterator = $DB->request([
+            'FROM'   => \NetworkEquipment::getTable(),
+            'WHERE'  => ['is_dynamic' => 1]
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
+
+        $main_expected = [
+            'id' => null,
+            'entities_id' => 0,
+            'is_recursive' => 0,
+            'name' => 'SW00Test - 5130EI',
+            'ram' => null,
+            'serial' => 'CX15GXXX99',
+            'otherserial' => null,
+            'contact' => 'admin@xy.z',
+            'contact_num' => null,
+            'users_id_tech' => 0,
+            'groups_id_tech' => 0,
+            'date_mod' => null,
+            'comment' => null,
+            'locations_id' => $locations_id,
+            'networks_id' => 0,
+            'networkequipmenttypes_id' => $types_id,
+            'networkequipmentmodels_id' => $models_id,
+            'manufacturers_id' => $manufacturers_id,
+            'is_deleted' => 0,
+            'is_template' => 0,
+            'template_name' => null,
+            'users_id' => 0,
+            'groups_id' => 0,
+            'states_id' => 0,
+            'ticket_tco' => '0.0000',
+            'is_dynamic' => 1,
+            'uuid' => null,
+            'date_creation' => null,
+            'autoupdatesystems_id' => $autoupdatesystems_id,
+            'sysdescr' => null,
+            'cpu' => 0,
+            'uptime' => '22 days, 00:08:54.24',
+            'last_inventory_update' => $date_now,
+            'snmpcredentials_id' => 0,
+        ];
+
+        $stacks = [
+            1 => [
+                'name' => 'SW00Test - 5130EI - 1',
+                'serial' => 'CX15GXXX99',
+                'connections'  => 0
+            ],
+            2 => [
+                'name' => 'SW00Test - 5130EI - 2',
+                'serial' => 'CN15CN123456',
+                'connections' => 1
+            ]
+        ];
+
+        foreach ($iterator as $row) {
+            $expected = $main_expected;
+            $equipments_id = $row['id'];
+            $expected['id'] = $equipments_id;
+            $equipment = new \NetworkEquipment();
+            $this->boolean($equipment->getFromDB($equipments_id))->isTrue();
+            $expected['date_mod'] = $row['date_mod'];
+            $expected['date_creation'] = $row['date_creation'];
+            $stack_id = preg_replace('/.+ - (\d)/', '$1', $row['name']);
+            $this->array($stacks)->hasKey($stack_id);
+            $expected['name'] .= ' - ' . $stack_id;
+            $expected['serial'] = $stacks[$stack_id]['serial'];
+            $this->array($row)->isIdenticalTo($expected);
+        }
+
+        //check matchedlogs
+        $mlogs = new \RuleMatchedLog();
+        $found = $mlogs->find();
+        $this->array($found)->hasSize(2);
+
+        $mrules_criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => []
+        ];
+
+        $neteq_criteria = $mrules_criteria;
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $iterator = $DB->request($neteq_criteria);
+        $this->integer(count($iterator))->isIdenticalTo($expected_eq_count);
+        foreach ($iterator as $neteq) {
+            $this->string($neteq['name'])->isIdenticalTo('NetworkEquipment import (by serial)');
+            $this->string($neteq['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
+        }
+    }
     public function testImportNetworkEquipmentMultiConnections()
     {
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'networkequipment_3.json'));
