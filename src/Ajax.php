@@ -344,15 +344,33 @@ JAVASCRIPT;
 
             foreach ($tabs as $tab_key => $val) {
                 $target = str_replace('\\', '_', $val['id']);
-                $href = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
+                $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
                 $selected = $active_id == $target ? 'selected' : '';
                 $title = $val['title'];
                 $title_clean = strip_tags($title);
+
+                // Compute direct link that user can reach in a new tab using
+                // middle mouse click.
+                // TODO: ctrl+click should have the same behavior but it seems
+                // to be caught by the tabs events handler and does not trigger
+                // a new browser tab.
+                $direct_link_url = $_SERVER['REQUEST_URI'];
+                if (count($_GET)) {
+                    $direct_link_url .= count($_GET) ? '&' : '?';
+                }
+                $direct_link_url .= "forcetab=$tab_key";
+
                 if ($tab_key !== -1) {
                     $html_tabs .= <<<HTML
                         <li class='nav-item $navitemml'>
-                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
-                                title='{$title_clean}' href='{$href}' data-bs-target='#{$target}'>{$title}</a>
+                            <a
+                                class='nav-link justify-content-between $navlinkp $display_class'
+                                data-bs-toggle='tab'
+                                title='{$title_clean}'
+                                data-glpi-ajax-content='{$tab_content_url}'
+                                href='{$direct_link_url}'
+                                data-bs-target='#{$target}'
+                            >{$title}</a>
                         </li>
 HTML;
                     $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
@@ -385,7 +403,7 @@ HTML;
             $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
-            var url = tablink.attr('href');
+            var url = tablink.data('glpi-ajax-content');
             var base_url = CFG_GLPI.url_base;
             if (base_url === '') {
                 // If base URL is not configured, fallback to current URL domain + GLPI base dir.
