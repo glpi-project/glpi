@@ -1761,13 +1761,14 @@ function getRealInputWidth(input, real_font_size = null)
  * Else fallback to uniqid()
  */
 function getUUID() {
-    if (typeof crypto.randomUUID === "undefined") {
-        // Only available for HTTPS
-        return crypto.randomUUID();
-    } else {
-        // Always available but collisions are possible (very unlikely to happen)
+    // crypto functions are only available when using secure context
+    if (typeof crypto === "undefined" || typeof crypto.randomUUID === "undefined") {
+        // Fallback to another method that is always available but collisions
+        // are not totally impossible.
         return uniqid();
     }
+
+    return crypto.randomUUID();
 }
 
 // Init the AJAX controller
