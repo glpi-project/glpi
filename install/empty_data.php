@@ -921,7 +921,19 @@ $empty_data_builder = new class
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 6,
-            ],
+            ], [
+                'id' => 48,
+                'itemtype' => 'Glpi\Form\Form',
+                'name' => 'purgedraftforms',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => 30,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ]
         ];
 
         $dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";

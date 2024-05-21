@@ -246,6 +246,37 @@ final class Form extends CommonDBTM
     }
 
     /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array Array of information
+     **/
+    public static function cronInfo($name)
+    {
+        return ['description' => __('Purge old form drafts')];
+    }
+
+    /**
+     * Cron action to purge old form drafts
+     *
+     * @param CronTask|null $task
+     *
+     * @return int
+     * @used-by CronTask
+     */
+    public static function cronPurgeDraftForms($task = null)
+    {
+        $form = new Form();
+        $form->deleteByCriteria([
+            'is_draft' => 1,
+            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime('-1 day'))],
+        ], true);
+
+        return 1;
+    }
+
+    /**
      * Get sections of this form
      *
      * @return Section[]
