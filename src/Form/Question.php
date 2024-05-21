@@ -46,7 +46,7 @@ use ReflectionClass;
 /**
  * Question of a given helpdesk form's section
  */
-final class Question extends CommonDBChild
+final class Question extends CommonDBChild implements Block
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';

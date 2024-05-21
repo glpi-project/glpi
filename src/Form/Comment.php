@@ -37,14 +37,13 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\ContentTemplates\TemplateManager;
 use Log;
 use Override;
 
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild
+final class Comment extends CommonDBChild implements Block
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
