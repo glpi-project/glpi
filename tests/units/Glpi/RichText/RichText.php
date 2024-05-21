@@ -34,6 +34,8 @@
  */
 
 namespace tests\units\Glpi\RichText;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\Tag;
 
 /**
  * Test class for src/Glpi/RichText/richtext.class.php
@@ -392,15 +394,15 @@ HTML,
             'expected_result' => '<span contenteditable="true">Editable content</span>',
         ];
 
-        yield 'Do not remove data-form-tag property' => [
-            'content' => '<span data-form-tag="true">Tag label</span>',
+        $tag = new Tag(
+            label: __("My label"),
+            value: 5, // Fake id
+            provider: AnswerTagProvider::class
+        );
+        yield 'Html content of form tags should not be modified' => [
+            'content' => $tag->html,
             'encode_output_entities' => false,
-            'expected_result' => '<span data-form-tag="true">Tag label</span>',
-        ];
-        yield 'Do not remove data-form-tag-value property' => [
-            'content' => '<span data-form-tag-value="my-value">Tag label</span>',
-            'encode_output_entities' => false,
-            'expected_result' => '<span data-form-tag-value="my-value">Tag label</span>',
+            'expected_result' => $tag->html,
         ];
     }
 
