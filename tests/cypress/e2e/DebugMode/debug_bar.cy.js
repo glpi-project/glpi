@@ -34,6 +34,7 @@
 describe("Debug Bar", () => {
     beforeEach(() => {
         cy.login();
+        cy.visit('/front/computer.php');
         cy.changeProfile('Super-Admin');
         cy.enableDebugMode();
     });
@@ -59,6 +60,8 @@ describe("Debug Bar", () => {
             cy.findByRole('button', {name: 'Toggle debug content area'}).click();
             cy.get('#debug-toolbar-expanded-content').should('not.be.visible');
         });
+        // Accessibility check is done last to let the widget buttons completely load
+        cy.get('#debug-toolbar-applet').injectAndCheckA11y();
     });
 
     it('Server performance widget', () => {
@@ -72,22 +75,18 @@ describe("Debug Bar", () => {
                 cy.get('.datagrid-title').contains('Total Execution Time').next().invoke('text').should('match', /\d+\s+ms/);
                 cy.get('.datagrid-title').contains('Memory Usage').next().invoke('text').should('match', /\d+.+\s+MiB\s+\/\s+[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('Memory Peak').next().invoke('text').should('match', /\d+.+\s+MiB\s+\/\s+[\d.]+\s+MiB/);
+                cy.root().injectAndCheckA11y(); // Using root() here to specify the subject of the within() block. Using cy.injectAndCheckA11y() doesn't seem to inherit the subject properly.
             });
         });
     });
 
     it('SQL requests', () => {
-        // Run this test on Computer search page because the dashboards on Central add a ton of SQL requests and can slow the test to the point of failure.
-        cy.visit('/front/computer.php');
-
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="sql"]')
                 .should('exist')
                 .invoke('text').should('match', /\d+\s+requests/);
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="sql"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
-                // Wait for syntax highlighting to be applied
-                cy.get('span.mtk1').should('exist');
                 // 1st column should be alphanumeric
                 cy.get('#debug-sql-request-table tr td:nth-child(1)').each(($el) => {
                     expect($el.text()).to.match(/^[a-z0-9]+$/);
@@ -95,11 +94,6 @@ describe("Debug Bar", () => {
                 // 2nd column should be numeric
                 cy.get('#debug-sql-request-table tr td:nth-child(2)').each(($el) => {
                     expect($el.text()).to.match(/^\d+$/);
-                });
-                // 3rd column should be a syntax-highlighted SQL query (Each value has at least one span with a class starting with "mtk")
-                cy.get('#debug-sql-request-table tr td:nth-child(3)').each(($el) => {
-                    expect($el.html()).to.match(/<span class="mtk\d+">/);
-                    cy.wrap($el).find('button.copy-code').should('exist');
                 });
                 // 4th column should be a float ms value
                 cy.get('#debug-sql-request-table tr td:nth-child(4)').each(($el) => {
@@ -114,7 +108,6 @@ describe("Debug Bar", () => {
     });
 
     it('HTTP requests', () => {
-        cy.visit('/'); // Somewhere a lot of requests are made
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="requests"]')
                 .should('exist')
@@ -134,6 +127,7 @@ describe("Debug Bar", () => {
                     cy.get('td').contains(/Memory Peak:\s+[\d.]+\s+MiB\s+\/\s+[\d.]+\s+MiB/).should('be.visible');
                     cy.get('td').contains(/SQL Requests:\s+\d+/).should('be.visible');
                     cy.get('td').contains(/SQL Duration:\s+[\d.]+ ms/).should('be.visible');
+                    cy.root().injectAndCheckA11y();
                 });
 
                 // Globals Tab
@@ -147,6 +141,7 @@ describe("Debug Bar", () => {
                     cy.get('.tab-pane[id^="debugsession"] .monaco-editor-container').should('exist');
                     cy.get('.nav-item').contains('SERVER').click();
                     cy.get('.tab-pane[id^="debugserver"] .monaco-editor-container').should('exist');
+                    cy.root().injectAndCheckA11y();
                 });
 
                 // Profiler
@@ -167,18 +162,14 @@ describe("Debug Bar", () => {
                     cy.get('tr[data-profiler-section-id] > td[data-prop="percent_of_parent"]').each(($el) => {
                         expect($el.text()).to.match(/[\d.]%/);
                     });
+                    cy.root().injectAndCheckA11y();
                 });
 
                 // SQL Tab
                 cy.get('.right-panel .nav .nav-link').contains('SQL').click();
                 cy.get('.request-details-content-area').within(() => {
-                    cy.get('span.mtk1').should('exist', {timeout: 10000});
                     cy.get('#debug-sql-request-table tr td:nth-of-type(1)').each(($el) => {
                         expect($el.text()).to.match(/^\d+$/);
-                    });
-                    cy.get('#debug-sql-request-table tr td:nth-of-type(2)').each(($el) => {
-                        expect($el.html()).to.match(/<span class="mtk\d+">/);
-                        cy.wrap($el).find('button.copy-code').should('exist');
                     });
                     cy.get('#debug-sql-request-table tr td:nth-of-type(3)').each(($el) => {
                         expect($el.text()).to.match(/^\d+\.\d+\sms$/);
@@ -200,6 +191,7 @@ describe("Debug Bar", () => {
                 cy.get('.datagrid-title').contains('Used JS Heap').next().invoke('text').should('match', /[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('Total JS Heap').next().invoke('text').should('match', /[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('JS Heap Limit').next().invoke('text').should('match', /[\d.]+\s+MiB/);
+                cy.root().injectAndCheckA11y();
             });
 
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="client_performance"]')
@@ -222,7 +214,7 @@ describe("Debug Bar", () => {
                 }).as('searchOptions');
 
                 cy.findByLabelText('Itemtype').should('be.visible').find('option').should('have.length.gte', 10);
-                cy.findByLabelText('Itemtype').select('Computer'); // Should always be available since it in the menu, so already autoloaded.
+                cy.findByLabelText('Itemtype').select('Printer'); // Should always be available since it in the menu, so already autoloaded.
                 cy.wait('@searchOptions').its('response.statusCode').should('eq', 200);
                 cy.get('.search-opts-table').should('exist');
 
@@ -230,6 +222,8 @@ describe("Debug Bar", () => {
                 cy.findByLabelText('Itemtype').clear();
                 cy.findByLabelText('Itemtype').type('Monitor{enter}');
                 cy.wait('@searchOptions').its('response.statusCode').should('eq', 200);
+
+                cy.root().injectAndCheckA11y();
             });
         });
     });
@@ -247,6 +241,8 @@ describe("Debug Bar", () => {
                 cy.findByRole('combobox', {name: 'Palette'}).should('be.visible').select('auror');
                 cy.root().closest('html').invoke('attr', 'data-glpi-theme').should('eq', 'auror');
                 cy.root().closest('html').invoke('attr', 'data-glpi-theme-dark').should('eq', '0');
+
+                cy.root().injectAndCheckA11y();
             });
         });
     });

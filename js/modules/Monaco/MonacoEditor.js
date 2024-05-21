@@ -145,10 +145,11 @@ export default class MonacoEditor {
         const dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
         delete options._force_default_lang;
 
+        window.GLPI.Monaco.registerGLPIThemes();
         this.editor = window.monaco.editor.create(el, Object.assign({
             value: value,
             language: new_lang_id,
-            theme: dark_theme ? 'vs-dark' : 'vs'
+            theme: dark_theme ? 'glpi-dark' : 'glpi'
         }, options));
 
         if (options._single_line_editor) {
@@ -228,6 +229,38 @@ export default class MonacoEditor {
 }
 
 window.GLPI.Monaco = {
+    /**
+     * Register custom GLPI themes for Monaco editor.
+     * Does not automatically import the Monaco library.
+     */
+    registerGLPIThemes: () => {
+        if (window.GLPI.Monaco._themes_registered) {
+            return;
+        }
+        const light_overrides = [
+            {
+                token: 'operator.sql',
+                foreground: '#5E6F7D'
+            },
+            {
+                token: 'string.sql',
+                foreground: '#d90000'
+            }
+        ];
+        window.monaco.editor.defineTheme('glpi', {
+            base: 'vs',
+            inherit: true,
+            colors: {},
+            rules: light_overrides,
+        });
+        window.monaco.editor.defineTheme('glpi-dark', {
+            base: 'vs-dark',
+            inherit: true,
+            colors: {},
+            rules: [],
+        });
+        window.GLPI.Monaco._themes_registered = true;
+    },
     createEditor: async (element_id, language, value = '', completions = [], options = {}) => {
         return import('../../../public/lib/monaco.js').then(() => {
             return new MonacoEditor(element_id, language, value, completions, options);
@@ -241,6 +274,9 @@ window.GLPI.Monaco = {
      */
     colorizeText: async (text, language) => {
         return import('../../../public/lib/monaco.js').then(() => {
+            window.GLPI.Monaco.registerGLPIThemes();
+            // Theme set here because colorize doesn't support specifying the theme in the options like colorizeElement does
+            window.monaco.editor.setTheme('glpi');
             return window.monaco.editor.colorize(text, language);
         });
     },
@@ -252,8 +288,10 @@ window.GLPI.Monaco = {
      */
     colorizeElement: async (element, language) => {
         return import('../../../public/lib/monaco.js').then(() => {
+            window.GLPI.Monaco.registerGLPIThemes();
             return window.monaco.editor.colorizeElement(element, {
-                language: language
+                language: language,
+                theme: $('html').attr('data-glpi-theme-dark') === '1' ? 'glpi-dark' : 'glpi'
             });
         });
     },

@@ -3971,8 +3971,9 @@ var GLPIImpact = {
                 }
 
                 // Set badge color, adjust contract as needed (target ratio is > 1.8)
-                var rgb = hexToRgb(node.data('badge').color);
-                while (contrast([255, 255, 255], [rgb.r, rgb.g, rgb.b]) < 1.8) {
+                const rgb = window.GLPI.Color.fromHex(node.data('badge').color);
+                const white = new window.GLPI.Color(255, 255, 255);
+                while (white.contrast(rgb) < 1.8) {
                     rgb.r *= 0.95;
                     rgb.g *= 0.95;
                     rgb.b *= 0.95;

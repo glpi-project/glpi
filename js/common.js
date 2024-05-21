@@ -1055,50 +1055,6 @@ function updateProgress(progressid) {
     });
 }
 
-/**
- * Get RGB object from an hexadecimal color code
- *
- * @param {*} hex
- * @returns {Object} {r, g, b}
- */
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-/**
- * Get luminance for a color
- * https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
- *
- * @param {Array} rgb [r, g, b] array
- * @returns {Number}
- */
-function luminance(rgb) {
-    var a = rgb.map(function (v) {
-        v /= 255;
-        return v <= 0.03928
-            ? v / 12.92
-            : Math.pow( (v + 0.055) / 1.055, 2.4 );
-    });
-    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-}
-
-/**
- * Get contrast ratio between two colors
- * https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
- *
- * @param {Array} rgb1 [r, g, b] array
- * @param {Array} rgb2 [r, g, b] array
- * @returns {Number}
- */
-function contrast(rgb1, rgb2) {
-    return (luminance(rgb1) + 0.05) / (luminance(rgb2) + 0.05);
-}
-
 // fullscreen api
 function GoInFullscreen(element) {
     if (element.requestFullscreen) {

@@ -39,6 +39,7 @@ module.exports = defineConfig({
     experimentalStudio: true,
     e2e: {
         baseUrl: "http://localhost:80",
+        experimentalMemoryManagement: true,
         setupNodeEvents(on) {
             // implement node event listeners here
             // Remove --start-maximized flag from Chrome
@@ -49,6 +50,18 @@ module.exports = defineConfig({
                     launchOptions.args.splice(maximized_index, 1);
                 }
                 return launchOptions;
+            });
+            on('task', {
+                log(message) {
+                    // eslint-disable-next-line no-console
+                    console.log(message);
+                    return null;
+                },
+                table(message) {
+                    // eslint-disable-next-line no-console
+                    console.table(message);
+                    return null;
+                }
             });
         },
     },

@@ -36,7 +36,7 @@ import _ from 'lodash';
 let api_token = null;
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method login
  * @description Login to GLPI. This command will also reuse the session for subsequent calls when possible rather than logging in again.
  * @param {string} [username=e2e_tests] - Username
@@ -75,7 +75,7 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method changeProfile
  * @description Change the profile of the current user. Only supports the default GLPI profiles.
  * @param {string} profile - Profile to change to
@@ -95,7 +95,7 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
     const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
     // Check if we are already on the desired profile
     cy.get('header a.user-menu-dropdown-toggle').then(() => {
-        if (!Cypress.$('a.user-menu-dropdown-toggle').text().match(profile_pattern)) {
+        if (!Cypress.$('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').text().match(profile_pattern)) {
             // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
             cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
                 cy.blockGLPIDashboards();
@@ -107,7 +107,7 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
                     }
                 }).then(() => {
                     if (verify) {
-                        cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
+                        cy.get('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').contains(profile_pattern);
                     }
                 });
             });
@@ -116,7 +116,7 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method iframe
  * @description Helper to interact with elements inside an iframe given the complexity of needing to wait for the iframe to load and needing to switch contexts to the iframe's document.
  *              You can optionally specify a url_pattern to match the iframe's content window location.
@@ -230,7 +230,7 @@ Cypress.Commands.add('selectDate', {
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method blockGLPIDashboards
  * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
  */

@@ -122,7 +122,7 @@
                 {% if may_be_located %}
                     <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
                         {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
-                        <input type="radio" class="btn-check" role="button"
+                        <input type="radio" class="btn-check"
                             name="as_map" value="1" autocomplete="off"
                             id="show_as_table"
                             onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
@@ -134,7 +134,7 @@
                             </label >
 
                         {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
-                        <input type="radio" class="btn-check" role="button"
+                        <input type="radio" class="btn-check"
                             name="as_map" value="1" autocomplete="off"
                             id="show_as_map"
                             onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
@@ -197,12 +197,12 @@
                 {% endif %}
 
                 {% if count > 0 %}
-                    <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" id="dropdown-export-{{ rand }}"
-                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
-                        <span title="{{ __("Export") }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <div class="d-inline-block" title="{{ __("Export") }}" data-bs-toggle="tooltip" data-bs-placement="top" role="none">
+                        <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" id="dropdown-export-{{ rand }}"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
                             <i id="export_dropdown_icon" class="ti ti-download"></i>
-                        </span>
-                    </button>
+                        </button>
+                    </div>
                     {% set exporthref = path('/front/report.dynamic.php') ~ "?" ~ {
                         'item_type': itemtype,
                         'sort': sort,

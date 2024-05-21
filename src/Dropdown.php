@@ -372,11 +372,9 @@ class Dropdown
 
            // Location icon
             if ($itemtype == 'Location') {
-                $location_icon = '<div class="btn btn-outline-secondary">';
-                $location_icon .= "<span title='" . __s('Display on map') . "' data-bs-toggle='tooltip' onclick='showMapForLocation(this)' data-fid='$field_id'>
-               <i class='fa-fw ti ti-map'></i>
-            </span>";
-                $location_icon .= '</div>';
+                $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
+                                       data-fid='$field_id' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
+                $location_icon .= "<i class='fa-fw ti ti-map'></i></div>";
                 $icon_array[] = $location_icon;
             }
 

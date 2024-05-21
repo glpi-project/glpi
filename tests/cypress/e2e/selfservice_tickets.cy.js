@@ -40,6 +40,7 @@ describe('Self-Service Tickets', () => {
         cy.visit('/');
 
         cy.get('aside.sidebar').contains('Create a ticket').click();
+        cy.injectAndCheckA11y();
         cy.url().should('include', '/front/helpdesk.public.php?create_ticket=1');
 
         cy.get('form.new-itil-object').within(() => {
