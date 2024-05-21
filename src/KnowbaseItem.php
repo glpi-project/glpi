@@ -1809,7 +1809,7 @@ TWIG, $twig_params);
                                 <td class="text-start">
                                     <div class="kb">
                                         {% if data['is_faq'] %}
-                                            <i class="ti ti-help faq" title="{{ faq_tooltip|e('html_attr') }}"></i>
+                                            <i class="ti ti-help faq" title="{{ faq_tooltip }}"></i>
                                         {% endif %}
                                         <a href="{{ 'KnowbaseItem'|itemtype_form_path(data['id']) }}" class="{{ data['is_faq'] ? 'faq' : 'knowbase' }}"
                                            title="{{ name }}">{{ name|u.truncate(80, '(...)') }}</a>

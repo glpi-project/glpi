@@ -67,7 +67,7 @@
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside">
                             <i class="ti ti-list-search"></i>
                             {% if active_search_name|length %}
-                                <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name|e('html_attr') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                                     {{ active_search_name }}
                                 </span>
                             {% else %}
@@ -86,7 +86,7 @@
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-arrows-sort"></i>
                         {% set sort_names = (active_sort_name|length ? active_sort_name : __("Sort")) %}
-                        <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names|e('html_attr') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                        <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names }}" data-bs-toggle="tooltip" data-bs-placement="top">
                             {{ sort_names }}
                         </span>
                     </button>

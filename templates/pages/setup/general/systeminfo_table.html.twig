@@ -85,7 +85,7 @@ Database:
 
 Requirements:
    {%- for requirement in core_requirements -%}
-      {{ "\n" }}<img src="{{ path('/pics/') ~ requirement['status'] ~ '_min.png' }}" alt="{{ requirement['messages']|join(' ')|e('html_attr') }}"/>{{ requirement['messages']|join("\n") }}
+      {{ "\n" }}<img src="{{ path('/pics/') ~ requirement['status'] ~ '_min.png' }}" alt="{{ requirement['messages']|join(' ') }}"/>{{ requirement['messages']|join("\n") }}
    {%- endfor -%}
 {% endset %}
 

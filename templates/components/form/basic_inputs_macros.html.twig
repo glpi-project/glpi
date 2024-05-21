@@ -72,7 +72,7 @@
                {{ options.disabled ? 'disabled' : '' }}
                {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
                {{ options.required ? 'required' : '' }}
-               {{ options.pattern ? ('pattern="' ~ options.pattern|e('html_attr') ~ '"')|raw : '' }}
+               {% if options.pattern is defined %}pattern="{{ options.pattern }}"{% endif %}
                {% if options.min is defined %}min="{{ options.min }}"{% endif %}
                {% if options.max is defined %}max="{{ options.max }}"{% endif %}
                {% if options.step is defined %}step="{{ options.step }}"{% endif %} />
@@ -383,7 +383,7 @@
     <input type="hidden"   name="{{ name }}" value="0" />
     <input type="checkbox" name="{{ name }}" value="1"
            class="form-check-input {{ options.input_addclass }}"
-           {{ (options.id != null ? 'id="' ~ options.id|e('html_attr') ~ '"' : '')|raw }}
+           {{ (options.id != null ? 'id="' ~ options.id|escape ~ '"' : '')|raw }}
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}
@@ -402,7 +402,7 @@
 
     <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
         {% for attr, value in options.additional_attributes %}
-            {{ attr }}="{{ value|e('html_attr') }}"
+            {{ attr }}="{{ value }}"
         {% endfor %}>
         {% if options.icon is not empty %}
             <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
@@ -436,7 +436,7 @@
               data-bs-toggle="popover"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ options.helper|raw|nl2br|escape('html_attr') }}">
+              data-bs-content="{{ options.helper|raw|nl2br|escape }}">
             ?
         </span>
         {% endset %}

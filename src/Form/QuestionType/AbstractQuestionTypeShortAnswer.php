@@ -59,10 +59,10 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
         $template = <<<TWIG
             <input
                 class="form-control mb-2"
-                type="{{ input_type|e('html_attr') }}"
+                type="{{ input_type }}"
                 name="default_value"
-                placeholder="{{ input_placeholder|e('html_attr') }}"
-                value="{{ question is not null ? question.fields.default_value|e('html_attr') : '' }}"
+                placeholder="{{ input_placeholder }}"
+                value="{{ question is not null ? question.fields.default_value : '' }}"
             />
 TWIG;
 
@@ -80,10 +80,10 @@ TWIG;
     ): string {
         $template = <<<TWIG
             <input
-                type="{{ input_type|e('html_attr') }}"
+                type="{{ input_type }}"
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
-                value="{{ question.fields.default_value|e('html_attr') }}"
+                value="{{ question.fields.default_value }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
 TWIG;

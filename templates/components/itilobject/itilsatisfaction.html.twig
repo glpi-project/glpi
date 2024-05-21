@@ -37,7 +37,7 @@
     {% if url is defined %}
         {{ fields.htmlField(
             '',
-            '<a href="' ~ url|e('html_attr') ~ '">' ~ url ~ '</a>',
+            '<a href="' ~ url|escape ~ '">' ~ url|escape ~ '</a>',
             __('External survey'),
             {
                 'input_class' : 'col-xxl-9',

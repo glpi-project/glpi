@@ -48,7 +48,7 @@
             {{ label }}
             {% if helper is not empty %}
                <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                     data-bs-content="{{ helper|e('html_attr') }}">?</span>
+                     data-bs-content="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>
@@ -70,7 +70,7 @@
              <span class="ms-2">{{ label }}</span>
             {% if helper is not empty %}
                <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                     data-bs-content="{{ helper|e('html_attr') }}">?</span>
+                     data-bs-content="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>

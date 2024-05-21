@@ -73,7 +73,7 @@
                     class="form-control content-editable-h2 mb-0"
                     type="text"
                     name="name"
-                    value="{{ question is not null ? question.fields.name|e('html_attr') : '' }}"
+                    value="{{ question is not null ? question.fields.name : '' }}"
                     placeholder="{{ __("New question") }}"
                     data-glpi-form-editor-dynamic-input
                     data-glpi-form-editor-on-input="compute-dynamic-input"

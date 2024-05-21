@@ -35,7 +35,7 @@
 
 {% macro icon_msg(message, icon) %}
    <td class="icons_block">
-      <i class="{{ icon }}" title="{{ message|e('html_attr') }}" data-bs-toggle="tooltip"></i>
+      <i class="{{ icon }}" title="{{ message }}" data-bs-toggle="tooltip"></i>
       <span class="sr-only">{{ message }}</span>
    </td>
 {% endmacro %}

@@ -64,16 +64,16 @@
             <label class="d-flex align-items-center gap-2 form-check form-switch mt-2">
                 <input type="checkbox"
                     name="capacities[]"
-                    value="{{ get_class(capacity)|e('html_attr') }}"
+                    value="{{ get_class(capacity) }}"
                     class="form-check-input"
                     id="%id%"
-                    data-capacity="{{ get_class(capacity)|e('html_attr') }}"
+                    data-capacity="{{ get_class(capacity) }}"
                     data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
                     {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
                 <i class="ti ti-alert-circle-filled text-red fs-2 d-none"
-                    data-capacity="{{ get_class(capacity)|e('html_attr') }}"
+                    data-capacity="{{ get_class(capacity) }}"
                     data-bs-toggle="tooltip"
-                    title="{{ capacity.getCapacityUsageDescription(classname)|e('html_attr') }}"></i>
+                    title="{{ capacity.getCapacityUsageDescription(classname) }}"></i>
             </label>
         {% endset %}
         {{ fields.field('capacities[]', field, label) }}
@@ -95,7 +95,7 @@
                     </div>
                     <div class="list-group list-group-flush list-group-hoverable text-start mt-2">
                         {% for capacity in capacities|filter(capacity => capacity.isUsed(classname)) %}
-                            <div class="list-group-item p-3 d-none" data-capacity="{{ get_class(capacity)|e('html_attr') }}">
+                            <div class="list-group-item p-3 d-none" data-capacity="{{ get_class(capacity) }}">
                                 <div class="row align-items-center">
                                     <div class="col text-truncate ms-6">
                                         <span class="text-reset d-block">{{ capacity.getLabel() }}</span>

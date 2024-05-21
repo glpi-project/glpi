@@ -171,8 +171,8 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                     class="w-full"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
-                    value="{{ value|e('html_attr') }}"
-                    placeholder="{{ placeholder|e('html_attr') }}"
+                    value="{{ value }}"
+                    placeholder="{{ placeholder }}"
                 >
                 <i
                     data-glpi-form-editor-question-extra-details
@@ -232,7 +232,7 @@ TWIG;
                     <input
                         type="{{ input_type }}"
                         name="{{ question.getEndUserInputName() }}"
-                        value="{{ value.value|e('html_attr') }}"
+                        value="{{ value.value }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
                     <span class="form-check-label">{{ value.value }}</span>
