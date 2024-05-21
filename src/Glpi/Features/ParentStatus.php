@@ -173,7 +173,11 @@ trait ParentStatus
                     || $needupdateparent)
             ) {
                 $input['_status'] = CommonITILObject::PLANNED;
-            } elseif ($parentitem->fields["status"] == CommonITILObject::PLANNED) {
+            } elseif (
+                $parentitem->fields["status"] == CommonITILObject::PLANNED
+                && in_array('begin', $this->updates)
+                && $this->isField('begin')
+            ) {
                 /** @var \DBmysql $DB */
                 global $DB;
                 $criteria = [

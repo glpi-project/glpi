@@ -500,6 +500,26 @@ class TicketTask extends DbTestCase
         ]))->isTrue();
 
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+
+        // Check that adding a followup on a ticket that has the CommonITILObject::PLANNED status will not fail.
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticket_id,
+            'content'            => "Planned Task",
+            'begin'              => $date_begin_string,
+            'end'                => $date_end_string,
+        ]))->isTrue();
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+
+        $followup = new \ITILFollowup();
+        $this->integer($followup->add([
+            'itemtype'   => 'Ticket',
+            'items_id'   => $ticket_id,
+            'content'    => 'Followup on planned ticket',
+        ]))->isGreaterThan(0);
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
     }
 
     public function testUpdateParentStatus()
