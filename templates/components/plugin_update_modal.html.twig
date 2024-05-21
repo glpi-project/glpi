@@ -45,7 +45,7 @@
                 <i class="fa-2x ti ti-info-circle mb-2 text-info"></i>
                 <h3>{{ _x('button', 'Update ?') }}</h3>
                 <div class="text-muted">{{ __('A new update is available for the %s plugin.')|escape|format('<strong>' ~ plugin_name ~ '</strong>')|raw }}</div>
-                <div class="text-muted">{{ ('Update to version <strong><code>%to_version%</code></strong> ?'|replace({'%to_version%': to_version}))|raw }}</div>
+                <div class="text-muted">{{ __('Update to version %s ?')|escape|format('<strong><code>' ~ to_version ~ '</strong></code>')|raw }}</div>
             </div>
             <div class="modal-footer">
                 <div class="w-100">
