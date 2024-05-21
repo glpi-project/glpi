@@ -111,7 +111,7 @@ if (!$DB->tableExists('glpi_forms_comments')) {
             `rank` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
-            KEY `forms_sections_id` (`forms_forms_id`)
+            KEY `forms_sections_id` (`forms_sections_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
