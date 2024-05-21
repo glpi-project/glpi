@@ -2461,14 +2461,14 @@ class Plugin extends CommonDBTM
                 }
 
                 if (in_array($state, [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED], true)) {
-                   // Install button for new, not installed or not up to date plugins
+                    // Install button for new, not installed or not up to date plugins
                     if (function_exists("plugin_" . $directory . "_install")) {
                         $function   = 'plugin_' . $directory . '_check_prerequisites';
 
                         ob_start();
                         $do_install = $plugin->checkVersions($directory);
                         if (!$do_install) {
-                             $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                            $output .= "<span class='error'>" . ob_get_contents() . "</span>";
                         }
                         ob_end_clean();
 
@@ -2484,24 +2484,43 @@ class Plugin extends CommonDBTM
                         }
                         if ($state == self::NOTUPDATED) {
                             $msg = _x('button', 'Upgrade');
+                            $output .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
+                                'plugin_name' => $plugin->getField('name'),
+                                'to_version' => $plugin->getField('version'),
+                                'modal_id' => 'updateModal' . $plugin->getField('directory'),
+                                'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-plus fa-2x me-1"
+                                                          data-bs-toggle="modal"
+                                                          data-bs-target="#updateModal' . $plugin->getField('directory') . '"
+                                                          title="' . __s("Update") . '">
+                                                          <span class="sr-only">' . __s("Update") . '</span>
+                                                      </span></a>',
+                                'update_btn' => Html::getSimpleForm(
+                                    static::getFormURL(),
+                                    ['action' => 'install'],
+                                    $msg,
+                                    ['id' => $ID],
+                                    '',
+                                    'class="btn btn-warning w-100"'
+                                ),
+                            ]);
                         } else {
                             $msg = _x('button', 'Install');
-                        }
-                        if ($do_install) {
-                            $output .= Html::getSimpleForm(
-                                static::getFormURL(),
-                                ['action' => 'install'],
-                                $msg,
-                                ['id' => $ID],
-                                'fa-fw fa-folder-plus fa-2x me-1'
-                            );
+                            if ($do_install) {
+                                $output .= Html::getSimpleForm(
+                                    static::getFormURL(),
+                                    ['action' => 'install'],
+                                    $msg,
+                                    ['id' => $ID],
+                                    'fa-fw fa-folder-plus fa-2x me-1'
+                                );
+                            }
                         }
                     } else {
                         $missing = '';
                         if (!function_exists("plugin_" . $directory . "_install")) {
                             $missing .= "plugin_" . $directory . "_install";
                         }
-                       //TRANS: %s is the list of missing functions
+                        //TRANS: %s is the list of missing functions
                         $output .= sprintf(
                             __('%1$s: %2$s'),
                             __('Non-existent function'),
