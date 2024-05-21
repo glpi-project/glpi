@@ -34,6 +34,28 @@
  * ---------------------------------------------------------------------
  */
 
+// Try detecting if we are running with the root user (Not available on Windows)
+if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    // Translation functions not available here
+    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+
+    if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
+        if (in_array('-n', $_SERVER['argv'], true) || in_array('--no-interaction', $_SERVER['argv'], true)) {
+            echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+            exit(1);
+        } else {
+            echo "\t" . 'Do you want to continue anyway? [yes/No]' . ' ';
+            $handle = fopen('php://stdin', 'rb');
+            $line = fgets($handle);
+            fclose($handle);
+            if (trim($line) !== 'yes' && trim($line) !== 'y') {
+                exit(1);
+            }
+        }
+    }
+}
+
 // Extract command line arguments
 $options = [];
 if (isset($_SERVER['argv'])) {

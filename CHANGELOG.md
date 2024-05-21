@@ -64,6 +64,7 @@ The present file will list all changes made to the project; according to the
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
 - The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
 - List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
+- Running `front/cron.php` or `bin/console` will attempt to check and block execution if running as root.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
