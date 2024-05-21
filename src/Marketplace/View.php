@@ -809,7 +809,7 @@ HTML;
             } else if ($can_be_updated) {
                 $update_title = sprintf(
                     __s("A new version (%s) is available, update?", 'marketplace'),
-                    $web_update_version
+                    htmlspecialchars($web_update_version)
                 );
 
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
