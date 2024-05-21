@@ -912,6 +912,14 @@ class Form extends DbTestCase
      */
     public function testCleanDBonPurge(): void
     {
+        // Count existing data to make sure residual data in the tests database
+        // doesn't cause a failure when running tests locally.
+        $forms = countElementsInTable(\Glpi\Form\Form::getTable());
+        $questions = countElementsInTable(Question::getTable());
+        $sections = countElementsInTable(Section::getTable());
+        $destinations = countElementsInTable(FormDestination::getTable());
+        $access_controls = countElementsInTable(FormAccessControl::getTable());
+
         // Test subject that we are going to delete
         $form_to_be_deleted = $this->createForm(
             (new FormBuilder())
@@ -939,23 +947,23 @@ class Form extends DbTestCase
         // Count items before deletion
         $this
             ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
-            ->isEqualTo(2)
+            ->isEqualTo(2 + $forms)
         ;
         $this
             ->integer(countElementsInTable(Question::getTable()))
-            ->isEqualTo(6) // 5 (to delete) + 1 (control)
+            ->isEqualTo(6 + $questions) // 5 (to delete) + 1 (control)
         ;
         $this
             ->integer(countElementsInTable(Section::getTable()))
-            ->isEqualTo(3) // 2 (to delete) + 1 (control)
+            ->isEqualTo(3 + $sections) // 2 (to delete) + 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))
-            ->isEqualTo(2) // 1 (to delete) + 1 (control)
+            ->isEqualTo(2 + $destinations) // 1 (to delete) + 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormAccessControl::getTable()))
-            ->isEqualTo(3) // 2 (to delete) + 1 (control)
+            ->isEqualTo(3 + $access_controls) // 2 (to delete) + 1 (control)
         ;
 
         // Delete item
@@ -968,23 +976,23 @@ class Form extends DbTestCase
         // Re count items after deletion
         $this
             ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
-            ->isEqualTo(1)
+            ->isEqualTo(1 + $forms)
         ;
         $this
             ->integer(countElementsInTable(Question::getTable()))
-            ->isEqualTo(1) // 1 (control)
+            ->isEqualTo(1 + $questions) // 1 (control)
         ;
         $this
             ->integer(countElementsInTable(Section::getTable()))
-            ->isEqualTo(1) // 1 (control)
+            ->isEqualTo(1 + $sections) // 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))
-            ->isEqualTo(1) // 1 (control)
+            ->isEqualTo(1 + $destinations) // 1 (control)
         ;
         $this
             ->integer(countElementsInTable(FormAccessControl::getTable()))
-            ->isEqualTo(1) // 1 (control)
+            ->isEqualTo(1 + $access_controls) // 1 (control)
         ;
     }
 }
