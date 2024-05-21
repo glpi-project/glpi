@@ -48,7 +48,7 @@ final class AnswerTagProvider implements TagProviderInterface
         $tags = [];
         foreach ($form->getQuestions() as $questions) {
             $tags[] = new Tag(
-                label: "Answer: {$questions->fields['name']}",
+                label: sprintf(__('Answer: %s'), $questions->fields['name']),
                 value: $questions->getId(),
                 provider: self::class,
             );
