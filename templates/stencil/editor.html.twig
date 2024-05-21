@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (params['save_zone_data_label']|default(__("Save zone data")) ~ ' (' ~ _x('keyboard', 'Enter') ~ ')')|escape('html_attr') }}">
+                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (params['save_zone_data_label']|default(__("Save zone data")) ~ ' (' ~ _x('keyboard', 'Enter') ~ ')') }}">
                         <i class="ti ti-device-floppy"></i>
                         {% if params.save_zone_data_label is defined %}
                             <span>{{ params['save_zone_data_label'] }}</span>
@@ -125,7 +125,7 @@
                         <i class="ti ti-trash"></i>
                         <span>{{ __("Reset") }}</span>
                     </button>
-                    <button type="button" id="cancel-zone-data-{{ rand }}" class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (__("Cancel") ~ ' (' ~ _x('keyboard', 'Esc') ~ ')')|escape('html_attr') }}">
+                    <button type="button" id="cancel-zone-data-{{ rand }}" class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (__("Cancel") ~ ' (' ~ _x('keyboard', 'Esc') ~ ')') }}">
                         <i class="ti ti-x"></i>
                         <span>{{ __("Cancel") }}</span>
                     </button>

@@ -36,12 +36,12 @@
         {% if stencil.getZonePopover(params.is_editor_view, zone) != null %}
             {% set popover_attrs %}
                 data-bs-toggle="popover" data-bs-html="true"
-                data-bs-content="{{ stencil.getZonePopover(params.is_editor_view, zone)|e('html_attr') }}"
+                data-bs-content="{{ stencil.getZonePopover(params.is_editor_view, zone) }}"
             {% endset %}
         {% else %}
             {% set tooltip_attrs %}
                 data-bs-toggle="tooltip"
-                data-bs-title="{{ zone['label']|e('html_attr') }}"
+                data-bs-title="{{ zone['label'] }}"
             {% endset %}
         {% endif %}
 

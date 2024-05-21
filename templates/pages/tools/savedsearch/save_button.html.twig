@@ -46,4 +46,4 @@
         title="{{ __('Save current search') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
    <i class="ti ti-bookmark-plus {{ active ? 'active text-yellow' : '' }}"></i>
 </button>
-<div id="savedsearch-modal" class="modal" data-params="{{ params|json_encode|e('html_attr') }}"></div>
+<div id="savedsearch-modal" class="modal" data-params="{{ params|json_encode }}"></div>

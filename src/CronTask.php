@@ -1954,7 +1954,7 @@ TWIG, ['msg' => __('Last run list')]);
                 <span class="alert alert-warning p-1 ps-2">
                     <i class="ti ti-alert-triangle me-2"></i>
                     <span>{{ msg }}</span>
-                    <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ warnings|escape('html_attr') }}">
+                    <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ warnings }}">
                         ?
                     </span>
                 </span>

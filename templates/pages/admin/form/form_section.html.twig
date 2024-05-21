@@ -81,7 +81,7 @@
                         type="text"
                         class="form-control content-editable-h2 mb-0"
                         name="name"
-                        value="{{ section is not null ? section.fields.name|e('html_attr') : '' }}"
+                        value="{{ section is not null ? section.fields.name : '' }}"
                         placeholder="{{ __("New section") }}"
                         data-glpi-form-editor-section-details-name
                     >

@@ -176,11 +176,11 @@ class QuestionTypeDateTime extends AbstractQuestionType
                 <div class="col-5">
                     <input
                         class="form-control mb-2"
-                        type="{{ input_type|e('html_attr') }}"
+                        type="{{ input_type }}"
                         id="date_input_{{ rand }}"
                         name="default_value"
-                        placeholder="{{ placeholders.input[input_type_ignore_text]|e('html_attr') }}"
-                        value="{{ default_value|e('html_attr') }}"
+                        placeholder="{{ placeholders.input[input_type_ignore_text] }}"
+                        value="{{ default_value }}"
                         {{ is_default_value_current_time ? 'disabled' : '' }}
                     />
                 </div>
@@ -322,10 +322,10 @@ TWIG;
     ): string {
         $template = <<<TWIG
             <input
-                type="{{ input_type|e('html_attr') }}"
+                type="{{ input_type }}"
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
-                value="{{ default_value|e('html_attr') }}"
+                value="{{ default_value }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
 TWIG;
