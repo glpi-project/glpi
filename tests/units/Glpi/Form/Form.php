@@ -995,4 +995,71 @@ class Form extends DbTestCase
             ->isEqualTo(1 + $access_controls) // 1 (control)
         ;
     }
+
+    /**
+     * Test the purgedraftforms cron task
+     */
+    public function testCronTaskPurgeDraftForms()
+    {
+        global $DB;
+
+        // Count existing data to make sure residual data in the tests database
+        // doesn't cause a failure when running tests locally.
+        $forms = countElementsInTable(\Glpi\Form\Form::getTable());
+        $questions = countElementsInTable(Question::getTable());
+        $sections = countElementsInTable(Section::getTable());
+        $destinations = countElementsInTable(FormDestination::getTable());
+        $access_controls = countElementsInTable(FormAccessControl::getTable());
+
+        // Create a draft form
+        $this->createForm((new FormBuilder())->setIsDraft(true));
+
+        // Run the cron task
+        \Glpi\Form\Form::cronPurgeDraftForms();
+
+        // Ensure the draft form wasn't deleted because it was created less than 1 day ago
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(1 + $forms);
+
+        // Create a draft form that was created more than 1 day ago
+        $form = $this->createForm(
+            (new FormBuilder())->setIsDraft(true)
+                ->addSection('Section 1')
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
+        );
+        $DB->update(
+            \Glpi\Form\Form::getTable(),
+            [
+                'date_mod' => date('Y-m-d H:i:s', strtotime('-2 days')),
+            ],
+            [
+                'id' => $form->getID(),
+            ]
+        );
+
+        // Run the cron task
+        \Glpi\Form\Form::cronPurgeDraftForms();
+
+        // Ensure the draft form was deleted
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(1 + $forms);
+
+        // Ensure all related data was deleted
+        $this
+            ->integer(countElementsInTable(Question::getTable()))
+            ->isEqualTo($questions);
+        $this
+            ->integer(countElementsInTable(Section::getTable()))
+            ->isEqualTo($sections);
+        $this
+            ->integer(countElementsInTable(FormDestination::getTable()))
+            ->isEqualTo($destinations);
+        $this
+            ->integer(countElementsInTable(FormAccessControl::getTable()))
+            ->isEqualTo($access_controls);
+    }
 }
