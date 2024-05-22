@@ -169,6 +169,26 @@ class GlpiFormEditorController
             }
         });
 
+        // Handle form submit success event
+        $(this.#target).on('glpi-ajax-controller-submit-success', () => {
+            // Reset unsaved changes
+            this.#updatePreviewButton();
+
+            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action');
+            if (save_and_preview_button.get(0) === $(document.activeElement).get(0)) {
+                // Open the preview page in a new tab
+                window.open(save_and_preview_button.data('glpi-form-editor-preview-url'), '_blank');
+            }
+        });
+
+        let last_form_changes = window.glpiUnsavedFormChanges;
+        setInterval(() => {
+            if (last_form_changes !== window.glpiUnsavedFormChanges) {
+                this.#updatePreviewButton();
+            }
+            last_form_changes = window.glpiUnsavedFormChanges;
+        }, 500);
+
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
@@ -1625,5 +1645,19 @@ class GlpiFormEditorController
         ids.forEach((id) => {
             tinymce.init(window.tinymce_editor_configs[id]);
         });
+    }
+
+    #updatePreviewButton() {
+        if (window.glpiUnsavedFormChanges) {
+            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
+                .find('[data-glpi-form-editor-preview-action]').addClass('d-none');
+            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
+                .find('[data-glpi-form-editor-save-and-preview-action]').removeClass('d-none');
+        } else {
+            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
+                .find('[data-glpi-form-editor-preview-action]').removeClass('d-none');
+            $(this.#target).find('[data-glpi-form-editor-preview-actions]')
+                .find('[data-glpi-form-editor-save-and-preview-action]').addClass('d-none');
+        }
     }
 }
