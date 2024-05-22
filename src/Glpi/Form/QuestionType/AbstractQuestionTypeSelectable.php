@@ -180,7 +180,7 @@ TWIG;
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, checked, value, placeholder, uuid = null, extra_details = false, disabled = false) %}
+        {% macro addOption(input_type, checked, value, translations, uuid = null, extra_details = false, disabled = false) %}
             {% if uuid is null %}
                 {% set uuid = random() %}
             {% endif %}
@@ -191,7 +191,7 @@ TWIG;
             >
                 <i
                     role="button"
-                    aria-label="{{ __('Move option') }}"
+                    aria-label="{{ translations.move_option }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-handle
                     class="ti ti-grip-horizontal cursor-grab ms-auto me-1"
@@ -203,7 +203,7 @@ TWIG;
                     name="default_value[]"
                     value="{{ uuid }}"
                     class="form-check-input" {{ checked ? 'checked' : '' }}
-                    aria-label="{{ __('Default option') }}"
+                    aria-label="{{ translations.default_option }}"
                     {{ disabled ? 'disabled' : '' }}
                 >
                 <input
@@ -213,12 +213,12 @@ TWIG;
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
-                    placeholder="{{ placeholder }}"
-                    aria-label="{{ __('Selectable option') }}"
+                    placeholder="{{ translations.enter_option }}"
+                    aria-label="{{ translations.selectable_option }}"
                 >
                 <i
                     role="button"
-                    aria-label="{{ __('Remove option') }}"
+                    aria-label="{{ translations.remove_option }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-remove
                     class="ti ti-x fa-lg text-muted ml-2 {{ value ? '' : 'd-none' }}"
@@ -228,7 +228,7 @@ TWIG;
         {% endmacro %}
 
         <template>
-            {{ _self.addOption(input_type, false, '', input_placeholder, null, true, true) }}
+            {{ _self.addOption(input_type, false, '', translations, null, true, true) }}
         </template>
 
         <div
@@ -236,11 +236,11 @@ TWIG;
             {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
         >
             {% for value in values %}
-                {{ _self.addOption(input_type, value.checked, value.value, input_placeholder, value.uuid) }}
+                {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid) }}
             {% endfor %}
         </div>
 
-        {{ _self.addOption(input_type, false, '', input_placeholder, null, true, true) }}
+        {{ _self.addOption(input_type, false, '', translations, null, true, true) }}
 
         <script>
             {$this->getFooterScript()}
@@ -253,8 +253,14 @@ TWIG;
             'question_type'     => $this::class,
             'values'            => $this->getValues($question),
             'input_type'        => $this->getInputType($question),
-            'input_placeholder' => __('Enter an option'),
             'hide_container_when_unfocused' => $this->hideOptionsContainerWhenUnfocused(),
+            'translations'      => [
+                'move_option'   => __('Move option'),
+                'default_option' => __('Default option'),
+                'remove_option' => __('Remove option'),
+                'selectable_option' => __('Selectable option'),
+                'enter_option' => __('Enter an option'),
+            ]
         ]);
     }
 

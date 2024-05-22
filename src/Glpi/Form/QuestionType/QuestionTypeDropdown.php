@@ -194,7 +194,7 @@ TWIG;
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
             {{ fields.dropdownArrayField(
-                'answers[' ~ question.fields.id ~ ']',
+                question.getEndUserInputName(),
                 not is_multiple ? checked_values|first : '',
                 values,
                 '',

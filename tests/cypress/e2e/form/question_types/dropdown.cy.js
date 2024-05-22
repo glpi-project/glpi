@@ -48,7 +48,7 @@ describe('Dropdown form question type', () => {
             cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
 
             // Set the question name
-            cy.findByRole("textbox", { name: "Question title" }).should('exist').type("Test dropdown question");
+            cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test dropdown question");
 
             // Store the question section
             cy.findByRole("option", { name: /New question|Test dropdown question/ }).should('exist').as('question');

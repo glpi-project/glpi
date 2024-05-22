@@ -44,6 +44,8 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
     constructor(inputType = null, container = null) {
         super(inputType, container);
 
+        this._container.on('sortupdate', (event) => this.#handleSortableUpdate(event));
+
         this._container.closest('[data-glpi-form-editor-question-details]')
             .find('div[data-glpi-form-editor-specific-question-options]')
             .find('input[data-glpi-form-editor-original-name=is_multiple_dropdown]')
@@ -130,6 +132,15 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
             .on('change', () => {
                 this.#updateDropdownOptions();
             });
+    }
+
+    /**
+     * Handle the sortable update event.
+     *
+     * @param {Event} event - The sortable update event.
+     */
+    #handleSortableUpdate(event) {
+        this.#updateDropdownOptions();
     }
 
     onAddOption(option) {
