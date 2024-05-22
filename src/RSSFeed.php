@@ -752,7 +752,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href='" . RSSFeed::getSearchURL() . "'>" .
+                $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
                        _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
                 $titre = _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
