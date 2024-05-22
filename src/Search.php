@@ -4573,8 +4573,38 @@ JAVASCRIPT;
                     break;
                 }
 
+                // Build base condition using entity restrictions
+                $condition = "(";
+                $condition .= getEntitiesRestrictRequest(
+                    '',
+                    'glpi_tickets_items_id_' . self::computeComplexJoinID([
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Ticket::getType() . '"'
+                    ]),
+                    'entities_id',
+                    ''
+                );
+                $condition .= " OR ";
+                $condition .= getEntitiesRestrictRequest(
+                    '',
+                    'glpi_changes_items_id_' . self::computeComplexJoinID([
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Change::getType() . '"'
+                    ]),
+                    'entities_id',
+                    ''
+                );
+                $condition .= " OR ";
+                $condition .= getEntitiesRestrictRequest(
+                    '',
+                    'glpi_problems_items_id_' . self::computeComplexJoinID([
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Problem::getType() . '"'
+                    ]),
+                    'entities_id',
+                    ''
+                );
+                $condition .= ") ";
+
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $condition = "(`glpi_itilfollowups`.`is_private` $in ";
+                $condition .= " AND (`glpi_itilfollowups`.`is_private` $in ";
 
                // Now filter on parent item visiblity
                 $condition .= "AND (";
@@ -5836,6 +5866,45 @@ JAVASCRIPT;
                         }
                     }
                 }
+                break;
+
+            case ITILFollowup::class:
+                $out .= self::addLeftJoin(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    Ticket::getTable(),
+                    'items_id',
+                    false,
+                    '',
+                    [
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Ticket::getType() . '"'
+                    ]
+                );
+                $out .= self::addLeftJoin(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    Change::getTable(),
+                    'items_id',
+                    false,
+                    '',
+                    [
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Change::getType() . '"'
+                    ]
+                );
+                $out .= self::addLeftJoin(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    Problem::getTable(),
+                    'items_id',
+                    false,
+                    '',
+                    [
+                        'condition' => 'AND REFTABLE.`itemtype` = "' . Problem::getType() . '"'
+                    ]
+                );
                 break;
 
             default:
