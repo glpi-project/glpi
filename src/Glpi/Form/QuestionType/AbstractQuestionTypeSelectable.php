@@ -68,7 +68,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
      *
      * @return string
      */
-    public function getFooterScript(): string
+    protected function getFooterScript(): string
     {
         $js = <<<TWIG
             $(document).ready(function() {

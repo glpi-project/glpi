@@ -50,8 +50,7 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
             .find('div[data-glpi-form-editor-specific-question-options]')
             .find('input[data-glpi-form-editor-original-name=is_multiple_dropdown]')
             .on('change', (event) => {
-                this._inputType = event.target.checked ? 'checkbox' : 'radio';
-                this.#updateInputType(this._inputType);
+                this.#updateInputType(event.target.checked ? 'checkbox' : 'radio');
                 this.#updateDropdownOptions();
             });
 
@@ -84,6 +83,7 @@ class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
      * @param {string} inputType
      */
     #updateInputType(inputType) {
+        this._inputType = inputType;
         this._container.closest('[data-glpi-form-editor-question-type-specific]')
             .find('input[type="checkbox"], input[type="radio"]').each((index, element) => {
                 $(element).attr('type', inputType);

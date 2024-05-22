@@ -84,7 +84,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
     }
 
     #[Override]
-    public function getFooterScript(): string
+    protected function getFooterScript(): string
     {
         $js = <<<TWIG
             $(document).ready(function() {

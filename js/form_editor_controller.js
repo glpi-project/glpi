@@ -487,8 +487,9 @@ class GlpiFormEditorController
 
             // Update input name
             let postfix = "";
-            if (typeof field === 'string' && field.match(/\[([\w-[\]]*)\]$/g)) {
-                postfix = field.match(/\[([\w-[\]]*)\]$/g);
+            cons postfix_pattern = new RegExp('\[([\w-\[\]]*)\]$', 'g');
+            if (typeof field === 'string' && postfix_pattern.test(field)) {
+                postfix = field.match(postfix_pattern);
                 field = field.replace(postfix, "");
             }
 
