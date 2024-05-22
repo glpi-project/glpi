@@ -49,7 +49,7 @@
       {{ fields.dropdownArrayField('server_type', type_value, protocols, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {% set ssl_value = connect_opts['ssl'] ? '/ssl' : '' %}
       {{ fields.dropdownArrayField('server_ssl', ssl_value, {
@@ -57,7 +57,7 @@
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {% set tls_value = connect_opts['tls'] is same as(true) ? '/tls' : (connect_opts['tls'] is same as (false) ? '/notls' : '') %}
       {{ fields.dropdownArrayField('server_tls', tls_value, {
@@ -66,7 +66,7 @@
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {% set cert_value = connect_opts['validate-cert']is same as(true) ? '/validate-cert' : (connect_opts['validate-cert'] is same as(false) ? '/novalidate-cert' : '') %}
       {{ fields.dropdownArrayField('server_cert', cert_value, {
@@ -75,28 +75,28 @@
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {{ fields.dropdownArrayField('server_rsh', connect_opts['norsh'] == true ? '/norsh' : '', {
          '/norsh': __('NORSH'),
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {{ fields.dropdownArrayField('server_secure', connect_opts['secure'] == true ? '/secure' : '', {
          '/secure': __('SECURE'),
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
       {{ fields.dropdownArrayField('server_debug', connect_opts['debug'] == true ? '/debug' : '', {
          '/debug': __('DEBUG'),
       }, '', {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'col-5'
+         field_class: 'me-2'
       }) }}
    </div>
 {% endset %}
