@@ -52,6 +52,7 @@ class Hooks
     const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
     const INIT_SESSION                = 'init_session';
     const POST_INIT                   = 'post_init';
+    const CONFIG_PAGE                 = 'config_page';
 
    // Specific function hooks with parameters
     const RULE_MATCHED          = 'rule_matched';
@@ -168,6 +169,7 @@ class Hooks
         return [
             self::CHANGE_ENTITY,
             self::CHANGE_PROFILE,
+            self::CONFIG_PAGE,
             self::DISPLAY_LOCKED_FIELDS,
             self::DISPLAY_LOGIN,
             self::DISPLAY_CENTRAL,
