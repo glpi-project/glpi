@@ -4344,16 +4344,18 @@ JAVASCRIPT;
 
             case 'ProjectTask':
                 $condition  = '';
-                $teamtable  = 'glpi_projecttaskteams';
                 $condition .= "`glpi_projects`.`is_template` = 0";
-                $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
-                             AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
-                if (count($_SESSION['glpigroups'])) {
-                    $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                    AND `$teamtable`.`items_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                if (!Session::haveRight("projecttask", Project::READALL)) {
+                    $teamtable  = 'glpi_projecttaskteams';
+                    $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
+                                 AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
+                    if (count($_SESSION['glpigroups'])) {
+                        $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
+                                        AND `$teamtable`.`items_id`
+                                           IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                    }
+                    $condition .= ") ";
                 }
-                $condition .= ") ";
                 break;
 
             case 'Project':
