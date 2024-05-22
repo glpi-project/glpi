@@ -103,7 +103,7 @@ class Html extends \GLPITestCase
     public function testCleanInputText()
     {
         $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
+        $expected = 'This is a &#039;string&#039; with some &quot;replacements&quot; needed, but not « others »!';
         $this->string(@\Html::cleanInputText($origin))->isIdenticalTo($expected);
     }
 
