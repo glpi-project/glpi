@@ -34,6 +34,7 @@
  */
 
 namespace tests\units\Glpi\RichText;
+
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 
