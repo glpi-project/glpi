@@ -736,7 +736,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             $criteria['WHERE']["$table.users_id"] = $users_id;
             $criteria['WHERE']["$table.is_active"] = 1;
 
-            $titre = "<a href='" . htmlspecialchars($CFG_GLPI["root_doc"] . "/front/rssfeed.php") . "'>" .
+            $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
                     _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
            // Show public rssfeeds / not mines : need to have access to public rssfeeds
@@ -752,10 +752,10 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/rssfeed.php\">" .
-                       _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
+                $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
+                       _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
-                $titre = _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
+                $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
             }
         }
 
@@ -779,7 +779,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         $output = "";
         $output .= "<table class='table table-striped table-hover card-table'>";
         $output .= "<thead>";
-        $output .= "<tr class='noHover'><th colspan='2'><div class='relative'><span>" . htmlspecialchars($titre) . "</span>";
+        $output .= "<tr class='noHover'><th colspan='2'><div class='relative'><span>" . $titre . "</span>";
 
         if (
             ($personal && self::canCreate())
