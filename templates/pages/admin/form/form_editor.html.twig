@@ -121,7 +121,7 @@
                                 </div>
 
                                 {# Form's hader #}
-                                <div class="content-editable-tinymce">
+                                <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
                                     {{ fields.textareaField(
                                         'header',
                                         item.fields.header,
@@ -183,18 +183,33 @@
         {# Preview form action #}
         {# Mostly useful to test forms ATM. Final UI/UX are not really thought out #}
         {# TODO: UI/UX #}
-        <a
-            href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
-            target="_blank"
-            class="btn btn-secondary me-auto"
-            type="button"
-            name="preview"
-            form="form-form"
-            title="{{ __("Preview") }}"
-        >
-            <i class="ti ti-eye me-1"></i>
-            <span class="d-none d-xl-block">{{ __("Preview") }}</span>
-        </a>
+        <div class="me-auto" data-glpi-form-editor-preview-actions>
+            <a
+                href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
+                target="_blank"
+                class="btn btn-secondary"
+                type="button"
+                name="preview"
+                form="form-form"
+                title="{{ __("Preview") }}"
+                data-glpi-form-editor-preview-action
+            >
+                <i class="ti ti-eye me-1"></i>
+                <span class="d-none d-xl-block">{{ __("Preview") }}</span>
+            </a>
+            <button
+                class="btn btn-secondary d-none"
+                type="submit"
+                name="update"
+                form="form-form"
+                title="{{ __("Save and preview") }}"
+                data-glpi-form-editor-save-and-preview-action
+                data-glpi-form-editor-preview-url="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
+            >
+                <i class="ti ti-eye me-1"></i>
+                <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
+            </button>
+        </div>
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}

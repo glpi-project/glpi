@@ -48,9 +48,10 @@
     'no_label'     : true,
 } %}
 
-<div
+<section
     data-glpi-form-editor-section
     class="mt-4"
+    aria-label="{{ __("Form section") }}"
 >
     <div
         class="bg-primary px-2 py-1 rounded-top {{ show_section_form ? "" : "d-none" }}"
@@ -78,6 +79,7 @@
                 <div class="d-flex">
                     {# Section's name #}
                     <input
+                        title="{{ __("Section name") }}"
                         type="text"
                         class="form-control content-editable-h2 mb-0"
                         name="name"
@@ -101,6 +103,8 @@
                             class="ti ti-dots-vertical show"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
+                            role="button"
+                            aria-label="{{ __('Section actions') }}"
                         ></i>
                         <ul class="dropdown-menu" data-bs-popper="none">
                             <li>
@@ -129,6 +133,7 @@
                                 <a
                                     href="#"
                                     class="dropdown-item {{ section_index == 1 ? "d-none" : "" }}"
+                                    aria-label="{{ __('Merge with previous section') }}"
                                     data-glpi-form-editor-on-click="merge-with-previous-section"
                                 >
                                     <i class="ti ti-arrow-merge me-2"></i>
@@ -162,6 +167,7 @@
                         base_field_options|merge({
                             'enable_richtext': true,
                             'placeholder': __('Add a description to this section...'),
+                            'aria_label': __('Section description'),
                             'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
                             'editor_height': "0",
                             'rows' : 1,
@@ -210,5 +216,5 @@
         {% endfor %}
     </div>
 
-</div>
+</section>
 
