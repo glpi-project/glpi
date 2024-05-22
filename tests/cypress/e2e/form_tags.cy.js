@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+let last_name_question_id;
+
 describe('Form tags', () => {
     beforeEach(() => {
         cy.createWithAPI('Glpi\\Form\\Form', {
@@ -40,6 +42,24 @@ describe('Form tags', () => {
                 'forms_forms_id': form_id,
                 'itemtype': 'Glpi\\Form\\Destination\\FormDestinationTicket',
                 'name': 'Test ticket 1',
+            });
+
+            cy.createWithAPI('Glpi\\Form\\Section', {
+                'name': 'Section 1',
+                'forms_forms_id': form_id,
+            }).then((section_id) => {
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'First name',
+                    'forms_sections_id': section_id,
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                });
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'Last name',
+                    'forms_sections_id': section_id,
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                }).then((question_id) => {
+                    last_name_question_id = question_id;
+                });
             });
         });
 
@@ -55,28 +75,25 @@ describe('Form tags', () => {
 
     it('tags autocompletion is loaded and values are preserved on reload', () => {
         // Auto completion is not yet opened
-        cy.findByRole("menuitem", {name: "Exemple tag 1"}).should('not.exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 2"}).should('not.exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 3"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Question: First name"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
 
         // Use autocomplete
         cy.findByLabelText("Content").awaitTinyMCE().as("rich_text_editor");
         cy.get("@rich_text_editor").type("#");
-        cy.findByRole("menuitem", {name: "Exemple tag 1"}).should('exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 2"}).should('exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 3"}).should('exist').click();
+        cy.findByRole("menuitem", {name: "Question: First name"}).should('exist');
+        cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist').click();
 
         // Auto completion UI is terminated after clicking on the item.
-        cy.findByRole("menuitem", {name: "Exemple tag 1"}).should('not.exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 2"}).should('not.exist');
-        cy.findByRole("menuitem", {name: "Exemple tag 3"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Question: First name"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
 
         // Item has been inserted into rich text
         cy.get("@rich_text_editor")
-            .findByText("Exemple tag 3")
+            .findByText("Question: Last name")
             .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
-            .should('have.attr', 'data-form-tag-value', 'exemple-tag-3')
+            .should('have.attr', 'data-form-tag-value', last_name_question_id)
         ;
 
         // Save form
@@ -84,10 +101,10 @@ describe('Form tags', () => {
 
         // Rich text content provided by autocompleted values should be displayed properly
         cy.findByLabelText("Content").awaitTinyMCE()
-            .findByText("Exemple tag 3")
+            .findByText("Question: Last name")
             .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
-            .should('have.attr', 'data-form-tag-value', 'exemple-tag-3')
+            .should('have.attr', 'data-form-tag-value', last_name_question_id)
         ;
     });
 });

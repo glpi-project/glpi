@@ -33,22 +33,41 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Form\Tag;
+
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
-use Glpi\Http\Response;
+use Glpi\Form\Question;
+use Override;
 
-include('../../inc/includes.php');
+final class QuestionTagProvider implements TagProviderInterface
+{
+    #[Override]
+    public function getTags(Form $form): array
+    {
+        $tags = [];
+        foreach ($form->getQuestions() as $questions) {
+            $tags[] = new Tag(
+                label: sprintf(__('Question: %s'), $questions->fields['name']),
+                value: $questions->getId(),
+                provider: self::class,
+            );
+        }
 
-// The user must be able to respond to forms.
-Session::checkRight(Form::$rightname, UPDATE);
+        return $tags;
+    }
 
-// Get mandatory form parameter
-$form = Form::getById($_GET['form_id'] ?? null);
-if (!$form) {
-    Response::sendError(400, __('Form not found'));
+    #[Override]
+    public function getTagContentForValue(
+        string $value,
+        AnswersSet $answers_set
+    ): string {
+        $id = (int) $value;
+
+        $question = Question::getById((int) $id);
+        if (!$question) {
+            return '';
+        }
+        return $question->fields['name'];
+    }
 }
-
-// Get tags
-$tag_manager = new FormTagsManager();
-header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags($form));

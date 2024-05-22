@@ -35,21 +35,41 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
-use GLPITestCase;
+use DbTestCase;
+use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 
-final class Tag extends GLPITestCase
+final class Tag extends DbTestCase
 {
+    use FormTesterTrait;
+
     public function testTagCanBeExportedToJson(): void
     {
-        $tag = new \Glpi\Form\Tag\Tag(
-            label: 'Example tag',
-            value: 'example-tag',
-        );
+        $form = $this->getFormWithQuestions();
+        $tag_manager = new FormTagsManager();
+        $tags = $tag_manager->getTags($form);
+
+        $tag = $this->getTagByName($tags, 'Question: First name');
+        $question_id = $this->getQuestionId($form, 'First name');
+        $provider = QuestionTagProvider::class;
+
         $this->string(json_encode($tag))->isEqualTo(
             json_encode([
-                'label' => 'Example tag',
-                'html' => '<span contenteditable="false" data-form-tag="true" data-form-tag-value="example-tag">Example tag</span>'
+                'label' => 'Question: First name',
+                'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\">Question: First name</span>"
             ])
         );
+    }
+
+    private function getFormWithQuestions(): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion("First name", QuestionTypeShortText::class);
+        $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        return $this->createForm($builder);
     }
 }

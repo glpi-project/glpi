@@ -47,14 +47,16 @@ final readonly class Tag
     public function __construct(
         string $label,
         string $value,
+        string $provider,
     ) {
         $this->label = $label;
 
         // Build HTML representation of the tag.
         $properties = [
-            "contenteditable"     => "false",
-            "data-form-tag"       => "true",
-            "data-form-tag-value" => $value,
+            "contenteditable"        => "false",
+            "data-form-tag"          => "true",
+            "data-form-tag-value"    => $value,
+            "data-form-tag-provider" => $provider,
         ];
         $properties = implode(" ", array_map(
             fn($key, $value) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)),

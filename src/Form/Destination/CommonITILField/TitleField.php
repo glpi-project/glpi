@@ -36,7 +36,9 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\ConfigFieldInterface;
+use Glpi\Form\Form;
 use Override;
 
 class TitleField implements ConfigFieldInterface
@@ -55,6 +57,7 @@ class TitleField implements ConfigFieldInterface
 
     #[Override]
     public function renderConfigForm(
+        Form $form,
         ?array $config,
         string $input_name,
         array $display_options
@@ -81,8 +84,11 @@ TWIG;
     }
 
     #[Override]
-    public function applyConfiguratedValue(array $input, ?array $config): array
-    {
+    public function applyConfiguratedValueToInputUsingAnswers(
+        ?array $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
         if (is_null($config)) {
             return $input;
         }

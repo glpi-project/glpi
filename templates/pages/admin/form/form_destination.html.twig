@@ -88,7 +88,10 @@
                         <div class="accordion-body pt-0">
                             <form id="form-destination-{{ destination.getID() }}" method="POST" action="{{ controller_url }}">
                                 <div>
-                                    {{ concrete_destination.renderConfigForm(destination.getConfig())|raw }}
+                                    {{ concrete_destination.renderConfigForm(
+                                        form,
+                                        destination.getConfig()
+                                    )|raw }}
                                 </div>
 
                                 {# Submit button to delete the destination #}

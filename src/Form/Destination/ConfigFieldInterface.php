@@ -35,6 +35,9 @@
 
 namespace Glpi\Form\Destination;
 
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Form;
+
 interface ConfigFieldInterface
 {
     /**
@@ -55,6 +58,7 @@ interface ConfigFieldInterface
     /**
      * Render the input field for this configuration.
      *
+     * @param Form       $form
      * @param array|null $config
      * @param string     $input_name Input name supplied by the controller.
      *                               Must be reused in the actual input field.
@@ -64,6 +68,7 @@ interface ConfigFieldInterface
      * @return string
      */
     public function renderConfigForm(
+        Form $form,
         ?array $config,
         string $input_name,
         array $display_options
@@ -72,11 +77,16 @@ interface ConfigFieldInterface
     /**
      * Apply configurated value to the given input.
      *
-     * @param array      $input
      * @param array|null $config May be null if there is no configuration for
      *                           this field.
+     * @param array      $input
+     * @param AnswersSet $answers_set
      *
      * @return array
      */
-    public function applyConfiguratedValue(array $input, ?array $config): array;
+    public function applyConfiguratedValueToInputUsingAnswers(
+        ?array $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array;
 }

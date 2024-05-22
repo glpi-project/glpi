@@ -593,6 +593,7 @@ JAVASCRIPT;
             'data-user-id',
             'data-form-tag',
             'data-form-tag-value',
+            'data-form-tag-provider',
         ];
         foreach ($rich_text_completion_attributes as $attribute) {
             $config = $config->allowAttribute($attribute, 'span');

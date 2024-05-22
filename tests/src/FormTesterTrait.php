@@ -41,6 +41,7 @@ use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 
 /**
@@ -219,5 +220,13 @@ trait FormTesterTrait
 
         $control = array_pop($controls);
         return $control;
+    }
+
+    protected function getTagByName(array $tags, string $name): Tag
+    {
+        return current(array_filter(
+            $tags,
+            fn($tag) => $tag->label === $name,
+        ));
     }
 }
