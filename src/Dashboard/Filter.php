@@ -40,7 +40,6 @@ use Session;
 use Plugin;
 use Toolbox;
 use Glpi\Dashboard\Filters\{
-    AbstractFilter,
     DatesFilter,
     ItilCategoryFilter,
     LocationFilter,
@@ -128,6 +127,21 @@ class Filter extends \CommonDBChild
         }
 
         return $filters;
+    }
+
+    /**
+     * Return all available filters.
+     * Keys are filters ids, values are filters labels.
+     *
+     * @return array of filters
+     *
+     * @deprecated 11.0.0.
+     */
+    public static function getAll(): array
+    {
+        Toolbox::deprecated();
+
+        return self::getFilterChoices();
     }
 
     /**

@@ -145,15 +145,13 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 - Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 - `templates/password_form.html.twig` should no longer be used directly. Use `templates/forgotpassword.html.twig`, `templates/updatepassword.html.twig` or a custom template.
-- Usage of `ajax/dropdownMassiveActionAddValidator.php` without `validation_class` parameter is no longer supported.
-- Usage of `ajax/dropdownValidator.php` without `validation_class` parameter is no longer supported.
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` now requires a `validation_class` parameter.
 - Usage of `ajax/dropdownValidator.php` with the `users_id_validate` parameter is no longer supported. Use `items_id_target` instead.
 - `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
-- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `ajax/itemTicket.php` script usage.
@@ -167,8 +165,6 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
 - `CommonITILObject::isValidator()`
-- `CommonITILValidation::alreadyExists()`
-- `CommonITILValidation::getTicketStatusNumber()`
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
 - `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
 - `Config::validatePassword()`
@@ -176,9 +172,8 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
-- `DropdownTranslation::canBeTranslated()`
-- `DropdownTranslation::isDropdownTranslationActive()`
 - `Glpi\Application\View\Extension::getVerbatimValue()`
+- `Glpi\Dashboard\Filter::getAll()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
@@ -198,26 +193,18 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
 - `Glpi\Toolbox\Sanitizer::sanitize()`
 - `Glpi\Toolbox\Sanitizer::unsanitize()`
+- `Html::ajaxFooter()`
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
-- `Html::displayAjaxMessageAfterRedirect()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
-- `KnowbaseItemTranslation::canBeTranslated()`
-- `KnowbaseItemTranslation::isKbTranslationActive()`
-- `Link::showForItem()`
-- `ReminderTranslation::canBeTranslated()`
-- `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
-- `Ticket_Ticket::checkParentSon()`
-- `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
-- `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
 - `Toolbox::stripslashes_deep()`
@@ -268,8 +255,6 @@ The present file will list all changes made to the project; according to the
 - `Entity::getDefaultContractValues()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
-- `Glpi\Application\View\Extension::getVerbatimValue()`/Twig `verbatim_value` filter.
-- `Glpi\Dashboard\Filter::getAll()`
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
 - `Glpi\Dashboard\Filter::itilcategory()`
@@ -292,11 +277,8 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
-- `Html::ajaxFooter()`
 - `Html::autocompletionTextField()`
 - `Html::clean()`
-- `Html::cleanInputText()`
-- `Html::cleanPostForTextArea()`
 - `Html::closeArrowMassives()`
 - `Html::displayAjaxMessageAfterRedirect()`. The JS function is already provided by `js/misc.js`.
 - `Html::jsConfirmCallback()`
@@ -315,8 +297,9 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_KnowbaseItemCategory::displayTabContentForItem()`
 - `KnowbaseItem_KnowbaseItemCategory::getTabNameForItem()`
 - `KnowbaseItem_KnowbaseItemCategory::showForItem()`
-- `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
 - `KnowbaseItemTranslation::canBeTranslated()`. Translations are now always active.
+- `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
+- `Link::showForItem()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
@@ -331,11 +314,11 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
-- `QueryExpression` class. Replaced by `Glpi\DBAL\QueryExpression`.
-- `QueryParam` class. Replaced by `Glpi\DBAL\QueryParam`.
 - `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
 - `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.
 - `Reminder::addVisibilityJoins()`
+- `ReminderTranslation::canBeTranslated()`. Translations are now always active.
+- `ReminderTranslation::isReminderTranslationActive()`. Translations are now always active.
 - `Reservation::displayError()`
 - `RSSFeed::addVisibilityJoins()`
 - `RSSFeed::addVisibilityRestrict()`
@@ -367,7 +350,6 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::checkParentSon()`
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`. Replaced by `CommonITILObject_CommonITILObject::manageLinksOnChange()`.
-- `Ticket_Ticket::getLinkedTicketsTo()`. Replaced by `CommonITILObject_CommonITILObject::getLinkedTo()`.
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`

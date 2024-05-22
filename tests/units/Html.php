@@ -100,6 +100,13 @@ class Html extends \GLPITestCase
         $this->string(\Html::convDateTime($mydate, 2, true))->isIdenticalTo($expected);
     }
 
+    public function testCleanInputText()
+    {
+        $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
+        $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
+        $this->string(@\Html::cleanInputText($origin))->isIdenticalTo($expected);
+    }
+
     public function cleanParametersURL()
     {
         $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';

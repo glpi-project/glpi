@@ -155,6 +155,25 @@ class Html
     }
 
     /**
+     * Clean string for input text field
+     *
+     * @param string $string
+     *
+     * @return string
+     *
+     * @deprecated 11.0.0
+     **/
+    public static function cleanInputText($string)
+    {
+        Toolbox::deprecated();
+
+        if (!is_string($string)) {
+            return $string;
+        }
+        return htmlspecialchars($string);
+    }
+
+    /**
      * Clean all parameters of an URL. Get a clean URL
      *
      * @param string $url
@@ -182,6 +201,23 @@ class Html
         }
 
         return $string;
+    }
+
+    /**
+     * Clean post value for display in textarea
+     *
+     * @param string $value
+     *
+     * @return string
+     *
+     * @deprecated 11.0.0
+     **/
+    public static function cleanPostForTextArea($value)
+    {
+        Toolbox::deprecated();
+
+        // As input is no more sanitized automatically, this method does not need to revert backslashes anymore.
+        return $value;
     }
 
     /**
@@ -1764,6 +1800,17 @@ HTML;
         if (!$keepDB && function_exists('closeDBConnections')) {
             closeDBConnections();
         }
+    }
+
+    /**
+     * Display Ajax Footer for debug
+     *
+     * @deprecated 11.0.0
+     */
+    public static function ajaxFooter()
+    {
+        // Not currently used. Old debug stuff is now in the new debug bar.
+        Toolbox::deprecated();
     }
 
     /**
