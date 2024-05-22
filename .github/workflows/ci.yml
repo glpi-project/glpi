@@ -210,7 +210,6 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
-        if: env.skip != 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -221,23 +220,18 @@ jobs:
             app_home_deps-8.3-
             app_home_deps-
       - name: "Initialize containers"
-        if: env.skip != 'true'
         run: |
           .github/actions/init_containers-start.sh
       - name: "Show versions"
-        if: env.skip != 'true'
         run: |
           .github/actions/init_show-versions.sh
       - name: "Build dependencies / translations"
-        if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
-        if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/test_install.sh
       - name: "WEB tests"
-        if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "E2E tests"
