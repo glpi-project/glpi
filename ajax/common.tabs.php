@@ -41,12 +41,8 @@ $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymou
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 
-if (isset($_GET['full_page_tab'])) {
-    Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
-} else {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
     Session::checkLoginUser();
@@ -114,21 +110,4 @@ if (isset($options['locked'])) {
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], $_GET["withtemplate"], $options);
 \Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');
 
-
-if (isset($_GET['full_page_tab'])) {
-   // I think that we should display this warning, because tabs are not prepare
-   // for being used full space ...
-    if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
-       // Debug string : not really need translation.
-        $msg  = 'WARNING: full page tabs are only for debug/validation purpose !\n';
-        $msg .= 'Actions on this page may have undefined result.';
-        echo "<script type='text/javascript' >\n";
-        echo "alert('$msg')";
-        echo "</script>";
-        $_SESSION['glpi_warned_about_full_page_tab'] = true;
-    }
-
-    Html::footer();
-} else {
-    Html::ajaxFooter();
-}
+Html::ajaxFooter();
