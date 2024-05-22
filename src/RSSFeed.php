@@ -736,7 +736,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             $criteria['WHERE']["$table.users_id"] = $users_id;
             $criteria['WHERE']["$table.is_active"] = 1;
 
-            $titre = "<a href='" . RSSFeed::getSearchURL() . "'>" .
+            $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
                     _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
            // Show public rssfeeds / not mines : need to have access to public rssfeeds
