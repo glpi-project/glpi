@@ -308,7 +308,22 @@ class ITILFollowup extends CommonDBChild
             Log::HISTORY_ADD_SUBITEM
         );
 
+        self::addToMergedTickets();
+
         parent::post_addItem();
+    }
+
+    private function addToMergedTickets(): void
+    {
+        $merged = Ticket::getMergedTickets($this->fields['items_id']);
+        foreach ($merged as $ticket_id) {
+            $input = $this->input;
+            $input['items_id'] = $ticket_id;
+            $input['sourceitems_id'] = $this->fields['items_id'];
+
+            $followup = new self();
+            $followup->add($input);
+        }
     }
 
 

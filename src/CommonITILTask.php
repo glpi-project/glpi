@@ -728,7 +728,26 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         // Assign technician to main item  from task
         self::assignTechFromtask($this->input);
 
+        if ($this->input["_job"]->getType() == 'Ticket') {
+            self::addToMergedTickets();
+        }
+
         parent::post_addItem();
+    }
+
+    private function addToMergedTickets(): void
+    {
+        $merged = Ticket::getMergedTickets($this->fields['tickets_id']);
+        foreach ($merged as $ticket_id) {
+            $input = $this->fields;
+            $input['tickets_id'] = $ticket_id;
+            $input['sourceitems_id'] = $this->fields['tickets_id'];
+            unset($input['id']);
+            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+
+            $task = new static();
+            $task->add($input);
+        }
     }
 
     public function post_getEmpty()

@@ -3841,6 +3841,108 @@ class Ticket extends DbTestCase
         $this->integer((int)$supplier_count)->isEqualTo(3);
     }
 
+    /**
+     * After a ticket has been merged (set as deleted), the responses from the child tickets should be copied to the parent ticket.
+     */
+    public function testResponsesAfterMerge(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $ticket = new \Ticket();
+        $ticket1 = $ticket->add([
+            'name'        => "Parent ticket",
+            'content'     => "Parent ticket",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
+        ]);
+        $ticket2 = $ticket->add([
+            'name'        => "Child ticket",
+            'content'     => "Child ticket",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::INCOMING,
+        ]);
+
+        $status = [];
+        $mergeparams = [
+            'linktypes' => [
+                'ITILFollowup',
+                'TicketTask',
+                'Document'
+            ],
+            'link_type'  => \Ticket_Ticket::SON_OF
+        ];
+
+        \Ticket::merge($ticket1, [$ticket2], $status, $mergeparams);
+
+        $status_counts = array_count_values($status);
+        $failure_count = 0;
+        if (array_key_exists(1, $status_counts)) {
+            $failure_count += $status_counts[1];
+        }
+        if (array_key_exists(2, $status_counts)) {
+            $failure_count += $status_counts[2];
+        }
+
+        $this->integer((int)$failure_count)->isEqualTo(0);
+
+        // Add a followup to the child ticket
+        $followup = new \ITILFollowup();
+        $this->integer($followup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'Child ticket followup'
+        ]))->isGreaterThan(0);
+
+        // Check that the followup was copied to the parent ticket
+        $this->array($followup->find([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket1,
+            'sourceitems_id' => $ticket2,
+            'content' => 'Child ticket followup'
+        ]))->isNotEmpty();
+
+        // Add a task to the child ticket
+        $task = new \TicketTask();
+        $this->integer($task->add([
+            'tickets_id'   => $ticket2,
+            'content'      => 'Child ticket task'
+        ]))->isGreaterThan(0);
+
+        // Check that the task was copied to the parent ticket
+        $this->array($task->find([
+            'tickets_id' => $ticket1,
+            'sourceitems_id' => $ticket2,
+            'content' => 'Child ticket task'
+        ]))->isNotEmpty();
+
+        // Add a document to the child ticket
+        $document = new \Document();
+        $documents_id = $document->add([
+            'name'     => 'Child ticket document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+        ]);
+        $this->integer($documents_id)->isGreaterThan(0);
+
+        $document_item = new \Document_Item();
+        $this->integer($document_item->add([
+            'itemtype'     => 'Ticket',
+            'items_id'     => $ticket2,
+            'documents_id' => $documents_id,
+            'entities_id'  => '0',
+            'is_recursive' => 0
+        ]))->isGreaterThan(0);
+
+        // Check that the document was copied to the parent ticket
+        $this->array($document_item->find([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket1,
+            'documents_id' => $documents_id,
+        ]))->isNotEmpty();
+    }
+
     public function testKeepScreenshotsOnFormReload()
     {
        //login to get session

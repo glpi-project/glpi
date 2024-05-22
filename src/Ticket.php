@@ -6198,6 +6198,39 @@ JAVASCRIPT;
         return true;
     }
 
+    /**
+     * Get the list of tickets in which the ticket has been merged
+     *
+     * @param int $id The ID of the ticket
+     *
+     * @return array The list of tickets that have ticket with ID $id as son
+     */
+    public static function getMergedTickets(int $id): array
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        //look for merged tickets
+        $merged = [];
+        $iterator = $DB->request(
+            [
+                'FROM' => Ticket_Ticket::getTable(),
+                'SELECT' => ['tickets_id_2'],
+                'DISTINCT' => true,
+                'WHERE' => [
+                    'tickets_id_1' => $id,
+                    'link'        => Ticket_Ticket::SON_OF
+                ]
+            ]
+        );
+        foreach ($iterator as $data) {
+            $merged[] = $data['tickets_id_2'];
+        }
+        return $merged;
+    }
+
 
     /**
      * Check profiles and detect where criteria from existing rights
