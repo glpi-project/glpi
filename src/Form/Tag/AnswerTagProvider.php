@@ -37,7 +37,6 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use Glpi\Form\Question;
 use Override;
 
 final class AnswerTagProvider implements TagProviderInterface

@@ -39,6 +39,8 @@ use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\Tag\Tag;
@@ -47,17 +49,99 @@ final class FormTagsManager extends DbTestCase
 {
     use FormTesterTrait;
 
-    public function testGetTags()
+    public function getTagsProvider(): iterable
     {
-        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
         $form = $this->getFormWithQuestions();
 
-        $tags = $tag_manager->getTags($form);
+        // All possible tags that may be returned for all cases.
+        $tags = [
+            new Tag(
+                label: 'Question: First name',
+                value: $this->getQuestionId($form, 'First name'),
+                provider: QuestionTagProvider::class,
+            ),
+            new Tag(
+                label: 'Question: Last name',
+                value: $this->getQuestionId($form, 'Last name'),
+                provider: QuestionTagProvider::class,
+            ),
+            new Tag(
+                label: 'Answer: First name',
+                value: $this->getQuestionId($form, 'First name'),
+                provider: AnswerTagProvider::class,
+            ),
+            new Tag(
+                label: 'Answer: Last name',
+                value: $this->getQuestionId($form, 'Last name'),
+                provider: AnswerTagProvider::class,
+            )
+        ];
 
-        $this->array($tags)->isNotEmpty();
-        foreach ($tags as $tag) {
-            $this->object($tag)->isInstanceOf(Tag::class);
-        }
+        yield 'Without filter' => [
+            'form'     => $form,
+            'filter'   => "",
+            'expected' => [
+                $this->getTagByName($tags, 'Question: First name'),
+                $this->getTagByName($tags, 'Question: Last name'),
+                $this->getTagByName($tags, 'Answer: First name'),
+                $this->getTagByName($tags, 'Answer: Last name'),
+            ],
+        ];
+        yield 'With "name" filter' => [
+            'form'     => $form,
+            'filter'   => "name",
+            'expected' => [
+                $this->getTagByName($tags, 'Question: First name'),
+                $this->getTagByName($tags, 'Question: Last name'),
+                $this->getTagByName($tags, 'Answer: First name'),
+                $this->getTagByName($tags, 'Answer: Last name'),
+            ],
+        ];
+        yield 'With "Question" filter' => [
+            'form'     => $form,
+            'filter'   => "Question",
+            'expected' => [
+                $this->getTagByName($tags, 'Question: First name'),
+                $this->getTagByName($tags, 'Question: Last name'),
+            ],
+        ];
+        yield 'With "Answer" filter' => [
+            'form'     => $form,
+            'filter'   => "Answer",
+            'expected' => [
+                $this->getTagByName($tags, 'Answer: First name'),
+                $this->getTagByName($tags, 'Answer: Last name'),
+            ],
+        ];
+        yield 'With "First" filter' => [
+            'form'     => $form,
+            'filter'   => "First",
+            'expected' => [
+                $this->getTagByName($tags, 'Question: First name'),
+                $this->getTagByName($tags, 'Answer: First name'),
+            ],
+        ];
+        yield 'With "Last" filter' => [
+            'form'     => $form,
+            'filter'   => "Last",
+            'expected' => [
+                $this->getTagByName($tags, 'Question: Last name'),
+                $this->getTagByName($tags, 'Answer: Last name'),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getTagsProvider
+     */
+    public function testGetTags(
+        Form $form,
+        string $filter,
+        array $expected
+    ): void {
+        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tags = $tag_manager->getTags($form, $filter);
+        $this->array($tags)->isEqualTo($expected);
     }
 
     public function testInsertTagsContent()

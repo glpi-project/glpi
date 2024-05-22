@@ -48,7 +48,10 @@ if (!$form) {
     Response::sendError(400, __('Form not found'));
 }
 
+// Get filter parameter
+$filter = $_GET['filter'] ?? "";
+
 // Get tags
 $tag_manager = new FormTagsManager();
 header('Content-Type: application/json');
-echo json_encode($tag_manager->getTags($form));
+echo json_encode($tag_manager->getTags($form, $filter));

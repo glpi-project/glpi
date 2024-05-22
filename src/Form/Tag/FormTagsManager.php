@@ -40,14 +40,14 @@ use Glpi\Form\Form;
 
 final class FormTagsManager
 {
-    public function getTags(Form $form): array
+    public function getTags(Form $form, string $filter = ""): array
     {
         $tags = [];
         foreach ($this->getTagProviders() as $provider) {
             $tags = array_merge($tags, $provider->getTags($form));
         }
 
-        return $tags;
+        return $this->filterTags($tags, $filter);
     }
 
     public function insertTagsContent(
@@ -109,5 +109,21 @@ final class FormTagsManager
 
             return true;
         });
+    }
+
+    private function filterTags(array $tags, string $filter): array
+    {
+        $filtered_tags = array_filter(
+            $tags,
+            fn($tag) => $tag instanceof Tag && str_contains(
+                $tag->label,
+                $filter
+            )
+        );
+
+        // We must use array_values to ensure there is no gap in the array keys.
+        // If there were gaps, the front end would receive an object instead of
+        // an array which would lead to errors.
+        return array_values($filtered_tags);
     }
 }

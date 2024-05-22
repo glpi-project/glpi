@@ -76,7 +76,7 @@ GLPI.RichText.FormTags = class
             {
                 trigger: '#',
                 minChars: 0,
-                fetch: () => this.#fetchItems(),
+                fetch: (filter) => this.#fetchItems(filter),
                 onAction: (autocompleteApi, range, value) => {
                     this.#insertTag(autocompleteApi, range, value);
                 }
@@ -84,10 +84,11 @@ GLPI.RichText.FormTags = class
         );
     }
 
-    async #fetchItems() {
+    async #fetchItems(filter) {
         const url = CFG_GLPI.root_doc + '/ajax/form/form_tags.php';
         const data = await $.get(url, {
             form_id: this.#form_id,
+            filter: filter
         });
 
         return data.map((tag) => ({
