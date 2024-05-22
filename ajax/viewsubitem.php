@@ -60,5 +60,3 @@ if (
         echo __('Access denied');
     }
 }
-
-Html::ajaxFooter();

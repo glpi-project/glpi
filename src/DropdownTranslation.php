@@ -631,38 +631,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Check if an item can be translated
-     * It be translated if translation if globally on and item is an instance of CommonDropdown
-     * or CommonTreeDropdown and if translation is enabled for this class
-     *
-     * @param CommonGLPI $item the item to check
-     *
-     * @return boolean true if item can be translated, false otherwise
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function canBeTranslated(CommonGLPI $item)
-    {
-        Toolbox::deprecated();
-
-        return ($item instanceof CommonDropdown) && $item->maybeTranslated();
-    }
-
-    /**
-     * Is dropdown item translation functionality active
-     *
-     * @deprecated 11.0.0
-     *
-     * @return true if active, false if not
-     **/
-    public static function isDropdownTranslationActive()
-    {
-        Toolbox::deprecated("Dropdown translations are now always active");
-
-        return true;
-    }
-
-    /**
      * Get translations for an item
      *
      * @param string  $itemtype  itemtype

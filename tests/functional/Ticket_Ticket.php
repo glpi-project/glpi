@@ -159,57 +159,6 @@ class Ticket_Ticket extends DbTestCase
          ->integer['link']->isEqualTo(\CommonITILObject_CommonITILObject::SON_OF);
     }
 
-    public function testNumberOpen()
-    {
-        $this->login();
-        $this->createTickets();
-        $tone = $this->tone;
-        $ttwo = $this->ttwo;
-
-        $link = new \Ticket_Ticket();
-        $this->integer(
-            (int)$link->add([
-                'tickets_id_1' => $tone->getID(),
-                'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
-            ])
-        )->isGreaterThan(0);
-
-       //not a SON_OF => no child
-        $this->when(
-            function () use ($link) {
-                $this->integer(\Ticket_Ticket::countOpenChildren($link->getID()))->isIdenticalTo(0);
-            }
-        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
-
-
-        $this->boolean(
-            $link->update([
-                'id'     => $link->getID(),
-                'link'   => \CommonITILObject_CommonITILObject::SON_OF
-            ])
-        )->isTrue();
-
-        $this->when(
-            function () use ($ttwo) {
-                $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(1);
-            }
-        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
-
-        $this->boolean(
-            $tone->update([
-                'id'     => $tone->getID(),
-                'status' => \Ticket::CLOSED
-            ])
-        )->isTrue();
-
-        $this->when(
-            function () use ($ttwo) {
-                $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
-            }
-        )->error()->withType(E_USER_DEPRECATED)->withMessage('Use "CommonITILObject::countOpenChildrenOfSameType()"')->exists();
-    }
-
     /**
      * BC Test for getLinkedTicketsTo
      * @return void

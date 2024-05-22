@@ -303,38 +303,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Is kb item translation functionality active
-     *
-     * @deprecated 11.0.0
-     *
-     * @return true if active, false if not
-     **/
-    public static function isKbTranslationActive()
-    {
-        Toolbox::deprecated("KB translations are now always active");
-
-        return true;
-    }
-
-    /**
-     * Check if an item can be translated
-     * It be translated if translation if globally on and item is an instance of CommonDropdown
-     * or CommonTreeDropdown and if translation is enabled for this class
-     *
-     * @param CommonGLPI $item the item to check
-     *
-     * @return true if item can be translated, false otherwise
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function canBeTranslated(CommonGLPI $item)
-    {
-        Toolbox::deprecated();
-
-        return $item instanceof KnowbaseItem;
-    }
-
-    /**
      * Return the number of translations for an item
      *
      * @param KnowbaseItem $item

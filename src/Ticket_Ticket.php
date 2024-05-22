@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject
 {
@@ -49,12 +51,6 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
         return _n('Linked ticket', 'Linked tickets', $nb);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -72,12 +68,6 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -187,65 +177,5 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
 
         ksort($tickets);
         return $tickets;
-    }
-
-    /**
-     * Check for parent relation (inverse of son)
-     *
-     * @param array $input Input
-     *
-     * @return void
-     *
-     * @deprecated 11.0
-     */
-    public function checkParentSon(&$input)
-    {
-        Toolbox::deprecated();
-
-        if (isset($input['link']) && $input['link'] == Ticket_Ticket::PARENT_OF) {
-           //a PARENT_OF relation is an inverted SON_OF one :)
-            $id1 = $input['tickets_id_2'];
-            $id2 = $input['tickets_id_1'];
-            $input['tickets_id_1'] = $id1;
-            $input['tickets_id_2'] = $id2;
-            $input['link']         = Ticket_Ticket::SON_OF;
-        }
-    }
-
-
-    /**
-     * Count number of open children for a parent
-     *
-     * @param integer $pid Parent ID
-     *
-     * @return integer
-     * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::countLinksByStatus()
-     */
-    public static function countOpenChildren($pid)
-    {
-        Toolbox::deprecated('Use "CommonITILObject::countOpenChildrenOfSameType()"');
-        $ticket = new Ticket();
-        $ticket->getFromDB($pid);
-        return $ticket->countOpenChildrenOfSameType();
-    }
-
-
-    /**
-     * Affect the same solution/status for duplicates tickets.
-     *
-     * @param integer           $ID        ID of the ticket id
-     * @param ITILSolution|null $solution  Ticket's solution
-     *
-     * @return void
-     * @deprecated 11.0.0 Use {@link CommonITILObject_CommonITILObject::manageLinksOnChange()} instead using '_solution' and/or '_status' properties in $changes parameter
-     **/
-    public static function manageLinkedTicketsOnSolved($ID, $solution = null)
-    {
-        Toolbox::deprecated('Use "CommonITILObject_CommonITILObject::manageLinksOnChange()"');
-        if ($solution !== null) {
-            self::manageLinksOnChange('Ticket', $ID, ['_solution' => $solution]);
-        } else {
-            self::manageLinksOnChange('Ticket', $ID, ['_status' => CommonITILObject::SOLVED]);
-        }
     }
 }

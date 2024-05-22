@@ -816,71 +816,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return $target_criteria;
     }
 
-
-    /**
-     * Get the number of validations attached to an item having a specified status
-     *
-     * @param integer $items_id item ID
-     * @param integer $status   status
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function getTicketStatusNumber($items_id, $status)
-    {
-        Toolbox::deprecated();
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $row = $DB->request([
-            'FROM'   => static::getTable(),
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-                static::$items_id => $items_id,
-                'status'          => $status
-            ]
-        ])->current();
-
-        return $row['cpt'];
-    }
-
-
-    /**
-     * Check if validation already exists
-     *
-     * @param $items_id   integer  item ID
-     * @param $users_id   integer  user ID
-     *
-     * @since 0.85
-     *
-     * @return boolean
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function alreadyExists($items_id, $users_id)
-    {
-        Toolbox::deprecated();
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $iterator = $DB->request([
-            'FROM'   => static::getTable(),
-            'WHERE'  => [
-                static::$items_id    => $items_id,
-                'users_id_validate'  => $users_id
-            ],
-            'START'  => 0,
-            'LIMIT'  => 1
-        ]);
-
-        if (count($iterator) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-
     /**
      * Form for Followup on Massive action
      **/
@@ -1719,32 +1654,11 @@ abstract class CommonITILValidation extends CommonDBChild
      *  - applyto
      *
      * @return string|int Output if $options['display'] is false, else return rand
-     *
-     * @since 11.0.0 Deprecated usage of 'name' option
-     * @since 11.0.0 Deprecated usage of 'users_id_validate' option
      **/
     public static function dropdownValidator(array $options = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-
-        if (array_key_exists('name', $options)) {
-            Toolbox::deprecated('Usage of "name" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "prefix" instead.');
-        }
-
-        if (array_key_exists('users_id_validate', $options)) {
-            Toolbox::deprecated('Usage of "users_id_validate" option is deprecated in "CommonITILValidation::dropdownValidator()". Use "itemtype_target"/"items_id_target" instead.');
-            if (isset($options['users_id_validate']['groups_id'])) {
-                $options['itemtype_target'] = Group::class;
-                $options['items_id_target'] = $options['users_id_validate']['groups_id'];
-            } else {
-                $options['itemtype_target'] = User::class;
-                $options['items_id_target'] = is_array($options['users_id_validate'])
-                    ? current($options['users_id_validate'])
-                    : $options['users_id_validate'];
-            }
-            unset($options['users_id_validate']);
-        }
 
         $params = [
             'prefix'             => null,
@@ -1778,9 +1692,7 @@ abstract class CommonITILValidation extends CommonDBChild
             ? 'Group_User'
             : $options['itemtype_target'];
 
-        $validatortype_name = array_key_exists('name', $params)
-            ? 'validatortype' // legacy behaviour, remove it in GLPI 11.0
-            : $params['prefix'] . '[validatortype]';
+        $validatortype_name = $params['prefix'] . '[validatortype]';
 
         // Build list of available dropdown items
         $validators = [

@@ -47,12 +47,7 @@ use Glpi\Search\SearchOption;
  *
  * Generic class for Search Engine
  * <hr>
- * Many of the methods in this class are now stubs.
- * This is still the correct way to interact with the Search Engine but the
- * logic is being moved over to the new Glpi\Search namespace and split into
- * multiple classes.
- * <br>
- * THE NEW CLASSES SHOULD NOT BE USED DIRECTLY!
+ * **Many of the methods in this class are now stubs. You should use the classes in the Glpi\Search namespace instead.**
  **/
 class Search
 {

@@ -170,7 +170,7 @@ class Html
         if (!is_string($string)) {
             return $string;
         }
-        return preg_replace('/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
+        return htmlspecialchars($string);
     }
 
     /**
@@ -216,22 +216,8 @@ class Html
     {
         Toolbox::deprecated();
 
-        if (is_array($value)) {
-            return array_map(__METHOD__, $value);
-        }
-        $order   = ['\r\n',
-            '\n',
-            "\\'",
-            '\"',
-            '\\\\'
-        ];
-        $replace = ["\n",
-            "\n",
-            "'",
-            '"',
-            "\\"
-        ];
-        return str_replace($order, $replace, $value);
+        // As input is no more sanitized automatically, this method does not need to revert backslashes anymore.
+        return $value;
     }
 
     /**
@@ -564,30 +550,6 @@ class Html
             'display_container' => $display_container
         ]);
     }
-
-
-    /**
-     * @deprecated since version 11.0.0
-     */
-    public static function displayAjaxMessageAfterRedirect()
-    {
-        Toolbox::deprecated("The js function is already provided by js/misc.js");
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        echo Html::scriptBlock("
-      displayAjaxMessageAfterRedirect = function() {
-         $('.messages_after_redirect').remove();
-         $.ajax({
-            url:  '" . $CFG_GLPI['root_doc'] . "/ajax/displayMessageAfterRedirect.php',
-            success: function(html) {
-               $('body').append(html);
-            }
-         });
-      }");
-    }
-
 
     /**
      * Common Title Function
@@ -1840,16 +1802,16 @@ HTML;
         }
     }
 
-
     /**
      * Display Ajax Footer for debug
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function ajaxFooter()
     {
         // Not currently used. Old debug stuff is now in the new debug bar.
-        // FIXME: Deprecate this in GLPI 11.0.
+        Toolbox::deprecated();
     }
-
 
     /**
      * Print a simple HTML head with links

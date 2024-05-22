@@ -141,5 +141,3 @@ if (($_POST["action"] ?? null) == "color_filter") {
 if (($_POST["action"] ?? null) == "delete_filter") {
     Planning::deleteFilter($_POST);
 }
-
-Html::ajaxFooter();

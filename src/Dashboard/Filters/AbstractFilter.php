@@ -121,10 +121,8 @@ abstract class AbstractFilter
      * @param bool   $filled
      *
      * @return string the html for the complete field
-     *
-     * @FIXME Make it protected in GLPI 11.0.
      */
-    final public static function field(
+    final protected static function field(
         string $id,
         string $field,
         string $label,

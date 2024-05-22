@@ -114,12 +114,10 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $foreignKey = $parent->getForeignKeyField();
         $params[$foreignKey] = $_REQUEST[$foreignKey];
         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
-        Html::ajaxFooter();
         exit();
     }
     if ($template === null) {
         echo __('Access denied');
-        Html::ajaxFooter();
         exit();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);

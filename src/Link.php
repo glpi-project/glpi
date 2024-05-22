@@ -528,20 +528,6 @@ class Link extends CommonDBTM
     }
 
     /**
-     * Show Links for an item
-     *
-     * @param CommonDBTM $item CommonDBTM object
-     * @param integer $withtemplate  withtemplate param (default 0)
-     * @deprecated 11.0.0
-     * @see Link::showAllLinksForItem()
-     **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
-    {
-        Toolbox::deprecated();
-        self::showAllLinksForItem($item, self::class);
-    }
-
-    /**
      * Show all external and manual links for an item
      * @param CommonDBTM $item
      * @param 'ManualLink'|'Link'|null $restrict_type Restrict to a specific type of link
