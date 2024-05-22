@@ -387,6 +387,8 @@ class GlpiFormEditorController
      * Must be executed after each actions.
      */
     computeState() {
+        let global_block_indices = { 'question': 0, 'comment': 0 };
+
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
         sections.each((s_index, section) => {
@@ -400,7 +402,6 @@ class GlpiFormEditorController
             this.#remplaceEmptyIdByUuid($(section));
 
             // Find all items for this section (both questions and comments)
-            const indices = { 'question': 0, 'comment': 0 };
             const items = $(section).find("[data-glpi-form-editor-question], [data-glpi-form-editor-comment]");
 
             items.each((index, item) => {
@@ -411,14 +412,14 @@ class GlpiFormEditorController
                 this.#formatInputsNames(
                     $(item),
                     itemType,
-                    indices[itemType]
+                    global_block_indices[itemType]
                 );
                 this.#setItemRank($(item), index);
                 this.#remplaceEmptyIdByUuid($(item));
                 this.#setParentSection($(item), $(section));
 
                 // Increment the index for this item type
-                indices[itemType]++;
+                global_block_indices[itemType]++;
             });
         });
     }
@@ -698,10 +699,12 @@ class GlpiFormEditorController
     }
 
     /**
-     * Add a new question at the end of the form
-     * @param {jQuery} target   Current position in the form
+     * Add a new block next to the target.
+     * @param {jQuery} target
+     * @param {jQuery} template
+     * @returns
      */
-    #addQuestion(target) {
+    #addBlock(target, template) {
         let destination;
         let action;
 
@@ -710,17 +713,17 @@ class GlpiFormEditorController
             target.data('glpi-form-editor-question') !== undefined
             || target.data('glpi-form-editor-comment') !== undefined
         ) {
-            // Adding a new question after an existing question
+            // Adding a new block after an existing question
             destination = target;
             action = "after";
         } else if (target.data('glpi-form-editor-section') !== undefined) {
-            // Adding a question at the start of a section
+            // Adding a block at the start of a section
             destination = target
                 .closest("[data-glpi-form-editor-section]")
                 .find("[data-glpi-form-editor-section-blocks]");
             action = "prepend";
         } else if (target.data('glpi-form-editor-form') !== undefined) {
-            // Add a question at the end of the form
+            // Add a block at the end of the form
             destination = $(this.#target)
                 .find("[data-glpi-form-editor-section]:last-child")
                 .find("[data-glpi-form-editor-section-blocks]:last-child");
@@ -729,17 +732,25 @@ class GlpiFormEditorController
             throw new Error('Unexpected target');
         }
 
-        // Get template content
-        const template_content = this.#getQuestionTemplate(
-            this.#defaultQuestionType
-        ).children();
-
         // Insert the new template into the questions area of the current section
-        const new_question = this.#copy_template(
-            template_content,
+        return this.#copy_template(
+            template,
             destination,
             action
         );
+    }
+
+    /**
+     * Add a new question at the end of the form
+     * @param {jQuery} target   Current position in the form
+     */
+    #addQuestion(target) {
+        // Get template content
+        const template = this.#getQuestionTemplate(
+            this.#defaultQuestionType
+        ).children();
+
+        const new_question = this.#addBlock(target, template);
 
         // Mark as active
         this.#setActiveItem(new_question);
@@ -1161,44 +1172,12 @@ class GlpiFormEditorController
      * @param {jQuery} target   Current position in the form
      */
     #addComment(target) {
-        let destination;
-        let action;
-
-        // Find the context using the target
-        if (
-            target.data('glpi-form-editor-question') !== undefined
-            || target.data('glpi-form-editor-comment') !== undefined
-        ) {
-            // Adding a new comment block after an existing question
-            destination = target;
-            action = "after";
-        } else if (target.data('glpi-form-editor-section') !== undefined) {
-            // Adding a comment block at the start of a section
-            destination = target
-                .closest("[data-glpi-form-editor-section]")
-                .find("[data-glpi-form-editor-section-blocks]");
-            action = "prepend";
-        } else if (target.data('glpi-form-editor-form') !== undefined) {
-            // Add a comment block at the end of the form
-            destination = $(this.#target)
-                .find("[data-glpi-form-editor-section]:last-child")
-                .find("[data-glpi-form-editor-section-blocks]:last-child");
-            action = "append";
-        } else {
-            throw new Error('Unexpected target');
-        }
-
         // Find the comment template
         const template = $(this.#templates)
             .find("[data-glpi-form-editor-comment-template]")
             .children();
 
-        // Insert the new template into the questions area of the current section
-        const new_comment = this.#copy_template(
-            template,
-            destination,
-            action
-        );
+        const new_comment = this.#addBlock(target, template);
 
         // Mark as active
         this.#setActiveItem(new_comment);
