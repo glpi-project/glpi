@@ -66,14 +66,12 @@
                         field_options
                     ) }}
 
-
                     {{ fields.htmlField(
                         'agenttypes_id',
                         call('Dropdown::getDropdownName', ["glpi_agenttypes", item.fields['agenttypes_id']]),
                         __('Agent type'),
                         field_options
                     ) }}
-
 
                     {{ fields.dropdownYesNo(
                     'locked',
