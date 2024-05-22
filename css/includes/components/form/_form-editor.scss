@@ -160,7 +160,7 @@
 
 [data-glpi-form-editor-comment] {
     &[data-glpi-form-editor-active-comment] {
-        // Show secondary data on active form
+        // Show secondary data on active comments
         [data-glpi-form-editor-comment-extra-details] {
             opacity: 1;
             visibility: visible;
@@ -169,12 +169,12 @@
     }
 
     &:not([data-glpi-form-editor-active-comment]) {
-        // Do not highlight inactive forms
+        // Do not highlight inactive comments
         [data-glpi-form-editor-active-comment-status-indicator] {
             display: none;
         }
 
-        // Do not show secondary data on inactive form
+        // Do not show secondary data on inactive comments
         [data-glpi-form-editor-comment-extra-details] {
             height: 0;
             opacity: 0;

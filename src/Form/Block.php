@@ -35,7 +35,7 @@
 
 namespace Glpi\Form;
 
-interface Block
+interface BlockInterface
 {
     public function displayBlockForEditor(): void;
 }

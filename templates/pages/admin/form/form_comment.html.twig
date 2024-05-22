@@ -72,7 +72,7 @@
                     class="form-control content-editable-h2 mb-0"
                     type="text"
                     name="name"
-                    value="{{ comment is not null ? comment.fields.name|e('html_attr') : '' }}"
+                    value="{{ comment is not null ? comment.fields.name : '' }}"
                     placeholder="{{ __("Add a title...") }}"
                     aria-label="{{ __("Comment title") }}"
                     data-glpi-form-editor-dynamic-input
@@ -115,7 +115,7 @@
             </div>
 
             <div
-                class="d-flex flex-row-reverse align-items-center mt-2"
+                class="d-flex flex-row-reverse align-items-center"
                 data-glpi-form-editor-comment-extra-details
             >
                 <button

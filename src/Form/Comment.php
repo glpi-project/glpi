@@ -43,7 +43,7 @@ use Override;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements Block
+final class Comment extends CommonDBChild implements BlockInterface
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
