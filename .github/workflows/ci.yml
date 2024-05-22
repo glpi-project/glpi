@@ -236,7 +236,6 @@ jobs:
           docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "E2E tests"
         id: "e2e"
-        if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
