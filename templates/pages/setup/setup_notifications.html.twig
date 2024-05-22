@@ -33,7 +33,7 @@
 
 {% if can_update_config or has_active_mode %}
    <div class="container">
-      <div class="row justify-content-evenly">
+      <div class="d-flex justify-content-center">
       {% if can_update_config %}
          <div class="card col-12 col-lg-5">
             <form method="POST" action="{{ path('/front/setup.notification.php') }}" data-submit-once>
