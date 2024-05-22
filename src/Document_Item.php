@@ -214,7 +214,22 @@ class Document_Item extends CommonDBRelation
 
             $ticket->update($input);
         }
+
+        self::addToMergedTickets();
+
         parent::post_addItem();
+    }
+
+    private function addToMergedTickets(): void
+    {
+        $merged = Ticket::getMergedTickets($this->fields['items_id']);
+        foreach ($merged as $ticket_id) {
+            $input = $this->input;
+            $input['items_id'] = $ticket_id;
+
+            $document = new self();
+            $document->add($input);
+        }
     }
 
     public function post_purgeItem()
