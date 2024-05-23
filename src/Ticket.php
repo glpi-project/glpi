@@ -4836,10 +4836,20 @@ JAVASCRIPT;
                         $options['criteria'][0]['value']      = Session::getLoginUserID();
                         $options['criteria'][0]['link']       = 'AND';
 
-                        $options['criteria'][1]['field']      = 12; // status
-                        $options['criteria'][1]['searchtype'] = 'equals';
-                        $options['criteria'][1]['value']      = 'process';
-                        $options['criteria'][1]['link']       = 'AND';
+                        $options['criteria'][5]['field']      = 12; // status
+                        $options['criteria'][5]['searchtype'] = 'equals';
+                        $options['criteria'][5]['value']      = 2;
+                        $options['criteria'][5]['link']       = 'AND';
+
+                        $options['criteria'][7]['link']       = 'OR';
+                        $options['criteria'][7]['criteria'][0]['link']       = 'AND';
+                        $options['criteria'][7]['criteria'][0]['field']      = 12; // status
+                        $options['criteria'][7]['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][7]['criteria'][0]['value']      = 1;
+                        $options['criteria'][7]['criteria'][1]['link']       = 'AND';
+                        $options['criteria'][7]['criteria'][1]['field']      = 5; // users_id_assign
+                        $options['criteria'][7]['criteria'][1]['searchtype'] = 'equals';
+                        $options['criteria'][7]['criteria'][1]['value']      = Session::getLoginUserID();
 
                         $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
                          Toolbox::append_params($options, '&amp;') . "\">" .
