@@ -644,23 +644,23 @@ HTML
         $this->login();
         $this->setEntity('_test_child_2', false);
 
-        // Add followups in the correct entity, they should be counted
+        // Add followups in an entity our user can see
         $number_of_visible_followups = $this->countVisibleFollowupsForLoggedInUser();
         $this->createFollowupInEntityForType('_test_child_2', Ticket::class);
         $this->createFollowupInEntityForType('_test_child_2', Problem::class);
         $this->createFollowupInEntityForType('_test_child_2', Change::class);
         $this->integer(
             $this->countVisibleFollowupsForLoggedInUser()
-        )->isEqualTo($number_of_visible_followups + 3);
+        )->isEqualTo($number_of_visible_followups + 3); // 3 new followup found
 
-        // Add followups in the correct entity, they should NOT be counted
+        // Add followups in a visible that our user can't see
         $number_of_visible_followups = $this->countVisibleFollowupsForLoggedInUser();
         $this->createFollowupInEntityForType('_test_root_entity', Ticket::class);
         $this->createFollowupInEntityForType('_test_root_entity', Problem::class);
         $this->createFollowupInEntityForType('_test_root_entity', Change::class);
         $this->integer(
             $this->countVisibleFollowupsForLoggedInUser()
-        )->isEqualTo($number_of_visible_followups); // No new followups visible
+        )->isEqualTo($number_of_visible_followups); // No new followups found
     }
 
     private function countVisibleFollowupsForLoggedInUser(): int
