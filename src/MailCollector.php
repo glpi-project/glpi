@@ -2224,13 +2224,12 @@ class MailCollector extends CommonDBTM
         switch ($itemtype) {
             //If notification from contract
             case 'Contract':
-                return false;               
+                return false;
             //If notification from Software License
             case 'SoftwareLicense':
-                return false;               
-                
+                return false;
         }
-        
+
         $uuid = $matches['uuid'];
         if (empty($uuid)) {
            // message-id corresponds to old format, without uuid.
