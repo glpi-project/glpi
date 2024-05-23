@@ -47,14 +47,13 @@
    {% set target       = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
-   {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
    {% set field_options = {
        'locked_fields': item.getLockedFields(),
        'rand': rand,
    } %}
 
    <div class="card-body d-flex flex-wrap">
-      <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+      <div class="col-12 flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
@@ -68,7 +67,7 @@
 
                     {{ fields.htmlField(
                         'agenttypes_id',
-                        call('Dropdown::getDropdownName', ["glpi_agenttypes", item.fields['agenttypes_id']]),
+                        get_item_name('AgentType', item.fields['agenttypes_id']),
                         _n('Agent type', 'Agents types', 1),
                         field_options
                     ) }}
@@ -103,7 +102,7 @@
 
                     {{ fields.htmlField(
                         "itemtype",
-                        call(item.fields['itemtype'] ~ '::getTypeName', [0]),
+                        item.fields['itemtype']|itemtype_name,
                         __('Item type'),
                         field_options
                     ) }}
@@ -190,7 +189,8 @@
                         <div class="hr-text">
                             <i class="ti ti-list"></i>
                             <span>{{ __('Supported tasks') }} </span>
-                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true" data-bs-content="<i> {{ __('When reported by GLPI agent via native inventory') }}</i>">?</span>
+                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                                  data-bs-content="{{ '<i>' ~__('When reported by GLPI agent via native inventory') ~ '</i>' }}">?</span>
                         </div>
 
                         {% for modulefield, modulelabel in {
@@ -217,23 +217,10 @@
             </div> {# .row #}
          </div> {# .flex-row #}
       </div>
-      {% if item_has_pictures %}
-         <div class="col-12 col-xxl-3 flex-column">
-            <div class="flex-row asset-pictures">
-               {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
-            </div>
-         </div>
-      {% endif %}
    </div> {# .card-body #}
 
-   {% if item_type == 'Contract' %}
-      {{ include('components/form/support_hours.html.twig') }}
-   {% endif %}
    {% if no_form_buttons is not defined or no_form_buttons == false %}
       {{ include('components/form/buttons.html.twig') }}
-   {% endif %}
-   {% if no_inventory_footer is not defined or no_inventory_footer == false %}
-      {{ include('components/form/inventory_info.html.twig') }}
    {% endif %}
 
    {% if params['formfooter'] is null or params['formfooter'] == true %}
