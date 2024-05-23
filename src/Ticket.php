@@ -4831,25 +4831,31 @@ JAVASCRIPT;
                         break;
 
                     case "process":
-                        $options['criteria'][0]['field']      = 5; // users_id_assign
-                        $options['criteria'][0]['searchtype'] = 'equals';
-                        $options['criteria'][0]['value']      = Session::getLoginUserID();
-                        $options['criteria'][0]['link']       = 'AND';
-
-                        $options['criteria'][5]['field']      = 12; // status
-                        $options['criteria'][5]['searchtype'] = 'equals';
-                        $options['criteria'][5]['value']      = 2;
-                        $options['criteria'][5]['link']       = 'AND';
-
-                        $options['criteria'][7]['link']       = 'OR';
-                        $options['criteria'][7]['criteria'][0]['link']       = 'AND';
-                        $options['criteria'][7]['criteria'][0]['field']      = 12; // status
-                        $options['criteria'][7]['criteria'][0]['searchtype'] = 'equals';
-                        $options['criteria'][7]['criteria'][0]['value']      = 1;
-                        $options['criteria'][7]['criteria'][1]['link']       = 'AND';
-                        $options['criteria'][7]['criteria'][1]['field']      = 5; // users_id_assign
-                        $options['criteria'][7]['criteria'][1]['searchtype'] = 'equals';
-                        $options['criteria'][7]['criteria'][1]['value']      = Session::getLoginUserID();
+                        $options['criteria'] = [
+                            [
+                                'field'        => 5,
+                                'searchtype'   => 'equals',
+                                'value'        => 'myself',
+                                'link'         => 'OR',
+                            ],
+                            [
+                                'link' => 'AND',
+                                'criteria' => [
+                                    [
+                                        'link'        => 'AND',
+                                        'field'       => 12,
+                                        'searchtype'  => 'equals',
+                                        'value'       => Ticket::INCOMING,
+                                    ],
+                                    [
+                                        'link'        => 'OR',
+                                        'field'       => 12,
+                                        'searchtype'  => 'equals',
+                                        'value'       => Ticket::ASSIGNED,
+                                    ]
+                                ]
+                            ]
+                        ];
 
                         $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
                          Toolbox::append_params($options, '&amp;') . "\">" .
