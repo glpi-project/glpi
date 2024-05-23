@@ -17754,7 +17754,7 @@ msgstr ""
 
 #: templates/components/form/flags.html.twig src/Monitor.php:379
 msgid "Pivot"
-msgstr "Pivô"
+msgstr "Suporte"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Plan this task"
