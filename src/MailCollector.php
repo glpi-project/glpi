@@ -2219,7 +2219,12 @@ class MailCollector extends CommonDBTM
            // message-id header does not match GLPI format.
             return false;
         }
-
+        //FIX to create ticket from notification from contracts
+        $items_id = $matches['items_id'];
+        if ($items_id == 0) {
+            return false;
+        }
+        
         $uuid = $matches['uuid'];
         if (empty($uuid)) {
            // message-id corresponds to old format, without uuid.
