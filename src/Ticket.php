@@ -4836,7 +4836,7 @@ JAVASCRIPT;
                                 'field'        => 5,
                                 'searchtype'   => 'equals',
                                 'value'        => 'myself',
-                                'link'         => 'OR',
+                                'link'         => 'AND',
                             ],
                             [
                                 'link' => 'AND',
