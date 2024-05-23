@@ -47,7 +47,7 @@ final class FormTagsManager
             $tags = array_merge($tags, $provider->getTags($form));
         }
 
-        return $this->filterTags($tags, $filter);
+        return $filter === '' ? $tags : $this->filterTags($tags, $filter);
     }
 
     public function insertTagsContent(
