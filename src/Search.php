@@ -4574,34 +4574,20 @@ JAVASCRIPT;
                 }
 
                 // Build base condition using entity restrictions
-                $condition = "(";
-                $condition .= getEntitiesRestrictRequest(
-                    '',
-                    'glpi_tickets_items_id_' . self::computeComplexJoinID([
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Ticket::getType() . '"'
-                    ]),
-                    'entities_id',
-                    ''
-                );
-                $condition .= " OR ";
-                $condition .= getEntitiesRestrictRequest(
-                    '',
-                    'glpi_changes_items_id_' . self::computeComplexJoinID([
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Change::getType() . '"'
-                    ]),
-                    'entities_id',
-                    ''
-                );
-                $condition .= " OR ";
-                $condition .= getEntitiesRestrictRequest(
-                    '',
-                    'glpi_problems_items_id_' . self::computeComplexJoinID([
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Problem::getType() . '"'
-                    ]),
-                    'entities_id',
-                    ''
-                );
-                $condition .= ") ";
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                $entity_restrictions = [];
+                foreach ($itil_types as $itil_itemtype) {
+                    $entity_restrictions[] = getEntitiesRestrictRequest(
+                        '',
+                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]),
+                        'entities_id',
+                        ''
+                    );
+                }
+                $condition = "(" . implode(" OR ", $entity_restrictions) . ")";
 
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $condition .= " AND (`glpi_itilfollowups`.`is_private` $in ";
@@ -5869,42 +5855,22 @@ JAVASCRIPT;
                 break;
 
             case ITILFollowup::class:
-                $out .= self::addLeftJoin(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    Ticket::getTable(),
-                    'items_id',
-                    false,
-                    '',
-                    [
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Ticket::getType() . '"'
-                    ]
-                );
-                $out .= self::addLeftJoin(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    Change::getTable(),
-                    'items_id',
-                    false,
-                    '',
-                    [
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Change::getType() . '"'
-                    ]
-                );
-                $out .= self::addLeftJoin(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    Problem::getTable(),
-                    'items_id',
-                    false,
-                    '',
-                    [
-                        'condition' => 'AND REFTABLE.`itemtype` = "' . Problem::getType() . '"'
-                    ]
-                );
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                foreach ($itil_types as $itil_itemtype) {
+                    $out .= self::addLeftJoin(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $itil_itemtype::getTable(),
+                        'items_id',
+                        false,
+                        '',
+                        [
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]
+                    );
+                }
                 break;
 
             default:
