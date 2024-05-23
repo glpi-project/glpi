@@ -69,7 +69,7 @@
                     {{ fields.htmlField(
                         'agenttypes_id',
                         call('Dropdown::getDropdownName', ["glpi_agenttypes", item.fields['agenttypes_id']]),
-                        __('Agent type'),
+                        _n('Agent type', 'Agents types', 1),
                         field_options
                     ) }}
 
