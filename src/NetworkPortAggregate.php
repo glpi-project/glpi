@@ -77,40 +77,4 @@ class NetworkPortAggregate extends NetworkPortInstantiation
         $this->showMacField($netport, $options);
         $this->showNetworkPortSelector($recursiveItems, static::class);
     }
-
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-        $group->addHeader('Origin', __s('Origin port'), $super);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-        return null;
-    }
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-        if (
-            isset($this->fields['networkports_id_list'])
-            && is_string($this->fields['networkports_id_list'])
-        ) {
-            $this->fields['networkports_id_list']
-                        = importArrayFromDB($this->fields['networkports_id_list']);
-        }
-
-        $row->addCell(
-            $row->getHeaderByName('Instantiation', 'Origin'),
-            $this->getInstantiationNetworkPortHTMLTable()
-        );
-
-        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-        return null;
-    }
 }

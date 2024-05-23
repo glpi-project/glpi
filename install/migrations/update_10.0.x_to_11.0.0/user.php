@@ -52,3 +52,6 @@ $migration->dropField('glpi_users', 'fold_search');
 $migration->addConfig(['show_search_form' => 0]);
 $migration->addConfig(['search_pagination_on_top' => 0]);
 Config::deleteConfigurationValues('core', ['fold_search']);
+
+// Drop useless field
+$migration->dropField('glpi_users', 'display_options');

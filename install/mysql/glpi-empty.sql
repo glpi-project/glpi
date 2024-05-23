@@ -7801,7 +7801,6 @@ CREATE TABLE `glpi_users` (
   `duedatecritical_less` int DEFAULT NULL,
   `duedatewarning_unit` varchar(255) DEFAULT NULL,
   `duedatecritical_unit` varchar(255) DEFAULT NULL,
-  `display_options` text,
   `is_deleted_ldap` tinyint NOT NULL DEFAULT '0',
   `pdffont` varchar(255) DEFAULT NULL,
   `picture` varchar(255) DEFAULT NULL,

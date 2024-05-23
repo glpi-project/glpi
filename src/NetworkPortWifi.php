@@ -88,47 +88,6 @@ class NetworkPortWifi extends NetworkPortInstantiation
         }
     }
 
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-        DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, null, $options);
-
-        $group->addHeader('ESSID', __s('ESSID'), $super);
-        $group->addHeader('Mode', __s('Wifi mode'), $super);
-        $group->addHeader('Version', __s('Wifi protocol version'), $super);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-        return null;
-    }
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-        DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, null, $options);
-
-        $row->addCell(
-            $row->getHeaderByName('Instantiation', 'ESSID'),
-            Dropdown::getDropdownName(
-                "glpi_wifinetworks",
-                $this->fields["wifinetworks_id"]
-            )
-        );
-
-        $row->addCell($row->getHeaderByName('Instantiation', 'Mode'), $this->fields['mode']);
-
-        $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
-
-        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-        return null;
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];

@@ -46,30 +46,6 @@ class NetworkPortDialup extends NetworkPortInstantiation
         return __('Connection by dial line - Dialup Port');
     }
 
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-
-        $header = $group->addHeader('Connected', __s('Connected to'), $super);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
-        return null;
-    }
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-
-        return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
-    }
-
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         $twig_params = [

@@ -128,64 +128,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
 TWIG, $twig_params);
     }
 
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-        $header          = $group->addHeader('Connected', __s('Connected to'), $super);
-
-        DeviceNetworkCard::getHTMLTableHeader(
-            'NetworkPortFiberchannel',
-            $group,
-            $super,
-            $header,
-            $options
-        );
-
-        $group->addHeader('speed', __s('Fiber channel port speed'), $super, $header);
-        $group->addHeader('wwn', __s('World Wide Name'), $super, $header);
-        $group->addHeader('Socket', _sn('Network socket', 'Network sockets', 1), $super, $header);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
-        return $header;
-    }
-
-    protected function getPeerInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-        DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
-
-        if (!empty($this->fields['speed'])) {
-            $row->addCell(
-                $row->getHeaderByName('Instantiation', 'speed'),
-                self::getPortSpeed($this->fields["speed"]),
-                $father
-            );
-        }
-
-        if (!empty($this->fields['wwn'])) {
-            $row->addCell($row->getHeaderByName('Instantiation', 'wwn'), $this->fields["wwn"], $father);
-        }
-
-        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-        Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
-    }
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-        return $this->getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];
