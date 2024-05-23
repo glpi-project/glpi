@@ -187,17 +187,55 @@ jobs:
         run: |
           .github/actions/init_initialize-imap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-imap.sh
-      - name: "WEB tests"
-        if: env.skip != 'true'
-        run: |
-          docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "Javascript tests"
         if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/test_javascript.sh
+
+  e2e:
+    # Do not run scheduled tests on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    name: "E2E and web tests using latest PHP and MariaDB versions"
+    runs-on: "ubuntu-latest"
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      DB_IMAGE: "githubactions-mariadb:10.11"
+      PHP_IMAGE: "githubactions-php-apache:8.3"
+      UPDATE_FILES_ACL: true
+    steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-8.3-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-8.3-
+            app_home_deps-
+      - name: "Initialize containers"
+        run: |
+          .github/actions/init_containers-start.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker compose exec -T app .github/actions/init_build.sh
+      - name: "Install DB tests"
+        run: |
+          docker compose exec -T app .github/actions/test_install.sh
+      - name: "WEB tests"
+        run: |
+          docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "E2E tests"
         id: "e2e"
-        if: env.skip != 'true'
         run: |
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
