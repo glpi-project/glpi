@@ -555,57 +555,6 @@ class NetworkPort extends CommonDBChild
     }
 
     /**
-     * Get available display options array
-     *
-     * @since 0.84
-     *
-     * @return array  all the options
-     **/
-    public static function getAvailableDisplayOptions()
-    {
-        $options = [];
-        $options[__('Global displays')] = [
-            'characteristics' => [
-                'name'    => __('Characteristics'),
-                'default' => true
-            ],
-            'internet'        => [
-                'name'    => __('Internet information'),
-                'default' => true
-            ],
-            'dynamic_import'  => [
-                'name'    => __('Automatic inventory'),
-                'default' => false
-            ]
-        ];
-        $options[__('Common options')] = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
-        $options[__('Internet information')] = [
-            'names'       => [
-                'name'    => NetworkName::getTypeName(Session::getPluralNumber()),
-                'default' => false
-            ],
-            'aliases'     => [
-                'name'    => NetworkAlias::getTypeName(Session::getPluralNumber()),
-                'default' => false
-            ],
-            'ipaddresses' => [
-                'name'    => IPAddress::getTypeName(Session::getPluralNumber()),
-                'default' => true
-            ],
-            'ipnetworks'  => [
-                'name'    => IPNetwork::getTypeName(Session::getPluralNumber()),
-                'default' => true
-            ]
-        ];
-
-        foreach (self::getNetworkPortInstantiations() as $portType) {
-            $portTypeName           = $portType::getTypeName();
-            $options[$portTypeName] = $portType::getInstantiationNetworkPortDisplayOptions();
-        }
-        return $options;
-    }
-
-    /**
      * Show ports for an item
      *
      * @param CommonDBTM $item

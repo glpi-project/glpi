@@ -76,32 +76,4 @@ class NetworkPortAlias extends NetworkPortInstantiation
         $this->showMacField($netport, $options);
         $this->showNetworkPortSelector($recursiveItems, static::class);
     }
-
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-        $group->addHeader('Origin', __s('Origin port'), $super);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-        return null;
-    }
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-        $row->addCell(
-            $row->getHeaderByName('Instantiation', 'Origin'),
-            $this->getInstantiationNetworkPortHTMLTable()
-        );
-
-        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-        return null;
-    }
 }

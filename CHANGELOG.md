@@ -227,6 +227,11 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDropdown::displayHeader()`
+- `CommonGLPI::getAvailableDisplayOptions()`
+- `CommonGLPI::getDisplayOptions()`
+- `CommonGLPI::getDisplayOptionsLink()`
+- `CommonGLPI::updateDisplayOptions()`
+- `CommonGLPI::showDislayOptions()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
 - `CommonITILValidation::alreadyExists()`
@@ -307,8 +312,16 @@ The present file will list all changes made to the project; according to the
 - `Netpoint` class
 - `NetworkAlias::getInternetNameFromID()`
 - `NetworkName::getInternetNameFromID()`
+- `NetworkPort::getAvailableDisplayOptions()`
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
 - `NetworkPort::resetConnections()`
+- `NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions()`
+- `NetworkPortInstantiation::getInstantiationHTMLTable()` and all sub classes overrrides.
+- `NetworkPortInstantiation::getInstantiationHTMLTableHeaders()` and all sub classes overrrides.
+- `NetworkPortInstantiation::getInstantiationHTMLTableWithPeer()`
+- `NetworkPortInstantiation::getInstantiationNetworkPortDisplayOptions()`
+- `NetworkPortInstantiation::getInstantiationNetworkPortHTMLTable()`
+- `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrrides.
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `Plugin::migrateItemType()`
