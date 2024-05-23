@@ -3617,6 +3617,7 @@ JS;
                branding: false,
                selector: '#' + $.escapeSelector('{$id}'),
                text_patterns: false,
+               paste_webkit_styles: 'all',
 
                plugins: {$pluginsjs},
 
