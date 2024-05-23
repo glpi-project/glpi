@@ -2219,6 +2219,16 @@ class MailCollector extends CommonDBTM
            // message-id header does not match GLPI format.
             return false;
         }
+        //FIX to create ticket from notification from GLPI to not blacklist it
+        $itemtype = $matches['itemtype'];
+        switch ($itemtype) {
+            //If notification from contract
+            case 'Contract':
+                return false;
+            //If notification from Software License
+            case 'SoftwareLicense':
+                return false;
+        }
 
         $uuid = $matches['uuid'];
         if (empty($uuid)) {
