@@ -42,6 +42,7 @@
     >
         {# Add question action #}
         <button
+            type="button"
             class="btn btn-icon flex-grow-0"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
@@ -54,9 +55,26 @@
             </span>
         </button>
 
-        {# Add section action #}
-        {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getQuestions()|length > 0 %}
+        {# Add comment action #}
         <button
+        type="button"
+            for="btn-radio-toolbar-1"
+            class="btn btn-icon flex-grow-0"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{{ __("Add a new comment") }}"
+            data-glpi-form-editor-on-click="add-comment"
+        >
+            <span class="px-2 d-flex align-items-center">
+                <i class="ti ti-letter-case"></i>
+            </span>
+        </button>
+
+        {# Add section action #}
+        {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getBlocks()|length > 0 %}
+        <button
+            type="button"
+            for="btn-radio-toolbar-1"
             class="btn btn-icon flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"

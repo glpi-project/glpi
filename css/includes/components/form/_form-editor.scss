@@ -158,6 +158,31 @@
     }
 }
 
+[data-glpi-form-editor-comment] {
+    &[data-glpi-form-editor-active-comment] {
+        // Show secondary data on active comments
+        [data-glpi-form-editor-comment-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-comment]) {
+        // Do not highlight inactive comments
+        [data-glpi-form-editor-active-comment-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive comments
+        [data-glpi-form-editor-comment-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
 .glpi-form-editor-drag-question-placeholder {
     border: 2px dashed var(--tblr-primary);
     background: rgba(var(--tblr-primary), 0.1);
@@ -184,7 +209,7 @@
     opacity: 0;
 }
 
-[data-glpi-form-editor-question-details] {
+[data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
     &:hover {
         .glpi-form-editor-question-handle {
             opacity: 0.7;
@@ -195,7 +220,7 @@
 // Hide content of collapsed sections
 [data-glpi-form-editor-section].section-collapsed {
     [data-glpi-form-editor-section-description],
-    [data-glpi-form-editor-section-questions],
+    [data-glpi-form-editor-section-blocks],
     [data-glpi-form-editor-section-extra-details] {
         display: none;
     }

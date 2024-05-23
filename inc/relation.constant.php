@@ -707,6 +707,7 @@ $RELATION = [
 
     'glpi_forms_sections' => [
         "_glpi_forms_questions" => "forms_sections_id",
+        "_glpi_forms_comments" => "forms_sections_id",
     ],
 
     'glpi_fqdns' => [

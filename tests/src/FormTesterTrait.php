@@ -37,6 +37,7 @@ namespace Glpi\Tests;
 
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -87,6 +88,15 @@ trait FormTesterTrait
                     'is_mandatory'      => $question_data['is_mandatory'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                ]);
+            }
+
+            // Create comments
+            foreach ($section_data['comments'] as $comment_data) {
+                $this->createItem(Comment::class, [
+                    'forms_sections_id' => $section->getID(),
+                    'name'              => $comment_data['name'],
+                    'description'       => $comment_data['description'],
                 ]);
             }
         }
@@ -197,6 +207,56 @@ trait FormTesterTrait
 
         $section = array_pop($filtered_sections);
         return $section->getID();
+    }
+
+    /**
+     * Helper method to access the ID of a comment for a given form.
+     *
+     * @param Form        $form         Given form
+     * @param string      $comment_name Comment name to look for
+     * @param string|null $section_name Optional section name, might be needed if
+     *
+     * @return int The ID of the comment
+     */
+    protected function getCommentId(
+        Form $form,
+        string $comment_name,
+        string $section_name = null,
+    ): int {
+        // Make sure form is up to date
+        $form->getFromDB($form->getID());
+
+        // Get comments
+        $comments = $form->getComments();
+
+        if ($section_name === null) {
+            // Search by name
+            $filtered_comments = array_filter(
+                $comments,
+                fn($comment) => $comment->fields['name'] === $comment_name
+            );
+
+            $comment = array_pop($filtered_comments);
+            return $comment->getID();
+        } else {
+            // Find section
+            $sections = $form->getSections();
+            $filtered_sections = array_filter(
+                $sections,
+                fn($section) => $section->fields['name'] === $section_name
+            );
+            $section = array_pop($filtered_sections);
+
+            // Search by name AND section
+            $filtered_comments = array_filter(
+                $comments,
+                fn($comment) => $comment->fields['name'] === $comment_name
+                    && $comment->fields['forms_sections_id'] === $section->getID()
+            );
+            $this->array($filtered_comments)->hasSize(1);
+            $comment = array_pop($filtered_comments);
+            return $comment->getID();
+        }
     }
 
     /**

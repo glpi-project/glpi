@@ -53,6 +53,13 @@ final class Section extends CommonDBChild
      */
     protected ?array $questions = null;
 
+    /**
+     * Lazy loaded array of comments
+     * Should always be accessed through getComments()
+     * @var Comment[]|null
+     */
+    protected ?array $comments = null;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -72,8 +79,23 @@ final class Section extends CommonDBChild
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Question::class,
+                Comment::class,
             ]
         );
+    }
+
+    /**
+     * Get blocks of this section
+     * Block can be a question or a comment
+     *
+     * @return Block[]
+     */
+    public function getBlocks(): array
+    {
+        $blocks = array_merge($this->getQuestions(), $this->getComments());
+        usort($blocks, fn($a, $b) => $a->fields['rank'] <=> $b->fields['rank']);
+
+        return $blocks;
     }
 
     /**
@@ -110,6 +132,34 @@ final class Section extends CommonDBChild
     }
 
     /**
+     * Get comments of this section
+     *
+     * @return Comment[]
+     */
+    public function getComments(): array
+    {
+        // Lazy loading
+        if ($this->comments === null) {
+            $this->comments = [];
+
+            // Read from database
+            $comments_data = (new Comment())->find(
+                [self::getForeignKeyField() => $this->fields['id']],
+                'rank ASC',
+            );
+            foreach ($comments_data as $row) {
+                $comment = new Comment();
+                $comment->getFromResultSet($row);
+                $comment->post_getFromDB();
+
+                $this->comments[$row['id']] = $comment;
+            }
+        }
+
+        return $this->comments;
+    }
+
+    /**
      * Clear lazy loaded data
      *
      * @return void
@@ -117,5 +167,6 @@ final class Section extends CommonDBChild
     protected function clearLazyLoadedData(): void
     {
         $this->questions = null;
+        $this->comments = null;
     }
 }

@@ -290,6 +290,22 @@ final class Form extends CommonDBTM
     }
 
     /**
+     * Get all comments for this form
+     *
+     * @return Comment[]
+     */
+    public function getComments(): array
+    {
+        $comments = [];
+        foreach ($this->getSections() as $section) {
+            // Its important to use the "+" operator here and not array_merge
+            // because the keys must be preserved
+            $comments = $comments + $section->getComments();
+        }
+        return $comments;
+    }
+
+    /**
      * Get all defined destinations of this form
      *
      * @return FormDestination[]
@@ -350,8 +366,10 @@ final class Form extends CommonDBTM
         // have been moved to another section.
         $this->updateSections();
         $this->updateQuestions();
+        $this->updateComments();
         $this->deleteMissingSections();
         $this->deleteMissingQuestions();
+        $this->deleteMissingComments();
     }
 
     /**
@@ -593,6 +611,120 @@ final class Form extends CommonDBTM
         }
 
         unset($this->input['_found_questions']);
+    }
+
+    /**
+     * Update form's comments using the special data found in
+     * $this->input['_comments']
+     *
+     * @return void
+     */
+    protected function updateComments(): void
+    {
+        $comments = $this->input['_comments'] ?? [];
+
+        // Keep track of comments found
+        $found_comments = [];
+
+        // Parse each submitted comment
+        foreach ($comments as $comment_data) {
+            $comment = new Comment();
+
+            if ($comment_data["_use_uuid_for_sections_id"]) {
+                // This question was added to a newly created section
+                // We need to find the correct section id using the temporary UUID
+                $uuid = $comment_data['forms_sections_id'];
+                $comment_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            }
+
+            // Newly created comment, may need to be updated using temporary UUID instead of ID
+            if ($comment_data['_use_uuid']) {
+                $uuid = $comment_data['id'];
+                $comment_data['id'] = $_SESSION['form_editor_comments_uuid'][$uuid] ?? 0;
+            } else {
+                $uuid = null;
+            }
+
+            if ($comment_data['id'] == 0) {
+                // Add new comment
+                unset($comment_data['id']);
+                $id = $comment->add($comment_data);
+
+                if (!$id) {
+                    throw new \RuntimeException("Failed to add comment");
+                }
+
+                // Store temporary UUID -> ID mapping in session
+                if ($uuid !== null) {
+                    $_SESSION['form_editor_comments_uuid'][$uuid] = $id;
+                }
+            } else {
+                // Update existing comment
+                $success = $comment->update($comment_data);
+                if (!$success) {
+                    throw new \RuntimeException("Failed to update comment");
+                }
+                $id = $comment->getID();
+            }
+
+            // Keep track of its id
+            $found_comments[] = $id;
+        }
+
+        // Deletion will be handled in a separate method
+        $this->input['_found_comments'] = $found_comments;
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_comments']);
+    }
+
+    /**
+     * Delete comments that were not found in the submitted data
+     *
+     * @return void
+     */
+    protected function deleteMissingComments(): void
+    {
+        // We can't run this code if we don't have the list of updated comments
+        if (!isset($this->input['_found_comments'])) {
+            return;
+        }
+        $found_comments = $this->input['_found_comments'];
+
+        // Safety check to avoid deleting all comments if some code run an update
+        // without the _comments keys.
+        // Deletion is only done if the special "_delete_missing_comments" key
+        // is present
+        $delete_missing_comments = $this->input['_delete_missing_comments'] ?? false;
+        if ($delete_missing_comments) {
+            // Avoid empty IN clause
+            if (empty($found_comments)) {
+                $found_comments = [-1];
+            }
+
+            $missing_comments = (new Comment())->find([
+                // Is part of this form
+                'forms_sections_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => Section::getTable(),
+                    'WHERE'  => [
+                        'forms_forms_id' => $this->fields['id'],
+                    ],
+                ]),
+                // Was not found in the submitted data
+                'id' => ['NOT IN', $found_comments],
+            ]);
+
+            foreach ($missing_comments as $row) {
+                $comment = new Comment();
+                $success = $comment->delete($row);
+                if (!$success) {
+                    throw new \RuntimeException("Failed to delete comment");
+                }
+            }
+        }
+
+        unset($this->input['_found_comments']);
     }
 
     /**

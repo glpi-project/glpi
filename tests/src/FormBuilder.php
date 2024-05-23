@@ -267,6 +267,7 @@ class FormBuilder
             'name'        => $name,
             'description' => $description,
             'questions'   => [],
+            'comments'    => [],
         ];
         return $this;
     }
@@ -304,6 +305,24 @@ class FormBuilder
             'extra_data'    => $extra_data,
             'description'   => $description,
             'is_mandatory'  => $is_mandatory,
+        ];
+
+        return $this;
+    }
+
+    public function addComment(
+        string $name,
+        string $description = "",
+    ): self {
+        // Add first section if missing
+        if (empty($this->sections)) {
+            $this->addSection("First section");
+        }
+
+        // Add question into last section
+        $this->sections[count($this->sections) - 1]['comments'][] = [
+            'name'          => $name,
+            'description'   => $description,
         ];
 
         return $this;

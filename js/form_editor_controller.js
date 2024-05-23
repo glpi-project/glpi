@@ -101,7 +101,7 @@ class GlpiFormEditorController
 
         // Enable sortable on questions
         this.#enableSortable(
-            $(this.#target).find("[data-glpi-form-editor-sections]")
+            $(this.#target).find("[data-glpi-form-editor-blocks]")
         );
 
         // Focus the form's name input if there are no questions
@@ -236,7 +236,8 @@ class GlpiFormEditorController
                     target.closest(`
                         [data-glpi-form-editor-active-form],
                         [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-question]
+                        [data-glpi-form-editor-active-question],
+                        [data-glpi-form-editor-active-comment]
                     `),
                 );
                 break;
@@ -283,7 +284,8 @@ class GlpiFormEditorController
                     target.closest(`
                         [data-glpi-form-editor-active-form],
                         [data-glpi-form-editor-active-section],
-                        [data-glpi-form-editor-active-question]
+                        [data-glpi-form-editor-active-question],
+                        [data-glpi-form-editor-active-comment]
                     `),
                 );
                 break;
@@ -334,10 +336,35 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Duplicate target comment
+            case "duplicate-comment":
+                this.#duplicateComment(
+                    target.closest("[data-glpi-form-editor-comment]")
+                );
+                break;
+
             // No specific instructions for these events.
             // They must still be kept here as they benefits from the common code
             // like refreshUX() and glpiUnsavedFormChanges.
             case "question-sort-update":
+                break;
+
+            // Add a new comment
+            case "add-comment":
+                this.#addComment(
+                    target.closest(`
+                        [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
+                        [data-glpi-form-editor-active-question],
+                        [data-glpi-form-editor-active-comment]
+                    `),
+                );
+                break;
+            // Delete the target comment
+            case "delete-comment":
+                this.#deleteComment(
+                    target.closest("[data-glpi-form-editor-comment]")
+                );
                 break;
 
             // Unknown action
@@ -360,7 +387,7 @@ class GlpiFormEditorController
      * Must be executed after each actions.
      */
     computeState() {
-        let global_q_index = 0;
+        let global_block_indices = { 'question': 0, 'comment': 0 };
 
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -374,20 +401,25 @@ class GlpiFormEditorController
             this.#setItemRank($(section), s_index);
             this.#remplaceEmptyIdByUuid($(section));
 
-            // Find all questions for this section
-            const questions = $(section).find("[data-glpi-form-editor-question]");
-            questions.each((q_index, question) => {
-                // Compute state for each questions
-                this.#formatInputsNames(
-                    $(question),
-                    'question',
-                    global_q_index,
-                );
-                this.#setItemRank($(question), q_index);
-                this.#remplaceEmptyIdByUuid($(question));
-                this.#setParentSection($(question), $(section));
+            // Find all items for this section (both questions and comments)
+            const items = $(section).find("[data-glpi-form-editor-question], [data-glpi-form-editor-comment]");
 
-                global_q_index++;
+            items.each((index, item) => {
+                // Determine the type of the item
+                const itemType = $(item).is("[data-glpi-form-editor-question]") ? 'question' : 'comment';
+
+                // Compute state for each item
+                this.#formatInputsNames(
+                    $(item),
+                    itemType,
+                    global_block_indices[itemType]
+                );
+                this.#setItemRank($(item), index);
+                this.#remplaceEmptyIdByUuid($(item));
+                this.#setParentSection($(item), $(section));
+
+                // Increment the index for this item type
+                global_block_indices[itemType]++;
             });
         });
     }
@@ -410,6 +442,7 @@ class GlpiFormEditorController
      * expected format, which is:
      * - Sections: _sections[section_index][field]
      * - Questions: _questions[question_index][field]
+     * - Comment blocks: _comments[comment_index][field]
      *
      * @param {jQuery} item       Section or question form container
      * @param {string} type       Item type: "question" or "section"
@@ -445,6 +478,9 @@ class GlpiFormEditorController
                 if (is_option) {
                     base_input_index += `[extra_data]`;
                 }
+            } else if (type === "comment") {
+                // The input is for a comment block
+                base_input_index = `_comments[${item_index}]`;
             } else {
                 throw new Error(`Unknown item type: ${type}`);
             }
@@ -629,7 +665,7 @@ class GlpiFormEditorController
      * @param {jQuery|null} item_container
      */
     #setActiveItem(item_container) {
-        const possible_active_items = ['form', 'section', 'question'];
+        const possible_active_items = ['form', 'section', 'question', 'comment'];
 
         // Remove current active item
         possible_active_items.forEach((type) => {
@@ -637,7 +673,6 @@ class GlpiFormEditorController
                 .find(`[data-glpi-form-editor-active-${type}]`)
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
-
 
         // Set new active item if specified
         if (item_container !== null) {
@@ -664,45 +699,58 @@ class GlpiFormEditorController
     }
 
     /**
-     * Add a new question at the end of the form
-     * @param {jQuery} target   Current position in the form
+     * Add a new block next to the target.
+     * @param {jQuery} target
+     * @param {jQuery} template
+     * @returns
      */
-    #addQuestion(target) {
+    #addBlock(target, template) {
         let destination;
         let action;
 
         // Find the context using the target
-        if (target.data('glpi-form-editor-question') !== undefined) {
-            // Adding a new question after an existing question
+        if (
+            target.data('glpi-form-editor-question') !== undefined
+            || target.data('glpi-form-editor-comment') !== undefined
+        ) {
+            // Adding a new block after an existing question
             destination = target;
             action = "after";
         } else if (target.data('glpi-form-editor-section') !== undefined) {
-            // Adding a question at the start of a section
+            // Adding a block at the start of a section
             destination = target
                 .closest("[data-glpi-form-editor-section]")
-                .find("[data-glpi-form-editor-section-questions]");
+                .find("[data-glpi-form-editor-section-blocks]");
             action = "prepend";
         } else if (target.data('glpi-form-editor-form') !== undefined) {
-            // Add a question at the end of the form
+            // Add a block at the end of the form
             destination = $(this.#target)
                 .find("[data-glpi-form-editor-section]:last-child")
-                .find("[data-glpi-form-editor-section-questions]:last-child");
+                .find("[data-glpi-form-editor-section-blocks]:last-child");
             action = "append";
         } else {
             throw new Error('Unexpected target');
         }
 
-        // Get template content
-        const template_content = this.#getQuestionTemplate(
-            this.#defaultQuestionType
-        ).children();
-
         // Insert the new template into the questions area of the current section
-        const new_question = this.#copy_template(
-            template_content,
+        return this.#copy_template(
+            template,
             destination,
             action
         );
+    }
+
+    /**
+     * Add a new question at the end of the form
+     * @param {jQuery} target   Current position in the form
+     */
+    #addQuestion(target) {
+        // Get template content
+        const template = this.#getQuestionTemplate(
+            this.#defaultQuestionType
+        ).children();
+
+        const new_question = this.#addBlock(target, template);
 
         // Mark as active
         this.#setActiveItem(new_question);
@@ -1020,7 +1068,10 @@ class GlpiFormEditorController
         let to_move;
 
         // Find the context using the target
-        if (target.data('glpi-form-editor-question') !== undefined) {
+        if (
+            target.data('glpi-form-editor-question') !== undefined
+            || target.data('glpi-form-editor-comment') !== undefined
+        ) {
             // Adding a new section after an existing question
             // For the existing sections, any questions AFTER the target will
             // be moved into the new section
@@ -1065,7 +1116,7 @@ class GlpiFormEditorController
         // Move questions into their new sections if needed
         if (to_move !== null && to_move.length > 0) {
             to_move.detach().appendTo(
-                section.find("[data-glpi-form-editor-section-questions]")
+                section.find("[data-glpi-form-editor-section-blocks]")
             );
             to_move.each((index, question) => {
                 this.#handleItemMove($(question));
@@ -1117,16 +1168,65 @@ class GlpiFormEditorController
     }
 
     /**
+     * Add a new comment block.
+     * @param {jQuery} target   Current position in the form
+     */
+    #addComment(target) {
+        // Find the comment template
+        const template = $(this.#templates)
+            .find("[data-glpi-form-editor-comment-template]")
+            .children();
+
+        const new_comment = this.#addBlock(target, template);
+
+        // Mark as active
+        this.#setActiveItem(new_comment);
+
+        // Focus title's name
+        new_comment
+            .find("[data-glpi-form-editor-comment-details-name]")[0]
+            .focus();
+    }
+
+    /**
+     * Delete the given comment.
+     *
+     * @param {jQuery} comment
+     */
+    #deleteComment(comment) {
+        if (
+            $(this.#target).find("[data-glpi-form-editor-comment]").length == 1
+            && $(this.#getSectionCount()) == 1
+        ) {
+            // If the last comments is going to be deleted and there is only one section
+            // set the form itself as active to show its toolbar
+            this.#setActiveItem(
+                $(this.#target).find("[data-glpi-form-editor-form-details]")
+            );
+        } else {
+            // Set active the previous comment/section
+            if (comment.prev().length > 0) {
+                this.#setActiveItem(comment.prev());
+            } else {
+                this.#setActiveItem(comment.closest("[data-glpi-form-editor-section]"));
+            }
+        }
+
+        // Remove comment and update UX
+        comment.remove();
+    }
+
+    /**
      * Update the visibility of the "add section" action.
      * The action is hidden if there are no questions in the form.
      */
     #updateAddSectionActionVisiblity() {
-        const questions_count = $(this.#target)
-            .find("[data-glpi-form-editor-question]")
+        const block_count = $(this.#target)
+            .find("[data-glpi-form-editor-block]")
             .length;
 
         // Hide the "add section" action unless there is at least one question
-        if (questions_count == 0) {
+        if (block_count == 0) {
             $("[data-glpi-form-editor-on-click='add-section']")
                 .addClass("d-none");
         } else {
@@ -1223,14 +1323,14 @@ class GlpiFormEditorController
         sections
             .each((index, section) => {
                 const questions_container = $(section)
-                    .find("[data-glpi-form-editor-section-questions]");
+                    .find("[data-glpi-form-editor-section-blocks]");
 
                 sortable(questions_container, {
                     // Drag and drop handle selector
                     handle: '[data-glpi-form-editor-question-handle]',
 
                     // Accept from others sections
-                    acceptFrom: '[data-glpi-form-editor-section-questions]',
+                    acceptFrom: '[data-glpi-form-editor-section-blocks]',
 
                     // Placeholder class
                     placeholderClass: 'glpi-form-editor-drag-question-placeholder mb-3',
@@ -1239,7 +1339,7 @@ class GlpiFormEditorController
 
         // Keep track on unsaved changes if the sort order was updated
         sections
-            .find("[data-glpi-form-editor-section-questions]")
+            .find("[data-glpi-form-editor-section-blocks]")
             .on('sortupdate', (e) => {
                 // Trigger an action to make sure we use the main entry point
                 // where common action related functions are excuted
@@ -1248,7 +1348,7 @@ class GlpiFormEditorController
 
         // Add a special class while a drag and drop is happening
         sections
-            .find("[data-glpi-form-editor-section-questions]")
+            .find("[data-glpi-form-editor-section-blocks]")
             .on('sortstart', () => {
                 $(this.#target).addClass("disable-focus");
             });
@@ -1256,7 +1356,7 @@ class GlpiFormEditorController
         // Run the post move process if any item was dragged, even if it was not
         // moved in the end (= dragged on itself)
         sections
-            .find("[data-glpi-form-editor-section-questions]")
+            .find("[data-glpi-form-editor-section-blocks]")
             .on('sortstop', (e) => {
                 // The 'sortstop' event trigger twice for a single drag and drop
                 // action.
@@ -1357,7 +1457,7 @@ class GlpiFormEditorController
                 section
                     .remove()
                     .appendTo(
-                        $(this.#target).find("[data-glpi-form-editor-sections]")
+                        $(this.#target).find("[data-glpi-form-editor-blocks]")
                     );
             });
 
@@ -1387,12 +1487,12 @@ class GlpiFormEditorController
 
         // Move questions into the previous section
         const to_move = section
-            .find("[data-glpi-form-editor-section-questions]")
+            .find("[data-glpi-form-editor-section-blocks]")
             .children();
         to_move
             .detach()
             .appendTo(
-                previous_section.find("[data-glpi-form-editor-section-questions]")
+                previous_section.find("[data-glpi-form-editor-section-blocks]")
             );
 
         // Fix complex inputs like tinymce that don't like to be moved
@@ -1450,6 +1550,20 @@ class GlpiFormEditorController
     }
 
     /**
+     * Duplicate the given comment
+     * @param {jQuery} section
+     */
+    #duplicateComment(comment) {
+        // TinyMCE must be disabled before we can duplicate the comment DOM
+        const ids = this.#disableTinyMce(comment);
+        const new_comment = this.#copy_template(comment, comment, "after");
+        this.#enableTinyMce(ids);
+
+        this.#setItemInput(new_comment, "id", 0);
+        this.#setActiveItem(new_comment);
+    }
+
+    /**
      * Add fake div to empty sections to allow drag and drop.
      * This is needed because sortable require at least one item in a list to
      * enable drag and drop.
@@ -1463,7 +1577,7 @@ class GlpiFormEditorController
         // Add fake divs to empty sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
         sections.each((index, section) => {
-            const questions = $(section).find("[data-glpi-form-editor-section-questions]");
+            const questions = $(section).find("[data-glpi-form-editor-section-blocks]");
             if (questions.children().length == 0) {
                 questions.append('<div data-glpi-form-editor-empty-div style="height: 1px"></div>');
             }
