@@ -972,17 +972,17 @@ class Contract extends CommonDBTM
 
         $options = [
             'reset' => 'reset',
-            'sort'  => 12,
+            'sort'  => 20,
             'order' => 'DESC',
             'start' => 0,
             'criteria' => [
                 [
-                    'field'      => 12,
+                    'field'      => 20,
                     'value'      => '<0',
                     'searchtype' => 'contains',
                 ],
                 [
-                    'field'      => 12,
+                    'field'      => 20,
                     'link'       => 'AND',
                     'value'      => '>-30',
                     'searchtype' => 'contains',
