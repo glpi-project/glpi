@@ -62,11 +62,13 @@ final class QuestionTagProvider extends DbTestCase
                     label: 'Question: First name',
                     value: $this->getQuestionId($form, 'First name'),
                     provider: \Glpi\Form\Tag\QuestionTagProvider::class,
+                    color: \Glpi\Form\Tag\QuestionTagProvider::ACCENT_COLOR,
                 ),
                 new Tag(
                     label: 'Question: Last name',
                     value: $this->getQuestionId($form, 'Last name'),
                     provider: \Glpi\Form\Tag\QuestionTagProvider::class,
+                    color: \Glpi\Form\Tag\QuestionTagProvider::ACCENT_COLOR,
                 ),
             ]
         ];

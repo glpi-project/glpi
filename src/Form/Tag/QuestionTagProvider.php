@@ -42,6 +42,8 @@ use Override;
 
 final class QuestionTagProvider implements TagProviderInterface
 {
+    public const ACCENT_COLOR = "orange";
+
     #[Override]
     public function getTags(Form $form): array
     {
@@ -51,6 +53,7 @@ final class QuestionTagProvider implements TagProviderInterface
                 label: sprintf(__('Question: %s'), $questions->fields['name']),
                 value: $questions->getId(),
                 provider: self::class,
+                color: self::ACCENT_COLOR,
             );
         }
 
