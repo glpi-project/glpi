@@ -129,6 +129,15 @@ final class FormTagsManager extends DbTestCase
                 $this->getTagByName($tags, 'Answer: Last name'),
             ],
         ];
+        yield 'With "last" filter' => [
+            'form'     => $form,
+            'filter'   => "last",
+            'expected' => [
+                // Must still match despite the case difference.
+                $this->getTagByName($tags, 'Question: Last name'),
+                $this->getTagByName($tags, 'Answer: Last name'),
+            ],
+        ];
     }
 
     /**

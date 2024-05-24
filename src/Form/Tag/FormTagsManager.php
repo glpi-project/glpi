@@ -116,8 +116,8 @@ final class FormTagsManager
         $filtered_tags = array_filter(
             $tags,
             fn($tag) => $tag instanceof Tag && str_contains(
-                $tag->label,
-                $filter
+                strtoupper($tag->label),
+                strtoupper($filter)
             )
         );
 
