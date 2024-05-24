@@ -221,9 +221,9 @@ class MailCollector extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
+        $contract_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Contract', '_contract01'));
         $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
         $base_notif = new NotificationTarget();
-
         $uuid = Config::getUuid('notification');
 
         $time = time();
@@ -253,7 +253,7 @@ class MailCollector extends DbTestCase
                     'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // with object relation
                 ],
                 'expected' => true,
-            ],
+            ],            
             [
                 'headers'  => [
                     'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // without object relation
@@ -271,7 +271,7 @@ class MailCollector extends DbTestCase
                 'headers'  => [
                     'message-id' => "GLPI_{$uuid}-SoftwareLicense-1.{$time}.{$rand}@{$uname}", // with object relation
                 ],
-                'expected' => true,
+                'expected' => false,
             ],
             [
                 'headers'  => [
@@ -300,9 +300,15 @@ class MailCollector extends DbTestCase
             ],
             [
                 'headers'  => [
-                    'message-id' => $soft_notif->getMessageID(), // with object relation
+                    'message-id' => $ticket_notif->getMessageID(), // for ticket
                 ],
                 'expected' => true,
+            ],
+            [
+                'headers'  => [
+                    'message-id' => $soft_notif->getMessageID(), // with object relation
+                ],
+                'expected' => false,
             ],
             [
                 'headers'  => [
@@ -322,6 +328,13 @@ class MailCollector extends DbTestCase
                 ],
                 'expected' => false,
             ],
+            [
+                'headers'  => [
+                    'message-id' => $contract_notif->getMessageID(), // without object relation
+                ],
+                'expected' => false,
+            ],
+            
         ];
     }
 
@@ -338,6 +351,8 @@ class MailCollector extends DbTestCase
                 'content' => 'Message contents...',
             ]
         );
+//        print_r($headers);
+//        print_r($expected);
 
         $this->boolean($this->testedInstance->isMessageSentByGlpi($message))->isEqualTo($expected);
     }

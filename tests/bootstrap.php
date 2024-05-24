@@ -714,6 +714,16 @@ function loadDataset()
                 'version'      => '1.0.0',
                 'state'        => 1,
             ]
+        ],'Contract' => [
+            [
+                'name'         => '_contract01',
+                'completename' => '_contract01',
+                'level'        => 0,
+                'entities_id'  => '_test_root_entity',
+                'is_recursive' => 1,
+                'number'       => 2,
+                'softwares_id' => '_test_contract',
+            ],
         ],
     ];
 
