@@ -253,7 +253,7 @@ class MailCollector extends DbTestCase
                     'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // with object relation
                 ],
                 'expected' => true,
-            ],            
+            ],
             [
                 'headers'  => [
                     'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // without object relation
@@ -334,7 +334,7 @@ class MailCollector extends DbTestCase
                 ],
                 'expected' => false,
             ],
-            
+
         ];
     }
 
