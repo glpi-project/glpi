@@ -245,6 +245,17 @@ final class ITILController extends AbstractController
                 ],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-field' => 'actiontime'],
+                'state' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        \Planning::INFO,
+                        \Planning::TODO,
+                        \Planning::DONE,
+                    ]
+                ],
+                'category' => self::getDropdownTypeSchema(class: \TaskCategory::class, full_schema: 'TaskCategory'),
             ]
         ];
 
@@ -259,6 +270,20 @@ final class ITILController extends AbstractController
         $schemas['ProblemTask'] = $base_task_schema;
         $schemas['ProblemTask']['x-itemtype'] = \ProblemTask::class;
         $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+
+        $schemas['TaskCategory'] = [
+            'x-itemtype' => \TaskCategory::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ]
+        ];
 
         $schemas['RequestType'] = [
             'x-itemtype' => \RequestType::class,
