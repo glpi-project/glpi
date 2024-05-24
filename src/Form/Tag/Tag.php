@@ -48,6 +48,7 @@ final readonly class Tag
         string $label,
         string $value,
         string $provider,
+        string $color,
     ) {
         $this->label = $label;
 
@@ -57,6 +58,7 @@ final readonly class Tag
             "data-form-tag"          => "true",
             "data-form-tag-value"    => $value,
             "data-form-tag-provider" => $provider,
+            "class"                  => "bg-$color-lt"
         ];
         $properties = implode(" ", array_map(
             fn($key, $value) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)),

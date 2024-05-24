@@ -56,11 +56,12 @@ final class Tag extends DbTestCase
         $tag = $this->getTagByName($tags, 'Question: First name');
         $question_id = $this->getQuestionId($form, 'First name');
         $provider = QuestionTagProvider::class;
+        $color = QuestionTagProvider::ACCENT_COLOR;
 
         $this->string(json_encode($tag))->isEqualTo(
             json_encode([
                 'label' => 'Question: First name',
-                'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\">Question: First name</span>"
+                'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\" class=\"bg-$color-lt\">Question: First name</span>"
             ])
         );
     }
