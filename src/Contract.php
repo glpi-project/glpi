@@ -589,7 +589,7 @@ class Contract extends CommonDBTM
                 '1'                  => 'begin_date',
                 '2'                  => 'duration'
             ],
-            'searchunit'         => 'MONTH',
+            'searchunit'         => 'DAY',
             'delayunit'          => 'MONTH',
             'maybefuture'        => true,
             'massiveaction'      => false
