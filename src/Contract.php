@@ -997,17 +997,17 @@ class Contract extends CommonDBTM
         ];
 
         $options['criteria'][0]['searchtype'] = 'morethan';
-        $options['criteria'][1]['value']      = 'NOW';
+        $options['criteria'][0]['value']      = 'NOW';
         $options['criteria'][1]['searchtype'] = 'lessthan';
-        $options['criteria'][1]['value']      = '7DAYS';
+        $options['criteria'][1]['value']      = '7DAY';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
             'count'  => $contract7
         ];
 
-        $options['criteria'][1]['searchtype'] = 'lessthan';
-        $options['criteria'][1]['value']      = '6DAYS';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value']      = '6DAY';
         $options['criteria'][1]['searchtype'] = 'lessthan';
         $options['criteria'][1]['value']      = '1MONTH';
         $twig_params['items'][] = [
