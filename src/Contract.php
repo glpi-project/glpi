@@ -589,7 +589,7 @@ class Contract extends CommonDBTM
                 '1'                  => 'begin_date',
                 '2'                  => 'duration'
             ],
-            'searchunit'         => 'DAY',
+            'searchunit'         => 'MONTH',
             'delayunit'          => 'MONTH',
             'maybefuture'        => true,
             'massiveaction'      => false
@@ -978,14 +978,14 @@ class Contract extends CommonDBTM
             'criteria' => [
                 [
                     'field'      => 20,
-                    'value'      => '<0',
-                    'searchtype' => 'contains',
+                    'value'      => 'NOW',
+                    'searchtype' => 'lessthan',
                 ],
                 [
                     'field'      => 20,
                     'link'       => 'AND',
-                    'value'      => '>-30',
-                    'searchtype' => 'contains',
+                    'searchtype' => 'morethan',
+                    'value'      => '-1MONTH',
                 ]
             ]
         ];
@@ -996,16 +996,20 @@ class Contract extends CommonDBTM
             'count'  => $contract0
         ];
 
-        $options['criteria'][0]['value'] = '>0';
-        $options['criteria'][1]['value'] = '<7';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][1]['value']      = 'NOW';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '7DAYS';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
             'count'  => $contract7
         ];
 
-        $options['criteria'][0]['value'] = '>6';
-        $options['criteria'][1]['value'] = '<30';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '6DAYS';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '1MONTH';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 30 days'),
