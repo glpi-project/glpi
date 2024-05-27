@@ -1017,12 +1017,12 @@ class Form extends DbTestCase
         // Run the cron task
         \Glpi\Form\Form::cronPurgeDraftForms();
 
-        // Ensure the draft form wasn't deleted because it was created less than 1 day ago
+        // Ensure the draft form wasn't deleted because it was created less than 7 day ago
         $this
             ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
             ->isEqualTo(1 + $forms);
 
-        // Create a draft form that was created more than 1 day ago
+        // Create a draft form that was created more than 7 day ago
         $form = $this->createForm(
             (new FormBuilder())->setIsDraft(true)
                 ->addSection('Section 1')
@@ -1033,7 +1033,7 @@ class Form extends DbTestCase
         $DB->update(
             \Glpi\Form\Form::getTable(),
             [
-                'date_mod' => date('Y-m-d H:i:s', strtotime('-2 days')),
+                'date_mod' => date('Y-m-d H:i:s', strtotime('-8 days')),
             ],
             [
                 'id' => $form->getID(),
