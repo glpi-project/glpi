@@ -4851,7 +4851,7 @@ JAVASCRIPT;
                                         'link'        => 'OR',
                                         'field'       => 12,
                                         'searchtype'  => 'equals',
-                                        'value'       => Ticket::ASSIGNED,
+                                        'value'       => 'process',
                                     ]
                                 ]
                             ]
