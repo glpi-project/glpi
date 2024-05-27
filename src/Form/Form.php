@@ -270,7 +270,7 @@ final class Form extends CommonDBTM
         $form = new Form();
         $form->deleteByCriteria([
             'is_draft' => 1,
-            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime('-1 day'))],
+            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime('-7 day'))],
         ], true);
 
         return 1;
