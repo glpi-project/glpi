@@ -234,6 +234,7 @@ The present file will list all changes made to the project; according to the
 - `Auth::getMethodName()` now only returns the name without a link. Use `Auth::getMethodLink()` to get a HTML-safe link.
 - `GLPI_STRICT_DEPRECATED` constant is now know as `GLPI_STRICT_ENV`
 - `Software::merge()` method is now private.
+- The refusal of the collected emails corresponding to a GLPI notification will now be made based on a default rule.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
@@ -487,6 +488,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
 - `Link::showForItem()`
 - `Link_Itemtype::showForLink()`
+- `MailCollector::isMessageSentByGlpi()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
 - `MassiveAction::updateProgressBars()`

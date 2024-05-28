@@ -922,14 +922,9 @@ class MailCollector extends CommonDBTM
             $tkt['date'] = $headers['date'];
         }
 
-        if ($this->isMessageSentByGlpi($message)) {
-           // Message was sent by current instance of GLPI.
-           // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
-            $tkt['_blacklisted'] = true;
-            return $tkt;
-        } else if ($this->isResponseToMessageSentByAnotherGlpi($message)) {
-           // Message is a response to a message sent by another GLPI.
-           // Message is blacklisted as we consider that the other instance of GLPI is responsible to handle this thread.
+        if ($this->isItilNotificationFromSelf($message)) {
+            // Message was sent by current instance of GLPI.
+            // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
             $tkt['_blacklisted'] = true;
             return $tkt;
         }
@@ -1032,14 +1027,6 @@ class MailCollector extends CommonDBTM
         $found_item = $this->getItemFromHeaders($message);
         if ($found_item instanceof Ticket) {
             $tkt['tickets_id'] = $found_item->fields['id'];
-        }
-
-       // See in title
-        if (
-            !isset($tkt['tickets_id'])
-            && preg_match('/\[.+#(\d+)\]/', $subject, $match)
-        ) {
-            $tkt['tickets_id'] = intval($match[1]);
         }
 
         $tkt['_supplier_email'] = false;
@@ -2061,42 +2048,54 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             }
         }
 
+        // Check in subject
+        if ($message->getHeaders()->has('subject')) {
+            $subject = $message->getHeader('subject')->getFieldValue();
+            $matches = [];
+
+            $ticket = new Ticket();
+            if (
+                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
+                && $ticket->getFromDB($matches[1])
+            ) {
+                return $ticket;
+            }
+        }
+
         return null;
     }
 
     /**
-     * Check if message was sent by current instance of GLPI.
-     * This can be verified by checking the MessageId header.
-     *
-     * @param Message $message
-     *
-     * @since 9.5.4
-     *
-     * @return bool
+     * Check if message was sent by current instance of GLPI and corresponds to a notification related to an ITIL object.
      */
-    public function isMessageSentByGlpi(Message $message): bool
+    private function isItilNotificationFromSelf(Message $message): bool
     {
         if (!$message->getHeaders()->has('message-id')) {
-           // Messages sent by GLPI now have always a message-id header.
+            // Messages sent by GLPI now have always a message-id header.
             return false;
         }
 
-        $message_id = $message->getHeader('message_id')->getFieldValue();
+        $message_id = $message->getHeader('message-id')->getFieldValue();
         $matches = $this->extractValuesFromRefHeader($message_id);
+
         if ($matches === null) {
-           // message-id header does not match GLPI format.
+            // message-id header does not match GLPI format.
+            return false;
+        }
+
+        if (!is_a($matches['itemtype'], CommonITILObject::class, true)) {
             return false;
         }
 
         $uuid = $matches['uuid'];
-        if (empty($uuid)) {
-           // message-id corresponds to old format, without uuid.
-           // We assume that in most environments this message have been sent by this instance of GLPI,
-           // as only one instance of GLPI will be installed.
+        if ($uuid === null) {
+            // message-id corresponds to old format, without uuid.
+            // We assume that in most environments this message have been sent by this instance of GLPI,
+            // as only one instance of GLPI will be installed.
             return true;
         }
 
-        return $uuid == Config::getUuid('notification');
+        return $matches['uuid'] === Config::getUuid('notification');
     }
 
     /**
@@ -2149,20 +2148,11 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {
-        $defaults = [
-            'uuid'      => null,
-            'itemtype'  => null,
-            'items_id'  => null,
-            'event'     => null,
-        ];
-
-        $values = [];
-
         // Message-Id generated in GLPI >= 10.0.7
         // - without related item:                  GLPI_{$uuid}/{$event}.{$time}.{$rand}@{$uname}
         // - with related item (reference event):   GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}@{$uname}
         // - with related item (other events):      GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
@@ -2170,15 +2160,20 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($new_pattern, $header, $values) === 1) {
+            return [
+                'uuid'     => $values['uuid'],
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => $values['event'],
+            ];
         }
 
         // Message-Id generated by GLPI >= 10.0.0 < 10.0.7
         // - without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
         // - with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $old_pattern_1 = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optionnal itemtype + items_id
@@ -2186,16 +2181,21 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '\.[0-9]+' // rand()
             . '@.+'     // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($old_pattern_1, $header, $values) === 1) {
+            return [
+                'uuid'     => $values['uuid'],
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => null,
+            ];
         }
 
         // Message-Id generated by GLPI < 10.0.0
         // - for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
         // - without related item:  GLPI.{$time}.{$rand}@{$uname}
         // - with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $old_pattern_2 = '/'
             . 'GLPI'
             . '(-(?<itemtype>[a-z]+))?' // optionnal itemtype
             . '(-(?<items_id>[0-9]+))?' // optionnal items_id
@@ -2203,9 +2203,14 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '\.[0-9]+' // rand()
             . '@.+' // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($old_pattern_2, $header, $values) === 1) {
+            return [
+                'uuid'     => null,
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : (!empty($values['items_id']) ? 'Ticket' : null),
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => null,
+            ];
         }
 
         return null;
