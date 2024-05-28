@@ -41,14 +41,12 @@
     } %}
     {% if item.isNewItem() %}
         {% set preconfig_field %}
-            {% set preconfig_options = {
-                AD: __('Active Directory'),
-                OpenLDAP: __('OpenLDAP'),
-                default: __('Default values')
-            } %}
-
             {% set form_url = 'AuthLDAP'|itemtype_form_path ~ '?preconfig=' %}
-            {{ preconfig_options|map((l, k) => '<a href="' ~ (form_url ~ k)|e('html_attr') ~ '">' ~ l|e('html') ~ '</a>')|join(' / ')|raw }}
+            <a href="{{ form_url ~ 'AD' }}">{{ __('Active Directory') }}</a>
+            /
+            <a href="{{ form_url ~ 'OpenLDAP' }}">{{ __('OpenLDAP') }}</a>
+            /
+            <a href="{{ form_url ~ 'default' }}">{{ __('Default values') }}</a>
         {% endset %}
         {{ fields.htmlField('', preconfig_field, __('Preconfiguration'), field_options) }}
         {{ fields.nullField() }}
