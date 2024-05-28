@@ -1984,7 +1984,7 @@ function setupAdaptDropdown(config)
     return select2_el;
 }
 
-function fetchSessionMessages() {
+function displaySessionMessages() {
     $.ajax({
         method: 'GET',
         url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),

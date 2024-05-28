@@ -583,7 +583,7 @@ TWIG, ['msg' => _x('button', 'Test')]);
                                     action: 'test_ldap_replicate'
                                 }
                             ).then(() => {
-                                fetchSessionMessages();
+                                displaySessionMessages();
                                 $(e.target).find('.spinner-border').remove();
                                 $(e.target).prop('disabled', false);
                             });

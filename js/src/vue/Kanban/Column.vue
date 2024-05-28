@@ -149,7 +149,7 @@
             closeItemForms();
             showAddItemForm(itemtype, is_bulk);
         }).always(() => {
-            fetchSessionMessages();
+            displaySessionMessages();
         });
     }
 
