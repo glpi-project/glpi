@@ -237,7 +237,7 @@ class Group extends CommonTreeDropdown
             && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
             && static::canUpdate()
         ) {
-            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "ldap.group.php";
+            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
         }
         return $links;
     }
