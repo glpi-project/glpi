@@ -106,17 +106,13 @@ class Item_Cluster extends CommonDBRelation
         ]);
 
         if ($cluster->canAddItem('itemtype')) {
-            echo "<div class='mt-1 mb-3 text-center'>";
-            Html::showSimpleForm(
-                self::getFormURL(),
-                '_add_fromitem',
-                __('Add new item to this cluster...'),
-                [
-                    'cluster'   => $ID,
-                    'position'  => 1
-                ]
-            );
-            echo "</div>";
+            (new self())->showForm(-1, [
+                'clusters_id' => $ID,
+                'params' => [
+                    'formfooter' => false
+                ],
+                'no_header'  => true,
+            ]);
         }
 
         $entries = [];
@@ -152,96 +148,40 @@ class Item_Cluster extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+        /** @var \DBmysql $DB */
+        global $DB;
 
         echo "<div class='center'>";
 
         $this->initForm($ID, $options);
-        $this->showFormHeader();
 
-        $cluster = new Cluster();
-        $cluster->getFromDB($this->fields['clusters_id']);
-
-        $rand = mt_rand();
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_itemtype$rand'>" . __('Item type') . "</label></td>";
-        echo "<td>";
-        $types = $CFG_GLPI['cluster_types'];
-        $translated_types = [];
-        foreach ($types as $type) {
-            $translated_types[$type] = $type::getTypeName(1);
-        }
-        Dropdown::showFromArray(
-            'itemtype',
-            $translated_types,
-            [
-                'display_emptychoice'   => true,
-                'value'                 => $this->fields["itemtype"],
-                'rand'                  => $rand
-            ]
-        );
-
-       //get all used items
+        // get all used items
         $used = [];
         $iterator = $DB->request([
-            'FROM'   => $this->getTable()
+            'SELECT' => ['itemtype', 'items_id'],
+            'FROM'   => static::getTable()
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
         }
 
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "items_id",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
-            [
-                'idtable'   => '__VALUE__',
-                'name'      => 'items_id',
-                'value'     => $this->fields['items_id'],
-                'rand'      => $rand,
-                'used'      => $used
-            ]
-        );
+        $twig_params = [
+            'item' => $this,
+            'used' => $used,
+        ] + $options;
 
-        echo "</td>";
-        echo "<td><label for='dropdown_items_id$rand'>" . _n('Item', 'Items', 1) . "</label></td>";
-        echo "<td id='items_id'>";
-        if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
-            $itemtype = $this->fields['itemtype'];
-            $itemtype = new $itemtype();
-            $itemtype::dropdown([
-                'name'   => "items_id",
-                'value'  => $this->fields['items_id'],
-                'rand'   => $rand
-            ]);
-        } else {
-            Dropdown::showFromArray(
-                'items_id',
-                [],
-                [
-                    'display_emptychoice'   => true,
-                    'rand'                  => $rand
-                ]
-            );
-        }
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_clusters_id$rand'>" . Cluster::getTypeName(1) . "</label></td>";
-        echo "<td>";
-        Cluster::dropdown(['value' => $this->fields["clusters_id"], 'rand' => $rand]);
-        echo "</td>";
-        echo "</tr>";
-
-        $this->showFormButtons($options);
-
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% extends 'generic_show_form.html.twig' %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% block form_fields %}
+                {{ fields.dropdownItemsFromItemtypes('itemtype', _n('Item', 'Items', 1), {
+                    itemtypes: config('cluster_types'),
+                    used: used,
+                }) }}
+                <input type="hidden" name="clusters_id" value="{{ item.fields['clusters_id'] }}"/>
+            {% endblock %}
+TWIG, $twig_params);
         return true;
     }
 
