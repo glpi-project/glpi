@@ -2532,7 +2532,7 @@ abstract class API
                     }
 
                    // expand dropdown
-                    if ($params['expand_dropdowns']) {
+                    if ($params['expand_dropdowns'] && is_integer($value)) {
                         $value = Dropdown::getDropdownName($tablename, $value, false, true, false, '');
                     }
                 }
