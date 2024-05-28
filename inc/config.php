@@ -222,6 +222,11 @@ TWIG, $twig_params);
                 'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
                 'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
                 'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
+                'outdated'          => version_compare(
+                    VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
+                    VersionParser::getNormalizedVersion(GLPI_VERSION),
+                    '>'
+                )
             ];
 
             Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
@@ -240,8 +245,7 @@ TWIG, $twig_params);
                                     </form>
                                 {% endif %}
                                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
-                                    {% set outdated = CFG_GLPI['version']|version_compare(GLPI_VERSION, '>') %}
-                                    {% if outdated is not same as(true) %}
+                                    {% if not outdated %}
                                         <form method="post" action="{{ path('install/update.php') }}">
                                             {% if not stable_release %}
                                                 {{ agree_unstable|raw }}
