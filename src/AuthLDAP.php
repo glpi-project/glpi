@@ -530,7 +530,6 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('pages/setup/ldap/adv_info.html.twig', [
             'item' => $this,
             'page_size_available' => self::isLdapPageSizeAvailable(false, false),
-            'ldap_start_tls_exists' => function_exists("ldap_start_tls"),
             'gmt_values' => Dropdown::getGMTValues(),
             'params' => [
                 'formfooter' => false,

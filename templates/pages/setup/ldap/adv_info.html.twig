@@ -35,15 +35,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {% if ldap_start_tls_exists %}
-        {{ fields.dropdownYesNo('use_tls', item.fields['use_tls'], __('Use TLS')) }}
-    {% else %}
-        {% set field %}
-            <input type="hidden" name="use_tls" value="0">
-            {{ __('ldap_start_tls does not exist') }}
-        {% endset %}
-        {{ fields.htmlField('', field, __('Use TLS')) }}
-    {% endif %}
+    {{ fields.dropdownYesNo('use_tls', item.fields['use_tls'], __('Use TLS')) }}
     {{ fields.dropdownArrayField('time_offset', item.fields['time_offset'], gmt_values, __('LDAP directory time zone')) }}
 
     {% if page_size_available %}
