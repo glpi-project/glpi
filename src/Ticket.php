@@ -5502,6 +5502,11 @@ JAVASCRIPT;
                                 'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
                                 'glpi_tickets_users.users_id'    => Session::getLoginUserID()
                             ]
+                        ], [
+                            'AND' => [
+                                'glpi_ticketvalidations.tickets_id'        => new \QueryExpression('glpi_tickets.id'),
+                                'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID()
+                            ]
                         ]
                     ];
                     if (count($_SESSION['glpigroups'])) {
@@ -5783,6 +5788,13 @@ JAVASCRIPT;
             'ON' => [
                 self::getTable()     => 'id',
                 'glpi_tickettasks'   => 'tickets_id'
+            ]
+        ];
+
+        $criteria['LEFT JOIN']['glpi_ticketvalidations'] = [
+            'ON' => [
+                self::getTable()         => 'id',
+                'glpi_ticketvalidations' => 'tickets_id'
             ]
         ];
 
