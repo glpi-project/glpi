@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 abstract class RuleCommonITILObject extends Rule
 {
     const PARENT  = 1024;
@@ -104,22 +106,26 @@ abstract class RuleCommonITILObject extends Rule
     public function getTitleAction()
     {
         parent::getTitleAction();
-        $showwarning = false;
+        $has_impact_urgency = false;
+        $has_priority_recompute = false;
         if (isset($this->actions)) {
-            foreach ($this->actions as $key => $val) {
+            foreach ($this->actions as $val) {
                 if (isset($val->fields['field'])) {
                     if (in_array($val->fields['field'], ['impact', 'urgency'])) {
-                        $showwarning = true;
+                        $has_impact_urgency = true;
+                    } else if ($val->fields['field'] === 'priority' && $val->fields['action_type'] === 'compute') {
+                        $has_priority_recompute = true;
                     }
                 }
             }
         }
-        if ($showwarning) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td>" .
-                __s('Urgency or impact used in actions, think to add Priority: recompute action if needed.') .
-                "</td></tr>\n";
-            echo "</table><br>";
+        if ($has_impact_urgency && !$has_priority_recompute) {
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="alert alert-warning">
+                    {{ message }}
+                </div>
+TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority: recompute action if needed.')]);
         }
     }
 
@@ -135,7 +141,7 @@ abstract class RuleCommonITILObject extends Rule
     {
         $entity_as_criteria = false;
         foreach ($this->criterias as $criteria) {
-            if ($criteria->fields['criteria'] == 'entities_id') {
+            if ($criteria->fields['criteria'] === 'entities_id') {
                 $entity_as_criteria = true;
                 break;
             }

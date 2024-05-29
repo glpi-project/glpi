@@ -862,7 +862,6 @@ class Rule extends CommonDBTM
 
         $canedit = $this->canEdit(static::$rightname);
         $rand = mt_rand();
-        $this->showFormHeader($options);
 
         $plugin = isPluginItemType(static::class);
         $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? Plugin::getWebDir($plugin['plugin'], false) : '');
@@ -877,7 +876,8 @@ class Rule extends CommonDBTM
                 ]
             ];
         }
-        TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', [
+
+        $twig_params = array_merge_recursive([
             'item' => $this,
             'match_operators' => $this->getRulesMatch(),
             'conditions' => static::getConditionsArray(),
@@ -887,7 +887,8 @@ class Rule extends CommonDBTM
                 'canedit' => $canedit,
                 'addbuttons' => $add_buttons,
             ]
-        ]);
+        ], $options);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', $twig_params);
     }
 
     /**
@@ -932,13 +933,15 @@ class Rule extends CommonDBTM
     }
 
     /**
-     * Get all criteria for a given rule
+     * Get all criteria for a given rule and saves them in the object
      *
      * @param integer $ID              the rule_description ID
      * @param boolean $withcriterias   1 to retrieve all the criteria for a given rule (default 0)
      * @param boolean $withactions     1 to retrieve all the actions for a given rule (default 0)
      *
      * @return boolean
+     * @see {@link actions}
+     * @see {@link criterias}
      **/
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
     {
@@ -1023,33 +1026,33 @@ class Rule extends CommonDBTM
         $this->getTitleAction();
 
         if ($canedit) {
-            echo "<div id='viewaction{$rules_id}{$rand}'></div>";
-        }
-
-        $max_actions_count = $this->maxActionsCount();
-        if (
-            $canedit
-            && ($max_actions_count === 0
-              || (count($this->actions) < $max_actions_count))
-        ) {
-            $params = [
-                'type'                => $this->ruleactionclass,
-                'parenttype'          => static::class,
-                $this->rules_id_field => $rules_id,
-                'id'                  => -1
+            $max_actions_count = $this->maxActionsCount();
+            $twig_params = [
+                'rules_id' => $rules_id,
+                'rand' => $rand,
+                'can_add_new_action' => $max_actions_count === 0 || (count($this->actions) < $max_actions_count),
+                'btn_label' => __('Add a new action'),
+                'ajax_params' => [
+                    'type' => $this->ruleactionclass,
+                    'parenttype' => static::class,
+                    $this->rules_id_field => $rules_id,
+                    'id' => -1
+                ],
             ];
-            $js = "function viewAddAction{$rules_id}{$rand}() {";
-            $js .= Ajax::updateItemJsCode(
-                toupdate: "viewaction{$rules_id}{$rand}",
-                url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                parameters: $params,
-                display: false
-            );
-            $js .= "};";
-            echo Html::scriptBlock($js);
-            echo "<div class='center mt-1 mb-3'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddAction{$rules_id}{$rand}();'>";
-            echo __('Add a new action') . "</a></div>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div id="viewaction{{ rules_id }}{{ rand }}"></div>
+                {% if can_add_new_action %}
+                    <div class="center mt-1 mb-3">
+                        <button type="button" name="add_action" class="btn btn-primary">{{ btn_label }}</button>
+                        <script>
+                            $('button[name="add_action"]').on('click', () => {
+                                $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
+                            });
+                        </script>
+                    </div>
+                {% endif %}
+TWIG, $twig_params);
         }
 
         $entries = [];
@@ -1106,7 +1109,7 @@ class Rule extends CommonDBTM
                         }
                         const action_id = $(e.currentTarget).data('id');
                         if (action_id) {
-                            $('#viewaction{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
+                            $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: "{$this->ruleactionclass}",
                                 parenttype: "{$rule_class}",
                                 rules_id: $rules_id,
@@ -1135,9 +1138,6 @@ JS
      **/
     public function showCriteriasList($rules_id, $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $rand = mt_rand();
         $p['readonly'] = false;
 
@@ -1149,25 +1149,29 @@ JS
 
         $canedit = $this->canEdit($rules_id);
         if ($canedit) {
-            echo "<div id='viewcriteria{$rules_id}{$rand}'></div>";
-            $params = [
-                'type'                => $this->rulecriteriaclass,
-                'parenttype'          => static::class,
-                $this->rules_id_field => $rules_id,
-                'id'                  => -1
+            $twig_params = [
+                'rules_id' => $rules_id,
+                'rand' => $rand,
+                'btn_label' => __('Add a new criterion'),
+                'ajax_params' => [
+                    'type' => $this->rulecriteriaclass,
+                    'parenttype' => static::class,
+                    $this->rules_id_field => $rules_id,
+                    'id' => -1
+                ],
             ];
-            $js = "function viewAddCriteria{$rules_id}{$rand}() {";
-            $js .= Ajax::updateItemJsCode(
-                toupdate: "viewcriteria{$rules_id}{$rand}",
-                url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                parameters: $params,
-                display: false
-            );
-            $js .= "};";
-            echo Html::scriptBlock($js);
-            echo "<div class='center mt-1 mb-3'>" .
-                "<a class='btn btn-primary' href='javascript:viewAddCriteria{$rules_id}{$rand}();'>";
-            echo __('Add a new criterion') . "</a></div>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
+                <div class="center mt-1 mb-3">
+                    <button type="button" name="add_criterion" class="btn btn-primary">{{ btn_label }}</button>
+                    <script>
+                        $('button[name="add_criterion"]').on('click', () => {
+                            $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
+                        });
+                    </script>
+                </div>
+TWIG, $twig_params);
         }
 
         $entries = [];
@@ -2039,57 +2043,59 @@ JS
     /**
      * Show preview result of a rule
      *
-     * @param string $target    where to go if action
+     * @param string $target    Not used
      * @param array $input     input data array
      * @param array $params    params used (see addSpecificParamsForPreview)
      **/
     public function showRulePreviewResultsForm($target, $input, $params)
     {
-
         $actions       = $this->getAllActions();
         $check_results = [];
         $output        = [];
 
-       //Test all criteria, without stopping at the first good one
+        // Test all criteria, without stopping at the first good one
         $this->testCriterias($input, $check_results);
-       //Process the rule
+        // Process the rule
         $this->process($input, $output, $params);
         if (!$criteria = getItemForItemtype($this->rulecriteriaclass)) {
             return;
         }
 
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadrehov'>";
-        echo "<tr><th colspan='4'>" . __('Result details') . "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='center b'>" . _n('Criterion', 'Criteria', 1) . "</td>";
-        echo "<td class='center b'>" . __('Condition') . "</td>";
-        echo "<td class='center b'>" . __('Reason') . "</td>";
-        echo "<td class='center b'>" . _n('Validation', 'Validations', 1) . "</td>";
-        echo "</tr>\n";
-
+        $entries = [];
         foreach ($check_results as $ID => $criteria_result) {
-            echo "<tr class='tab_bg_1'>";
             $criteria->getFromDB($criteria_result["id"]);
-            echo $this->getMinimalCriteriaText($criteria->fields);
-            if ($criteria->fields['condition'] != self::PATTERN_FIND) {
-                echo "<td class='b'>" . Dropdown::getYesNo($criteria_result["result"]) . "</td></tr>\n";
-            } else {
-                echo "<td class='b'>" . Dropdown::EMPTY_VALUE . "</td></tr>\n";
-            }
+            $entries[] = [
+                'validation' => (int) $criteria->fields['condition'] !== self::PATTERN_FIND ? Dropdown::getYesNo($criteria_result["result"]) : Dropdown::EMPTY_VALUE,
+            ] + $this->getMinimalCriteria($criteria->fields);
         }
-        echo "</table></div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'table_class_style' => 'table mb-3',
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'nopager' => true,
+            'super_header' => __('Result details'),
+            'columns' => [
+                'criterion' => _n('Criterion', 'Criteria', 1),
+                'condition' => __('Condition'),
+                'pattern' => __('Reason'),
+                'validation' => _n('Validation', 'Validations', 1),
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false
+        ]);
 
         $global_result = (isset($output["_rule_process"]) ? 1 : 0);
 
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadrehov'>";
-        echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center b'>" . _n('Validation', 'Validations', 1) . "</td><td>";
-        echo Dropdown::getYesNo($global_result) . "</td></tr>";
-
+        $entries = [
+            [
+                'action' => __('Validation'),
+                'result' => htmlspecialchars(Dropdown::getYesNo($global_result)),
+            ]
+        ];
         $output = $this->preProcessPreviewResults($output);
 
         foreach ($output as $criteria => $value) {
@@ -2103,42 +2109,55 @@ JS
                 continue;
             }
 
-            if (isset($action_def['type'])) {
-                $actiontype = $action_def['type'];
-            } else {
-                $actiontype = '';
-            }
+            $actiontype = $action_def['type'] ?? '';
 
             // Some action values can be an array (appendto actions). So, we will force everything to be an array and loop over it when displaying the rows.
             if (!is_array($value)) {
                 $value = [$value];
             }
             foreach ($value as $v) {
-                $action_value = $this->getActionValue($action_def_key, $actiontype, $v);
-                echo "<tr class='tab_bg_2'>";
-                echo "<td>" . $action_def["name"] . "</td>";
-                echo "<td>$action_value</td></tr>";
+                $entries[] = [
+                    'action' => $action_def["name"],
+                    'result' => htmlspecialchars($this->getActionValue($action_def_key, $actiontype, $v))
+                ];
             }
         }
 
-       //If a regular expression was used, and matched, display the results
+        // If a regular expression was used, and matched, display the results
         if (count($this->regex_results)) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . __('Result of the regular expression') . "</td>";
-            echo "<td>";
+            $regex_results = '';
             if (!empty($this->regex_results[0])) {
-                echo "<table class='tab_cadre'>";
-                echo "<tr><th>" . __('Key') . "</th><th>" . __('Value') . "</th></tr>";
+                $regex_results .= "<table class='table table-sm table-borderless table-striped'>";
+                $regex_results .= "<tr><th>" . __s('Key') . "</th><th>" . __s('Value') . "</th></tr>";
                 foreach ($this->regex_results[0] as $key => $value) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td>$key</td><td>$value</td></tr>";
+                    $regex_results .= "<tr><td>" . htmlspecialchars($key) . "</td><td>" . htmlspecialchars($value) . "</td></tr>";
                 }
-                echo "</table>";
+                $regex_results .= "</table>";
             }
-            echo "</td></tr>\n";
+            $entries[] = [
+                'action' => __('Result of the regular expression'),
+                'result' => $regex_results
+            ];
         }
-        echo "</tr>\n";
-        echo "</table></div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'nopager' => true,
+            'super_header' => __('Rule results'),
+            'columns' => [
+                'action' => __('Action'),
+                'result' => __('Result')
+            ],
+            'formatters' => [
+                'result' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false
+        ]);
     }
 
     /**
@@ -2638,63 +2657,29 @@ JS
     public function showRulePreviewCriteriasForm($target, $rules_id)
     {
         $criteria = $this->getAllCriteria();
-
-        if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
-            echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
-            echo "<div class='spaced'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>";
-
-            $type_match        = (($this->fields["match"] == self::AND_MATCHING) ? __('AND') : __('OR'));
-            $already_displayed = [];
-            $first             = true;
-
-           //Brower all criteria
-            foreach ($this->criterias as $criterion) {
-                //Look for the criteria in the field of already displayed criteria :
-                //if present, don't display it again
-                if (!in_array($criterion->fields["criteria"], $already_displayed)) {
-                    $already_displayed[] = $criterion->fields["criteria"];
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td>";
-
-                    if ($first) {
-                        echo "&nbsp;";
-                        $first = false;
-                    } else {
-                        echo $type_match;
-                    }
-
-                    echo "</td>";
-                    $criteria_constants = $criteria[$criterion->fields["criteria"]];
-                    echo "<td>" . $criteria_constants["name"] . "</td>";
-                    echo "<td>";
-                    $value = "";
-                    if (isset($_POST[$criterion->fields["criteria"]])) {
-                        $value = $_POST[$criterion->fields["criteria"]];
-                    }
-
-                    $this->displayCriteriaSelectPattern(
-                        $criterion->fields['criteria'],
-                        $criterion->fields['criteria'],
-                        $criterion->fields['condition'],
-                        $value,
-                        true
-                    );
-                    echo "</td></tr>\n";
-                }
-            }
-            $this->showSpecificCriteriasForPreview($_POST);
-
-            echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-            echo "<input type='submit' name='test_rule' value=\"" . _sx('button', 'Test') . "\"
-                class='btn btn-primary'>";
-            echo "<input type='hidden' name='" . $this->rules_id_field . "' value='$rules_id'>";
-            echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
-            echo "</td></tr>\n";
-            echo "</table></div>\n";
-            Html::closeForm();
+        if (!$this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
+            return;
         }
+        $criteria_names = [];
+        foreach ($criteria as $key => $value) {
+            $criteria_names[$key] = $value['name'] ?? '';
+        }
+        $already_added_criterias = [];
+        $unique_criterias = [];
+        foreach ($this->criterias as $criterion) {
+            if (!in_array($criterion->fields["criteria"], $already_added_criterias, true)) {
+                $unique_criterias[] = $criterion;
+                $already_added_criterias[] = $criterion->fields["criteria"];
+            }
+        }
+        TemplateRenderer::getInstance()->display('pages/admin/rules/preview_criteria.html.twig', [
+            'criterias' => $unique_criterias,
+            'criteria_names' => $criteria_names,
+            'item' => $this,
+            'target' => $target,
+            'rules_id' => $rules_id,
+            'rules_id_field' => $this->rules_id_field,
+        ]);
     }
 
     /**
@@ -2900,135 +2885,76 @@ JS
     }
 
     /**
-     * @param integer $ID
-     *
-     * @return void
-     **/
-    public function showNewRuleForm($ID)
-    {
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('Entity') . "'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='7'>" . $this->getTitle() . "</th></tr>\n";
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td><td>";
-        echo Html::input('name', ['value' => '', 'size' => '33']);
-        echo "</td><td>" . __('Description') . "</td><td>";
-        echo Html::input('description', ['value' => '', 'size' => '33']);
-        echo "</td><td>" . __('Logical operator') . "</td><td>";
-        $this->dropdownRulesMatch();
-        echo "</td><td class='tab_bg_2 center'>";
-        echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
-        echo "<input type=hidden name='entities_id' value='0'>";
-        echo "<input type=hidden name='affectentity' value='$ID'>";
-        echo "<input type=hidden name='_method' value='AddRule'>";
-        echo "<input type='submit' name='execute' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-        echo "</td></tr>\n";
-        echo "</table>";
-        Html::closeForm();
-    }
-
-    /**
-     * @param CommonDBTM $item
+     * @param CommonDBTM $item Entity
      *
      * @return void
      **/
     public function showAndAddRuleForm($item)
     {
-        $rand    = mt_rand();
         $canedit = self::canUpdate();
 
-        if (
-            $canedit
-            && ($item instanceof Entity)
-        ) {
-            $this->showNewRuleForm($item->getField('id'));
+        if ($canedit && ($item instanceof Entity)) {
+            $this->showForm($item->getField('id'), [
+                'no_header' => true,
+                'short'     => true,
+                'entities_id' => $item->getField('id'),
+                'params' => [
+                    'formfooter' => false
+                ]
+            ]);
         }
 
-         //Get all rules and actions
-        $crit = ['field' => getForeignKeyFieldForTable($item->getTable()),
+        // Get all rules and actions
+        $crit = [
+            'field' => getForeignKeyFieldForTable($item->getTable()),
             'value' => $item->getField('id')
         ];
 
         $rules = $this->getRulesForCriteria($crit);
-        $nb    = count($rules);
-        echo "<div class='spaced'>";
 
-        if (!$nb) {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><th>" . __('No item found') . "</th>";
-            echo "</tr>\n";
-            echo "</table>\n";
-        } else {
+        $entries = [];
+        foreach ($rules as $rule) {
+            $name = htmlspecialchars($rule->fields["name"]);
             if ($canedit) {
-                Html::openMassiveActionsForm('mass' . get_called_class() . $rand);
-                $massiveactionparams
-                = ['num_displayed'
-                           => min($_SESSION['glpilist_limit'], $nb),
-                    'specific_actions'
-                           => ['update' => _x('button', 'Update'),
-                               'purge'  => _x('button', 'Delete permanently')
-                           ]
-                ];
-                  //     'extraparams'
-                //           => array('rule_class_name' => $this->getRuleClassName()));
-                Html::showMassiveActions($massiveactionparams);
+                $name = "<a href='" . htmlspecialchars(static::getFormURLWithID($rule->fields["id"]))
+                    . "&amp;onglet=1'>" . $name . "</a>";
             }
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . $this->getTitle() . "</th>";
-            $header_end .= "<th>" . __('Description') . "</th>";
-            $header_end .= "<th>" . __('Active') . "</th>";
-            $header_end .= "</tr>\n";
-            echo $header_begin . $header_top . $header_end;
 
-            Session::initNavigateListItems(
-                get_class($this),
-                //TRANS: %1$s is the itemtype name,
-                              //       %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
-            );
-
-            foreach ($rules as $rule) {
-                Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $rule->fields["id"]);
-                    echo "</td>";
-                    echo "<td><a href='" . $this->getFormURLWithID($rule->fields["id"])
-                                   . "&amp;onglet=1'>" . $rule->fields["name"] . "</a></td>";
-                } else {
-                    echo "<td>" . $rule->fields["name"] . "</td>";
-                }
-
-                echo "<td>" . $rule->fields["description"] . "</td>";
-                echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
-                echo "</tr>\n";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>\n";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
+            $entries[] = [
+                'name' => $name,
+                'description' => $rule->fields["description"],
+                'is_active'   => Dropdown::getYesNo($rule->fields["is_active"])
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'nopager' => true,
+            'columns' => [
+                'name' => $this->getTitle(),
+                'description' => __('Description'),
+                'is_active' => __('Active'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'row_class' => 'cursor-pointer',
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'item'          => $this,
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ]
+        ]);
     }
 
     public function defineTabs($options = [])

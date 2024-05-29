@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Rule class store all information about a GLPI rule :
  *   - description
@@ -133,20 +135,34 @@ class RuleDictionnarySoftware extends Rule
             $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
         }
 
-        //if there's a least one action with type == append_regex_result, then need to display
-        //this field as a criteria
-        foreach ($this->actions as $action) {
-            if ($action->fields["action_type"] == "append_regex_result") {
-                $value = htmlspecialchars($fields[$action->fields['field']] ?? '');
-                // Get actions for this type of rule
-                $actions = $this->getActions();
-
-                // display the additionnal field
-                echo "<tr class='tab_bg_1'>";
-                echo "<td>" . htmlspecialchars($this->fields['match']) . "</td>";
-                echo "<td>" . htmlspecialchars($actions[$action->fields['field']]['name']) . "</td>";
-                echo "<td><input type='text' name='version' value='$value'></td></tr>";
-            }
+        $twig_params = [
+            'actions' => $this->actions,
+            'fields' => $fields,
+            'action_names' => [],
+            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+        ];
+        $actions = $this->getActions();
+        foreach ($actions as $key => $action) {
+            $twig_params['action_names'][$key] = $action['name'];
         }
+
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% for action in actions %}
+                {% if action.fields['action_type'] == 'append_regex_result' %}
+                    {{ fields.htmlField('', type_match|e, '', {
+                        no_label: true,
+                        field_class: 'col-2',
+                        input_class: 'col-12'
+                    }) }}
+                    {{ fields.textField('version', fields[action.fields['field']]|default(''), action_names[action.fields['field']], {
+                        field_class: 'col-10',
+                        label_class: 'col-5',
+                        input_class: 'col-7'
+                    }) }}
+                {% endif %}
+            {% endfor %}
+TWIG, $twig_params);
     }
 }

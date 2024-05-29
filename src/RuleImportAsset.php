@@ -34,6 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class RuleImportAsset extends Rule
 {
     const RULE_ACTION_LINK_OR_IMPORT    = 0;
@@ -995,30 +997,44 @@ class RuleImportAsset extends Rule
 
     public function showSpecificCriteriasForPreview($fields)
     {
-        $entity_as_criterion = false;
+        $twig_params = [
+            'entity_as_criterion' => false,
+            'fields'              => $fields,
+            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+        ];
         foreach ($this->criterias as $criterion) {
-            if ($criterion->fields['criteria'] == 'entities_id') {
-                $entity_as_criterion = true;
+            if ($criterion->fields['criteria'] === 'entities_id') {
+                $twig_params['entity_as_criterion'] = true;
                 break;
             }
         }
-        if (!$entity_as_criterion) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . Entity::getTypeName(1) . "</td>";
-            echo "<td>";
-            Dropdown::show('Entity');
-            echo "</td></tr>";
-        }
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='2'>" . __('Use values found from an already refused equipment') . "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . RefusedEquipment::getTypeName(1) . "</td>";
-        echo "<td>";
-        Dropdown::show(RefusedEquipment::getType(), ['value' => ($fields['refusedequipments_id'] ?? null)]);
-        echo "</td></tr>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% if not entity_as_criterion %}
+                {{ fields.htmlField('', type_match|e, '', {
+                    no_label: true,
+                    field_class: 'col-2',
+                    input_class: 'col-12'
+                }) }}
+                {{ fields.dropdownField('Entity', 'entities_id', 0, 'Entity'|itemtype_name, {
+                    field_class: 'col-10',
+                    label_class: 'col-5',
+                    input_class: 'col-7'
+                }) }}
+            {% endif %}
+            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+                no_label: true,
+                field_class: 'col-2',
+                input_class: 'col-12'
+            }) }}
+            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', fields['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
+                field_class: 'col-10',
+                label_class: 'col-5',
+                input_class: 'col-7'
+            }) }}
+TWIG, $twig_params);
     }
 
     /**

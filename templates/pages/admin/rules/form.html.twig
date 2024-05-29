@@ -38,14 +38,15 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {% block more_fields %}
-        {% if not item.isNewItem %}
-            {{ inputs.hidden('ranking', item.fields['ranking']) }}
-        {% endif %}
-        {{ inputs.hidden('sub_type', get_class(item)) }}
-        {{ fields.textField('name', item.fields['name'], __('Name')) }}
-        {{ fields.textField('description', item.fields['description'], __('Description')) }}
-        {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
+    {% if not item.isNewItem %}
+        {{ inputs.hidden('ranking', item.fields['ranking']) }}
+    {% endif %}
+    {{ inputs.hidden('sub_type', get_class(item)) }}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('description', item.fields['description'], __('Description')) }}
+    {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
+
+    {% if not short %}
         {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
         {% if conditions|length > 0 %}
             {{ fields.dropdownArrayField('condition', item.fields['condition'], conditions, __('Use rule for')) }}
@@ -61,5 +62,11 @@
                 }
             ]) %}
         {% endif %}
+    {% else %}
+        {{ inputs.hidden('entities_id', 0) }}
+        {{ inputs.hidden('affectentity', entities_id) }}
+        {{ inputs.hidden('_method', 'AddRule') }}
+    {% endif %}
+    {% block more_fields %}
     {% endblock %}
 {% endblock %}
