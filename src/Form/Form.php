@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use CommonDBTM;
+use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
@@ -243,6 +244,41 @@ final class Form extends CommonDBTM
                 FormAccessControl::class,
             ]
         );
+    }
+
+    /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array Array of information
+     **/
+    public static function cronInfo($name)
+    {
+        return [
+            'description' => __('Purge old form drafts'),
+            'parameter'   => __('Form drafts retention period (in days)'),
+        ];
+    }
+
+    /**
+     * Cron action to purge old form drafts
+     *
+     * @param CronTask $task
+     *
+     * @return int
+     * @used-by CronTask
+     */
+    public static function cronPurgeDraftForms(CronTask $task): int
+    {
+        $delay = (int) $task->fields['param'];
+        $form = new Form();
+        $form->deleteByCriteria([
+            'is_draft' => 1,
+            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime(sprintf('-%d day', $delay)))],
+        ], true);
+
+        return 1;
     }
 
     /**

@@ -229,3 +229,12 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addKey("glpi_forms_answerssets", "entities_id");
     $migration->addField("glpi_forms_destinations_formdestinations", "config", "JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type'");
 }
+
+CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
+    'state'         => CronTask::STATE_WAITING,
+    'mode'          => CronTask::MODE_INTERNAL,
+    'hourmin'       => 0,
+    'hourmax'       => 24,
+    'logs_lifetime' => 30,
+    'param'         => 7
+]);
