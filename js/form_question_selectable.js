@@ -142,7 +142,7 @@ class GlpiFormQuestionTypeSelectable {
      * @param {boolean} grab_visibility - Whether to show the grab handle for the new option.
      */
     #addOption(input, focus = false, grab_visibility = false) {
-        const template = this._container.parent().find('template').get(0);
+        const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
         const clone = template.content.cloneNode(true);
 
         $(input).parent().after(clone);
@@ -244,7 +244,8 @@ class GlpiFormQuestionTypeSelectable {
      */
     #addNewOptionIfNeeded(input) {
         const isLast = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-            .children().filter('div').last()
+            .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+            .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
         if (isLast) {
@@ -283,9 +284,11 @@ class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #removeLastOptionIfNeeded(input) {
-        const isLast = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+        const isLast = $(input).closest('div[data-glpi-form-editor-selectable-question-options]')
             .children('div').last()
             .find('input[type="text"]').get(0) === input;
+
+        console.log(isLast);
 
         // Remove the last option if the value is empty and if the option is the last
         if (isLast) {
@@ -371,7 +374,9 @@ class GlpiFormQuestionTypeSelectable {
                 this.#addOption(input, true, true);
             }
         } else if (event.key === 'Backspace') {
-            const is_last = $(input).closest('div[data-glpi-form-editor-question-type-specific]').children().filter('div').last().find('input[type="text"]').get(0) === input;
+            const is_last = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+                .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+                .children('div').last().find('input[type="text"]').get(0) === input;
 
             // Remove the option
             if (input.value === '' && !is_last) {

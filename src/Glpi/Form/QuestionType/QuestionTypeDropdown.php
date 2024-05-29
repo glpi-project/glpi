@@ -74,6 +74,11 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
         return true;
     }
 
+    public function hideOptionsDefaultValueInput(): bool
+    {
+        return true;
+    }
+
     #[Override]
     public function loadJavascriptFiles(): array
     {
@@ -106,7 +111,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question = null): string
+    public function renderAdministrationTemplate(?Question $question = null, array $params = []): string
     {
         $template = <<<TWIG
         {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -122,7 +127,7 @@ TWIG;
                     'no_label': true,
                     'multiple': false,
                     'display_emptychoice': true,
-                    'field_class': 'single-preview-dropdown col-12 col-sm-6' ~ (is_multiple_dropdown ? ' d-none' : '')
+                    'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : '')
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -135,13 +140,15 @@ TWIG;
                     'no_label': true,
                     'multiple': true,
                     'values': checked_values,
-                    'field_class': 'multiple-preview-dropdown col-12 col-sm-6' ~ (not is_multiple_dropdown ? ' d-none' : '')
+                    'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : '')
                 }
             ) }}
         </div>
 TWIG;
 
-        $template .= parent::renderAdministrationTemplate($question);
+        $template .= parent::renderAdministrationTemplate($question, [
+            'selectable_question_options_class' => 'dropdown-border'
+        ]);
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(

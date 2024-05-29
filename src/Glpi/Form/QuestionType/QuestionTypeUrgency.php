@@ -65,7 +65,7 @@ final class QuestionTypeUrgency extends AbstractQuestionType
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question): string
+    public function renderAdministrationTemplate(?Question $question, array $params = []): string
     {
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}

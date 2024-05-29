@@ -95,10 +95,11 @@ interface QuestionTypeInterface
      * This template is used on the form editor page.
      *
      * @param Question|null $question Given question's data. May be null for a new question.
+     * @param array $params Additional parameters to pass to the template.
      *
      * @return string
      */
-    public function renderAdministrationTemplate(?Question $question): string;
+    public function renderAdministrationTemplate(?Question $question, array $params = []): string;
 
     /**
      * Render the administration options template for the given question.

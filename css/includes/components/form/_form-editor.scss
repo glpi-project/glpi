@@ -31,21 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
- .form-editor {
+.form-editor {
     // Use all available parent space
     flex-grow: 1;
 
     // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
     // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
-    background: linear-gradient(
-        169deg,
-        rgb(255,255,255) 0%,
-        rgb(254,254,254) 14%,
-        rgb(253,253,253) 22%,
-        rgb(252,252,252) 33%,
-        rgb(251,251,252) 41%,
-        rgb(248,250,252) 48%
-    );
+    background: linear-gradient(169deg,
+            rgb(255, 255, 255) 0%,
+            rgb(254, 254, 254) 14%,
+            rgb(253, 253, 253) 22%,
+            rgb(252, 252, 252) 33%,
+            rgb(251, 251, 252) 41%,
+            rgb(248, 250, 252) 48%);
 
     .designer {
         .form-details {
@@ -78,6 +76,7 @@
 
 [data-glpi-form-editor-form] {
     &[data-glpi-form-editor-active-form] {
+
         // Show secondary data on active form
         [data-glpi-form-editor-form-extra-details] {
             opacity: 1;
@@ -87,6 +86,7 @@
     }
 
     &:not([data-glpi-form-editor-active-form]) {
+
         // Do not highlight inactive forms
         [data-glpi-form-editor-active-form-status-indicator] {
             display: none;
@@ -103,6 +103,7 @@
 
 [data-glpi-form-editor-section] {
     &[data-glpi-form-editor-active-section] {
+
         // Show secondary data on active form
         [data-glpi-form-editor-section-extra-details] {
             opacity: 1;
@@ -112,6 +113,7 @@
     }
 
     &:not([data-glpi-form-editor-active-section]) {
+
         // Do not highlight inactive forms
         [data-glpi-form-editor-active-section-status-indicator] {
             display: none;
@@ -128,6 +130,7 @@
 
 [data-glpi-form-editor-question] {
     &[data-glpi-form-editor-active-question] {
+
         // Show secondary data on active form
         [data-glpi-form-editor-question-extra-details] {
             position: relative;
@@ -138,6 +141,7 @@
     }
 
     &:not([data-glpi-form-editor-active-question]) {
+
         // Do not highlight inactive forms
         [data-glpi-form-editor-active-question-status-indicator] {
             display: none;
@@ -219,6 +223,7 @@
 
 // Hide content of collapsed sections
 [data-glpi-form-editor-section].section-collapsed {
+
     [data-glpi-form-editor-section-description],
     [data-glpi-form-editor-section-blocks],
     [data-glpi-form-editor-section-extra-details] {
@@ -226,4 +231,52 @@
     }
 
     margin-bottom: 1rem !important;
+}
+
+[data-glpi-form-editor-question] {
+    &[data-glpi-form-editor-active-question] {
+        .dropdown-border {
+            position: relative;
+
+            border: 0.15rem solid var(--tblr-border-color);
+            border-top: 0;
+            border-bottom-left-radius: var(--tblr-border-radius);
+            border-bottom-right-radius: var(--tblr-border-radius);
+
+            padding: 0.5rem;
+            padding-bottom: 0;
+
+            margin-bottom: 0.5rem;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 5%;
+                height: 10%;
+                border-top: 0.15rem solid var(--tblr-border-color);
+                border-left: 0.15rem solid var(--tblr-border-color);
+                border-top-left-radius: var(--tblr-border-radius);
+
+                margin-left: calc(-0.15rem); // compensate for border
+                margin-top: calc(-0.15rem); // compensate for border;
+            }
+
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 5%;
+                height: 10%;
+                border-top: 0.15rem solid var(--tblr-border-color);
+                border-right: 0.15rem solid var(--tblr-border-color);
+                border-top-right-radius: var(--tblr-border-radius);
+
+                margin-right: calc(-0.15rem); // compensate for border
+                margin-top: calc(-0.15rem); // compensate for border;
+            }
+        }
+    }
 }

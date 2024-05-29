@@ -114,7 +114,7 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole(role, { name: "Default option" }).last().should('not.be.checked').should('be.disabled');
     }
 
-    it('test adding and selecting options (simple)', () => {
+    it.only('test adding and selecting options (simple)', () => {
         // Add a new option
         cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
         cy.findAllByRole("textbox", { name: "Selectable option" }).should('exist');

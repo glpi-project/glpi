@@ -132,6 +132,11 @@ TWIG;
         return false;
     }
 
+    public function hideOptionsDefaultValueInput(): bool
+    {
+        return false;
+    }
+
     /**
      * Retrieve the options
      *
@@ -175,12 +180,12 @@ TWIG;
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question = null): string
+    public function renderAdministrationTemplate(?Question $question = null, array $params = []): string
     {
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, checked, value, translations, uuid = null, extra_details = false, disabled = false) %}
+        {% macro addOption(input_type, checked, value, translations, uuid = null, extra_details = false, disabled = false, hide_default_value_input = false) %}
             {% if uuid is null %}
                 {% set uuid = random() %}
             {% endif %}
@@ -202,8 +207,9 @@ TWIG;
                     type="{{ input_type }}"
                     name="default_value[]"
                     value="{{ uuid }}"
-                    class="form-check-input" {{ checked ? 'checked' : '' }}
+                    class="form-check-input {{ hide_default_value_input ? 'd-none' : '' }}"
                     aria-label="{{ translations.default_option }}"
+                    {{ checked ? 'checked' : '' }}
                     {{ disabled ? 'disabled' : '' }}
                 >
                 <input
@@ -228,19 +234,22 @@ TWIG;
         {% endmacro %}
 
         <template>
-            {{ _self.addOption(input_type, false, '', translations, null, true, true) }}
+            {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
         </template>
 
-        <div
-            data-glpi-form-editor-selectable-question-options="{{ rand }}"
-            {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
-        >
-            {% for value in values %}
-                {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid) }}
-            {% endfor %}
+        <div class="{{ selectable_question_options_class|default('') }}">
+            <div
+                data-glpi-form-editor-selectable-question-options="{{ rand }}"
+                {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
+            >
+                {% for value in values %}
+                    {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid, false, false, hide_default_value_input) }}
+                {% endfor %}
+            </div>
+
+            {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
         </div>
 
-        {{ _self.addOption(input_type, false, '', translations, null, true, true) }}
 
         <script>
             {$this->getFooterScript()}
@@ -248,20 +257,21 @@ TWIG;
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'question'          => $question,
-            'question_type'     => $this::class,
-            'values'            => $this->getValues($question),
-            'input_type'        => $this->getInputType($question),
+        return $twig->renderFromStringTemplate($template, array_merge($params, [
+            'question'                      => $question,
+            'question_type'                 => $this::class,
+            'values'                        => $this->getValues($question),
+            'input_type'                    => $this->getInputType($question),
             'hide_container_when_unfocused' => $this->hideOptionsContainerWhenUnfocused(),
-            'translations'      => [
-                'move_option'   => __('Move option'),
-                'default_option' => __('Default option'),
-                'remove_option' => __('Remove option'),
+            'hide_default_value_input'      => $this->hideOptionsDefaultValueInput(),
+            'translations'                  => [
+                'move_option'       => __('Move option'),
+                'default_option'    => __('Default option'),
+                'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
-                'enter_option' => __('Enter an option'),
+                'enter_option'      => __('Enter an option'),
             ]
-        ]);
+        ]));
     }
 
     #[Override]

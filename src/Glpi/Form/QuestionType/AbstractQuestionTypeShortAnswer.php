@@ -52,10 +52,8 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     abstract public function getInputType(): string;
 
     #[Override]
-    public function renderAdministrationTemplate(
-        ?Question $question = null,
-        ?string $input_prefix = null
-    ): string {
+    public function renderAdministrationTemplate(?Question $question, array $params = []): string
+    {
         $template = <<<TWIG
             <input
                 class="form-control mb-2"
