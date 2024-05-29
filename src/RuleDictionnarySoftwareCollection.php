@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
    // From RuleCollection
@@ -63,35 +65,37 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
     public function warningBeforeReplayRulesOnExistingDB($target)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        $twig_params = [
+            'warning_title' => __('Warning before running rename based on the dictionary rules'),
+            'warning_message' => __('Warning! This operation can put merged software in the trashbin. Ensure to notify your users.'),
+            'manufacturer_label' => __('Replay dictionary rules for manufacturers'),
+            'btn_label' => _sx('button', 'Post'),
+            'target' => $target,
+            'emptylabel' => __('All'),
+        ];
 
-        echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"" .
-             $target . "\">\n";
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2' class='b'>" .
-            __('Warning before running rename based on the dictionary rules') . "</th></tr>\n";
-        echo "<tr><td class='tab_bg_2 center'>";
-        echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
-        echo "<td class='tab_bg_2 center'>" .
-            __('Warning! This operation can put merged software in the trashbin. Ensure to notify your users.') .
-           "</td></tr>\n";
-        echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th></tr>\n";
-        echo "<tr><td class='tab_bg_2 center'>" .
-            __('Replay dictionary rules for manufacturers (----- = All)') . "</td>";
-        echo "<td class='tab_bg_2 center'>";
-        Manufacturer::dropdown(['name' => 'manufacturer']);
-        echo "</td></tr>\n";
-
-        echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-        echo "<input type='submit' name='replay_rule' value=\"" . _sx('button', 'Post') . "\"
-             class='btn btn-primary'>";
-        echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
-        echo "</td></tr>";
-        echo "</table>\n";
-        echo "</div>\n";
-        Html::closeForm();
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/alerts_macros.html.twig' as alerts %}
+            <form name="testrule_form" id="softdictionnary_confirmation" method="post" action="{{ target }}">
+                <div class="card">
+                    <div class="card-body">
+                        {{ alerts.alert_warning(warning_title, warning_message) }}
+                        <div>
+                            {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
+                                emptylabel: emptylabel,
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex flex-row-reverse">
+                        <input type="hidden" name="replay_confirm" value="replay_confirm">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
+                    </div>
+                </div>
+            </form>
+TWIG, $twig_params);
         return true;
     }
 
@@ -103,7 +107,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         if (isCommandLine()) {
             echo "replayRulesOnExistingDB started : " . date("r") . "\n";
         }
-        $nb = 0;
         $i  = $offset;
 
         if (count($items) === 0) {

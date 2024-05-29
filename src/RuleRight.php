@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * RuleRight Class
  *
@@ -43,38 +45,6 @@ class RuleRight extends Rule
    // From Rule
     public static $rightname           = 'rule_ldap';
     public $specific_parameters = true;
-
-    public function showNewRuleForm($ID)
-    {
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('Entity') . "'>";
-        echo "<table  class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='7'>" . __('Authorizations assignment rules') . "</th></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td><td>";
-        echo Html::input('name', ['value' => '', 'size' => '33']);
-        echo '</td><td>' . __('Description') . "</td><td>";
-        echo Html::input('description', ['value' => '', 'size' => '33']);
-        echo "</td><td>" . __('Logical operator') . "</td><td>";
-        $this->dropdownRulesMatch();
-        echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
-        echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
-        echo "<input type=hidden name='entities_id' value='0'>";
-        echo "<input type=hidden name='affectentity' value='$ID'>";
-        echo "<input type=hidden name='_method' value='AddRule'>";
-        echo "<input type='submit' name='execute' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center'>" . _n('Profile', 'Profiles', 1) . "</td><td>";
-        Profile::dropdown();
-        echo "</td><td>" . __('Recursive') . "</td><td colspan='3'>";
-        Dropdown::showYesNo("is_recursive", 0);
-        echo "</td></tr>\n";
-
-        echo "</table>";
-        Html::closeForm();
-    }
 
     public function executeActions($output, $params, array $input = [])
     {
@@ -398,5 +368,45 @@ class RuleRight extends Rule
     public static function getIcon()
     {
         return Profile::getIcon();
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $new_item = static::isNewID($ID);
+        if (!$new_item) {
+            $this->check($ID, READ);
+        } else {
+            // Create item
+            $this->checkGlobal(UPDATE);
+        }
+
+        $canedit = $this->canEdit(static::$rightname);
+
+        $add_buttons = [];
+        if (!$new_item && $canedit) {
+            $add_buttons = [
+                [
+                    'text' => _x('button', 'Test'),
+                    'type' => 'button',
+                    'onclick' => "$('#ruletestmodal').modal('show');",
+                ]
+            ];
+        }
+
+        $twig_params = array_merge_recursive([
+            'item' => $this,
+            'match_operators' => $this->getRulesMatch(),
+            'conditions' => static::getConditionsArray(),
+            'rand' => mt_rand(),
+            'test_url' => $CFG_GLPI["root_doc"] . "/front/rule.test.php",
+            'params' => [
+                'canedit' => $canedit,
+                'addbuttons' => $add_buttons,
+            ]
+        ], $options);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/ruleright_form.html.twig', $twig_params);
     }
 }

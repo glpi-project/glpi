@@ -365,7 +365,9 @@ The present file will list all changes made to the project; according to the
 - `Rule::showMinimalActionForm()`
 - `Rule::showMinimalCriteriaForm()`
 - `Rule::showMinimalForm()`
+- `Rule::showNewRuleForm()`
 - `RuleCollection::showTestResults()`
+- `RuleRight::showNewRuleForm()`
 - `RuleRightCollection::displayActionByName()`
 - `RuleRightCollection::showTestResults()`
 - `RuleImportComputer` class.
