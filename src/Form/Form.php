@@ -254,7 +254,10 @@ final class Form extends CommonDBTM
      **/
     public static function cronInfo($name)
     {
-        return ['description' => __('Purge old form drafts')];
+        return [
+            'description' => __('Purge old form drafts'),
+            'parameter'   => __('Form drafts retention period (in days)'),
+        ];
     }
 
     /**
@@ -265,12 +268,13 @@ final class Form extends CommonDBTM
      * @return int
      * @used-by CronTask
      */
-    public static function cronPurgeDraftForms($task = null)
+    public static function cronPurgeDraftForms(CronTask $task): int
     {
+        $delay = (int) $task->fields['param'];
         $form = new Form();
         $form->deleteByCriteria([
             'is_draft' => 1,
-            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime('-7 day'))],
+            'date_mod' => ['<', date('Y-m-d H:i:s', strtotime(sprintf('-%d day', $delay)))],
         ], true);
 
         return 1;

@@ -222,5 +222,5 @@ CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
     'hourmin'       => 0,
     'hourmax'       => 24,
     'logs_lifetime' => 30,
-    'param'         => 30
+    'param'         => 7
 ]);
