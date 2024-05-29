@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use CommonDBTM;
+use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
@@ -263,7 +264,7 @@ final class Form extends CommonDBTM
     /**
      * Cron action to purge old form drafts
      *
-     * @param CronTask|null $task
+     * @param CronTask $task
      *
      * @return int
      * @used-by CronTask

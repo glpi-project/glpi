@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form;
 
+use CronTask;
 use DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -1014,8 +1015,11 @@ class Form extends DbTestCase
         // Create a draft form
         $this->createForm((new FormBuilder())->setIsDraft(true));
 
+        // Retrieve the cron task
+        $task = CronTask::getById(48);
+
         // Run the cron task
-        \Glpi\Form\Form::cronPurgeDraftForms();
+        \Glpi\Form\Form::cronPurgeDraftForms($task);
 
         // Ensure the draft form wasn't deleted because it was created less than 7 day ago
         $this
@@ -1041,7 +1045,7 @@ class Form extends DbTestCase
         );
 
         // Run the cron task
-        \Glpi\Form\Form::cronPurgeDraftForms();
+        \Glpi\Form\Form::cronPurgeDraftForms($task);
 
         // Ensure the draft form was deleted
         $this
