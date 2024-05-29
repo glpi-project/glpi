@@ -1016,7 +1016,8 @@ class Form extends DbTestCase
         $this->createForm((new FormBuilder())->setIsDraft(true));
 
         // Retrieve the cron task
-        $task = CronTask::getById(48);
+        $task = new CronTask();
+        $task->fields['param'] = 7;
 
         // Run the cron task
         \Glpi\Form\Form::cronPurgeDraftForms($task);
