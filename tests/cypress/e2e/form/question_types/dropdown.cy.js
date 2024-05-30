@@ -87,16 +87,7 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).last().should('have.value', '');
     }
 
-    function checkSelectedOptions(role, indexes, multiple = false) {
-        // Check if the selected options are correct
-        cy.findAllByRole(role, { name: "Default option" }).each((el, i) => {
-            if (indexes.includes(i)) {
-                cy.wrap(el).should('be.checked');
-            } else {
-                cy.wrap(el).should('not.be.checked');
-            }
-        });
-
+    function checkSelectedOptions(indexes, multiple = false) {
         // Check in the select preview
         const selector = multiple ? ".multiple-preview-dropdown select" : ".single-preview-dropdown select";
         cy.get('@question').find(selector).find("option").each((el, i) => {
@@ -109,53 +100,39 @@ describe('Dropdown form question type', () => {
                 cy.wrap(el).should('not.be.selected');
             }
         });
-
-        // Check if the last option isn't checked and disabled
-        cy.findAllByRole(role, { name: "Default option" }).last().should('not.be.checked').should('be.disabled');
     }
 
-    it.only('test adding and selecting options (simple)', () => {
+    it('test adding and selecting options (simple)', () => {
         // Add a new option
         cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
         cy.findAllByRole("textbox", { name: "Selectable option" }).should('exist');
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", []);
+        checkSelectedOptions([]);
         checkOptionLabels(["Option 1"]);
 
         // Add a new option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
 
-        // Check selected options and option labels
-        checkSelectedOptions("radio", []);
-        checkOptionLabels(["Option 1", "Option 2"]);
-
-        // Select the first option
-        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+        // Select the first option in the select preview
+        cy.findByRole("combobox", { name: "-----" }).closest(".single-preview-dropdown").find("select").select("Option 1", { force: true });
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [0]);
+        checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2"]);
 
         // Add a new option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [0]);
-        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
-
-        // Select the second option
-        cy.findAllByRole("radio", { name: "Default option" }).eq(1).should('exist').check();
-
-        // Check selected options and option labels
-        checkSelectedOptions("radio", [1]);
+        checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
 
         // Select the third option in the select preview
-        cy.findByRole("combobox", { name: "Option 2" }).closest(".single-preview-dropdown").find("select").select("Option 3", { force: true });
+        cy.findByRole("combobox", { name: "Option 1" }).closest(".single-preview-dropdown").find("select").select("Option 3", { force: true });
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [2]);
+        checkSelectedOptions([2]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
 
         // Save the form (force is required because the button is hidden by a toast message)
@@ -171,7 +148,7 @@ describe('Dropdown form question type', () => {
         cy.get("@question").click('top');
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [2]);
+        checkSelectedOptions([2]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
     });
 
@@ -185,28 +162,40 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [], true);
+        checkSelectedOptions([], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Select the first option
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).check();
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 1' }).should('exist').click();
+        });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [0], true);
+        checkSelectedOptions([0], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Select the second option
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(1).check();
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 2' }).should('exist').click();
+        });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [0, 1], true);
+        checkSelectedOptions([0, 1], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Unselect the first option
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).uncheck();
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 1' }).should('exist').click();
+        });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [1], true);
+        checkSelectedOptions([1], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Select the third option in the select preview
@@ -217,7 +206,7 @@ describe('Dropdown form question type', () => {
         });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [1, 2], true);
+        checkSelectedOptions([1, 2], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Save the form (force is required because the button is hidden by a toast message)
@@ -233,7 +222,7 @@ describe('Dropdown form question type', () => {
         cy.get("@question").click('top');
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [1, 2], true);
+        checkSelectedOptions([1, 2], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
     });
 
@@ -244,31 +233,35 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Select the first option
-        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+        cy.findByRole("combobox", { name: "-----" }).closest(".single-preview-dropdown").find("select").select("Option 1", { force: true });
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [0]);
+        checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
 
         // Change the question type to "Dropdown (multiple)"
         cy.findByRole("checkbox", { name: "Allow multiple options" }).check();
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [0], true);
+        checkSelectedOptions([0], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Select the second option
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(1).check();
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 2' }).should('exist').click();
+        });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [0, 1], true);
+        checkSelectedOptions([0, 1], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Change the question type to "Dropdown (simple)"
         cy.findByRole("checkbox", { name: "Allow multiple options" }).uncheck();
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [1]);
+        checkSelectedOptions([1]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
     });
 
@@ -279,17 +272,17 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Select the first option
-        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+        cy.findByRole("combobox", { name: "-----" }).closest(".single-preview-dropdown").find("select").select("Option 1", { force: true });
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [0]);
+        checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
 
         // Delete the first option
         cy.findAllByRole("button", { name: "Remove option" }).eq(0).click();
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", []);
+        checkSelectedOptions([]);
         checkOptionLabels(["Option 2", "Option 3"]);
     });
 
@@ -300,10 +293,10 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Select the first option
-        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+        cy.findByRole("combobox", { name: "-----" }).closest(".single-preview-dropdown").find("select").select("Option 1", { force: true });
 
         // Check selected options and option labels
-        checkSelectedOptions("radio", [0]);
+        checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
 
         // Save the form (force is required because the button is hidden by a toast message)
@@ -336,11 +329,17 @@ describe('Dropdown form question type', () => {
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Select the first and third option
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).should('exist').check();
-        cy.findAllByRole("checkbox", { name: "Default option" }).eq(2).should('exist').check();
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 1' }).should('exist').click();
+
+            // Open the dropdown
+            cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 3' }).should('exist').click();
+        });
 
         // Check selected options and option labels
-        checkSelectedOptions("checkbox", [0, 2], true);
+        checkSelectedOptions([0, 2], true);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
 
         // Save the form (force is required because the button is hidden by a toast message)
