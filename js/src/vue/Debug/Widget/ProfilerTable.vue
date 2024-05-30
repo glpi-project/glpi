@@ -1,6 +1,6 @@
 <script setup>
     import {computed} from "vue";
-    import {Color} from "../../../../modules/Util/Color.js";
+    import tinycolor from 'tinycolor2';
 
     const props = defineProps({
         parent_id: {
@@ -30,15 +30,15 @@
 
     function getProfilerCategoryColor(category) {
         const predefined_colors = {
-            core: '#5a78be',
-            db: '#a128ce',
-            twig: '#74c95f',
-            plugins: '#c5aacb',
-            search: '#e19851',
+            core: '#526dad',
+            db: '#9252ad',
+            twig: '#64ad52',
+            plugins: '#a077a6',
+            search: '#b6803d',
         };
-        let hint_color = '';
+        let bg_color = '';
         if (predefined_colors[category] !== undefined) {
-            hint_color = predefined_colors[category];
+            bg_color = predefined_colors[category];
         } else {
             let hash = 0;
             for (let i = 0; i < category.length; i++) {
@@ -49,30 +49,16 @@
                 const value = (hash >> (i * 8)) & 0xFF;
                 color += ('00' + value.toString(16)).substr(-2);
             }
-            hint_color = color;
+            bg_color = color;
         }
 
-        const getContrastingColors = (hint_color) => {
-            const hint_hsl = hint_color.getHsl();
-            const hue = hint_hsl[0];
-
-            // Lightness of the hint color
-            const hint_l = hint_hsl[2];
-
-            // Lightness of the contrasting colors
-            let l1 = hint_l < 50 ? 90 : 25;
-            let l2 = hint_l < 50 ? 25 : 90;
-
-            return [
-                Color.fromHsl(hue, 90, l1),
-                Color.fromHsl(hue, 20, l2),
-            ];
-        };
-        const contrasting_colors = getContrastingColors(Color.fromHex(hint_color));
+        const contrasting_color = tinycolor.mostReadable(bg_color, tinycolor(bg_color).monochromatic(), {
+            includeFallbackColors: true
+        }).toHexString();
 
         return {
-            bg_color: contrasting_colors[0],
-            text_color: contrasting_colors[1]
+            bg_color: bg_color,
+            text_color: contrasting_color
         };
     }
 
@@ -96,8 +82,8 @@
                 id: section.id,
                 name: escapeMarkupText(section.name),
                 category: escapeMarkupText(section.category),
-                bg_color: cat_colors.bg_color.getHex(),
-                text_color: cat_colors.text_color.getHex(),
+                bg_color: cat_colors.bg_color,
+                text_color: cat_colors.text_color,
                 start: section.start,
                 end: section.end,
                 duration: duration,
@@ -146,7 +132,7 @@
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></td>
                     <td data-prop="category">
-                        <span class="category-badge fw-bold" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
+                        <span class="category-badge" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
                             {{ section.category }}
                         </span>
                     </td>

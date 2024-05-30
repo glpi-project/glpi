@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import {Color} from "../../../modules/Util/Color.js";
+import tinycolor from 'tinycolor2';
 
 export class TeamBadgeProvider {
     constructor(display_initials, max_team_images = 3) {
@@ -161,7 +161,7 @@ export class TeamBadgeProvider {
         const itemtype = team_member['itemtype'];
         const baseColor = Math.random();
         const lightness = (Math.random() * 10) + (this.dark_theme ? 25 : 70);
-        let bg_color = Color.fromHsl(baseColor * 360, 1, lightness).getHex();
+        let bg_color = tinycolor(`hsl(${baseColor * 360}, 100%, ${lightness}%)`).toHexString();
 
         if (cached_colors !== null && cached_colors[itemtype] !== null && cached_colors[itemtype][team_member['id']]) {
             bg_color = cached_colors[itemtype][team_member['id']];
