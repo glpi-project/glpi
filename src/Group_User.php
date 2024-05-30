@@ -613,7 +613,7 @@ class Group_User extends CommonDBRelation
                 if ($canedit) {
                     echo "<td width='10'>";
                     if (
-                        Session::canViewAllEntities() 
+                        Session::canViewAllEntities()
                         || Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($data["id"], false))
                     ) {
                         Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
