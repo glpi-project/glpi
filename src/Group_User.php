@@ -612,9 +612,7 @@ class Group_User extends CommonDBRelation
                 echo "\n<tr class='tab_bg_" . ($user->isDeleted() ? '1_2' : '1') . "'>";
                 if ($canedit) {
                     echo "<td width='10'>";
-                    if (in_array($user->fields['entities_id'], $_SESSION['glpiactiveentities'])) {
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    }
+                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                     echo "</td>";
                 }
                 echo "<td>" . $user->getLink();
@@ -684,6 +682,7 @@ class Group_User extends CommonDBRelation
             'condition' => [
                 'is_usergroup' => 1,
             ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
+            + getEntitiesRestrictCriteria(User::getTable(), '', '', true)
         ];
 
        // Define normalized action for add_item and remove_item
