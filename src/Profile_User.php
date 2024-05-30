@@ -99,14 +99,13 @@ class Profile_User extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-
        // TODO: check if the entities should not be inherited from the profile or the user
-        if (
-            !isset($input['entities_id'])
-            || ($input['entities_id'] < 0)
-        ) {
+        $valid_entity = isset($input['entities_id']) && $input['entities_id'] >= 0;
+        $valid_profile = isset($input['profiles_id']) && $input['profiles_id'] > 0;
+        $valid_user = isset($input['users_id']) && $input['users_id'] > 0;
+        if (!$valid_entity || !$valid_user || !$valid_profile) {
             Session::addMessageAfterRedirect(
-                __('No selected element or badly defined operation'),
+                __('One or more required fields are missing'),
                 false,
                 ERROR
             );
