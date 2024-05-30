@@ -149,6 +149,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `ajax/dropdownValidator.php` with the `users_id_validate` parameter is no longer supported. Use `items_id_target` instead.
 - `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
+- Namespaced plugins files must be placed in a subdirectory of the plugin `src` directory that corresponds to the second part of the plugin namespace (e.g. `src/Myplugin/` for a plugin called `myplugin`).
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
