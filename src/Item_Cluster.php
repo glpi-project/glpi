@@ -168,6 +168,7 @@ class Item_Cluster extends CommonDBRelation
         $twig_params = [
             'item' => $this,
             'used' => $used,
+            'item_label' => _n('Item', 'Items', 1),
         ] + $options;
 
         // language=Twig
@@ -175,7 +176,7 @@ class Item_Cluster extends CommonDBRelation
             {% extends 'generic_show_form.html.twig' %}
             {% import 'components/form/fields_macros.html.twig' as fields %}
             {% block form_fields %}
-                {{ fields.dropdownItemsFromItemtypes('itemtype', _n('Item', 'Items', 1), {
+                {{ fields.dropdownItemsFromItemtypes('itemtype', item_label, {
                     itemtypes: config('cluster_types'),
                     used: used,
                 }) }}
