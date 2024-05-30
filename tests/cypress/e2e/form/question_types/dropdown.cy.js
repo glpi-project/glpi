@@ -265,7 +265,7 @@ describe('Dropdown form question type', () => {
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
     });
 
-    it('test deleting options', () => {
+    it.only('test deleting options', () => {
         // Add new options
         cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");

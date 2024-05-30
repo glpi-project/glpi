@@ -114,7 +114,7 @@ class GlpiFormQuestionTypeSelectable {
             .on('keydown', (event) => this.#handleKeydown(event));
 
         option
-            .find('i[data-glpi-form-editor-question-option-remove]')
+            .find('button[data-glpi-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
     }
 
@@ -234,7 +234,7 @@ class GlpiFormQuestionTypeSelectable {
         $(input).siblings('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', false);
         $(input).parent().removeAttr('data-glpi-form-editor-question-extra-details');
-        $(input).siblings('i').removeClass('d-none');
+        $(input).siblings('button[data-glpi-form-editor-question-option-remove]').removeClass('d-none');
     }
 
     /**

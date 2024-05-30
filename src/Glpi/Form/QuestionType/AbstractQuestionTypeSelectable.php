@@ -222,14 +222,14 @@ TWIG;
                     placeholder="{{ translations.enter_option }}"
                     aria-label="{{ translations.selectable_option }}"
                 >
-                <i
-                    role="button"
+                <button
+                    class="btn btn-sm btn-icon btn-ghost-secondary {{ value ? '' : 'd-none' }}"
                     aria-label="{{ translations.remove_option }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-remove
-                    class="ti ti-x fa-lg text-muted ml-2 {{ value ? '' : 'd-none' }}"
-                    style="cursor: pointer;"
-                ></i>
+                >
+                    <i class="ti ti-x"></i>
+                </button>
             </div>
         {% endmacro %}
 
