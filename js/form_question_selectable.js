@@ -288,8 +288,6 @@ class GlpiFormQuestionTypeSelectable {
             .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
-        console.log(isLast);
-
         // Remove the last option if the value is empty and if the option is the last
         if (isLast) {
             // Remove all previous empty options
