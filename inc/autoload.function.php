@@ -293,31 +293,43 @@ function glpi_autoload($classname)
         return;
     }
 
-    $plugin_name  = strtolower($plug['plugin']);
+    $plugin_name  = $plug['plugin'];
+    $plugin_key   = strtolower($plugin_name);
     $plugin_class = $plug['class'];
 
-    if (!Plugin::isPluginLoaded($plugin_name)) {
+    if (!Plugin::isPluginLoaded($plugin_key)) {
         return false;
     }
 
     $plugin_path = null;
     foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
-        $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_name);
+        $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_key);
         if (is_dir($dir_to_check)) {
             $plugin_path = $dir_to_check;
             break;
         }
     }
 
-    // Legacy class path, e.g. plugins/myplugin/foo.class.php
-    $legacy_path      = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
-    // PSR-4 styled path for class without namespace, e.g. plugins/myplugin/MyPluginFoo.php
-    $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    // Legacy class path, e.g. `MyPluginFoo` -> `plugins/myplugin/inc/foo.class.php`
+    $legacy_path          = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
+    // PSR-4 styled path for class without namespace, e.g. `MyPluginFoo` -> `plugins/myplugin/src/MyPluginFoo.php`
+    $psr4_styled_path     = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    // PSR-4 unprefixed path for class with namespace, e.g. `GlpiPlugin\\MyPlugin\\Foo` -> `plugins/myplugin/src/Foo.php`
+    // deprecated in favor of `GlpiPlugin\\MyPlugin\\Foo` -> `plugins/myplugin/src/MyPlugin/Foo.php`.
+    $psr4_unprefixed_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $plugin_class));
     if (file_exists($legacy_path)) {
         include_once($legacy_path);
     } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
-        // PSR-4 styled autoloading for classes without namespace
         include_once($psr4_styled_path);
+    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_unprefixed_path)) {
+        Toolbox::deprecated(
+            sprintf(
+                'To PSR-4 autoloading of plugins classes now expects the class `%s` to be placed in `%s`',
+                $classname,
+                implode(DIRECTORY_SEPARATOR, [$plugin_key, 'src', $plugin_name, str_replace('\\', DIRECTORY_SEPARATOR, $plugin_class)])
+            )
+        );
+        include_once($psr4_unprefixed_path);
     }
 }
 

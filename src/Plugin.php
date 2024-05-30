@@ -314,7 +314,7 @@ class Plugin extends CommonDBTM
                 $loaded = true;
                 if (!in_array($plugin_key, self::$loaded_plugins)) {
                     // Register PSR-4 autoloader
-                    $psr4_dir = $plugin_directory . '/src';
+                    $psr4_dir = $plugin_directory . '/src/' . ucfirst($plugin_key);
                     if (is_dir($psr4_dir)) {
                         $psr4_autoloader = new \Composer\Autoload\ClassLoader();
                         $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);

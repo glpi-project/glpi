@@ -63,23 +63,13 @@ class InstallCommand extends \\Symfony\\Component\\Console\\Command\\Command {
 }
 PHP,
 
-                // Namespaced command case located in root of source dir
-                'ValidateCommand.php' => <<<PHP
-<?php
-namespace Glpi;
-class ValidateCommand extends \\Symfony\\Component\\Console\\Command\\Command {
-   protected function configure() {
-      \$this->setName('validate');
-   }
-}
-PHP,
-
                 // Not a command case
                 'SomeName.php' => '<?php class SomeName {}',
 
-                'Console' => [
-                    // Namespaced command case
-                    'TestCommand.php' => <<<PHP
+                'Glpi' => [
+                    'Console' => [
+                        // Namespaced command case
+                        'TestCommand.php' => <<<PHP
 <?php
 namespace Glpi\\Console;
 class TestCommand extends \\Symfony\\Component\\Console\\Command\\Command {
@@ -88,6 +78,7 @@ class TestCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    }
 }
 PHP,
+                    ],
                 ],
             ],
             'tools' => [
@@ -270,7 +261,6 @@ PHP,
         $core_names_to_class = [
             'database:install' => 'InstallCommand',
             'db:install'       => 'InstallCommand',
-            'validate'         => 'Glpi\\ValidateCommand',
             'test'             => 'Glpi\\Console\\TestCommand',
             'tools:debug'      => 'DebugCommand',
         ];

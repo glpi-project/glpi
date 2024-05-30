@@ -1503,27 +1503,31 @@ class DbUtils extends DbTestCase
             null,
             [
                 'src' => [
-                    'Application' => [
-                        'Console' => [
-                            'MyCommand.php' => '',
+                    'Glpi' => [
+                        'Application' => [
+                            'Console' => [
+                                'MyCommand.php' => '',
+                            ],
                         ],
-                    ],
-                    'Something' => [
-                        'Item_Filter.php' => '',
+                        'Something' => [
+                            'Item_Filter.php' => '',
+                        ],
+                        'NamespacedClass.php' => '',
                     ],
                     'MyClass.php' => '',
-                    'NamespacedClass.php' => '',
                 ],
                 'plugins' => [
                     'foo' => [
                         'src' => [
-                            'Models' => [
-                                'Foo' => [
-                                    'Bar_Item.php' => '',
+                            'Foo' => [
+                                'Models' => [
+                                    'Foo' => [
+                                        'Bar_Item.php' => '',
+                                    ],
                                 ],
+                                'NamespacedBar.php' => '',
+                                'Relation_Item.php' => '',
                             ],
-                            'NamespacedBar.php' => '',
-                            'Relation_Item.php' => '',
                             'PluginFooBarItem.php' => '',
                         ],
                     ],

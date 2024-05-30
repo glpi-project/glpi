@@ -388,11 +388,13 @@ final class DbUtils
         $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
         $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
 
-        $expected_lc_path = str_ireplace(
-            [$namespace, '\\'],
-            [''        , DIRECTORY_SEPARATOR],
-            strtolower($itemtype) . '.php'
-        );
+        $replacements = [];
+        if ($context !== 'glpi-core') {
+            // Strip the `GlpiPlugin\\` prefix that is not present in plugins classes path
+            $replacements[NS_PLUG] = '';
+        }
+        $replacements['\\'] = DIRECTORY_SEPARATOR;
+        $expected_lc_path = str_ireplace(array_keys($replacements), array_values($replacements), strtolower($itemtype) . '.php');
 
         $cache_key = sprintf('itemtype-case-mapping-%s', $context);
 
@@ -403,7 +405,7 @@ final class DbUtils
 
         if ($mapping[$context] !== null && array_key_exists($expected_lc_path, $mapping[$context])) {
             // Return known value, if any
-            return ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path];
+            return ($context !== 'glpi-core' && $uses_namespace ? NS_PLUG : '') . $mapping[$context][$expected_lc_path];
         }
 
         if (
@@ -456,7 +458,7 @@ final class DbUtils
         $GLPI_CACHE->set($cache_key, $mapping[$context]);
 
         return array_key_exists($expected_lc_path, $mapping[$context])
-            ? ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path]
+            ? ($context !== 'glpi-core' && $uses_namespace ? NS_PLUG : '') . $mapping[$context][$expected_lc_path]
             : $itemtype;
     }
 
