@@ -43,12 +43,12 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * @return RefreshToken|null
      */
-    public function getNewRefreshToken()
+    public function getNewRefreshToken(): ?RefreshTokenEntityInterface
     {
         return new RefreshToken();
     }
 
-    public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
+    public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -60,7 +60,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         ]);
     }
 
-    public function revokeRefreshToken($tokenId)
+    public function revokeRefreshToken($tokenId): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -70,7 +70,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         ]);
     }
 
-    public function isRefreshTokenRevoked($tokenId)
+    public function isRefreshTokenRevoked($tokenId): bool
     {
         /** @var \DBmysql $DB */
         global $DB;

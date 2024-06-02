@@ -50,7 +50,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         return $code;
     }
 
-    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
+    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -64,7 +64,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         ]);
     }
 
-    public function revokeAuthCode($codeId)
+    public function revokeAuthCode($codeId): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -72,7 +72,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         $DB->delete('glpi_oauth_auth_codes', ['identifier' => $codeId]);
     }
 
-    public function isAuthCodeRevoked($codeId)
+    public function isAuthCodeRevoked($codeId): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
