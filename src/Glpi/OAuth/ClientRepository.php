@@ -36,12 +36,13 @@
 namespace Glpi\OAuth;
 
 use GLPIKey;
+use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use OAuthClient;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-    public function getClientEntity($clientIdentifier)
+    public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -64,7 +65,7 @@ class ClientRepository implements ClientRepositoryInterface
         return null;
     }
 
-    public function validateClient($clientIdentifier, $clientSecret, $grantType)
+    public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
         $client = new OAuthClient();
         $client->getFromDBByCrit([

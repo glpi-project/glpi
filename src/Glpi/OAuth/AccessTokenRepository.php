@@ -44,7 +44,7 @@ use Ramsey\Uuid\Uuid;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
+    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
         $token = new AccessToken();
         $token->setClient($clientEntity);
@@ -55,7 +55,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         return $token;
     }
 
-    public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
+    public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -69,7 +69,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         ]);
     }
 
-    public function revokeAccessToken($tokenId)
+    public function revokeAccessToken($tokenId): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -77,7 +77,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
     }
 
-    public function isAccessTokenRevoked($tokenId)
+    public function isAccessTokenRevoked($tokenId): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
