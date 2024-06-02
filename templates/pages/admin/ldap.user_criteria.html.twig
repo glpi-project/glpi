@@ -35,13 +35,13 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {# TODO Stop using the session to store temporary parameters! #}
-{% set is_sync_mode = session('ldap_import')['mode']|default(0) == constant('AuthLDAP::ACTION_SYNCHRONIZE') %}
-{% set is_expert_interface = session('ldap_import')['interface']|default('simple') == constant('AuthLDAP::EXPERT_INTERFACE') %}
-{% set selected_authldaps_id = session('ldap_import')['authldaps_id'] %}
+{% set is_sync_mode = _request['mode']|default(0) == constant('AuthLDAP::ACTION_SYNCHRONIZE') %}
+{% set is_expert_interface = _request['interface']|default('simple') == constant('AuthLDAP::EXPERT_INTERFACE') %}
+{% set selected_authldaps_id = _request['authldaps_id'] %}
 {% set is_authsldap_selected = selected_authldaps_id != constant('NOT_AVAILABLE') and selected_authldaps_id > 0 %}
-{% set selected_entity = session('ldap_import')['entities_id']|default(session('glpiactive_entity')) %}
+{% set selected_entity = _request['entities_id']|default(session('glpiactive_entity')) %}
 
-<form method="post" action="{{ path('front/ldap.import.php') }}" data-submit-once>
+<form method="get" action="{{ path('front/ldap.import.php') }}" data-submit-once>
     <div class="card">
         <div class="card-header justify-content-between">
             <h1 class="fs-2">{{ is_sync_mode ? __('Synchronizing already imported users') : __('Import new users') }}</h1>
@@ -72,7 +72,7 @@
                 {% endif %}
 
                 {{ fields.smallTitle(__('Search criteria for users')) }}
-                {{ fields.textField('basedn', session('ldap_import')['basedn'], __('BaseDN'), {
+                {{ fields.textField('basedn', _request['basedn'], __('BaseDN'), {
                     full_width: true,
                     label_class: 'col-xxl-3',
                     input_class: 'col-xxl-9',
@@ -81,7 +81,7 @@
                         'data-interface': 'expert'
                     }
                 }) }}
-                {{ fields.textField('ldap_filter', session('ldap_import')['ldap_filter'], __('Search filter for users'), {
+                {{ fields.textField('ldap_filter', _request['ldap_filter'], __('Search filter for users'), {
                     full_width: true,
                     label_class: 'col-xxl-3',
                     input_class: 'col-xxl-9',
@@ -109,7 +109,7 @@
                 } %}
                 {% for field, label in simple_fields %}
                     {% if authldap.fields[field] is defined and authldap.fields[field] is not empty %}
-                        {{ fields.textField('criterias[' ~ field ~ ']', authldap.fields[field], label, {
+                        {{ fields.textField('criterias[' ~ field ~ ']', _request['criterias'][field]|default(''), label, {
                             add_field_class: is_expert_interface ? 'd-none' : '',
                             add_field_attribs: {
                                 'data-interface': 'simple'
@@ -119,20 +119,27 @@
                 {% endfor %}
 
                 {% set updated_date_fields %}
-                    {{ inputs.datetime('begin_date', null, {
+                    {{ inputs.datetime('begin_date', _request[field]|default(null), {
                         maybeempty: true,
                         clearable: true,
                     }) }}
                     <span class="mx-3">-></span>
-                    {{ inputs.datetime('end_date', session('glpi_currenttime'), {
-                        maybeempty: false,
-                        clearable: false,
+                    {{ inputs.datetime('end_date', _request[field]|default(null), {
+                        maybeempty: true,
+                        clearable: true,
                     }) }}
                 {% endset %}
-                {{ fields.htmlField('', updated_date_fields, __('View updated users')) }}
+                {{ fields.htmlField('', updated_date_fields, __('View updated users'), {
+                    add_field_class: is_expert_interface ? 'd-none' : '',
+                    add_field_attribs: {
+                        'data-interface': 'simple'
+                    },
+                }) }}
             </div>
         </div>
         <div class="card-footer d-flex flex-row-reverse">
+            {{ inputs.hidden('action', _request['action']|default('show')) }}
+            {{ inputs.hidden('mode', _request['mode']|default(constant('AuthLDAP::ACTION_IMPORT'))) }}
             {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
             {{ inputs.submit('search', _x('button', 'Search'), 1) }}
         </div>
@@ -144,7 +151,10 @@
                     chkbox.closest('.form-field').find('> label').text(is_expert_mode ? '{{ __('Expert mode') }}' : '{{ __('Simple mode') }}');
                     chkbox.closest('form').find('.form-field[data-interface="expert"]').toggleClass('d-none', !is_expert_mode);
                     chkbox.closest('form').find('.form-field[data-interface="simple"]').toggleClass('d-none', is_expert_mode);
-                });
+                    // Disable hidden fields
+                    chkbox.closest('form').find('.form-field input').prop('disabled', false);
+                    chkbox.closest('form').find('.form-field.d-none input').prop('disabled', true);
+                }).trigger('change');
             });
         </script>
     </div>
