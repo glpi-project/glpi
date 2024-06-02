@@ -1664,156 +1664,82 @@ TWIG, $twig_params);
             'start' => 0,
         ], $_REQUEST);
 
-        $rand          = mt_rand();
         $results       = [];
         $limitexceeded = false;
         $ldap_users    = self::getUsers($values, $results, $limitexceeded);
+        $total_results = count($ldap_users);
 
         $config_ldap   = new AuthLDAP();
         $config_ldap->getFromDB($values['authldaps_id']);
 
-        if (is_array($ldap_users)) {
-            $numrows = count($ldap_users);
+        self::displaySizeLimitWarning($limitexceeded);
 
-            if ($numrows > 0) {
-                echo "<div class='card'>";
-                self::displaySizeLimitWarning($limitexceeded);
-
-                Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
-
-                // delete end
-                array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
-                // delete begin
-                if ($values['start'] > 0) {
-                    array_splice($ldap_users, 0, $values['start']);
-                }
-
-                if ($values['mode']) {
-                    $textbutton  = _x('button', 'Synchronize');
-                    $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
-                } else {
-                    $textbutton  = _x('button', 'Import');
-                    $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
-                }
-
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'    => min(count($ldap_users), $_SESSION['glpilist_limit']),
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'specific_actions' => [$form_action => $textbutton]
-                ];
-                echo "<div class='ms-2 ps-1 d-flex mb-2'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                echo "<table class='table card-table'>";
-                echo "<thead>";
-                echo "<tr>";
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-                $num = 0;
-                if ($config_ldap->isSyncFieldEnabled()) {
-                    echo Search::showHeaderItem(
-                        Search::HTML_OUTPUT,
-                        __('Synchronization field'),
-                        $num,
-                        $_SERVER['PHP_SELF'] .
-                        "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                    );
-                }
-                echo Search::showHeaderItem(
-                    Search::HTML_OUTPUT,
-                    User::getTypeName(Session::getPluralNumber()),
-                    $num,
-                    $_SERVER['PHP_SELF'] .
-                    "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                );
-                echo "<th>" . __('Last update in the LDAP directory') . "</th>";
-                if ($values['mode']) {
-                     echo "<th>" . __('Last update in GLPI') . "</th>";
-                }
-                echo "</tr>";
-                echo "</thead>";
-
-                foreach ($ldap_users as $userinfos) {
-                    echo "<tr>";
-                    //Need to use " instead of ' because it doesn't work with names with ' inside !
-                    echo "<td>";
-                    echo Html::getMassiveActionCheckBox(__CLASS__, $userinfos['uid']);
-                    echo "</td>";
-                    if ($config_ldap->isSyncFieldEnabled()) {
-                        echo "<td>" . $userinfos['uid'] . "</td>";
-                    }
-                    echo "<td>";
-                    if (isset($userinfos['id']) && User::canView()) {
-                        echo "<a href='" . $userinfos['link'] . "'>" . $userinfos['name'] . "</a>";
-                    } else {
-                        echo $userinfos['link'];
-                    }
-                    echo "</td>";
-
-                    if ($userinfos['stamp'] != '') {
-                         echo "<td>" . Html::convDateTime(date("Y-m-d H:i:s", $userinfos['stamp'])) . "</td>";
-                    } else {
-                        echo "<td>&nbsp;</td>";
-                    }
-                    if ($values['mode']) {
-                        if ($userinfos['date_sync'] != '') {
-                            echo "<td>" . Html::convDateTime($userinfos['date_sync']) . "</td>";
-                        }
-                    }
-                    echo "</tr>";
-                }
-                echo "<tfoot>";
-                echo "<tr>";
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-                $num = 0;
-
-                if ($config_ldap->isSyncFieldEnabled()) {
-                    echo Search::showHeaderItem(
-                        Search::HTML_OUTPUT,
-                        __('Synchronization field'),
-                        $num,
-                        $_SERVER['PHP_SELF'] .
-                        "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                    );
-                }
-                echo Search::showHeaderItem(
-                    Search::HTML_OUTPUT,
-                    User::getTypeName(Session::getPluralNumber()),
-                    $num,
-                    $_SERVER['PHP_SELF'] .
-                    "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                );
-                echo "<th>" . __('Last update in the LDAP directory') . "</th>";
-                if ($values['mode']) {
-                     echo "<th>" . __('Last update in GLPI') . "</th>";
-                }
-                echo "</tr>";
-                echo "</tfoot>";
-                echo "</table>";
-
-                $massiveactionparams['ontop'] = false;
-                echo "<div class='ms-2 ps-1 mt-2 d-flex'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                Html::closeForm();
-
-                Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
-
-                echo "</div>";
-            } else {
-                echo "<div class='center b'>" .
-                  ($values['mode'] ? __('No user to be synchronized') : __('No user to be imported')) . "</div>";
-            }
-        } else {
-            echo "<div class='center b'>" .
-               ($values['mode'] ? __('No user to be synchronized') : __('No user to be imported')) . "</div>";
+        // delete end
+        array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
+        // delete begin
+        if ($values['start'] > 0) {
+            array_splice($ldap_users, 0, $values['start']);
         }
+
+        if ($values['mode']) {
+            $textbutton  = _x('button', 'Synchronize');
+            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
+        } else {
+            $textbutton  = _x('button', 'Import');
+            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
+        }
+
+        $entries = [];
+        foreach ($ldap_users as $userinfos) {
+            $entry = [];
+            if ($config_ldap->isSyncFieldEnabled()) {
+                $entry['sync_field'] = $userinfos['uid'];
+            }
+            if (isset($userinfos['id']) && User::canView()) {
+                $entry['user'] = "<a href='" . htmlspecialchars($userinfos['link']) . "'>" . htmlspecialchars($userinfos['name']) . "</a>";
+            } else {
+                $entry['user'] = $userinfos['link'];
+            }
+
+            $date_mod = '';
+            if ($userinfos['stamp'] !== '') {
+                $date_mod = date("Y-m-d H:i:s", $userinfos['stamp']);
+            }
+            if ($values['mode'] && $userinfos['date_sync'] !== '') {
+                $date_mod = $userinfos['date_sync'];
+            }
+            $entry['date_mod'] = $date_mod;
+            $entries[] = $entry;
+        }
+
+        $columns = [];
+        if ($config_ldap->isSyncFieldEnabled()) {
+            $columns['sync_field'] = __('Synchronization field');
+        }
+        $columns['user'] = User::getTypeName(1);
+        $columns['date_mod'] = $values['mode'] ? __('Last update in GLPI') : __('Last update in the LDAP directory');
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => false,
+            'nofilter' => true,
+            'nosort' => true,
+            'start' => $values['start'],
+            'limit' => $_SESSION['glpilist_limit'],
+            'columns' => $columns,
+            'formatters' => [
+                'user' => 'raw_html',
+                'date_mod' => 'datetime'
+            ],
+            'entries' => $entries,
+            'total_number' => $total_results,
+            'filtered_number' => $total_results,
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'specific_actions' => [$form_action => $textbutton]
+            ]
+        ]);
     }
 
     /**
@@ -3850,8 +3776,8 @@ TWIG, $twig_params);
         }
 
         // If time restriction
-        $begin_date = $_REQUEST['begin_date'] ?: null;
-        $end_date   = $_REQUEST['end_date'] ?: null;
+        $begin_date = $_REQUEST['begin_date'] ?? null;
+        $end_date   = $_REQUEST['end_date'] ?? null;
         $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
         $ldap_condition = $authldap->getField('condition');
         // Add entity filter and filter filled in directory's configuration form
