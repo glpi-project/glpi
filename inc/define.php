@@ -599,7 +599,7 @@ $CFG_GLPI['javascript'] = [
             'marketplace' => ['marketplace']
         ],
         'config' => ['clipboard', 'tinymce'],
-        'webhook' => ['monaco', 'autocomplete'],
+        'webhook' => ['monaco'],
         'link' => ['monaco']
     ],
     'admin'        => ['clipboard', 'monaco', 'tinymce'],

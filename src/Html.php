@@ -1149,10 +1149,6 @@ HTML;
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
             }
-
-            if (in_array('autocomplete', $jslibs)) {
-                Html::requireJs('autocomplete');
-            }
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
@@ -5917,9 +5913,6 @@ HTML;
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
-                break;
-            case 'autocomplete':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/autocomplete.js';
                 break;
             default:
                 $found = false;
