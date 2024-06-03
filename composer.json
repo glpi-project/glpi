@@ -44,7 +44,7 @@
         "laminas/laminas-mail": "^2.25",
         "laminas/laminas-mime": "^2.12",
         "league/commonmark": "^2.4",
-        "league/csv": "^9.15",
+        "league/csv": "^9.16",
         "league/html-to-markdown": "^5.1",
         "league/oauth2-client": "^2.7",
         "league/oauth2-google": "^4.0",
