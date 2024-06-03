@@ -405,14 +405,15 @@ class AuthLDAP extends CommonDBTM
                     if (isset($input["dn"][$id])) {
                         $group_dn = $input["dn"][$id];
                         if (isset($input["ldap_import_entities"][$id])) {
-                              $entity = $input["ldap_import_entities"][$id];
+                            $entity = (int) $input["ldap_import_entities"][$id];
                         } else {
-                             $entity = $_SESSION["glpiactive_entity"];
+                            $entity = $_SESSION["glpiactive_entity"];
                         }
-                      // Is recursive is in the main form and thus, don't pass through
-                      // zero_on_empty mechanism inside massive action form ...
+                        // Is recursive is in the main form and thus, don't pass through
+                        // zero_on_empty mechanism inside massive action form ...
                         $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
-                        $options      = ['authldaps_id' => $_SESSION['ldap_server'],
+                        $options      = [
+                            'authldaps_id' => $_REQUEST['authldaps_id'],
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
                             'type'         => $input['ldap_import_type'][$id]
@@ -1230,67 +1231,6 @@ TWIG, ['authldaps_id' => $ID]);
             }
         }
         return $ret;
-    }
-
-    /**
-     * Display LDAP filter
-     *
-     * @param string  $target target for the form
-     * @param boolean $users  for user? (true by default)
-     *
-     * @return void
-     */
-    public static function displayLdapFilter($target, $users = true)
-    {
-        $config_ldap = new self();
-        if (!isset($_SESSION['ldap_server'])) {
-            throw new \RuntimeException('LDAP server must be set!');
-        }
-        $config_ldap->getFromDB($_SESSION['ldap_server']);
-
-        $filter_name1 = null;
-        $filter_name2 = null;
-        if ($users) {
-            $filter_name1 = "condition";
-            $filter_var   = "ldap_filter";
-        } else {
-            $filter_var = "ldap_group_filter";
-            switch ($config_ldap->fields["group_search_type"]) {
-                case self::GROUP_SEARCH_USER:
-                    $filter_name1 = "condition";
-                    break;
-                case self::GROUP_SEARCH_GROUP:
-                    $filter_name1 = "group_condition";
-                    break;
-                case self::GROUP_SEARCH_BOTH:
-                    $filter_name1 = "group_condition";
-                    $filter_name2 = "condition";
-                    break;
-            }
-        }
-
-        if ($filter_name1 !== null && empty($_SESSION[$filter_var])) {
-            $_SESSION[$filter_var] = $config_ldap->fields[$filter_name1];
-        }
-
-        // Only display when looking for groups in users AND groups
-        if (
-            !$users
-            && ($config_ldap->fields["group_search_type"] === self::GROUP_SEARCH_BOTH)
-        ) {
-            if ($filter_name2 !== null && empty($_SESSION["ldap_group_filter2"])) {
-                $_SESSION["ldap_group_filter2"] = $config_ldap->fields[$filter_name2];
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('pages/setup/ldap/filter.html.twig', [
-            'target' => $target,
-            'users' => $users,
-            'filter_name1' => $filter_name1,
-            'filter_name2' => $filter_name2,
-            'filter_var' => $filter_var,
-            'config_ldap' => $config_ldap,
-        ]);
     }
 
     /**
@@ -2151,9 +2091,10 @@ TWIG, $twig_params);
      * @param string  $filter  ldap filter to use (default '')
      * @param string  $filter2 second ldap filter to use (which case?) (default '')
      * @param integer $entity  working entity
-     * @param string  $order   display order (default DESC)
      *
      * @return void
+     *
+     * @since 11.0.0 $order parameter has been removed.
      */
     public static function showLdapGroups(
         $target,
@@ -2161,147 +2102,125 @@ TWIG, $twig_params);
         $sync = 0,
         $filter = '',
         $filter2 = '',
-        $entity = 0,
-        $order = 'DESC'
+        $entity = 0
     ) {
-
-        echo "<br>";
         $limitexceeded = false;
         $ldap_groups   = self::getAllGroups(
-            $_SESSION["ldap_server"],
+            $_REQUEST['authldaps_id'],
             $filter,
             $filter2,
             $entity,
-            $limitexceeded,
-            $order
+            $limitexceeded
         );
+        $total_results = count($ldap_groups);
 
-        if (is_array($ldap_groups)) {
-            $numrows     = count($ldap_groups);
-            $rand        = mt_rand();
-            if ($numrows > 0) {
-                echo "<div class='card'>";
-                self::displaySizeLimitWarning($limitexceeded);
-                $parameters = '';
-                Html::printPager($start, $numrows, $target, $parameters);
+        echo "<div class='card p-3 mt-3'>";
+        self::displaySizeLimitWarning($limitexceeded);
 
-                // delete end
-                array_splice($ldap_groups, $start + $_SESSION['glpilist_limit']);
-                // delete begin
-                if ($start > 0) {
-                    array_splice($ldap_groups, 0, $start);
-                }
-
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams  = [
-                    'num_displayed' => min($_SESSION['glpilist_limit'], count($ldap_groups)),
-                    'container' => 'mass' . __CLASS__ . $rand,
-                    'specific_actions' => [
-                        __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group'
-                                       => _sx('button', 'Import')
-                    ],
-                    'extraparams' => [
-                        'massive_action_fields' => [
-                            'dn',
-                            'ldap_import_type',
-                            'ldap_import_entities',
-                            'ldap_import_recursive'
-                        ]
-                    ]
-                ];
-                echo "<div class='ms-2 ps-1 d-flex mb-2'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                echo "<table class='table table-sm card-table'>";
-                echo "<thead>";
-                echo "<tr>";
-                echo "<th width='10'>";
-                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_item']]);
-                echo "</th>";
-                $header_num = 0;
-                echo Search::showHeaderItem(
-                    Search::HTML_OUTPUT,
-                    Group::getTypeName(1),
-                    $header_num,
-                    $target . "?order=" . ($order == "DESC" ? "ASC" : "DESC"),
-                    1,
-                    $order
-                );
-                echo "<th>" . __('Group DN') . "</th>";
-                echo "<th>" . __('Destination entity') . "</th>";
-                if (Session::isMultiEntitiesMode()) {
-                     echo"<th>";
-                     Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_item_child_entities']]);
-                     echo "&nbsp;" . __('Child entities');
-                     echo "</th>";
-                }
-                echo "</tr>";
-                echo "</thead>";
-
-                $dn_index = 0;
-                foreach ($ldap_groups as $groupinfos) {
-                    $group       = $groupinfos["cn"];
-                    $group_dn    = $groupinfos["dn"];
-                    $search_type = $groupinfos["search_type"];
-
-                    echo "<tr>";
-                    echo "<td>";
-                    echo Html::hidden("dn[$dn_index]", ['value'                 => $group_dn,
-                        'data-glpicore-ma-tags' => 'common'
-                    ]);
-                    echo Html::hidden("ldap_import_type[$dn_index]", ['value'                 => $search_type,
-                        'data-glpicore-ma-tags' => 'common'
-                    ]);
-                    Html::showMassiveActionCheckBox(
-                        __CLASS__,
-                        $dn_index,
-                        ['massive_tags' => 'select_item']
-                    );
-                    echo "</td>";
-                    echo "<td>" . $group . "</td>";
-                    echo "<td>" . $group_dn . "</td>";
-                    echo "<td>";
-                    Entity::dropdown(['value'         => $entity,
-                        'name'          => "ldap_import_entities[$dn_index]",
-                        'specific_tags' => ['data-glpicore-ma-tags' => 'common']
-                    ]);
-                    echo "</td>";
-                    if (Session::isMultiEntitiesMode()) {
-                          echo "<td>";
-                          Html::showMassiveActionCheckBox(
-                              __CLASS__,
-                              $dn_index,
-                              ['massive_tags'  => 'select_item_child_entities',
-                                  'name'          => "ldap_import_recursive[$dn_index]",
-                                  'specific_tags' => ['data-glpicore-ma-tags' => 'common']
-                              ]
-                          );
-                            echo "</td>";
-                    } else {
-                        echo Html::hidden("ldap_import_recursive[$dn_index]", ['value'                 => 0,
-                            'data-glpicore-ma-tags' => 'common'
-                        ]);
-                    }
-                    echo "</tr>";
-                    $dn_index++;
-                }
-                echo "</table>";
-
-                $massiveactionparams['ontop'] = false;
-                echo "<div class='ms-2 ps-1 mt-2 d-flex'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                Html::closeForm();
-                Html::printPager($start, $numrows, $target, $parameters);
-                echo "</div>";
-            } else {
-                echo "<div class='center b'>" . __('No group to be imported') . "</div>";
-            }
-        } else {
-            echo "<div class='center b'>" . __('No group to be imported') . "</div>";
+        // delete end
+        array_splice($ldap_groups, $start + $_SESSION['glpilist_limit']);
+        // delete begin
+        if ($start > 0) {
+            array_splice($ldap_groups, 0, $start);
         }
+
+        $dn_index = 1;
+        $entries = [];
+        foreach ($ldap_groups as $groupinfos) {
+            $entry = [
+                'id'       => $dn_index,
+                'itemtype' => self::class, // required for massive actions
+            ];
+            $group       = $groupinfos["cn"];
+            $group_dn    = $groupinfos["dn"];
+            $search_type = $groupinfos["search_type"];
+            $group_cell = '';
+            $group_cell .= Html::hidden("dn[$dn_index]", [
+                'value'                 => $group_dn,
+                'data-glpicore-ma-tags' => 'common'
+            ]);
+            $group_cell .= Html::hidden("ldap_import_type[$dn_index]", [
+                'value'                 => $search_type,
+                'data-glpicore-ma-tags' => 'common'
+            ]);
+            if (Session::isMultiEntitiesMode()) {
+                $group_cell .= Html::hidden("ldap_import_recursive[$dn_index]", [
+                    'value'                 => 0,
+                    'data-glpicore-ma-tags' => 'common'
+                ]);
+            }
+            $group_cell .= htmlescape($group);
+            $entry['group'] = $group_cell;
+            $entry['group_dn'] = $group_dn;
+            if (Session::isMultiEntitiesMode()) {
+                $entry['entity'] = Entity::dropdown([
+                    'value'         => $entity,
+                    'name'          => "ldap_import_entities[$dn_index]",
+                    'specific_tags' => ['data-glpicore-ma-tags' => 'common'],
+                    'display'       => false,
+                ]);
+                $entry['child_entities'] = Html::getCheckbox([
+                    'name'          => "ldap_import_recursive[$dn_index]",
+                    'massive_tags' => 'select_item_child_entities',
+                    'specific_tags' => ['data-glpicore-ma-tags' => 'common'],
+                ]);
+            }
+            $entries[] = $entry;
+            $dn_index++;
+        }
+
+        $columns = [
+            'group' => Group::getTypeName(1),
+            'group_dn' => __('Group DN'),
+        ];
+        if (Session::isMultiEntitiesMode()) {
+            $columns['entity'] = __('Destination entity');
+
+            $chk_all_child_entities = Html::getCheckbox([
+                'criterion' => ['tag_for_massive' => 'select_item_child_entities']
+            ]);
+            $columns['child_entities'] = [
+                'label' => $chk_all_child_entities . __s('Child entities'),
+                'raw_header' => true
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => false,
+            'nofilter' => true,
+            'nosort' => true,
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
+            'columns' => $columns,
+            'formatters' => [
+                'group' => 'raw_html', // Raw because there are some hidden inputs added here. The Group itself is pre-sanitized.
+                'entity' => 'raw_html', // Select HTML element
+                'child_entities' => 'raw_html' // Checkbox HTML element
+            ],
+            'entries' => $entries,
+            'total_number' => $total_results,
+            'filtered_number' => $total_results,
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'specific_actions' => [
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import')
+                ],
+                'extraparams' => [
+                    'authldaps_id' => $_REQUEST['authldaps_id'],
+                    'massive_action_fields' => [
+                        'authldaps_id',
+                        'dn',
+                        'ldap_import_type',
+                        'ldap_import_entities',
+                        'ldap_import_recursive'
+                    ]
+                ]
+            ]
+        ]);
+
+        echo "</div>";
     }
 
     /**
@@ -2314,17 +2233,17 @@ TWIG, $twig_params);
      * @param string  $filter2       second ldap filter to use if needed
      * @param string  $entity        entity to search
      * @param boolean $limitexceeded is limit exceeded
-     * @param string  $order         order to use (default DESC)
      *
      * @return array of the groups
+     *
+     * @since 11.0.0 $order parameter has been removed.
      */
     public static function getAllGroups(
         $auths_id,
         $filter,
         $filter2,
         $entity,
-        &$limitexceeded,
-        $order = 'DESC'
+        &$limitexceeded
     ) {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2414,8 +2333,8 @@ TWIG, $twig_params);
 
             usort(
                 $groups,
-                static function ($a, $b) use ($order) {
-                    return $order === 'DESC' ? strcasecmp($b['cn'], $a['cn']) : strcasecmp($a['cn'], $b['cn']);
+                static function ($a, $b) {
+                    return strcasecmp($a['cn'], $b['cn']);
                 }
             );
         }
@@ -2629,40 +2548,6 @@ TWIG, $twig_params);
         } while (($cookie !== null) && ($cookie != ''));
 
         return $groups;
-    }
-
-    /**
-     * Form to choose a ldap server
-     *
-     * @param string $target target page for the form
-     *
-     * @return void
-     */
-    public static function ldapChooseDirectory($target)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                'is_active' => 1
-            ],
-            'ORDER'  => 'name ASC'
-        ]);
-
-        if (count($iterator) === 1) {
-            // If only one server, do not show the choose ldap server window
-            $ldap                    = $iterator->current();
-            $_SESSION["ldap_server"] = $ldap["id"];
-            Html::redirect($_SERVER['PHP_SELF']);
-        }
-
-        TemplateRenderer::getInstance()->display('pages/admin/ldap.choose_directory.html.twig', [
-            'target'          => $target,
-            'nb_ldap_servers' => count($iterator),
-        ]);
     }
 
     /**
@@ -3608,10 +3493,25 @@ TWIG, $twig_params);
 
     /**
      * Sets the default values for the LDAP import if not already set.
+     * @param bool $is_users If true, the default values are set for user actions, otherwise for group actions.
      * @return void
      */
-    public static function manageRequestValues(): void
+    public static function manageRequestValues(bool $is_users = true): void
     {
+        if (!$is_users) {
+            if (!isset($_REQUEST['authldaps_id']) || (int) $_REQUEST['authldaps_id'] <= 0) {
+                // Use default from the current entity or global default
+                $entity = new Entity();
+                $entity->getFromDB($_SESSION['glpiactive_entity']);
+                $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
+                if ((int) $_REQUEST['authldaps_id'] <= 0) {
+                    $_REQUEST['authldaps_id'] = self::getDefault();
+                }
+            }
+            $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
+            $_REQUEST['mode'] = self::ACTION_IMPORT;
+            return;
+        }
         //If form accessed via modal, do not show expert mode link
         // Manage new value is set : entity or mode
         if (isset($_REQUEST['entity']) || isset($_REQUEST['mode'])) {
@@ -3746,7 +3646,25 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get number of servers
+     * Show import group form
+     *
+     * @param AuthLDAP $authldap AuthLDAP object
+     *
+     * @return void
+     */
+    public static function showGroupImportForm(AuthLDAP $authldap)
+    {
+        // Get data related to entity (directory and ldap filter)
+        $authldap->getFromDB($_REQUEST['authldaps_id']);
+
+        TemplateRenderer::getInstance()->display('pages/admin/ldap.group_criteria.html.twig', [
+            'has_multiple_servers' => self::getNumberOfServers() > 1,
+            'authldap'             => $authldap
+        ]);
+    }
+
+    /**
+     * Get number of active servers
      *
      * @return integer
      */
