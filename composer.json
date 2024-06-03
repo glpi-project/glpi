@@ -52,7 +52,7 @@
         "mexitek/phpcolors": "^1.0",
         "monolog/monolog": "^3.6",
         "paragonie/sodium_compat": "^2.0",
-        "phpoffice/phpspreadsheet": "^2.0",
+        "phpoffice/phpspreadsheet": "^2.1",
         "psr/cache": "^3.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
