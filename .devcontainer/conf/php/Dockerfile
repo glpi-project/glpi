@@ -6,10 +6,10 @@ RUN apk update && \
     zsh sudo vim htop && \
     # Install Python, pip and Python modules required by "plugin-release" script.
     apk add python3-dev py3-pip && \
-    apk add libffi-dev libxml2-dev libxslt-dev && pip install lxml && \
-    apk add git && pip install gitpython && \
-    pip install PyGithub && \
-    pip install termcolor && \
+    apk add libffi-dev libxml2-dev libxslt-dev && pip install --break-system-packages lxml && \
+    apk add git && pip install --break-system-packages gitpython && \
+    pip install --break-system-packages PyGithub && \
+    pip install --break-system-packages termcolor && \
     # Install PHP extensions dependencies
     apk add --virtual .build-deps openldap-dev linux-headers $PHPIZE_DEPS && \
     # Install PHP extensions
@@ -40,6 +40,8 @@ RUN apk update && \
     # Clean cache and dependencies
     apk del -f .build-deps && \
     rm -rf /var/cache/apk/*
+
+RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # Add transifex client
 RUN cd /usr/local/bin/ && curl --silent --location https://raw.githubusercontent.com/transifex/cli/master/install.sh | sh
