@@ -1,0 +1,116 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-4',
+        input_class: 'col-xxl-8'
+    } %}
+    {% if item.isNewItem() %}
+        {% set preconfig_field %}
+            {% set form_url = 'AuthLDAP'|itemtype_form_path ~ '?preconfig=' %}
+            <a href="{{ form_url ~ 'AD' }}">{{ __('Active Directory') }}</a>
+            /
+            <a href="{{ form_url ~ 'OpenLDAP' }}">{{ __('OpenLDAP') }}</a>
+            /
+            <a href="{{ form_url ~ 'default' }}">{{ __('Default values') }}</a>
+        {% endset %}
+        {{ fields.htmlField('', preconfig_field, __('Preconfiguration'), field_options) }}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+    {{ fields.nullField() }}
+
+    {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server'), field_options) }}
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
+    {{ fields.textField('host', item.fields['host'], __('Server'), field_options) }}
+    {{ fields.numberField('port', item.fields['port'], __('Port (default=389)'), field_options) }}
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
+    {{ fields.nullField() }}
+
+    {{ fields.textareaField('condition', item.fields['condition'], __('Connection filter'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    }) }}
+    {{ fields.textField('basedn', item.fields['basedn'], __('BaseDN'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    }) }}
+
+    {{ fields.dropdownYesNo('use_bind', item.fields['use_bind'], __('Use bind'), {
+        helper: __("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used.")|e('html')
+    }|merge(field_options)) }}
+    {{ fields.nullField() }}
+    <script>
+        $(() => {
+            $('select[name="use_bind"]').on('change', (e) => {
+                const bind_fields = $('.bind_field');
+                if ($(e.target).val() === '1') {
+                    bind_fields.removeClass('d-none');
+                } else {
+                    bind_fields.addClass('d-none');
+                }
+            });
+        });
+    </script>
+
+    {{ fields.textField('rootdn', item.fields['rootdn'], __('RootDN (for non anonymous binds)'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+        add_field_class: 'bind_field' ~ (item.fields['use_bind'] == '1' ? '' : ' d-none'),
+    }) }}
+    {{ fields.passwordField('rootdn_passwd', item.fields['rootdn_passwd'], __('Password (for non-anonymous binds)'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+        add_field_class: 'bind_field' ~ (item.fields['use_bind'] == '1' ? '' : ' d-none'),
+        clearable: true
+    }) }}
+
+    {{ fields.textField('login_field', item.fields['login_field'], __('Login field'), field_options) }}
+    {{ fields.textField('sync_field', item.fields['sync_field'], __('Synchronization field'), {
+        helper: __('Synchronization field cannot be changed once in use.')|e('html'),
+        disabled: item.isSyncFieldEnabled() and item.isSyncFieldUsed()
+    }|merge(field_options)) }}
+
+    {% for f in hidden_fields %}
+        <input type="hidden" name="{{ f }}" value="{{ item.fields[f] }}">
+    {% endfor %}
+{% endblock %}

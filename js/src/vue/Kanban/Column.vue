@@ -149,28 +149,7 @@
             closeItemForms();
             showAddItemForm(itemtype, is_bulk);
         }).always(() => {
-            $.ajax({
-                method: 'GET',
-                url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
-                data: {
-                    'get_raw': true
-                }
-            }).done((messages) => {
-                $.each(messages, (level, level_messages) => {
-                    $.each(level_messages, (index, message) => {
-                        switch (parseInt(level)) {
-                            case 1:
-                                glpi_toast_error(message);
-                                break;
-                            case 2:
-                                glpi_toast_warning(message);
-                                break;
-                            default:
-                                glpi_toast_info(message);
-                        }
-                    });
-                });
-            });
+            displaySessionMessages();
         });
     }
 

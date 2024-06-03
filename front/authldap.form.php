@@ -75,47 +75,6 @@ if (isset($_POST["update"])) {
     $config_ldap->delete($_POST, 1);
     $_SESSION['glpi_authconfig'] = 1;
     $config_ldap->redirectToList();
-} else if (isset($_POST["test_ldap"])) {
-    $config_ldap->getFromDB($_POST["id"]);
-
-    if (AuthLDAP::testLDAPConnection($_POST["id"])) {
-                                       //TRANS: %s is the description of the test
-        $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(
-            __('Test successful: %s'),
-            //TRANS: %s is the name of the LDAP main server
-            sprintf(__('Main server %s'), $config_ldap->fields["name"])
-        );
-    } else {
-                                       //TRANS: %s is the description of the test
-        $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(
-            __('Test failed: %s'),
-            //TRANS: %s is the name of the LDAP main server
-            sprintf(__('Main server %s'), $config_ldap->fields["name"])
-        );
-        GLPINetwork::addErrorMessageAfterRedirect();
-    }
-    Html::back();
-} else if (isset($_POST["test_ldap_replicate"])) {
-    $replicate = new AuthLdapReplicate();
-    $replicate->getFromDB($_POST["ldap_replicate_id"]);
-
-    if (AuthLDAP::testLDAPConnection($_POST["id"], $_POST["ldap_replicate_id"])) {
-                                       //TRANS: %s is the description of the test
-        $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(
-            __('Test successful: %s'),
-            //TRANS: %s is the name of the LDAP replica server
-            sprintf(__('Replicate %s'), $replicate->fields["name"])
-        );
-    } else {
-                                        //TRANS: %s is the description of the test
-        $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(
-            __('Test failed: %s'),
-            //TRANS: %s is the name of the LDAP replica server
-            sprintf(__('Replicate %s'), $replicate->fields["name"])
-        );
-        GLPINetwork::addErrorMessageAfterRedirect();
-    }
-    Html::back();
 } else if (isset($_POST["add_replicate"])) {
     $replicate = new AuthLdapReplicate();
     unset($_POST["next"]);

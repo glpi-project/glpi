@@ -65,6 +65,7 @@ The present file will list all changes made to the project; according to the
 - The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
 - List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 - Running `front/cron.php` or `bin/console` will attempt to check and block execution if running as root.
+- Testing LDAP replicates now shows results as toast notifications rather than inside the replicate tab after a page reload.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -87,6 +88,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
+- `fetchSessionMessages()` global JS function to display new session messages as toast notifications without requiring a page reload.
 
 #### Changes
 - Many methods have their signature changed to specify both their return type and the types of their parameters.
@@ -394,6 +396,7 @@ The present file will list all changes made to the project; according to the
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
 - `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
+- `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
 
 
 ## [10.0.16] unreleased
