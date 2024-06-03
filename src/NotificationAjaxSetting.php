@@ -65,7 +65,7 @@ class NotificationAjaxSetting extends NotificationSetting
             $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
 
             TemplateRenderer::getInstance()->display('pages/setup/notification/ajax_setting.html.twig', [
-                'stale_crontask_link' => $crontask->getLink(),
+                'stale_crontask_name' => $crontask->getName(),
                 'item' => $this,
                 'params' => [
                     'candel' => false,

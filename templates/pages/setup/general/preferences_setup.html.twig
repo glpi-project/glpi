@@ -356,10 +356,8 @@
 
    {{ fields.smallTitle(_n('Notification', 'Notifications', get_plural_number()), 'ti ti-bell') }}
    {% set enable_notif_helper %}
-      <ul>
-         <li>{{ __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it.') }}</li>
-         <li>{{ __('Disable all notifications on all other objects, without ability to derogate to it.') }}</li>
-      </ul>
+      • {{ __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it.') }}
+      • {{ __('Disable all notifications on all other objects, without ability to derogate to it.') }}
    {% endset %}
    {{ fields.dropdownYesNo('is_notif_enable_default', config['is_notif_enable_default'], __('Enable notifications'), field_options|merge({
       helper: enable_notif_helper

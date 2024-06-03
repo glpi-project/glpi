@@ -58,7 +58,7 @@
     }) }}
 
     {{ fields.dropdownNumberField('notifications_ajax_expiration_delay', config['notifications_ajax_expiration_delay'], __('Validity period of notifications (in days)'), {
-        helper: __('Notifications older than the selected value will not be displayed. Expired notifications will be deleted by the %s crontask.')|e|format(stale_crontask_link)|raw,
+        helper: __('Notifications older than the selected value will not be displayed. Expired notifications will be deleted by the %s crontask.')|format(stale_crontask_name),
         toadd: {
             0: __('Unlimited')
         }

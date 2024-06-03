@@ -152,6 +152,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 - Namespaced plugins files must be placed in a subdirectory of the plugin `src` directory that corresponds to the second part of the plugin namespace (e.g. `src/Myplugin/` for a plugin called `myplugin`).
+- The `helper` property of form fields will not support anymore the presence of HTML code.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
