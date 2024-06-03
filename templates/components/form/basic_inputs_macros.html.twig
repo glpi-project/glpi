@@ -433,12 +433,15 @@
 
     {% set helper = '' %}
     {% if options.helper %}
+        {# `|escape` must be called before call to `|nl2br` to ensure that special chars in the text will escaped twice. #}
+        {# Indeed, otherwise, due to the usage of `data-bs-html="true"`, any code snippet would be interpreted. #}
+        {% set helper_safe_text = options.helper|escape|nl2br %}
         {% set helper %}
         <span class="form-help"
               data-bs-toggle="popover"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ options.helper|raw|nl2br|escape }}">
+              data-bs-content="{{ helper_safe_text }}">
             ?
         </span>
         {% endset %}

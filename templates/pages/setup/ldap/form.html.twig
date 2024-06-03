@@ -74,7 +74,7 @@
     }) }}
 
     {{ fields.dropdownYesNo('use_bind', item.fields['use_bind'], __('Use bind'), {
-        helper: __("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used.")|e('html')
+        helper: __("Indicates whether a simple bind operation should be used during connection to LDAP server. Disabling this behaviour can be required when LDAPS bind is used.")
     }|merge(field_options)) }}
     {{ fields.nullField() }}
     <script>
@@ -106,7 +106,7 @@
 
     {{ fields.textField('login_field', item.fields['login_field'], __('Login field'), field_options) }}
     {{ fields.textField('sync_field', item.fields['sync_field'], __('Synchronization field'), {
-        helper: __('Synchronization field cannot be changed once in use.')|e('html'),
+        helper: __('Synchronization field cannot be changed once in use.'),
         disabled: item.isSyncFieldEnabled() and item.isSyncFieldUsed()
     }|merge(field_options)) }}
 

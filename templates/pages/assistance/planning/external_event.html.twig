@@ -129,7 +129,7 @@
     {{ fields.dropdownField('User', 'users_id_guests[]', item.fields['users_id_guests'], __('Guests'), {
         right: 'all',
         multiple: true,
-        helper: __("Each guest will have a read-only copy of this event")|e
+        helper: __("Each guest will have a read-only copy of this event")
     }|merge(field_options)) }}
     {{ _self.null_field() }}
 
