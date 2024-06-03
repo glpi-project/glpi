@@ -2518,7 +2518,8 @@ abstract class API
                 }
 
                 if (
-                    is_integer($value) && $value >= 0
+                    is_integer($value)
+                    && ($value > 0 || ($key === 'entities_id' && $value >= 0))
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
                     $itemtype = getItemTypeForTable($tablename);
