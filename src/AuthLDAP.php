@@ -1672,6 +1672,7 @@ TWIG, $twig_params);
         $config_ldap   = new AuthLDAP();
         $config_ldap->getFromDB($values['authldaps_id']);
 
+        echo "<div class='card p-3 mt-3'>";
         self::displaySizeLimitWarning($limitexceeded);
 
         // delete end
@@ -1691,7 +1692,9 @@ TWIG, $twig_params);
 
         $entries = [];
         foreach ($ldap_users as $userinfos) {
-            $entry = [];
+            $entry = [
+                'id' => $userinfos['uid']
+            ];
             if ($config_ldap->isSyncFieldEnabled()) {
                 $entry['sync_field'] = $userinfos['uid'];
             }
@@ -1740,6 +1743,7 @@ TWIG, $twig_params);
                 'specific_actions' => [$form_action => $textbutton]
             ]
         ]);
+        echo "</div>";
     }
 
     /**
