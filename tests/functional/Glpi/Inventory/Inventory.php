@@ -8025,15 +8025,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check created networkequipment
         $neteq = new \NetworkEquipment();
         $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
-        /*$this->string($neteq->fields['comment'])->isIdenticalTo('A comment');*/
-        /*$this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);*/
-        /*$this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);*/
 
         $locations = $DB->request(['FROM' => 'glpi_locations', 'ORDER' => 'id DESC']);
         $this->integer(count($locations))->isIdenticalTo($count_locations + 2);
 
         $new_location = $locations->current();
-        $this->string($new_location['name'])->isIdenticalTo('France &#62; Paris');
+        $this->string($new_location['name'])->isIdenticalTo('Paris');
         $this->integer($new_location['locations_id'])->isGreaterThan(0);
 
         $locations->next();
