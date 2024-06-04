@@ -160,6 +160,11 @@ class Kernel extends BaseKernel
         }
 
         $proxy->proxify();
+
+        if (str_contains(implode(";", headers_list()), ';Content-type:')) {
+            // "proxify()" sends headers for files, and if it does, we must exit() to avoid running Symfony's router
+            exit;
+        }
     }
 
     /**
