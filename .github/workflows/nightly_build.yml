@@ -26,7 +26,7 @@ jobs:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"
         options: >-
-          --volume /glpi:/var/glpi
+          --volume /glpi:/var/www/glpi
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v4"

@@ -2520,13 +2520,13 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
                 if (
                     !empty($value)
-                    || $key == 'entities_id' && !is_array($value) && $value >= 0
+                    || $key == 'entities_id' && is_integer($value) && $value >= 0
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
                     $itemtype = getItemTypeForTable($tablename);
 
                    // get hateoas
-                    if ($params['get_hateoas'] && is_integer($value)) {
+                    if ($params['get_hateoas']) {
                         $fields['links'][] = ['rel'  => $itemtype,
                             'href' => self::$api_url . "/$itemtype/" . $value
                         ];

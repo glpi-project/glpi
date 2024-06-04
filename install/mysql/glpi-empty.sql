@@ -6230,6 +6230,7 @@ CREATE TABLE `glpi_queuednotifications` (
   KEY `sent_time` (`sent_time`),
   KEY `mode` (`mode`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`),
+  KEY `recipient` (`recipient`(255)),
   KEY `item_trigger` (`itemtype_trigger`,`items_id_trigger`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

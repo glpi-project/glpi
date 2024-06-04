@@ -629,6 +629,9 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultWhereCriteria(string $itemtype): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $criteria = [];
 
         switch ($itemtype) {
@@ -947,6 +950,7 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 }
 
+
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $criteria = [
                     'glpi_itilfollowups.is_private' => $allowed_is_private,
@@ -966,6 +970,22 @@ final class SQLProvider implements SearchProviderInterface
                         )),
                     ]
                 ];
+
+                // Entity restrictions
+                $entity_restrictions = [];
+                foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
+                    $entity_restrictions[] = getEntitiesRestrictRequest(
+                        '',
+                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]),
+                        'entities_id',
+                        ''
+                    );
+                }
+                if (!empty($entity_restrictions)) {
+                    $criteria[] = ['OR' => $entity_restrictions];
+                }
 
                 break;
 
@@ -1906,6 +1926,9 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $out = [];
         switch ($itemtype) {
             // No link
@@ -2197,6 +2220,23 @@ final class SQLProvider implements SearchProviderInterface
                 $out = ['LEFT JOIN' => $leftjoin];
                 foreach ($leftjoin as $table => $criteria) {
                     $already_link_tables[] = $table;
+                }
+                break;
+
+            case ITILFollowup::class:
+                foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $itil_itemtype::getTable(),
+                        'items_id',
+                        false,
+                        '',
+                        [
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]
+                    ));
                 }
                 break;
 

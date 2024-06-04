@@ -5186,6 +5186,7 @@ JAVASCRIPT;
                 $iterator_params = [
                     'FROM'   => $itemtable,
                     'WHERE'  => [
+                        'entities_id' => $this->getEntities(),
                         'OR' => [
                             $field_user => $ID
                         ] + $group_where
