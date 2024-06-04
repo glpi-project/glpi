@@ -36,7 +36,7 @@
 use Glpi\Http\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('dev', true);
 

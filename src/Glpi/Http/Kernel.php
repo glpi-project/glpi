@@ -55,12 +55,12 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        return $this->getProjectDir().'/files/_cache/symfony';
+        return $this->getProjectDir() . '/files/_cache/symfony';
     }
 
     public function getLogDir(): string
     {
-        return $this->getProjectDir().'/files/_log/';
+        return $this->getProjectDir() . '/files/_log/';
     }
 
     public function registerBundles(): iterable
