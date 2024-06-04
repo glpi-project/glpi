@@ -4005,7 +4005,17 @@ JAVASCRIPT;
                         'glpi_tickets.status'   => self::CLOSED,
                         [
                             'OR'                   => [
-                                'glpi_entities.inquest_config' => Entity::CONFIG_PARENT, // We need to resolve the inquest_duration in PHP
+                                [
+                                    'glpi_tickets.entities_id' => ['<>', 0], // Root entity never inherits
+                                    'glpi_entities.inquest_config' => Entity::CONFIG_PARENT, // We need to resolve the inquest_duration in PHP
+                                    // We can ignore any tickets closed more than Entity::MAX_INQUEST_DURATION_DAYS days ago as no survey is valid after that
+                                    new QueryExpression(
+                                        QueryFunction::dateDiff(
+                                            expression1: 'glpi_tickets.closedate',
+                                            expression2: QueryFunction::curDate()
+                                        ) . ' <= ' . Entity::MAX_INQUEST_DURATION_DAYS
+                                    )
+                                ],
                                 'glpi_entities.inquest_duration' => 0,
                                 new QueryExpression(
                                     QueryFunction::dateDiff(
