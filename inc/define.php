@@ -36,6 +36,20 @@
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\SocketModel;
 
+/**
+ * @var array $CFG_GLPI
+ * @var int $DEFAULT_PLURAL_NUMBER
+ * @var array $PLUGIN_HOOKS
+ * @var array $CFG_GLPI_PLUGINS
+ * @var array $LANG
+ */
+global $CFG_GLPI,
+    $DEFAULT_PLURAL_NUMBER,
+    $PLUGIN_HOOKS,
+    $CFG_GLPI_PLUGINS,
+    $LANG
+;
+
 // Current version of GLPI
 define('GLPI_VERSION', '11.0.0-dev');
 

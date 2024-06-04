@@ -45,6 +45,12 @@ if (
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 
+/**
+ * @var array $CFG_GLPI
+ * @var array $PLUGIN_HOOKS
+ */
+global $CFG_GLPI, $PLUGIN_HOOKS;
+
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
 include(GLPI_ROOT . "/inc/based_config.php");
@@ -83,8 +89,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
     die();
 } else {
-    /** @var array $CFG_GLPI */
-    global $CFG_GLPI;
     include(GLPI_ROOT . "/inc/includes.php");
 
     //Try to detect GLPI agent calls
