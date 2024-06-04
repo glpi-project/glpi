@@ -7409,10 +7409,11 @@ JAVASCRIPT;
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($data[$ID][$k]['name']) {
+                             $user    = TicketValidation::getApprover($data[$ID][$k]['users_id_validate']);
                              $status  = TicketValidation::getStatus($data[$ID][$k]['name']);
                              $bgcolor = TicketValidation::getStatusColor($data[$ID][$k]['name']);
                              $out    .= (empty($out) ? '' : self::LBBR) .
-                                 "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
+                                 "<div class='container'> <span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark col col-5'>" . $status . '</span> < ' . $user . '</div>';
                         }
                     }
                     return $out;
@@ -7421,10 +7422,11 @@ JAVASCRIPT;
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($data[$ID][$k]['name']) {
+                            $user     = ChangeValidation::getApprover($data[$ID][$k]['users_id_validate']);
                              $status  = ChangeValidation::getStatus($data[$ID][$k]['name']);
                              $bgcolor = ChangeValidation::getStatusColor($data[$ID][$k]['name']);
                              $out    .= (empty($out) ? '' : self::LBBR) .
-                                 "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
+                             "<div class='container'> <span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark col col-5'>" . $status . '</span> < ' . $user . '</div>';
                         }
                     }
                     return $out;

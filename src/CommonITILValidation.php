@@ -592,6 +592,23 @@ abstract class CommonITILValidation extends CommonDBChild
         return Dropdown::showFromArray($name, $tab, $p);
     }
 
+    /**
+     * Get Ticket validation approver link
+     *
+     * @param integer   $users_id
+     **/
+    public static function getApprover($users_id)
+    {
+        if ($users_id === null) {
+            return null;
+        }
+
+        $users = User::getById($users_id);
+        $users_link = $users->getLink();
+        $label = $users_link;
+
+        return $label;
+    }
 
     /**
      * Get Ticket validation status Name
@@ -599,11 +616,17 @@ abstract class CommonITILValidation extends CommonDBChild
      * @param integer   $value
      * @param bool      $decorated
      **/
-    public static function getStatus($value, bool $decorated = false)
+    public static function getStatus($value, bool $decorated = false, $users_id = null)
     {
         $statuses = self::getAllStatusArray(true, true);
 
         $label = $statuses[$value] ?? $value;
+
+        if ($users_id) {
+            $users = User::getById($users_id);
+            $users_link = $users->getLink();
+            $label = '&nbsp' . $users_link . ' - ' . $label;
+        }
 
         if ($decorated) {
             $color   = self::getStatusColor($value);
@@ -1229,6 +1252,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'searchtype'         => 'equals',
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'additionalfields'   => ['users_id_validate'],
             'joinparams'         => [
                 'jointype'           => 'child'
             ]
