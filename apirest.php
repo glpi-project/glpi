@@ -39,6 +39,12 @@
 
 use Glpi\Cache\CacheManager;
 
+/**
+ * @var GLPI $GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
+global $GLPI, $GLPI_CACHE;
+
 define('GLPI_ROOT', __DIR__);
 ini_set('session.use_cookies', 0);
 

@@ -40,8 +40,21 @@ use Glpi\Toolbox\URL;
 /**
  * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var bool $AJAX_INCLUDE
+ * @var bool $FOOTER_LOADED
+ * @var bool $HEADER_LOADED
+ * @var bool $PLUGINS_EXCLUDED
+ * @var bool $PLUGINS_INCLUDED
+ * @var string $SECURITY_STRATEGY
  */
-global $CFG_GLPI, $GLPI_CACHE;
+global $CFG_GLPI,
+    $GLPI_CACHE,
+    $AJAX_INCLUDE,
+    $FOOTER_LOADED, $HEADER_LOADED,
+    $PLUGINS_EXCLUDED, $PLUGINS_INCLUDED,
+    $SECURITY_STRATEGY,
+    $CURRENTCSRFTOKEN
+;
 
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
@@ -74,7 +87,7 @@ if (
     && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
 ) {
     // Start the debug profile
-    $profile = \Glpi\Debug\Profile::getCurrent();
+    \Glpi\Debug\Profile::getCurrent();
 }
 
 // Mark if Header is loaded or not :

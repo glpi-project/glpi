@@ -46,8 +46,17 @@ use Glpi\Toolbox\VersionParser;
  * @var array $CFG_GLPI
  * @var \GLPI $GLPI;
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var bool $skip_db_check
+ * @var bool $dont_check_maintenance_mode
+ * @var bool $USEDBREPLICATE
+ * @var bool $DBCONNECTION_REQUIRED
  */
-global $CFG_GLPI, $GLPI, $GLPI_CACHE;
+global $CFG_GLPI,
+    $GLPI,
+    $GLPI_CACHE,
+    $skip_db_check, $dont_check_maintenance_mode,
+    $USEDBREPLICATE, $DBCONNECTION_REQUIRED
+;
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
 
