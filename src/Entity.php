@@ -84,6 +84,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public const ANONYMIZE_USE_NICKNAME_USER   = 4;
     /** @var int Replace the group's name with a generic name */
     public const ANONYMIZE_USE_GENERIC_GROUP   = 5;
+    /** @var int Maximum number of days that can be configured for survey validity */
+    public const MAX_INQUEST_DURATION_DAYS = 180;
 
     // Const values used for the scene configuration dropdown
     public const SCENE_INHERIT = "inherit";
