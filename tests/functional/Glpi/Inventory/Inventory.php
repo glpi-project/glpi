@@ -7998,7 +7998,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         <CPU>4</CPU>
         <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
         <ID>0</ID>
-        <LOCATION>France > Paris</LOCATION>
+        <LOCATION>France &gt; Paris</LOCATION>
         <MAC>8c:60:4f:8d:ae:fc</MAC>
         <MANUFACTURER>Cisco</MANUFACTURER>
         <MODEL>UCS 6248UP 48-Port</MODEL>
