@@ -112,11 +112,11 @@ final class TOTPManager
         static $tfa = null;
         if ($tfa === null) {
             $tfa = new TwoFactorAuth(
+                new BaconQrCodeProvider(4, '#ffffff', '#000000', 'svg'),
                 self::$brand_label,
                 self::CODE_LENGTH_DIGITS,
                 self::CODE_VALIDITY_SECONDS,
-                Algorithm::from($algorithm),
-                new BaconQrCodeProvider(4, '#ffffff', '#000000', 'svg')
+                Algorithm::from($algorithm)
             );
         }
         return $tfa;

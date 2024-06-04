@@ -59,7 +59,7 @@
         "ralouphie/getallheaders": "^3.0",
         "ramsey/uuid": "^4.7",
         "rlanvin/php-rrule": "^2.4",
-        "robthree/twofactorauth": "^2.1",
+        "robthree/twofactorauth": "^3.0",
         "sabre/dav": "^4.6",
         "sabre/http": "^5.1",
         "sabre/uri": "^2.3",

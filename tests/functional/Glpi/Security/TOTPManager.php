@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Security;
 
 use RobThree\Auth\Algorithm;
+use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 
 class TOTPManager extends \DbTestCase
@@ -126,6 +127,7 @@ class TOTPManager extends \DbTestCase
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
 
         $tfa_internal = new TwoFactorAuth(
+            new BaconQrCodeProvider(),
             '',
             $tfa::CODE_LENGTH_DIGITS,
             $tfa::CODE_VALIDITY_SECONDS,
