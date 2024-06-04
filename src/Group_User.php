@@ -205,7 +205,14 @@ class Group_User extends CommonDBRelation
                 'condition' => [
                     'is_usergroup' => 1,
                 ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
-            ] + ['NOT' => self::getListForItemParams($user)];
+            ];
+
+            if (count($used) > 0) {
+                $params['condition'][] = [
+                    'NOT' => [Group::getTable() . '.id' => $used]
+                ];
+            }
+
             Group::dropdown($params);
             echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";
             Dropdown::showYesNo('is_manager');
@@ -605,7 +612,9 @@ class Group_User extends CommonDBRelation
                 echo "\n<tr class='tab_bg_" . ($user->isDeleted() ? '1_2' : '1') . "'>";
                 if ($canedit) {
                     echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    if ($user->canUpdateItem()) {
+                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    }
                     echo "</td>";
                 }
                 echo "<td>" . $user->getLink();

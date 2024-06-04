@@ -57,10 +57,6 @@
 
         // remove margin-left is small screen
         @include media-breakpoint-down(sm) {
-            .card-title {
-                padding-left: 0 !important;
-            }
-
             .badge {
                 margin-left: 0 !important;
             }

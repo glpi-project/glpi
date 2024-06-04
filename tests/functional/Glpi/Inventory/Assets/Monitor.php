@@ -1133,4 +1133,49 @@ class Monitor extends AbstractInventoryAsset
         //we have 2 dynamic link
         $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1])))->isIdenticalTo(2);
     }
+
+    public function testInventoryRemoved()
+    {
+
+        global $DB;
+
+        $nb_monitors = countElementsInTable(\Monitor::getTable());
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
+
+        $inventory = $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
+            ->string['version']->isIdenticalTo('2.3.19')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check created monitor
+        ++$nb_monitors;
+        $this->integer(countElementsInTable(\Monitor::getTable()))->isIdenticalTo($nb_monitors);
+        $this->integer(count($DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]])))->isIdenticalTo(1);
+
+        //remove monitor
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
+        unset($json->content->monitors);
+        $this->doInventory($json);
+
+        //monitor is still present in database
+        $this->integer(countElementsInTable(\Monitor::getTable()))->isIdenticalTo($nb_monitors);
+        //link to monitor has been removed
+        $this->integer(count($DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]])))->isIdenticalTo(0);
+    }
 }

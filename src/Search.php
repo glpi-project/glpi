@@ -4573,8 +4573,24 @@ JAVASCRIPT;
                     break;
                 }
 
+                // Build base condition using entity restrictions
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                $entity_restrictions = [];
+                foreach ($itil_types as $itil_itemtype) {
+                    $entity_restrictions[] = getEntitiesRestrictRequest(
+                        '',
+                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]),
+                        'entities_id',
+                        ''
+                    );
+                }
+                $condition = "(" . implode(" OR ", $entity_restrictions) . ")";
+
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $condition = "(`glpi_itilfollowups`.`is_private` $in ";
+                $condition .= " AND (`glpi_itilfollowups`.`is_private` $in ";
 
                // Now filter on parent item visiblity
                 $condition .= "AND (";
@@ -5835,6 +5851,25 @@ JAVASCRIPT;
                               );
                         }
                     }
+                }
+                break;
+
+            case ITILFollowup::class:
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                foreach ($itil_types as $itil_itemtype) {
+                    $out .= self::addLeftJoin(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $itil_itemtype::getTable(),
+                        'items_id',
+                        false,
+                        '',
+                        [
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]
+                    );
                 }
                 break;
 

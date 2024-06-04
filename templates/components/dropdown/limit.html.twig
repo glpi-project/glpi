@@ -40,7 +40,8 @@
 {% endif %}
 
 {% if not no_onchange %}
-   {% set href = "location.href='" ~ href ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+   {% set href_separator = '?' in href ? '&' : '?' %}
+   {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
    {% if is_tab is defined and is_tab == true %}
       {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
    {% endif %}

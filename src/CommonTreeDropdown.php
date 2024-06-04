@@ -937,13 +937,13 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function import(array $input)
     {
-
-        if (isset($input['name'])) {
-            return parent::import($input);
+        if (empty($input['name']) && empty($input['completename'])) {
+            return -1;
         }
 
-        if (!isset($input['completename']) || empty($input['completename'])) {
-            return -1;
+        if (empty($input['completename'])) {
+            $input['completename'] = $input['name'];
+            unset($input['name']);
         }
 
        // Import a full tree from completename

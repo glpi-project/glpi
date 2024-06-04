@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <DESCRIPTION>HPE</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>1</INDEX>
+          <MANUFACTURER>HPE</MANUFACTURER>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>HPE 5130 48G PoE+ 4SFP+ EI JG937A Software Version 7.1.070</DESCRIPTION>
+          <FIRMWARE>147</FIRMWARE>
+          <FRU>1</FRU>
+          <INDEX>2</INDEX>
+          <MANUFACTURER>HPE</MANUFACTURER>
+          <MODEL>JG937A</MODEL>
+          <NAME>5130EI</NAME>
+          <REVISION>Ver.B</REVISION>
+          <SERIAL>CX15GXXX99</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>7.1.070 Release 3208P16</VERSION>
+        </COMPONENT>        
+		       <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>HPE 5130 48G PoE+ 4SFP+ EI JG937A Software Version 7.1.070</DESCRIPTION>
+          <FIRMWARE>147</FIRMWARE>
+          <FRU>1</FRU>
+          <INDEX>3</INDEX>
+          <MANUFACTURER>HPE</MANUFACTURER>
+          <MODEL>JG937A</MODEL>
+          <NAME>5130EI</NAME>
+          <REVISION>Ver.B</REVISION>
+          <SERIAL>CN15CN123456</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>7.1.070 Release 3208P16</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>CONTAINER LEVEL1</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>12</INDEX>
+          <NAME>Level 1 Container #1</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>12</CONTAINEDININDEX>
+          <DESCRIPTION>MODULE LEVEL1</DESCRIPTION>
+          <FIRMWARE>147</FIRMWARE>
+          <FRU>2</FRU>
+          <INDEX>192</INDEX>
+          <MANUFACTURER>HPE</MANUFACTURER>
+          <MODEL>JG937A</MODEL>
+          <NAME>Board</NAME>
+          <REVISION>Ver.B</REVISION>
+          <SERIAL>CN123456</SERIAL>
+          <TYPE>module</TYPE>
+          <VERSION>Release 3208P16</VERSION>
+        </COMPONENT>       
+        <COMPONENT>
+          <CONTAINEDININDEX>383</CONTAINEDININDEX>
+          <DESCRIPTION>Ten-GigabitEthernet2/0/52</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>495</INDEX>
+          <MANUFACTURER>HPE</MANUFACTURER>
+          <NAME>Ten-GigabitEthernet2/0/52</NAME>
+          <SERIAL>CN0CN123456</SERIAL>
+          <TYPE>port</TYPE>
+        </COMPONENT>		   
+      </COMPONENTS>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <NAME>5130-48G-PoE+-4SFP+(370W) EI</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>7.1.070 Release 3208P16</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <CONTACT>admin@xy.z</CONTACT>
+        <FIRMWARE>7.1.070 Release 3208P16</FIRMWARE>
+        <ID>797</ID>
+        <IPS>
+          <IP>10.2.7.32</IP>
+        </IPS>
+        <LOCATION>office</LOCATION>
+        <MAC>dc:68:00:00:00:ae</MAC>
+        <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+        <MODEL>5130-48G-PoE+-4SFP+(370W) EI</MODEL>
+        <NAME>SW00Test</NAME>
+        <SERIAL>CX15GXXX06</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>22 days, 00:08:54.24</UPTIME>
+      </INFO>
+      <PORTS>    
+        <PORT>
+          <IFALIAS>GigabitEthernet1/0/2 Interface</IFALIAS>
+          <IFDESCR>GigabitEthernet1/0/2</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>2</IFINTERNALSTATUS>
+          <IFLASTCHANGE>1 minute, 12.58</IFLASTCHANGE>
+          <IFMTU>12288</IFMTU>
+          <IFNAME>GigabitEthernet1/0/2</IFNAME>
+          <IFNUMBER>2</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>1</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>dc:00:0c:00:00:d8</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN 0001</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>6.1</MODULEVERSION>
+    <PROCESSNUMBER>442</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>it-2024-05-11-14-34-10</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>

@@ -9,7 +9,7 @@ services:
     volumes: 
       - type: "bind"
         source: "${APPLICATION_ROOT}"
-        target: "/var/glpi"
+        target: "/var/www/glpi"
       - type: "bind"
         source: "${APP_CONTAINER_HOME}"
         target: "/home/glpi"

@@ -138,6 +138,9 @@ class NetworkEquipment extends MainAsset
                 $stack->$model_field = $switch->model;
                 $stack->description = $stack->name . ' - ' . ($switch->name ?? $switch->description);
                 $stack->name = $stack->name . ' - ' . ($switch->name ?? $switch->description);
+                if (($switch->name ?? $switch->description) != $switch->stack_number ?? '') {
+                    $stack->name .= ' - ' . $switch->stack_number;
+                }
                 $stack->stack_number = $switch->stack_number ?? null;
                 $this->data[] = $stack;
             }
