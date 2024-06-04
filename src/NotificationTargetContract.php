@@ -77,7 +77,7 @@ class NotificationTargetContract extends NotificationTarget
                 $contract["duration"],
                 $contract["notice"]
             );
-            
+
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(
                     'glpi_contracttypes',
@@ -190,7 +190,7 @@ class NotificationTargetContract extends NotificationTarget
             'contract.entity'       => Entity::getTypeName(1),
             'contract.states'       => __('Status'),
             'contract.endtime'      => __('Contract expired since the'),                
-	        'contract.noticetime'   => __('Contract with notice since the'),
+            'contract.noticetime'   => __('Contract with notice since the'),
             'contract.time'         => sprintf(
                 __('%1$s / %2$s'),
                 __('Contract expired since the'),
