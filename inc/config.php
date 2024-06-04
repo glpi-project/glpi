@@ -46,10 +46,10 @@ use Glpi\Toolbox\VersionParser;
  * @var array $CFG_GLPI
  * @var \GLPI $GLPI;
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
- * @var bool $skip_db_check
- * @var bool $dont_check_maintenance_mode
- * @var bool $USEDBREPLICATE
- * @var bool $DBCONNECTION_REQUIRED
+ * @var bool|null $skip_db_check
+ * @var bool|null $dont_check_maintenance_mode
+ * @var bool|null $USEDBREPLICATE
+ * @var bool|null $DBCONNECTION_REQUIRED
  */
 global $CFG_GLPI,
     $GLPI,

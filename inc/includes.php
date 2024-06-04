@@ -40,12 +40,13 @@ use Glpi\Toolbox\URL;
 /**
  * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
- * @var bool $AJAX_INCLUDE
+ * @var bool|null $AJAX_INCLUDE
  * @var bool $FOOTER_LOADED
  * @var bool $HEADER_LOADED
- * @var bool $PLUGINS_EXCLUDED
- * @var bool $PLUGINS_INCLUDED
- * @var string $SECURITY_STRATEGY
+ * @var bool|null $PLUGINS_EXCLUDED
+ * @var bool|null $PLUGINS_INCLUDED
+ * @var string|null $SECURITY_STRATEGY
+ * @var string $CURRENTCSRFTOKEN
  */
 global $CFG_GLPI,
     $GLPI_CACHE,
