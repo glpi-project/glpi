@@ -16,7 +16,7 @@ jobs:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ github.event.inputs.php-version }}"
         options: >-
-          --volume /glpi:/var/glpi
+          --volume /glpi:/var/www/glpi
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v4"
