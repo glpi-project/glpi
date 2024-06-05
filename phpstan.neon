@@ -3,7 +3,7 @@ parameters:
         maximumNumberOfProcesses: 2
     level: 1
     bootstrapFiles:
-        - inc/based_config.php
+        - tests/phpstan_bootstrap.php
     paths:
         - ajax
         - front

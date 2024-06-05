@@ -32,23 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\DependencyInjection\PublicService;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Config\LegacyConfigProviderInterface;
+use Plugin;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
+final readonly class InitializePlugins implements LegacyConfigProviderInterface
+{
+    public function execute(): void
+    {
+        /**
+         * @var bool|null $PLUGINS_EXCLUDED
+         * @var bool|null $PLUGINS_INCLUDED
+         */
+        global $PLUGINS_EXCLUDED, $PLUGINS_INCLUDED;
 
-    $services = $container->services();
+        // Assets classes autoload
+        AssetDefinitionManager::getInstance()->registerAssetsAutoload();
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
+        /* On startup, register all plugins configured for use. */
+        if (!isset($PLUGINS_INCLUDED)) {
+            // PLugin already included
+            $PLUGINS_INCLUDED = 1;
+            $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
+            $plugin = new Plugin();
+            $plugin->init(true, $PLUGINS_EXCLUDED);
+        }
 
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+        // Assets classes bootstraping.
+        // Must be done after plugins initialization, to allow plugin to register new capacities.
+        AssetDefinitionManager::getInstance()->boostrapAssets();
+    }
+}

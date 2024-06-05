@@ -32,23 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config;
 
 use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
+final class LegacyConfigProviders implements PublicService
+{
+    /**
+     * @var LegacyConfigProviderInterface[]
+     */
+    private array $configProviders = [];
 
-    $services = $container->services();
+    public function __construct(
+        #[TaggedIterator(LegacyConfigProviderInterface::TAG_NAME)]
+        iterable $configProviders = [],
+    ) {
+        foreach ($configProviders as $provider) {
+            $this->addProvider($provider);
+        }
+    }
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
+    /**
+     * @return LegacyConfigProviderInterface[]
+     */
+    public function getProviders(): array
+    {
+        return $this->configProviders;
+    }
 
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+    private function addProvider(LegacyConfigProviderInterface $provider): void
+    {
+        $this->configProviders[] = $provider;
+    }
+}

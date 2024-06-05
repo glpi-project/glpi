@@ -41,6 +41,8 @@ use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
+use Glpi\Config\LegacyConfigProviders;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
@@ -48,8 +50,9 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 use Plugin;
 use Session;
-use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Bundle\FrameworkBundle\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -58,6 +61,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
 
@@ -105,10 +109,9 @@ class Application extends BaseApplication
      */
     private $output;
 
-    public function __construct()
+    public function __construct(KernelInterface $kernel)
     {
-
-        parent::__construct('GLPI CLI', GLPI_VERSION);
+        parent::__construct($kernel);
 
         $this->initApplication();
         $this->initCache();
@@ -120,7 +123,7 @@ class Application extends BaseApplication
 
        // Load core commands only to check if called command prevent or not usage of plugins
        // Plugin commands will be loaded later
-        $loader = new CommandLoader(false);
+        $loader = new CommandLoader(false, $kernel->getProjectDir());
         $this->setCommandLoader($loader);
 
         if ($this->usePlugins()) {
@@ -130,18 +133,37 @@ class Application extends BaseApplication
         }
     }
 
+    public function setCommandLoader(CommandLoaderInterface $commandLoader): void
+    {
+        $r = new \ReflectionProperty(\Symfony\Component\Console\Application::class, 'commandLoader');
+        $r->setAccessible(true);
+
+        $existingLoader = $r->getValue($this);
+        if (!$existingLoader) {
+            parent::setCommandLoader($commandLoader);
+            return;
+        }
+
+        if ($existingLoader instanceof CommandLoader) {
+            // TODO: reuse this in CommandLoader to load Symfony's base commands.
+            $existingLoader->setPrevious($commandLoader);
+        }
+    }
+
     protected function getDefaultInputDefinition(): InputDefinition
     {
         $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
 
-        $definition = new InputDefinition(
+        $this->prepareApplication();
+        $this->initConfigProviders();
+
+        return new InputDefinition(
             [
                 new InputArgument(
                     'command',
                     InputArgument::REQUIRED,
                     __('The command to execute')
                 ),
-
                 new InputOption(
                     '--help',
                     '-h',
@@ -211,11 +233,9 @@ class Application extends BaseApplication
                 )
             ]
         );
-
-        return $definition;
     }
 
-    protected function configureIO(InputInterface $input, OutputInterface $output)
+    protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
 
         /** @var array $CFG_GLPI */
@@ -244,7 +264,7 @@ class Application extends BaseApplication
      *
      * @return OutputInterface
      */
-    public function getOutput()
+    public function getOutput(): OutputInterface
     {
         return $this->output;
     }
@@ -260,7 +280,7 @@ class Application extends BaseApplication
         return $name;
     }
 
-    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
     {
 
         $begin_time = microtime(true);
@@ -322,7 +342,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    private function initApplication()
+    private function initApplication(): void
     {
         /** @var \GLPI $GLPI */
         global $GLPI;
@@ -340,14 +360,13 @@ class Application extends BaseApplication
      *
      * @throws RuntimeException
      */
-    private function initDb()
+    private function initDb(): void
     {
-
         if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
             return;
         }
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $DB = @new DB();
         $this->db = $DB;
@@ -372,7 +391,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    private function initSession()
+    private function initSession(): void
     {
 
         if (!Session::canWriteSessionFiles()) {
@@ -396,7 +415,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    private function initCache()
+    private function initCache(): void
     {
 
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
@@ -412,7 +431,7 @@ class Application extends BaseApplication
      *
      * @return void
      */
-    private function initConfig()
+    private function initConfig(): void
     {
 
         /** @var array $CFG_GLPI */
@@ -435,7 +454,7 @@ class Application extends BaseApplication
      *
      * @throws RuntimeException
      */
-    private function computeAndLoadOutputLang()
+    private function computeAndLoadOutputLang(): void
     {
 
        // 1. Check in command line arguments
@@ -472,7 +491,7 @@ class Application extends BaseApplication
      *
      * @return boolean
      */
-    private function isLanguageValid($language)
+    private function isLanguageValid($language): bool
     {
         return is_array($this->config)
          && array_key_exists('languages', $this->config)
@@ -484,7 +503,7 @@ class Application extends BaseApplication
      *
      * @return boolean
      */
-    private function usePlugins()
+    private function usePlugins(): bool
     {
         if (!($this->db instanceof DBmysql) || !$this->db->connected) {
             return false;
@@ -567,15 +586,37 @@ class Application extends BaseApplication
         return true;
     }
 
-    public function extractNamespace(string $name, ?int $limit = null): string
+    private function prepareApplication(): void
     {
-        $parts = explode(':', $name);
+        $options = \extractOptionsFromArgv();
 
-        if ($limit === 1 && count($parts) >= 2 && $parts[0] === 'plugins') {
-            // Force grouping plugin commands
-            $limit = 2;
+        // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
+        if (array_key_exists('config-dir', $options)) {
+            $config_dir = $options['config-dir'];
+
+            if (false === $config_dir || !@is_dir($config_dir)) {
+                die(
+                    sprintf(
+                        '--config-dir "%s" does not exists in "%s".' . "\n",
+                        $config_dir,
+                        getcwd()
+                    )
+                );
+            }
+
+            define('GLPI_CONFIG_DIR', realpath($config_dir));
         }
+    }
 
-        return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
+    private function initConfigProviders(): void
+    {
+        $this->getKernel()->boot();
+        /** @var LegacyConfigProviders $configProviders */
+        $configProviders = $this->getKernel()->getContainer()->get(LegacyConfigProviders::class);
+        foreach ($configProviders->getProviders() as $provider) {
+            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
+                $provider->execute();
+            }
+        }
     }
 }

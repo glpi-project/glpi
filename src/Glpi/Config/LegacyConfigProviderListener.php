@@ -32,23 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config;
 
-use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
+final readonly class LegacyConfigProviderListener implements EventSubscriberInterface
+{
+    public function __construct(
+        private LegacyConfigProviders $legacyConfigProviders,
+    ) {
+    }
 
-    $services = $container->services();
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            // Has to be executed before anything else!
+            KernelEvents::REQUEST => ['onKernelRequest', 10000],
+        ];
+    }
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
-
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        foreach ($this->legacyConfigProviders->getProviders() as $provider) {
+            if ($provider instanceof ConfigProviderWithRequestInterface) {
+                $provider->setRequest($event->getRequest());
+            }
+            $provider->execute();
+        }
+    }
+}

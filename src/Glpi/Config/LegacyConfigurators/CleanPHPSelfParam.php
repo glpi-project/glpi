@@ -32,23 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\DependencyInjection\PublicService;
+use Glpi\Config\ConfigProviderHasRequestTrait;
+use Glpi\Config\ConfigProviderWithRequestInterface;
+use Glpi\Config\LegacyConfigProviderInterface;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
+final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
+{
+    use ConfigProviderHasRequestTrait;
 
-    $services = $container->services();
+    public function execute(): void
+    {
+        // Security of PHP_SELF
+        $self = \Html::cleanParametersURL($this->getRequest()->server->get('PHP_SELF'));
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
-
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+        $_SERVER['PHP_SELF'] = $self;
+        $this->getRequest()->server->set('PHP_SELF', $self);
+    }
+}

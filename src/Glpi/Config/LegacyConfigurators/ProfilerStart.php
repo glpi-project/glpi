@@ -32,23 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\DependencyInjection\PublicService;
+use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
-
-    $services = $container->services();
-
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
-
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+final readonly class ProfilerStart implements LegacyConfigProviderInterface
+{
+    public function execute(): void
+    {
+        Profiler::getInstance()->start('php_request');
+    }
+}

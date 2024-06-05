@@ -32,23 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config;
 
-use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\HttpFoundation\Request;
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
+trait ConfigProviderHasRequestTrait
+{
+    private ?Request $request;
 
-    $services = $container->services();
+    public function setRequest(Request $request): void
+    {
+        if ($this->request) {
+            throw new \RuntimeException('Cannot set request twice in config.');
+        }
+        $this->request = $request;
+    }
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
-
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+    protected function getRequest(): Request
+    {
+        if (!$this->request) {
+            throw new \RuntimeException(sprintf(
+                'Request was not injected in class "%s". It is required by the interface "%s".',
+                __CLASS__,
+                ConfigProviderWithRequestInterface::class,
+            ));
+        }
+    }
+}

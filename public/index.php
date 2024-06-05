@@ -38,7 +38,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new Kernel('dev', true);
+$env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
+$kernel = new Kernel($env, $env === 'development');
 
 $request = Request::createFromGlobals();
 

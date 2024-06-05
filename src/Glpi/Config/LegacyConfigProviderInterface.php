@@ -32,23 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Config;
 
-use Glpi\DependencyInjection\PublicService;
+interface LegacyConfigProviderInterface
+{
+    public const TAG_NAME = 'glpi.legacy_config_provider';
 
-return static function (ContainerConfigurator $container): void {
-    $projectDir = dirname(__DIR__);
-
-    $services = $container->services();
-
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-        ->instanceof(PublicService::class)->public()
-    ;
-
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
-    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
-    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
-};
+    public function execute(): void;
+}

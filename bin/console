@@ -138,11 +138,15 @@ if (array_key_exists('env', $options)) {
 // Init GLPI
 define('GLPI_ROOT', dirname(__DIR__));
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
-@include_once(GLPI_CONFIG_DIR . '/config_db.php');
+//include_once(GLPI_ROOT . '/inc/based_config.php');
+//@include_once(GLPI_CONFIG_DIR . '/config_db.php');
 
 // Run console application
 use Glpi\Console\Application;
+use Glpi\Kernel\Kernel;
 
-$application = new Application();
+$env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
+$kernel = new Kernel($env, $env === 'development');
+
+$application = new Application($kernel);
 $application->run();
