@@ -999,8 +999,26 @@ class Config extends CommonDBTM
             [ 'name'    => 'symfony/console',
                 'check'   => 'Symfony\\Component\\Console\\Application'
             ],
+            [ 'name'    => 'symfony/config',
+                'check'   => 'Symfony\\Component\\Config\\Loader\\LoaderInterface'
+            ],
+            [ 'name'    => 'symfony/dependency-injection',
+                'check'   => 'Symfony\\Component\\DependencyInjection\\ContainerInterface'
+            ],
             [ 'name'    => 'symfony/filesystem',
                 'check'   => 'Symfony\\Component\\Filesystem\\Filesystem'
+            ],
+            [ 'name'    => 'symfony/framework-bundle',
+                'check'   => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle'
+            ],
+            [ 'name'    => 'symfony/http-foundation',
+                'check'   => 'Symfony\\Component\\HttpFoundation\\Request'
+            ],
+            [ 'name'    => 'symfony/http-kernel',
+                'check'   => 'Symfony\\Component\\HttpKernel\\KernelInterface'
+            ],
+            [ 'name'    => 'symfony/routing',
+                'check'   => 'Symfony\\Component\\Routing\\RouterInterface'
             ],
             [ 'name'    => 'scssphp/scssphp',
                 'check'   => 'ScssPhp\ScssPhp\Compiler'
