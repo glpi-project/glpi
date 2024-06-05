@@ -46,6 +46,10 @@
     "// composer autoloader",
     "Composer\\Autoload\\ClassLoader",
 
+    "// dev dependencies",
+    "Symfony\\Bundle\\TwigBundle\\TwigBundle",
+    "Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle",
+
     "SodiumException"
   ],
   "scan-files": [

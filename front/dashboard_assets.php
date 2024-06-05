@@ -38,8 +38,6 @@ use Glpi\Dashboard\Dashboard;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
 

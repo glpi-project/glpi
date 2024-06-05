@@ -35,21 +35,10 @@
 
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
-if (($_GET["action"] ?? null) == "get_dl_progress") {
-    if (!defined('GLPI_ROOT')) {
-        define('GLPI_ROOT', dirname(__DIR__));
-    }
-
-    include_once GLPI_ROOT . '/inc/based_config.php';
-    Session::setPath();
-    Session::start();
-
+if (($_GET["action"] ?? null) === "get_dl_progress") {
     echo $_SESSION['marketplace_dl_progress'][$_GET['key']] ?? 0;
     exit;
 }
-
-// get common marketplace action, load GLPI framework
-include("../inc/includes.php");
 
 Session::checkRight("config", UPDATE);
 

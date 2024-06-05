@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("config", UPDATE);
 $notificationajax = new NotificationAjaxSetting();
 

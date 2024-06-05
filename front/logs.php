@@ -35,8 +35,6 @@
 
 use Glpi\System\Log\LogViewer;
 
-include('../inc/includes.php');
-
 Session::checkRight("logs", READ);
 
 Html::header(

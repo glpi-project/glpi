@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $obj      = new Ticket();
 $item_obj = new Item_Ticket();
 include(GLPI_ROOT . '/front/commonitilobject_item.form.php');

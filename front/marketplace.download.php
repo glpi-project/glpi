@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include("../inc/includes.php");
-
 Session::checkRight("config", UPDATE);
 
 use Glpi\Marketplace\Controller as MarketplaceController;

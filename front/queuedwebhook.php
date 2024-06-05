@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("config", READ);
 
 Html::header(QueuedWebhook::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", Webhook::class);

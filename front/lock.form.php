@@ -42,8 +42,6 @@ global $CFG_GLPI;
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 if (isset($_POST['itemtype'])) {
     $itemtype    = $_POST['itemtype'];
     $source_item = new $itemtype();

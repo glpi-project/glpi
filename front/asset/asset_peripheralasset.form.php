@@ -40,8 +40,6 @@
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Event;
 
-include('../../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $relation = new Asset_PeripheralAsset();

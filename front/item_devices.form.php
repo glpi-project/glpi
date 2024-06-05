@@ -37,8 +37,6 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 if (isset($_POST["add"])) {

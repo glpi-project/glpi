@@ -38,9 +38,6 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
-
 Session::checkCentralAccess();
 
 Html::header(__('Global'), $_SERVER['PHP_SELF'], "assets", "allassets");

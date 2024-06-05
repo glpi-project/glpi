@@ -37,8 +37,6 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("config", UPDATE);
 
 $plugin = new Plugin();

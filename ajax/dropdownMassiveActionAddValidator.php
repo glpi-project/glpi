@@ -39,13 +39,11 @@
 
 /**
  * @var array $CFG_GLPI
- * @var bool|null $AJAX_INCLUDE
  */
-global $CFG_GLPI,
-    $AJAX_INCLUDE;
+global $CFG_GLPI;
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
+/** @var $this \Glpi\Controller\LegacyFileLoadController */
+$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
-
 Session::checkCentralAccess();
 
 if (isset($_POST["sub_type"])) {

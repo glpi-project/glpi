@@ -35,8 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 if (($_POST['action'] ?? null) === 'change_task_state') {

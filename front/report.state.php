@@ -37,8 +37,6 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");

@@ -36,8 +36,6 @@
 use Glpi\Asset\AssetDefinition;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 $definition = new AssetDefinition();
 $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
     ? $definition->getAssetModelClassName()

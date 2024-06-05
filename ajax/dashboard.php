@@ -36,15 +36,6 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Dashboard\Grid;
 
-/**
- * @var string|null $SECURITY_STRATEGY
- */
-global $SECURITY_STRATEGY;
-
-$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to embed dashboards
-
-include('../inc/includes.php');
-
 if (!isset($_REQUEST["action"])) {
     exit;
 }

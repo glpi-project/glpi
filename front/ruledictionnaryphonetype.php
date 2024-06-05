@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $rulecollection = new RuleDictionnaryPhoneTypeCollection();
 
 include(GLPI_ROOT . "/front/rule.common.php");

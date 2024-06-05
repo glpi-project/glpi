@@ -37,8 +37,6 @@
  * @since 0.85
  */
 
-include("../inc/includes.php");
-
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
     $action = $_GET['action'];

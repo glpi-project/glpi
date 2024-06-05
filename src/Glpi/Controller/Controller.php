@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,18 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.5.0
- */
+namespace Glpi\Controller;
 
-define('GLPI_ROOT', __DIR__);
-ini_set('session.use_cookies', 0);
+use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-include_once(GLPI_ROOT . '/inc/includes.php');
-
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
-
-$server = new Glpi\CalDAV\Server();
-$server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-$server->start();
+interface Controller extends PublicService
+{
+    public function __invoke(Request $request): Response;
+}

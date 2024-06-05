@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("domain", READ);
 
 Html::header(Domain::getTypeName(1), $_SERVER['PHP_SELF'], "management", "domain");

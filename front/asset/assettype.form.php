@@ -41,8 +41,6 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetType;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 if (array_key_exists('id', $_REQUEST)) {
     $asset_type = AssetType::getById($_REQUEST['id']);
 } else {

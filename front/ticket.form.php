@@ -41,8 +41,6 @@ use Glpi\Event;
  */
 global $CFG_GLPI, $DB;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 $track = new Ticket();
 

@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("license", READ);
 if (!isset($_REQUEST["id"])) {
     $_REQUEST["id"] = "";

@@ -35,8 +35,6 @@
 
 use Glpi\Controller\CommonAjaxController;
 
-include('../inc/includes.php');
-
 /**
  * AJAX endpoint used to update, delete, restore or purge a CommonDBTM item
  */

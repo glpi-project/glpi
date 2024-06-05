@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);

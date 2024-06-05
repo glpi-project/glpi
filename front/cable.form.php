@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("cable_management", READ);
 
 if (empty($_GET["id"])) {

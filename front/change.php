@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRightsOr('change', [Change::READALL, Change::READMY]);
 
 Html::header(Change::getTypeName(Session::getPluralNumber()), '', "helpdesk", "change");

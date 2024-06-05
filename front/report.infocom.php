@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight(Report::$rightname, READ);
 Session::checkRight(Infocom::$rightname, READ);
 

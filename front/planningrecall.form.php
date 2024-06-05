@@ -37,8 +37,6 @@
  * @since 0.84.3
  */
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 $pr = new PlanningRecall();

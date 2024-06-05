@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session ::checkCentralAccess();
 
 if (isset($_POST['purge'], $_POST['id'])) {

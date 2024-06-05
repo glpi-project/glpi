@@ -35,7 +35,6 @@
 
 use Glpi\Cache\CacheManager;
 
-include('../inc/includes.php');
 Session::checkRight("config", READ);
 
 if (isset($_GET['check_version'])) {

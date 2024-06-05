@@ -39,9 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
-
 $item = new OlaLevel();
 
 if (isset($_POST["update"])) {

@@ -36,8 +36,6 @@
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\ImpactCsvExport;
 
-include('../inc/includes.php');
-
 $itemtype = $_GET['itemtype'] ?? '';
 $items_id = $_GET['items_id'] ?? '';
 
