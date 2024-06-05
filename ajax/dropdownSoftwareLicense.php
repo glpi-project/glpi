@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \DBmysql $DB */
-global $DB;
+/**
+ * @var \DBmysql $DB
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $DB,
+    $AJAX_INCLUDE;
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownSoftwareLicense.php")) {
     $AJAX_INCLUDE = 1;

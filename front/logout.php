@@ -37,8 +37,12 @@
  * @since 0.85
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
 $SECURITY_STRATEGY = 'no_check';
 

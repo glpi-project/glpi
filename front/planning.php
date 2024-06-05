@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $SECURITY_STRATEGY;
+
 if (isset($_GET['genical'])) {
     // A new sssion is generated and destroyed during the ical/webcal export.
     // Prevent sending cookies to browser to ensure that user will not be disconnected when using the export feature.

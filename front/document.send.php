@@ -35,6 +35,11 @@
 
 use Glpi\Inventory\Conf;
 
+/**
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $SECURITY_STRATEGY;
+
 $SECURITY_STRATEGY = 'no_check'; // may allow unauthenticated access, for public FAQ images
 
 include('../inc/includes.php');

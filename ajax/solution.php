@@ -36,6 +36,11 @@
 use Glpi\Http\Response;
 use Glpi\RichText\RichText;
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');

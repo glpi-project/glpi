@@ -39,8 +39,12 @@
 
 use Glpi\DBAL\QueryExpression;
 
-/** @var \DBmysql $DB */
-global $DB;
+/**
+ * @var \DBmysql $DB
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $DB,
+    $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 
