@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE;
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {

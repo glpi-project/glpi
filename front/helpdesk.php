@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
 $SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
 

@@ -35,6 +35,11 @@
 
 use Glpi\Http\Response;
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");

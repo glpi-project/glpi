@@ -40,7 +40,10 @@ use Glpi\Form\Renderer\FormRenderer;
 use Glpi\Http\Firewall;
 use Glpi\Http\Response;
 
-/** @var array $CFG_GLPI */
+/**
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $SECURITY_STRATEGY;
 
 // Since forms may be available to unauthenticated users, we trust the
 // `canAnswerForm` method to do the required session checks.

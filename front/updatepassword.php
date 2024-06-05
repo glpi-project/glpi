@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-$SECURITY_STRATEGY = 'no_check';
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+$SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');
 

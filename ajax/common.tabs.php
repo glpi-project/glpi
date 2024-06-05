@@ -33,8 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE,
+    $SECURITY_STRATEGY;
 
 $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
 

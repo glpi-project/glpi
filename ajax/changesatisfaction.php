@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "changesatisfaction.php")) {
     $AJAX_INCLUDE = 1;

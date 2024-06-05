@@ -35,8 +35,12 @@
 
 use Glpi\Event;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE;
 
 // avoid reloading js libs
 if (isset($_GET['ajax']) && $_GET['ajax']) {

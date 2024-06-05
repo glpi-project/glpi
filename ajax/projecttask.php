@@ -37,6 +37,11 @@
  * @since 9.2
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');

@@ -35,6 +35,11 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+/**
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $SECURITY_STRATEGY;
+
 // Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
 $SECURITY_STRATEGY = 'no_check';
 

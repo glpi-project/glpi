@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
