@@ -193,7 +193,12 @@ class Config extends DbTestCase
         }
         sort($expected);
         $this->array($expected)->isNotEmpty();
-        $this->array($actual)->isIdenticalTo($expected);
+
+        $unexpected_libs = array_diff($actual, $expected);
+        $missing_libs    = array_diff($expected, $actual);
+
+        $this->array($unexpected_libs)->isEmpty('Unexpected libs returned by Config::getLibraries(): ' . implode(', ', $unexpected_libs));
+        $this->array($missing_libs)->isEmpty('Missing libs in Config::getLibraries() return value: ' . implode(', ', $missing_libs));
     }
 
     public function testGetLibraryDir()
