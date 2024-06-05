@@ -33,7 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $dropdown = new PrinterModel();
 include(GLPI_ROOT . "/front/dropdown.common.php");

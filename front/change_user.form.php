@@ -42,10 +42,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
-
 $link = new Change_User();
 $item = new Change();
 

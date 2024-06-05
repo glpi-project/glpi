@@ -37,8 +37,6 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "rssfeed");

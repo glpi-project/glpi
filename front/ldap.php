@@ -35,8 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
-
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");

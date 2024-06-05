@@ -34,7 +34,6 @@
  */
 
 // Direct access to file
-include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 
 Session::checkLoginUser();

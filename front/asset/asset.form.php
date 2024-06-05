@@ -42,8 +42,6 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Event;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $asset = Asset::getById($_REQUEST['id']);
 } else {

@@ -37,8 +37,6 @@ use Glpi\Csv\CsvResponse;
 use Glpi\Csv\LogCsvExport;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 // Read params
 $itemtype = $_GET['itemtype']   ?? null;
 $id       = $_GET['id']         ?? null;

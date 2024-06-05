@@ -41,8 +41,6 @@ use Glpi\Event;
  */
 global $CFG_GLPI, $DB;
 
-include('../inc/includes.php');
-
 if (!$DB->tableExists('glpi_networkportmigrations')) {
     Html::displayNotFoundError();
 }

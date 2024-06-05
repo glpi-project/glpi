@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../../inc/includes.php');
-
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Http\Response;
 use Glpi\Toolbox\MarkdownRenderer;

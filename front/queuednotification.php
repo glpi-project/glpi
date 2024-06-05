@@ -37,8 +37,6 @@
  * @since 0.85
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("queuednotification", READ);
 
 Html::header(QueuedNotification::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuednotification");

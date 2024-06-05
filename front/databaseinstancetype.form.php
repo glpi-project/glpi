@@ -33,7 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $dropdown = new DatabaseInstanceType();
 include(GLPI_ROOT . "/front/dropdown.common.form.php");

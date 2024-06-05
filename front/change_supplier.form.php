@@ -39,10 +39,6 @@
 
 use Glpi\Event;
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
-
 $link = new Change_Supplier();
 
 Session::checkLoginUser();

@@ -35,14 +35,13 @@
 
 /**
  * @var \DBmysql $DB
- * @var bool|null $AJAX_INCLUDE
  */
-global $DB,
-    $AJAX_INCLUDE;
+global $DB;
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
-    $AJAX_INCLUDE = 1;
-    include('../inc/includes.php');
+    /** @var $this \Glpi\Controller\LegacyFileLoadController */
+    $this->setAjax();
+
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }

@@ -40,8 +40,6 @@ use Glpi\System\Log\LogViewer;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Session::checkRight("logs", READ);
 
 $filepath = $_REQUEST['filepath'] ?? null;

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Html::header_nocache();
 
 Session::checkLoginUser();

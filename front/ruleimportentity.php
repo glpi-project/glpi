@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $rulecollection = new RuleImportEntityCollection();
 
 include(GLPI_ROOT . "/front/rule.common.php");

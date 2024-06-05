@@ -33,7 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $dropdown = new PassiveDCEquipmentType();
 include(GLPI_ROOT . "/front/dropdown.common.php");

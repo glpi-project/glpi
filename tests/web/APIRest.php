@@ -59,6 +59,7 @@ use User;
 class APIRest extends atoum
 {
     protected $session_token;
+    /** @var GuzzleHttp\Client */
     protected $http_client;
     protected $base_uri = "";
     protected $last_error;

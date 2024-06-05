@@ -37,8 +37,6 @@ use Glpi\Csv\CsvResponse;
 use Glpi\Csv\PrinterLogCsvExport;
 use Glpi\Csv\PrinterLogCsvExportComparison;
 
-include('../inc/includes.php');
-
 Session::checkRight("printer", READ);
 
 if (isset($_GET["id"])) {

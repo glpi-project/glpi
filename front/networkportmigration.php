@@ -36,8 +36,6 @@
 /** @var \DBMysql $DB */
 global $DB;
 
-include('../inc/includes.php');
-
 Session::checkRight("networking", UPDATE);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {

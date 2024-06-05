@@ -36,9 +36,6 @@
 /**
  * @since 9.2
  */
-include('../inc/includes.php');
-
-
 $criteria = new OlaLevelAction();
 
 if (isset($_POST["add"])) {

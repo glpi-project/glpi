@@ -34,19 +34,26 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(dirname(__DIR__)));
-define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests/config');
-define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
+$root = dirname(__DIR__, 2);
+define('GLPI_CONFIG_DIR', $root . '/tests/config');
+define('GLPI_VAR_DIR', $root . '/tests/files');
 define(
    'PLUGINS_DIRECTORIES',
    [
-      GLPI_ROOT . '/plugins',
-      GLPI_ROOT . '/tests/fixtures/plugins',
+      $root . '/plugins',
+      $root . '/tests/fixtures/plugins',
    ]
 );
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
-include_once(GLPI_ROOT . '/inc/includes.php');
+require $root . '/vendor/autoload.php';
+
+// Initialize configuration constants.
+// It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
+require_once $root . '/src/Glpi/Application/ConfigurationConstants.php';
+(new \Glpi\Application\ConfigurationConstants($root))->computeConstants();
+
+$kernel = new \Glpi\Kernel\Kernel('testing');
+$kernel->loadCommonGlobalConfig();
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 

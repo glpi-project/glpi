@@ -36,8 +36,6 @@
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRightsOr(Monitor::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (empty($_GET["id"])) {

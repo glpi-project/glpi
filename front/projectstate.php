@@ -37,7 +37,5 @@
  * @since 0.85
  */
 
-include('../inc/includes.php');
-
 $dropdown = new ProjectState();
 include(GLPI_ROOT . "/front/dropdown.common.php");

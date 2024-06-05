@@ -36,11 +36,12 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 define('GLPI_ENVIRONMENT_TYPE', 'testing');
-// Ensure errors happening during test suite bootstraping are always displayed
-ini_set('display_errors', 'On');
+
+ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
@@ -51,13 +52,19 @@ define('TU_PASS', 'PhpUnit_4');
 
 global $CFG_GLPI, $GLPI_CACHE;
 
-include(__DIR__ . "/../inc/based_config.php");
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+// Initialize configuration constants.
+// It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
+require_once dirname(__DIR__) . '/src/Glpi/Application/ConfigurationConstants.php';
+(new \Glpi\Application\ConfigurationConstants(dirname(__DIR__)))->computeConstants();
+
+$kernel = new Kernel('testing');
+$kernel->loadCommonGlobalConfig();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
 }
-
-include_once __DIR__ . '/../inc/includes.php';
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
@@ -78,11 +85,6 @@ include_once __DIR__ . '/InventoryTestCase.php';
 //include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 //include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 //include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
-
-// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
-}
 
 loadDataset();
 

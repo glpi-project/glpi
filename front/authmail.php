@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("config", UPDATE);
 
 Html::header(AuthMail::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "auth", "imap");

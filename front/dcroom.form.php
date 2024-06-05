@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("datacenter", READ);
 
 if (empty($_GET["id"])) {

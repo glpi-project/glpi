@@ -37,11 +37,13 @@
 // Please try to keep them alphabetically ordered.
 
 // Directories constants
+define('GLPI_ROOT', null);
 define('GLPI_CACHE_DIR', null);
 define('GLPI_CRON_DIR', null);
 define('GLPI_DOC_DIR', null);
 define('GLPI_DUMP_DIR', null);
 define('GLPI_GRAPH_DIR', null);
+define('GLPI_I18N_DIR', null);
 define('GLPI_INVENTORY_DIR', null);
 define('GLPI_LOCAL_I18N_DIR', null);
 define('GLPI_LOCK_DIR', null);

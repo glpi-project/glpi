@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 $ticket_ticket = new Ticket_Ticket();
 
 Session::checkCentralAccess();

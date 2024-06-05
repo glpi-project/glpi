@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight(NetworkName::$rightname, READ);
 
 $nn = new NetworkName();

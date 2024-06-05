@@ -37,8 +37,6 @@
  * @since 0.85
  */
 
-include('../inc/includes.php');
-
 $cost = new ProblemCost();
 
 include(GLPI_ROOT . "/front/commonitilcost.form.php");

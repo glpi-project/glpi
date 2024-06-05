@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("notification", READ);
 
 if (!isset($_GET["id"])) {

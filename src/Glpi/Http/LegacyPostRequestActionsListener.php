@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,18 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.5.0
- */
+namespace Glpi\Http;
 
-define('GLPI_ROOT', __DIR__);
-ini_set('session.use_cookies', 0);
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-include_once(GLPI_ROOT . '/inc/includes.php');
+class LegacyPostRequestActionsListener implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::FINISH_REQUEST => ['onFinishRequest'],
+        ];
+    }
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
-
-$server = new Glpi\CalDAV\Server();
-$server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-$server->start();
+    public function onFinishRequest(): void
+    {
+        \Html::resetAjaxParam();
+        \Session::resetAjaxParam();
+    }
+}

@@ -35,8 +35,6 @@
 
 use Glpi\Http\Response;
 
-include('../inc/includes.php');
-
 $impact_item = new ImpactItem();
 
 if (isset($_POST["update"])) {
