@@ -74,7 +74,7 @@
         "symfony/dependency-injection": "^6.4",
         "symfony/dom-crawler": "^6.4",
         "symfony/filesystem": "^6.4",
-        "symfony/framework-bundle": "^6.2",
+        "symfony/framework-bundle": "^6.4",
         "symfony/html-sanitizer": "^6.4",
         "symfony/http-foundation": "^6.4",
         "symfony/http-kernel": "^6.4",
@@ -107,7 +107,7 @@
         "phpstan/phpstan-deprecation-rules": "^1.2",
         "squizlabs/php_codesniffer": "^3.10",
         "symfony/browser-kit": "^6.2",
-        "symfony/http-client": "^6.2",
+        "symfony/http-client": "^6.4",
         "symfony/var-dumper": "^6.4"
     },
     "provide": {
