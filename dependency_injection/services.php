@@ -33,15 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+return static function (ContainerConfigurator $container): void {
+    $projectDir = dirname(__DIR__);
 
-$kernel = new Kernel('dev', true);
+    $services = $container->services();
 
-$request = Request::createFromGlobals();
+    $services
+        ->defaults()
+        ->autowire()
+        ->autoconfigure()
+    ;
 
-$response = $kernel->handle($request);
-
-$response->send();
+    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
+    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
+    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+};
