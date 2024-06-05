@@ -202,7 +202,7 @@ class DropdownTranslation extends CommonDBChild
      * Return the number of translations for a field in a language
      *
      * @param string $itemtype
-     * @param int|string $items_id
+     * @param int $items_id
      * @param string $field
      * @param string $language
      *
@@ -247,7 +247,7 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Check if a field's translation can be added or updated
      *
-     * @param mixed $input          translation's fields
+     * @param bool $input          translation's fields
      * @param bool $add    boolean true if a transaltion must be added, false if updated (true by default)
      *
      * @return boolean true if translation can be added/update, false otherwise
@@ -270,7 +270,7 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Generate completename associated with a tree dropdown
      *
-     * @param mixed $input array    of user values
+     * @param array $input     array of user values
      * @param bool $add   boolean  true if translation is added, false if update (tgrue by default)
      *
      * @return void
