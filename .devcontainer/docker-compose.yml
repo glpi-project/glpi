@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ..:/var/www/:rw
-      - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./conf/php/php-dev.ini:/usr/local/etc/php/conf.d/php-dev.ini
     depends_on:
       - db
     extra_hosts:
