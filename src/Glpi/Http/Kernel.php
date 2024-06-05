@@ -55,11 +55,13 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
+        // TODO Use GLPI_CACHE_DIR
         return $this->getProjectDir() . '/files/_cache/symfony';
     }
 
     public function getLogDir(): string
     {
+        // TODO Use GLPI_LOG_DIR
         return $this->getProjectDir() . '/files/_log/';
     }
 
@@ -94,10 +96,6 @@ class Kernel extends BaseKernel
 
     private function runLegacyRouter(Request $request): void
     {
-        if (defined('GLPI_ROOT')) {
-            // This var is defined in {root_dir}/index.php , the legacy front controller
-            return;
-        }
 
         /**
          * GLPI web router.
@@ -129,8 +127,6 @@ class Kernel extends BaseKernel
             '',
             parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
         );
-
-        require_once $glpi_root . '/src/Glpi/Http/ProxyRouter.php';
 
         $proxy = new \Glpi\Http\ProxyRouter($glpi_root, $path);
         $proxy->handleRedirects($uri_prefix);
