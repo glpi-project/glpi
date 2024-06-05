@@ -41,21 +41,10 @@ use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 
-define('GLPI_ROOT', realpath('..'));
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
-
 /**
- * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $GLPI, $GLPI_CACHE;
-
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
-Config::detectRootDoc();
+global $GLPI_CACHE;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
@@ -406,7 +395,6 @@ function step6()
     /** @var \DBmysql $DB */
     global $DB;
 
-    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     $DB = new DB();
 
@@ -429,7 +417,6 @@ function step7()
 // finish installation
 function step8()
 {
-    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     $DB = new DB();
 
@@ -567,9 +554,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     header_html(__("Select your language"));
     choose_language();
 } else {
-   // Check CSRF: ensure nobody strap first page that checks if config file exists ...
-    Session::checkCSRF($_POST);
-
    // DB clean
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);

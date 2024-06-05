@@ -37,15 +37,11 @@
  * @since 0.85
  */
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "getDropdownUsers.php")) {
-    $AJAX_INCLUDE = 1;
-    include('../inc/includes.php');
+    /** @var $this \Glpi\Controller\LegacyFileLoadController */
+    $this->setAjax();
+
     header("Content-Type: application/json; charset=UTF-8");
     Html::header_nocache();
 } else if (!defined('GLPI_ROOT')) {
