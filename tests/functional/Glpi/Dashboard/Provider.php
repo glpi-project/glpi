@@ -49,12 +49,12 @@ class Provider extends DbTestCase
         global $DB;
 
        // Prepare context
-        $slm = new Slm();
+        $slm = new \Slm();
         $slm->add([
             'name' => 'SLM',
         ]);
 
-        $slaTto = new SLA();
+        $slaTto = new \SLA();
         $slaTto->add([
             'name' => 'sla tto',
             'type' => '1', // TTO
@@ -63,7 +63,7 @@ class Provider extends DbTestCase
             'slms_id' => $slm->getID(),
         ]);
 
-        $slaTtr = new SLA();
+        $slaTtr = new \SLA();
         $slaTtr->add([
             'name' => 'sla ttr',
             'type' => '0', // TTR
@@ -72,36 +72,36 @@ class Provider extends DbTestCase
             'slms_id' => $slm->getID(),
         ]);
 
-        $ticket = new Ticket();
+        $ticket = new \Ticket();
         $ticket->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
             '_users_id_assign' => 2, // glpi
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
-        $ticket2 = new Ticket();
+        $ticket2 = new \Ticket();
         $ticket2->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
             '_users_id_assign' => 4, // tech
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket2->isNewItem())->isFalse();
 
-        $ticket3 = new Ticket();
+        $ticket3 = new \Ticket();
         $ticket3->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
             '_users_id_assign' => 4, // tech
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket3->isNewItem())->isFalse();
 
@@ -319,12 +319,12 @@ class Provider extends DbTestCase
         global $DB;
 
        // Prepare context
-        $slm = new Slm();
+        $slm = new \Slm();
         $slm->add([
             'name' => 'SLM',
         ]);
 
-        $slaTto = new SLA();
+        $slaTto = new \SLA();
         $slaTto->add([
             'name' => 'sla tto',
             'type' => '1', // TTO
@@ -333,7 +333,7 @@ class Provider extends DbTestCase
             'slms_id' => $slm->getID(),
         ]);
 
-        $slaTtr = new SLA();
+        $slaTtr = new \SLA();
         $slaTtr->add([
             'name' => 'sla ttr',
             'type' => '0', // TTR
@@ -342,7 +342,7 @@ class Provider extends DbTestCase
             'slms_id' => $slm->getID(),
         ]);
 
-        $group = new Group();
+        $group = new \Group();
         $group->add([
             'entities_id' => 0,
             'name'        => 'group sla test',
@@ -351,7 +351,7 @@ class Provider extends DbTestCase
         ]);
         $this->boolean($group->isNewItem())->isFalse();
 
-        $group2 = new Group();
+        $group2 = new \Group();
         $group2->add([
             'entities_id' => 0,
             'name'        => 'second group sla test',
@@ -360,36 +360,36 @@ class Provider extends DbTestCase
         ]);
         $this->boolean($group2->isNewItem())->isFalse();
 
-        $ticket = new Ticket();
+        $ticket = new \Ticket();
         $ticket->add([
             'name' => "test dashboard card SLA / tech",
             'content' => 'foo',
             '_groups_id_assign' => $group->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
-        $ticket2 = new Ticket();
+        $ticket2 = new \Ticket();
         $ticket2->add([
             'name' => "test dashboard card SLA / tech for second group",
             'content' => 'foo',
             '_groups_id_assign' => $group2->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
         $this->boolean($ticket2->isNewItem())->isFalse();
 
-        $ticket3 = new Ticket();
+        $ticket3 = new \Ticket();
         $ticket3->add([
             'name' => "test dashboard card SLA / tech for second group",
             'content' => 'foo',
             '_groups_id_assign' => $group2->getID(),
             'sla_id_tto'       => $slaTto->getID(),
             'sla_id_ttr'       => $slaTtr->getID(),
-            'status'           => Ticket::ASSIGNED,
+            'status'           => \Ticket::ASSIGNED,
         ]);
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();

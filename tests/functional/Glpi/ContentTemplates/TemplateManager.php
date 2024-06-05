@@ -170,7 +170,7 @@ class TemplateManager extends DbTestCase
     {
        // Not much to test here, maybe keepk this for code coverage ?
         $manager = $this->newTestedInstance();
-        $this->object($manager->getSecurityPolicy())->isInstanceOf(SecurityPolicy::class);
+        $this->object($manager->getSecurityPolicy())->isInstanceOf(\Twig\Sandbox\SecurityPolicy::class);
     }
     /**
      * Get all possible CommonITILObject classes.

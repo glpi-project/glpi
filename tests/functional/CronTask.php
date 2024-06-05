@@ -96,13 +96,14 @@ class CronTask extends DbTestCase
     public function getFileCountRecursively($path)
     {
 
-        $dir = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator(
+        $dir = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator(
             $dir,
-            RecursiveIteratorIterator::CHILD_FIRST
+            \RecursiveIteratorIterator::CHILD_FIRST
         );
         return iterator_count($files);
     }
+
     protected function registerProvider()
     {
         return [
