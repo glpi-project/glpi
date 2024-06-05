@@ -416,7 +416,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Get already translated languages for item
      *
-     * @param $item
+     * @param CommonDBTM $item
      *
      * @return array of already translated languages
      **/

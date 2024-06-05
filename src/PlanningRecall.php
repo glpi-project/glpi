@@ -102,9 +102,9 @@ class PlanningRecall extends CommonDBChild
     /**
      * Retrieve an item from the database
      *
-     * @param $itemtype     string   itemtype to get
-     * @param $items_id     integer  id of the item
-     * @param $users_id     integer  id of the user
+     * @param string $itemtype     string   itemtype to get
+     * @param integer $items_id     integer  id of the item
+     * @param integer $users_id     integer  id of the user
      *
      * @return boolean true if succeed else false
      **/
@@ -214,9 +214,9 @@ class PlanningRecall extends CommonDBChild
     /**
      * Update planning recal date when changing begin of planning
      *
-     * @param $itemtype  string   itemtype to get
-     * @param $items_id  integer  id of the item
-     * @param $begin     datetime new begin date
+     * @param string $itemtype  string   itemtype to get
+     * @param integer $items_id  integer  id of the item
+     * @param string $begin     datetime new begin date
      *
      * @return boolean true if succeed else false
      **/

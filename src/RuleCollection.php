@@ -1004,7 +1004,7 @@ JAVASCRIPT;
     /**
      * Export rules in a xml format
      *
-     * @param $items array the input data to transform to xml
+     * @param array $items array the input data to transform to xml
      *
      * @since 0.85
      *
