@@ -318,7 +318,7 @@ class DBConnection extends CommonDBTM
      *
      * @param integer $choice  Host number (default NULL)
      *
-     * @return DBmysql object
+     * @return DBmysql|void object
      **/
     public static function getDBSlaveConf($choice = null)
     {
