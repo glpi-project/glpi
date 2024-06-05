@@ -287,8 +287,8 @@ class Infocom extends CommonDBChild
     /**
      * Fill, if necessary, automatically some dates when status changes
      *
-     * @param item          CommonDBTM object: the item whose status have changed
-     * @param action_add    true if object is added, false if updated (true by default)
+     * @param $item          CommonDBTM object: the item whose status have changed
+     * @param $action_add    true if object is added, false if updated (true by default)
      *
      * @return void
      **/
@@ -335,10 +335,10 @@ class Infocom extends CommonDBChild
     /**
      * Automatically manage copying one date to another is necessary
      *
-     * @param infocoms   array of item's infocom to modify
-     * @param field            the date to modify (default '')
-     * @param action           the action to peform (copy from another date) (default 0)
-     * @param params     array of additional parameters needed to perform the task
+     * @param $infocoms   array of item's infocom to modify
+     * @param $field            the date to modify (default '')
+     * @param $action           the action to peform (copy from another date) (default 0)
+     * @param $params     array of additional parameters needed to perform the task
      *
      * @return void
      **/

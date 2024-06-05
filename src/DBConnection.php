@@ -305,7 +305,7 @@ class DBConnection extends CommonDBTM
     /**
      * Indicates is the DB replicate is active or not
      *
-     * @return true if active / false if not active
+     * @return boolean true if active / false if not active
      **/
     public static function isDBSlaveActive()
     {

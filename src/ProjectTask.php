@@ -608,7 +608,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *     - target form target
      *     - projects_id ID of the software for add process
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return boolean true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {

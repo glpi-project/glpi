@@ -201,10 +201,10 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Return the number of translations for a field in a language
      *
-     * @param itemtype
-     * @param items_id
-     * @param field
-     * @param language
+     * @param $itemtype
+     * @param $items_id
+     * @param $field
+     * @param $language
      *
      * @return integer the number of translations for this field
      **/
@@ -250,7 +250,7 @@ class DropdownTranslation extends CommonDBChild
      * @param $input          translation's fields
      * @param $add    boolean true if a transaltion must be added, false if updated (true by default)
      *
-     * @return true if translation can be added/update, false otherwise
+     * @return boolean true if translation can be added/update, false otherwise
      **/
     public function checkBeforeAddorUpdate($input, $add = true)
     {
@@ -783,7 +783,7 @@ JAVASCRIPT
     /**
      * Is dropdown item translation functionality active
      *
-     * @return true if active, false if not
+     * @return boolean true if active, false if not
      **/
     public static function isDropdownTranslationActive()
     {

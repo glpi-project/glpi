@@ -398,10 +398,10 @@ class Fieldblacklist extends CommonDropdown
     /**
      * Check if a field & value are blacklisted or not
      *
-     * @param itemtype      itemtype of the blacklisted field
-     * @param entities_id   the entity in which the field must be saved
-     * @param field         the field to check
-     * @param value         the field's value
+     * @param $itemtype      itemtype of the blacklisted field
+     * @param $entities_id   the entity in which the field must be saved
+     * @param $field         the field to check
+     * @param $value         the field's value
      *
      * @return true is value if blacklisted, false otherwise
      **/

@@ -1434,7 +1434,7 @@ class Session
      *  Force active Tab for an itemtype
      *
      * @param string  $itemtype item type
-     * @param integer $tab      ID of the tab
+     * @param mixed $tab      ID of the tab
      *
      * @return void
      **/
