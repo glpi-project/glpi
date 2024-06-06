@@ -46,7 +46,6 @@ TESTS_SUITES=(
   "lint_twig"
   "install"
   "update"
-  "units"
   "functional"
   "cache"
   "ldap"
@@ -147,7 +146,6 @@ Available tests suites:
  - lint_twig
  - install
  - update
- - units
  - functional
  - cache
  - ldap
@@ -263,10 +261,6 @@ run_single_test () {
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
-      || LAST_EXIT_CODE=$?
-      ;;
-    "units")
-         docker compose exec -T app .github/actions/test_tests-units.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
