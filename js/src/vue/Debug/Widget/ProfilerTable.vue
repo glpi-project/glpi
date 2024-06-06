@@ -1,5 +1,6 @@
 <script setup>
     import {computed} from "vue";
+    import tinycolor from 'tinycolor2';
 
     const props = defineProps({
         parent_id: {
@@ -51,12 +52,13 @@
             bg_color = color;
         }
 
-        const rgb = hexToRgb(bg_color);
-        const text_color = luminance([rgb['r'], rgb['g'], rgb['b']]) > 0.5 ? 'var(--dark)' : 'var(--light)';
+        const contrasting_color = tinycolor.mostReadable(bg_color, tinycolor(bg_color).monochromatic(), {
+            includeFallbackColors: true
+        }).toHexString();
 
         return {
             bg_color: bg_color,
-            text_color: text_color
+            text_color: contrasting_color
         };
     }
 
@@ -116,7 +118,7 @@
     <table class="table table-striped card-table" v-show="hasUnfilteredSections(top_level_data)">
         <thead>
             <tr>
-                <th class="nesting-spacer" v-for="i in nest_level" :key="i"></th>
+                <th class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></th>
                 <th>Category</th>
                 <th>Name</th>
                 <th>Start</th>
@@ -128,7 +130,7 @@
         <tbody>
             <template v-for="section in top_level_data">
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
-                    <td class="nesting-spacer" v-for="i in nest_level" :key="i"></td>
+                    <td class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></td>
                     <td data-prop="category">
                         <span class="category-badge" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
                             {{ section.category }}
@@ -143,7 +145,7 @@
                 <tr v-if="section.has_children" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td :colspan="col_count">
                         <widget-profiler-table :parent_duration="section.duration" :nest_level="props.nest_level + 1"
-                            :profiler_sections="props.profiler_sections" :parent_id="section.id" :hide_instant_sections="props.hide_instant_sections"></widget-profiler-table>
+                                               :profiler_sections="props.profiler_sections" :parent_id="section.id" :hide_instant_sections="props.hide_instant_sections"></widget-profiler-table>
                     </td>
                 </tr>
             </template>

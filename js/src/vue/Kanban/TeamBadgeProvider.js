@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+import tinycolor from 'tinycolor2';
+
 export class TeamBadgeProvider {
     constructor(display_initials, max_team_images = 3) {
         this.badges = {
@@ -150,46 +152,6 @@ export class TeamBadgeProvider {
     }
 
     /**
-     * Convert the given H, S, L values into a color hex code (with prepended hash symbol).
-     * @param {number} h Hue
-     * @param {number} s Saturation
-     * @param {number} l Lightness
-     * @return {string} Hex code color value
-     */
-    hslToHexColor(h, s, l) {
-        let r, g, b;
-
-        if (s === 0) {
-            r = g = b = l;
-        } else {
-            const hue2rgb = function hue2rgb(p, q, t){
-                if (t < 0)
-                    t += 1;
-                if (t > 1)
-                    t -= 1;
-                if (t < 1/6)
-                    return p + (q - p) * 6 * t;
-                if (t < 1/2)
-                    return q;
-                if (t < 2/3)
-                    return p + (q - p) * (2/3 - t) * 6;
-                return p;
-            };
-
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-
-        r = ('0' + (r * 255).toString(16)).substr(-2);
-        g = ('0' + (g * 255).toString(16)).substr(-2);
-        b = ('0' + (b * 255).toString(16)).substr(-2);
-        return '#' + r + g + b;
-    }
-
-    /**
      * Compute a new badge color or retrieve the cached color from session storage.
      * @param team_member The team member
      * @returns {string} The color to use for the badge
@@ -199,7 +161,7 @@ export class TeamBadgeProvider {
         const itemtype = team_member['itemtype'];
         const baseColor = Math.random();
         const lightness = (Math.random() * 10) + (this.dark_theme ? 25 : 70);
-        let bg_color = this.hslToHexColor(baseColor, 1, lightness / 100);
+        let bg_color = tinycolor(`hsl(${baseColor * 360}, 100%, ${lightness}%)`).toHexString();
 
         if (cached_colors !== null && cached_colors[itemtype] !== null && cached_colors[itemtype][team_member['id']]) {
             bg_color = cached_colors[itemtype][team_member['id']];

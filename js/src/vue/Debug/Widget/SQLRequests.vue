@@ -125,7 +125,6 @@
 
 <template>
     <div class="overflow-auto py-2 px-3">
-        <h2 class="mb-3"></h2>
         <table id="debug-sql-request-table" class="table card-table">
             <thead>
                 <tr>

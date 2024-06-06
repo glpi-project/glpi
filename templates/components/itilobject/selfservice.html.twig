@@ -61,9 +61,9 @@
 
    <div class="card">
         <div class="card-header">
-            <h3 class="card-title">
+            <h1 class="card-title fs-3">
                 {{ __('Describe the incident or request') }}
-            </h3>
+            </h1>
         </div>
 
         <div class="card-body bg-secondary-lt pt-0">
@@ -174,7 +174,7 @@
                      <a class="btn btn-sm btn-ghost-secondary mt-2" role="button"
                         id="btn-collapse-items{{ rand }}"
                         aria-expanded="false" aria-controls="collapse-items{{ rand }}"
-                        data-bs-toggle="collapse" href="#collapse-items{{ rand }}" >
+                        data-bs-toggle="collapse" href="#collapse-items{{ rand }}" title="{{ __('Add a new item') }}">
                         <i class="fas fa-plus"></i>
                      </a>
                      <div class="collapse" id="collapse-items{{ rand }}">
