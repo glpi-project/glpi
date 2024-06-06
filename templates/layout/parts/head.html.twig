@@ -48,6 +48,11 @@
    {# prevent robots to index GLPI instances #}
    <meta name="robots" content="noindex, nofollow" />
 
+    {# Custom header tags for plugins #}
+    {% for header_tag in custom_header_tags %}
+        <{{ header_tag.tag }} {% for key, value in header_tag.properties %}{{ key }}="{{ value }}" {% endfor %}/>
+    {% endfor %}
+
    <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
 
    {% for css_file in css_files %}

@@ -43,6 +43,7 @@ class Hooks
    // File hooks
     const ADD_CSS        = 'add_css';
     const ADD_JAVASCRIPT = 'add_javascript';
+    const ADD_HEADER_TAG = 'add_header_tag';
 
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
@@ -185,6 +186,7 @@ class Hooks
             self::UNDISCLOSED_CONFIG_VALUE,
             self::UNLOCK_FIELDS,
             self::VCARD_DATA,
+            self::ADD_HEADER_TAG
         ];
     }
 
