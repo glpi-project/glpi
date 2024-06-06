@@ -36,6 +36,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /* Test for inc/crontask.class.php */
 
@@ -43,53 +45,40 @@ class CronTask extends DbTestCase
 {
     public function testCronTemp()
     {
-
-       //create some files
-        $Data = [
-            [
-                'name'    => GLPI_TMP_DIR . '/recent_file.txt',
-                'content' => 'content1',
-            ],
-            [
-                'name'    => GLPI_TMP_DIR . '/file1.txt',
-                'content' => 'content1',
-            ],
-            [
-                'name'    => GLPI_TMP_DIR . '/file2.txt',
-                'content' => 'content2',
-            ],
-            [
-                'name'    => GLPI_TMP_DIR . '/auto_orient/file3.txt',
-                'content' => 'content3',
-            ],
-            [
-                'name'    => GLPI_TMP_DIR . '/auto_orient/file4.txt',
-                'content' => 'content4',
-            ]
+        //create some files
+        $filenames = [
+            'recent_file.txt',
+            'file1.txt',
+            'file2.txt',
+            'file3.txt',
+            'file4.txt',
         ];
-
-       //create auto_orient directory
-        if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
-            mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true);
+        foreach ($filenames as $filename) {
+            $this->variable(file_put_contents(GLPI_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))))->isNotFalse();
         }
 
-        foreach ($Data as $Row) {
-            $file = fopen($Row['name'], 'c');
-            fwrite($file, $Row['content']);
-            fclose($file);
+        //create auto_orient directory
+        if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
+            $this->boolean(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true))->isTrue();
+        }
 
-           //change filemtime (except recent_file.txt)
-            if ($Row['name'] != GLPI_TMP_DIR . '/recent_file.txt') {
-                touch($Row['name'], time() - (HOUR_TIMESTAMP * 2));
+        $tmp_dir_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(GLPI_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($tmp_dir_iterator as $path) {
+            if (basename($path) !== 'recent_file.txt') {
+                // change the modification date of the file to make it considered as "not recent"
+                $this->boolean(touch($path, time() - (HOUR_TIMESTAMP * 2)))->isTrue();
             }
         }
 
-       // launch Cron for cleaning _tmp directory
+        // launch Cron for cleaning _tmp directory
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'temp');
 
         $nb_file = $this->getFileCountRecursively(GLPI_TMP_DIR);
-        $this->variable($nb_file)->isEqualTo(1); //recent_file.txt
+        $this->variable($nb_file)->isEqualTo(1); // only recent_file.txt should be preserved
     }
 
 
