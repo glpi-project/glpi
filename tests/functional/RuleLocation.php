@@ -349,4 +349,62 @@ class RuleLocation extends DbTestCase
         $all_locations = getAllDataFromTable($location->getTable());
         $this->integer(count($all_locations))->isIdenticalTo($count_locations);
     }
+
+
+    public function testActionsFromTestContext()
+    {
+        $this->login();
+
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'Location_Test',
+        ]);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'location rule test context',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1
+        ];
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "tag",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'regex_result',
+            'field'       => 'locations_id',
+            'value'       => "#0"
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        // test rule like rule.test.php
+        $rule = new \RuleLocation();
+        $rule->getRuleWithCriteriasAndActions($rules_id, 1, 1);
+
+        $params = $rule->addSpecificParamsForPreview([]);
+        $input = $rule->prepareAllInputDataForProcess(['tag' => 'testtag'], $params);
+
+        // intercepts the output of echo functions
+        // as showRulePreviewResultsForm is also in charge of displaying the result (in addition to testing the rule)
+        ob_start();
+        $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
+        ob_end_clean();
+
+        // check that location was not created
+        $location = new \Location();
+        $this->boolean($location->getFromDBByCrit(['name' => 'testtag']))->isNotTrue();
+    }
 }
