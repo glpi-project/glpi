@@ -54,5 +54,8 @@ RUN echo "glpi ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER glpi
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+ENV GLPI_ENVIRONMENT_TYPE=development
+
 WORKDIR /var/www
 EXPOSE 9000
