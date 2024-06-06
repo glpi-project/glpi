@@ -2,12 +2,33 @@
 
 namespace Glpi\Http;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-readonly class LegacyRouterRunner
+readonly class LegacyRouterListener implements EventSubscriberInterface
 {
-    public function run(Request $request): ?Response
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 260],
+        ];
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+
+        $response = $this->runLegacyRouter($request);
+
+        if ($response) {
+            $event->setResponse($response);
+        }
+    }
+
+    public function runLegacyRouter(Request $request): ?Response
     {
         /**
          * GLPI web router.
@@ -70,8 +91,7 @@ readonly class LegacyRouterRunner
         $request->server->set('SCRIPT_FILENAME', $target_file);
         $request->server->set('SCRIPT_NAME', $target_path);
 
-        // Execute target script.
-        trigger_deprecation('glpi/glpi', '11.0.0', 'Old proxy router is deprecated: you should instead create proper controllers with Route attributes.');
+        \Toolbox::deprecated('Old proxy router is deprecated: you should instead create proper controllers with Route attributes.');
 
         $baseContent = '';
         ob_start(static function (string $content) use (&$baseContent) {
