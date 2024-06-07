@@ -622,7 +622,7 @@ TWIG, ['authldaps_id' => $ID]);
                     'test' => '',
                 ],
                 'formatters' => [
-                    'timeout' => 'number',
+                    'timeout' => 'integer',
                     'test' => 'raw_html'
                 ],
                 'entries' => $entries,

@@ -1769,29 +1769,6 @@ class Toolbox
         return $tab;
     }
 
-
-    /**
-     * Display a mail server configuration form
-     *
-     * @param string $value  host connect string ex {localhost:993/imap/ssl}INBOX
-     *
-     * @return string  type of the server (imap/pop)
-     **/
-    public static function showMailServerConfig($value)
-    {
-        if (!Config::canUpdate()) {
-            return '';
-        }
-
-        $tab = Toolbox::parseMailServerConnectString($value);
-        TemplateRenderer::getInstance()->display('pages/setup/mailcollector/server_config_fields.html.twig', [
-            'connect_opts' => $tab,
-            'host' => $value
-        ]);
-        return $tab['type'];
-    }
-
-
     /**
      * @param array $input
      *
