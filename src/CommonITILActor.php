@@ -162,6 +162,13 @@ abstract class CommonITILActor extends CommonDBRelation
                     'id'     => $this->fields[static::getItilObjectForeignKey()],
                     'status' => $status
                 ]);
+                if ($donotif) {
+                    $options = [];
+                    if (isset($this->fields['users_id'])) {
+                        $options = ['_old_user' => $this->fields];
+                        NotificationEvent::raiseEvent('del_assign_user', $item, $options);
+                    }
+                }
             } else {
                 $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
@@ -171,6 +178,7 @@ abstract class CommonITILActor extends CommonDBRelation
                         $options = ['_old_user' => $this->fields];
                     }
                     NotificationEvent::raiseEvent("update", $item, $options);
+                    NotificationEvent::raiseEvent('del_assign_user', $item, $options);
                 }
             }
         }

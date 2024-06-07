@@ -144,6 +144,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'user_mention'      => __('User mentioned'),
             'auto_reminder'     => ITILReminder::getTypeName(1),
             'add_document'      => __('New document'),
+            'del_assign_user'   => __('Deletion of a user in assignees'),
         ];
 
         asort($events);
@@ -881,7 +882,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             return; // Do not propose more targets
         }
 
-        if ($event == 'update') {
+        if (
+            $event == 'update' ||
+            $event == 'del_assign_user'
+        ) {
             $this->addTarget(
                 Notification::OLD_TECH_IN_CHARGE,
                 __('Former technician in charge of the ticket')
