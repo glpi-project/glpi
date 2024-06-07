@@ -2611,38 +2611,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
     public static function prepareConnectionsProvider()
     {
-        global $DB;
-        $DB->beginTransaction();
-
-        $networkEquipment = new \NetworkEquipment();
-        $networkPort      = new \NetworkPort();
-
-        $networkEquipments_id = $networkEquipment->add([
-            'entities_id' => 0,
-            'name'        => 'sw001',
-        ]);
-        $this->assertGreaterThan(0, $networkEquipments_id);
-
-        $mngtports_id = $networkPort->add([
-            'items_id'           => $networkEquipments_id,
-            'itemtype'           => 'NetworkEquipment',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'name'               => 'management',
-            'mac'                => '2c:fa:a2:d1:b2:28',
-        ]);
-        $this->assertGreaterThan(0, $mngtports_id);
-
-        $ports_id = $networkPort->add([
-            'name'               => 'port47',
-            'logical_number'     => '1047',
-            'instantiation_type' => 'NetworkPortEthernet',
-            'items_id'           => $networkEquipments_id,
-            'itemtype'           => 'NetworkEquipment',
-            'ifdescr'            => '47',
-            'mac'                => '2c:fa:a2:d1:b2:99',
-        ]);
-        $this->assertGreaterThan(0, $ports_id);
-
         return [
             ['json_source' =>
                 '{
@@ -2711,6 +2679,35 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testPrepareConnections($json_source)
     {
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw001',
+        ]);
+        $this->assertGreaterThan(0, $networkEquipments_id);
+
+        $mngtports_id = $networkPort->add([
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'management',
+            'mac'                => '2c:fa:a2:d1:b2:28',
+        ]);
+        $this->assertGreaterThan(0, $mngtports_id);
+
+        $ports_id = $networkPort->add([
+            'name'               => 'port47',
+            'logical_number'     => '1047',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'            => '47',
+            'mac'                => '2c:fa:a2:d1:b2:99',
+        ]);
+        $this->assertGreaterThan(0, $ports_id);
+
         $json = json_decode($json_source);
 
         $networkEquipment = getItemByTypeName('NetworkEquipment', '_test_networkequipment_1');
