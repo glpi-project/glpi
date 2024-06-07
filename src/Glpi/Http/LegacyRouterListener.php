@@ -112,8 +112,6 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         // Execute target script.
         $this->requireFile($target_file, $request);
 
-        \Toolbox::deprecated('Old proxy router is deprecated: you should instead create proper controllers with Route attributes.', true, '11.0');
-
         $requestedFileContent = ob_get_flush();
 
         // Both have been set by legacy "front" or "ajax" files, usually.
