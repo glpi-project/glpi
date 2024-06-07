@@ -120,7 +120,7 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         $headers = $this->buildHeadersList(headers_list());
         $httpCode = http_response_code();
 
-        return new Response($baseContent.$requestedFileContent, $httpCode, $headers);
+        return new Response($baseContent . $requestedFileContent, $httpCode, $headers);
     }
 
     /**

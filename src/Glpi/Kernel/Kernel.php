@@ -73,7 +73,7 @@ class Kernel extends BaseKernel
     {
         $projectDir = $this->getProjectDir();
 
-        $container->import($projectDir.'/dependency_injection/services.php', 'php');
+        $container->import($projectDir . '/dependency_injection/services.php', 'php');
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
