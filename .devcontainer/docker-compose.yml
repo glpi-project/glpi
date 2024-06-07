@@ -53,5 +53,8 @@ services:
     container_name: "glpi-adminer"
     image: adminer:latest
     restart: unless-stopped
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
     ports:
         - '9090:8080'
+    command: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
