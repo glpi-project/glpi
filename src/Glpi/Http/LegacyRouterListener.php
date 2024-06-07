@@ -104,8 +104,6 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         $request->server->set('SCRIPT_FILENAME', $target_file);
         $request->server->set('SCRIPT_NAME', $target_path);
 
-        \Toolbox::deprecated('Old proxy router is deprecated: you should instead create proper controllers with Route attributes.');
-
         $baseContent = '';
         ob_start(static function (string $content) use (&$baseContent) {
             $baseContent .= $content;
@@ -113,6 +111,8 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
 
         // Execute target script.
         $this->requireFile($target_file, $request);
+
+        \Toolbox::deprecated('Old proxy router is deprecated: you should instead create proper controllers with Route attributes.', true, '11.0');
 
         $requestedFileContent = ob_get_flush();
 
