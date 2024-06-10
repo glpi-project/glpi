@@ -5395,6 +5395,7 @@ JAVASCRIPT;
                 self::$rightname,
                 [self::READALL, self::READMY, self::READASSIGN, CREATE]
             )
+            && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
         ) {
             return false;
         }
@@ -5404,65 +5405,23 @@ JAVASCRIPT;
         }
 
         $criteria = self::getCommonCriteria();
-        $restrict = [];
-        $options  = [
-            'criteria' => [],
-            'reset'    => 'reset',
-        ];
+        $restrict = self::getListForItemRestrict($item);
+        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+        $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
+        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
 
         switch (get_class($item)) {
-            case User::class:
-                $restrict['glpi_tickets_users.users_id'] = $item->getID();
-                $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
-
-                $options['criteria'][0]['field']      = 4; // status
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-                break;
-
             case SLA::class:
-                $restrict[] = [
-                    'OR' => [
-                        'slas_id_tto'  => $item->getID(),
-                        'slas_id_ttr'  => $item->getID()
-                    ]
-                ];
                 $criteria['ORDERBY'] = 'glpi_tickets.time_to_resolve DESC';
-
-                $options['criteria'][0]['field']      = 30;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
                 break;
 
             case OLA::class:
-                $restrict[] = [
-                    'OR' => [
-                        'olas_id_tto'  => $item->getID(),
-                        'olas_id_ttr'  => $item->getID()
-                    ]
-                ];
                 $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
-
-                $options['criteria'][0]['field']      = 30;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-                break;
-
-            case Supplier::class:
-                $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
-                $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
-
-                $options['criteria'][0]['field']      = 6;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
                 break;
 
             case Group::class:
-               // Mini search engine
+                // Mini search engine
+                /** @var Group $item */
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                     echo "<table class='tab_cadre_fixe'>";
@@ -5479,61 +5438,10 @@ JAVASCRIPT;
                     $tree = 0;
                 }
                 echo "</td></tr></table>";
-
-                $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
-
-                $options['criteria'][0]['field']      = 71;
-                $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-                break;
-
-            default:
-                $restrict['glpi_items_tickets.items_id'] = $item->getID();
-                $restrict['glpi_items_tickets.itemtype'] = $item->getType();
-
-               // you can only see your tickets
-                if (!Session::haveRight(self::$rightname, self::READALL)) {
-                    $or = [
-                        'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
-                        [
-                            'AND' => [
-                                'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
-                                'glpi_tickets_users.users_id'    => Session::getLoginUserID()
-                            ]
-                        ], [
-                            'AND' => [
-                                'glpi_ticketvalidations.tickets_id'        => new \QueryExpression('glpi_tickets.id'),
-                                'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID()
-                            ]
-                        ]
-                    ];
-                    if (count($_SESSION['glpigroups'])) {
-                        $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
-                    }
-                    $restrict[] = ['OR' => $or];
-                }
-
-                $options['criteria'][0]['field']      = 12;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = 'all';
-                $options['criteria'][0]['link']       = 'AND';
-
-                $options['metacriteria'][0]['itemtype']   = $item->getType();
-                $options['metacriteria'][0]['field']      = Search::getOptionNumber(
-                    $item->getType(),
-                    'id'
-                );
-                $options['metacriteria'][0]['searchtype'] = 'equals';
-                $options['metacriteria'][0]['value']      = $item->getID();
-                $options['metacriteria'][0]['link']       = 'AND';
+                /** @var CommonDBTM $item */
                 break;
         }
 
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
@@ -5595,6 +5503,7 @@ JAVASCRIPT;
                                            )
                 );
 
+                $options  = self::getListForItemSearchOptionsCriteria($item);
                 echo "<tr class='noHover'><th colspan='$colspan'>";
                 $title = sprintf(_n('Last %d ticket', 'Last %d tickets', $number), $number);
                 $link = "<a href='" . Ticket::getSearchURL() . "?" .
@@ -7088,5 +6997,152 @@ JAVASCRIPT;
     public static function getContentTemplatesParametersClass(): string
     {
         return TicketParameters::class;
+    }
+
+    public static function getListForItemRestrict(CommonDBTM $item)
+    {
+        $restrict = [];
+
+        switch (get_class($item)) {
+            case User::class:
+                $restrict['glpi_tickets_users.users_id'] = $item->getID();
+                $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
+                break;
+
+            case SLA::class:
+                $restrict[] = [
+                    'OR' => [
+                        'slas_id_tto'  => $item->getID(),
+                        'slas_id_ttr'  => $item->getID()
+                    ]
+                ];
+                break;
+
+            case OLA::class:
+                $restrict[] = [
+                    'OR' => [
+                        'olas_id_tto'  => $item->getID(),
+                        'olas_id_ttr'  => $item->getID()
+                    ]
+                ];
+                break;
+
+            case Supplier::class:
+                $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
+                $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
+                break;
+
+            case Group::class:
+                /** @var Group $item */
+                if ($item->haveChildren()) {
+                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                } else {
+                    $tree = 0;
+                }
+                $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+                $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
+                /** @var CommonDBTM $item */
+                break;
+
+            default:
+                $restrict['glpi_items_tickets.items_id'] = $item->getID();
+                $restrict['glpi_items_tickets.itemtype'] = $item->getType();
+                // you can only see your tickets
+                if (!Session::haveRight(self::$rightname, self::READALL)) {
+                    $or = [
+                        'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
+                        [
+                            'AND' => [
+                                'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
+                                'glpi_tickets_users.users_id'    => Session::getLoginUserID()
+                            ]
+                        ]
+                    ];
+                    if (Session::haveRightsOr(TicketValidation::$rightname, [TicketValidation::VALIDATEINCIDENT, TicketValidation::VALIDATEREQUEST])) {
+                        $or[] = [
+                            'AND' => [
+                                'glpi_ticketvalidations.tickets_id'        => new \QueryExpression('glpi_tickets.id'),
+                                'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID(),
+                            ]
+                        ];
+                    }
+                    if (count($_SESSION['glpigroups'])) {
+                        $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
+                    }
+                    $restrict[] = ['OR' => $or];
+                }
+        }
+
+        return $restrict;
+    }
+
+    public static function getListForItemSearchOptionsCriteria(CommonDBTM $item)
+    {
+        $options  = [
+            'criteria' => [],
+            'reset'    => 'reset',
+        ];
+
+        switch (get_class($item)) {
+            case User::class:
+                $options['criteria'][0]['field']      = 4; // status
+                $options['criteria'][0]['searchtype'] = 'equals';
+                $options['criteria'][0]['value']      = $item->getID();
+                $options['criteria'][0]['link']       = 'AND';
+                break;
+
+            case SLA::class:
+                $options['criteria'][0]['field']      = 30;
+                $options['criteria'][0]['searchtype'] = 'equals';
+                $options['criteria'][0]['value']      = $item->getID();
+                $options['criteria'][0]['link']       = 'AND';
+                break;
+
+            case OLA::class:
+                $options['criteria'][0]['field']      = 30;
+                $options['criteria'][0]['searchtype'] = 'equals';
+                $options['criteria'][0]['value']      = $item->getID();
+                $options['criteria'][0]['link']       = 'AND';
+                break;
+
+            case Supplier::class:
+                $options['criteria'][0]['field']      = 6;
+                $options['criteria'][0]['searchtype'] = 'equals';
+                $options['criteria'][0]['value']      = $item->getID();
+                $options['criteria'][0]['link']       = 'AND';
+                break;
+
+            case Group::class:
+                /** @var Group $item */
+                if ($item->haveChildren()) {
+                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                } else {
+                    $tree = 0;
+                }
+                $options['criteria'][0]['field']      = 71;
+                $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
+                $options['criteria'][0]['value']      = $item->getID();
+                $options['criteria'][0]['link']       = 'AND';
+                /** @var CommonDBTM $item */
+                break;
+
+            default:
+                $options['criteria'][0]['field']      = 12;
+                $options['criteria'][0]['searchtype'] = 'equals';
+                $options['criteria'][0]['value']      = 'all';
+                $options['criteria'][0]['link']       = 'AND';
+
+                $options['metacriteria'][0]['itemtype']   = $item->getType();
+                $options['metacriteria'][0]['field']      = Search::getOptionNumber(
+                    $item->getType(),
+                    'id'
+                );
+                $options['metacriteria'][0]['searchtype'] = 'equals';
+                $options['metacriteria'][0]['value']      = $item->getID();
+                $options['metacriteria'][0]['link']       = 'AND';
+                break;
+        }
+
+        return $options;
     }
 }
