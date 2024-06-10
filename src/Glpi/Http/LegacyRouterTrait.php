@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,16 +34,18 @@
 
 namespace Glpi\Http;
 
+use Symfony\Component\HttpFoundation\Request;
+
 trait LegacyRouterTrait
 {
-    public function isTargetAPhpScript(string $path): bool
+    protected function isTargetAPhpScript(string $path): bool
     {
         // Check extension on path directly to be able to recognize that target is supposed to be a PHP
         // script even if it not exists. This is usefull to send most appropriate response code (i.e. 403 VS 404).
         return preg_match('/^php\d*$/', pathinfo($path, PATHINFO_EXTENSION)) === 1;
     }
 
-    public function isPathAllowed(string $path): bool
+    protected function isPathAllowed(string $path): bool
     {
         // Check global exclusion patterns.
         $excluded_path_patterns = [
@@ -134,5 +135,33 @@ trait LegacyRouterTrait
         ];
 
         return preg_match('/(' . implode('|', $allowed_path_pattern) . ')/i', $path) === 1;
+    }
+
+    protected function extractPathAndPrefix(Request $request): array
+    {
+        if (
+            $request->server->get('SCRIPT_NAME') === '/public/index.php'
+            && preg_match('/^\/public/', $request->server->get('REQUEST_URI')) !== 1
+        ) {
+            // When requested URI does not start with '/public' but `$request->server->get('SCRIPT_NAME')` is '/public/index.php',
+            // it means that document root is the GLPI root directory, but a rewrite rule redirects the request to the PHP router.
+            // This case happen when redirection to PHP router is made by an `.htaccess` file placed in the GLPI root directory,
+            // and has to be handled to support shared hosting where it is not possible to change the web server root directory.
+            $uri_prefix = '';
+        } else {
+            // `$request->server->get('SCRIPT_NAME')` corresponds to the script path relative to server document root.
+            // -> if server document root is `/public`, then `$request->server->get('SCRIPT_NAME')` will be equal to `/index.php`
+            // -> if script is located into a `/glpi-alias` alias directory, then `$request->server->get('SCRIPT_NAME')` will be equal to `/glpi-alias/index.php`
+            $uri_prefix = rtrim(str_replace('\\', '/', dirname($request->server->get('SCRIPT_NAME'))), '/');
+        }
+
+        // Get URI path relative to GLPI (i.e. without alias directory prefix).
+        $path = preg_replace(
+            '/^' . preg_quote($uri_prefix, '/') . '/',
+            '',
+            parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
+        );
+
+        return [$uri_prefix, $path];
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -68,27 +67,7 @@ final readonly class LegacyAssetsListener implements EventSubscriberInterface
     {
         $glpi_root = dirname(__DIR__, 3);
 
-        if (
-            $request->server->get('SCRIPT_NAME') === '/public/index.php'
-            && preg_match('/^\/public/', $request->server->get('REQUEST_URI')) !== 1
-        ) {
-            // When requested URI does not start with '/public' but `$request->server->get('SCRIPT_NAME')` is '/public/index.php',
-            // it means that document root is the GLPI root directory, but a rewrite rule redirects the request to the PHP router.
-            // This case happen when redirection to PHP router is made by an `.htaccess` file placed in the GLPI root directory,
-            // and has to be handled to support shared hosting where it is not possible to change the web server root directory.
-            $uri_prefix = '';
-        } else {
-            // `$request->server->get('SCRIPT_NAME')` corresponds to the script path relative to server document root.
-            // -> if server document root is `/public`, then `$request->server->get('SCRIPT_NAME')` will be equal to `/index.php`
-            // -> if script is located into a `/glpi-alias` alias directory, then `$request->server->get('SCRIPT_NAME')` will be equal to `/glpi-alias/index.php`
-            $uri_prefix = rtrim(str_replace('\\', '/', dirname($request->server->get('SCRIPT_NAME'))), '/');
-        }
-
-        $path = preg_replace(
-            '/^' . preg_quote($uri_prefix, '/') . '/',
-            '',
-            parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
-        );
+        [$_, $path] = $this->extractPathAndPrefix($request);
 
         if ($this->isPathAllowed($path) === false) {
             return null;
