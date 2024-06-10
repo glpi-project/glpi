@@ -1925,7 +1925,7 @@ function setupAdaptDropdown(config)
         templateSelection: config.templateselection,
     })
         .bind('setValue', function (e, value) {
-            $('#$id').val(value).trigger('change');
+            $('#' + field_id).val(value).trigger('change');
         });
     $('label[for=' + field_id + ']').on('click', function () {
         $('#' + field_id).select2('open');
