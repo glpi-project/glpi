@@ -51,6 +51,7 @@
    {% set field_options = {
        'locked_fields': item.getLockedFields(),
        'rand': rand,
+       'readonly': canedit is defined ? not canedit : false,
    } %}
 
    <div class="card-body d-flex flex-wrap">

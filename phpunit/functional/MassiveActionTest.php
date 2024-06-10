@@ -57,13 +57,13 @@ class MassiveActionTest extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 29,
-                'singlecount'  => 19
+                'allcount'     => 30,
+                'singlecount'  => 20
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 24,
-                'singlecount'  => 16
+                'allcount'     => 25,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
@@ -72,28 +72,28 @@ class MassiveActionTest extends DbTestCase
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 22,
-                'singlecount'  => 16
+                'allcount'     => 23,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 24,
-                'singlecount'  => 17
+                'allcount'     => 25,
+                'singlecount'  => 18
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 25,
-                'singlecount'  => 16
+                'allcount'     => 26,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 25,
-                'singlecount'  => 16
+                'allcount'     => 26,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
-                'allcount'     => 20,
-                'singlecount'  => 9
+                'allcount'     => 21,
+                'singlecount'  => 10
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',

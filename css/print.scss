@@ -1,0 +1,178 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+.preview-summary {
+    width: 210mm;
+}
+
+.preview {
+    width: 210mm;
+    background-color: white !important;
+
+    @page {
+        size: a4;
+    }
+
+    * {
+        box-shadow: none !important;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    [class*="form-control"],
+    [class*="form-select"],
+    [class*="select2"],
+    span:not(.avatar) {
+        border-color: transparent !important;
+        background-color: transparent !important;
+        color: black !important;
+    }
+
+    .break {
+        margin-top: 100px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    .racks_col {
+        margin-right: 2% !important;
+    }
+
+    table, .table {
+        width: 100%;
+        max-width: 210mm;
+        box-sizing: border-box;
+        table-layout: fixed;
+        overflow-x: hidden;
+
+        td, th, a, span {
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tfoot, tr[class*="noHover"] {
+            display: none !important;
+        }
+    }
+
+    div[class*="form-field"] {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .card-header {
+        background-color: rgb(255, 255, 255) !important;
+        color: black !important;
+    }
+
+    @mixin hide-elements {
+        display: none !important;
+    }
+
+    * {
+        box-shadow: none !important;
+    }
+
+    #header,
+    #footer,
+    .navbar, /*left navbar*/
+    .nav-tabs, /*item tab*/
+    #debug-toolbar, /* toolbar */
+    .navigationheader > div:first-of-type, /* navigationheader */
+    .navigationheader > div:last-of-type, /* navigationheader */
+    #single-action, /* btn action from item header */
+    #nav,
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    input[type="checkbox"],
+    input[name="to_add"],
+    [class*="btn "],
+    [class*="search-pager"],
+    [class*="tab_cadre_pager"],
+    [class*="alert-"],
+    [class*="selection__arrow"],
+    [class*="fileupload"],
+    [class*="add_relation"],
+    form[action="contract_item"],
+    form[action*="asset_peripheralasset"],
+    form[action*="socket"],
+    form[action*="document"],
+    form[action*="item_line"],
+    form[action*="networkport"],
+    form[action*="item_softwarelicense"],
+    form[action*="item_softwareversion"],
+    form[action*="contract_item"],
+    form[action*="knowbaseitem_item"],
+    form[action*="certificate_item"],
+    form[action*="domain"],
+    form[action*="appliance_item"],
+    label[for*="pictures_"],
+    form[id*="form_device_add"],
+    span[class*="fa-plus pointer"],
+    #debug-toolbar-applet ,
+    [class*="firstbloc"],
+    .ribbon-bookmark {
+        @include hide-elements;
+    }
+}
+
+@media print {
+    .preview-summary,
+    [class*="navbar"],
+    [id*="tabspanel-select"],
+    div[id*="navigationheader"] {
+        display: none !important;
+    }
+
+    .break {
+        break-before: page !important;
+        margin-top: 0 !important;
+    }
+
+    .timeline-content {
+        margin-left: 10px;
+        padding-bottom: 15px !important;
+    }
+
+    i[class*="ti ti-eye-off"] {
+        margin-top: 15px;
+    }
+
+}

@@ -57,7 +57,6 @@ if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_
 
     $_GET['file'] = $theme->getPath();
 }
-
 $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');

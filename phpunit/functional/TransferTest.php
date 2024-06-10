@@ -83,6 +83,7 @@ class TransferTest extends DbTestCase
                 '/^USBVendor$/',
                 '/^PCIVendor$/',
                 '/^PendingReasonCron$/',
+                '/^PrintPreview$/',
             ]
         );
 

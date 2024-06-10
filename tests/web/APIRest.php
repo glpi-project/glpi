@@ -2623,19 +2623,9 @@ class APIRest extends atoum
                     ["key" => "Reservation:disable",             "label" => "Prohibit reservations"],
                     ["key" => "Reservation:available",           "label" => "Make available for reservations"],
                     ["key" => "Reservation:unavailable",         "label" => "Make unavailable for reservations"],
+                    ["key" => "PrintPreview:print_preview",      "label" => "Display to a printable view"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
-                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
-                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
-                ],
-            ],
-            [
-                'url' => 'getMassiveActions/Computer?is_deleted=1',
-                'status' => 200,
-                'response' => [
-                    ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
-                    ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
-                    ["key" => "MassiveAction:restore",                 "label" => "Restore"],
                     ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
                     ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
@@ -2668,8 +2658,20 @@ class APIRest extends atoum
                     ["key" => "Reservation:disable",             "label" => "Prohibit reservations"],
                     ["key" => "Reservation:available",           "label" => "Make available for reservations"],
                     ["key" => "Reservation:unavailable",         "label" => "Make unavailable for reservations"],
+                    ["key" => "PrintPreview:print_preview",      "label" => "Display to a printable view"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActions/Computer?is_deleted=1',
+                'status' => 200,
+                'response' => [
+                    ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
+                    ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
+                    ["key" => "MassiveAction:restore",                 "label" => "Restore"],
                     ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
                     ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
@@ -2813,6 +2815,11 @@ class APIRest extends atoum
                 'response' => [
                     ["name" => "peer_contracts_id", "type" => "dropdown"],
                 ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/PrintPreview:print_preview',
+                'status' => 200,
+                'response' => []
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:amend_comment',

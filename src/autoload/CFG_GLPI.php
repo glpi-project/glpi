@@ -641,3 +641,8 @@ $CFG_GLPI['admin_types'] = [
 
 $CFG_GLPI['process_types'] = ['Computer'];
 $CFG_GLPI['environment_types'] = ['Computer'];
+
+$CFG_GLPI["print_preview_types"]  = ['Computer', 'Monitor', 'Software', 'NetworkEquipment',
+    'Device', 'Peripheral', 'Printer', 'CartridgeItem', 'ConsumableItem', 'Phone', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment',
+    'Unmanaged', 'Cable', 'DeviceSimcard', 'Ticket'
+];
