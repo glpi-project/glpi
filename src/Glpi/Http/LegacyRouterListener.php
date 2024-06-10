@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,9 +52,10 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
      */
     protected string $glpi_root;
 
-    public function __construct(?string $glpi_root = null)
-    {
-        $this->glpi_root = $glpi_root ?? dirname(__DIR__, 3);
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')] private string $projectDir,
+    ) {
+        $this->glpi_root = $projectDir;
     }
 
     public static function getSubscribedEvents(): array

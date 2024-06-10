@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -50,9 +51,10 @@ final readonly class LegacyAssetsListener implements EventSubscriberInterface
      */
     protected string $glpi_root;
 
-    public function __construct(?string $glpi_root = null)
-    {
-        $this->glpi_root = $glpi_root ?? dirname(__DIR__, 3);
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')] private string $projectDir,
+    ) {
+        $this->glpi_root = $projectDir;
     }
 
 
