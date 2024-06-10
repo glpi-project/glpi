@@ -115,6 +115,11 @@ class TicketTemplate extends ITILTemplate
                 'name',
                 'glpi_contracts'
             )   => '_contracts_id',
+            $itil_object->getSearchOptionIDByField(
+                'field',
+                'type',
+                'glpi_tickets'
+            )   => 'type',
 
         ];
 
