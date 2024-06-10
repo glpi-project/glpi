@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Mime\MimeTypes;
 
 readonly class LegacyAssetsListener implements EventSubscriberInterface
 {
@@ -96,8 +97,6 @@ readonly class LegacyAssetsListener implements EventSubscriberInterface
             }
         }
 
-
-
         if ($this->isPathAllowed($path) === false) {
             return null;
         }
@@ -113,7 +112,9 @@ readonly class LegacyAssetsListener implements EventSubscriberInterface
         }
 
         // Serve static files if web server is not configured to do it directly.
-        $response = new BinaryFileResponse($target_file);
+        $response = new BinaryFileResponse($target_file, 200, [
+            'Content-Type' => $this->getMimeType($target_file),
+        ]);
         $response->setMaxAge(2_592_000);
         $response->mustRevalidate();
 
@@ -121,5 +122,30 @@ readonly class LegacyAssetsListener implements EventSubscriberInterface
         $response->isNotModified($request);
 
         return $response;
+    }
+
+    private function getMimeType(string $target_file): string
+    {
+        $extension = \pathinfo($target_file, PATHINFO_EXTENSION);
+
+        switch ($extension) {
+            case 'css':
+                return 'text/css';
+            case 'js':
+            case 'vue':
+                return 'application/javascript';
+            case 'woff':
+                return 'font/woff';
+            case 'woff2':
+                return 'font/woff2';
+            default:
+                $mime = \mime_content_type($target_file);
+
+                if ($mime === false) {
+                    $mime = 'application/octet-stream';
+                }
+
+                return $mime;
+        }
     }
 }
