@@ -5253,9 +5253,9 @@ msgid_plural "Cartridges"
 msgstr[0] "Касети"
 
 #: src/Printer_CartridgeInfo.php:44
+msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgid_plural "Cartridge inventoried information"
-msgstr[0] "Информация за инвентаризацията на касетата"
+msgstr "Информация за инвентаризацията на касетата"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

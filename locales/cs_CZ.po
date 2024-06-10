@@ -5448,12 +5448,9 @@ msgstr[2] "Náplní"
 msgstr[3] "Náplně"
 
 #: src/Printer_CartridgeInfo.php:44
+msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgid_plural "Cartridge inventoried information"
-msgstr[0] "Informace evidovaných cartridge"
-msgstr[1] "Informace evidovaných cartridge"
-msgstr[2] "Informace evidovaných cartridge"
-msgstr[3] "Informace evidovaných cartridge"
+msgstr "Informace evidovaných cartridge"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

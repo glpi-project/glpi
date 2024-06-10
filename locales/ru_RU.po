@@ -5498,12 +5498,9 @@ msgstr[2] "Картриджи"
 msgstr[3] "Картриджи"
 
 #: src/Printer_CartridgeInfo.php:44
+msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgid_plural "Cartridge inventoried information"
-msgstr[0] "Информация по инвентаризации картриджа"
-msgstr[1] "Информация по инвентаризации картриджа"
-msgstr[2] "Информация по инвентаризации картриджа"
-msgstr[3] "Информация по инвентаризации картриджа"
+msgstr "Информация по инвентаризации картриджа"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

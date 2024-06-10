@@ -5483,12 +5483,9 @@ msgstr[2] "Náplne"
 msgstr[3] "Náplne"
 
 #: src/Printer_CartridgeInfo.php:44
+msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgid_plural "Cartridge inventoried information"
-msgstr[0] "Informácie o evidencii náplní"
-msgstr[1] "Informácie o evidencii náplní"
-msgstr[2] "Informácie o evidencii náplní"
-msgstr[3] "Informácie o evidencii náplní"
+msgstr "Informácie o evidencii náplní"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

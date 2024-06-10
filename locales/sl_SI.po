@@ -5483,12 +5483,9 @@ msgstr[2] "Kartuše"
 msgstr[3] "Kartuš"
 
 #: src/Printer_CartridgeInfo.php:44
+msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgid_plural "Cartridge inventoried information"
-msgstr[0] "Informacije o inventariziranih kartušah"
-msgstr[1] "Informacije o inventariziranih kartušah"
-msgstr[2] "Informacije o inventariziranih kartušah"
-msgstr[3] "Informacije o inventariziranih kartušah"
+msgstr "Informacije o inventariziranih kartušah"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
