@@ -139,9 +139,12 @@ trait LegacyRouterTrait
 
     protected function extractPathAndPrefix(Request $request): array
     {
+        $script_name = $request->server->get('SCRIPT_NAME');
+        $request_uri = $request->server->get('REQUEST_URI');
+
         if (
-            $request->server->get('SCRIPT_NAME') === '/public/index.php'
-            && preg_match('/^\/public/', $request->server->get('REQUEST_URI')) !== 1
+            $script_name === '/public/index.php'
+            && preg_match('/^\/public/', $request_uri) !== 1
         ) {
             // When requested URI does not start with '/public' but `$request->server->get('SCRIPT_NAME')` is '/public/index.php',
             // it means that document root is the GLPI root directory, but a rewrite rule redirects the request to the PHP router.
@@ -152,14 +155,15 @@ trait LegacyRouterTrait
             // `$request->server->get('SCRIPT_NAME')` corresponds to the script path relative to server document root.
             // -> if server document root is `/public`, then `$request->server->get('SCRIPT_NAME')` will be equal to `/index.php`
             // -> if script is located into a `/glpi-alias` alias directory, then `$request->server->get('SCRIPT_NAME')` will be equal to `/glpi-alias/index.php`
-            $uri_prefix = rtrim(str_replace('\\', '/', dirname($request->server->get('SCRIPT_NAME'))), '/');
+            $uri_prefix = rtrim(str_replace('\\', '/', dirname($script_name)), '/');
         }
 
         // Get URI path relative to GLPI (i.e. without alias directory prefix).
+        $request_uri = preg_replace('/\/{2,}/', '/', $request_uri); // remove duplicates `/`
         $path = preg_replace(
             '/^' . preg_quote($uri_prefix, '/') . '/',
             '',
-            parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
+            parse_url($request_uri, PHP_URL_PATH)
         );
 
         return [$uri_prefix, $path];

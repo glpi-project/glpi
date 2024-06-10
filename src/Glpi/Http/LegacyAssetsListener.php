@@ -45,6 +45,17 @@ final readonly class LegacyAssetsListener implements EventSubscriberInterface
 {
     use LegacyRouterTrait;
 
+    /**
+     * GLPI root directory.
+     */
+    protected string $glpi_root;
+
+    public function __construct(?string $glpi_root = null)
+    {
+        $this->glpi_root = $glpi_root ?? dirname(__DIR__, 3);
+    }
+
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -65,15 +76,13 @@ final readonly class LegacyAssetsListener implements EventSubscriberInterface
 
     private function serveLegacyAssets(Request $request): ?Response
     {
-        $glpi_root = dirname(__DIR__, 3);
-
-        [$_, $path] = $this->extractPathAndPrefix($request);
+        [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
         if ($this->isPathAllowed($path) === false) {
             return null;
         }
 
-        $target_file = $glpi_root . $path;
+        $target_file = $this->glpi_root . $path;
 
         if (!is_file($target_file)) {
             return null;

@@ -46,6 +46,16 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 {
     use LegacyRouterTrait;
 
+    /**
+     * GLPI root directory.
+     */
+    protected string $glpi_root;
+
+    public function __construct(?string $glpi_root = null)
+    {
+        $this->glpi_root = $glpi_root ?? dirname(__DIR__, 3);
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -71,12 +81,9 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
          *
          * This router is used to be able to expose only the `/public` directory on the webserver.
          */
-
-        $glpi_root = \dirname(__DIR__, 3);
-
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
-        [$path, $pathinfo] = $this->getTargetPathInfo($path, $glpi_root);
+        [$path, $pathinfo] = $this->getTargetPathInfo($path);
 
         // Enforce legacy index file for root URL.
         // This prevents Symfony from being called.
@@ -89,7 +96,7 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
             return $response;
         }
 
-        $target_file = $glpi_root . $path;
+        $target_file = $this->glpi_root . $path;
 
         if (
             !$this->isTargetAPhpScript($path)
@@ -101,7 +108,8 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
         }
 
         // Ensure `getcwd()` and inclusion path is based on requested file FS location.
-        chdir(dirname($target_file));
+        // use `@` to silence errors on unit tests (`chdir` does not work on streamed mocked dir)
+        @chdir(dirname($target_file));
 
         // (legacy) Redefine some $_SERVER variables to have same values whenever scripts are called directly
         // or through current router.
@@ -122,22 +130,20 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
         });
     }
 
-    private function getTargetPathInfo(string $path, string $glpi_root): array
+    private function getTargetPathInfo(string $init_path): array
     {
-        $uri = preg_replace('/\/{2,}/', '/', $path); // remove duplicates `/`
-
         $path = '';
         $pathinfo = null;
 
         // Parse URI to find requested script and PathInfo
         $slash_pos = 0;
-        while ($slash_pos !== false && ($dot_pos = strpos($uri, '.', $slash_pos)) !== false) {
-            $slash_pos = strpos($uri, '/', $dot_pos);
-            $filepath = substr($uri, 0, $slash_pos !== false ? $slash_pos : strlen($uri));
-            if (is_file($glpi_root . $filepath)) {
+        while ($slash_pos !== false && ($dot_pos = strpos($init_path, '.', $slash_pos)) !== false) {
+            $slash_pos = strpos($init_path, '/', $dot_pos);
+            $filepath = substr($init_path, 0, $slash_pos !== false ? $slash_pos : strlen($init_path));
+            if (is_file($this->glpi_root . $filepath)) {
                 $path = $filepath;
 
-                $pathinfo = substr($uri, strlen($filepath));
+                $pathinfo = substr($init_path, strlen($filepath));
                 if ($pathinfo !== '') {
                     // On any regular PHP script that is directly served by Apache, `$_SERVER['PATH_INFO']`
                     // contains decoded URL.
@@ -152,13 +158,13 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
         if ($path === '') {
             // Fallback to requested URI
-            $path = $uri;
+            $path = $init_path;
 
             // Clean trailing `/`.
             $path = rtrim($path, '/');
 
             // If URI matches a directory path, consider `index.php` is the requested script.
-            if (is_dir($glpi_root . $path) && is_file($glpi_root . $path . '/index.php')) {
+            if (is_dir($this->glpi_root . $path) && is_file($this->glpi_root . $path . '/index.php')) {
                 $path .= '/index.php';
             }
         }
