@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-readonly class LegacyAssetsListener implements EventSubscriberInterface
+final readonly class LegacyAssetsListener implements EventSubscriberInterface
 {
     use LegacyRouterTrait;
 

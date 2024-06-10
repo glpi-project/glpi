@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-readonly class LegacyRouterListener implements EventSubscriberInterface
+final readonly class LegacyRouterListener implements EventSubscriberInterface
 {
     use LegacyRouterTrait;
 
