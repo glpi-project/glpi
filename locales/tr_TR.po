@@ -5321,9 +5321,10 @@ msgstr[0] "Kartuş"
 msgstr[1] "Kartuşlar"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Kartuş envantere alındı bilgisi"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Kartuş envantere alındı bilgisi"
+msgstr[1] "Kartuş envantere alındı bilgisi"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

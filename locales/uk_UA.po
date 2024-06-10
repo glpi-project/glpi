@@ -5245,9 +5245,9 @@ msgid_plural "Cartridges"
 msgstr[0] "Картриджі"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Інвентаризована інформація картриджу"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Інвентаризована інформація картриджу"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

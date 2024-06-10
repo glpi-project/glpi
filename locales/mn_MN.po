@@ -5276,9 +5276,10 @@ msgstr[0] "Камер"
 msgstr[1] "Картридж"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Картриджийн тооллого хийсэн мэдээлэл"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Картриджийн тооллого хийсэн мэдээлэл"
+msgstr[1] "Картриджийн тооллого хийсэн мэдээлэл"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

@@ -5495,9 +5495,12 @@ msgstr[2] "Kartridży"
 msgstr[3] "Kartridży"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Informacje o zinwentaryzowanych kartridżach"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Informacje o zinwentaryzowanych kartridżach"
+msgstr[1] "Informacje o zinwentaryzowanych kartridżach"
+msgstr[2] "Informacje o zinwentaryzowanych kartridżach"
+msgstr[3] "Informacje o zinwentaryzowanych kartridżach"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

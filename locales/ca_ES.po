@@ -5286,9 +5286,10 @@ msgstr[0] "Cartutxo"
 msgstr[1] "Cartutxos"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Informació inventariada del cartutx"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Informació inventariada del cartutx"
+msgstr[1] "Informació inventariada del cartutx"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

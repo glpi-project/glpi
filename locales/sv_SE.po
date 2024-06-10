@@ -5288,9 +5288,10 @@ msgstr[0] "Toner"
 msgstr[1] "Toners"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Information om kassettinventering"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Information om kassettinventering"
+msgstr[1] "Information om kassettinventering"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"

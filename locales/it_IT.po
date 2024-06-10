@@ -5427,9 +5427,11 @@ msgstr[1] "Cartucce"
 msgstr[2] "Cartucce"
 
 #: src/Printer_CartridgeInfo.php:44
-msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr "Informazioni sull'inventario delle cartucce"
+msgid_plural "Cartridge inventoried information"
+msgstr[0] "Informazioni sull'inventario delle cartucce"
+msgstr[1] "Informazioni sull'inventario delle cartucce"
+msgstr[2] "Informazioni sull'inventario delle cartucce"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
