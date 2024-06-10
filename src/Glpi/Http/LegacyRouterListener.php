@@ -112,7 +112,7 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         // Execute target script.
         $this->requireFile($target_file, $request);
 
-        $requestedFileContent = ob_get_flush();
+        $requestedFileContent = ob_get_clean();
 
         // Both have been set by legacy "front" or "ajax" files, usually.
         $headers = $this->buildHeadersList(headers_list());

@@ -33,7 +33,7 @@ readonly class LegacyAssetsListener implements EventSubscriberInterface
 
     private function serveLegacyAssets(Request $request): ?Response
     {
-        $glpi_root = realpath(dirname(__DIR__, 3));
+        $glpi_root = dirname(__DIR__, 3);
 
         if (
             $request->server->get('SCRIPT_NAME') === '/public/index.php'
