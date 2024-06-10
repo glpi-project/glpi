@@ -1,0 +1,20 @@
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {{ fields.checkboxField(
+         'legend',
+         0,
+         __('Show legend'),
+      ) }}
+    </div>
+    <div class="col">
+      {{ fields.checkboxField(
+         'legend2',
+         1,
+         __('Show legend2'),
+      ) }}
+    </div>
+  </div>
+</div>
