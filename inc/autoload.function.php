@@ -34,7 +34,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', dirname(__DIR__));
+    die("Sorry. You can't access this file directly");
 }
 
 define('NS_GLPI', 'Glpi\\');

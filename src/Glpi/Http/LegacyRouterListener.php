@@ -6,6 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -31,7 +32,7 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         }
     }
 
-    public function runLegacyRouter(Request $request): ?Response
+    private function runLegacyRouter(Request $request): ?Response
     {
         /**
          * GLPI web router.
@@ -64,6 +65,8 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
             parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
         );
 
+        [$path, $pathinfo] = $this->getTargetPathInfo($path, $glpi_root);
+
         // Enforce legacy index file for root URL.
         // This prevents Symfony from being called.
         if ($path === '/') {
@@ -92,81 +95,27 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         // (legacy) Redefine some $_SERVER variables to have same values whenever scripts are called directly
         // or through current router.
         $target_path     = $uri_prefix . $path;
-        $target_pathinfo = $this->getTargetPathInfo($glpi_root, $path);
-        $_SERVER['PATH_INFO']       = $target_pathinfo;
+        $_SERVER['PATH_INFO']       = $pathinfo;
         $_SERVER['PHP_SELF']        = $target_path;
         $_SERVER['SCRIPT_FILENAME'] = $target_file;
         $_SERVER['SCRIPT_NAME']     = $target_path;
 
         // New server overrides:
-        $request->server->set('PATH_INFO', $target_pathinfo);
+        $request->server->set('PATH_INFO', $pathinfo);
         $request->server->set('PHP_SELF', $target_path);
         $request->server->set('SCRIPT_FILENAME', $target_file);
         $request->server->set('SCRIPT_NAME', $target_path);
 
-        $baseContent = '';
-        ob_start(static function (string $content) use (&$baseContent) {
-            $baseContent .= $content;
+        return new StreamedResponse(static function () use ($target_file) {
+            require($target_file);
         });
-
-        // Execute target script.
-        $this->requireFile($target_file, $request);
-
-        $requestedFileContent = ob_get_clean();
-
-        // Both have been set by legacy "front" or "ajax" files, usually.
-        $headers = $this->buildHeadersList(headers_list());
-        $httpCode = http_response_code();
-
-        return new Response($baseContent . $requestedFileContent, $httpCode, $headers);
     }
 
-    /**
-     * The goal of this wrapper is to make sure to remove *all* context variables,
-     * except the $target_file (which can't be removed) and the HTTP request (for smoother upgrades)
-     */
-    private function requireFile(string $target_file, Request $request): void
+    private function getTargetPathInfo(string $path, string $glpi_root): array
     {
-        require($target_file);
-    }
+        $uri = preg_replace('/\/{2,}/', '/', $path); // remove duplicates `/`
 
-    /**
-     * @param array<string> $headersAsList
-     *
-     * @return array<string, string>
-     */
-    private function buildHeadersList(array $headersAsList): array
-    {
-        $headers = [];
-
-        foreach ($headersAsList as $value) {
-            [$key, $value] = array_map('trim', explode(':', $value, 2));
-            $headers[$key] = $value;
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Check whether target is a PHP script.
-     *
-     * @return bool
-     */
-    public function isTargetAPhpScript(string $path): bool
-    {
-        // Check extension on path directly to be able to recognize that target is supposed to be a PHP
-        // script even if it not exists. This is usefull to send most appropriate response code (i.e. 403 VS 404).
-        if (preg_match('/^php\d*$/', pathinfo($path, PATHINFO_EXTENSION)) === 1) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function getTargetPathInfo(string $glpi_root, string $uri): ?string
-    {
-        $uri = preg_replace('/\/{2,}/', '/', $uri); // remove duplicates `/`
-
+        $path = '';
         $pathinfo = null;
 
         // Parse URI to find requested script and PathInfo
@@ -184,21 +133,33 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
                     // We have to reproduce this decoding operation to prevent issues with endoded chars.
                     $pathinfo = urldecode($pathinfo);
                 } else {
-                    $pathinfo = null;
+                    $pathinfo = '';
                 }
                 break;
             }
         }
 
-        return $pathinfo;
-    }
+        if ($path === '') {
+            // Fallback to requested URI
+            $path = $uri;
 
+            // Clean trailing `/`.
+            $path = rtrim($path, '/');
+
+            // If URI matches a directory path, consider `index.php` is the requested script.
+            if (is_dir($glpi_root . $path) && is_file($glpi_root . $path . '/index.php')) {
+                $path .= '/index.php';
+            }
+        }
+
+        return [$path, $pathinfo];
+    }
 
     /**
      *  Handle well-known URIs as defined in RFC 5785.
      *  https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
      */
-    public function handleRedirects(string $path, string $uri_prefix): ?Response
+    private function handleRedirects(string $path, string $uri_prefix): ?Response
     {
         // Handle well-known URIs
         if (preg_match('/^\/\.well-known\//', $path) !== 1) {
@@ -214,5 +175,7 @@ readonly class LegacyRouterListener implements EventSubscriberInterface
         if ($requested_uri === 'change-password') {
             return new RedirectResponse($uri_prefix . '/front/updatepassword.php', 307);
         }
+
+        return null;
     }
 }

@@ -8,7 +8,6 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Mime\MimeTypes;
 
 readonly class LegacyAssetsListener implements EventSubscriberInterface
 {
@@ -57,45 +56,6 @@ readonly class LegacyAssetsListener implements EventSubscriberInterface
             '',
             parse_url($request->server->get('REQUEST_URI') ?? '/', PHP_URL_PATH)
         );
-
-        $uri = preg_replace('/\/{2,}/', '/', $path); // remove duplicates `/`
-
-        $path     = null;
-        $pathinfo = null;
-
-        // Parse URI to find requested script and PathInfo
-        $slash_pos = 0;
-        while ($slash_pos !== false && ($dot_pos = strpos($uri, '.', $slash_pos)) !== false) {
-            $slash_pos = strpos($uri, '/', $dot_pos);
-            $filepath = substr($uri, 0, $slash_pos !== false ? $slash_pos : strlen($uri));
-            if (is_file($glpi_root . $filepath)) {
-                $path = $filepath;
-
-                $pathinfo = substr($uri, strlen($filepath));
-                if ($pathinfo !== '') {
-                    // On any regular PHP script that is directly served by Apache, `$_SERVER['PATH_INFO']`
-                    // contains decoded URL.
-                    // We have to reproduce this decoding operation to prevent issues with endoded chars.
-                    $pathinfo = urldecode($pathinfo);
-                } else {
-                    $pathinfo = null;
-                }
-                break;
-            }
-        }
-
-        if ($path === null) {
-            // Fallback to requested URI
-            $path = $uri;
-
-            // Clean trailing `/`.
-            $path = rtrim($path, '/');
-
-            // If URI matches a directory path, consider `index.php` is the requested script.
-            if (is_dir($glpi_root . $path) && is_file($glpi_root . $path . '/index.php')) {
-                $path .= '/index.php';
-            }
-        }
 
         if ($this->isPathAllowed($path) === false) {
             return null;
