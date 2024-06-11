@@ -357,6 +357,13 @@
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]"
     );
+
+    {% for question_type in question_types_manager.getQuestionTypes() %}
+        window.glpi_form_editor_controller.registerQuestionTypeOptions(
+            '{{ get_class(question_type)|e('js') }}',
+            {{ question_type.getFormEditorJsOptions()|raw }}
+        );
+    {% endfor %}
 </script>
 
 <style>
