@@ -4383,7 +4383,7 @@ TWIG, $twig_params);
                 $values['authldaps_id'],
                 $user_sync_field
             );
-            if ($_REQUEST['mode'] !== self::ACTION_IMPORT && $user) {
+            if ($values['mode'] !== self::ACTION_IMPORT && $user) {
                 // Not importing and the user already exists
                 continue;
             }
