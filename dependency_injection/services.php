@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,15 +32,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+return static function (ContainerConfigurator $container): void {
+    $projectDir = dirname(__DIR__);
 
-$kernel = new Kernel('dev', true);
+    $services = $container->services();
 
-$request = Request::createFromGlobals();
+    $services
+        ->defaults()
+        ->autowire()
+        ->autoconfigure()
+    ;
 
-$response = $kernel->handle($request);
-
-$response->send();
+    $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
+    $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+};
