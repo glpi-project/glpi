@@ -87,9 +87,6 @@ describe('Convert default value form', () => {
         // Change sub type to "Emails"
         cy.findByRole('combobox', { name: 'Question type' }).select('Long answer');
 
-        // Wait for the editor to be loaded
-        cy.wait(1000);
-
         // Check if default value has been converted
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
             cy.findByLabelText("Default value")
@@ -101,9 +98,6 @@ describe('Convert default value form', () => {
     it('test convert default value between long text and short text types', () => {
         // Change sub type to "Emails"
         cy.findByRole('combobox', { name: 'Question type' }).select('Long answer');
-
-        // Wait for the editor to be loaded
-        cy.wait(1000);
 
         // Set defaut value
         cy.findByRole('region', {'name': 'Question details'}).within(() => {

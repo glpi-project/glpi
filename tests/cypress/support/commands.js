@@ -137,7 +137,10 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
     }
     return cy.wrap(new Cypress.Promise(resolve => {
         // Check if the iframe's content window is already loaded to a page on the same domain
-        if (iframe[0].contentWindow.location.href.match(url_pattern)) {
+        if (
+            iframe[0].contentWindow.location.href.match(url_pattern)
+            && iframe.contents().find('body').length > 0
+        ) {
             resolve(iframe.contents().find('body'));
             return;
         }
