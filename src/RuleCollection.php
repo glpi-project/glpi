@@ -471,6 +471,7 @@ class RuleCollection extends CommonDBTM
     public function showListRules($target, $options = [])
     {
         /** @var array $CFG_GLPI */
+        /** @var int $AJAX_INCLUDE */
         global $CFG_GLPI, $AJAX_INCLUDE;
 
         $p['inherited'] = 1;
