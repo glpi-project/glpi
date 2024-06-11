@@ -4759,8 +4759,8 @@ JS;
             unset($options['selected']);
         }
         $select = '';
-        $original_field_name = rtrim($name, '[]');
         if (isset($options['multiple']) && $options['multiple']) {
+            $original_field_name = htmlspecialchars(rtrim($name, '[]'));
             $select .= "<input type='hidden' name='$original_field_name' value=''>";
         }
         $select .= sprintf(
