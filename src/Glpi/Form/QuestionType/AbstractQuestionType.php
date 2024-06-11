@@ -76,6 +76,20 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) { return null; },
+                "convertDefaultValue": function (question, old_type, value) {
+                    // No need to convert the default value
+                    return value;
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
         return ''; // No options by default
