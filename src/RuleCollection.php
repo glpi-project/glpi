@@ -575,7 +575,7 @@ class RuleCollection extends CommonDBTM
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
-            Session::initNavigateListItems($ruletype);
+            Session::initNavigateListItems($ruletype, '', '');
         }
 
         if ($can_sort) {
