@@ -111,7 +111,13 @@ TWIG;
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question = null, array $params = []): string
+    protected function getSelectableQuestionOptionsClass(): string
+    {
+        return 'dropdown-border';
+    }
+
+    #[Override]
+    public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
         {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -148,9 +154,7 @@ TWIG;
         </div>
 TWIG;
 
-        $template .= parent::renderAdministrationTemplate($question, [
-            'selectable_question_options_class' => 'dropdown-border'
-        ]);
+        $template .= parent::renderAdministrationTemplate($question);
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(

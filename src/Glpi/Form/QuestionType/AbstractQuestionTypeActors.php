@@ -119,7 +119,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question, array $params = []): string
+    public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
         {% import 'components/form/fields_macros.html.twig' as fields %}

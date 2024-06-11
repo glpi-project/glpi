@@ -165,7 +165,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
     }
 
     #[Override]
-    public function renderAdministrationTemplate(?Question $question, array $params = []): string
+    public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
             {% set rand = random() %}

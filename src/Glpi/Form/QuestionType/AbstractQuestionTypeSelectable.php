@@ -179,8 +179,18 @@ TWIG;
         return $values;
     }
 
+    /**
+     * Retrieve the selectable question options class
+     *
+     * @return string
+     */
+    protected function getSelectableQuestionOptionsClass(): string
+    {
+        return '';
+    }
+
     #[Override]
-    public function renderAdministrationTemplate(?Question $question = null, array $params = []): string
+    public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
         {% set rand = random() %}
@@ -257,21 +267,22 @@ TWIG;
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, array_merge($params, [
-            'question'                      => $question,
-            'question_type'                 => $this::class,
-            'values'                        => $this->getValues($question),
-            'input_type'                    => $this->getInputType($question),
-            'hide_container_when_unfocused' => $this->hideOptionsContainerWhenUnfocused(),
-            'hide_default_value_input'      => $this->hideOptionsDefaultValueInput(),
-            'translations'                  => [
+        return $twig->renderFromStringTemplate($template, [
+            'question'                          => $question,
+            'question_type'                     => $this::class,
+            'values'                            => $this->getValues($question),
+            'input_type'                        => $this->getInputType($question),
+            'hide_container_when_unfocused'     => $this->hideOptionsContainerWhenUnfocused(),
+            'hide_default_value_input'          => $this->hideOptionsDefaultValueInput(),
+            'selectable_question_options_class' => $this->getSelectableQuestionOptionsClass(),
+            'translations'                      => [
                 'move_option'       => __('Move option'),
                 'default_option'    => __('Default option'),
                 'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
                 'enter_option'      => __('Enter an option'),
             ]
-        ]));
+        ]);
     }
 
     #[Override]
