@@ -51,6 +51,12 @@ class SingletonRuleList
      **/
     public static function &getInstance($type, $entity)
     {
+        //FIXME: can be removed when using phpunit 10 and process-isolation
+        if (defined('TU_USER')) {
+            $o = new self();
+            return $o;
+        }
+
         static $instances = [];
 
         if (!isset($instances[$type][$entity])) {
