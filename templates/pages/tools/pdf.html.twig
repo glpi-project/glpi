@@ -1,22 +1,49 @@
-{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
 
-<div class="container">
-  <div class="row">
-    {% for key, tab in tabs %}
-        <div class="col-1 my-2 align-items-center text-end">
-            {{ _inputs.checkbox(key, 0) }}
+{% if is_render == false %}
+    <div class="hr-text my-2">
+        <span style="font-size: 1.5em;" >{{ __('Select tabs to print') }}</span>
+    </div>
+    <form name="pdf_form"method="post" action="{{ call('Pdf::getFormUrl') }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="itemtype" value="{{ itemtype }}">
+        <input type="hidden" name="item_id" value="{{ item_id }}">
+        <div class="container">
+            <div class="row">
+                <div class="col-1 my-2 align-items-center text-end">
+                        <input type="checkbox" class="form-check-input" name="select_all" onclick="selectAllCheckboxes(this.checked)"/>
+                </div>
+                <div class="col-11 text-start my-2">
+                    <i class="ti ti-checks me-1"></i>
+                    {{ __('Select all') }}
+                </div>
+            </div>
+            <div class="hr my-2"></div>
+            <div class="row">
+                {% for key, tab in tabs %}
+                    <div class="col-1 my-2 align-items-center text-end">
+                        {{ _inputs.checkbox(key, 0) }}
+                    </div>
+                    <div class="col-5 text-start my-2">
+                        {{ tab|raw }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="col-5 text-start my-2">
-            {{ tab|raw }}
+        <div class="hr my-2"></div>
+        <div class="container text-center">
+            <input name="generate_pdf" class="btn btn-primary mt-2" type="submit" value="{{ __('Generate PDF') }}" />
         </div>
-    {% endfor %}
-  </div>
-  <button onclick="printPage()">Imprimer et revenir</button>
-</div>
+    </form>
+    <script>
+        function selectAllCheckboxes(isChecked) {
+            var checkboxes = document.querySelector('form[name="pdf_form"]').querySelectorAll('input[type=checkbox]');
 
-<script>
-    function printPage() {
-        window.print();
-    }
-</script>
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        }
+    </script>
+{% else %}
+    test
+{% endif %}

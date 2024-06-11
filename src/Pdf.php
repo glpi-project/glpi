@@ -58,11 +58,40 @@ class Pdf
                 $firstItemtype = reset($itemtypes);
                 $firstitem = reset($items[$firstItemtype]);
                 TemplateRenderer::getInstance()->display('pages/tools/pdf.html.twig', [
-                    'tabs' => self::getPrintableTabs($firstItemtype, $firstitem),
+                    'is_render' => false,
+                    'tabs'      => self::getPrintableTabs($firstItemtype, $firstitem),
                 ]);
                 return true;
         }
         return false;
+    }
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+
+        switch ($ma->getAction()) {
+            case 'print_as_pdf':
+                TemplateRenderer::getInstance()->render('pages/tools/pdf.html.twig', [
+                    'is_render' => true,
+                ]);
+        }
+    }
+
+    /**
+     * Get the form page URL for the current classe
+     *
+     * @param boolean $full  path or relative one
+     **/
+    public static function getFormURL($full = true)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        return "$dir/front/pdf.form.php";
     }
 
     public static function getPrintableTypeLabel($itemtype, $item)
@@ -98,5 +127,16 @@ class Pdf
         return [
             \Impact::class,
         ];
+    }
+
+    public static function showPdfPreview($item_id, $itemtype, $input)
+    {
+        $item = new $itemtype();
+        $item->getFromDB($item_id);
+        echo TemplateRenderer::getInstance()->render('pages/tools/pdf.html.twig', [
+            'is_render' => true,
+            'item'      => $item,
+            'input'     => $input,
+        ]);
     }
 }
