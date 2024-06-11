@@ -114,6 +114,8 @@ if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile'
 
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
+   echo "\n" . 'Usage of the `--config-dir` option is deprecated. Please use the `--env` option instead.' . "\n\n";
+
    $config_dir = $options['config-dir'];
 
    if (false === $config_dir || !@is_dir($config_dir)) {
@@ -129,6 +131,9 @@ if (array_key_exists('config-dir', $options)) {
    define('GLPI_CONFIG_DIR', realpath($config_dir));
 }
 
+if (array_key_exists('env', $options)) {
+    define('GLPI_ENVIRONMENT_TYPE', $options['env']);
+}
 
 // Init GLPI
 define('GLPI_ROOT', dirname(__DIR__));

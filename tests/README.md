@@ -22,10 +22,10 @@ Creating a dedicated database
 -----------------------------
 
 Use the **database:install** CLI command to create a new database,
-only used for the test suite, using the `--config-dir=./tests/config` option:
+only used for the test suite, using the `--env=testing` option:
 
 ```bash
-$ bin/console database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console database:install --env=testing --db-name=glpitests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
@@ -45,8 +45,8 @@ Changing database configuration
 
 Using the same database than the web application is not recommended. Use the `tests/config/config_db.php` file to adjust connection settings.
 
-Running the test suite on developpement env
--------------------------------------------
+Running the test suite on developpement machine
+-----------------------------------------------
 
 There are multiple directories for tests:
 - `tests/functional` for unit and functional tests;
