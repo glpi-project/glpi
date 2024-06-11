@@ -8239,4 +8239,70 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
         $this->integer($computer->fields['users_id'])->isIdenticalTo($result['users_id']);
     }
+
+    public function testLocationHierarchy()
+    {
+        global $DB;
+
+        //count existing locations
+        $locations = $DB->request(['FROM' => 'glpi_locations']);
+        $count_locations = count($locations);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>UCS 6248UP 48-Port</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>5.0(3)N2(4.02b)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <CPU>4</CPU>
+        <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
+        <ID>0</ID>
+        <LOCATION>France &gt; Paris</LOCATION>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>UCS 6248UP 48-Port</MODEL>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>482 days, 05:42:18.50</UPTIME>
+        <IPS>
+           <IP>127.0.0.1</IP>
+           <IP>10.2.5.10</IP>
+           <IP>192.168.12.5</IP>
+        </IPS>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created networkequipment
+        $neteq = new \NetworkEquipment();
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+
+        $locations = $DB->request(['FROM' => 'glpi_locations', 'ORDER' => 'id DESC']);
+        $this->integer(count($locations))->isIdenticalTo($count_locations + 2);
+
+        $new_location = $locations->current();
+        $this->string($new_location['name'])->isIdenticalTo('Paris');
+        $this->integer($new_location['locations_id'])->isGreaterThan(0);
+
+        $locations->next();
+        $parent_location = $locations->current();
+        $this->string($parent_location['name'])->isIdenticalTo('France');
+        $this->integer($parent_location['id'])->isIdenticalTo($new_location['locations_id']);
+    }
 }

@@ -101,7 +101,7 @@ class ReservationItem extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype Type of the item
      * @param int $ID ID of the item
      *
-     * @return true if succeed else false
+     * @return boolean true if succeed else false
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {

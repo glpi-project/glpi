@@ -1752,7 +1752,7 @@ final class DbUtils
      *                      (default =0)
      * @param $disable_anon   bool  disable anonymization of username.
      *
-     * @return string username string (realname if not empty and name if realname is empty).
+     * @return string[]|string username string (realname if not empty and name if realname is empty).
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {

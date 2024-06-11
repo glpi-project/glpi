@@ -104,7 +104,7 @@ class PlanningRecall extends CommonDBChild
      * @param integer $items_id id of the item
      * @param integer $users_id id of the user
      *
-     * @return true if succeed else false
+     * @return boolean true if succeed else false
      **/
     public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
     {
@@ -205,9 +205,9 @@ class PlanningRecall extends CommonDBChild
      *
      * @param string $itemtype itemtype to get
      * @param integer $items_id id of the item
-     * @param datetime $begin new begin date
+     * @param string $begin new begin date
      *
-     * @return true if succeed else false
+     * @return boolean true if succeed else false
      **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {

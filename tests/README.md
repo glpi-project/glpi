@@ -49,8 +49,7 @@ Running the test suite on developpement env
 -------------------------------------------
 
 There are multiple directories for tests:
-- `tests/units` for unit tests;
-- `tests/functional` for functional tests;
+- `tests/functional` for unit and functional tests;
 - `tests/imap` for Mail collector tests;
 - `tests/LDAP` for LDAP connection tests;
 - `tests/web` for API tests.
@@ -58,11 +57,11 @@ There are multiple directories for tests:
 You can choose to run tests on a whole directory, on any file, or on any \<class::method>. You have to specify a bootstrap file each time:
 
 ```bash
-$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/units/
+$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/functional/
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/units/Html.php
+$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/units/Html.php -m tests\units\Html::testConvDateTime
+$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php -m tests\units\Html::testConvDateTime
 ```
 In `tests\units\Html::testConvDateTime`, you may need to double the backslashes (depending on the shell you use);
 

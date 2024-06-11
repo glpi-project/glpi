@@ -221,7 +221,7 @@ class DropdownTranslation extends CommonDBChild
      * @param array $input          translation's fields
      * @param boolean $add true if a transaltion must be added, false if updated (true by default)
      *
-     * @return true if translation can be added/update, false otherwise
+     * @return boolean true if translation can be added/update, false otherwise
      **/
     public function checkBeforeAddorUpdate($input, $add = true)
     {

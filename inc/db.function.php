@@ -436,7 +436,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *                      (default =0)
  *@param $disable_anon   bool  disable anonymization of username.
  *
- *@return string : username string (realname if not empty and name if realname is empty).
+ *@return string[]|string : username string (realname if not empty and name if realname is empty).
  **/
 function getUserName($ID, $link = 0, $disable_anon = false)
 {

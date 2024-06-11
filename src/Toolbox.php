@@ -2087,8 +2087,10 @@ class Toolbox
         global $DB;
 
         if (null === $database) {
-           // Use configured DB if no $db is defined in parameters
-            include_once(GLPI_CONFIG_DIR . "/config_db.php");
+            // Use configured DB if no $db is defined in parameters
+            if (!class_exists('DB', false)) {
+                include(GLPI_CONFIG_DIR . "/config_db.php");
+            }
             $database = new DB();
         }
 

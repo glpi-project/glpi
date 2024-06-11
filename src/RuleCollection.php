@@ -1062,7 +1062,7 @@ TWIG, $twig_params);
      * @param integer $condition          the rulecriteria condition
      * @param string  $criterion          the criterion
      *
-     * @return true if a criterion is a dropdown, false otherwise
+     * @return boolean true if a criterion is a dropdown, false otherwise
      **/
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {
