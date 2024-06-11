@@ -471,8 +471,7 @@ class RuleCollection extends CommonDBTM
     public function showListRules($target, $options = [])
     {
         /** @var array $CFG_GLPI */
-        /** @var int $AJAX_INCLUDE */
-        global $CFG_GLPI, $AJAX_INCLUDE;
+        global $CFG_GLPI;
 
         $p['inherited'] = 1;
         $p['childrens'] = 0;
@@ -576,8 +575,7 @@ class RuleCollection extends CommonDBTM
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
-            $AJAX_INCLUDE = false;
-            Session::initNavigateListItems($ruletype);
+            Session::initNavigateListItems($ruletype, '', '');
         }
 
         if ($can_sort) {
