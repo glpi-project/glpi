@@ -1005,6 +1005,9 @@ class Config extends CommonDBTM
             [ 'name'    => 'symfony/dependency-injection',
                 'check'   => 'Symfony\\Component\\DependencyInjection\\ContainerInterface'
             ],
+            [ 'name'    => 'symfony/event-dispatcher',
+                'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcherInterface'
+            ],
             [ 'name'    => 'symfony/filesystem',
                 'check'   => 'Symfony\\Component\\Filesystem\\Filesystem'
             ],
