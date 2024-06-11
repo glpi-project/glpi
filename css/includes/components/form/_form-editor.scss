@@ -230,40 +230,19 @@
     &[data-glpi-form-editor-active-question] {
         .dropdown-border {
             position: relative;
-            border: 0.15rem solid var(--tblr-border-color);
+            border: 1px solid var(--tblr-border-color);
             border-top: 0;
             border-bottom-left-radius: var(--tblr-border-radius);
             border-bottom-right-radius: var(--tblr-border-radius);
             padding: 0.5rem;
             padding-bottom: 0;
             margin-bottom: 0.5rem;
+        }
 
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 5%;
-                height: 10%;
-                border-top: 0.15rem solid var(--tblr-border-color);
-                border-left: 0.15rem solid var(--tblr-border-color);
-                border-top-left-radius: var(--tblr-border-radius);
-                margin-left: calc(-0.15rem); // compensate for border
-                margin-top: calc(-0.15rem); // compensate for border;
-            }
-
-            &::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 5%;
-                height: 10%;
-                border-top: 0.15rem solid var(--tblr-border-color);
-                border-right: 0.15rem solid var(--tblr-border-color);
-                border-top-right-radius: var(--tblr-border-radius);
-                margin-right: calc(-0.15rem); // compensate for border
-                margin-top: calc(-0.15rem); // compensate for border;
+        .single-preview-dropdown, .multiple-preview-dropdown {
+            .select2-selection {
+                border-bottom-left-radius: unset;
+                border-bottom-right-radius: unset;
             }
         }
     }

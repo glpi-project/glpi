@@ -127,7 +127,8 @@ TWIG;
                     'no_label': true,
                     'multiple': false,
                     'display_emptychoice': true,
-                    'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : '')
+                    'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
+                    'mb': ''
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -140,7 +141,8 @@ TWIG;
                     'no_label': true,
                     'multiple': true,
                     'values': checked_values,
-                    'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : '')
+                    'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
+                    'mb': ''
                 }
             ) }}
         </div>
