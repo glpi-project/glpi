@@ -38,6 +38,7 @@
  */
 
 use Glpi\Cache\CacheManager;
+use Glpi\Application\ErrorHandler;
 
 /**
  * @var GLPI $GLPI
@@ -54,6 +55,9 @@ include_once(GLPI_ROOT . "/inc/based_config.php");
 $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
+
+// Ensure errors will not break API output.
+ErrorHandler::getInstance()->disableOutput();
 
 //init cache
 $cache_manager = new CacheManager();

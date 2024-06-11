@@ -522,14 +522,6 @@ class Toolbox
         if (isset($log_in_files)) {
             $CFG_GLPI['use_log_in_files'] = $log_in_files;
         }
-
-       // If debug mode activated : display some information
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-           // Force reporting of all errors
-            error_reporting(E_ALL);
-           // Disable native error displaying as it will be done by custom handler
-            ini_set('display_errors', 'Off');
-        }
     }
 
 

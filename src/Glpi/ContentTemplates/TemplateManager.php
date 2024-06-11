@@ -36,6 +36,7 @@
 namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
+use Glpi\Application\ErrorHandler;
 use Glpi\RichText\RichText;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
@@ -115,9 +116,7 @@ class TemplateManager
                 ]
             );
         } catch (\Twig\Error\Error $e) {
-            /** @var \GLPI $GLPI */
-            global $GLPI;
-            $GLPI->getErrorHandler()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e);
             return null;
         }
         return $html;

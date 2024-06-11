@@ -35,6 +35,7 @@
 
 namespace Glpi\Application;
 
+use GLPI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,8 +65,8 @@ class ErrorHandler
         E_USER_NOTICE       => LogLevel::NOTICE,
         E_STRICT            => LogLevel::NOTICE,
         E_RECOVERABLE_ERROR => LogLevel::ERROR,
-        E_DEPRECATED        => LogLevel::NOTICE,
-        E_USER_DEPRECATED   => LogLevel::NOTICE,
+        E_DEPRECATED        => LogLevel::INFO,
+        E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
     /**
@@ -81,6 +82,11 @@ class ErrorHandler
         E_USER_ERROR,
         E_RECOVERABLE_ERROR,
     ];
+
+    /**
+     * Environment type.
+     */
+    private string $env;
 
     /**
      * Exit code to use on shutdown.
@@ -141,10 +147,12 @@ class ErrorHandler
 
     /**
      * @param LoggerInterface|null $logger
+     * @param string               $env
      */
-    public function __construct(LoggerInterface $logger = null)
+    private function __construct(LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
     {
         $this->logger = $logger;
+        $this->env = $env;
     }
 
     /**
@@ -228,6 +236,13 @@ class ErrorHandler
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleFatalError']);
         $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
+
+        // Force reporting of all errors, to ensure that all log levels that are supposed to be
+        // pushed in logs according to `GLPI_LOG_LVL`/`GLPI_ENVIRONMENT_TYPE` are actually reported.
+        error_reporting(E_ALL);
+
+        // Disable native error displaying as it will be handled by `self::outputDebugMessage()`.
+        ini_set('display_errors', 'Off');
     }
 
     /**
@@ -311,7 +326,7 @@ class ErrorHandler
         $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
 
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-        $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+        $this->outputDebugMessage($error_type, $error_description, $log_level);
     }
 
     /**
@@ -330,8 +345,7 @@ class ErrorHandler
         $this->outputDebugMessage(
             sprintf('SQL Error "%s"', $error_code),
             sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
-            self::ERROR_LEVEL_MAP[E_USER_ERROR],
-            isCommandLine()
+            self::ERROR_LEVEL_MAP[E_USER_ERROR]
         );
     }
 
@@ -393,7 +407,7 @@ class ErrorHandler
 
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
         if (!$quiet) {
-            $this->outputDebugMessage($error_type, $error_description, $log_level, isCommandLine());
+            $this->outputDebugMessage($error_type, $error_description, $log_level);
         }
     }
 
@@ -484,7 +498,7 @@ class ErrorHandler
                 'Error',
                 'An error has occurred, but the trace of this error could not recorded because of a problem accessing the log file.',
                 LogLevel::CRITICAL,
-                true
+                true // Force output to warn administrator there is something wrong with the error log
             );
         }
     }
@@ -506,10 +520,25 @@ class ErrorHandler
             return;
         }
 
-        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+        if (
+            in_array($this->env, [GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION])
+            && in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
+        ) {
+            // On staging/production environment, do not output debug/info messages.
+            // These messages are not supposed to be intended for end users, as they have no functional impact.
+            return;
+        }
+
+        $is_dev_env         = $this->env === GLPI::ENV_DEVELOPMENT;
+        $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
         $is_console_context = $this->output_handler instanceof OutputInterface;
 
-        if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
+        if (
+            !$force
+            && !$is_dev_env          // error messages are always output in development environment
+            && !$is_debug_mode       // error messages are always output in debug mode
+            && !$is_console_context  // error messages are always forwarded to the console output handler, that handles itself the verbosity level
+        ) {
             return;
         }
 
