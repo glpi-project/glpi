@@ -462,6 +462,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
+            trigger_error($exception->getMessage(), E_USER_WARNING);
             return new JSONResponse(null, 500);
         }
     }
