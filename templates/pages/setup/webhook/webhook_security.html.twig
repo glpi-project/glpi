@@ -125,7 +125,10 @@
       {{ fields.passwordField('clientsecret', item.fields['clientsecret'], __('Client Secret'), {
          is_disclosable: true,
          readonly: true,
-         more_atributes: 'autocomplete=off onfocus=this.removeAttribute(\"readonly\");',
+         additional_attributes: {
+            autocomplete: 'off',
+            onfocus: 'this.removeAttribute("readonly");'
+         }
       }) }}
 
       <script>
