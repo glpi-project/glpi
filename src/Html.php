@@ -6074,9 +6074,7 @@ HTML;
         };";
 
         if ($full) {
-            $debug = (isset($_SESSION['glpi_use_mode'])
-                   && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0) . ";";
+            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
         }
 
         $plugins_path = [];

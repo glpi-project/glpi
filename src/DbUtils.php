@@ -411,12 +411,11 @@ final class DbUtils
         if (
             (
                 $mapping[$context] !== null
-                && ($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE
-                && !defined('TU_USER')
+                && !in_array(GLPI_ENVIRONMENT_TYPE, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING])
             )
             || in_array($context, $already_scanned)
         ) {
-            // Do not scan class files if mapping was already cached, unless debug mode is used.
+            // Do not scan class files if mapping was already cached, unless current env is development/testing.
             //
             // It will prevent a scan on all files when method is used on an unexisting itemtype
             // which would never be present in cached mapping as it would have no matching file.
