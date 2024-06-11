@@ -53,9 +53,50 @@ class Pdf
     {
         switch ($ma->getAction()) {
             case 'print_as_pdf':
-                TemplateRenderer::getInstance()->display('pages/tools/pdf.html.twig', []);
+                $items = $ma->getItems();
+                $itemtypes = array_keys($items);
+                $firstItemtype = reset($itemtypes);
+                $firstitem = reset($items[$firstItemtype]);
+                TemplateRenderer::getInstance()->display('pages/tools/pdf.html.twig', [
+                    'tabs' => self::getPrintableTabs($firstItemtype, $firstitem),
+                ]);
                 return true;
         }
         return false;
+    }
+
+    public static function getPrintableTypeLabel($itemtype, $item)
+    {
+        $instance = new $itemtype();
+        $label = $instance->getTabNameForItem($item);
+        if (empty($label)) {
+            $label = '<span><i class="' . $itemtype::getIcon() . ' me-2"></i>' . $itemtype::getTypeName(0) . '</span>';
+        }
+        return $label;
+    }
+
+    public static function getPrintableTabs($itemtype, $item_id)
+    {
+        $item = new $itemtype();
+        $item->getFromDB($item_id);
+
+        $tabKeys = array_keys($item->defineTabs());
+        $tabKeys = array_map(function ($value) {
+            $parts = explode('$', $value);
+            return $parts[0];
+        }, $tabKeys);
+        $tabKeys = array_diff($tabKeys, self::getUnprintableTypes());
+
+        foreach ($tabKeys as $tabKey) {
+            $cleanTabs[$tabKey] = self::getPrintableTypeLabel($tabKey, $item);
+        }
+        return $cleanTabs ?? [];
+    }
+
+    public static function getUnprintableTypes()
+    {
+        return [
+            \Impact::class,
+        ];
     }
 }

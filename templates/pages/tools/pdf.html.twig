@@ -1,20 +1,22 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
 
 <div class="container">
   <div class="row">
-    <div class="col">
-      {{ fields.checkboxField(
-         'legend',
-         0,
-         __('Show legend'),
-      ) }}
-    </div>
-    <div class="col">
-      {{ fields.checkboxField(
-         'legend2',
-         1,
-         __('Show legend2'),
-      ) }}
-    </div>
+    {% for key, tab in tabs %}
+        <div class="col-1 my-2 align-items-center text-end">
+            {{ _inputs.checkbox(key, 0) }}
+        </div>
+        <div class="col-5 text-start my-2">
+            {{ tab|raw }}
+        </div>
+    {% endfor %}
   </div>
+  <button onclick="printPage()">Imprimer et revenir</button>
 </div>
+
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
