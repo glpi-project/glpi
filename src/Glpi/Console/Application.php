@@ -132,6 +132,7 @@ class Application extends BaseApplication
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
+        $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
 
         $definition = new InputDefinition(
             [
@@ -184,10 +185,17 @@ class Application extends BaseApplication
                     __('Do not ask any interactive question')
                 ),
                 new InputOption(
+                    '--env',
+                    null,
+                    InputOption::VALUE_REQUIRED,
+                    sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
+                    suggestedValues: $env_values
+                ),
+                new InputOption(
                     '--config-dir',
                     null,
                     InputOption::VALUE_OPTIONAL,
-                    __('Configuration directory to use')
+                    __('Configuration directory to use. Deprecated option')
                 ),
                 new InputOption(
                     '--no-plugins',
