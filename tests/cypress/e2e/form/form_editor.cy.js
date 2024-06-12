@@ -41,10 +41,14 @@ describe ('Form editor', () => {
         // Go to form creation page
         cy.visit('/front/form/form.php');
         cy.findByRole('link', {'name': 'Add'}).click();
+        cy.findByRole('tab', {'name': 'Form'}).click();
 
         // Edit form details
-        cy.focused().type("My form name"); // Form name is focused by default
         cy.findByRole('region', {'name': 'Form details'}).within(() => {
+            cy.findByRole('textbox', {'name': 'Form name'})
+                .type("My form name")
+            ;
+
             cy.findByRole('checkbox', {'name': 'Active'})
                 .should('not.to.be.checked')
                 .check()
