@@ -50,13 +50,13 @@ final class ContentField extends DbTestCase
     public function testApplyConfiguratedValueToInputUsingAnswers(): void
     {
         $tag = $this->getDummyTag();
-        $config = ['value' => "My custom content using tags: {$tag->html}"];
+        $value = "My custom content using tags: {$tag->html}";
 
         $field = new \Glpi\Form\Destination\CommonITILField\ContentField();
         $input = $field->applyConfiguratedValueToInputUsingAnswers(
-            config     : $config,
-            input      : [],
-            answers_set: $this->getFakeAnswers(),
+            configurated_value: $value,
+            input             : [],
+            answers_set       : $this->getFakeAnswers(),
         );
 
         $this->string($input['content'])->isEqualTo(

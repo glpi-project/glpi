@@ -78,8 +78,8 @@ abstract class AbstractFormDestinationType extends DbTestCase
                     $this->getTestedInstance()::class,
                     'test',
                     [
-                        'title'   => ['value' => 'My title'],
-                        'content' => ['value' => "My content"],
+                        'title'   => "My title",
+                        'content' => "My content",
                     ]
                 )
         );

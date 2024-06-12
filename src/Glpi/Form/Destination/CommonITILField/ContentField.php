@@ -59,7 +59,7 @@ class ContentField implements ConfigFieldInterface
     #[Override]
     public function renderConfigForm(
         Form $form,
-        ?array $config,
+        mixed $configurated_value,
         string $input_name,
         array $display_options
     ): string {
@@ -83,7 +83,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'form_id'    => $form->fields['id'],
             'label'      => $this->getLabel(),
-            'value'      => $config['value'] ?? '',
+            'value'      => $configurated_value ?? '',
             'input_name' => $input_name,
             'options'    => $display_options,
         ]);
@@ -91,17 +91,17 @@ TWIG;
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        ?array $config,
+        mixed $configurated_value,
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (is_null($config)) {
+        if (is_null($configurated_value)) {
             return $input;
         }
 
         $tag_manager = new FormTagsManager();
         $input['content'] = $tag_manager->insertTagsContent(
-            $config['value'],
+            $configurated_value,
             $answers_set
         );
 

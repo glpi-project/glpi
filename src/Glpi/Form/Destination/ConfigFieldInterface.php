@@ -59,7 +59,7 @@ interface ConfigFieldInterface
      * Render the input field for this configuration.
      *
      * @param Form       $form
-     * @param array|null $config
+     * @param mixed      $config
      * @param string     $input_name Input name supplied by the controller.
      *                               Must be reused in the actual input field.
      * @param array      $display_options Common twig options to display the
@@ -69,7 +69,7 @@ interface ConfigFieldInterface
      */
     public function renderConfigForm(
         Form $form,
-        ?array $config,
+        mixed $configurated_value,
         string $input_name,
         array $display_options
     ): string;
@@ -77,7 +77,7 @@ interface ConfigFieldInterface
     /**
      * Apply configurated value to the given input.
      *
-     * @param array|null $config May be null if there is no configuration for
+     * @param mixed      $config May be null if there is no configuration for
      *                           this field.
      * @param array      $input
      * @param AnswersSet $answers_set
@@ -85,7 +85,7 @@ interface ConfigFieldInterface
      * @return array
      */
     public function applyConfiguratedValueToInputUsingAnswers(
-        ?array $config,
+        mixed $configurated_value,
         array $input,
         AnswersSet $answers_set
     ): array;
