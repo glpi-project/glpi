@@ -55,7 +55,6 @@ $dont_check_maintenance_mode = true;
 $skip_db_check               = true;
 
 //std cache, with DB connection
-include_once GLPI_ROOT . "/inc/db.function.php";
 include_once GLPI_ROOT . '/inc/config.php';
 
 // Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).

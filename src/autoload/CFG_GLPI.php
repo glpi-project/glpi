@@ -38,52 +38,10 @@ use Glpi\SocketModel;
 
 /**
  * @var array $CFG_GLPI
- * @var int $DEFAULT_PLURAL_NUMBER
- * @var array $PLUGIN_HOOKS
- * @var array $CFG_GLPI_PLUGINS
- * @var array $LANG
  */
-global $CFG_GLPI,
-    $DEFAULT_PLURAL_NUMBER,
-    $PLUGIN_HOOKS,
-    $CFG_GLPI_PLUGINS,
-    $LANG
-;
+global $CFG_GLPI;
 
-// Current version of GLPI
-define('GLPI_VERSION', '11.0.0-dev');
-
-$schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
-define(
-    "GLPI_SCHEMA_VERSION",
-    GLPI_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
-);
-
-if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
-    define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
-}
-
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of index.php
-define('GLPI_MAX_PHP', '8.3'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2024');
-
-//Define a global recipient address for email notifications
-//define('GLPI_FORCE_MAIL', 'me@localhost');
-
-// rights
-define("READ", 1);
-define("UPDATE", 2);
-define("CREATE", 4);
-define("DELETE", 8);
-define("PURGE", 16);
-define("ALLSTANDARDRIGHT", 31);
-define("READNOTE", 32);
-define("UPDATENOTE", 64);
-define("UNLOCK", 128);
-define("READ_ASSIGNED", 256);
-define("UPDATE_ASSIGNED", 512);
-define("READ_OWNED", 1024);
-define("UPDATE_OWNED", 2048);
+$CFG_GLPI = [];
 
 // set the default app_name
 $CFG_GLPI['app_name'] = 'GLPI';
@@ -155,56 +113,8 @@ $CFG_GLPI['languages'] = [
     'es_CL'  => ['Español chileno',           'es_CL',       'es',    'es', 'spanish chilean',      2]
 ];
 
-$DEFAULT_PLURAL_NUMBER = 2;
-
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = [];
-
-define("NOT_AVAILABLE", 'N/A');
-
-// key used to crypt passwords in DB for external access : proxy / smtp / ldap /  mailcollectors
-// This key is not used to crypt user's passwords
-// If you hav to define passwords again
-define("GLPIKEY", "GLPI£i'snarss'ç");
-
-// TIMES
-define("MINUTE_TIMESTAMP", 60);
-define("HOUR_TIMESTAMP", 3600);
-define("DAY_TIMESTAMP", 86400);
-define("WEEK_TIMESTAMP", 604800);
-define("MONTH_TIMESTAMP", 2592000);
-
-
-//Management modes
-define("MANAGEMENT_UNITARY", 0);
-define("MANAGEMENT_GLOBAL", 1);
-
-
-//Mail send methods
-define("MAIL_MAIL", 0);
-define("MAIL_SMTP", 1);
-define("MAIL_SMTPS", 2);
-define("MAIL_SMTPSSL", 2);
-define("MAIL_SMTPTLS", 3);
-define("MAIL_SMTPOAUTH", 4);
-
-// MESSAGE TYPE
-define("INFO", 0);
-define("ERROR", 1);
-define("WARNING", 2);
-
-// ACTIONS_ERROR
-
-define("ERROR_NOT_FOUND", 1);
-define("ERROR_RIGHT", 2);
-define("ERROR_COMPAT", 3);
-define("ERROR_ON_ACTION", 4);
-define("ERROR_ALREADY_DEFINED", 5);
-
-// For plugins
-$PLUGIN_HOOKS     = [];
-$CFG_GLPI_PLUGINS = [];
-$LANG             = [];
 
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
     'Infocom', 'Monitor', 'NetworkEquipment',
@@ -410,7 +320,7 @@ $CFG_GLPI["contract_types"]               = array_merge(
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
-    AllAssets::getType()       => "asset_types"
+    AllAssets::class       => "asset_types"
 ];
 
 $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCollector',
@@ -644,22 +554,22 @@ $CFG_GLPI['max_time_for_count'] = 200;
  * Impact itemtypes enabled by default
  */
 $CFG_GLPI["default_impact_asset_types"] = [
-    Appliance::getType()          => "pics/impact/appliance.png",
-    Cluster::getType()            => "pics/impact/cluster.png",
-    Computer::getType()           => "pics/impact/computer.png",
-    Datacenter::getType()         => "pics/impact/datacenter.png",
-    DCRoom::getType()             => "pics/impact/dcroom.png",
-    Domain::getType()             => "pics/impact/domain.png",
-    Enclosure::getType()          => "pics/impact/enclosure.png",
-    Monitor::getType()            => "pics/impact/monitor.png",
-    NetworkEquipment::getType()   => "pics/impact/networkequipment.png",
-    PDU::getType()                => "pics/impact/pdu.png",
-    Peripheral::getType()         => "pics/impact/peripheral.png",
-    Phone::getType()              => "pics/impact/phone.png",
-    Printer::getType()            => "pics/impact/printer.png",
-    Rack::getType()               => "pics/impact/rack.png",
-    Software::getType()           => "pics/impact/software.png",
-    DatabaseInstance::getType()   => "pics/impact/databaseinstance.png",
+    Appliance::class          => "pics/impact/appliance.png",
+    Cluster::class            => "pics/impact/cluster.png",
+    Computer::class           => "pics/impact/computer.png",
+    Datacenter::class         => "pics/impact/datacenter.png",
+    DCRoom::class             => "pics/impact/dcroom.png",
+    Domain::class             => "pics/impact/domain.png",
+    Enclosure::class          => "pics/impact/enclosure.png",
+    Monitor::class            => "pics/impact/monitor.png",
+    NetworkEquipment::class   => "pics/impact/networkequipment.png",
+    PDU::class                => "pics/impact/pdu.png",
+    Peripheral::class         => "pics/impact/peripheral.png",
+    Phone::class              => "pics/impact/phone.png",
+    Printer::class            => "pics/impact/printer.png",
+    Rack::class               => "pics/impact/rack.png",
+    Software::class           => "pics/impact/software.png",
+    DatabaseInstance::class   => "pics/impact/databaseinstance.png",
 ];
 
 /**
@@ -667,26 +577,26 @@ $CFG_GLPI["default_impact_asset_types"] = [
  * added in GLPI configuration
  */
 $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
-    AuthLDAP::getType()           => "pics/impact/authldap.png",
-    CartridgeItem::getType()      => "pics/impact/cartridgeitem.png",
-    Contract::getType()           => "pics/impact/contract.png",
-    CronTask::getType()           => "pics/impact/crontask.png",
-    DeviceSimcard::getType()      => "pics/impact/devicesimcard.png",
-    Entity::getType()             => "pics/impact/entity.png",
-    Group::getType()              => "pics/impact/group.png",
-    ITILCategory::getType()       => "pics/impact/itilcategory.png",
-    Line::getType()               => "pics/impact/line.png",
-    Location::getType()           => "pics/impact/location.png",
-    MailCollector::getType()      => "pics/impact/mailcollector.png",
-    Notification::getType()       => "pics/impact/notification.png",
-    Profile::getType()            => "pics/impact/profile.png",
-    Project::getType()            => "pics/impact/project.png",
-    Rack::getType()               => "pics/impact/rack.png",
-    SLM::getType()                => "pics/impact/slm.png",
-    SoftwareLicense::getType()    => "pics/impact/softwarelicense.png",
-    Supplier::getType()           => "pics/impact/supplier.png",
-    User::getType()               => "pics/impact/user.png",
-    Database::getType()           => "pics/impact/database.png",
+    AuthLDAP::class           => "pics/impact/authldap.png",
+    CartridgeItem::class      => "pics/impact/cartridgeitem.png",
+    Contract::class           => "pics/impact/contract.png",
+    CronTask::class           => "pics/impact/crontask.png",
+    DeviceSimcard::class      => "pics/impact/devicesimcard.png",
+    Entity::class             => "pics/impact/entity.png",
+    Group::class              => "pics/impact/group.png",
+    ITILCategory::class       => "pics/impact/itilcategory.png",
+    Line::class               => "pics/impact/line.png",
+    Location::class           => "pics/impact/location.png",
+    MailCollector::class      => "pics/impact/mailcollector.png",
+    Notification::class       => "pics/impact/notification.png",
+    Profile::class            => "pics/impact/profile.png",
+    Project::class            => "pics/impact/project.png",
+    Rack::class               => "pics/impact/rack.png",
+    SLM::class                => "pics/impact/slm.png",
+    SoftwareLicense::class    => "pics/impact/softwarelicense.png",
+    Supplier::class           => "pics/impact/supplier.png",
+    User::class               => "pics/impact/user.png",
+    Database::class           => "pics/impact/database.png",
 ];
 
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];

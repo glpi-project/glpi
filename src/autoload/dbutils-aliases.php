@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 /**
  * Return foreign key field name for a table
  *
