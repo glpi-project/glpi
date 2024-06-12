@@ -75,7 +75,6 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'key'        => $this->getKey(),
             'label'      => $this->getLabel(),
             'value'      => $config['value'] ?? '',
             'input_name' => $input_name,
