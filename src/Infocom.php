@@ -1925,24 +1925,6 @@ JS;
 
 
     /**
-     * Display debug information for infocom of current object
-     **/
-    public function showDebug()
-    {
-
-        $item = ['item_name'          => '',
-            'warrantyexpiration' => '',
-            'itemtype'           => $this->fields['itemtype'],
-            'items_id'           => $this->fields['items_id']
-        ];
-
-        $options['entities_id'] = $this->getEntityID();
-        $options['items']       = [$item];
-        NotificationEvent::debugEvent($this, $options);
-    }
-
-
-    /**
      * Get date using a begin date and a period in month
      *
      * @param string  $from          begin date

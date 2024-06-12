@@ -5512,14 +5512,6 @@ JAVASCRIPT;
         return ($tot > 0 ? 1 : 0);
     }
 
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
-    }
-
 
     /**
      * @since 0.85

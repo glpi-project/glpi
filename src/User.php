@@ -5914,8 +5914,6 @@ JAVASCRIPT;
      */
     public function showDebug()
     {
-
-        NotificationEvent::debugEvent($this);
         $this->showLdapDebug();
     }
 

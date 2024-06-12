@@ -585,26 +585,6 @@ class FieldUnicity extends CommonDropdown
         ]);
     }
 
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        $params = [
-            'action_type' => true,
-            'action_user' => getUserName(Session::getLoginUserID()),
-            'entities_id' => $_SESSION['glpiactive_entity'],
-            'itemtype'    => get_class($this),
-            'date'        => $_SESSION['glpi_currenttime'],
-            'refuse'      => true,
-            'label'       => ['name' => 'test'],
-            'field'       => ['action_refuse' => true],
-            'double'      => []
-        ];
-
-        NotificationEvent::debugEvent($this, $params);
-    }
-
     public static function getIcon()
     {
         return "ti ti-fingerprint";

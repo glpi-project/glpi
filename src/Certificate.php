@@ -817,14 +817,6 @@ class Certificate extends CommonDBTM
         return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
     }
 
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
-    }
-
 
     public static function getIcon()
     {

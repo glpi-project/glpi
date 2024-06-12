@@ -880,17 +880,6 @@ class Change extends CommonITILObject
         }
     }
 
-
-    /**
-     * Display debug information for current object
-     *
-     * @since 0.90.2
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
-    }
-
     public static function getDefaultValues($entity = 0)
     {
         if (is_numeric(Session::getLoginUserID(false))) {
