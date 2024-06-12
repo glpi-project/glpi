@@ -1204,7 +1204,7 @@ class Migration extends \GLPITestCase
         //Test updating a UPDATE right when profile has READ and UPDATE config right (Default)
         $this->output(
             function () {
-                $this->migration->updateRight('test_updateright_1', READ);
+                $this->migration->replaceRight('test_updateright_1', READ);
             }
         )->isEqualTo('Rights has been updated for test_updateright_1, you should review ACLs after update');
 
@@ -1220,7 +1220,7 @@ class Migration extends \GLPITestCase
         //Test updating a READ right when profile has UPDATE group right
         $this->output(
             function () {
-                $this->migration->updateRight('test_updateright_2', READ, ['group' => UPDATE]);
+                $this->migration->replaceRight('test_updateright_2', READ, ['group' => UPDATE]);
             }
         )->isEqualTo('Rights has been updated for test_updateright_2, you should review ACLs after update');
 
@@ -1236,7 +1236,7 @@ class Migration extends \GLPITestCase
         //Test updating an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->output(
             function () {
-                $this->migration->updateRight('test_updateright_2', UPDATE, [
+                $this->migration->replaceRight('test_updateright_2', UPDATE, [
                     'group'  => READ | UPDATE,
                     'entity' => CREATE
                 ]);
@@ -1255,7 +1255,7 @@ class Migration extends \GLPITestCase
         //Test updating a READ right when profile with no requirements
         $this->output(
             function () {
-                $this->migration->updateRight('test_updateright_3', READ, []);
+                $this->migration->replaceRight('test_updateright_3', READ, []);
             }
         )->isEqualTo('Rights has been updated for test_updateright_3, you should review ACLs after update');
 
@@ -1322,7 +1322,7 @@ class Migration extends \GLPITestCase
             ],
             [
                 'fn' => function () {
-                    $this->migration->updateRight('testReloadCurrentProfile', READ);
+                    $this->migration->replaceRight('testReloadCurrentProfile', READ);
                 },
                 'expected' => 'Rights has been updated for testReloadCurrentProfile, you should review ACLs after update'
             ],

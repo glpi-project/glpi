@@ -35,8 +35,14 @@
 
 namespace tests\units;
 
+use CommonITILTask;
 use DbTestCase;
 use Glpi\Search\SearchEngine;
+use Profile;
+use Profile_User;
+use ProfileRight;
+use Ticket;
+use User;
 
 /* Test for inc/tickettask.class.php */
 
@@ -682,5 +688,374 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($data['data']['totalcount'])->isEqualTo(1);
         $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('ticket title');
+    }
+
+    /**
+     * Test that the user can update his own task
+     * Right : TicketTask::UPDATEMY
+     *
+     * @return void
+     */
+    public function testUpdateMyTask()
+    {
+        global $DB;
+
+        $this->login();
+        $uid = getItemByTypeName(User::class, TU_USER, true);
+
+        //Create profile
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'testUpdateMyTask',
+            'interface' => 'central',
+        ]);
+
+        $profile_user = new Profile_User();
+        $profile_user->getFromDBByCrit([
+            'users_id' => $uid,
+        ]);
+
+        $DB->delete(
+            ProfileRight::getTable(),
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'task'
+            ],
+        );
+
+        //Add the profile to the user
+        $DB->update(
+            Profile_User::getTable(),
+            ['profiles_id' => $profile->getID()],
+            ['users_id' => $uid],
+        );
+
+        $this->login();
+
+        $this->boolean((new \TicketTask())->canCreate())->isFalse();
+
+        $ticket_right = new ProfileRight();
+        $ticket_right->getFromDBByCrit(
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'ticket',
+            ]
+        );
+
+        // Create a profile right to be able to read my ticket
+        $this->updateItem(
+            ProfileRight::class,
+            $ticket_right->getID(),
+            [
+                'rights' => READ
+            ]
+        );
+
+        // Create a profile right to add a task to the ticket
+        $task_right = $this->createItem(ProfileRight::class, [
+            'profiles_id' => $profile->getID(),
+            'name' => 'task',
+            'rights' => CommonITILTask::ADDMY,
+        ]);
+
+        $this->login();
+
+        $this->boolean((new \TicketTask())->canCreate())->isTrue();
+
+        // Check that the last_rights_update field is not null
+        $this->variable($profile->fields['last_rights_update'])->isNotNull();
+
+        $profile->getFromDB($profile->getID());
+
+        $this->login();
+
+        // Get a ticket
+        $ticket = self::getNewTicket();
+
+        // Create a task
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
+                'state' => \Planning::TODO,
+                'tickets_id' => $ticket,
+                'content' => "Task",
+                'users_id' => $uid,
+            ]
+        );
+
+        $this->boolean((new \TicketTask())->canUpdateItem())->isFalse();
+
+        // Create a profile right to add a task to the ticket
+        $this->updateItem(
+            ProfileRight::class,
+            $task_right->getID(),
+            [
+                'rights' => CommonITILTask::UPDATEMY,
+            ]
+        );
+
+        $this->login();
+
+        $this->boolean($task->canUpdateItem())->isTrue();
+    }
+
+    /**
+     * Test that the user can create a task in function of his status
+     *
+     * @param string $profileName
+     * @param integer $right
+     * @param string $ticketUserType
+     *
+     * @return void
+     */
+    private function createTaskAndAssertCanCreate($profileName, $right, $ticketUserType)
+    {
+        global $DB;
+
+        $this->login();
+        $uid = getItemByTypeName(User::class, TU_USER, true);
+
+        //Create profile
+        $profile = $this->createItem(Profile::class, [
+            'name' => $profileName,
+            'interface' => 'central',
+        ]);
+
+        $profile_user = new Profile_User();
+        $profile_user->getFromDBByCrit([
+            'users_id' => $uid,
+        ]);
+
+        $DB->delete(
+            ProfileRight::getTable(),
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'task'
+            ],
+        );
+
+        //Add the profile to the user
+        $DB->update(
+            Profile_User::getTable(),
+            ['profiles_id' => $profile->getID()],
+            ['users_id' => $uid],
+        );
+
+        $this->login();
+
+        $ticket = self::getNewTicket();
+
+        $this->boolean((new \TicketTask())->canCreate())->isFalse();
+
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
+                'state' => \Planning::TODO,
+                'tickets_id' => $ticket,
+                'content' => "Task",
+                'users_id' => $uid,
+            ]
+        );
+
+        $this->boolean($task->canCreateItem())->isFalse();
+
+        $ticket_right = new ProfileRight();
+        $ticket_right->getFromDBByCrit(
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'ticket',
+            ]
+        );
+
+        // Create a profile right to be able to read my ticket
+        $this->updateItem(
+            ProfileRight::class,
+            $ticket_right->getID(),
+            [
+                'rights' => READ
+            ]
+        );
+
+        // Create a profile right to add a task to the ticket
+        $this->createItem(ProfileRight::class, [
+            'profiles_id' => $profile->getID(),
+            'name' => 'task',
+            'rights' => $right,
+        ]);
+
+        $this->login();
+
+        $this->boolean((new \TicketTask())->canCreate())->isTrue();
+
+        // Create a ticket as a $ticketUserType
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => 'ticket title',
+                'content' => 'Content',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                $ticketUserType => $uid
+            ]
+        );
+
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
+                'state' => \Planning::TODO,
+                'tickets_id' => $ticket->getID(),
+                'content' => "Task",
+                'users_id' => $uid,
+            ]
+        );
+
+        $this->boolean($task->canCreateItem())->isTrue();
+    }
+
+    /**
+     * Test that the user can create a task on his ticket
+     *
+     * @return void
+     */
+    public function testAddOnMyTicket()
+    {
+        $this->createTaskAndAssertCanCreate('testAddOnMyTicket', CommonITILTask::ADDMY, '_users_id_requester');
+    }
+
+    /**
+     * Test that the user can create a task on ticket where he is the observer
+     *
+     * @return void
+     */
+    public function testAddAsObserver()
+    {
+        $this->createTaskAndAssertCanCreate('testAddAsObserver', CommonITILTask::ADD_AS_OBSERVER, '_users_id_observer');
+    }
+
+    /**
+     * Test that the user can create a task on ticket where he is assigned
+     *
+     * @return void
+     */
+    public function testAddAsTechnician()
+    {
+        $this->createTaskAndAssertCanCreate('testAddAsTechnician', CommonITILTask::ADD_AS_TECHNICIAN, '_users_id_assign');
+    }
+
+    /**
+     * Test that the user can create a task on ticket where an associated group is actor
+     *
+     * @return void
+     */
+    public function testAddAsGroup()
+    {
+        global $DB;
+
+        $this->login();
+        $uid = getItemByTypeName(User::class, TU_USER, true);
+
+        //Create profile
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'testAddAsGroup',
+            'interface' => 'central',
+        ]);
+
+        $profile_user = new Profile_User();
+        $profile_user->getFromDBByCrit([
+            'users_id' => $uid,
+        ]);
+
+        $DB->delete(
+            ProfileRight::getTable(),
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'task'
+            ],
+        );
+
+        //Add the profile to the user
+        $DB->update(
+            Profile_User::getTable(),
+            ['profiles_id' => $profile->getID()],
+            ['users_id' => $uid],
+        );
+
+        $this->login();
+
+        $ticket = self::getNewTicket();
+
+        $this->boolean((new \TicketTask())->canCreate())->isFalse();
+
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
+                'state' => \Planning::TODO,
+                'tickets_id' => $ticket,
+                'content' => "Task",
+                'users_id' => $uid,
+            ]
+        );
+
+        $this->boolean($task->canCreateItem())->isFalse();
+
+        $ticket_right = new ProfileRight();
+        $ticket_right->getFromDBByCrit(
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'ticket',
+            ]
+        );
+
+        // Create a profile right to be able to read my ticket
+        $this->updateItem(
+            ProfileRight::class,
+            $ticket_right->getID(),
+            [
+                'rights' => READ
+            ]
+        );
+
+        // Create a profile right to add a task to the ticket
+        $this->createItem(ProfileRight::class, [
+            'profiles_id' => $profile->getID(),
+            'name' => 'task',
+            'rights' => CommonITILTask::ADD_AS_GROUP
+        ]);
+
+        $this->login();
+
+        $this->boolean((new \TicketTask())->canCreate())->isTrue();
+
+        $group = $this->createItem(\Group::class, [
+            'name' => 'testAddAsGroup',
+            'comment' => 'testAddAsGroup',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id' => $uid,
+        ]);
+
+        // Create a ticket as a $ticketUserType
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => 'ticket title',
+                'content' => 'Content',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_groups_id_requester' => $group->getID(),
+            ]
+        );
+
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
+                'state' => \Planning::TODO,
+                'tickets_id' => $ticket->getID(),
+                'content' => "Task",
+                'users_id' => $uid,
+            ]
+        );
+
+        $this->boolean($task->canCreateItem())->isTrue();
     }
 }

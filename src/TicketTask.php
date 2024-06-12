@@ -46,14 +46,21 @@ class TicketTask extends CommonITILTask
 
     public static function canCreate(): bool
     {
-        return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-              || Session::haveRight('ticket', Ticket::OWN));
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                parent::ADDALLITEM,
+                parent::ADD_AS_GROUP,
+                parent::ADDMY,
+                parent::ADD_AS_OBSERVER,
+                parent::ADD_AS_TECHNICIAN,
+            ],
+        ));
     }
 
     public static function canUpdate(): bool
     {
-        return (Session::haveRight(self::$rightname, parent::UPDATEALL)
-              || Session::haveRight('ticket', Ticket::OWN));
+        return (Session::haveRightsOr(self::$rightname, [parent::UPDATEALL, parent::UPDATEMY]));
     }
 
 
@@ -92,7 +99,7 @@ class TicketTask extends CommonITILTask
             return true;
         }
 
-       // see task created or affected to me
+        // see task created or affected to me
         if (
             Session::getCurrentInterface() == "central"
             && ($this->fields["users_id"] === Session::getLoginUserID())
@@ -120,26 +127,14 @@ class TicketTask extends CommonITILTask
      **/
     public function canCreateItem(): bool
     {
-
         if (!$this->canReadITILItem()) {
             return false;
         }
 
         $ticket = new Ticket();
-        if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            // No validation for closed tickets
-            && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
-        ) {
-            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-                 || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                 || (isset($_SESSION["glpigroups"])
-                     && $ticket->haveAGroup(
-                         CommonITILActor::ASSIGN,
-                         $_SESSION['glpigroups']
-                     )));
-        }
-        return false;
+        $ticket->getFromDB($this->fields['tickets_id']);
+
+        return $ticket->canAddTasks();
     }
 
 
@@ -164,8 +159,10 @@ class TicketTask extends CommonITILTask
         }
 
         if (
-            ($this->fields["users_id"] != Session::getLoginUserID())
-            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
+            (($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight(self::$rightname, parent::UPDATEALL))
+            || ($this->fields["users_id"] == Session::getLoginUserID()
+            && !Session::haveRight(self::$rightname, parent::UPDATEMY))
         ) {
             return false;
         }
@@ -256,10 +253,24 @@ class TicketTask extends CommonITILTask
 
         if ($interface == 'central') {
             $values[parent::UPDATEALL]      = __('Update all');
-            $values[parent::ADDALLITEM  ]   = __('Add to all items');
+            $values[parent::ADDALLITEM  ]   = __('Add to all tickets');
             $values[parent::SEEPRIVATE]     = __('See private ones');
         }
 
+        $values[self::ADD_AS_GROUP]
+                                     = ['short' => __('Add (associated groups)'),
+                                         'long'  => __('Add to tickets of associated groups'),
+                                     ];
+        $values[self::UPDATEMY]    = __('Update (author)');
+        $values[self::ADDMY] = ['short' => __('Add (requester)'),
+            'long'  => __('Add to tickets (requester)'),
+        ];
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add (observer)'),
+            'long'  => __('Add to tickets (observer)'),
+        ];
+        $values[self::ADD_AS_TECHNICIAN] = ['short' => __('Add (technician)'),
+            'long'  => __('Add to tickets (technician)'),
+        ];
         $values[parent::SEEPUBLIC]   = __('See public ones');
 
         if ($interface == 'helpdesk') {

@@ -976,32 +976,67 @@ abstract class CommonITILObject extends CommonDBTM
     public function canAddFollowups()
     {
         return (
-         (
-            Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
-            && (
-               $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-               || (
-                  isset($this->fields["users_id_recipient"])
-                  && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
-               )
+            (
+                Session::haveRight("followup", ITILFollowup::ADDMY)
+                && (
+                    $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                    || (
+                        isset($this->fields["users_id_recipient"])
+                        && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
+                    )
+                )
             )
-         )
-         || (
-            Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
-            && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-         )
-         || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
-         || (
-            Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
-            && isset($_SESSION["glpigroups"])
-            && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
-         )
-         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-         || (
-            isset($_SESSION["glpigroups"])
-            && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
-         )
-         || $this->isUserValidationRequested(Session::getLoginUserID(), true)
+            || (
+                Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
+                && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+            )
+            || Session::haveRight('followup', ITILFollowup::ADDALLITEM)
+            || (
+                Session::haveRight('followup', ITILFollowup::ADD_AS_GROUP)
+                && isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+            )
+            || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (
+                isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+            )
+            || $this->isUserValidationRequested(Session::getLoginUserID(), true)
+        );
+    }
+
+    public function canAddTasks()
+    {
+        return (
+             (
+                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDMY)
+                 && (
+                     $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                     || (
+                         isset($this->fields["users_id_recipient"])
+                         && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
+                     )
+                 )
+             )
+             || (
+                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
+                 && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+             )
+             || Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDALLITEM)
+             || (
+                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_GROUP)
+                 && isset($_SESSION["glpigroups"])
+                 && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+             )
+             || (
+                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_TECHNICIAN)
+                 && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+             )
+             || (
+                 isset($_SESSION["glpigroups"])
+                 && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+             )
+             || $this->isUserValidationRequested(Session::getLoginUserID(), true)
         );
     }
 

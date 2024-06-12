@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,17 +34,17 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \DBmysql $DB
- * @var \Migration $migration
- */
-
-$table = 'glpi_cables';
-if (!$DB->fieldExists($table, 'is_deleted', false)) {
-    $migration->addField($table, 'is_deleted', 'bool');
-    $migration->addKey($table, 'is_deleted');
+trait ITILSubItemRights
+{
+    const SEEPUBLIC = 1;
+    const UPDATEMY = 2;
+    const ADDMY = 4;
+    const UPDATEALL = 1024;
+    const ADD_AS_GROUP = 2048;
+    const ADDALLITEM = 4096;
+    /** @deprecated 11.0.0 */
+    const ADDALLTICKET = 4096;
+    const SEEPRIVATE = 8192;
+    const ADD_AS_OBSERVER = 16384;
+    const ADD_AS_TECHNICIAN = 32768;
 }
-
-$migration->replaceRight('cable_management', READ | UPDATE | CREATE | DELETE | PURGE, [
-    'cable_management' => READ | UPDATE | CREATE | PURGE
-]);

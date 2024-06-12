@@ -2904,7 +2904,7 @@ class Ticket extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDALLTICKET,
+                        'followup' => \READ + \ITILFollowup::ADDALLITEM,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -2918,7 +2918,7 @@ class Ticket extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDMYTICKET,
+                        'followup' => \READ + \ITILFollowup::ADDMY,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -2932,7 +2932,7 @@ class Ticket extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
+                        'followup' => \READ + \ITILFollowup::ADD_AS_GROUP,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -4175,7 +4175,7 @@ HTML,
             ]
         );
 
-       // Cannot add followup as user do not have ADDMYTICKET right
+       // Cannot add followup as user do not have ADDMY right
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
         $this->login('post-only', 'postonly');
@@ -4185,7 +4185,7 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADDMYTICKET
+                'rights' => \ITILFollowup::ADDMY
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
@@ -4193,7 +4193,7 @@ HTML,
             ]
         );
 
-       // User is recipient and have ADDMYTICKET, he should be able to add followup
+       // User is recipient and have ADDMY, he should be able to add followup
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
         $this->login('post-only', 'postonly');
@@ -4245,7 +4245,7 @@ HTML,
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-       // Cannot add followup as user do not have ADDMYTICKET right
+       // Cannot add followup as user do not have ADDMY right
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
         $this->login('post-only', 'postonly');
@@ -4255,7 +4255,7 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADDMYTICKET
+                'rights' => \ITILFollowup::ADDMY
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
@@ -4263,7 +4263,7 @@ HTML,
             ]
         );
 
-       // User is requester and have ADDMYTICKET, he should be able to add followup
+       // User is requester and have ADDMY, he should be able to add followup
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
         $this->login('post-only', 'postonly');
@@ -4326,7 +4326,7 @@ HTML,
         $this->integer((int) $group_ticket->add($input_group_ticket))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-       // Cannot add followup as user do not have ADDGROUPTICKET right
+       // Cannot add followup as user do not have ADD_AS_GROUP right
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
         $this->login('post-only', 'postonly');
@@ -4336,7 +4336,7 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADDGROUPTICKET
+                'rights' => \ITILFollowup::ADD_AS_GROUP
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
@@ -4344,7 +4344,7 @@ HTML,
             ]
         );
 
-       // User is requester and have ADDGROUPTICKET, he should be able to add followup
+       // User is requester and have ADD_AS_GROUP, he should be able to add followup
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
         $this->login('post-only', 'postonly');

@@ -34,16 +34,14 @@
  */
 
 /**
- * @var \DBmysql $DB
  * @var \Migration $migration
  */
 
-$table = 'glpi_cables';
-if (!$DB->fieldExists($table, 'is_deleted', false)) {
-    $migration->addField($table, 'is_deleted', 'bool');
-    $migration->addKey($table, 'is_deleted');
-}
-
-$migration->replaceRight('cable_management', READ | UPDATE | CREATE | DELETE | PURGE, [
-    'cable_management' => READ | UPDATE | CREATE | PURGE
-]);
+// new right values for task
+$migration->giveRight(
+    'task',
+    CommonITILTask::ADDMY | CommonITILTask::ADD_AS_GROUP | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
+    [
+        'ticket' => Ticket::OWN
+    ]
+);

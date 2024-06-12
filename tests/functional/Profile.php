@@ -60,8 +60,8 @@ class Profile extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => false],
                 ],
             ],
             [
@@ -74,8 +74,8 @@ class Profile extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => true],
                 ],
             ],
             [
@@ -88,8 +88,8 @@ class Profile extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => true],
                 ],
             ],
         ];
