@@ -328,6 +328,13 @@ class User extends CommonDBTM
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
                 $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
+
+                if (
+                    $item->fields['authtype'] === Auth::LDAP
+                    && Session::haveRight(self::$rightname, self::READAUTHENT)
+                ) {
+                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::getType(), AuthLDAP::getIcon());
+                }
                 return $ong;
 
             case 'Preference':
@@ -344,7 +351,16 @@ class User extends CommonDBTM
 
         switch (get_class($item)) {
             case self::class:
-                $item->showItems($tabnum == 2);
+                switch ($tabnum) {
+                    case 1:
+                    case 2:
+                        $item->showItems($tabnum == 2);
+                        break;
+                    case 3:
+                        $item->showLdapInformation();
+                        break;
+                }
+
                 return true;
 
             case Preference::class:
@@ -5863,21 +5879,20 @@ JAVASCRIPT;
      *
      * @return void
      */
-    private function showLdapDebug()
+    private function showLdapInformation(): void
     {
-
-        if ($this->fields['authtype'] != Auth::LDAP) {
+        if ($this->fields['authtype'] != Auth::LDAP || !Session::haveRight(self::$rightname, self::READAUTHENT)) {
             return;
         }
+
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='4'>" . AuthLDAP::getTypeName(1) . "</th></tr>";
+        echo "<tr><th colspan='2'>" . htmlspecialchars(AuthLDAP::getTypeName(1)) . "</th></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('User DN') . "</td>";
-        echo "<td>" . $this->fields['user_dn'] . "</td></tr>\n";
+        echo "<tr class='tab_bg_2'><td>" . __s('User DN') . "</td>";
+        echo "<td>" . htmlspecialchars($this->fields['user_dn']) . "</td></tr>";
 
         if ($this->fields['user_dn']) {
-            echo "<tr class='tab_bg_2'><td>" . __('User information') . "</td><td>";
             $config_ldap = new AuthLDAP();
             $ds          = false;
 
@@ -5892,29 +5907,44 @@ JAVASCRIPT;
                     ['*', 'createTimeStamp', 'modifyTimestamp']
                 );
                 if (is_array($info)) {
-                     Html::printCleanArray($info);
+                    foreach ($info as $key => $values) {
+                        if (is_numeric($key) || !is_array($values)) {
+                            // $info will have the following format:
+                            //
+                            // [
+                            //   0           => 'propertyX',
+                            //   'propertyX' => [
+                            //     'count' => 2,
+                            //     0       => 'value1',
+                            //     1       => 'value2',
+                            //   ],
+                            //   'count'     => 1,
+                            //   'dn'        => 'uid=X,dc=Y,dc=Z',
+                            // ]
+                            //
+                            // Ignore entries that correspond to a propery name (numeric key)
+                            // or that corresponds to count/dn properties.
+                            continue;
+                        }
+                        echo '<tr class="tab_bg_2">';
+                        echo '<td>' . htmlspecialchars($key) . '</td>';
+                        echo '<td>';
+                        unset($values['count']);
+                        echo implode(', ', array_map(fn ($value) => htmlspecialchars($value), $values));
+                        echo '</td>';
+                        echo '</tr>';
+                    }
                 } else {
-                    echo __('No item to display');
+                    echo '<tr class="tab_bg_2">';
+                    echo '<td colspan="2">' . __s('No LDAP information to display') . '</td>';
+                    echo '</tr>';
                 }
             } else {
-                echo __('Connection failed');
+                echo '<td colspan="2">' . __s('Connection failed') . '</td>';
             }
-
-            echo "</td></tr>\n";
         }
 
         echo "</table></div>";
-    }
-
-
-    /**
-     * Display debug information for current object.
-     *
-     * @return void
-     */
-    public function showDebug()
-    {
-        $this->showLdapDebug();
     }
 
     public function getUnicityFieldsToDisplayInErrorMessage()
