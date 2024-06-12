@@ -266,6 +266,7 @@ The present file will list all changes made to the project; according to the
 - `Entity::getDefaultContractValues()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`
+- `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
