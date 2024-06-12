@@ -511,9 +511,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
 
         if (!is_array($crit)) {
-           //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-           //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-           //}
+            Toolbox::deprecated(
+                sprintf('Usage of `%s` in request criteria is deprecated.', get_debug_type($crit)),
+                false
+            );
             return $crit;
         }
         $ret = "";
