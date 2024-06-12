@@ -213,14 +213,14 @@ describe("Debug Bar", () => {
                     },
                 }).as('searchOptions');
 
-                cy.findByLabelText('Itemtype').should('be.visible').find('option').should('have.length.gte', 10);
-                cy.findByLabelText('Itemtype').select('Printer'); // Should always be available since it in the menu, so already autoloaded.
+                cy.findByLabelText('Itemtype').should('be.visible');
+                cy.findByLabelText('Itemtype').select('Profile'); // Should always be available since it is required for the session, so already autoloaded.
                 cy.wait('@searchOptions').its('response.statusCode').should('eq', 200);
                 cy.get('.search-opts-table').should('exist');
 
                 cy.findByRole('button', {name: 'Toggle manual input'}).click();
                 cy.findByLabelText('Itemtype').clear();
-                cy.findByLabelText('Itemtype').type('Monitor{enter}');
+                cy.findByLabelText('Itemtype').type('User{enter}'); // Should always be available since it is required for the session, so already autoloaded.
                 cy.wait('@searchOptions').its('response.statusCode').should('eq', 200);
 
                 cy.root().injectAndCheckA11y();

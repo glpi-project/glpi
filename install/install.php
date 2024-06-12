@@ -44,7 +44,6 @@ use Glpi\Toolbox\Filesystem;
 define('GLPI_ROOT', realpath('..'));
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
-include_once(GLPI_ROOT . "/inc/db.function.php");
 
 /**
  * @var \GLPI $GLPI

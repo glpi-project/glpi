@@ -45,7 +45,78 @@ if (!empty($tz)) {
     date_default_timezone_set(@date_default_timezone_get());
 }
 
-include_once(GLPI_ROOT . "/inc/autoload.function.php");
+
+// Check if dependencies are up to date
+$needrun  = false;
+
+// composer dependencies
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
+if (!file_exists($autoload)) {
+    $needrun = true;
+} else if (file_exists(GLPI_ROOT . '/composer.lock')) {
+    if (!file_exists(GLPI_ROOT . '/.composer.hash')) {
+       /* First time */
+        $needrun = true;
+    } else if (sha1_file(GLPI_ROOT . '/composer.lock') != file_get_contents(GLPI_ROOT . '/.composer.hash')) {
+       /* update */
+        $needrun = true;
+    }
+}
+
+// node dependencies
+if (!file_exists(GLPI_ROOT . '/public/lib')) {
+    $needrun = true;
+} else if (file_exists(GLPI_ROOT . '/package-lock.json')) {
+    if (!file_exists(GLPI_ROOT . '/.package.hash')) {
+       /* First time */
+        $needrun = true;
+    } else if (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
+       /* update */
+        $needrun = true;
+    }
+}
+
+if ($needrun) {
+    $deps_install_msg = 'Application dependencies are not up to date.' . PHP_EOL
+      . 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
+    if (isCommandLine()) {
+        echo $deps_install_msg;
+    } else {
+        echo nl2br($deps_install_msg);
+    }
+    die(1);
+}
+
+// Check if locales are compiled.
+$need_mo_compile = false;
+$locales_files = scandir(GLPI_ROOT . '/locales');
+$po_files = preg_grep('/\.po$/', $locales_files);
+$mo_files = preg_grep('/\.mo$/', $locales_files);
+if (count($mo_files) < count($po_files)) {
+    $need_mo_compile = true;
+} else if (file_exists(GLPI_ROOT . '/locales/glpi.pot')) {
+   // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
+    foreach ($po_files as $po_file) {
+        $po_file = GLPI_ROOT . '/locales/' . $po_file;
+        $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
+        if (!file_exists($mo_file) || filemtime($mo_file) < filemtime($po_file)) {
+            $need_mo_compile = true;
+            break; // No need to scan the whole dir
+        }
+    }
+}
+if ($need_mo_compile) {
+    $mo_compile_msg = 'Application locales have to be compiled.' . PHP_EOL
+      . 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
+    if (isCommandLine()) {
+        echo $mo_compile_msg;
+    } else {
+        echo nl2br($mo_compile_msg);
+    }
+    die(1);
+}
+
+require_once $autoload;
 
 // Check if web root is configured correctly
 if (!isCommandLine()) {
@@ -140,6 +211,7 @@ if (!isCommandLine()) {
             'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
             'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
             'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/marketplace/',
+            'GLPI_MARKETPLACE_PRERELEASES'      => preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1, // allow marketplace to expose unstable plugins versions
             'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
             'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
             'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
@@ -255,4 +327,17 @@ if (!isCommandLine()) {
 
 define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
 
-include_once(GLPI_ROOT . "/inc/define.php");
+/**
+ * @var array $PLUGIN_HOOKS
+ * @var array $CFG_GLPI_PLUGINS
+ * @var array $LANG
+ */
+global $PLUGIN_HOOKS,
+    $CFG_GLPI_PLUGINS,
+    $LANG
+;
+
+// For plugins
+$PLUGIN_HOOKS     = [];
+$CFG_GLPI_PLUGINS = [];
+$LANG             = [];

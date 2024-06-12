@@ -137,6 +137,14 @@
         }
     },
     "autoload": {
+        "files": [
+            "src/autoload/CFG_GLPI.php",
+            "src/autoload/constants.php",
+            "src/autoload/dbutils-aliases.php",
+            "src/autoload/i18n.php",
+            "src/autoload/legacy-autoloader.php",
+            "src/autoload/misc-functions.php"
+        ],
         "psr-4": {
             "Glpi\\": "src/Glpi/"
         }

@@ -155,6 +155,7 @@ The present file will list all changes made to the project; according to the
 - The `helper` property of form fields will not support anymore the presence of HTML code.
 - `Glpi\Application\ErrorHandler` constructor visibility has been changed to private.
 - `GLPI::initErrorHandler()` does not return any value anymore.
+- The `inc/autoload.function.php`, `inc/db.function.php` and `inc/define.php` file has been removed and the corresponding global functions, constants and variables are now loaded and initialized automatically.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.

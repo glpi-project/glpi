@@ -66,9 +66,6 @@ include_once GLPI_ROOT . '/inc/based_config.php';
 \Glpi\Debug\Profiler::getInstance()->start('php_request');
 
 
-/// TODO try to remove them if possible
-include_once(GLPI_ROOT . "/inc/db.function.php");
-
 // Standard includes
 include_once(GLPI_ROOT . "/inc/config.php");
 
