@@ -5749,6 +5749,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->testImportComputer();
 
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1_partial_volumes.json'));
+        $json->content->hardware->lastloggeduser = 'trasher/root';
         $inventory = $this->doInventory($json);
 
         //check inventory metadata
@@ -8037,5 +8038,73 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $parent_location = $locations->current();
         $this->string($parent_location['name'])->isIdenticalTo('France');
         $this->integer($parent_location['id'])->isIdenticalTo($new_location['locations_id']);
+    }
+
+    public function testPartialUser()
+    {
+        $json_str = <<<JSON
+{
+    "action": "inventory",
+    "content": {
+        "bios": {
+            "bdate": "2019-09-09",
+            "bmanufacturer": "American Megatrends Inc.",
+            "bversion": "1201",
+            "mmanufacturer": "ASUSTeK COMPUTER INC.",
+            "mmodel": "PRIME X570-P",
+            "msn": "190653777602969",
+            "skunumber": "SKU"
+        },
+        "hardware": {
+            "chassis_type": "Desktop",
+            "datelastloggeduser": "Mon Jun 10 09:06",
+            "defaultgateway": "192.168.0.254",
+            "lastloggeduser": "guillaume",
+            "memory": 31990,
+            "name": "pc_with_user",
+            "swap": 16143,
+            "uuid": "ea38cc5b-92eb-7777-ec5e-04d9f521c6e3",
+            "vmsystem": "Physical"
+        },
+        "users": [
+            {
+                "login": "guillaume"
+            }
+        ],
+        "versionclient": "GLPI-Agent_v1.10-dev"
+    },
+    "deviceid": "test-2021-11-30-09-57-34",
+    "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+
+        //initial import
+        $this->doInventory($json);
+
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
+        $this->string($computer->fields['contact'])->isIdenticalTo('guillaume');
+
+        //change user, and redo inventory
+        $json = json_decode($json_str);
+        $newuser = 'john';
+        $json->content->hardware->lastloggeduser = $newuser;
+        $json->content->users[0]->login = $newuser;
+
+        $this->doInventory($json);
+        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
+        $this->string($computer->fields['contact'])->isIdenticalTo($newuser);
+
+        //make partial, change user, and redo inventory
+        $json = json_decode($json_str);
+        $newuser = 'partialized';
+        $json->content->hardware->lastloggeduser = $newuser;
+        $json->content->users[0]->login = $newuser;
+        $json->partial = true;
+
+        $this->doInventory($json);
+        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
+        $this->string($computer->fields['contact'])->isIdenticalTo($newuser);
     }
 }
