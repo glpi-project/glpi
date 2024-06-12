@@ -42,13 +42,13 @@ final class TitleField extends GLPITestCase
 {
     public function testApplyConfiguratedValueToInputUsingAnswers(): void
     {
-        $config = ['value' => 'My custom title'];
+        $value = 'My custom title';
 
         $field = new \Glpi\Form\Destination\CommonITILField\TitleField();
         $input = $field->applyConfiguratedValueToInputUsingAnswers(
-            config: $config,
-            input: [],
-            answers_set: new AnswersSet()
+            configurated_value: $value,
+            input             : [],
+            answers_set       : new AnswersSet()
         );
 
         $this->string($input['name'])->isEqualTo('My custom title');

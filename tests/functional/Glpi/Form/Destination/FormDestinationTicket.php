@@ -53,11 +53,11 @@ class FormDestinationTicket extends AbstractFormDestinationType
     {
         yield 'Simple field' => [
             'field_key' => 'title',
-            'expected'  => 'config[title][value]',
+            'expected'  => 'config[title]',
         ];
         yield 'Array field' => [
             'field_key' => 'my_values[]',
-            'expected'  => 'config[my_values][value][]',
+            'expected'  => 'config[my_values][]',
         ];
     }
 

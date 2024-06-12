@@ -145,9 +145,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     {
         // Handle array fields
         if (str_ends_with($field_key, '[]')) {
-            return "config[" . rtrim($field_key, '[]') . "][value][]";
+            return "config[" . rtrim($field_key, '[]') . "][]";
         }
 
-        return "config[$field_key][value]";
+        return "config[$field_key]";
     }
 }

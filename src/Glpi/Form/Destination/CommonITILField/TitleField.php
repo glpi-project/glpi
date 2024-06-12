@@ -58,7 +58,7 @@ class TitleField implements ConfigFieldInterface
     #[Override]
     public function renderConfigForm(
         Form $form,
-        ?array $config,
+        mixed $configurated_value,
         string $input_name,
         array $display_options
     ): string {
@@ -76,7 +76,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'label'      => $this->getLabel(),
-            'value'      => $config['value'] ?? '',
+            'value'      => $configurated_value ?? '',
             'input_name' => $input_name,
             'options'    => $display_options,
         ]);
@@ -84,15 +84,15 @@ TWIG;
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        ?array $config,
+        mixed $configurated_value,
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (is_null($config)) {
+        if (is_null($configurated_value)) {
             return $input;
         }
 
-        $input['name'] = $config['value'];
+        $input['name'] = $configurated_value;
 
         return $input;
     }
