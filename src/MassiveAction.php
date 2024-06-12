@@ -712,8 +712,11 @@ class MassiveAction
      **/
     public static function getAllMassiveActions($item, $is_deleted = false, CommonDBTM $checkitem = null, ?int $items_id = null)
     {
-        /** @var array $PLUGIN_HOOKS */
+        /** @var array $PLUGIN_HOOKS
+         *  @var array $CFG_GLPI
+        */
         global $PLUGIN_HOOKS;
+        global $CFG_GLPI;
 
         if (is_string($item)) {
             $itemtype = $item;
@@ -805,7 +808,9 @@ class MassiveAction
             Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Reservation::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-            Pdf::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+            if (in_array($itemtype, $CFG_GLPI["print_preview_types"])) {
+                PrintPreview::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+            }
 
            // Amend comment for objects with a 'comment' field
             $item->getEmpty();

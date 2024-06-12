@@ -676,3 +676,8 @@ $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
 
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];
 $CFG_GLPI['itemvirtualmachines_types'] = ['Computer'];
+
+$CFG_GLPI["print_preview_types"]  = ['Computer', 'Monitor', 'Software', 'NetworkEquipment',
+    'Devices', 'Printers', 'Cartridge', 'ConsumableItem', 'Phone', 'Racks', 'Enclosure', 'Pdu', 'PassiveDCEquipment',
+    'Unmanaged', 'Cable', 'DeviceSimcard'
+];

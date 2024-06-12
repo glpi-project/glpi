@@ -35,31 +35,33 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-class Pdf
+class PrintPreview
 {
     public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $action_prefix = 'Pdf' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $action_prefix = 'PrintPreview' . MassiveAction::CLASS_ACTION_SEPARATOR;
         $item = new $itemtype();
         if ($item instanceof CommonDBTM) {
-            $actions[$action_prefix . 'print_as_pdf'] = '<i class="ti ti-file-type-pdf"> </i>' . __('Print as PDF');
+            $actions[$action_prefix . 'print_preview'] = '<i class="' . self::getIcon() . '"> </i>' . __('Print a preview');
         }
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
-            case 'print_as_pdf':
+            case 'print_preview':
                 $items = $ma->getItems();
                 $itemtypes = array_keys($items);
                 $firstItemtype = reset($itemtypes);
                 $firstitem = reset($items[$firstItemtype]);
-                TemplateRenderer::getInstance()->display('pages/tools/pdf.html.twig', [
+                TemplateRenderer::getInstance()->display('pages/tools/print_preview.html.twig', [
                     'is_render' => false,
                     'tabs'      => self::getPrintableTabs($firstItemtype, $firstitem),
+                    'items_id' => $firstitem,
+                    'itemtype' => $firstItemtype,
                 ]);
                 return true;
         }
@@ -73,8 +75,8 @@ class Pdf
     ) {
 
         switch ($ma->getAction()) {
-            case 'print_as_pdf':
-                TemplateRenderer::getInstance()->render('pages/tools/pdf.html.twig', [
+            case 'print_preview':
+                TemplateRenderer::getInstance()->render('pages/tools/print_preview.html.twig', [
                     'is_render' => true,
                 ]);
         }
@@ -91,7 +93,7 @@ class Pdf
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        return "$dir/front/pdf.form.php";
+        return "$dir/front/print_preview.form.php";
     }
 
     public static function getPrintableTypeLabel($itemtype, $item)
@@ -129,14 +131,17 @@ class Pdf
         ];
     }
 
-    public static function showPdfPreview($item_id, $itemtype, $input)
+    public static function showPreview($item_id, $itemtype, $input)
     {
         $item = new $itemtype();
+        $item->showFormHeader();
+        $item->showForm($item_id);
         $item->getFromDB($item_id);
-        echo TemplateRenderer::getInstance()->render('pages/tools/pdf.html.twig', [
-            'is_render' => true,
-            'item'      => $item,
-            'input'     => $input,
-        ]);
+        CommonGLPI::displayStandardTab($item, 'Log');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-file-unknown';
     }
 }

@@ -1,0 +1,57 @@
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+
+{% if is_render == false %}
+    <div class="hr-text mt-2 mb-5">
+        <span style="font-size: 1.5em;" >{{ __('Select tabs to print') }}</span>
+    </div>
+    <form name="print_form"method="post" action="{{ call('PrintPreview::getFormUrl') }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="itemtype" value="{{ itemtype }}">
+        <input type="hidden" name="items_id" value="{{ items_id }}">
+        <div class="container">
+            <div class="row">
+                {% for key, tab in tabs %}
+                    <div class="col-1 my-2 align-items-center text-end">
+                        {{ _inputs.checkbox(key, key == itemtype ? 1 : 0, {'disabled': key == itemtype ? true : false}) }}
+                    </div>
+                    <div class="col-3 text-start my-2">
+                        {{ tab|raw }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="hr my-2"></div>
+            <div class="row">
+                <div class="col-8 my-2">
+                </div>
+                <div class="col-1 my-2 align-items-center text-end">
+                        <input type="checkbox" class="form-check-input" name="select_all" onclick="selectAllCheckboxes(this.checked)"/>
+                </div>
+                <div class="col-3 text-start my-2">
+                    <i class="ti ti-checks me-1"></i>
+                    {{ __('All') }}
+                </div>
+            </div>
+        </div>
+        <div class="hr my-2"></div>
+        <div class="container text-center">
+            <input name="generate_preview" class="btn btn-primary mt-2" type="submit" value="{{ __('Generate preview') }}" />
+        </div>
+    </form>
+    <script>
+        function selectAllCheckboxes(isChecked) {
+            var checkboxes = document.querySelector('form[name="print_form"]').querySelectorAll('input[type=checkbox]:not([disabled])');
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        }
+    </script>
+{% else %}
+    {{ itemtype.showForm(item.fields['id']) }}
+    {% for key, tab in tabs %}
+        {% if tab == 1 %}
+            {{ call('CommonGLPI::displayStandardTab', [item, key]) }}
+        {% endif %}
+    {% endfor %}
+{% endif %}
