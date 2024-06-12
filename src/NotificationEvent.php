@@ -224,26 +224,4 @@ class NotificationEvent extends CommonDBTM
         $template = null;
         return true;
     }
-
-
-    /**
-     * Display debug information for an object
-     *
-     * @param CommonDBTM $item    Object instance
-     * @param array      $options Options
-     *
-     * @return void
-     **/
-    public static function debugEvent($item, $options = [])
-    {
-        $events = [];
-        if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
-            $events = $target->getAllEvents();
-        }
-        TemplateRenderer::getInstance()->display('pages/setup/notification/event_debug.html.twig', [
-            'item' => $item,
-            'events' => $events,
-            'options' => $options
-        ]);
-    }
 }

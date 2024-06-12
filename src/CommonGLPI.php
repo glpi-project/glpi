@@ -1266,26 +1266,6 @@ class CommonGLPI implements CommonGLPIInterface
         if (method_exists($this, 'showDebug')) {
             $this->showDebug();
         }
-
-        if (!($this instanceof CommonDBTM)) {
-            return;
-        }
-
-        $class = $this->getType();
-
-        if (Infocom::canApplyOn($class)) {
-            $infocom = new Infocom();
-            if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
-                $infocom->showDebug();
-            }
-        }
-
-        if (in_array($class, $CFG_GLPI["reservation_types"])) {
-            $resitem = new ReservationItem();
-            if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
-                $resitem->showDebugResa();
-            }
-        }
     }
 
     /**

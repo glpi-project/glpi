@@ -378,7 +378,6 @@ class CartridgeItem extends CommonDBTM
             $alert   = new Alert();
 
             foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
-                // if you change this query, please don't forget to also change in showDebug()
                 $result = $DB->request(
                     [
                         'SELECT'    => [
@@ -562,26 +561,6 @@ class CartridgeItem extends CommonDBTM
     public function getEvents()
     {
         return ['alert' => __('Send alarms on cartridges')];
-    }
-
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        // see query_alert in cronCartridge()
-        $item = [
-            'cartID'    => $this->fields['id'],
-            'entity'    => $this->fields['entities_id'],
-            'ref'       => $this->fields['ref'],
-            'name'      => $this->fields['name'],
-            'threshold' => $this->fields['alarm_threshold']
-        ];
-
-        $options = [];
-        $options['entities_id'] = $this->getEntityID();
-        $options['items']       = [$item];
-        NotificationEvent::debugEvent($this, $options);
     }
 
     public function showForm($ID, array $options = [])

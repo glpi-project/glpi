@@ -1611,19 +1611,6 @@ class Contract extends CommonDBTM
         return NOT_AVAILABLE;
     }
 
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        $options = [
-            'entities_id' => $this->getEntityID(),
-            'contracts'   => [],
-            'items'       => [],
-        ];
-        NotificationEvent::debugEvent($this, $options);
-    }
-
     public function getUnallowedFieldsForUnicity()
     {
         return array_merge(

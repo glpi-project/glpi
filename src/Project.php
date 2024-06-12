@@ -2578,14 +2578,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
-    }
-
-    /**
      * Get the list of active projects for a list of groups.
      *
      * @param array $groups_id The group IDs.

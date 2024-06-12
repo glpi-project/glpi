@@ -835,22 +835,6 @@ TWIG, $twig_params);
         return $cron_status;
     }
 
-    /**
-     * Display debug information for reservation of current object
-     **/
-    public function showDebugResa()
-    {
-        $resa                                = new Reservation();
-        $resa->fields['id']                  = '1';
-        $resa->fields['reservationitems_id'] = $this->getField('id');
-        $resa->fields['begin']               = $_SESSION['glpi_currenttime'];
-        $resa->fields['end']                 = $_SESSION['glpi_currenttime'];
-        $resa->fields['users_id']            = Session::getLoginUserID();
-        $resa->fields['comment']             = '';
-
-        NotificationEvent::debugEvent($resa);
-    }
-
     public function getRights($interface = 'central')
     {
         if ($interface === 'central') {

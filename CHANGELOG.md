@@ -229,6 +229,9 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
 - `Cartridge::getNotificationParameters()`
+- `CartridgeItem::showDebug()`
+- `Certificate::showDebug()`
+- `Change::showDebug()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDBTM::getCacheKeyForFriendlyName()`
@@ -253,10 +256,13 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
+- `Config::showDebug()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
+- `ConsumableItem::showDebug()`
 - `Contract::commonListHeader()`
 - `Contract::getContractRenewalIDByName()`
+- `Contract::showDebug()`
 - `Contract::showShort()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
@@ -265,6 +271,7 @@ The present file will list all changes made to the project; according to the
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
+- `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::showDebug()`
@@ -301,6 +308,7 @@ The present file will list all changes made to the project; according to the
 - `Html::openArrowMassives()`
 - `Html::showTimeField()`
 - `Impact::buildNetwork()`
+- `Infocom::showDebug()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`
 - `KnowbaseItem::addToFaq()`
@@ -331,6 +339,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkPortInstantiation::getInstantiationNetworkPortDisplayOptions()`
 - `NetworkPortInstantiation::getInstantiationNetworkPortHTMLTable()`
 - `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrides.
+- `NotificationEvent::debugEvent()`
 - `NotificationTemplateTranslation::showDebug()`
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
@@ -338,12 +347,15 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `Project::showDebug()`
+- `ProjectTask::showDebug()`
 - `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
 - `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.
 - `Reminder::addVisibilityJoins()`
 - `ReminderTranslation::canBeTranslated()`. Translations are now always active.
 - `ReminderTranslation::isReminderTranslationActive()`. Translations are now always active.
 - `Reservation::displayError()`
+- `ReservationItem::showDebugResa()`
 - `RSSFeed::addVisibilityJoins()`
 - `RSSFeed::addVisibilityRestrict()`
 - `RSSFeed::showDiscoveredFeeds()`
@@ -372,6 +384,8 @@ The present file will list all changes made to the project; according to the
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
+- `SoftwareLicense::showDebug()`
+- `Ticket::showDebug()`
 - `Ticket_Ticket::checkParentSon()`
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`. Replaced by `CommonITILObject_CommonITILObject::manageLinksOnChange()`.

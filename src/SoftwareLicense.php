@@ -1097,24 +1097,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        $license = [
-            'softname'      => '',
-            'name'          => '',
-            'serial'        => '',
-            'expire'        => '',
-            'entities_id'   => '',
-        ];
-
-        $options['entities_id'] = $this->getEntityID();
-        $options['licenses']    = [$license];
-        NotificationEvent::debugEvent($this, $options);
-    }
-
-    /**
      * Get fields to display in the unicity error message
      *
      * @return array

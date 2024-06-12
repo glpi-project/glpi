@@ -1577,14 +1577,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
-    }
-
-    /**
      * Get the list of active project tasks for a list of groups.
      *
      * @param array $groups_id The group IDs.

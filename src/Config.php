@@ -1293,20 +1293,6 @@ class Config extends CommonDBTM
 
 
     /**
-     * Display debug information for dbslave
-     **/
-    public function showDebug()
-    {
-
-        $options = [
-            'diff' => 0,
-            'name' => '',
-        ];
-        NotificationEvent::debugEvent(new DBConnection(), $options);
-    }
-
-
-    /**
      * Display field unicity criterias form
      **/
     public function showFormFieldUnicity()

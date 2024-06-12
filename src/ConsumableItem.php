@@ -442,25 +442,6 @@ class ConsumableItem extends CommonDBTM
         return ['alert' => __('Send alarms on consumables')];
     }
 
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        // see query_alert in cronConsumable()
-        $item = ['consID'    => $this->fields['id'],
-            'entity'    => $this->fields['entities_id'],
-            'ref'       => $this->fields['ref'],
-            'name'      => $this->fields['name'],
-            'threshold' => $this->fields['alarm_threshold']
-        ];
-
-        $options = [];
-        $options['entities_id'] = $this->getEntityID();
-        $options['items']       = [$item];
-        NotificationEvent::debugEvent($this, $options);
-    }
-
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
