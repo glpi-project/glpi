@@ -36,6 +36,7 @@
 namespace Glpi\Form\AnswersHandler;
 
 use CommonDBTM;
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
@@ -116,31 +117,6 @@ final class AnswersHandler
                 throw $e;
             }
         }
-    }
-
-    /**
-     * Insert additionnal data into the given raw answers array to be used when rendering
-     *
-     * @param array $answers The raw answers array
-     *
-     * @return array The formatted answers array
-     */
-    public function prepareAnswersForDisplay(array $answers): array
-    {
-        $computed_answers = [];
-
-        // Insert types objects which will be used to render the answers
-        foreach ($answers as $answer) {
-            $type = $answer['type'] ?? "";
-            if (!is_a($answer['type'], QuestionTypeInterface::class, true)) {
-                continue;
-            }
-
-            $answer['type'] = new $type();
-            $computed_answers[] = $answer;
-        }
-
-        return $computed_answers;
     }
 
     /**
@@ -231,12 +207,10 @@ final class AnswersHandler
             // the linked question might be deleted one day but the answer must still
             // be readable.
             $question = $questions[$question_id];
-            $formatted_answers[] = [
-                'question' => $question_id,
-                'value'    => $question->getQuestionType()->prepareEndUserAnswer($question, $answer),
-                'label'    => $question->fields['name'],
-                'type'     => $question->fields['type'],
-            ];
+            $prepared_answer = $question->getQuestionType()
+                ->prepareEndUserAnswer($question, $answer)
+            ;
+            $formatted_answers[] = new Answer($question, $prepared_answer);
         }
 
         // Save to database

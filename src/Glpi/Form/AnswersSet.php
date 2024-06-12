@@ -129,10 +129,20 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
-    #[Override]
-    public function post_getFromDB()
+    public function getAnswers()
     {
-        $this->fields['answers'] = json_decode($this->fields['answers'], true);
+        $answers = [];
+        $raw_answers = json_decode($this->fields['answers'], true);
+        foreach ($raw_answers as $raw_answer) {
+            try {
+                $answers[] = Answer::fromDecodedJsonData($raw_answer);
+            } catch (\InvalidArgumentException $e) {
+                // Skip invalid data
+                continue;
+            }
+        }
+
+        return $answers;
     }
 
     #[Override]
@@ -196,13 +206,11 @@ final class AnswersSet extends CommonDBChild
         $this->getFromDB($id);
         $this->initForm($id, $options);
 
-        $answer_handler = AnswersHandler::getInstance();
-
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/display_answers.html.twig', [
             'item'    => $this,
-            'answers' => $answer_handler->prepareAnswersForDisplay($this->fields['answers']),
+            'answers' => $this->getAnswers(),
             'params'  => $options,
         ]);
         return true;

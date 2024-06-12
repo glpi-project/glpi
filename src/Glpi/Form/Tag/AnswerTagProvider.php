@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Tag;
 
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Override;
@@ -66,11 +67,9 @@ final class AnswerTagProvider implements TagProviderInterface
     ): string {
         $id = (int) $value;
 
-        // TODO: create a proper readonly class for answers object to avoid using
-        // arbitrary array indexes.
         $answers = array_filter(
-            $answers_set->fields['answers'] ?? [],
-            fn ($answer) => $answer['question'] === $id
+            $answers_set->getAnswers(),
+            fn (Answer $answer) => $answer->getQuestionId() === $id
         );
 
         if (count($answers) !== 1) {
@@ -78,6 +77,6 @@ final class AnswerTagProvider implements TagProviderInterface
         }
 
         $answer = array_pop($answers);
-        return $answer['value'] ?? "";
+        return $answer->getRawAnswer();
     }
 }

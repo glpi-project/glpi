@@ -56,12 +56,13 @@
         </div>
 
         {% for answer in answers %}
-            {% if answer.value is not empty %}
+            {% set type = answer.getType() %}
+            {% if answer.getRawAnswer() is not empty and type is not null %}
                 <div class="mb-3">
                     <label class="form-label">
-                        {{ answer.label }}
+                        {{ answer.getQuestionLabel() }}
                     </label>
-                    {{ answer.type.renderAnswerTemplate(answer.value)|raw }}
+                    {{ type.renderAnswerTemplate(answer.getRawAnswer())|raw }}
                 </div>
             {% endif %}
         {% endfor %}

@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use DbTestCase;
+use Glpi\Form\Answer;
 use Glpi\Form\Question;
 use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
@@ -70,6 +71,19 @@ class AnswersHandler extends DbTestCase
         ;
         $form_1 = $this->createForm($builder);
 
+        $first_name_question = Question::getById(
+            $this->getQuestionId($form_1, "First name")
+        );
+        $last_name_question = Question::getById(
+            $this->getQuestionId($form_1, "Last name")
+        );
+        $age_question = Question::getById(
+            $this->getQuestionId($form_1, "Age")
+        );
+        $thoughts_question = Question::getById(
+            $this->getQuestionId($form_1, "Thoughts about GLPI")
+        );
+
         // Submit first answer
         yield [
             'form'     => $form_1,
@@ -85,32 +99,12 @@ class AnswersHandler extends DbTestCase
                 'users_id'       => $users_id,
                 'name'           => "Form 1 #1",
                 'index'          => 1,
-                'answers'        => [
-                    [
-                        'question' => $this->getQuestionId($form_1, "First name"),
-                        'value'    => "John",
-                        'label'    => "First name",
-                        'type'     => QuestionTypeShortText::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Last name"),
-                        'value'    => "Doe",
-                        'label'    => "Last name",
-                        'type'     => QuestionTypeShortText::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Age"),
-                        'value'    => 78,
-                        'label'    => "Age",
-                        'type'     => QuestionTypeNumber::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
-                        'value'    => "I love GLPI!!!",
-                        'label'    => "Thoughts about GLPI",
-                        'type'     => QuestionTypeLongText::class,
-                    ],
-                ],
+                'answers'        => json_encode([
+                    new Answer($first_name_question, "John"),
+                    new Answer($last_name_question, "Doe"),
+                    new Answer($age_question, 78),
+                    new Answer($thoughts_question, "I love GLPI!!!"),
+                ]),
             ]
         ];
 
@@ -129,32 +123,12 @@ class AnswersHandler extends DbTestCase
                 'users_id'       => $users_id,
                 'name'           => "Form 1 #2", // Increased to #2
                 'index'          => 2,           // Increased to #2
-                'answers'        => [
-                    [
-                        'question' => $this->getQuestionId($form_1, "First name"),
-                        'value'    => "John",
-                        'label'    => "First name",
-                        'type'     => QuestionTypeShortText::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Last name"),
-                        'value'    => "Smith",
-                        'label'    => "Last name",
-                        'type'     => QuestionTypeShortText::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Age"),
-                        'value'    => 19,
-                        'label'    => "Age",
-                        'type'     => QuestionTypeNumber::class,
-                    ],
-                    [
-                        'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
-                        'value'    => "GLPI is incredible",
-                        'label'    => "Thoughts about GLPI",
-                        'type'     => QuestionTypeLongText::class,
-                    ],
-                ],
+                'answers'        => json_encode([
+                    new Answer($first_name_question, "John"),
+                    new Answer($last_name_question, "Smith"),
+                    new Answer($age_question, 19),
+                    new Answer($thoughts_question, "GLPI is incredible"),
+                ]),
             ]
         ];
 
@@ -164,6 +138,10 @@ class AnswersHandler extends DbTestCase
             ->addQuestion("Contact email", QuestionTypeEmail::class)
         ;
         $form_2 = $this->createForm($builder);
+
+        $contact_email_question = Question::getById(
+            $this->getQuestionId($form_2, "Contact email")
+        );
 
         yield [
             'form'     => $form_2,
@@ -176,14 +154,9 @@ class AnswersHandler extends DbTestCase
                 'users_id'       => $users_id,
                 'name'           => "Form 2 #1", // Back to #1 since this is a different form
                 'index'          => 1,
-                'answers'        => [
-                    [
-                        'question' => $this->getQuestionId($form_2, "Contact email"),
-                        'value'    => "glpi@teclib.com",
-                        'label'    => "Contact email",
-                        'type'     => QuestionTypeEmail::class,
-                    ],
-                ],
+                'answers'        => json_encode([
+                    new Answer($contact_email_question, "glpi@teclib.com"),
+                ]),
             ]
         ];
     }
@@ -218,117 +191,5 @@ class AnswersHandler extends DbTestCase
 
         // The `createDestinations` part of the `saveAnswers` method is tested
         // by each possible destinations type in their own test file
-    }
-
-    /**
-     * Data provider for testPrepareAnswersForDisplay method
-     *
-     * @return iterable
-     */
-    protected function testPrepareAnswersForDisplayProvider(): iterable
-    {
-        $this->login();
-        $users_id = getItemByTypeName(User::class, TU_USER, true);
-
-        // Build form
-        $builder = new FormBuilder("Form 1");
-        $builder
-            ->addQuestion("First name", QuestionTypeShortText::class)
-            ->addQuestion("Last name", QuestionTypeShortText::class)
-            ->addQuestion("Age", QuestionTypeNumber::class)
-        ;
-        $form_1 = $this->createForm($builder);
-
-        // Register an answer
-        $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
-        $answers_set = $handler->saveAnswers($form_1, [
-            $this->getQuestionId($form_1, "First name") => "Frédéric",
-            $this->getQuestionId($form_1, "Last name") => "Chopin",
-            $this->getQuestionId($form_1, "Age") => 39,
-        ], $users_id);
-
-        // First test: ensure type is replaced by its matching class
-        yield [
-            'answers' => $answers_set->fields['answers'],
-            'expected_prepared_answers' => [
-                [
-                    'question' => $this->getQuestionId($form_1, "First name"),
-                    'value'    => "Frédéric",
-                    'label'    => "First name",
-                    'type'     => new QuestionTypeShortText(),
-                ],
-                [
-                    'question' => $this->getQuestionId($form_1, "Last name"),
-                    'value'    => "Chopin",
-                    'label'    => "Last name",
-                    'type'     => new QuestionTypeShortText(),
-                ],
-                [
-                    'question' => $this->getQuestionId($form_1, "Age"),
-                    'value'    => 39,
-                    'label'    => "Age",
-                    'type'     => new QuestionTypeNumber(),
-                ],
-            ],
-        ];
-
-        // Build form
-        $builder = new FormBuilder("Form 2");
-        $builder
-            ->addQuestion("Valid question", QuestionTypeShortText::class)
-            ->addQuestion("Invalid question", "Not a question type")
-        ;
-        $form_2 = $this->createForm($builder);
-
-        // We can't use `getQuestionId` to get an invalid question id
-        $invalid_questions_id = getItemByTypeName(Question::class, "Invalid question", true);
-
-        // Register an answer
-        $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
-        $answers_set = $handler->saveAnswers($form_2, [
-            $this->getQuestionId($form_2, "Valid question") => "Valid answer",
-            $invalid_questions_id => "Invalid answer",
-        ], $users_id);
-
-        $error =  "Unknown question: $invalid_questions_id";
-        $this->when(
-            function () {
-                // Second test, ensure invalid types are dropped
-                yield [
-                    'answers' => $answers_set->fields['answers'],
-                    'expected_prepared_answers' => [
-                        [
-                            'question' => $this->getQuestionId($form_2, "Valid question"),
-                            'value'    => "Valid answer",
-                            'label'    => "Valid question",
-                            'type'     => new QuestionTypeShortText(),
-                        ],
-                    ],
-                ];
-            }
-        )->error()->withType(E_USER_WARNING)->exists()->withMessage($error);
-    }
-
-    /**
-     * Test the prepareAnswersForDisplay method
-     *
-     * @dataProvider testPrepareAnswersForDisplayProvider
-     *
-     * @param array $answers                   The answers to prepare
-     * @param array $expected_prepared_answers The expected prepared answers
-     *
-     * @return void
-     */
-    public function testPrepareAnswersForDisplay(
-        array $answers,
-        array $expected_prepared_answers
-    ): void {
-        $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
-        $prepared_answers = $handler->prepareAnswersForDisplay($answers);
-
-        $this
-            ->array($prepared_answers)
-            ->isEqualTo($expected_prepared_answers)
-        ;
     }
 }
