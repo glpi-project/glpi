@@ -60,11 +60,53 @@ abstract class AbstractFormDestinationType extends DbTestCase
 
     /**
      * Tests for the "createDestinations" method of the FormDestinationInterface.
-     * Added here to ensure implementation by child classes.
      *
      * @return void
      */
-    abstract public function testCreateDestinations(): void;
+    final public function testCreateDestinations(): void
+    {
+        $this->login();
+        $answers_handler = AnswersHandler::getInstance();
+        $itemtype = $this->getTestedInstance()::getTargetItemtype();
+        $link_itemtype = $itemtype::getItemLinkClass();
+
+        // Create a form with a single FormDestinationTicket destination
+        $form = $this->createForm(
+            (new FormBuilder("Test form 1"))
+                ->addQuestion("Name", QuestionTypeShortText::class)
+                ->addDestination(
+                    $this->getTestedInstance()::class,
+                    'test',
+                    [
+                        'title'   => ['value' => 'My title'],
+                        'content' => ['value' => "My content"],
+                    ]
+                )
+        );
+
+        // There are no tickets in the database named after this form
+        $itil_items = (new $itemtype())->find(['name' => 'My title']);
+        $this->array($itil_items)->hasSize(0);
+
+        // Submit form, a single itil item should be created
+        $answers = $answers_handler->saveAnswers($form, [
+            $this->getQuestionId($form, "Name") => "My name",
+        ], \Session::getLoginUserID());
+        $itil_items = (new $itemtype())->find(['name' => 'My title']);
+        $this->array($itil_items)->hasSize(1);
+
+        // Check fields
+        $itil_item = current($itil_items);
+        $this->string($itil_item['content'])->isEqualTo('My content');
+
+        // Make sure link with the form answers was created too
+        $links = (new $link_itemtype())->find([
+            $itemtype::getForeignKeyField() => $itil_item['id'],
+            'items_id' => $answers->getID(),
+            'itemtype' => $answers::getType(),
+        ]);
+        $this->array($links)->hasSize(1);
+    }
 
     /**
      * Test the getTargetItemtype method
