@@ -5020,6 +5020,52 @@ class CommonDBTM extends CommonGLPI
             }
 
             switch ($searchoptions['datatype']) {
+                case "polymorphic":
+                    $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']] ?? [];
+
+                    if (empty($options['types'])) {
+                        trigger_error("'itemtype_list' search option should not be empty", E_USER_WARNING);
+                    }
+
+                    $rand = rand();
+                    $options['itemtype_column'] = rand();
+                    $options['default_value'] = $options['types'][0];
+
+                    $select = '';
+                    $select .= Dropdown::showItemTypes($options['itemtype_column'], $options['types'], [
+                        'value'                 => $options['default_value'],
+                        'display'               => false,
+                        'rand'                  => $rand,
+                        'display_emptychoice'   => false
+                    ]);
+
+                    $p = [
+                        'idtable'   => '__VALUE__',
+                        'rand'      => $rand,
+                        'name'      => $name,
+                        'width'     => 'unset'
+                    ];
+
+                    $select .= Ajax::updateItemOnSelectEvent(
+                        "dropdown_" . $options['itemtype_column'] . $rand,
+                        "result_$rand",
+                        $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+                        $p,
+                        false
+                    );
+
+                    $select .= "<div id='result_$rand'>";
+
+                    $select .= $options['default_value']::dropdown([
+                        'name'                  => $name,
+                        'display_emptychoice'   => true,
+                        'rand'                  => $rand,
+                        'value'                 => $value,
+                        'display'               => false,
+                    ]);
+
+                    $select .= "</div>";
+                    return $select;
                 case "count":
                 case "number":
                 case "integer":

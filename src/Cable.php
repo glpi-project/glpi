@@ -188,7 +188,8 @@ class Cable extends CommonDBTM
             'field'              => 'items_id_endpoint_b',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B')),
             'massiveaction'      => false,
-            'datatype'           => 'specific',
+            'datatype'           => 'polymorphic',
+            'itemtype_list'      => 'socket_types',
             'searchtype'         => 'equals',
             'additionalfields'   => ['itemtype_endpoint_b']
         ];
@@ -210,7 +211,8 @@ class Cable extends CommonDBTM
             'field'              => 'items_id_endpoint_a',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A')),
             'massiveaction'      => false,
-            'datatype'           => 'specific',
+            'datatype'           => 'polymorphic',
+            'itemtype_list'      => 'socket_types',
             'searchtype'         => 'equals',
             'additionalfields'   => ['itemtype_endpoint_a']
         ];
@@ -339,34 +341,6 @@ class Cable extends CommonDBTM
 
         return $tab;
     }
-
-
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-        $options['display'] = false;
-        switch ($field) {
-            case 'items_id_endpoint_a':
-                if (isset($values['itemtype_endpoint_a']) && !empty($values['itemtype_endpoint_a'])) {
-                    $options['name']  = $name;
-                    $options['value'] = $values[$field];
-                    return Dropdown::show($values['itemtype_endpoint_a'], $options);
-                }
-                break;
-            case 'items_id_endpoint_b':
-                if (isset($values['itemtype_endpoint_b']) && !empty($values['itemtype_endpoint_b'])) {
-                    $options['name']  = $name;
-                    $options['value'] = $values[$field];
-                    return Dropdown::show($values['itemtype_endpoint_b'], $options);
-                }
-                break;
-        }
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
-    }
-
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
