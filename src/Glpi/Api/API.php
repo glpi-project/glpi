@@ -2379,17 +2379,6 @@ abstract class API
 
 
     /**
-     * Show API Debug
-     *
-     * @return void
-     */
-    protected function showDebug()
-    {
-        Html::printCleanArray($this);
-    }
-
-
-    /**
      * Show API header
      *
      * in debug, it add body and some libs (essentialy to colorise markdown)

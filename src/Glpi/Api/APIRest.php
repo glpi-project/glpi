@@ -140,10 +140,6 @@ class APIRest extends API
             if (empty($this->debug)) {
                 $this->debug = 1;
             }
-
-            if ($this->debug >= 2) {
-                $this->showDebug();
-            }
         }
 
         // retrieve session (if exist)
