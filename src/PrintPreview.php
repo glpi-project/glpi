@@ -82,6 +82,37 @@ class PrintPreview
         }
     }
 
+    public static function showPreview($ID, $options = [])
+    {
+        $unprintable = [
+            'items_id' => '',
+            'itemtype' => '',
+            'csrf_token' => '',
+            'generate_preview' => '',
+        ];
+        $itemtype = new $options['itemtype']();
+        $item = $itemtype->getById($ID);
+
+        $html = TemplateRenderer::getInstance()->render('generic_show_form.html.twig', [
+            'item'   => $item,
+            'params' => $options + ['formfooter' => false],
+            'no_header' => false,
+            'no_inventory_footer' => true,
+            'no_form_buttons'   => true,
+            'canedit' => false,
+        ]);
+
+        echo $html;
+
+        foreach (array_diff($options, $unprintable) as $key => $value) {
+            if ((int) $value == 1) {
+                $key::displayTabContentForItem($item);
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Get the form page URL for the current classe
      *
@@ -100,6 +131,9 @@ class PrintPreview
     {
         $instance = new $itemtype();
         $label = $instance->getTabNameForItem($item);
+        if (is_array($label)) {
+            $label = reset($label);
+        }
         if (empty($label)) {
             $label = '<span><i class="' . $itemtype::getIcon() . ' me-2"></i>' . $itemtype::getTypeName(0) . '</span>';
         }
@@ -129,15 +163,6 @@ class PrintPreview
         return [
             \Impact::class,
         ];
-    }
-
-    public static function showPreview($item_id, $itemtype, $input)
-    {
-        $item = new $itemtype();
-        $item->showFormHeader();
-        $item->showForm($item_id);
-        $item->getFromDB($item_id);
-        CommonGLPI::displayStandardTab($item, 'Log');
     }
 
     public static function getIcon()

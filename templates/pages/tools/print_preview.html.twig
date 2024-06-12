@@ -48,9 +48,18 @@
         }
     </script>
 {% else %}
-    {{ itemtype.showForm(item.fields['id']) }}
+    {{
+        (itemtype.showForm(
+            item.fields['id'],
+            {
+                'print_preview' : true,
+            }
+        ))|raw }}
     {% for key, tab in tabs %}
-        {% if tab == 1 %}
+        {% if key != 'items_id' and tab == 1 %}
+            <div class="hr-text mt-2 mb-5">
+                <span style="font-size: 1.5em;" >{{ key }}</span>
+            </div>
             {{ call('CommonGLPI::displayStandardTab', [item, key]) }}
         {% endif %}
     {% endfor %}

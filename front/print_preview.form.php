@@ -35,21 +35,12 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+    include('../inc/includes.php');
+}
 
 if (isset($_POST['generate_preview'])) {
-    $unprintable = [
-        'items_id' => '',
-        'itemtype' => '',
-        'csrf_token' => '',
-        'generate_preview' => '',
-    ];
-    $itemtype = new $_POST['itemtype']();
-    $item = $itemtype->getById($_POST['items_id']);
-    TemplateRenderer::getInstance()->display('pages/tools/print_preview.html.twig', [
-        'is_render' => true,
-        'item'      => $item,
-        'itemtype'  => $itemtype,
-        'tabs'      => array_diff($_POST, $unprintable),
-    ]);
+    Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference');
+    PrintPreview::showPreview($_POST['items_id'], $_POST);
+    Html::footer();
 }
