@@ -639,7 +639,7 @@ class Infocom extends CommonDBChild
             return $tmp;
         }
        // Default value for display
-        $tmp[0] = ' ';
+        $tmp[0] = __('None');
 
         if (isset($tmp[$val])) {
             return $tmp[$val];

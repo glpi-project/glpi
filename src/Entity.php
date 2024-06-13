@@ -2515,7 +2515,7 @@ class Entity extends CommonTreeDropdown
                                        // TRANS %s is the name of the state
                                 return sprintf(
                                     __('Fill when shifting to state %s'),
-                                    Dropdown::getDropdownName('glpi_states', $sid)
+                                    Dropdown::getDropdownName(table: 'glpi_states', id: $sid, default: __('None'))
                                 );
                             }
                         }
@@ -2571,7 +2571,7 @@ class Entity extends CommonTreeDropdown
                 return match ($strategy) {
                     self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                     self::CONFIG_NEVER => __('No change of entity'),
-                    default => Dropdown::getDropdownName('glpi_entities', $values[$field]),
+                    default => Dropdown::getDropdownName(table: 'glpi_entities', id: $values[$field], default: __('None')),
                 };
 
             case 'tickettemplates_id':
@@ -2579,14 +2579,14 @@ class Entity extends CommonTreeDropdown
                 if ($strategy === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
-                return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
+                return Dropdown::getDropdownName(table: TicketTemplate::getTable(), id: $values[$field], default: __('None'));
 
             case 'calendars_id':
                 $strategy = $values['calendars_strategy'] ?? $values[$field];
                 return match ($strategy) {
                     self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                     self::CONFIG_NEVER => __('24/7'),
-                    default => Dropdown::getDropdownName('glpi_calendars', $values[$field]),
+                    default => Dropdown::getDropdownName(table: 'glpi_calendars', id: $values[$field], default: __('None')),
                 };
 
             case 'transfers_id':
@@ -2594,7 +2594,7 @@ class Entity extends CommonTreeDropdown
                 return match (true) {
                     $strategy === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                     $strategy === self::CONFIG_NEVER, $values[$field] === 0 => __('No automatic transfer'),
-                    default => Dropdown::getDropdownName('glpi_transfers', $values[$field]),
+                    default => Dropdown::getDropdownName(table: 'glpi_transfers', id: $values[$field], default: __('None')),
                 };
 
             case 'contracts_id_default':
@@ -2602,7 +2602,7 @@ class Entity extends CommonTreeDropdown
                 return match ($strategy) {
                     self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                     self::CONFIG_AUTO => __('Contract in ticket entity'),
-                    default => Dropdown::getDropdownName('glpi_contracts', $values[$field]),
+                    default => Dropdown::getDropdownName(table: 'glpi_contracts', id: $values[$field], default: __('None')),
                 };
 
             case 'is_contact_autoupdate':

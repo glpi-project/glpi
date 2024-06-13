@@ -1599,7 +1599,7 @@ class Contract extends CommonDBTM
             return $names;
         }
         // Default value for display
-        $names[0] = ' ';
+        $names[0] = __('None');
 
         if (isset($names[$val])) {
             return $names[$val];
