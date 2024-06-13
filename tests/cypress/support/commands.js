@@ -70,7 +70,8 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
                     expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_') && cookie.name.endsWith('_rememberme'))).to.have.length(1);
                 });
             },
-        }
+            cacheAcrossSpecs: true,
+        },
     );
 });
 
