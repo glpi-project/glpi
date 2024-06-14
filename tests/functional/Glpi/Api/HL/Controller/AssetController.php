@@ -204,6 +204,100 @@ class AssetController extends \HLAPITestCase
         $this->api->autoTestCRUD('/Assets/' . $schema, $fields);
     }
 
+    public function testCRUDRackItem()
+    {
+        $this->loginWeb();
+        // Create rack
+        $rack = new \Rack();
+        $rack_id = $rack->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'number_units' => 20
+        ]);
+        // Create computer
+        $computer = new \Computer();
+        $computer_id = $computer->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login();
+
+        // get rack items (should be empty)
+        $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->isEmpty();
+                });
+        });
+
+        // Add computer to rack
+        $request = new Request('POST', '/Assets/Rack/' . $rack_id . '/Item');
+        $request->setParameter('itemtype', 'Computer');
+        $request->setParameter('items_id', $computer_id);
+        $request->setParameter('position', 1);
+        $rackitem_location = null;
+        $this->api->call($request, function ($call) use (&$rackitem_location){
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$rackitem_location) {
+                    $this->array($headers)->hasKey('Location');
+                    $rackitem_location = $headers['Location'];
+                });
+        });
+
+        // get rack items (should contain the computer)
+        $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) use ($computer_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($computer_id) {
+                    $this->array($content)->size->isEqualTo(1);
+                    $this->string($content[0]['itemtype'])->isEqualTo('Computer');
+                    $this->integer($content[0]['items_id'])->isEqualTo($computer_id);
+                });
+        });
+
+        //Update position
+        $request = new Request('PATCH', $rackitem_location);
+        $request->setParameter('position', 2);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+
+        // get specific rack item and validate the update
+        $this->api->call(new Request('GET', $rackitem_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->checkSimpleContentExpect($content, ['fields' => ['position' => 2]]);
+                });
+        });
+
+        // Delete computer from rack
+        $this->api->call(new Request('DELETE', $rackitem_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+
+        // get rack items (should be empty)
+        $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->isEmpty();
+                });
+        });
+    }
+
     public function testSearchAllAssets()
     {
         $this->login();

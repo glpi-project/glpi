@@ -37,6 +37,8 @@ namespace Glpi\Api\HL\Controller;
 
 use AutoUpdateSystem;
 use CommonDBTM;
+use Computer;
+use Enclosure;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -51,7 +53,12 @@ use Group;
 use GuzzleHttp\Psr7\Utils;
 use Location;
 use Manufacturer;
+use Monitor;
 use Network;
+use NetworkEquipment;
+use PassiveDCEquipment;
+use PDU;
+use Peripheral;
 use State;
 use User;
 
@@ -721,8 +728,62 @@ final class AssetController extends AbstractController
                     'x-field' => 'mesured_power' // Took liberty to fix typo in DB without having to mess with the DB itself or other code
                 ],
                 'max_weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'items' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'description' => 'List of items in the rack',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'RackItem',
+                        'x-join' => [
+                            'table' => \Item_Rack::getTable(),
+                            'fkey' => 'id',
+                            'field' => \Rack::getForeignKeyField(),
+                            'primary-property' => 'id',
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'x-readonly' => true,
+                            ],
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                        ]
+                    ]
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ]
+        ];
+
+        $schemas['RackItem'] = [
+            'x-itemtype' => \Item_Rack::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'rack' => self::getDropdownTypeSchema(class: \Rack::class, full_schema: 'Rack'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'position' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'orientation' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'enum' => [
+                        \Rack::FRONT => 'Front',
+                        \Rack::REAR => 'Rear',
+                    ]
+                ],
+                'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
+                'position_horizontal' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'x-field' => 'hpos'
+                ],
+                'is_reserved' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ]
         ];
 
@@ -898,6 +959,45 @@ final class AssetController extends AbstractController
             }
         }
         return $classes_only ? array_keys($assets) : $assets;
+    }
+
+    public static function getRackTypes(bool $schema_names_only = true): array
+    {
+        static $rack_types = null;
+
+        if ($rack_types === null) {
+            $rack_types = [
+                Computer::class => [
+                    'schema_name' => 'Computer',
+                    'label' => Computer::getTypeName(1)
+                ],
+                Monitor::class => [
+                    'schema_name' => 'Monitor',
+                    'label' => Monitor::getTypeName(1)
+                ],
+                NetworkEquipment::class => [
+                    'schema_name' => 'NetworkEquipment',
+                    'label' => NetworkEquipment::getTypeName(1)
+                ],
+                Peripheral::class => [
+                    'schema_name' => 'Peripheral',
+                    'label' => Peripheral::getTypeName(1)
+                ],
+                Enclosure::class => [
+                    'schema_name' => 'Enclosure',
+                    'label' => Enclosure::getTypeName(1)
+                ],
+                PDU::class => [
+                    'schema_name' => 'PDU',
+                    'label' => PDU::getTypeName(1)
+                ],
+                PassiveDCEquipment::class => [
+                    'schema_name' => 'PassiveDCEquipment',
+                    'label' => PassiveDCEquipment::getTypeName(1)
+                ],
+            ];
+        }
+        return $schema_names_only ? array_column($rack_types, 'schema_name') : $rack_types;
     }
 
     #[Route(path: '/', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1478,6 +1578,106 @@ final class AssetController extends AbstractController
     public function deleteRack(Request $request): Response
     {
         return Search::deleteBySchema($this->getKnownSchema('Rack'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: [
+        'rack_id' => '\d+'
+    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get items in a rack',
+        responses: [
+            ['schema' => 'RackItem[]']
+        ]
+    )]
+    public function getRackItems(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
+        $request->setParameter('filter', $filters);
+        return Search::searchBySchema($this->getKnownSchema('RackItem'), $request->getParameters());
+    }
+
+    #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['GET'], requirements: [
+        'rack_id' => '\d+',
+        'id' => '\d+'
+    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a rack item',
+        responses: [
+            ['schema' => 'RackItem[]']
+        ]
+    )]
+    public function getRackItem(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
+        $request->setParameter('filter', $filters);
+        return Search::getOneBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['PATCH'], requirements: [
+        'rack_id' => '\d+',
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Update a rack item',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Rack',
+            ]
+        ]
+    )]
+    public function updateRackItem(Request $request): Response
+    {
+        return Search::updateBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: [
+        'rack_id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Add an item to a rack',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RackItem',
+            ]
+        ]
+    )]
+    public function createRackItem(Request $request): Response
+    {
+        $rack_types = self::getRackTypes(false);
+        $rack_type = $request->getParameters()['itemtype'];
+
+        if (!array_key_exists($rack_type, $rack_types)) {
+            return new JSONResponse([
+                'error' => "Invalid itemtype '$rack_type'. Allowed values are: " . implode(', ', array_keys($rack_types))
+            ], 400);
+        }
+
+        $request->setParameter('rack', $request->getAttribute('rack_id'));
+        return Search::createBySchema($this->getKnownSchema('RackItem'), $request->getParameters(), [
+            self::class, 'getRackItem'
+        ], [
+            'mapped' => [
+                'rack_id' => $request->getAttribute('rack_id')
+            ]
+        ]);
+    }
+
+    #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['DELETE'], requirements: [
+        'rack_id' => '\d+',
+        'id' => '\d+'
+    ], tags: ['Assets'])]
+    #[Doc\Route(
+        description: 'Remove an item from a rack'
+    )]
+    public function deleteRackItem(Request $request): Response
+    {
+        return Search::deleteBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
