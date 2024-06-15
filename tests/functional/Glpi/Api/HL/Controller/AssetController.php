@@ -239,7 +239,7 @@ class AssetController extends \HLAPITestCase
         $request->setParameter('items_id', $computer_id);
         $request->setParameter('position', 1);
         $rackitem_location = null;
-        $this->api->call($request, function ($call) use (&$rackitem_location){
+        $this->api->call($request, function ($call) use (&$rackitem_location) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
