@@ -129,7 +129,7 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
-    public function getAnswers()
+    public function getAnswers(): array
     {
         $answers = [];
         $raw_answers = json_decode($this->fields['answers'], true);
