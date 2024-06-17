@@ -3782,7 +3782,17 @@ HTML;
             $newvalue = $oldvalue = '********';
         }
         $oldvalue = $name . ($context !== 'core' ? ' (' . $context . ') ' : ' ') . $oldvalue;
-        Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
+
+        if (in_array($name, NotificationMailingSetting::getRelatedConfigKeys(), true)) {
+            // Specific case for email notification settings
+            Log::history(
+                1,
+                NotificationMailingSetting::class,
+                [1, Sanitizer::sanitize($oldvalue), Sanitizer::sanitize($newvalue)]
+            );
+        } else {
+            Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
+        }
     }
 
     /**
