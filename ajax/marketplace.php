@@ -44,7 +44,6 @@ if (($_GET["action"] ?? null) == "get_dl_progress") {
     }
 
     include_once GLPI_ROOT . '/inc/based_config.php';
-    Session::setPath();
     Session::start();
 
     echo $_SESSION['marketplace_dl_progress'][$_GET['key']] ?? 0;

@@ -35,5 +35,23 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
+
+// Delete the "Clean expired sessions" crontask
+$session_crontask_req = [
+    'FROM' => 'glpi_crontasks',
+    'WHERE' => [
+        'itemtype'  => 'CronTask',
+        'name'      => 'session',
+    ]
+];
+$session_crontask_id = $DB->request($session_crontask_req)->current()['id'] ?? null;
+if ($session_crontask_id !== null) {
+    $migration->addPostQuery($DB->buildDelete('glpi_crontasklogs', ['crontasks_id' => $session_crontask_id]));
+    $migration->addPostQuery($DB->buildDelete('glpi_crontasks', ['id' => $session_crontask_id]));
+}
+
+// Add new display preferences
 $ADDTODISPLAYPREF['CronTask'] = [5, 6, 17, 18];

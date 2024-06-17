@@ -50,7 +50,6 @@ define('GLPI_MARKETPLACE_DIR', null);
 define('GLPI_PICTURE_DIR', null);
 define('GLPI_PLUGIN_DOC_DIR', null);
 define('GLPI_RSS_DIR', null);
-define('GLPI_SESSION_DIR', null);
 define('GLPI_THEMES_DIR', null);
 define('GLPI_TMP_DIR', null);
 define('GLPI_UPLOAD_DIR', null);

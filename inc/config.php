@@ -60,7 +60,6 @@ global $CFG_GLPI,
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
 
-Session::setPath();
 Session::start();
 
 // Default Use mode

@@ -490,18 +490,6 @@ $empty_data_builder = new class
                 'hourmin' => 0,
                 'hourmax' => 24,
             ], [
-                'id' => 12,
-                'itemtype' => 'CronTask',
-                'name' => 'session',
-                'frequency' => DAY_TIMESTAMP,
-                'param' => null,
-                'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
-                'lastrun' => null,
-                'logs_lifetime' => 30,
-                'hourmin' => 0,
-                'hourmax' => 24,
-            ], [
                 'id' => 13,
                 'itemtype' => 'CronTask',
                 'name' => 'graph',

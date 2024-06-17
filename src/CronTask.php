@@ -1510,49 +1510,6 @@ TWIG, ['msg' => __('Last run list')]);
     }
 
     /**
-     * Garbage collector for expired file session
-     *
-     * @param CronTask $task for log
-     *
-     * @return integer
-     * @used-by self
-     **/
-    public static function cronSession(CronTask $task)
-    {
-        // max time to keep the file session
-        $maxlifetime = ini_get('session.gc_maxlifetime');
-        if ($maxlifetime == 0) {
-            $maxlifetime = WEEK_TIMESTAMP;
-        }
-        $nb = 0;
-        foreach (glob(GLPI_SESSION_DIR . "/sess_*") as $filename) {
-            if ((filemtime($filename) + $maxlifetime) < time()) {
-                // Delete session file if not delete before
-                if (@unlink($filename)) {
-                    $nb++;
-                }
-            }
-        }
-
-        $task->setVolume($nb);
-        if ($nb) {
-           //TRANS: % %1$d is a number, %2$s is a number of seconds
-            $task->log(sprintf(
-                _n(
-                    'Clean %1$d session file created since more than %2$s seconds',
-                    'Clean %1$d session files created since more than %2$s seconds',
-                    $nb
-                ) . "\n",
-                $nb,
-                $maxlifetime
-            ));
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /**
      * Circular logs
      *
      * @since 0.85
@@ -1839,9 +1796,6 @@ TWIG, ['msg' => __('Last run list')]);
             'logs'        => [
                 'description' => __('Clean old logs'),
                 'parameter'   => __('System logs retention period (in days, 0 for infinite)')
-            ],
-            'session'     => [
-                'description' => __('Clean expired sessions')
             ],
             'graph'       => [
                 'description' => __('Clean generated graphics')

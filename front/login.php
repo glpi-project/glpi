@@ -52,11 +52,7 @@ include('../inc/includes.php');
 
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
-    if (!Session::canWriteSessionFiles()) {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
-    } else {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
-    }
+    Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
 }
 
 if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {

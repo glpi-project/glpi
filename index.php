@@ -61,7 +61,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Html::redirect("install/install.php");
     } else {
         // Init session (required by header display logic)
-        Session::setPath();
         Session::start();
         Session::loadLanguage('', false);
         // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
@@ -122,9 +121,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 $errors[] = __('You must accept cookies to reach this application');
                 break;
 
-            case 2: // GLPI_SESSION_DIR not writable
-                $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
-                break;
+            // case 2 was for issues with GLPI_SESSION_DIR write access
 
             case 3:
                 $errors[] = __('Your session has expired. Please log in again.');

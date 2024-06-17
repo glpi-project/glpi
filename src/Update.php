@@ -80,13 +80,6 @@ class Update
      */
     public function initSession()
     {
-        if (Session::canWriteSessionFiles()) {
-            Session::setPath();
-        } else {
-            if (isCommandLine()) {
-                die("Can't write in " . GLPI_SESSION_DIR . "\n");
-            }
-        }
         Session::start();
 
         if (isCommandLine()) {

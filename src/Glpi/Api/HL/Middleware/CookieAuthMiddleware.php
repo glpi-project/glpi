@@ -47,7 +47,6 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
             // Need to destroy the current session, enable cookie use, and then restart the session
             session_destroy();
             ini_set('session.use_cookies', '1');
-            Session::setPath();
             Session::start();
             // unset the response to indicate a successful auth
             $input->response = null;

@@ -58,7 +58,6 @@ class Variables
             'GLPI_PICTURE_DIR',
             'GLPI_PLUGIN_DOC_DIR',
             'GLPI_RSS_DIR',
-            'GLPI_SESSION_DIR',
             'GLPI_TMP_DIR',
             'GLPI_UPLOAD_DIR',
         ];

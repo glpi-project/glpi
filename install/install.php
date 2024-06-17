@@ -516,12 +516,6 @@ function update1($dbname)
 
 //------------Start of install script---------------------------
 
-
-// Use default session dir if not writable
-if (is_writable(GLPI_SESSION_DIR)) {
-    Session::setPath();
-}
-
 Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 

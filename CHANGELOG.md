@@ -66,6 +66,7 @@ The present file will list all changes made to the project; according to the
 - List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 - Running `front/cron.php` or `bin/console` will attempt to check and block execution if running as root.
 - Testing LDAP replicates now shows results as toast notifications rather than inside the replicate tab after a page reload.
+- Session files are no longer stored on a specific directory and the handling of these files is now delegated to the native PHP handler.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -220,6 +221,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
+- `GLPI_SESSION_DIR` constant.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
@@ -257,6 +259,7 @@ The present file will list all changes made to the project; according to the
 - `Contract::commonListHeader()`
 - `Contract::getContractRenewalIDByName()`
 - `Contract::showShort()`
+- `CronTask::cronSession()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`
@@ -366,6 +369,8 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `Session::canWriteSessionFiles()`
+- `Session::setPath()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
