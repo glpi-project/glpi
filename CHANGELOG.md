@@ -66,6 +66,7 @@ The present file will list all changes made to the project; according to the
 - List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 - Running `front/cron.php` or `bin/console` will attempt to check and block execution if running as root.
 - Testing LDAP replicates now shows results as toast notifications rather than inside the replicate tab after a page reload.
+- The debug tab that was present, for some items, when the debug mode was active, no longer exists. The corresponding features have been either moved, either removed.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -236,6 +237,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
+- `CommonDBTM::showDebugInfo()`
 - `CommonDropdown::displayHeader()`
 - `CommonGLPI::getAvailableDisplayOptions()`
 - `CommonGLPI::getDisplayOptions()`
