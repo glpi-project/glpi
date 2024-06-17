@@ -324,12 +324,13 @@ The present file will list all changes made to the project; according to the
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
 - `NetworkPort::resetConnections()`
 - `NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions()`
-- `NetworkPortInstantiation::getInstantiationHTMLTable()` and all sub classes overrrides.
-- `NetworkPortInstantiation::getInstantiationHTMLTableHeaders()` and all sub classes overrrides.
+- `NetworkPortInstantiation::getInstantiationHTMLTable()` and all sub classes overrides.
+- `NetworkPortInstantiation::getInstantiationHTMLTableHeaders()` and all sub classes overrides.
 - `NetworkPortInstantiation::getInstantiationHTMLTableWithPeer()`
 - `NetworkPortInstantiation::getInstantiationNetworkPortDisplayOptions()`
 - `NetworkPortInstantiation::getInstantiationNetworkPortHTMLTable()`
-- `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrrides.
+- `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrides.
+- `NotificationTemplateTranslation::showDebug()`
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `PlanningRecall::specificForm()`
