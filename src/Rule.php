@@ -3345,20 +3345,6 @@ JS
         return uniqid("$serverSubSha1-$dirSubSha1-", true);
     }
 
-    /**
-     * Display debug information for current object
-     *
-     * @since 0.85
-     *
-     * @retrun void
-     **/
-    public function showDebug()
-    {
-        echo "<div class='spaced'>";
-        printf(__s('%1$s: %2$s'), "<b>UUID</b>", htmlspecialchars($this->fields['uuid']));
-        echo "</div>";
-    }
-
     public static function canCreate(): bool
     {
         return static::canUpdate();
