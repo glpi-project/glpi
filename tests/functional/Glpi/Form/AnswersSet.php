@@ -38,7 +38,9 @@ namespace tests\units\Glpi\Form;
 use CommonGLPI;
 use Computer;
 use DbTestCase;
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
@@ -202,11 +204,11 @@ class AnswersSet extends DbTestCase
     }
 
     /**
-     * Test the "post_getFromDB" method
+     * Test the "getAnswers" method
      *
      * @return void
      */
-    public function testPost_getFromDB(): void
+    public function testGetAnswer(): void
     {
         $this->login();
         $answers_handler = AnswersHandler::getInstance();
@@ -220,8 +222,14 @@ class AnswersSet extends DbTestCase
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
         ], \Session::getLoginUserID());
 
-        // Ensure JSON is decoded
-        $this->array($answers_set->fields["answers"]);
+        $answer = new Answer(
+            Question::getById($this->getQuestionId($form, "Name")),
+            "Pierre Paul Jacques"
+        );
+        $expected_answer = [$answer];
+        $this->array($answers_set->getAnswers())
+            ->isEqualTo($expected_answer)
+        ;
     }
 
     /**
@@ -328,7 +336,7 @@ class AnswersSet extends DbTestCase
         $this->array($current_questions_types)
             ->hasSize(count($possible_types));
 
-        $this->array($answers_set->fields["answers"])
+        $this->array($answers_set->getAnswers())
             ->hasSize(count($form->getQuestions()));
 
         // Render content

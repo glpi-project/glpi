@@ -90,7 +90,7 @@ final class AnswerTagProvider extends DbTestCase
         $answers_handler = AnswersHandler::getInstance();
         yield 'Invalid value' => [
             'value'       => 'not a valid question id',
-            'answers_set' => new AnswersSet(),
+            'answers_set' => $this->getEmptyAnswerSet(),
             'expected'    => '',
         ];
 
@@ -134,5 +134,12 @@ final class AnswerTagProvider extends DbTestCase
         $builder->addQuestion("First name", QuestionTypeShortText::class);
         $builder->addQuestion("Last name", QuestionTypeShortText::class);
         return $this->createForm($builder);
+    }
+
+    private function getEmptyAnswerSet(): AnswersSet
+    {
+        $answers = new AnswersSet();
+        $answers->fields['answers'] = json_encode([]);
+        return $answers;
     }
 }
