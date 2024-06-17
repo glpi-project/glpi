@@ -85,6 +85,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -386,6 +387,9 @@ TWIG, $twig_params);
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
+                case self::class:
+                    return self::createTabEntry(__('Preview'), 0, $item::class, 'ti ti-template');
+                    break;
                 case 'NotificationTemplate':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -401,27 +405,29 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === NotificationTemplate::class) {
-            $temp = new self();
-            $temp->showSummary($item);
+        switch ($item::class) {
+            case self::class:
+                $item->showPreview();
+                break;
+            case NotificationTemplate::class:
+                $temp = new self();
+                $temp->showSummary($item);
+                break;
         }
         return true;
     }
 
     /**
-     * Display debug information for current object
-     * NotificationTemplateTranslation => translation preview
-     *
-     * @since 0.84
-     **/
-    public function showDebug()
+     * Display preview information for current object.
+     */
+    private function showPreview(): void
     {
         $template = new NotificationTemplate();
         if (!$template->getFromDB($this->fields['notificationtemplates_id'])) {
             return;
         }
 
-        $itemtype = $template->getField('itemtype');
+        $itemtype = $template->fields['itemtype'];
         if (!($item = getItemForItemtype($itemtype))) {
             return;
         }
@@ -430,21 +436,17 @@ TWIG, $twig_params);
             'Problem', 'Project', 'Ticket', 'User'
         ];
 
-        if (!in_array($itemtype, $oktypes, true)) {
-            // this itemtype doesn't work, need to be fixed
-            return;
-        }
+        $can_preview = in_array($itemtype, $oktypes, true);
 
         // Criteria Form
         $key   = getForeignKeyFieldForItemType($item::class);
         $id    = Session::getSavedOption(__CLASS__, $key, 0);
         $event = Session::getSavedOption(__CLASS__, $key . '_event', '');
 
-
         $data = null;
 
         // Preview
-        if ($event && $item->getFromDB($id)) {
+        if ($can_preview && $event && $item->getFromDB($id)) {
             $options = ['_debug' => true];
 
             // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
@@ -469,8 +471,9 @@ TWIG, $twig_params);
             }
         }
         TemplateRenderer::getInstance()->display('pages/setup/notification/translation_debug.html.twig', [
-            'template' => $template,
-            'data' => $data
+            'can_preview'   => $can_preview,
+            'template'      => $template,
+            'data'          => $data,
         ]);
     }
 }
