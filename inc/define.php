@@ -539,6 +539,9 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
+//uses regular expressions
+$CFG_GLPI['excluded_locks'] = ['/Device.*/', '/Item_Device.*/'];
+
 $reservations_libs = ['fullcalendar', 'reservations'];
 
 $CFG_GLPI['javascript'] = [
