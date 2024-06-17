@@ -40,6 +40,51 @@ use Session;
 
 class Discover_User extends CommonDBTM
 {
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
+
+        $tab[] = [
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false, // implicit field is id
+            'datatype'           => 'number'
+        ];
+
+        $tab[] = [
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'users_id',
+            'name'               => __('User ID'),
+            'massiveaction'      => false, // implicit field is id
+            'datatype'           => 'number'
+        ];
+
+        return $tab;
+    }
+
+    public static function canView(): bool
+    {
+        return Session::haveRight('config', UPDATE);
+    }
+
+    public static function canUpdate(): bool
+    {
+        return Session::haveRight('config', UPDATE);
+    }
+
+    public static function canDelete(): bool
+    {
+        return Session::haveRight('config', UPDATE);
+    }
+
+    public static function canPurge(): bool
+    {
+        return Session::haveRight('config', UPDATE);
+    }
+
     /**
      * Get the discover object for the given user
      *

@@ -61,6 +61,11 @@ final class Discover extends CommonGLPI
             return;
         }
 
+        // Don't load discover if we are in a testing environment
+        if (GLPI_ENVIRONMENT_TYPE === 'testing' && ($_SERVER['HTTP_LOAD_DISCOVER'] ?? 'false') === 'false') {
+            return;
+        }
+
         $discover_user = Discover_User::getForUser(Session::getLoginUserID());
         $lesson = $discover_user->getLessonToStart();
 
