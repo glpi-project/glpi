@@ -33,7 +33,7 @@
 describe('Discover', () => {
     beforeEach(() => {
         // Reset the discover progression
-        cy.resetDiscoverProgression()
+        cy.resetDiscoverProgression();
 
         cy.login();
 
