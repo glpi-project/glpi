@@ -456,13 +456,13 @@ HTML;
          var reloadTab = function (add) {
             var active_link = $('main #tabspanel .nav-item .nav-link.active');
 
-            // Update href and load tab contents
-            var currenthref = active_link.attr('href');
-            active_link.attr('href', currenthref + '&' + add);
+            // Update target AJAX endpoint URL and load tab contents
+            var current_url = active_link.data('glpi-ajax-content');
+            active_link.data('glpi-ajax-content', current_url + '&' + add);
             loadTabContents(active_link, true);
 
-            // Restore href
-            active_link.attr('href', currenthref);
+            // Restore URL
+            active_link.data('glpi-ajax-content', current_url);
          };
 
          var loadAllTabs = () => {
