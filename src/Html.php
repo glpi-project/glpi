@@ -4545,9 +4545,7 @@ JS;
 
         // Some variables need to be json encoded
         $on_change = json_encode($on_change);
-        if (!empty($placeholder)) {
-            $placeholder = json_encode($placeholder);
-        }
+        $placeholder = json_encode($placeholder);
 
         $js = <<<JS
             select2_configs['{$field_id}'] = {
@@ -4555,13 +4553,13 @@ JS;
                 field_id: '{$field_id}',
                 width: '{$width}',
                 multiple: '{$multiple}',
-                placeholder: '{$placeholder}',
+                placeholder: {$placeholder},
                 allowclear: {$allowclear},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 dropdown_max: {$CFG_GLPI['dropdown_max']},
                 url: '{$url}',
                 parent_id_field: '{$parent_id_field}',
-                on_change: '{$on_change}',
+                on_change: {$on_change},
                 templateResult: {$templateResult},
                 templateSelection: {$templateSelection},
                 params: {
