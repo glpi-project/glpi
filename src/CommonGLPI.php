@@ -339,16 +339,6 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-        $class = $this->getType();
-        if (
-            ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-            && (!$this->isNewItem() || $this->showdebug)
-            && (method_exists($class, 'showDebug')
-              || Infocom::canApplyOn($class)
-              || in_array($class, $CFG_GLPI["reservation_types"]))
-        ) {
-            $onglets[-2] = static::createTabEntry(__('Debug'), 0, null, 'ti ti-bug');
-        }
         return $onglets;
     }
 
@@ -645,10 +635,6 @@ class CommonGLPI implements CommonGLPIInterface
                         }
                     }
                 }
-                return true;
-
-            case -2:
-                $item->showDebugInfo();
                 return true;
 
             default:
@@ -1251,21 +1237,6 @@ class CommonGLPI implements CommonGLPIInterface
         $this->showTabsContent($options);
         echo "</div>";
         echo "</div>";
-    }
-
-    /**
-     * List infos in debug tab
-     *
-     * @return void
-     **/
-    public function showDebugInfo()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (method_exists($this, 'showDebug')) {
-            $this->showDebug();
-        }
     }
 
     /**
