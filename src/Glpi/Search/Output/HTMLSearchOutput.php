@@ -65,8 +65,9 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $search_error = false;
         if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
-            return false;
+            $search_error = true;
         }
 
         $search     = $data['search'];
@@ -175,6 +176,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         $rand = mt_rand();
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
+            'search_error'         => $search_error,
             'data'                => $data,
             'union_search_type'   => $CFG_GLPI["union_search_type"],
             'rand'                => $rand,
@@ -217,14 +219,16 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         ] + ($params['extra_twig_params'] ?? []));
 
         // Add items in item list
-        foreach ($data['data']['rows'] as $row) {
-            if ($itemtype !== \AllAssets::class) {
-                \Session::addToNavigateListItems($itemtype, $row["id"]);
-            } else {
-                // In case of a global search, reset and empty navigation list to ensure navigation in
-                // item header context is not shown. Indeed, this list does not support navigation through
-                // multiple itemtypes, so it should not be displayed in global search context.
-                \Session::initNavigateListItems($row['TYPE'] ?? $data['itemtype']);
+        if (isset($data['data']['rows'])) {
+            foreach ($data['data']['rows'] as $row) {
+                if ($itemtype !== \AllAssets::class) {
+                    \Session::addToNavigateListItems($itemtype, $row["id"]);
+                } else {
+                    // In case of a global search, reset and empty navigation list to ensure navigation in
+                    // item header context is not shown. Indeed, this list does not support navigation through
+                    // multiple itemtypes, so it should not be displayed in global search context.
+                    \Session::initNavigateListItems($row['TYPE'] ?? $data['itemtype']);
+                }
             }
         }
 
