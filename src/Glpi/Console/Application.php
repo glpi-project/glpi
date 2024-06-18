@@ -43,6 +43,7 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Glpi\Console\CommandLoader;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
@@ -147,6 +148,9 @@ class Application extends BaseApplication
         if ($existingLoader instanceof CommandLoader) {
             // TODO: reuse this in CommandLoader to load Symfony's base commands.
             $existingLoader->setPrevious($commandLoader);
+        } elseif ($commandLoader instanceof CommandLoader) {
+            parent::setCommandLoader($commandLoader);
+            $commandLoader->setPrevious($existingLoader);
         }
     }
 
@@ -205,13 +209,6 @@ class Application extends BaseApplication
                     '-n',
                     InputOption::VALUE_NONE,
                     __('Do not ask any interactive question')
-                ),
-                new InputOption(
-                    '--env',
-                    null,
-                    InputOption::VALUE_REQUIRED,
-                    sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
-                    suggestedValues: $env_values
                 ),
                 new InputOption(
                     '--config-dir',

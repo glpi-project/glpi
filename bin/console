@@ -57,14 +57,7 @@ if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
 }
 
 // Extract command line arguments
-$options = [];
-if (isset($_SERVER['argv'])) {
-   for ($i = 1; $i < count($_SERVER['argv']); $i++) {
-      $chunks = explode('=', $_SERVER['argv'][$i], 2);
-      $chunks[0] = preg_replace('/^--/', '', $chunks[0]);
-      $options[$chunks[0]] = (isset($chunks[1]) ? $chunks[1] : true);
-   }
-}
+$options = extractOptionsFromArgv();
 
 // Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
@@ -138,15 +131,40 @@ if (array_key_exists('env', $options)) {
 // Init GLPI
 define('GLPI_ROOT', dirname(__DIR__));
 
-//include_once(GLPI_ROOT . '/inc/based_config.php');
-//@include_once(GLPI_CONFIG_DIR . '/config_db.php');
+include_once(GLPI_ROOT . '/inc/based_config.php');
+
+if (file_exists($autoload = dirname(__DIR__).'/vendor/autoload.php')) {
+    require_once $autoload;
+}
+
+if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+    include_once GLPI_CONFIG_DIR . '/config_db.php';
+}
 
 // Run console application
 use Glpi\Console\Application;
 use Glpi\Kernel\Kernel;
 
 $env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
-$kernel = new Kernel($env, $env === 'development');
-
-$application = new Application($kernel);
+$kernel = new \Glpi\Kernel\Kernel($env, $env === 'development');
+$application = new \Glpi\Console\Application($kernel);
 $application->run();
+
+function extractOptionsFromArgv(): array
+{
+    if (!isset($_SERVER['argv'])) {
+        return [];
+    }
+
+    // Extract command line arguments
+    $options = [];
+
+    $c = count($_SERVER['argv']);
+    for ($i = 1; $i < $c; $i++) {
+        $chunks = explode('=', $_SERVER['argv'][$i], 2);
+        $chunks[0] = preg_replace('/^--/', '', $chunks[0]);
+        $options[$chunks[0]] = $chunks[1] ?? true;
+    }
+
+    return $options;
+}

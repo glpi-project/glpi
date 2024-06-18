@@ -37,10 +37,17 @@ namespace Glpi\Config\LegacyConfigurators {
     use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
     use Glpi\Config\LegacyConfigProviderInterface;
 
-    final readonly class DefineDbFunctions implements LegacyConfigProviderInterface, ConfigProviderConsoleExclusiveInterface
+    final class DefineDbFunctions implements LegacyConfigProviderInterface, ConfigProviderConsoleExclusiveInterface
     {
+        private static bool $initialized = false;
+
         public function execute(): void
         {
+            if (self::$initialized) {
+                return;
+            }
+            self::$initialized = true;
+
             \defineDbFunctions();
         }
     }

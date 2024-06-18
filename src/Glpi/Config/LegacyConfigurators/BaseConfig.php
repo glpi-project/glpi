@@ -38,8 +38,10 @@ use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final readonly class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderConsoleExclusiveInterface
+final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderConsoleExclusiveInterface
 {
+    private static bool $initialized = false;
+
     public function __construct(
         #[Autowire('%kernel.project_dir%')] private string $projectDir,
     ) {
@@ -47,7 +49,14 @@ final readonly class BaseConfig implements LegacyConfigProviderInterface, Config
 
     public function execute(): void
     {
-        define('GLPI_ROOT', $this->projectDir);
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+
+        if (!defined('GLPI_ROOT')) {
+            define('GLPI_ROOT', $this->projectDir);
+        }
 
         // Notice problem  for date function :
         $tz = ini_get('date.timezone');
