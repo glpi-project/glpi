@@ -452,4 +452,15 @@ class QueryFunction
         $substring = is_string($substring) ? new QueryExpression($DB::quoteValue($substring)) : $substring;
         return self::getExpression('LOCATE', [$substring, $expression], $alias);
     }
+
+    public static function concat_ws(string|QueryExpression $separator, array $params, ?string $alias = null): QueryExpression
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $params = array_map(static function ($p) use ($DB) {
+            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
+        }, $params);
+        $separator = $separator instanceof QueryExpression ? $separator : $DB::quoteName($separator);
+        return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
+    }
 }

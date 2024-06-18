@@ -420,6 +420,7 @@ The present file will list all changes made to the project; according to the
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
 - `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
+- `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
 
 
 ## [10.0.16] unreleased

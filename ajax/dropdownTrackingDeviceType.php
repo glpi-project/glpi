@@ -70,7 +70,7 @@ if ($isValidItemtype) {
     // Message for post-only
     if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
         echo "<span class='text-muted'>" .
-         __('Enter the first letters (user, item name, serial or asset number)')
+         __s('Enter the first letters (user, item name, serial or asset number)')
          . "</span>";
     }
     $field_id = Html::cleanId("dropdown_" . $_POST['myname'] . $rand);
@@ -87,7 +87,7 @@ if ($isValidItemtype) {
         ]),
     ];
 
-    if (isset($_POST["used"]) && !empty($_POST["used"])) {
+    if (!empty($_POST["used"])) {
         if (isset($_POST["used"][$itemtype])) {
             $p["used"] = $_POST["used"][$itemtype];
         }
@@ -107,10 +107,11 @@ if ($isValidItemtype) {
 
     // Auto update summary of active or just solved tickets
     if (($_POST['source_itemtype'] ?? null) === Ticket::class) {
-        echo "<span id='item_ticket_selection_information{$_POST["myname"]}_$rand' class='ms-1'></span>";
+        $myname = htmlspecialchars($_POST["myname"]);
+        echo "<span id='item_ticket_selection_information{$myname}_$rand' class='ms-1'></span>";
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "item_ticket_selection_information{$_POST["myname"]}_$rand",
+            "item_ticket_selection_information{$myname}_$rand",
             $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
             [
                 'items_id' => '__VALUE__',

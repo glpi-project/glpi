@@ -72,9 +72,9 @@
          (constant('Entity::CONFIG_NEVER')): __('No change of entity')
       } %}
       {% if item.fields['id'] > 0 %}
-         {% set to_add = to_add|merge({
+         {% set to_add = to_add + {
             (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
-         }) %}
+         } %}
       {% endif %}
       {{ fields.dropdownField(
          'Entity',
@@ -91,12 +91,12 @@
 
       {{ fields.largeTitle(__('Transfer')) }}
       {% set to_add = {
-           (constant('Entity::CONFIG_NEVER')): __('No automatic transfer')
+          (constant('Entity::CONFIG_NEVER')): __('No automatic transfer')
       } %}
       {% if item.fields['id'] > 0 %}
-         {% set to_add = to_add|merge({
+         {% set to_add = to_add + {
             (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
-         }) %}
+         } %}
       {% endif %}
       {{ fields.dropdownField(
          'Transfer',
@@ -106,7 +106,7 @@
          {
             toadd: to_add,
             add_field_html: inheritance_labels['transfers_id']|default(null),
-            display_emptychoice: false
+            display_emptychoice: false,
          }
       ) }}
 

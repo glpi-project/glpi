@@ -1,0 +1,146 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{{ fields.dropdownNumberField('inquest_delay' ~ config_suffix, inquest_delay, __('Create survey after'), {
+    full_width: true,
+    min: 1,
+    max: 90,
+    unit: 'day',
+    toadd: {
+        0: __('As soon as possible'),
+    }
+}) }}
+
+{{ fields.dropdownNumberField('inquest_rate' ~ config_suffix, inquest_rate, __('Rate to trigger survey'), {
+    full_width: true,
+    min: 0,
+    max: 100,
+    step: 10,
+    unit: '%',
+    toadd: {
+        0: __('Disabled')
+    }
+}) }}
+
+{{ fields.dropdownNumberField('inquest_duration' ~ config_suffix, inquest_duration, __('Duration of survey'), {
+    full_width: true,
+    min: 1,
+    max: 100,
+    unit: 'day',
+    toadd: {
+        0: __('Unspecified')
+    }
+}) }}
+
+{{ fields.dropdownNumberField('inquest_max_rate' ~ config_suffix, inquest_max_rate, __('Max rate'), {
+    full_width: true,
+    min: 1,
+    max: 10,
+}) }}
+
+{{ fields.numberField('inquest_default_rate' ~ config_suffix, inquest_default_rate, __('Default rate'), {
+    full_width: true,
+    min: 1,
+    max: 10,
+}) }}
+
+{{ fields.numberField('inquest_mandatory_comment' ~ config_suffix, inquest_mandatory_comment, __('Comment required if score is <= to'), {
+    full_width: true,
+    min: 0,
+    max: 10,
+    toadd: {
+        0: __('Disabled')
+    }
+}) }}
+
+{{ fields.datetimeField('max_closedate' ~ config_suffix, max_closedate, __('For %s closed after')|format(itemtype|itemtype_name(get_plural_number())), {
+    full_width: true,
+    maybeempty: true,
+    timestep: 1
+}) }}
+
+{% set tag_prefix = itemtype|upper %}
+{% set ticket_only_tags = " [REQUESTTYPE_ID] [REQUESTTYPE_NAME] [TICKETTYPE_NAME] [TICKETTYPE_ID] [SLA_TTO_ID] [SLA_TTO_NAME] [SLA_TTR_ID] [SLA_TTR_NAME] [SLALEVEL_ID] [SLALEVEL_NAME]" %}
+{% set tags = [
+    '[' ~ tag_prefix ~ '_ID]', '[' ~ tag_prefix ~ '_NAME]', '[' ~ tag_prefix ~ '_CREATEDATE]', '[' ~ tag_prefix ~ '_SOLVEDATE]',
+    '[' ~ tag_prefix ~ '_PRIORITY]', '[' ~ tag_prefix ~ '_PRIORITYNAME]', '[ITILCATEGORY_ID]', '[ITILCATEGORY_NAME]',
+    '[SOLUTIONTYPE_ID]', '[SOLUTIONTYPE_NAME]'
+]|join(' ') ~ (itemtype == 'Ticket' ? ticket_only_tags : '') %}
+{{ fields.htmlField('', tags|e, __('Valid tags'), {
+    full_width: true,
+    add_field_class: 'valid_tags'
+}) }}
+{{ fields.textField('inquest_URL' ~ config_suffix, inquest_URL, __('URL'), {
+    full_width: true,
+}) }}
+
+<script>
+    $(() => {
+        const rate_dropdown = $('select[name="inquest_rate{{ config_suffix }}"]');
+        const config_dropdown = $('select[name="inquest_config_change"]');
+
+        const refresh_param_rows = () => {
+            const val = parseInt('' + rate_dropdown.val());
+            const config_val = parseInt('' + config_dropdown.val());
+
+            const param_rows = [
+                'inquest_duration{{ config_suffix }}',
+                'inquest_max_rate{{ config_suffix }}',
+                'inquest_default_rate{{ config_suffix }}',
+                'inquest_mandatory_comment{{ config_suffix }}',
+                'max_closedate{{ config_suffix }}',
+                'inquest_URL{{ config_suffix }}'
+            ];
+            if (val === 0) {
+                param_rows.forEach(row => {
+                    $(`[name="${row}"]`).closest('.form-field').hide();
+                });
+            } else {
+                param_rows.forEach(row => {
+                    $(`[name="${row}"]`).closest('.form-field').show();
+                });
+            }
+            if (val === 0 || config_val !== {{ constant('CommonITILSatisfaction::TYPE_EXTERNAL') }}) {
+                $(`[name="inquest_URL{{ config_suffix }}"]`).closest('.form-field').hide();
+                $('.form-field.valid_tags').hide();
+            } else {
+                $(`[name="inquest_URL{{ config_suffix }}"]`).closest('.form-field').show();
+                $('.form-field.valid_tags').show();
+            }
+        }
+        rate_dropdown.on('change', refresh_param_rows);
+        refresh_param_rows();
+    });
+</script>

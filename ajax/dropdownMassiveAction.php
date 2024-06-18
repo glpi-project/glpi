@@ -33,8 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+use Glpi\Application\View\TemplateRenderer;
 
 include('../inc/includes.php');
 
@@ -44,10 +43,18 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'specialize');
 } catch (\Throwable $e) {
-    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
-      __s('Warning') . "'><br><br>";
-    echo "<span class='b'>" . $e->getMessage() . "</span><br>";
-    echo "</div>";
+    $twig_params = [
+        'title' => __('Warning'),
+        'text' => $e->getMessage(),
+    ];
+    // language=Twig
+    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        <div class="alert alert-warning">
+            <i class="alert-icon ti ti-alert-triangle"></i>
+            <div class="alert-title">{{ title }}</div>
+            <div class="text-secondary">{{ text }}</div>
+        </div>
+TWIG, $twig_params);
     exit();
 }
 

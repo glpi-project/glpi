@@ -48,13 +48,10 @@ if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
 
 Session::checkLoginUser();
 
-if (
-    isset($_POST['type']) && !empty($_POST['type'])
-    && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
-) {
+if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
     $prefix = '';
     $suffix = '';
-    if (isset($_POST['prefix']) && !empty($_POST['prefix'])) {
+    if (!empty($_POST['prefix'])) {
         $prefix = $_POST['prefix'] . '[';
         $suffix = ']';
     }
@@ -73,7 +70,7 @@ if (
             echo "</td><td>";
             Entity::dropdown($params);
             echo "</td><td>";
-            echo __('Child entities');
+            echo __s('Child entities');
             echo "</td><td>";
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
             echo "</td></tr></table>";
