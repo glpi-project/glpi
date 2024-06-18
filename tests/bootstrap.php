@@ -36,6 +36,8 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Config\ConfigProviderWithRequestInterface;
+use Glpi\Config\LegacyConfigProviders;
 use Glpi\OAuth\Server;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -68,6 +70,18 @@ if (file_exists($autoloadFile = __DIR__ . '/../vendor/autoload.php') && !file_ex
 }
 
 require_once $autoloadFile;
+
+$kernel = new \Glpi\Kernel\Kernel('testing', true);
+$kernel->boot();
+/** @var LegacyConfigProviders $providers */
+$providers = $kernel->getContainer()->get(LegacyConfigProviders::class);
+foreach ($providers->getProviders() as $provider) {
+    if ($provider instanceof ConfigProviderWithRequestInterface) {
+        continue;
+    }
+    $provider->execute();
+}
+
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
