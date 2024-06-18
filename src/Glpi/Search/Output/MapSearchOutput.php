@@ -80,7 +80,7 @@ final class MapSearchOutput extends HTMLSearchOutput
         global $CFG_GLPI;
 
         $itemtype = $data['itemtype'];
-        if ($data['data']['totalcount'] > 0) {
+        if (isset($data['data']['totalcount']) && $data['data']['totalcount'] > 0) {
             $target = $data['search']['target'];
             $criteria = $data['search']['criteria'];
             array_pop($criteria);

@@ -4751,8 +4751,6 @@ final class SQLProvider implements SearchProviderInterface
                         "sql query fails (too many tables). " .
                         "Please use 'Items seen' criterion instead")
                 );
-            } else {
-                echo $DBread->error();
             }
         }
         Profiler::getInstance()->stop('SQLProvider::constructData');
