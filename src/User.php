@@ -5930,7 +5930,14 @@ JAVASCRIPT;
                         echo '<td>' . htmlspecialchars($key) . '</td>';
                         echo '<td>';
                         unset($values['count']);
-                        echo implode(', ', array_map(fn ($value) => htmlspecialchars($value), $values));
+                        $printed_values = [];
+                        foreach ($values as $value) {
+                            if (str_contains($key, 'password')) {
+                                $value = '********';
+                            }
+                            $printed_values[] = htmlspecialchars($value);
+                        }
+                        echo implode(', ', $printed_values);
                         echo '</td>';
                         echo '</tr>';
                     }
