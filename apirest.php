@@ -46,10 +46,7 @@ use Glpi\Application\ErrorHandler;
  */
 global $GLPI, $GLPI_CACHE;
 
-define('GLPI_ROOT', __DIR__);
 ini_set('session.use_cookies', 0);
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
 
 // Init loggers
 $GLPI = new GLPI();

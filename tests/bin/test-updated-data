@@ -34,7 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(dirname(__DIR__)));
+define('GLPI_ROOT', dirname(__DIR__, 2));
 define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests/config');
 define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
 define(
@@ -45,8 +45,10 @@ define(
    ]
 );
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
-include_once(GLPI_ROOT . '/inc/includes.php');
+require GLPI_ROOT . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel('testing', true);
+$kernel->loadConfig();
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 

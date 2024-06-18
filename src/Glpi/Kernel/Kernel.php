@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Config\ConfigProviderWithRequestInterface;
+use Glpi\Config\LegacyConfigProviders;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -43,6 +45,8 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
+
+    private static bool $isBooted = false;
 
     public function getProjectDir(): string
     {
@@ -67,6 +71,21 @@ final class Kernel extends BaseKernel
             new FrameworkBundle(),
         ];
     }
+
+    public function loadConfig(): void
+    {
+        $this->boot();
+
+        /** @var LegacyConfigProviders $providers */
+        $providers = $this->container->get(LegacyConfigProviders::class);
+        foreach ($providers->getProviders() as $provider) {
+            if ($provider instanceof ConfigProviderWithRequestInterface) {
+                continue;
+            }
+            $provider->execute();
+        }
+    }
+
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
