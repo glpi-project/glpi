@@ -1864,7 +1864,8 @@ class Entity extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $entity,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'inherited_value' => $entity->getInheritedValueBadge('2fa_enforcement_strategy', '2fa_enforcement_strategy'),
         ]);
     }
 
@@ -2425,6 +2426,7 @@ class Entity extends CommonTreeDropdown
             case 'enable_custom_css':
             case 'suppliers_as_private':
             case 'display_users_initials':
+            case '2fa_enforcement_strategy':
                 if ($values[$field] === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }

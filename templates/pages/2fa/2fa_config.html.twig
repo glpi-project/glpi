@@ -62,6 +62,7 @@
                   '1': __('Yes'),
                }, '', {
                   'no_label': true,
+                   add_field_html: inherited_value
                }) }}
             {% else %}
                {{ fields.dropdownYesNo('2fa_enforced', item.fields['2fa_enforced'], '', {
