@@ -403,6 +403,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Transfer::manageConnectionComputer()`
+- `User::showDebug()`
 - `User::title()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
