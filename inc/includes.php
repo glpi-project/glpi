@@ -60,6 +60,7 @@ if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
 }
 
+include_once GLPI_ROOT . '/vendor/autoload.php';
 include_once GLPI_ROOT . '/inc/based_config.php';
 
 \Glpi\Debug\Profiler::getInstance()->start('php_request');

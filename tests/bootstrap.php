@@ -62,7 +62,12 @@ define('TU_PASS', 'PhpUnit_4');
 
 global $CFG_GLPI, $GLPI_CACHE;
 
-include(GLPI_ROOT . "/inc/based_config.php");
+// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
+if (file_exists($autoloadFile = __DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
+    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
+}
+
+require_once $autoloadFile;
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
@@ -100,11 +105,6 @@ include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
-
-// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
-}
 
 function loadDataset()
 {

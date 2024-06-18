@@ -87,3 +87,22 @@ function isPluginItemType($classname)
    // Standard case
     return false;
 }
+
+function extractOptionsFromArgv(): array
+{
+    if (!isset($_SERVER['argv'])) {
+        return [];
+    }
+
+    // Extract command line arguments
+    $options = [];
+
+    $c = count($_SERVER['argv']);
+    for ($i = 1; $i < $c; $i++) {
+        $chunks = explode('=', $_SERVER['argv'][$i], 2);
+        $chunks[0] = preg_replace('/^--/', '', $chunks[0]);
+        $options[$chunks[0]] = $chunks[1] ?? true;
+    }
+
+    return $options;
+}

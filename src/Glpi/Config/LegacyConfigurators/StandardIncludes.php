@@ -212,7 +212,7 @@ TWIG, $twig_params);
                     echo __('Service is down for maintenance. It will be back shortly.');
                     echo "\n";
                 } else {
-                    Glpi\Application\View\TemplateRenderer::getInstance()->display('maintenance.html.twig', [
+                    TemplateRenderer::getInstance()->display('maintenance.html.twig', [
                         'title'            => "MAINTENANCE MODE",
                         'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
                     ]);

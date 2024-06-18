@@ -8,7 +8,7 @@ mkdir -p $(dirname "$LOG_FILE")
 bin/console database:install \
   --ansi --no-interaction \
   --force \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password=glpi \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root \
   --strict-configuration \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];

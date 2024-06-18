@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 trait ConfigProviderHasRequestTrait
 {
-    private ?Request $request;
+    private ?Request $request = null;
 
     public function setRequest(Request $request): void
     {
@@ -57,5 +57,7 @@ trait ConfigProviderHasRequestTrait
                 ConfigProviderWithRequestInterface::class,
             ));
         }
+
+        return $this->request;
     }
 }
