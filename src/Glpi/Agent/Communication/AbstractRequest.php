@@ -215,7 +215,7 @@ abstract class AbstractRequest
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
                 $client = Server::validateAccessToken($request);
-                if (!\User::isNewID($client['users_id']) || !in_array('inventory', $client['scopes'], true)) {
+                if (!\User::isNewID($client['user_id']) || !in_array('inventory', $client['scopes'], true)) {
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
