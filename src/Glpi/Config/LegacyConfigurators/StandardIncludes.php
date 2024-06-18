@@ -73,14 +73,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                $skip_db_check, $dont_check_maintenance_mode,
                $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
 
-        Session::setPath();
-        Session::start();
-
-        // Default Use mode
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-        }
-
         $GLPI = new GLPI();
         $GLPI->initLogger();
         $GLPI->initErrorHandler();

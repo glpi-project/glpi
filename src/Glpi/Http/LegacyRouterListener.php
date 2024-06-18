@@ -55,7 +55,7 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] private string $projectDir,
-        Kernel $kernel,
+        private readonly Kernel $kernel,
     ) {
         $this->glpi_root = $projectDir;
     }
@@ -80,8 +80,6 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
     private function runLegacyRouter(Request $request): ?Response
     {
-        dd($this);
-
         /**
          * GLPI web router.
          *
