@@ -46,9 +46,6 @@
     "// composer autoloader",
     "Composer\\Autoload\\ClassLoader",
 
-    "// Used in some console-related commands before project initialization",
-    "GLPI\\Application\\View\\TemplateRenderer",
-
     "SodiumException"
   ],
   "scan-files": [
