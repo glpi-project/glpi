@@ -149,7 +149,6 @@ class Application extends BaseApplication
     {
         $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
 
-        $this->prepareApplication();
         $this->initConfigProviders();
 
         return new InputDefinition(
@@ -575,28 +574,6 @@ class Application extends BaseApplication
         }
 
         return true;
-    }
-
-    private function prepareApplication(): void
-    {
-        $options = \extractOptionsFromArgv();
-
-        // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
-        if (array_key_exists('config-dir', $options)) {
-            $config_dir = $options['config-dir'];
-
-            if (false === $config_dir || !@is_dir($config_dir)) {
-                die(
-                    sprintf(
-                        '--config-dir "%s" does not exists in "%s".' . "\n",
-                        $config_dir,
-                        getcwd()
-                    )
-                );
-            }
-
-            define('GLPI_CONFIG_DIR', realpath($config_dir));
-        }
     }
 
     private function initConfigProviders(): void

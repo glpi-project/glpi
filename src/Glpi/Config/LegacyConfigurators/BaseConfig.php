@@ -44,6 +44,7 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] private string $projectDir,
+        #[Autowire('%kernel.environment%')] private string $kernelEnvironment,
     ) {
     }
 
@@ -66,7 +67,9 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
             date_default_timezone_set(@date_default_timezone_get());
         }
 
-        (static function () {
+        $kernelEnvironment = $this->kernelEnvironment;
+
+        (static function () use ($kernelEnvironment) {
             // Define GLPI_* constants that can be customized by admin.
             //
             // Use a self-invoking anonymous function to:
@@ -76,7 +79,7 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
             $constants = [
                 'default' => [
                     // GLPI environment
-                    'GLPI_ENVIRONMENT_TYPE' => 'production',
+                    'GLPI_ENVIRONMENT_TYPE' => $kernelEnvironment,
 
                     // Constants related to system paths
                     'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
@@ -238,7 +241,5 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
         })();
 
         define('GLPI_I18N_DIR', $this->projectDir . "/locales");
-
-        //include_once $this->projectDir . "/inc/define.php";
     }
 }

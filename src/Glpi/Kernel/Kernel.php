@@ -49,8 +49,8 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
-        $env ??= $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
-        parent::__construct($env, $env === 'development');
+        $env ??= $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'production';
+        parent::__construct($env, $env === 'production');
     }
 
     public function getProjectDir(): string
