@@ -120,7 +120,7 @@ final class Firewall
      * @param string $strategy  Strategy to apply, or null to fallback to default strategy
      * @return void
      */
-    public function applyStrategy(string $path, ?string $strategy = null): void
+    public function applyStrategy(string $path, ?string $strategy): void
     {
         if ($strategy === null) {
             $strategy = $this->computeDefaultStrategy($path);

@@ -58,6 +58,8 @@ final class FirewallConfig implements LegacyConfigProviderInterface, ConfigProvi
          */
         global $CFG_GLPI;
 
-        $this->container->set(Firewall::class, new Firewall($CFG_GLPI['root_doc']));
+        $firewall = new Firewall($CFG_GLPI['root_doc']);
+        $this->container->set(Firewall::class, $firewall);
+        $firewall->applyStrategy($this->getRequest()->server->get('PHP_SELF'), null);
     }
 }
