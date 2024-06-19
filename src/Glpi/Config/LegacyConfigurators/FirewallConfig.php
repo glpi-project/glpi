@@ -38,20 +38,26 @@ use Glpi\Config\ConfigProviderHasRequestTrait;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Http\Firewall;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FirewallConfig implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
 {
     use ConfigProviderHasRequestTrait;
 
+    public function __construct(
+        #[Autowire('@service_container')]
+        private readonly ContainerInterface $container
+    ) {
+    }
+
     public function execute(): void
     {
         /**
          * @var array $CFG_GLPI
-         * @var string|null $SECURITY_STRATEGY
          */
-        global $CFG_GLPI, $SECURITY_STRATEGY;
+        global $CFG_GLPI;
 
-        $firewall = new Firewall($CFG_GLPI['root_doc']);
-        $firewall->applyStrategy($this->getRequest()->server->get('PHP_SELF'), $SECURITY_STRATEGY ?? null);
+        $this->container->set(Firewall::class, new Firewall($CFG_GLPI['root_doc']));
     }
 }

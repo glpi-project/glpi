@@ -71,7 +71,7 @@ final class Firewall
      * Security strategy to apply by default on core ajax/front scripts.
      *
      * @TODO In GLPI 11.0, raise default level to `self::STRATEGY_CENTRAL_ACCESS`.
-     *       It will require to explicitely declare `$SECURITY_STRATEGY = 'authenticated';` or `$SECURITY_STRATEGY = 'helpdesk_access';`
+     *       It will require to explicitely call `$this->applySecurityStrategy(...);` with `'authenticated'` or `'helpdesk_access';`
      *       on endpoints that do not require a central access.
      */
     private const STRATEGY_DEFAULT_FOR_CORE = self::STRATEGY_AUTHENTICATED;

@@ -13,6 +13,11 @@ class LegacyFileLoadController extends AbstractController
 
     private readonly Request $request;
 
+    public function __construct(
+        private readonly Firewall $firewall,
+    ) {
+    }
+
 
     public function __invoke(Request $request): StreamedResponse
     {
@@ -27,5 +32,10 @@ class LegacyFileLoadController extends AbstractController
         $callback = fn () => require $target_file;
 
         return new StreamedResponse($callback->bindTo($this, self::class));
+    }
+
+    private function applySecurityStrategy(string $strategy): void
+    {
+        $this->firewall->applyStrategy($this->request->server->get('PHP_SELF'), $strategy);
     }
 }
