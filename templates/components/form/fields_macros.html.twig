@@ -743,7 +743,7 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name ~ '_' ~ options.rand) %}
+      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
