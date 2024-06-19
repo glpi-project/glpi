@@ -34,7 +34,6 @@
 
 namespace Glpi\Http;
 
-use Glpi\Kernel\Kernel;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -55,7 +54,6 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] private string $projectDir,
-        private readonly Kernel $kernel,
     ) {
         $this->glpi_root = $projectDir;
     }
