@@ -8001,11 +8001,11 @@ msgstr "Dereferenzieren während der Lokalisierung"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Describe the incident or request"
-msgstr "Beschreiben Sie den Störung oder die Anfrage"
+msgstr "Beschreiben Sie die Störung oder die Anfrage"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Describe your issue"
-msgstr "Beschreibe dein Problem"
+msgstr "Beschreiben Sie Ihr Problem"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
@@ -8159,7 +8159,7 @@ msgstr[1] "Gerät Speichertypen"
 #: src/CommonDeviceModel.php:41
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] "Gerät-Modell"
+msgstr[0] "Gerätemodell"
 msgstr[1] "Gerätemodelle"
 
 #: src/Report.php:496 src/Report.php:505
@@ -8180,7 +8180,7 @@ msgstr[1] "Gerät Prozessorenmodelle"
 
 #: src/ReservationItem.php:831
 msgid "Device reservations expiring today"
-msgstr "Geräte deren Reservierung heute abläuft"
+msgstr "Geräte, deren Reservierung heute abläuft"
 
 #: src/DeviceSensorModel.php:46
 msgid "Device sensor model"
@@ -8317,7 +8317,7 @@ msgstr "Zu verwendendes Verzeichnis. Mögliche Werte sind: %s"
 #: src/DBConnection.php:712 src/DBConnection.php:716
 #: src/NotificationTargetDBConnection.php:81
 msgid "Difference between main and replica"
-msgstr "Unterschied zwischen Haupt- und Replikat"
+msgstr "Unterschied zwischen Hauptdatenbank und Replikat"
 
 #: src/Config.php:1598
 msgid "Digit"
@@ -8327,7 +8327,7 @@ msgstr "Ziffer"
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
 msgstr ""
-"Direkte Benachrichtigung (Anfragender zum Aufheben der Sperre ist Sender)"
+"Direkte Benachrichtigung (Anfragender zum Aufheben der Sperre ist Absender)"
 
 #: src/Transfer.php:4039
 msgid "Direct connections"
