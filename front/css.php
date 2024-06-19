@@ -39,13 +39,6 @@
  */
 global $skip_db_check, $dont_check_maintenance_mode;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // CSS must be accessible also on public pages
-
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', dirname(__DIR__));
-}
-
 use Glpi\Application\ErrorHandler;
 use Glpi\UI\ThemeManager;
 

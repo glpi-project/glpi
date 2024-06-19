@@ -42,12 +42,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check');
-
-include('../inc/includes.php');
-
-
 if (
     $CFG_GLPI["ssovariables_id"] > 0
     && strlen($CFG_GLPI['ssologout_url']) > 0

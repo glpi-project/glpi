@@ -38,10 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('faq_access');
-
-include('../inc/includes.php');
 Html::header_nocache();
 
 Toolbox::deprecated();

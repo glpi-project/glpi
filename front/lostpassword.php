@@ -40,11 +40,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check');
-
-include('../inc/includes.php');
-
 if (
     !$CFG_GLPI['notifications_mailing']
     || !countElementsInTable(

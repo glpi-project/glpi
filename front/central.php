@@ -38,14 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-
-if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
-    $this->applySecurityStrategy('no_check'); // Allow anonymous access for embed dashboards.
-}
-
-include('../inc/includes.php');
-
 // embed (anonymous) dashboard
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     $grid      = new Glpi\Dashboard\Grid($_GET["dashboard"]);

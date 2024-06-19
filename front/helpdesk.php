@@ -38,11 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // Anonymous access may be allowed by configuration.
-
-include('../inc/includes.php');
-
 if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }

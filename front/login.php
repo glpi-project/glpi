@@ -44,12 +44,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check');
-
-include('../inc/includes.php');
-
-
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
     if (!Session::canWriteSessionFiles()) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");

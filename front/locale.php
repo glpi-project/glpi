@@ -43,9 +43,6 @@ use Glpi\Application\ErrorHandler;
 global $CFG_GLPI, $TRANSLATE,
     $dont_check_maintenance_mode;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // locales must be accessible also on public pages
-
 $_GET['donotcheckversion']   = true;
 $dont_check_maintenance_mode = true;
 

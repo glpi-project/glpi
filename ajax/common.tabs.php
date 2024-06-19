@@ -40,10 +40,6 @@
 global $CFG_GLPI,
     $AJAX_INCLUDE;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // specific checks done later to allow anonymous access to public FAQ tabs
-
-include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 
 header("Content-Type: text/html; charset=UTF-8");

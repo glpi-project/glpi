@@ -36,11 +36,6 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Dashboard\Grid;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // specific checks done later to allow anonymous access to embed dashboards
-
-include('../inc/includes.php');
-
 if (!isset($_REQUEST["action"])) {
     exit;
 }

@@ -38,11 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // Anonymous access may be allowed by configuration.
-
-include('../inc/includes.php');
-
 if (
     empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")

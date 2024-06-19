@@ -35,11 +35,6 @@
 
 use Glpi\Inventory\Conf;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check'); // may allow unauthenticated access, for public FAQ images
-
-include('../inc/includes.php');
-
 $doc = new Document();
 
 if (isset($_GET['docid'])) {

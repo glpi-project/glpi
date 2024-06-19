@@ -71,7 +71,7 @@ final class Firewall
      * Security strategy to apply by default on core ajax/front scripts.
      *
      * @TODO In GLPI 11.0, raise default level to `self::STRATEGY_CENTRAL_ACCESS`.
-     *       It will require to explicitely call `$this->applySecurityStrategy(...);` with `'authenticated'` or `'helpdesk_access';`
+     *       It will require to explicitely call `$firewall->applyStrategy(...);` with `'authenticated'` or `'helpdesk_access';`
      *       on endpoints that do not require a central access.
      */
     private const STRATEGY_DEFAULT_FOR_CORE = self::STRATEGY_AUTHENTICATED;
@@ -103,14 +103,14 @@ final class Firewall
 
     /**
      * @param string $path_prefix   GLPI URLs path prefix
-     * @param string $root_dir      GLPI root directory on filesystem
-     * @param array $plugins_dirs   GLPI plugins root directories on filesystem
+     * @param ?string $root_dir      GLPI root directory on filesystem
+     * @param ?array $plugins_dirs   GLPI plugins root directories on filesystem
      */
-    public function __construct(string $path_prefix, string $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
+    public function __construct(string $path_prefix, ?string $root_dir = null, ?array $plugins_dirs = null)
     {
         $this->path_prefix = $path_prefix;
-        $this->root_dir = $root_dir;
-        $this->plugins_dirs = $plugins_dirs;
+        $this->root_dir = $root_dir ?? \GLPI_ROOT;
+        $this->plugins_dirs = $plugins_dirs ?? \PLUGINS_DIRECTORIES;
     }
 
     /**
@@ -156,6 +156,10 @@ final class Firewall
      */
     private function computeDefaultStrategy(string $path): string
     {
+        if ($strategy = $this->computeForPaths($path)) {
+            return $strategy;
+        }
+
         // Check if entrypoint is a GLPI core ajax/front script.
         if (
             str_starts_with($path, $this->path_prefix . '/ajax/')
@@ -200,5 +204,45 @@ final class Firewall
         // Normalize all directory separators to `/`.
         $path = preg_replace('/\\\/', '/', $path);
         return $path;
+    }
+
+    private function computeForPaths(string $path): ?string
+    {
+        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
+            return 'no_check';
+        }
+
+        if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
+            return 'no_check';
+        }
+
+        $paths = [
+            '/ajax/knowbase.php' => self::STRATEGY_FAQ_ACCESS,
+            '/front/helpdesk.faq.php' => self::STRATEGY_FAQ_ACCESS,
+
+            '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK,
+            '/ajax/dashboard.php' => self::STRATEGY_NO_CHECK,
+            '/ajax/telemetry.php' => self::STRATEGY_NO_CHECK,
+            '/front/cron.php' => self::STRATEGY_NO_CHECK,
+            '/front/css.php' => self::STRATEGY_NO_CHECK,
+            '/front/document.seed.php' => self::STRATEGY_NO_CHECK,
+            '/front/form/form_renderer.php' => self::STRATEGY_NO_CHECK,
+            '/front/helpdesk.php' => self::STRATEGY_NO_CHECK,
+            '/front/inventory.php' => self::STRATEGY_NO_CHECK,
+            '/front/locale.php' => self::STRATEGY_NO_CHECK,
+            '/front/login.php' => self::STRATEGY_NO_CHECK,
+            '/front/logout.php' => self::STRATEGY_NO_CHECK,
+            '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
+            '/front/tracking.injector.php' => self::STRATEGY_NO_CHECK,
+            '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
+        ];
+
+        foreach ($paths as $checkPath => $strategy) {
+            if (\str_starts_with($path, $checkPath)) {
+                return $strategy;
+            }
+        }
+
+        return null;
     }
 }

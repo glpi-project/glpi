@@ -68,9 +68,9 @@ return static function (ContainerConfigurator $container): void {
     $services->set(SessionStart::class)->tag($tagName, ['priority' => 170]);
     $services->set(StandardIncludes::class)->tag($tagName, ['priority' => 160]);
     $services->set(CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
-    $services->set(FirewallConfig::class)->tag($tagName, ['priority' => 140]);
     $services->set(SessionConfig::class)->tag($tagName, ['priority' => 130]);
     $services->set(InitializePlugins::class)->tag($tagName, ['priority' => 120]);
+    $services->set(FirewallConfig::class)->tag($tagName, ['priority' => 110]);
 
     // FIXME: This class MUST stay at the end until the entire config is revamped.
     $services->set(ConfigRest::class)->tag($tagName, ['priority' => 10]);

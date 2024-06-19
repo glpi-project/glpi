@@ -38,11 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('no_check');
-
-include('../inc/includes.php');
-
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`
 // considers it as an invalid session.

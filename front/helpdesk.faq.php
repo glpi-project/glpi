@@ -38,11 +38,6 @@
  */
 global $CFG_GLPI;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->applySecurityStrategy('faq_access');
-
-include('../inc/includes.php');
-
 // Redirect management
 if (isset($_GET["redirect"])) {
     Toolbox::manageRedirect($_GET["redirect"]);
