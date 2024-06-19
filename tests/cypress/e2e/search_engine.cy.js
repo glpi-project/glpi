@@ -31,29 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
-function terminalLog(violations) {
-    cy.task(
-        'log',
-        `${violations.length} accessibility violation${
-            violations.length === 1 ? '' : 's'
-        } ${violations.length === 1 ? 'was' : 'were'} detected`
-    );
-    // pluck specific keys to keep the table readable
-    const violationData = violations.map(
-        ({ id, impact, description, nodes }) => ({
-            id,
-            impact,
-            description,
-            nodes: JSON.stringify({
-                length: nodes.length,
-                targets: nodes.map(({ target }) => target).join(', ')
-            })
-        })
-    );
-
-    cy.task('table', violationData);
-}
-
-module.exports = {
-    terminalLog
-};
+describe('Search engine', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+    });
+    it('Accessibility', () => {
+        cy.visit('/front/computer.php');
+        cy.get('div.search_page').within(() => {
+            cy.root().injectAndCheckA11y();
+            cy.get('button.show-search-filters').click();
+            cy.get('div.search-form').injectAndCheckA11y();
+            cy.get('button.show-search-sorts').click();
+            cy.get('div.sort-container').injectAndCheckA11y();
+        });
+    });
+});

@@ -49,7 +49,7 @@
         {# Colors not for groups #}
         {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' %}
             <span class="color_input">
-                <input type="color" name="{{ filter_key }}_color" value="{{ color }}">
+                <input type="color" name="{{ filter_key }}_color" aria-label="{{ __('%s color')|format(title) }}" value="{{ color }}">
             </span>
         {% endif %}
         {% if filter_data.type == 'group_users' %}

@@ -31,29 +31,25 @@
  * ---------------------------------------------------------------------
  */
 
-function terminalLog(violations) {
-    cy.task(
-        'log',
-        `${violations.length} accessibility violation${
-            violations.length === 1 ? '' : 's'
-        } ${violations.length === 1 ? 'was' : 'were'} detected`
-    );
-    // pluck specific keys to keep the table readable
-    const violationData = violations.map(
-        ({ id, impact, description, nodes }) => ({
-            id,
-            impact,
-            description,
-            nodes: JSON.stringify({
-                length: nodes.length,
-                targets: nodes.map(({ target }) => target).join(', ')
-            })
-        })
-    );
+describe('Page layout', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+    });
+    it('Accessibility', () => {
+        cy.disableAnimations();
+        cy.get('aside.navbar.sidebar .nav-link.dropdown-toggle:visible').each(($el) => {
+            cy.wrap($el).click();
+            cy.get('aside.navbar.sidebar').injectAndCheckA11y();
+        });
 
-    cy.task('table', violationData);
-}
+        cy.get('.navbar-nav.user-menu:visible').click();
+        cy.get('.navbar-nav.user-menu:visible .dropdown-menu').injectAndCheckA11y();
 
-module.exports = {
-    terminalLog
-};
+        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle').click();
+        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
+
+        cy.visit('/front/computer.php');
+        cy.get('header.navbar').injectAndCheckA11y();
+    });
+});
