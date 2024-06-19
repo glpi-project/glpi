@@ -34,12 +34,12 @@
 
 namespace Glpi\Http;
 
+use Glpi\Controller\LegacyFileLoadController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -127,9 +127,14 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
         $request->server->set('SCRIPT_FILENAME', $target_file);
         $request->server->set('SCRIPT_NAME', $target_path);
 
-        return new StreamedResponse(static function () use ($target_file) {
-            require($target_file);
-        });
+        /**
+         * This will force Symfony to consider that routing was resolved already.
+         * @see \Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest
+         */
+        $request->attributes->set('_controller', LegacyFileLoadController::class);
+        $request->attributes->set(LegacyFileLoadController::REQUEST_FILE_KEY, $target_file);
+
+        return null;
     }
 
     private function getTargetPathInfo(string $init_path): array
