@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $PLUGINS_EXCLUDED */
-global $PLUGINS_EXCLUDED;
-
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
 if (($_GET["action"] ?? null) == "get_dl_progress") {
@@ -50,13 +47,6 @@ if (($_GET["action"] ?? null) == "get_dl_progress") {
     echo $_SESSION['marketplace_dl_progress'][$_GET['key']] ?? 0;
     exit;
 }
-
-if (in_array($_POST["action"] ?? null, ['download_plugin', 'update_plugin'])) {
-   // Do not load plugin that will be updated, to be able to load its new information
-   // by redefining its plugin_version_ function after files replacement.
-    $PLUGINS_EXCLUDED = [$_POST['key']];
-}
-
 
 // get common marketplace action, load GLPI framework
 include("../inc/includes.php");
@@ -90,6 +80,11 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
     if ($_POST["action"] == "disable_plugin") {
         $marketplace_ctrl->disablePlugin();
+    }
+    if ($_POST["action"] == "suspend_plugin") {
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode(['success' => $marketplace_ctrl->suspendPlugin()]);
+        exit();
     }
 
     echo MarketplaceView::getButtons($_POST['key']);

@@ -97,6 +97,11 @@ class Plugin extends CommonDBTM
     const REPLACED       = 7;
 
     /**
+     * @var int Plugin is installed and enabled, but its execution is suspended.
+     */
+    const SUSPENDED      = 8;
+
+    /**
      * Option used to indicates that auto installation of plugin should be disabled (bool value expected).
      *
      * @var string
@@ -233,11 +238,10 @@ class Plugin extends CommonDBTM
      * Init plugins list.
      *
      * @param boolean $load_plugins     Whether to load active/configurable plugins or not.
-     * @param array $excluded_plugins   List of plugins to exclude
      *
      * @return void
      **/
-    public function init(bool $load_plugins = false, array $excluded_plugins = [])
+    public function init(bool $load_plugins = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -252,7 +256,7 @@ class Plugin extends CommonDBTM
             return;
         }
 
-        $this->checkStates(false, $excluded_plugins);
+        $this->checkStates(false);
 
         $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
 
@@ -261,10 +265,7 @@ class Plugin extends CommonDBTM
         // in order to not have to do a DB query on `self::isActivated()` calls which are commonly use in plugins init functions.
         $directories_to_load = [];
         foreach ($plugins as $plugin) {
-            if (
-                in_array($plugin['directory'], $excluded_plugins)
-                || !$this->isLoadable($plugin['directory'])
-            ) {
+            if (!$this->isLoadable($plugin['directory'])) {
                 continue;
             }
 
@@ -484,11 +485,10 @@ class Plugin extends CommonDBTM
      * Check plugins states and detect new plugins.
      *
      * @param boolean $scan_inactive_and_new_plugins
-     * @param array $excluded_plugins   List of plugins to exclude
      *
      * @return void
      */
-    public function checkStates($scan_inactive_and_new_plugins = false, array $excluded_plugins = [])
+    public function checkStates($scan_inactive_and_new_plugins = false)
     {
         $directories = [];
 
@@ -508,9 +508,6 @@ class Plugin extends CommonDBTM
 
         // Check all directories from the checklist
         foreach ($directories as $directory) {
-            if (in_array($directory, $excluded_plugins)) {
-                continue;
-            }
             $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
         }
 
@@ -709,7 +706,7 @@ class Plugin extends CommonDBTM
         }
 
         // Check if configuration state changed
-        if (in_array((int)$plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
+        if (in_array((int)$plugin->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED, self::SUSPENDED], true)) {
             $function = 'plugin_' . $plugin_key . '_check_config';
             $is_config_ok = !function_exists($function) || $function();
 
@@ -1100,6 +1097,24 @@ class Plugin extends CommonDBTM
         return false;
     }
 
+    /**
+     * Suspend a plugin. This can be used to disable the execution of a plugin during its update process.
+     *
+     * @return boolean
+     **/
+    public function suspend(): bool
+    {
+        $success = $this->update([
+            'id'    => $this->getID(),
+            'state' => self::SUSPENDED
+        ]);
+
+        if ($success) {
+            $this->unload($this->fields['directory']);
+        }
+
+        return $success;
+    }
 
     /**
      * Unactivate a plugin
@@ -2205,6 +2220,9 @@ class Plugin extends CommonDBTM
 
             case self::REPLACED:
                 return _x('plugin', 'Replaced');
+
+            case self::SUSPENDED:
+                return _x('plugin', 'Execution suspended');
         }
 
         return __('Error / to clean');
@@ -2240,6 +2258,9 @@ class Plugin extends CommonDBTM
 
             case self::NOTACTIVATED:
                 return "notactived";
+
+            case self::SUSPENDED:
+                return "suspended";
         }
 
         return "";

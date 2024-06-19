@@ -54,27 +54,44 @@ $(document).ready(function() {
             .removeClass()
             .addClass('fas fa-spinner fa-spin');
 
-        if (action === 'download_plugin'
-          || action === 'update_plugin') {
-            followDownloadProgress(button);
-        }
-
-        ajax_done = false;
-        $.post(ajax_url, {
-            'action': action,
-            'key': plugin_key
-        }).done(function(html) {
-            ajax_done = true;
-
-            if (html.indexOf("cleaned") !== -1 && installed) {
-                li.remove();
-            } else {
-                html = html.replace('cleaned', '');
-                buttons.html(html);
-                displayAjaxMessageAfterRedirect();
-                addTooltips();
+        const executeAction = function () {
+            if (action === 'download_plugin'
+              || action === 'update_plugin') {
+                followDownloadProgress(button);
             }
-        });
+
+            ajax_done = false;
+            $.post(ajax_url, {
+                'action': action,
+                'key': plugin_key
+            }).done(function(html) {
+                ajax_done = true;
+
+                if (html.indexOf("cleaned") !== -1 && installed) {
+                    li.remove();
+                } else {
+                    html = html.replace('cleaned', '');
+                    buttons.html(html);
+                    displayAjaxMessageAfterRedirect();
+                    addTooltips();
+                }
+            });
+        };
+
+        if (action === 'download_plugin' || action === 'update_plugin') {
+            // Specific case for plugin code source replacement.
+            // The plugin execution must be suspended first to ensure that its `setup.php` file is not loaded before
+            // its new version is downloaded.
+            $.post(ajax_url, {
+                'action': 'suspend_plugin',
+                'key': plugin_key
+            }).done(function() {
+                executeAction();
+            });
+            return;
+        } else {
+            executeAction();
+        }
     });
 
     // sort control
