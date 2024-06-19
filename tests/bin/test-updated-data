@@ -47,8 +47,8 @@ define(
 
 require GLPI_ROOT . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel('testing', true);
-$kernel->loadConfig();
+$kernel = new \Glpi\Kernel\Kernel('testing');
+$kernel->loadCliOnlyConfig();
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 

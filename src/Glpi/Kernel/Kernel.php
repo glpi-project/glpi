@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -46,7 +47,11 @@ final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    private static bool $isBooted = false;
+    public function __construct(?string $env = null)
+    {
+        $env ??= $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
+        parent::__construct($env, $env === 'development');
+    }
 
     public function getProjectDir(): string
     {
@@ -72,7 +77,7 @@ final class Kernel extends BaseKernel
         ];
     }
 
-    public function loadConfig(): void
+    public function loadCommonGlobalConfig(): void
     {
         $this->boot();
 
@@ -86,6 +91,18 @@ final class Kernel extends BaseKernel
         }
     }
 
+    public function loadCliOnlyConfig(): void
+    {
+        $this->boot();
+
+        /** @var LegacyConfigProviders $providers */
+        $providers = $this->container->get(LegacyConfigProviders::class);
+        foreach ($providers->getProviders() as $provider) {
+            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
+                $provider->execute();
+            }
+        }
+    }
 
     protected function configureContainer(ContainerConfigurator $container): void
     {

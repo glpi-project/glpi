@@ -147,7 +147,6 @@ if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     include_once GLPI_CONFIG_DIR . '/config_db.php';
 }
 
-$env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? 'development';
-$kernel = new \Glpi\Kernel\Kernel($env, $env === 'development');
+$kernel = new \Glpi\Kernel\Kernel();
 $application = new \Glpi\Console\Application($kernel);
 $application->run();

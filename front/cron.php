@@ -33,6 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+include_once dirname(__DIR__) . '/vendor/autoload.php';
+
+if (PHP_SAPI === 'cli') {
+    $kernel = new \Glpi\Kernel\Kernel();
+    $kernel->loadCliOnlyConfig();
+}
+
 /**
  * @var array $CFG_GLPI
  * @var string|null $SECURITY_STRATEGY

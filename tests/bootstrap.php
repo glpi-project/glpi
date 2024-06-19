@@ -72,8 +72,8 @@ if (file_exists($autoloadFile = __DIR__ . '/../vendor/autoload.php') && !file_ex
 
 require_once $autoloadFile;
 
-$kernel = new Kernel('testing', true);
-$kernel->loadConfig();
+$kernel = new Kernel('testing');
+$kernel->loadCommonGlobalConfig();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");

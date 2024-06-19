@@ -47,6 +47,7 @@ use Glpi\Console\CommandLoader;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 use Plugin;
@@ -600,13 +601,8 @@ class Application extends BaseApplication
 
     private function initConfigProviders(): void
     {
-        $this->getKernel()->boot();
-        /** @var LegacyConfigProviders $configProviders */
-        $configProviders = $this->getKernel()->getContainer()->get(LegacyConfigProviders::class);
-        foreach ($configProviders->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
-                $provider->execute();
-            }
-        }
+        /** @var Kernel $kernel */
+        $kernel = $this->getKernel();
+        $kernel->loadCliOnlyConfig();
     }
 }
