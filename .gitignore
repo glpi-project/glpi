@@ -46,3 +46,5 @@ phpunit.xml
 /inventory-vendors/*.json
 /locales/*.mo
 /inc/downstream.php
+/docker-compose.override.yml
+/.devcontainer/docker-compose.override.yml
