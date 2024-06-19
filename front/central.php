@@ -35,13 +35,13 @@
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
+global $CFG_GLPI;
+
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
-    $SECURITY_STRATEGY = 'no_check'; // Allow anonymous access for embed dashboards.
+    $this->applySecurityStrategy('no_check'); // Allow anonymous access for embed dashboards.
 }
 
 include('../inc/includes.php');

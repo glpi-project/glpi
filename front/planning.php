@@ -33,11 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var string|null $SECURITY_STRATEGY
- */
-global $SECURITY_STRATEGY;
-
 if (isset($_GET['genical'])) {
     // A new sssion is generated and destroyed during the ical/webcal export.
     // Prevent sending cookies to browser to ensure that user will not be disconnected when using the export feature.
@@ -45,7 +40,8 @@ if (isset($_GET['genical'])) {
     ini_set('session.use_cookies', 0);
 
     if (isset($_GET['token'])) {
-        $SECURITY_STRATEGY = 'no_check'; // Token based access for ical/webcal access can be made anonymously.
+        /** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check'); // Token based access for ical/webcal access can be made anonymously.
     }
 }
 

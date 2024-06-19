@@ -35,12 +35,11 @@
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
+global $CFG_GLPI;
 
-$SECURITY_STRATEGY = 'no_check';
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check');
 
 include('../inc/includes.php');
 

@@ -34,14 +34,13 @@
  */
 
 /**
- * @var string|null $SECURITY_STRATEGY
  * @var bool|null $skip_db_check
  * @var bool|null $dont_check_maintenance_mode
  */
-global $SECURITY_STRATEGY,
-    $skip_db_check, $dont_check_maintenance_mode;
+global $skip_db_check, $dont_check_maintenance_mode;
 
-$SECURITY_STRATEGY = 'no_check'; // CSS must be accessible also on public pages
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check'); // CSS must be accessible also on public pages
 
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));

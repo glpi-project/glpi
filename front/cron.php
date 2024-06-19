@@ -42,15 +42,14 @@ if (PHP_SAPI === 'cli') {
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
+global $CFG_GLPI;
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
-$SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check'); // in GLPI mode, cronjob can also be triggered from public pages
 
 // Try detecting if we are running with the root user (Not available on Windows)
 if (function_exists('posix_geteuid') && posix_geteuid() === 0) {

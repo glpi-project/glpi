@@ -36,13 +36,12 @@
 /**
  * @var array $CFG_GLPI
  * @var bool|null $AJAX_INCLUDE
- * @var string|null $SECURITY_STRATEGY
  */
 global $CFG_GLPI,
-    $AJAX_INCLUDE,
-    $SECURITY_STRATEGY;
+    $AJAX_INCLUDE;
 
-$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check'); // specific checks done later to allow anonymous access to public FAQ tabs
 
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;

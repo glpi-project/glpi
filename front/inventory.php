@@ -36,12 +36,8 @@
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 
-/**
- * @var string|null $SECURITY_STRATEGY
- */
-global $SECURITY_STRATEGY;
-
-$SECURITY_STRATEGY = 'no_check'; // allow anonymous requests from inventory agent
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->applySecurityStrategy('no_check'); // allow anonymous requests from inventory agent
 
 if (!defined('GLPI_ROOT')) {
     include(__DIR__ . '/../inc/includes.php');
