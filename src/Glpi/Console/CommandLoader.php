@@ -79,8 +79,6 @@ class CommandLoader implements CommandLoaderInterface
      */
     private $plugin = null;
 
-    private ?CommandLoaderInterface $previousLoader = null;
-
     /**
      * @param bool          $include_plugins
      * @param string        $rootdir         Root directory path of application.
@@ -130,15 +128,6 @@ class CommandLoader implements CommandLoaderInterface
         $this->include_plugins = $include_plugins;
 
         $this->commands = null; // Reset registered command list to force (un)registration of plugins commands
-    }
-
-    public function setPrevious(CommandLoaderInterface $commandLoader): void
-    {
-        if ($this->previousLoader) {
-            throw new \RuntimeException('Cannot set previous loader twice.');
-        }
-
-        $this->previousLoader = $commandLoader;
     }
 
     /**

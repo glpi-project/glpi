@@ -110,9 +110,13 @@ class Application extends BaseApplication
      */
     private $output;
 
+    private CommandLoader $legacy_command_loader;
+
     public function __construct(KernelInterface $kernel)
     {
         parent::__construct($kernel);
+
+        $this->legacy_command_loader = new CommandLoader(false);
 
         $this->initApplication();
         $this->initCache();
@@ -122,35 +126,21 @@ class Application extends BaseApplication
 
         $this->computeAndLoadOutputLang();
 
-       // Load core commands only to check if called command prevent or not usage of plugins
-       // Plugin commands will be loaded later
-        $loader = new CommandLoader(false, $kernel->getProjectDir());
-        $this->setCommandLoader($loader);
-
         if ($this->usePlugins()) {
             $plugin = new Plugin();
             $plugin->init(true);
-            $loader->setIncludePlugins(true);
+            $this->legacy_command_loader->setIncludePlugins(true);
         }
     }
 
-    public function setCommandLoader(CommandLoaderInterface $commandLoader): void
+    protected function registerCommands()
     {
-        $r = new \ReflectionProperty(\Symfony\Component\Console\Application::class, 'commandLoader');
-        $r->setAccessible(true);
+        parent::registerCommands();
 
-        $existingLoader = $r->getValue($this);
-        if (!$existingLoader) {
-            parent::setCommandLoader($commandLoader);
-            return;
-        }
-
-        if ($existingLoader instanceof CommandLoader) {
-            // TODO: reuse this in CommandLoader to load Symfony's base commands.
-            $existingLoader->setPrevious($commandLoader);
-        } elseif ($commandLoader instanceof CommandLoader) {
-            parent::setCommandLoader($commandLoader);
-            $commandLoader->setPrevious($existingLoader);
+        foreach ($this->legacy_command_loader->getNames() as $command_name) {
+            // Call directly `\Symfony\Component\Console\Application` to prevent infinite loops.
+            // Indeed, the `parent::add()` method calls `$this->registerCommands()`.
+            \Symfony\Component\Console\Application::add($this->legacy_command_loader->get($command_name));
         }
     }
 
@@ -509,9 +499,12 @@ class Application extends BaseApplication
         $input = new ArgvInput();
 
         try {
-            $command = $this->find($this->getCommandName($input) ?? '');
-            if ($command instanceof ForceNoPluginsOptionCommandInterface) {
-                return !$command->getNoPluginsOptionValue();
+            $command_name = $this->getCommandName($input);
+            if ($command_name !== null && $this->legacy_command_loader->has($command_name)) {
+                $command = $this->legacy_command_loader->get($command_name);
+                if ($command instanceof ForceNoPluginsOptionCommandInterface) {
+                    return !$command->getNoPluginsOptionValue();
+                }
             }
         } catch (\Symfony\Component\Console\Exception\CommandNotFoundException $e) {
            // Command will not be found at this point if it is a plugin command
