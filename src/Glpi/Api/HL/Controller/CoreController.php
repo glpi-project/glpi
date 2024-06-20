@@ -40,6 +40,7 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -462,6 +463,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
+            ErrorHandler::getInstance()->handleException($exception, true);
             return new JSONResponse(null, 500);
         }
     }

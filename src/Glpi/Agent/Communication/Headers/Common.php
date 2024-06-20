@@ -121,6 +121,12 @@ class Common
      */
     protected $glpi_proxy_id;
 
+    /**
+     * Authorization header
+     * @var string
+     */
+    protected $authorization;
+
     public function getRequireds(): array
     {
         return [

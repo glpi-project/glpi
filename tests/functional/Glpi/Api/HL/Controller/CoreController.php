@@ -329,4 +329,60 @@ class CoreController extends \HLAPITestCase
                 });
         });
     }
+
+    public function testOAuthClientCredentialsGrant(): void
+    {
+        global $DB;
+
+        // Create an OAuth client
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        $this->integer($client_id)->isGreaterThan(0);
+
+        // get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client_id],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+        $client_data = $it->current();
+        $auth_data = [
+            'grant_type' => 'client_credentials',
+            'client_id' => $client_data['identifier'],
+            'client_secret' => (new \GLPIKey())->decrypt($client_data['secret']),
+            'scope' => 'inventory'
+        ];
+
+        // Expect 401 error if no grant is set
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(401));
+        });
+
+        $client->update([
+            'id' => $client_id,
+            'grants' => ['client_credentials'],
+            'scopes' => ['inventory']
+        ]);
+
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
+                    $this->string($content['token_type'])->isEqualTo('Bearer');
+                    $this->string($content['access_token'])->isNotEmpty();
+                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                });
+        });
+    }
 }

@@ -48,7 +48,9 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $token = new AccessToken();
         $token->setClient($clientEntity);
-        $token->setUserIdentifier($userIdentifier);
+        if ($userIdentifier !== null) {
+            $token->setUserIdentifier($userIdentifier);
+        }
         foreach ($scopes as $scope) {
             $token->addScope($scope);
         }
@@ -83,13 +85,17 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => 'identifier',
+            'SELECT' => ['identifier', 'date_expiration'],
             'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
-                'date_expiration' => ['>', QueryFunction::now()],
             ]
         ]);
-        return $iterator->count() === 0;
+        if (count($iterator) === 0) {
+            return true;
+        }
+        // Check if the token is expired
+        $expiration = $iterator->current()['date_expiration'];
+        return (new \DateTime($expiration)) < new \DateTime();
     }
 }
