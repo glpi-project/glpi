@@ -7937,6 +7937,11 @@ abstract class CommonITILObject extends CommonDBTM
                     $content = sprintf(__("%s: %s"), $log_row['field'], $content);
                 }
                 $content = "<i class='fas fa-history me-1' title='" . __("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $user_id = 0;
+                // try to extract ID from "user_name" (which was created using User::getNameForLog)
+                if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {
+                        $user_id = $m[1];
+                }
                 $timeline["Log_" . $log_row['id'] ] = [
                     'type'     => 'Log',
                     'class'    => 'text-muted d-none',
@@ -7945,7 +7950,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'content'            => $content,
                         'is_content_safe'    => true,
                         'date'               => $log_row['date_mod'],
-                        'users_id'           => 0,
+                        'users_id'           => $user_id,
                         'can_edit'           => false,
                         'timeline_position'  => self::TIMELINE_LEFT,
                     ],
