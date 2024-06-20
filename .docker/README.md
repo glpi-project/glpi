@@ -9,14 +9,14 @@ You can customize the docker services by creating a `docker-compose.override.yml
 
 ## HTTP server
 
-By default, the HTTP port is published to a random port on the host machine, to prevent conflicts with other projects.
-You will have to define a specific port in the `docker-compose.override.yml` file.
+By default, the HTTP port is published to on the `8080` port on the host machine.
+You can change it in the `docker-compose.override.yml` file.
 
 ```yaml
 services:
   app:
-    ports:
-      - "8080:80"
+    ports: !override
+      - "9000:80"
 ```
 
 The default uid/gid used by the docker container is `1000`. If your host user uses different uid/gid, you may encounter

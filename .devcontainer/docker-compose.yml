@@ -7,7 +7,7 @@ services:
     volumes:
       - "..:/var/www/glpi:rw"
     ports:
-      - "80"
+      - "8080:80"
     depends_on:
       - db
     extra_hosts:
@@ -34,14 +34,14 @@ services:
     expose:
       - "1025"
     ports:
-      - "8025"
+      - "8025:8025"
 
   adminer:
     container_name: "glpi-adminer"
     image: "adminer:latest"
     restart: "unless-stopped"
     ports:
-      - "8080"
+      - "8090:8080"
     environment:
       - "ADMINER_DEFAULT_SERVER=db"
     command: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
