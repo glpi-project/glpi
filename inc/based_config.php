@@ -320,15 +320,12 @@ define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
 
 /**
  * @var array $PLUGIN_HOOKS
- * @var array $CFG_GLPI_PLUGINS
  * @var array $LANG
  */
 global $PLUGIN_HOOKS,
-    $CFG_GLPI_PLUGINS,
     $LANG
 ;
 
 // For plugins
 $PLUGIN_HOOKS     = [];
-$CFG_GLPI_PLUGINS = [];
 $LANG             = [];
