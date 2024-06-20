@@ -37,15 +37,6 @@ if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__FILE__, 2));
 }
 
-// Notice problem  for date function :
-$tz = ini_get('date.timezone');
-if (!empty($tz)) {
-    date_default_timezone_set($tz);
-} else {
-    date_default_timezone_set(@date_default_timezone_get());
-}
-
-
 // Check if dependencies are up to date
 $needrun  = false;
 
