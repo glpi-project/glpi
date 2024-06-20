@@ -6,12 +6,12 @@
     "service": "app",
     "workspaceFolder": "/var/www/glpi",
 
-    "forwardPorts": [9080, 9090, 8025],
+    "forwardPorts": [8080, 8090, 8025],
     "portsAttributes": {
-        "9080": {
+        "8080": {
             "label": "GLPI"
         },
-        "9090": {
+        "8090": {
             "label": "Adminer"
         },
         "8025": {
