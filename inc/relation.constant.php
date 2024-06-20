@@ -1730,6 +1730,11 @@ $RELATION = [
         '_glpi_queuedwebhooks' => 'webhooks_id',
     ],
 
+    'glpi_webhookcategories' => [
+        'glpi_webhookcategories'    => 'webhookcategories_id',
+        'glpi_webhooks'             => 'webhookcategories_id',
+    ],
+
     'glpi_itilvalidationtemplates' => [
         '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
         'glpi_changevalidations' => 'itilvalidationtemplates_id',
