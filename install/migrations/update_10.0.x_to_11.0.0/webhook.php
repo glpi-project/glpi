@@ -34,6 +34,7 @@
  */
 
 /**
+ * @var \Migration $migration
  * @var array $ADDTODISPLAYPREF
  * @var \DBmysql $DB
  */
@@ -49,6 +50,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
       `is_recursive` tinyint NOT NULL DEFAULT '0',
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
+      `webhookcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `itemtype` varchar(255) DEFAULT NULL,
       `event` varchar(255) DEFAULT NULL,
       `payload` longtext,
@@ -76,9 +78,40 @@ if (!$DB->tableExists('glpi_webhooks')) {
       KEY `is_recursive` (`is_recursive`),
       KEY `use_cra_challenge` (`use_cra_challenge`),
       KEY `date_creation` (`date_creation`),
-      KEY `date_mod` (`date_mod`)
+      KEY `date_mod` (`date_mod`),
+      KEY `webhookcategories_id` (`webhookcategories_id`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQueryOrDie($query, "add table glpi_webhooks");
+}
+
+if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
+    // Dev migration
+    $migration->addField('glpi_webhooks', 'webhookcategories_id', 'fkey', [
+        'after' => 'comment'
+    ]);
+    $migration->addKey('glpi_webhooks', 'webhookcategories_id', 'webhookcategories_id');
+}
+
+if (!$DB->tableExists('glpi_webhookcategories')) {
+    $query = "CREATE TABLE `glpi_webhookcategories` (
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `comment` text,
+      `webhookcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+      `completename` text,
+      `level` int NOT NULL DEFAULT '0',
+      `ancestors_cache` longtext,
+      `sons_cache` longtext,
+      `date_mod` timestamp NULL DEFAULT NULL,
+      `date_creation` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `unicity` (`webhookcategories_id`,`name`),
+      KEY `name` (`name`),
+      KEY `date_mod` (`date_mod`),
+      KEY `date_creation` (`date_creation`),
+      KEY `level` (`level`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQueryOrDie($query, "add table glpi_webhookcategories");
 }
 
 $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];

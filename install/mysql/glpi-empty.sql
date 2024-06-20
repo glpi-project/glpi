@@ -9785,6 +9785,7 @@ CREATE TABLE `glpi_webhooks` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `webhookcategories_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(255) DEFAULT NULL,
   `event` varchar(255) DEFAULT NULL,
   `payload` longtext,
@@ -9812,7 +9813,28 @@ CREATE TABLE `glpi_webhooks` (
   KEY `is_recursive` (`is_recursive`),
   KEY `use_cra_challenge` (`use_cra_challenge`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `webhookcategories_id` (`webhookcategories_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_webhookcategories`;
+CREATE TABLE `glpi_webhookcategories` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `webhookcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `completename` text,
+  `level` int NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext,
+  `sons_cache` longtext,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`webhookcategories_id`,`name`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_queuedwebhooks`;
