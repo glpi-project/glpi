@@ -6,6 +6,19 @@
     "service": "app",
     "workspaceFolder": "/var/www/glpi",
 
+    "forwardPorts": [9080, 9090, 8025],
+    "portsAttributes": {
+        "9080": {
+            "label": "GLPI"
+        },
+        "9090": {
+            "label": "Adminer"
+        },
+        "8025": {
+            "label": "Mailpit"
+        }
+    },
+
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "composer build",
 
