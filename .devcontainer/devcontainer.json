@@ -1,17 +1,17 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/php-mariadb
 {
-	"name": "GLPI docker devcontainer",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "php",
-	"workspaceFolder": "/var/www/",
+    "name": "GLPI docker devcontainer",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "app",
+    "workspaceFolder": "/var/www/glpi",
 
-    "forwardPorts": [9080, 9090, 8025],
-	"portsAttributes": {
-        "9080": {
+    "forwardPorts": [8080, 8090, 8025],
+    "portsAttributes": {
+        "8080": {
             "label": "GLPI"
         },
-        "9090": {
+        "8090": {
             "label": "Adminer"
         },
         "8025": {
@@ -28,9 +28,6 @@
             "extensions": [
                 "bmewburn.vscode-intelephense-client",
                 "xdebug.php-debug",
-                "eamodio.gitlens",
-                "devsense.composer-php-vscode",
-                "mrorz.language-gettext",
                 "mblode.twig-language-2",
                 "dbaeumer.vscode-eslint"
             ]

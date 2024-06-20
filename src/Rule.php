@@ -55,6 +55,9 @@ class Rule extends CommonDBTM
    ///Criterias affected to this rule
     public $criterias             = [];
 
+    // preview context ?
+    protected $is_preview = false;
+
    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
     public $restrict_matching     = false;
 
@@ -2053,6 +2056,9 @@ JS
         $check_results = [];
         $output        = [];
 
+        // specify that we are in a test context
+        $this->is_preview = true;
+
         // Test all criteria, without stopping at the first good one
         $this->testCriterias($input, $check_results);
         // Process the rule
@@ -2534,6 +2540,13 @@ JS
                    // $type == regex_result display text
                     if ($type == 'regex_result') {
                         return $this->displayAdditionRuleActionValue($value);
+                    }
+
+                    if ($this->is_preview && !is_numeric($value)) {
+                        // In preview mode, if the value corresponds to a string
+                        // that does not match an existing dropdown entry,
+                        // it will not be imported and therefore tha value will not correspond to a dropdown valid ID.
+                        return $value;
                     }
 
                    // $type == assign

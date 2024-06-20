@@ -87,7 +87,7 @@ class NotificationEventAjax extends DbTestCase
     {
         global $CFG_GLPI, $DB;
 
-       //enable notifications
+        //enable notifications
         $CFG_GLPI['use_notifications'] = 1;
         $CFG_GLPI['notifications_ajax'] = 1;
 
@@ -104,13 +104,13 @@ class NotificationEventAjax extends DbTestCase
             ])
         )->isGreaterThan(0);
 
-       //event has been raised; it is in the queue!
+        //event has been raised; it is in the queue!
         $queue = getAllDataFromTable('glpi_queuednotifications');
 
-       //no ajax notification configured per default
+        //no ajax notification configured per default
         $this->array($queue)->hasSize(0);
 
-       //add an ajax notification on tickets creation
+        //add an ajax notification on tickets creation
         $iterator = $DB->request([
             'FROM'   => \Notification::getTable(),
             'WHERE'  => [
@@ -145,10 +145,10 @@ class NotificationEventAjax extends DbTestCase
             ])
         )->isGreaterThan(0);
 
-       //event has been raised; it is in the queue!
+        //event has been raised; it is in the queue!
         $queue = getAllDataFromTable('glpi_queuednotifications');
 
-       //no ajax notification configured per default
+        //no ajax notification configured per default
         $this->array($queue)->hasSize(1);
 
         $GLPI_URI = GLPI_URI;
@@ -182,7 +182,7 @@ class NotificationEventAjax extends DbTestCase
             'body_html' => null,
             'body_text' => <<<TEXT
  
-  URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()}&noAUTO=1 
+  URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()} 
 
  Ticket: Description
 
@@ -225,7 +225,7 @@ TEXT,
         ];
         $this->array($data)->isIdenticalTo($expected);
 
-       //reset
+        //reset
         $CFG_GLPI['use_notifications'] = 0;
         $CFG_GLPI['notifications_ajax'] = 0;
     }

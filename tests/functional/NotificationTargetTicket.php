@@ -144,7 +144,7 @@ class NotificationTargetTicket extends DbTestCase
 
         $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
             sprintf(
-                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
                 $CFG_GLPI['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
@@ -166,7 +166,7 @@ class NotificationTargetTicket extends DbTestCase
 
         $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
             sprintf(
-                '%s/index.php?redirect=ticket_%d_Ticket%%24main&noAUTO=1%%23TicketValidation_%d',
+                '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
                 $CFG_GLPI['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
@@ -500,7 +500,7 @@ class NotificationTargetTicket extends DbTestCase
             'entities_id' => $root,
         ]);
 
-        $expected_raw_url = "%base_url%/index.php?redirect=ticket_%ticket_id%&noAUTO=1";
+        $expected_raw_url = "%base_url%/index.php?redirect=ticket_%ticket_id%";
 
         $basic_options = [
             'additionnaloption' => [

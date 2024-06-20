@@ -463,16 +463,16 @@ class NotificationTarget extends DbTestCase
             'expected' => '',
         ];
 
-        // GLPI user, `noAUTO=1` parameter added
+        // GLPI user, no `noAUTO=1` parameter
         yield [
             'usertype' => \NotificationTarget::GLPI_USER,
             'redirect' => 'Ticket_24',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24&noAUTO=1',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
         ];
         yield [
             'usertype' => \NotificationTarget::GLPI_USER,
             'redirect' => '/front/test.php?param=test&value=foo bar',
-            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar&noAUTO=1',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
         ];
 
         // External user, no `noAUTO` parameter

@@ -76,6 +76,7 @@ find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 dev_nodes=(
     "composer.json"
     "composer.lock"
+    "docker-compose.yaml"
     "locales/glpi.pot"
     "node_modules"
     "package.json"
