@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: "glpi"
+    build:
+      context: ".docker/app"
+    restart: "unless-stopped"
+    volumes:
+      - ".:/var/www/glpi:rw"
+    ports:
+      - "8080:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

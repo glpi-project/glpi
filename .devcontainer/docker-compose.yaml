@@ -1,0 +1,51 @@
+services:
+  app:
+    container_name: "glpi-app"
+    build:
+      context: "../.docker/app"
+    restart: "unless-stopped"
+    volumes:
+      - "..:/var/www/glpi:rw"
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    container_name: "glpi-db"
+    image: "mariadb:11.4"
+    restart: "unless-stopped"
+    volumes:
+      - "db:/var/lib/mysql"
+      - "./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
+    environment:
+      MARIADB_ROOT_PASSWORD: "glpi"
+      MARIADB_DATABASE: "glpi"
+      MARIADB_USER: "glpi"
+      MARIADB_PASSWORD: "glpi"
+    expose:
+      - "3306"
+
+  mailpit:
+    container_name: "glpi-mailpit"
+    image: "axllent/mailpit"
+    restart: "unless-stopped"
+    expose:
+      - "1025"
+    ports:
+      - "8025:8025"
+
+  adminer:
+    container_name: "glpi-adminer"
+    image: "adminer:latest"
+    restart: "unless-stopped"
+    ports:
+      - "8090:8080"
+    environment:
+      - "ADMINER_DEFAULT_SERVER=db"
+    command: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
+
+volumes:
+  db:
