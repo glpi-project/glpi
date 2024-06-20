@@ -28,9 +28,6 @@
             "extensions": [
                 "bmewburn.vscode-intelephense-client",
                 "xdebug.php-debug",
-                "eamodio.gitlens",
-                "devsense.composer-php-vscode",
-                "mrorz.language-gettext",
                 "mblode.twig-language-2",
                 "dbaeumer.vscode-eslint"
             ]
