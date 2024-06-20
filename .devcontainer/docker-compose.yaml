@@ -19,6 +19,7 @@ services:
     restart: "unless-stopped"
     volumes:
       - "db:/var/lib/mysql"
+      - "./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
     environment:
       MARIADB_ROOT_PASSWORD: "glpi"
       MARIADB_DATABASE: "glpi"
