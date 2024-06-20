@@ -1325,6 +1325,9 @@ final class Search
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
         $itemtype = self::getItemtypeFromSchema($schema);
+        if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
+            $request_params['entity'] = $_SESSION['glpiactive_entity'];
+        }
         $input = self::getInputParamsBySchema($schema, $request_params);
 
         /** @var CommonDBTM $item */
