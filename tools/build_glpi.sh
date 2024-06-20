@@ -76,6 +76,7 @@ find $WORKING_DIR -depth \( -iname ".*" ! -iname ".htaccess" \) -exec rm -rf {} 
 dev_nodes=(
     "composer.json"
     "composer.lock"
+    "docker-compose.yaml"
     "ISSUE_TEMPLATE.md"
     "locales/glpi.pot"
     "node_modules"

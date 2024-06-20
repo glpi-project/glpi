@@ -9,7 +9,7 @@ By default, the following ports are exposed:
  - `8025` for the Mailpit web server,
  - `8090` for the Adminer web server.
 
-You can customize these ports by creating a `.devcontainer/docker-compose.override.yml.dist` file.
+You can customize these ports by creating a `.devcontainer/docker-compose.override.yaml` file.
 
 ```yaml
 services:

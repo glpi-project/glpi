@@ -5,12 +5,12 @@ from the GLPI root directory.
 
 ## Custom configuration
 
-You can customize the docker services by creating a `docker-compose.override.yml` file in the GLPI root directory.
+You can customize the docker services by creating a `docker-compose.override.yaml` file in the GLPI root directory.
 
 ## HTTP server
 
 By default, the HTTP port is published to on the `8080` port on the host machine.
-You can change it in the `docker-compose.override.yml` file.
+You can change it in the `docker-compose.override.yaml` file.
 
 ```yaml
 services:
@@ -21,7 +21,7 @@ services:
 
 The default uid/gid used by the docker container is `1000`. If your host user uses different uid/gid, you may encounter
 file permissions issues. To prevent this, you can customize them using the corresponding build args in
-the `docker-compose.override.yml` file.
+the `docker-compose.override.yaml` file.
 
 ```yaml
 services:
@@ -34,7 +34,7 @@ services:
 
 ### Database server
 
-By default, the database service is not provided. You can add it in the `docker-compose.override.yml` file.
+By default, the database service is not provided. You can add it in the `docker-compose.override.yaml` file.
 
 ```yaml
 services:
