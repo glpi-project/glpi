@@ -515,4 +515,36 @@ class AssetController extends \HLAPITestCase
                 });
         });
     }
+
+    public function testCreateInOtherEntities()
+    {
+        $this->login();
+
+        $request = new Request('POST', '/Assets/Computer', [
+            'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        $request->setParameter('name', 'Test');
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith('/Assets/Computer/');
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKey('entity');
+                    $this->array($content['entity'])->hasKey('name');
+                    $this->string($content['entity']['name'])->isEqualTo('_test_child_1');
+                });
+        });
+    }
 }
