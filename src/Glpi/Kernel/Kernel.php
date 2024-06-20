@@ -39,6 +39,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Glpi\Config\LegacyGlobals\Lang;
 
 final class Kernel extends BaseKernel
 {
@@ -78,5 +79,14 @@ final class Kernel extends BaseKernel
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
+    }
+
+    public function boot()
+    {
+        parent::boot();
+
+        // Register it using the same logic as the LegacyConfigProviders
+        $lang = new Lang();
+        $lang->register();
     }
 }

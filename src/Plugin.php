@@ -395,7 +395,6 @@ class Plugin extends CommonDBTM
          */
         global $CFG_GLPI, $TRANSLATE;
 
-       // For compatibility for plugins using $LANG
         $trytoload = 'en_GB';
         if (isset($_SESSION['glpilanguage'])) {
             $trytoload = $_SESSION["glpilanguage"];
