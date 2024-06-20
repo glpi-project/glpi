@@ -181,6 +181,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $em->add($impact);
                     break;
 
+                case DELTA_ACTION_UPDATE:
+                    $edge['id']   = ImpactRelation::getIDFromInput($impact);
+                    $edge['name'] = $impact['name'];
+                    $em->update($edge);
+                    break;
+
                 case DELTA_ACTION_DELETE:
                     $impact['id'] = ImpactRelation::getIDFromInput($impact);
                     $em->delete($impact);

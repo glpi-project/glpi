@@ -83,7 +83,7 @@ var GLPIImpact = {
     ACTION_EDIT_DEPENDS_COLOR           : 12,
     ACTION_EDIT_IMPACT_COLOR            : 13,
     ACTION_EDIT_IMPACT_AND_DEPENDS_COLOR: 14,
-
+    ACTION_EDIT_EDGE                    : 15,
     // Constans for depth
     DEFAULT_DEPTH: 5,
     MAX_DEPTH: 10,
@@ -144,10 +144,14 @@ var GLPIImpact = {
         editCompoundDialog      : "#edit_compound_dialog",
         editCompoundDialogSave  : '#edit_compound_save',
         editCompoundDialogCancel: '#edit_compound_cancel',
+        editEdgeDialog          : "#edit_edge_dialog",
+        editEdgeDialogSave      : '#edit_edge_save',
+        editEdgeDialogCancel    : '#edit_edge_cancel',
 
         // Inputs
         compoundName         : "input[name=compound_name]",
         compoundColor        : "input[name=compound_color]",
+        edgeName             : "input[name=edge_name]",
         dependsColor         : "input[name=depends_color]",
         impactColor          : "input[name=impact_color]",
         impactAndDependsColor: "input[name=impact_and_depends_color]",
@@ -205,6 +209,7 @@ var GLPIImpact = {
         previousCursor     : "default",
         ctrlDown           : false,
         editCompound       : null,        // Compound being edited
+        editEdge           : null,        // Edge being edited
     },
 
     /**
@@ -837,6 +842,15 @@ var GLPIImpact = {
                 }
             },
             {
+                selector: "edge[label]",
+                css: {
+                    "label": "data(label)",
+                    "text-rotation": "autorotate",
+                    "text-margin-x": "0px",
+                    "text-margin-y": "0px"
+                }
+            },
+            {
                 selector: '[flag=' + GLPIImpact.FORWARD + ']',
                 style: {
                     'line-color'        : this.edgeColors[GLPIImpact.FORWARD],
@@ -1110,6 +1124,7 @@ var GLPIImpact = {
         // Load edges
         GLPIImpact.cy.edges().forEach(function(edge) {
             data.edges[edge.data('id')] = {
+                name: edge.data('label'),
                 source: edge.data('source'),
                 target: edge.data('target'),
             };
@@ -1148,6 +1163,21 @@ var GLPIImpact = {
             var edge = GLPIImpact.initialState.edges[edgeID];
             if (Object.prototype.hasOwnProperty.call(currentEdges, edgeID)) {
             // If the edge is still here in the current state, nothing happened
+                var currentEdge = currentEdges[edgeID];
+
+                // Check for updates ...
+                if (edge.name != currentEdge.name) {
+                    var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
+                    var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
+                    edgesDelta[edgeID] = {
+                        action: GLPIImpact.DELTA_ACTION_UPDATE,
+                        name  : currentEdge.name,
+                        itemtype_source  : source[0],
+                        items_id_source  : source[1],
+                        itemtype_impacted: target[0],
+                        items_id_impacted: target[1]
+                    };
+                }
             // Remove it from the currentEdges data so we can skip it later
                 delete currentEdges[edgeID];
             } else {
@@ -1335,6 +1365,14 @@ var GLPIImpact = {
                 onClickFunction: this.menuOnShowOngoing
             },
             {
+                id             : 'editEdge',
+                content        : '<i class="fas fa-edit me-2"></i>' + __("Edge properties..."),
+                tooltipText    : _.unescape(__("Set name for this edge")),
+                selector       : 'edge',
+                onClickFunction: this.menuOnEditEdge,
+                show           : !this.readonly,
+            },
+            {
                 id             : 'editCompound',
                 content        : '<i class="fas fa-edit me-2"></i>' + __("Group properties..."),
                 tooltipText    : _.unescape(__("Set name and/or color for this group")),
@@ -1458,6 +1496,47 @@ var GLPIImpact = {
     },
 
     /**
+     * Set up event handlers for the edit edge dialog
+     */
+    prepareEditEdgeDialog: function() {
+        $(this.selectors.editEdgeDialogSave).on('click', function() {
+            var edge = GLPIImpact.eventData.editEdge.target;
+
+            // Save edge name
+            edge.data(
+                'label',
+                $(GLPIImpact.selectors.edgeName).val()
+            );
+
+            // Close dialog
+            $(GLPIImpact.selectors.editEdgeDialog).modal('hide');
+            GLPIImpact.cy.trigger("change");
+
+            // Log for undo
+            if (GLPIImpact.eventData.newEdge == null) {
+                var previousLabel = GLPIImpact.eventData.editEdge.previousLabel;
+
+                GLPIImpact.addToUndo(GLPIImpact.ACTION_EDIT_EDGE, {
+                    id      : edge.data('id'),
+                    label   : edge.data('label'),
+                    oldLabel: previousLabel,
+                });
+            } else {
+                var label = $(GLPIImpact.selectors.edgeName).val();
+
+                GLPIImpact.eventData.newEdge.data.label = label;
+
+                GLPIImpact.addToUndo(
+                    GLPIImpact.ACTION_EDIT_EDGE,
+                    _.cloneDeep(GLPIImpact.eventData.newEdge)
+                );
+
+                GLPIImpact.eventData.newEdge = null;
+            }
+        });
+    },
+
+    /**
     * Show the edit compound dialog
     *
     * @param {Object} compound label, color
@@ -1479,6 +1558,27 @@ var GLPIImpact = {
 
         // Show modal
         $(GLPIImpact.selectors.editCompoundDialog).modal('show');
+    },
+
+    /**
+     * Show the edit edge dialog
+     *
+     * @param {Object} edge label
+     */
+    showEditEdgeDialog: function(edge) {
+        var previousLabel = edge.data('label');
+
+        // Reset inputs
+        $(GLPIImpact.selectors.edgeName).val(previousLabel);
+
+        // Set global event data
+        this.eventData.editEdge = {
+            target: edge,
+            previousLabel: previousLabel
+        };
+
+        // Show modal
+        $(GLPIImpact.selectors.editEdgeDialog).modal('show');
     },
 
     /**
@@ -1509,6 +1609,7 @@ var GLPIImpact = {
 
         // Init dialogs actions handlers
         this.prepareEditCompoundDialog();
+        this.prepareEditEdgeDialog();
 
         this.initToolbar();
     },
@@ -3493,6 +3594,15 @@ var GLPIImpact = {
             parent.children().move({parent: null});
             GLPIImpact.cy.remove(parent);
         }
+    },
+
+    /**
+     * Handle "EditEdge" menu event
+     *
+     * @param {JQuery.Event} event
+     */
+    menuOnEditEdge: function (event) {
+        GLPIImpact.showEditEdgeDialog(event.target);
     },
 
     /**

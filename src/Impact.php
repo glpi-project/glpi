@@ -1232,11 +1232,12 @@ class Impact extends CommonGLPI
                 continue;
             }
             $related_node->getFromDB($related_item['items_id_' . $source]);
+            $label = $related_item['name'];
             self::addNode($nodes, $related_node);
 
            // Add or update the relation on the graph
             $edgeID = self::getEdgeID($node, $related_node, $direction);
-            self::addEdge($edges, $edgeID, $node, $related_node, $direction);
+            self::addEdge($edges, $edgeID, $node, $related_node, $direction, $label);
 
            // Keep exploring from this node unless we already went through it
             $related_node_id = self::getNodeID($related_node);
@@ -1401,7 +1402,8 @@ class Impact extends CommonGLPI
         string $key,
         CommonDBTM $itemA,
         CommonDBTM $itemB,
-        int $direction
+        int $direction,
+        $label
     ) {
        // Just update the flag if the edge already exist
         if (isset($edges[$key])) {
@@ -1430,7 +1432,8 @@ class Impact extends CommonGLPI
             'id'     => $key,
             'source' => $from,
             'target' => $to,
-            'flag'   => $direction
+            'flag'   => $direction,
+            'label' => $label
         ];
     }
 
@@ -1521,6 +1524,7 @@ class Impact extends CommonGLPI
             $data[] = [
                 'group' => 'edges',
                 'data'  => $edge,
+                'classes'  => 'top-center',
             ];
         }
 
@@ -1549,6 +1553,17 @@ class Impact extends CommonGLPI
     }
 
     /**
+     * Load the "edit edge" dialog
+     *
+     * @since 9.5
+     */
+    public static function printEditEdgeDialog()
+    {
+        TemplateRenderer::getInstance()->display('impact/edit_edge_modal.html.twig');
+    }
+
+
+    /**
      * Prepare the impact network
      *
      * @since 9.5
@@ -1561,6 +1576,7 @@ class Impact extends CommonGLPI
         self::printImpactNetworkContainer();
         self::printShowOngoingDialog();
         self::printEditCompoundDialog();
+        self::printEditEdgeDialog();
         echo Html::script("js/impact.js");
 
        // Load backend values
