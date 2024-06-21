@@ -847,7 +847,8 @@ var GLPIImpact = {
                     "label": "data(label)",
                     "text-rotation": "autorotate",
                     "text-margin-x": "0px",
-                    "text-margin-y": "-10px"
+                    "text-margin-y": "-10px",
+                    "font-size": "0.8em"
                 }
             },
             {
