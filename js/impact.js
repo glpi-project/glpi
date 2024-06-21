@@ -1630,6 +1630,96 @@ var GLPIImpact = {
     },
 
     /**
+     *
+     * @param target node or edge
+     */
+    bindPopper: function(target) {
+
+        let tooltipId = `popper-target-${target.id()}`;
+        let existingTarget = document.getElementById(tooltipId);
+        if (existingTarget && existingTarget.length !== 0) {
+            existingTarget.remove();
+        }
+
+        let popper = target.popper({
+            content: () => {
+                // create div container
+                let tooltip = document.createElement('div');
+
+                // adding id for easier JavaScript control
+                tooltip.id = tooltipId;
+
+                if ("itemtype" in target.data()) {
+                    // console.log(target.data());
+                    // adding class for easier CSS control
+                    tooltip.classList.add('target-popper');
+
+                    // create actual table
+                    let table = document.createElement('table');
+
+                    // append table to div container
+                    tooltip.append(table);
+                    let targetData = target.data();
+
+                    let fields = ['label', 'type', 'status', 'comment'];
+                    // loop through target data
+                    for (let prop in targetData) {
+
+                        if (!fields.includes(prop)) continue;
+                        if (!targetData.hasOwnProperty(prop)) continue;
+
+                        let targetValue = targetData[prop];
+
+                        // no recursive or reduce support
+                        if (typeof targetValue === "object") continue;
+
+                        let tr = table.insertRow();
+
+                        let tdTitle = tr.insertCell();
+                        let tdValue = tr.insertCell();
+                        if (prop == 'label') {
+                            propname = __("Name");
+                        }
+                        if (prop == 'type') {
+                            propname = __("Type");
+                        }
+                        if (prop == 'status') {
+                            propname = __("Status");
+                        }
+                        if (prop == 'comment') {
+                            propname = __("Comments");
+                        }
+                        if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
+                            tdTitle.innerText = propname;
+                            tdValue.innerText = targetValue;
+                        }
+                    }
+
+                    document.body.appendChild(tooltip);
+                }
+                return tooltip;
+            }
+        });
+
+        target.on('position', () => {
+            popper.scheduleUpdate();
+        });
+
+        target.cy().on('pan zoom resize', () => {
+            popper.scheduleUpdate();
+        });
+
+        target.on('mouseover', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.add('active');
+            }
+        }).on('mouseout', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.remove('active');
+            }
+        })
+    },
+    /**
     * Build the network graph
     *
     * @param {string} data (json)
@@ -1671,6 +1761,10 @@ var GLPIImpact = {
             layout   : layout,
             wheelSensitivity: 0.25,
         });
+
+        this.cy.filter('node', 'edge').forEach(t => {
+            this.bindPopper(t);
+        })
 
         // If we used the preset layout, some nodes might lack positions
         this.generateMissingPositions();

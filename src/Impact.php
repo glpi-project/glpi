@@ -804,6 +804,8 @@ JS);
     {
         echo Html::css('public/lib/cytoscape.css');
         echo Html::script("public/lib/cytoscape.js");
+        echo Html::script("public/lib/popper.min.js");
+        echo Html::script("public/lib/cytoscape-popper.js");
     }
 
     /**
@@ -1302,10 +1304,25 @@ JS);
         $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "";
         $image_name = self::checkIcon($image_name);
 
-        // Define basic data of the new node
+        $type = "";
+        if (class_exists($item->getType()."Type")) {
+            $tabletype = getTableForItemType($item->getType() . "Type");
+            $typefield = getForeignKeyFieldForTable($tabletype);
+            $types_id = $item->fields[$typefield];
+            $type = Dropdown::getDropdownName($tabletype, $types_id);
+        }
+        $states_id = "";
+        if (isset($item->fields['states_id'])) {
+            $states_id = Dropdown::getDropdownName("glpi_states", $item->fields['states_id']);
+        }
+       // Define basic data of the new node
         $new_node = [
             'id'          => $key,
             'label'       => $item->getFriendlyName(),
+            'itemtype'    => $item->getTypeName(),
+            'type'        => $type,
+            'comment'     => $item->fields['comment'],
+            'status'      => $states_id,
             'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
             'ITILObjects' => $item->getITILTickets(true),
         ];
