@@ -53,6 +53,12 @@ final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-mail';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 20;

@@ -159,4 +159,104 @@ final class QuestionTypesManager
             fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
         );
     }
+
+    public function getTemplateSelectionForCategories(): string
+    {
+        $icons = array_combine(
+            array_map(
+                fn(QuestionTypeCategory $type) => $type->value,
+                (array) $this->getCategories()
+            ),
+            array_map(
+                fn(QuestionTypeCategory $type) => $type->getIcon(),
+                (array) $this->getCategories()
+            )
+        );
+        $js_icons = json_encode($icons);
+
+        return <<<JS
+            function(item) {
+                const icons = {$js_icons};
+                return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
+                    + '<i class="' + icons[item.id] + '"></i>'
+                    + item.text
+                    + '</span>');
+            }
+        JS;
+    }
+
+    public function getTemplateResultForCategories(): string
+    {
+        $icons = array_combine(
+            array_map(
+                fn(QuestionTypeCategory $type) => $type->value,
+                (array) $this->getCategories()
+            ),
+            array_map(
+                fn(QuestionTypeCategory $type) => $type->getIcon(),
+                (array) $this->getCategories()
+            )
+        );
+        $js_icons = json_encode($icons);
+
+        return <<<JS
+            function(item) {
+                const icons = {$js_icons};
+                return $('<span class="d-flex align-items-center gap-2">'
+                    + '<i class="' + icons[item.id] + '"></i>'
+                    + item.text
+                    + '</span>');
+            }
+        JS;
+    }
+
+    public function getTemplateSelectionForQuestionTypes(): string
+    {
+        $icons = array_combine(
+            array_map(
+                fn(QuestionTypeInterface $type) => $type::class,
+                $this->getQuestionTypes()
+            ),
+            array_map(
+                fn(QuestionTypeInterface $type) => $type->getIcon(),
+                $this->getQuestionTypes()
+            )
+        );
+        $js_icons = json_encode($icons);
+
+        return <<<JS
+            function(item) {
+                const icons = {$js_icons};
+                return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
+                    + '<i class="' + icons[item.id] + '"></i>'
+                    + item.text
+                    + '</span>');
+            }
+        JS;
+    }
+
+    public function getTemplateResultForQuestionTypes(): string
+    {
+        $icons = array_combine(
+            array_map(
+                fn(QuestionTypeInterface $type) => $type::class,
+                $this->getQuestionTypes()
+            ),
+            array_map(
+                fn(QuestionTypeInterface $type) => $type->getIcon(),
+                $this->getQuestionTypes()
+            )
+        );
+        $js_icons = json_encode($icons);
+
+        return <<<JS
+            function(item) {
+                const icons = {$js_icons};
+                return $('<span class="d-flex align-items-center gap-1">'
+                    + '<i class="' + icons[item.id] + '"></i>'
+                    + item.text
+                    + '</span>');
+            }
+        JS;
+    }
 }

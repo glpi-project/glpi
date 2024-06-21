@@ -1005,10 +1005,11 @@ class GlpiFormEditorController
         );
 
         // Hide type selector if only one type is available
+        const types_select_container = types_select.parent();
         if (new_options.length <= 1) {
-            types_select.addClass("d-none");
+            types_select_container.addClass("d-none");
         } else {
-            types_select.removeClass("d-none");
+            types_select_container.removeClass("d-none");
         }
 
         // Trigger type change

@@ -103,4 +103,23 @@ enum QuestionTypeCategory: string
             self::CHECKBOX => __("Checkbox"),
         };
     }
+
+    /**
+     * Get category icon
+     * @return string
+     */
+    public function getIcon(): string
+    {
+        return match ($this) {
+            self::SHORT_ANSWER => "ti ti-letter-case",
+            self::LONG_ANSWER  => "ti ti-message",
+            self::DATE_AND_TIME => "ti ti-calendar",
+            self::ACTORS => "ti ti-user",
+            self::URGENCY => "ti ti-hourglass",
+            self::REQUEST_TYPE => "ti ti-tag",
+            self::FILE => "ti ti-file",
+            self::RADIO => "ti ti-circle-dot",
+            self::CHECKBOX => "ti ti-select",
+        };
+    }
 }

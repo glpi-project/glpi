@@ -52,6 +52,12 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-text-size';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 10;

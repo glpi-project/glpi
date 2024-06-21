@@ -49,6 +49,12 @@ final class QuestionTypeRequester extends AbstractQuestionTypeActors
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-user-question';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 10;

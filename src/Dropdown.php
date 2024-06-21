@@ -2125,6 +2125,8 @@ JAVASCRIPT;
      *    - noselect2           : if true, don't use select2 lib
      *    - templateResult      : if not empty, call this as template results of select2
      *    - templateSelection   : if not empty, call this as template selection of select2
+     *    - aria_label          : string / aria-label attribute for the select
+     *   - add_select_attributes: string or array / additional attributes to add to the select tag
      *
      * Permit to use optgroup defining items in arrays
      * array('optgroupname'  => array('key1' => 'val1',
@@ -2139,29 +2141,31 @@ JAVASCRIPT;
     public static function showFromArray($name, array $elements, $options = [])
     {
 
-        $param['value']               = '';
-        $param['values']              = [''];
-        $param['class']               = 'form-select';
-        $param['tooltip']             = '';
-        $param['option_tooltips']     = [];
-        $param['used']                = [];
-        $param['readonly']            = false;
-        $param['on_change']           = '';
-        $param['width']               = '';
-        $param['multiple']            = false;
-        $param['size']                = 1;
-        $param['display']             = true;
-        $param['other']               = false;
-        $param['rand']                = mt_rand();
-        $param['emptylabel']          = self::EMPTY_VALUE;
-        $param['display_emptychoice'] = false;
-        $param['disabled']            = false;
-        $param['required']            = false;
-        $param['noselect2']           = false;
-        $param['templateResult']      = "templateResult";
-        $param['templateSelection']   = "templateSelection";
-        $param['track_changes']       = "true";
-        $param['init']                = true;
+        $param['value']                 = '';
+        $param['values']                = [''];
+        $param['class']                 = 'form-select';
+        $param['tooltip']               = '';
+        $param['option_tooltips']       = [];
+        $param['used']                  = [];
+        $param['readonly']              = false;
+        $param['on_change']             = '';
+        $param['width']                 = '';
+        $param['multiple']              = false;
+        $param['size']                  = 1;
+        $param['display']               = true;
+        $param['other']                 = false;
+        $param['rand']                  = mt_rand();
+        $param['emptylabel']            = self::EMPTY_VALUE;
+        $param['display_emptychoice']   = false;
+        $param['disabled']              = false;
+        $param['required']              = false;
+        $param['noselect2']             = false;
+        $param['templateResult']        = "templateResult";
+        $param['templateSelection']     = "templateSelection";
+        $param['track_changes']         = "true";
+        $param['init']                  = true;
+        $param['aria_label']            = '';
+        $param['add_select_attributes'] = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2253,6 +2257,24 @@ JAVASCRIPT;
 
             if (!$param['track_changes']) {
                 $output .= " data-track-changes=''";
+            }
+
+            if ($param['aria_label'] !== '') {
+                $output .= " aria-label='" . $param['aria_label'] . "'";
+            }
+
+            if (!empty($param['add_select_attributes'])) {
+                if (is_array($param['add_select_attributes'])) {
+                    $param['add_select_attributes'] = implode(' ', array_map(
+                        function ($key, $value) {
+                            return $key . '="' . $value . '"';
+                        },
+                        array_keys($param['add_select_attributes']),
+                        $param['add_select_attributes']
+                    ));
+                }
+
+                $output .= ' ' . $param['add_select_attributes'];
             }
 
             $output .= '>';
