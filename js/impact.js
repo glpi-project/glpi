@@ -1681,7 +1681,7 @@ var GLPIImpact = {
                             propname = __("Name");
                         }
                         if (prop == 'type') {
-                            propname = __("Type");
+                            propname = _n("Type", "Types", 1);
                         }
                         if (prop == 'status') {
                             propname = __("Status");
