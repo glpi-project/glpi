@@ -37,7 +37,7 @@
  * @var \Migration $migration
  */
 
-$migration->addField('glpi_impactrelations', 'name', 'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL', [
+$migration->addField('glpi_impactrelations', 'name', "varchar(255) DEFAULT ''", [
     'after'  => 'id',
 ]);
 
