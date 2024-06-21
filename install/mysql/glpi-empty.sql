@@ -1243,8 +1243,8 @@ CREATE TABLE `glpi_impactrelations` (
   `itemtype_impacted` varchar(255) NOT NULL DEFAULT '',
   `items_id_impacted` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`),
   UNIQUE KEY `unicity` (`itemtype_source`,`items_id_source`,`itemtype_impacted`,`items_id_impacted`),
+  KEY `name` (`name`),
   KEY `impacted_asset` (`itemtype_impacted`,`items_id_impacted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
