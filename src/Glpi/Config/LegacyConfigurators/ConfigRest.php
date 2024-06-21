@@ -44,14 +44,12 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         /**
          * @var array $CFG_GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var bool|null $AJAX_INCLUDE
          * @var bool $FOOTER_LOADED
          * @var bool $HEADER_LOADED
          * @var string $CURRENTCSRFTOKEN
          */
         global $CFG_GLPI,
                $GLPI_CACHE,
-               $AJAX_INCLUDE,
                $FOOTER_LOADED, $HEADER_LOADED,
                $CURRENTCSRFTOKEN
                ;
@@ -59,9 +57,6 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         // Mark if Header is loaded or not :
         $HEADER_LOADED = false;
         $FOOTER_LOADED = false;
-        if (isset($AJAX_INCLUDE)) {
-            $HEADER_LOADED = true;
-        }
 
         ////
         ////

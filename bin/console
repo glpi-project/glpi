@@ -141,12 +141,13 @@ define('GLPI_ROOT', dirname(__DIR__));
 use Glpi\Console\Application;
 use Glpi\Kernel\Kernel;
 
-(new \Glpi\Config\LegacyConfigurators\BaseConfig(GLPI_ROOT))->execute();
+$kernel = new \Glpi\Kernel\Kernel();
+
+(new \Glpi\Config\LegacyConfigurators\BaseConfig(GLPI_ROOT, $kernel->getEnvironment()))->execute();
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     include_once GLPI_CONFIG_DIR . '/config_db.php';
 }
 
-$kernel = new \Glpi\Kernel\Kernel();
 $application = new \Glpi\Console\Application($kernel);
 $application->run();

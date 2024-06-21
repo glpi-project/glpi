@@ -33,15 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (isset($_GET['genical'])) {
-    // A new sssion is generated and destroyed during the ical/webcal export.
-    // Prevent sending cookies to browser to ensure that user will not be disconnected when using the export feature.
-    // It will also prevent to send a session cookie related to another user in case an error made the script exit before session destroying.
-    ini_set('session.use_cookies', 0);
-}
-
-include('../inc/includes.php');
-
 if (!isset($_GET['genical'])) {
     Session::checkRight("planning", READ);
 }

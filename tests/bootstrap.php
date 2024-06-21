@@ -65,12 +65,7 @@ define('TU_PASS', 'PhpUnit_4');
 
 global $CFG_GLPI, $GLPI_CACHE;
 
-// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists($autoloadFile = __DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
-}
-
-require_once $autoloadFile;
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('testing');
 $kernel->loadCommonGlobalConfig();
