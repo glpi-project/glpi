@@ -1305,7 +1305,7 @@ JS);
         $image_name = self::checkIcon($image_name);
 
         $type = "";
-        if (class_exists($item->getType()."Type")) {
+        if (class_exists($item->getType() . "Type")) {
             $tabletype = getTableForItemType($item->getType() . "Type");
             $typefield = getForeignKeyFieldForTable($tabletype);
             $types_id = $item->fields[$typefield];
