@@ -29,17 +29,10 @@ final class LegacyFileLoadController extends AbstractController
 
     protected function setAjax(): void
     {
-        // TODO: use this for modern usages of the "ajax" system.
         $this->getRequest()->attributes->set('_glpi_ajax', true);
 
-        /**
-         * @todo Remove all usages of this
-         * @deprecated
-         * @var bool|null $AJAX_INCLUDE
-         */
-        global $AJAX_INCLUDE;
-
-        $AJAX_INCLUDE = 1;
+        \Session::setAjax();
+        \Html::setAjax();
     }
 
     private function getRequest(): ?Request

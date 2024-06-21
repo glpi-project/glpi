@@ -52,6 +52,8 @@ use ScssPhp\ScssPhp\Compiler;
  **/
 class Html
 {
+    private static bool $is_ajax_request = false;
+
     /**
      * Recursivly execute html_entity_decode on an array
      *
@@ -450,14 +452,13 @@ class Html
     public static function redirectToLogin($params = '')
     {
         /**
-         * @var int $AJAX_INCLUDE
          * @var array $CFG_GLPI
          */
-        global $AJAX_INCLUDE, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        $dest     = $CFG_GLPI["root_doc"] . "/index.php";
+        $dest = $CFG_GLPI["root_doc"] . "/index.php";
 
-        if (!$AJAX_INCLUDE) {
+        if (!self::$is_ajax_request) {
             $url_dest = preg_replace(
                 '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
                 '',
@@ -6603,5 +6604,10 @@ CSS;
         }
 
         return "";
+    }
+
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
     }
 }
