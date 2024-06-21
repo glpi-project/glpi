@@ -1666,7 +1666,7 @@ var GLPIImpact = {
                     for (let prop in targetData) {
 
                         if (!fields.includes(prop)) continue;
-                        if (!targetData.hasOwn(prop)) continue;
+                        if (!Object.hasOwn(targetData, 'itemtype')) continue;
 
                         let targetValue = targetData[prop];
 
