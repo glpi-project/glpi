@@ -1660,13 +1660,13 @@ var GLPIImpact = {
                     // append table to div container
                     tooltip.append(table);
                     let targetData = target.data();
-
+                    let propname = '';
                     let fields = ['label', 'type', 'status', 'comment'];
                     // loop through target data
                     for (let prop in targetData) {
 
                         if (!fields.includes(prop)) continue;
-                        if (!targetData.hasOwnProperty(prop)) continue;
+                        if (!targetData.hasOwn(prop)) continue;
 
                         let targetValue = targetData[prop];
 
@@ -1717,7 +1717,7 @@ var GLPIImpact = {
             if (document.getElementById(tooltipId)) {
                 document.getElementById(tooltipId).classList.remove('active');
             }
-        })
+        });
     },
     /**
     * Build the network graph
@@ -1764,7 +1764,7 @@ var GLPIImpact = {
 
         this.cy.filter('node', 'edge').forEach(t => {
             this.bindPopper(t);
-        })
+        });
 
         // If we used the preset layout, some nodes might lack positions
         this.generateMissingPositions();
