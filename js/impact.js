@@ -1161,14 +1161,14 @@ var GLPIImpact = {
         // First iterate on the edges we had in the initial state
         Object.keys(GLPIImpact.initialState.edges).forEach(function(edgeID) {
             var edge = GLPIImpact.initialState.edges[edgeID];
+            var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
+            var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
             if (Object.prototype.hasOwnProperty.call(currentEdges, edgeID)) {
             // If the edge is still here in the current state, nothing happened
                 var currentEdge = currentEdges[edgeID];
 
                 // Check for updates ...
                 if (edge.name != currentEdge.name) {
-                    var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
-                    var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
                     edgesDelta[edgeID] = {
                         action: GLPIImpact.DELTA_ACTION_UPDATE,
                         name  : currentEdge.name,
@@ -1178,12 +1178,10 @@ var GLPIImpact = {
                         items_id_impacted: target[1]
                     };
                 }
-            // Remove it from the currentEdges data so we can skip it later
+                // Remove it from the currentEdges data so we can skip it later
                 delete currentEdges[edgeID];
             } else {
             // If the edge is missing in the current state, it has been deleted
-                var source = edge.source.split(GLPIImpact.NODE_ID_SEPERATOR);
-                var target = edge.target.split(GLPIImpact.NODE_ID_SEPERATOR);
                 edgesDelta[edgeID] = {
                     action           : GLPIImpact.DELTA_ACTION_DELETE,
                     itemtype_source  : source[0],
