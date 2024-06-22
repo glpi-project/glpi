@@ -1315,16 +1315,26 @@ JS);
         if (isset($item->fields['states_id'])) {
             $states_id = Dropdown::getDropdownName("glpi_states", $item->fields['states_id']);
         }
+        $infocom = new Infocom();
+        $businesscriticities_id = "";
+        if ($infocom->getFromDBforDevice($item->getType(), $item->getID())) {
+            $businesscriticities_id
+                = Dropdown::getDropdownName(
+                    'glpi_businesscriticities',
+                    $infocom->fields['businesscriticities_id']
+                );
+        }
        // Define basic data of the new node
         $new_node = [
-            'id'          => $key,
-            'label'       => $item->getFriendlyName(),
-            'itemtype'    => $item->getTypeName(),
-            'type'        => $type,
-            'comment'     => $item->fields['comment'],
-            'status'      => $states_id,
-            'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
-            'ITILObjects' => $item->getITILTickets(true),
+            'id'             => $key,
+            'label'          => $item->getFriendlyName(),
+            'itemtype'       => $item->getTypeName(),
+            'type'           => $type,
+            'comment'        => $item->fields['comment'],
+            'status'         => $states_id,
+            'criticity'      => $businesscriticities_id,
+            'image'          => $CFG_GLPI['root_doc'] . "/$image_name",
+            'ITILObjects'    => $item->getITILTickets(true),
         ];
 
         // Only set GOTO link if the user have READ rights
