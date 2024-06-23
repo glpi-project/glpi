@@ -738,7 +738,7 @@ var GLPIImpact = {
             {
                 selector: 'node:parent',
                 style: {
-                    'padding'           : '30px',
+                    'padding'           : '50px',
                     'shape'             : 'roundrectangle',
                     'border-width'      : '1px',
                     'background-opacity': '0.5',
