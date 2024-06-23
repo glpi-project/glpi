@@ -1768,6 +1768,27 @@ var GLPIImpact = {
                 edge.data('depth', Number.MAX_VALUE);
             }
         });
+        this.cy.nodeHtmlLabel([
+            {
+                query: 'node[image]',
+                halign: 'center',
+                valign: 'center',
+                cssClass: 'cy-node-title',
+                halignBox: 'center',
+                valignBox: 'bottom',
+                tpl: function (data) {
+                    let info = '<p>';
+                    if (data.label != null && data.label != '') {
+                        info +=   '<span class="cy-node-label">' + data.label + '</span>';
+                    }
+                    if (data.comment != null && data.comment != '') {
+                        info += '<br><span class="cy-node-comment">' + data.comment + '</span>';
+                    }
+                    info += '</p>';
+                    return info;
+                }
+            },
+        ]);
     },
 
     /**
