@@ -764,7 +764,6 @@ var GLPIImpact = {
             {
                 selector: 'node[image]',
                 style: {
-                    'label'             : 'data(label)',
                     'shape'             : 'rectangle',
                     'background-color'  : '#666',
                     'background-image'  : 'data(image)',
