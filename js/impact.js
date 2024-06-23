@@ -842,13 +842,13 @@ var GLPIImpact = {
                 }
             },
             {
-                selector: "edge[label]",
+                selector: 'edge[label]',
                 css: {
-                    "label": "data(label)",
-                    "text-rotation": "autorotate",
-                    "text-margin-x": "0px",
-                    "text-margin-y": "-10px",
-                    "font-size": "0.8em"
+                    'label'        : 'data(label)',
+                    'text-rotation': 'autorotate',
+                    'text-margin-x': '0px',
+                    'text-margin-y': '-10px',
+                    'font-size'    : '0.8em'
                 }
             },
             {
