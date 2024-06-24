@@ -562,6 +562,7 @@ var GLPIImpact = {
                 });
                 GLPIImpact.cy.trigger("change");
                 break;
+
                 // Remove node from the compound (and delete if needed)
                 // Available data: nodeData, compoundData, children
             case this.ACTION_REMOVE_FROM_COMPOUND:
@@ -3591,7 +3592,7 @@ var GLPIImpact = {
             GLPIImpact.cy.remove(parent);
         }
     },
-    
+
     /**
     * Handler for "delete" menu action
     *

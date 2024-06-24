@@ -1519,7 +1519,7 @@ JS);
         foreach ($graph['edges'] as $edge) {
             $data[] = [
                 'group' => 'edges',
-                'data'  => $edge
+                'data'  => $edge,
             ];
         }
 
