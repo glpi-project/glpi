@@ -349,7 +349,7 @@ class CacheManager extends \GLPITestCase
         );
 
         if ($expected_get_error !== null) {
-            //$this->expectErrorMessage($expected_get_error);
+            $this->expectExceptionMessage($expected_get_error);
             $this->assertInstanceOf(\Glpi\Cache\SimpleCache::class, $instance->getCacheInstance($context));
             return;
         }

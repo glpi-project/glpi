@@ -72,10 +72,16 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
         $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
         $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+
+        set_error_handler(static function (int $errno, string $errstr) {
+            throw new \Exception($errstr, $errno);
+        }, E_ALL);
     }
 
     public function tesarDown(): void
     {
+        restore_error_handler();
+
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
             unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
             $this->assertSame(
