@@ -1179,6 +1179,10 @@ $RELATION = [
         'glpi_planningexternalevents' => 'planningexternaleventtemplates_id',
     ],
 
+    'glpi_plugs' => [
+        '_glpi_items_plugs' => 'plugs_id',
+    ],
+
     'glpi_printermodels' => [
         '_glpi_cartridgeitems_printermodels' => 'printermodels_id',
         'glpi_printers'                      => 'printermodels_id',
