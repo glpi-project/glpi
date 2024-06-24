@@ -101,6 +101,12 @@ class ITILCategory extends CommonTreeDropdown
                 'type'      => 'bool',
                 'list'      => true,
             ],
+            [
+                'name'  => 'color',
+                'label' => __('Color'),
+                'type'  => 'color',
+            ],
+                
         ];
 
         $show_for_problem = Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
