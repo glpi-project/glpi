@@ -620,13 +620,13 @@ i.fa-impact-manipulation {
 
 .cy-node-label {
    font-size: 12px;
-   color: #666;
+   color: var(--tblr-dark);
    line-height: 1.1em;
    margin-bottom: 1.1em;
 }
 
 .cy-node-comment {
    font-size: 10px;
-   color: #999;
+   color: var(--tblr-muted);
    line-height: 1.1em;
 }
