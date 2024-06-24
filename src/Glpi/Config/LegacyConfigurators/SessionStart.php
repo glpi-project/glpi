@@ -14,9 +14,13 @@ final class SessionStart implements LegacyConfigProviderInterface, ConfigProvide
     /**
      * An array of regular expressions of the paths that disable the Session.
      */
-    private const NO_SESSION_PATHS = [
+    private const NO_COOKIE_PATHS = [
         '/api(rest)?\.php.*',
         '/caldav\.php.*',
+    ];
+
+    private const NO_SESSION_PATHS = [
+        '/api(rest)?\.php.*',
     ];
 
     public function execute(): void
@@ -24,21 +28,25 @@ final class SessionStart implements LegacyConfigProviderInterface, ConfigProvide
         $path = $this->getRequest()->getRequestUri();
         $path = '/' . ltrim($path, '/');
 
-        $noSessionPathsRegexes = \array_map(static fn ($regex) => '(?:' . $regex . ')', self::NO_SESSION_PATHS);
-
-        $fullRegex = '~^' . implode('|', $noSessionPathsRegexes) . '$~sUu';
+        $noCookiePaths = '~^' . implode('|', \array_map(static fn ($regex) => '(?:' . $regex . ')', self::NO_COOKIE_PATHS)) . '$~sUu';
 
         Session::setPath();
 
         if (
-            \preg_match($fullRegex, $path)
+            \preg_match($noCookiePaths, $path)
             || (\preg_match('~^/front/planning\.php~Uu', $path) && $this->getRequest()->query->has('genical'))
         ) {
             // Disable session cookie for these paths
             ini_set('session.use_cookies', 0);
         }
 
-        Session::start();
+        $noSessionPaths = '~^' . implode('|', \array_map(static fn ($regex) => '(?:' . $regex . ')', self::NO_SESSION_PATHS)) . '$~sUu';
+        if (
+            !\preg_match($noSessionPaths, $path)
+        ) {
+            // Disable session cookie for these paths
+            Session::start();
+        }
 
         // Default Use mode
         if (!isset($_SESSION['glpi_use_mode'])) {
