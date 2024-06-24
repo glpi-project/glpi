@@ -1781,7 +1781,7 @@ var GLPIImpact = {
                         info +=   '<span class="cy-node-label">' + _.escape(data.label) + '</span>';
                     }
                     if (data.comment != null && data.comment != '') {
-                        info += '<br><span class="cy-node-comment">' + data.comment + '</span>';
+                        info += '<br><span class="cy-node-comment">' + _.escape(data.comment) + '</span>';
                     }
                     info += '</p>';
                     return info;
