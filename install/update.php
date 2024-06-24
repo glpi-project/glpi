@@ -37,11 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', realpath('..'));
-}
+define('GLPI_ROOT', dirname(__DIR__));
 
-include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**

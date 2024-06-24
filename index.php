@@ -51,10 +51,6 @@ use Glpi\Plugin\Hooks;
  */
 global $CFG_GLPI, $PLUGIN_HOOKS;
 
-//Load GLPI constants
-define('GLPI_ROOT', __DIR__);
-include(GLPI_ROOT . "/inc/based_config.php");
-
 // If config_db doesn't exist -> start installation
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     if (file_exists(GLPI_ROOT . '/install/install.php')) {

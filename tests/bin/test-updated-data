@@ -34,18 +34,18 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(__DIR__, 2));
-define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests/config');
-define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
+$root = dirname(__DIR__, 2);
+define('GLPI_CONFIG_DIR', $root . '/tests/config');
+define('GLPI_VAR_DIR', $root . '/tests/files');
 define(
    'PLUGINS_DIRECTORIES',
    [
-      GLPI_ROOT . '/plugins',
-      GLPI_ROOT . '/tests/fixtures/plugins',
+      $root . '/plugins',
+      $root . '/tests/fixtures/plugins',
    ]
 );
 
-require GLPI_ROOT . '/vendor/autoload.php';
+require $root . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel('testing');
 $kernel->loadCommonGlobalConfig();

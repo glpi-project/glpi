@@ -67,7 +67,7 @@ final class Kernel extends BaseKernel
     public function getLogDir(): string
     {
         // TODO Use GLPI_LOG_DIR
-        return $this->getProjectDir() . '/files/_log/';
+        return $this->getProjectDir() . '/files/_log/symfony/' . $this->environment . '/';
     }
 
     public function registerBundles(): iterable

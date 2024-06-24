@@ -134,13 +134,6 @@ if (array_key_exists('env', $options)) {
     define('GLPI_ENVIRONMENT_TYPE', $options['env']);
 }
 
-// Init GLPI
-define('GLPI_ROOT', dirname(__DIR__));
-
-// Run console application
-use Glpi\Console\Application;
-use Glpi\Kernel\Kernel;
-
 $kernel = new \Glpi\Kernel\Kernel();
 
 $kernel->loadCliOnlyConfig();
