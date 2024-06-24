@@ -1256,7 +1256,7 @@ CREATE TABLE `glpi_configs` (
 DROP TABLE IF EXISTS `glpi_impactrelations`;
 CREATE TABLE `glpi_impactrelations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
   `itemtype_source` varchar(255) NOT NULL DEFAULT '',
   `items_id_source` int unsigned NOT NULL DEFAULT '0',
   `itemtype_impacted` varchar(255) NOT NULL DEFAULT '',
