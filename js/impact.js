@@ -575,8 +575,8 @@ var GLPIImpact = {
                 });
                 GLPIImpact.cy.trigger("change");
                 break;
-               // Reapply edit
-               // Available data : id, label, previousLabel
+                // Reapply edit
+                // Available data : id, label, previousLabel
             case this.ACTION_EDIT_EDGE:
                 this.cy.filter("node" + this.makeIDSelector(data.id)).data({
                     label: data.label,
