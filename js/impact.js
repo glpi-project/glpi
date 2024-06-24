@@ -1752,21 +1752,9 @@ var GLPIImpact = {
     },
 
     /**
-    * Reload the graph style
-    */
-    updateStyle: function() {
-        this.cy.style(this.getNetworkStyle());
-        // If either the source of the target node of an edge is hidden, hide the
-        // edge too by setting it's dept to the maximum value
-        this.cy.edges().forEach(function(edge) {
-            var source = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('source')));
-            var target = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('target')));
-            if (source.visible() && target.visible()) {
-                edge.data('depth', 0);
-            } else {
-                edge.data('depth', Number.MAX_VALUE);
-            }
-        });
+     * Load html labels
+     */
+    AddHtmlLabel: function() {
         this.cy.nodeHtmlLabel([
             {
                 query: 'node[image]',
@@ -1790,6 +1778,44 @@ var GLPIImpact = {
         ]);
     },
 
+    /**
+    * Reload the graph style
+    */
+    updateStyle: function() {
+        this.cy.style(this.getNetworkStyle());
+        this.AddHtmlLabel();
+        // If either the source of the target node of an edge is hidden, hide the
+        // edge too by setting it's dept to the maximum value
+        this.cy.edges().forEach(function(edge) {
+            var source = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('source')));
+            var target = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('target')));
+            if (source.visible() && target.visible()) {
+                edge.data('depth', 0);
+            } else {
+                edge.data('depth', Number.MAX_VALUE);
+            }
+        });
+    },
+
+    /**
+     * Reload the graph style without load labels
+     */
+    updateStyleWithoutHtmlLabel: function() {
+
+        this.cy.style(this.getNetworkStyle());
+        // If either the source of the target node of an edge is hidden, hide the
+        // edge too by setting it's dept to the maximum value
+        this.cy.edges().forEach(function(edge) {
+            var source = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('source')));
+            var target = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('target')));
+            if (source.visible() && target.visible()) {
+                edge.data('depth', 0);
+            } else {
+                edge.data('depth', Number.MAX_VALUE);
+            }
+        });
+    },
+    
     /**
     * Compute flags and depth for each nodes
     */
@@ -1891,7 +1917,7 @@ var GLPIImpact = {
             this.DEFAULT
         );
 
-        GLPIImpact.updateStyle();
+        GLPIImpact.updateStyleWithoutHtmlLabel();
     },
 
     /**
