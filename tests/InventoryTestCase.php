@@ -35,7 +35,7 @@
 
 class InventoryTestCase extends \DbTestCase
 {
-    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    protected const INV_FIXTURES = GLPI_ROOT . 'vendor/glpi-project/inventory_format/examples/';
 
     /**
      * Path to use to test inventory archive manipulations.
