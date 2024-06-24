@@ -1,5 +1,0 @@
-services:
-  app:
-    container_name: "glpi-11.0"
-    ports:
-      - "8091:80"
