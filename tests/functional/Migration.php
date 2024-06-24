@@ -36,9 +36,6 @@
 namespace tests\units;
 
 /* Test for inc/migration.class.php */
-/**
- * @engine inline
- */
 class Migration extends \GLPITestCase
 {
     /**

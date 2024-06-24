@@ -74,8 +74,6 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
 }
 
-include_once __DIR__ . '/../inc/includes.php';
-
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
    // Use configured cache for cache tests
@@ -86,10 +84,6 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
-// Errors/exceptions that are not explicitly validated by `$this->error()` or `$this->exception` asserter will already make test fails.
-// There is no need to pollute the output with error messages.
-ini_set('display_errors', 'Off');
-ErrorHandler::getInstance()->disableOutput();
 // To ensure that errors/exceptions will be caught by `atoum`, unregister GLPI error/exception handlers.
 // Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitly
 // validated by `$this->has*LogRecord*()` asserters, otherwise it will make test fails.
@@ -858,3 +852,8 @@ $tu_oauth_client = new OAuthClient();
 $tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
 define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
 define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
+
+// Errors/exceptions that are not explicitly validated by `$this->error()` or `$this->exception` asserter will already make test fails.
+// There is no need to pollute the output with error messages.
+ini_set('display_errors', 'Off');
+ErrorHandler::getInstance()->disableOutput();
