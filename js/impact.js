@@ -1850,38 +1850,10 @@ var GLPIImpact = {
     },
 
     /**
-     * Load html labels
-     */
-    AddHtmlLabel: function() {
-        this.cy.nodeHtmlLabel([
-            {
-                query: 'node[image]',
-                halign: 'center',
-                valign: 'center',
-                cssClass: 'cy-node-title',
-                halignBox: 'center',
-                valignBox: 'bottom',
-                tpl: function (data) {
-                    let info = '<p>';
-                    if (data.label != null && data.label != '') {
-                        info +=   '<span class="cy-node-label">' + _.escape(data.label) + '</span>';
-                    }
-                    if (data.comment != null && data.comment != '') {
-                        info += '<br><span class="cy-node-comment">' + _.escape(data.comment) + '</span>';
-                    }
-                    info += '</p>';
-                    return info;
-                }
-            },
-        ]);
-    },
-
-    /**
     * Reload the graph style
     */
     updateStyle: function() {
         this.cy.style(this.getNetworkStyle());
-        this.AddHtmlLabel();
         // If either the source of the target node of an edge is hidden, hide the
         // edge too by setting it's dept to the maximum value
         this.cy.edges().forEach(function(edge) {
@@ -1895,24 +1867,6 @@ var GLPIImpact = {
         });
     },
 
-    /**
-     * Reload the graph style without load labels
-     */
-    updateStyleWithoutHtmlLabel: function() {
-
-        this.cy.style(this.getNetworkStyle());
-        // If either the source of the target node of an edge is hidden, hide the
-        // edge too by setting it's dept to the maximum value
-        this.cy.edges().forEach(function(edge) {
-            var source = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('source')));
-            var target = GLPIImpact.cy.filter(GLPIImpact.makeIDSelector(edge.data('target')));
-            if (source.visible() && target.visible()) {
-                edge.data('depth', 0);
-            } else {
-                edge.data('depth', Number.MAX_VALUE);
-            }
-        });
-    },
     /**
     * Compute flags and depth for each nodes
     */
@@ -2014,7 +1968,7 @@ var GLPIImpact = {
             this.DEFAULT
         );
 
-        GLPIImpact.updateStyleWithoutHtmlLabel();
+        GLPIImpact.updateStyle();
     },
 
     /**
