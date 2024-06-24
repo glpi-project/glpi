@@ -37,15 +37,22 @@ services:
     ports:
       - "8025:8025"
 
-  adminer:
-    container_name: "glpi-adminer"
-    image: "adminer:latest"
+  dbgate:
+    container_name: "glpi-dbgate"
+    image: "dbgate/dbgate:latest"
     restart: "unless-stopped"
     ports:
-      - "8090:8080"
+      - "8090:3000"
     environment:
-      - "ADMINER_DEFAULT_SERVER=db"
-    command: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
+      CONNECTIONS: con_glpi
+
+      LABEL_con_glpi: MySql
+      SERVER_con_glpi: db
+      USER_con_glpi: root
+      PASSWORD_con_glpi: glpi
+      PORT_con_glpi: 3306
+      ENGINE_con_glpi: mysql@dbgate-plugin-mysql
+
 
 volumes:
   db:
