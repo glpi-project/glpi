@@ -37,28 +37,10 @@
  * @since 9.1
  */
 
-use Glpi\Cache\CacheManager;
 use Glpi\Application\ErrorHandler;
-
-/**
- * @var GLPI $GLPI
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
- */
-global $GLPI, $GLPI_CACHE;
-
-ini_set('session.use_cookies', 0);
-
-// Init loggers
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
 
 // Ensure errors will not break API output.
 ErrorHandler::getInstance()->disableOutput();
-
-//init cache
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 $api = new Glpi\Api\APIRest();
 $api->call();
