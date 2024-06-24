@@ -143,7 +143,7 @@ use Glpi\Kernel\Kernel;
 
 $kernel = new \Glpi\Kernel\Kernel();
 
-(new \Glpi\Config\LegacyConfigurators\BaseConfig(GLPI_ROOT, $kernel->getEnvironment()))->execute();
+$kernel->loadCliOnlyConfig();
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     include_once GLPI_CONFIG_DIR . '/config_db.php';
