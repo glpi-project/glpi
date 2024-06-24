@@ -1365,8 +1365,8 @@ var GLPIImpact = {
             },
             {
                 id             : 'editEdge',
-                content        : '<i class="fas fa-edit me-2"></i>' + __("Edge properties..."),
-                tooltipText    : _.unescape(__("Set name for this edge")),
+                content        : '<i class="fas fa-edit me-2"></i>' + _.escape(__("Edge properties...")),
+                tooltipText    : _.escape(__("Set name for this edge")),
                 selector       : 'edge',
                 onClickFunction: this.menuOnEditEdge,
                 show           : !this.readonly,
