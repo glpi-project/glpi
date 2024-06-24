@@ -319,7 +319,6 @@ var GLPIImpact = {
                 GLPIImpact.cy.trigger("change");
                 break;
 
-
                 // Re-add node to the compound (and recreate it needed)
                 // Available data: nodeData, compoundData, children
             case this.ACTION_REMOVE_FROM_COMPOUND:
