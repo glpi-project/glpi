@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Http;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Glpi\Controller\LegacyFileLoadController;
 
 class LegacyRouterListener extends \GLPITestCase
 {
@@ -208,17 +209,13 @@ class LegacyRouterListener extends \GLPITestCase
 
         $response = $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
 
+        $this->variable($response)->isNull();
         if ($included === false) {
-            $this->variable($response)->isNull();
+            $this->variable($request->attributes->get('_controller'))->isNull();
+            $this->variable($request->attributes->get('_glpi_file_to_load'))->isNull();
         } else {
-            $this->object($response)->isInstanceOf(StreamedResponse::class);
-            $callback = $response->getCallback();
-            $this->variable($callback)->isNotNull();
-            $this->output(
-                function () use ($callback) {
-                    $callback();
-                }
-            )->isEqualTo($target_path); // the file echoes its path (see `self::fileProvider()`)
+            $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+            $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . $target_path);
         }
     }
 
@@ -446,8 +443,6 @@ class LegacyRouterListener extends \GLPITestCase
      */
     public function testRunLegacyRouterFirewall(string $path, bool $is_served): void
     {
-        $random = bin2hex(random_bytes(20));
-
         $structure = null;
         foreach (array_reverse(explode('/', $path)) as $name) {
             if ($name === '') {
@@ -455,7 +450,7 @@ class LegacyRouterListener extends \GLPITestCase
             }
             if ($structure === null) {
                 // first element, correspond to the file
-                $structure = [$name => sprintf('<?php echo("%s");', $random)];
+                $structure = [$name => '<?php //...'];
             } else {
                 // include sub elements in the current element
                 $structure = [$name => $structure];
@@ -471,17 +466,14 @@ class LegacyRouterListener extends \GLPITestCase
         $request->server->set('REQUEST_URI', $path);
 
         $response = $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
+
+        $this->variable($response)->isNull();
         if ($is_served === false) {
-            $this->variable($response)->isNull();
+            $this->variable($request->attributes->get('_controller'))->isNull();
+            $this->variable($request->attributes->get('_glpi_file_to_load'))->isNull();
         } else {
-            $this->object($response)->isInstanceOf(StreamedResponse::class);
-            $callback = $response->getCallback();
-            $this->variable($callback)->isNotNull();
-            $this->output(
-                function () use ($callback) {
-                    $callback();
-                }
-            )->isEqualTo($random);
+            $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+            $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . preg_replace('/\/{2,}/', '/', $path));
         }
     }
 }
