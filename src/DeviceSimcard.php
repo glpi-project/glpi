@@ -45,7 +45,6 @@ class DeviceSimcard extends CommonDevice
 
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -76,7 +75,7 @@ class DeviceSimcard extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'integer',
@@ -92,7 +91,7 @@ class DeviceSimcard extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'allow_voip',
             'name'               => __('Allow VOIP'),
             'datatype'           => 'bool'
@@ -101,16 +100,8 @@ class DeviceSimcard extends CommonDevice
         return $tab;
     }
 
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 9.2
-     **/
     public function getImportCriteria()
     {
-
         return [
             'designation'             => 'equal',
             'manufacturers_id'        => 'equal',
@@ -118,9 +109,17 @@ class DeviceSimcard extends CommonDevice
         ];
     }
 
-
     public static function getIcon()
     {
         return "fas fa-sim-card";
+    }
+
+    public function getRights($interface = 'central')
+    {
+        $rights = parent::getRights($interface);
+        // Update labels to match other assets
+        $rights[READ] = __('View all');
+        $rights[UPDATE] = __('Update all');
+        return $rights;
     }
 }

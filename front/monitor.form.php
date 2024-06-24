@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("monitor", READ);
+Session::checkRightsOr(Monitor::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
@@ -119,7 +120,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["unglobalize"])) {
     $monitor->check($_POST["id"], UPDATE);
 
-    Computer_Item::unglobalizeItem($monitor);
+    Asset_PeripheralAsset::unglobalizeItem($monitor);
     Event::log(
         $_POST["id"],
         "monitors",

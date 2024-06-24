@@ -42,10 +42,8 @@ class DeviceFirmware extends CommonDevice
         return _n('Firmware', 'Firmware', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -73,14 +71,13 @@ class DeviceFirmware extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date',
             'name'               => __('Release date'),
             'datatype'           => 'date'
@@ -160,7 +157,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -180,7 +177,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -200,7 +197,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -276,7 +273,7 @@ class DeviceFirmware extends CommonDevice
             return $father;
         }
 
-        if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
+        if (in_array($item::class, $CFG_GLPI['itemdevicefirmware_types'], true)) {
             Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
             if ($this->fields["devicefirmwaretypes_id"]) {
@@ -303,11 +300,11 @@ class DeviceFirmware extends CommonDevice
                 );
             }
         }
+        return null;
     }
 
     public function getImportCriteria()
     {
-
         return [
             'designation'              => 'equal',
             'devicefirmwaretypes_id'   => 'equal',
@@ -315,7 +312,6 @@ class DeviceFirmware extends CommonDevice
             'version'                  => 'equal'
         ];
     }
-
 
     public static function getIcon()
     {

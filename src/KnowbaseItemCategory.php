@@ -49,7 +49,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         return _n('Knowledge base category', 'Knowledge base categories', $nb);
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         if (Session::getCurrentInterface() == "helpdesk") {
             return true;
@@ -67,7 +67,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
-                KnowbaseItem_KnowbaseItemCategory::class
+                KnowbaseItem_KnowbaseItemCategory::class,
             ]
         );
     }

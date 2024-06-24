@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /**
  * ReservationItem Class
  **/
@@ -53,58 +57,33 @@ class ReservationItem extends CommonDBChild
 
     public $taborientation           = 'horizontal';
 
-
-    /**
-     * @since 0.85
-     **/
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Reservable item', 'Reservable items', $nb);
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuName()
-     *
-     * @since 0.85
-     **/
     public static function getMenuName()
     {
         return Reservation::getTypeName(Session::getPluralNumber());
     }
 
-
-    /**
-     * @see CommonGLPI::getForbiddenActionsForMenu()
-     *
-     * @since 0.85
-     **/
     public static function getForbiddenActionsForMenu()
     {
         return ['add'];
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuLinks()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuLinks()
     {
-
         if (static::canView()) {
             return ['showall' => Reservation::getSearchURL(false)];
         }
         return false;
     }
-
 
     public static function getMenuContent()
     {
@@ -116,40 +95,34 @@ class ReservationItem extends CommonDBChild
         return $menu;
     }
 
-
-   // From CommonDBTM
     /**
      * Retrieve an item from the database for a specific item
      *
-     * @param $itemtype   type of the item
-     * @param $ID         ID of the item
+     * @param class-string<CommonDBTM> $itemtype Type of the item
+     * @param int $ID ID of the item
      *
      * @return boolean true if succeed else false
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {
-
         return $this->getFromDBByCrit([
-            $this->getTable() . '.itemtype'  => $itemtype,
-            $this->getTable() . '.items_id'  => $ID
+            static::getTable() . '.itemtype'  => $itemtype,
+            static::getTable() . '.items_id'  => $ID
         ]);
     }
 
-
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Reservation::class,
             ]
         );
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extend CommonDBConnexity
         $alert = new Alert();
-        $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
-
 
     public function rawSearchOptions()
     {
@@ -157,7 +130,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -165,7 +138,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool'
@@ -199,7 +172,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => '_virtual',
             'name'               => __('Planning'),
             'datatype'           => 'specific',
@@ -293,13 +266,29 @@ class ReservationItem extends CommonDBChild
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        return [
+            [
+                'id'                 => '81',
+                'table'              => static::getTable(),
+                'name'               => __('Reservable'),
+                'field'              => 'is_active',
+                'joinparams'         => [
+                    'jointype' => 'itemtype_item'
+                ],
+                'datatype'           => 'bool',
+                'massiveaction'      => false
+            ]
+        ];
+    }
 
     /**
-     * @param $item   CommonDBTM object
-     **/
+     * @param CommonDBTM $item
+     * @return false|void
+     */
     public static function showActivationFormForItem(CommonDBTM $item)
     {
-
         if (!self::canUpdate()) {
             return false;
         }
@@ -315,114 +304,78 @@ class ReservationItem extends CommonDBChild
         }
 
         $ri = new self();
+        $reservable = $ri->getFromDBbyItem($item::class, $item->getID());
+        $twig_params = [
+            'reservable' => $reservable,
+            'toggle_state_label' => ($ri->fields["is_active"] ?? 0)
+                ? __('Make unavailable')
+                : __('Make available'),
+            'toggle_state' => $ri->fields["is_active"] ?? 0,
+            'toggle_reservable_label' => $reservable
+                ? __('Prohibit reservations')
+                : __('Authorize reservations'),
+            'toggle_reservable' => $reservable,
+            'item' => $item,
+            'id' => $ri->getID(),
+            'purge_warning' => __('Are you sure you want to return this non-reservable item?')
+                . ' ' . __('That will remove all the reservations in progress.'),
+        ];
 
-        echo "<div>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>";
-        echo "<tr class='tab_bg_1'>";
-        if ($ri->getFromDBbyItem($item->getType(), $item->getID())) {
-            echo "<td class='center'>";
-           //Switch reservation state
-
-            if ($ri->fields["is_active"]) {
-                Html::showSimpleForm(
-                    static::getFormURL(),
-                    'update',
-                    "<i class='fas fa-toggle-on'></i>&nbsp;" . __('Make unavailable'),
-                    [
-                        'id'        => $ri->fields['id'],
-                        'is_active' => 0
-                    ]
-                );
-            } else {
-                Html::showSimpleForm(
-                    static::getFormURL(),
-                    'update',
-                    "<i class='fas fa-toggle-off'></i>&nbsp;" . __('Make available'),
-                    [
-                        'id'        => $ri->fields['id'],
-                        'is_active' => 1
-                    ]
-                );
-            }
-
-            echo '</td><td>';
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'purge',
-                "<i class='fas fa-ban'></i>&nbsp;" . __('Prohibit reservations'),
-                ['id' => $ri->fields['id']],
-                '',
-                '',
-                [__('Are you sure you want to return this non-reservable item?'),
-                    __('That will remove all the reservations in progress.')
-                ]
-            );
-
-            echo "</td>";
-        } else {
-            echo "<td class='center'>";
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'add',
-                "<i class='fas fa-check'></i>&nbsp;" . __('Authorize reservations'),
-                ['items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
-                    'entities_id'  => $item->getEntityID(),
-                    'is_recursive' => $item->isRecursive(),
-                ]
-            );
-            echo "</td>";
-        }
-        echo "</tr></table>";
-        echo "</div>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <form id="reservation_actions" class="d-flex justify-content-center mt-3" action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
+                <input type="hidden" name="items_id" value="{{ item.getID() }}">
+                <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
+                <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}">
+                <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
+                {% if reservable %}
+                    <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">
+                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2"></i>
+                        {{ toggle_state_label }}
+                    </button>
+                    <input type="hidden" name="id" value="{{ id }}">
+                    <script>
+                        $(() => $('#reservation_actions button[name="purge"]').on('click', () => confirm('{{ purge_warning }}')));
+                    </script>
+                {% endif %}
+                <button name="{{ toggle_reservable ? 'purge' : 'add' }}" class="btn btn-{{ toggle_reservable ? 'danger' : 'primary' }} mx-1">
+                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
+                    {{ toggle_reservable_label }}
+                </button>
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
+TWIG, $twig_params);
     }
-
 
     public function showForm($ID, array $options = [])
     {
-
         if (!self::canView()) {
             return false;
         }
 
         $r = new self();
-
         if ($r->getFromDB($ID)) {
             $type = $r->fields["itemtype"];
             $name = NOT_AVAILABLE;
             if ($item = getItemForItemtype($r->fields["itemtype"])) {
-                $type = $item->getTypeName();
+                $type = $item::getTypeName(1);
                 if ($item->getFromDB($r->fields["items_id"])) {
                     $name = $item->getName();
                 }
             }
 
-            echo "<div class='center'><form method='post' name=form action='" . $this->getFormURL() . "'>";
-            echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . __s('Modify the comment') . "</th></tr>";
-
-           // Ajouter le nom du materiel
-            echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-            echo "<td class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</td></tr>\n";
-
-            echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-            echo "<td><textarea name='comment' cols='30' rows='10' >" . $r->fields["comment"];
-            echo "</textarea></td></tr>\n";
-
-            echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-            echo "</td></tr>\n";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $options['candel'] = false;
+            $this->initForm($ID, $options);
+            TemplateRenderer::getInstance()->display('components/form/reservationitem_comment.html.twig', [
+                'item'      => $r,
+                'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                'params'    => $options,
+            ]);
             return true;
         }
         return false;
     }
-
 
     public static function showListSimple()
     {
@@ -438,73 +391,42 @@ class ReservationItem extends CommonDBChild
 
         $ok         = false;
         $showentity = Session::isMultiEntitiesMode();
-        $values     = [];
+        $reservation_types     = [];
 
         if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
             $_POST = $_SESSION['glpi_saved']['ReservationItem'];
         }
 
-        if (isset($_POST['reserve'])) {
-            echo "<div id='viewresasearch'  class='center'>";
+        $reserve = isset($_POST['reserve']);
+        if ($reserve) {
             Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
-            echo "<div id='nosearch' class='center firstbloc'>" .
-              "<a href=\"" . $CFG_GLPI['root_doc'] . "/front/reservationitem.php\">";
-            echo __('See all reservable items') . "</a></div>\n";
         } else {
-            echo "<div id='makesearch' class='center firstbloc'>" .
-              "<a class='btn btn-secondary' href='reservation.php?reservationitems_id=0'>
-                  <i class='far fa-calendar'></i>&nbsp;
-                  " . __("View calendar for all items") . "
-               </a>
-               <a class='btn btn-secondary mw-100 d-inline-block text-truncate' onClick=\"javascript:showHideDiv('viewresasearch','','','');" .
-                "showHideDiv('makesearch','','','')\">
-               <i class='fas fa-search'></i>&nbsp;";
-            echo __('Find a free item in a specific period') . "</a></div>";
-
-            echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
             $begin_time                 = time();
             $begin_time                -= ($begin_time % HOUR_TIMESTAMP);
             $_POST['reserve']["begin"]  = date("Y-m-d H:i:s", $begin_time);
             $_POST['reserve']["end"]    = date("Y-m-d H:i:s", $begin_time + HOUR_TIMESTAMP);
             $_POST['reservation_types'] = '';
         }
-        echo "<form method='post' name='form' action='" . Toolbox::getItemTypeSearchURL(__CLASS__) . "'>";
-        echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-        echo "<th colspan='3'>" . __('Find a free item in a specific period') . "</th></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td class='d-flex'>";
-        Html::showDateTimeField("reserve[begin]", ['value'      =>  $_POST['reserve']["begin"],
-            'maybeempty' => false
-        ]);
-        echo "</td><td rowspan='3'>";
-        echo "<input type='submit' class='btn btn-primary' name='submit' value=\"" . _sx('button', 'Search') . "\">";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Duration') . "</td><td>";
-        $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
-                             / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
-                       * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
-        $rand = Dropdown::showTimeStamp("reserve[_duration]", [
-            'min'        => 0,
-            'max'        => 48 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
-        ]);
-        echo "<br><div id='date_end$rand'></div>";
-        $params = ['duration'     => '__VALUE__',
-            'end'          => $_POST['reserve']["end"],
-            'name'         => "reserve[end]"
+        $twig_params = [
+            'reserve' => $reserve,
+            'view_calendar_label' => __("View calendar for all items"),
+            'find_free_item_label' => __('Find a free item in a specific period'),
         ];
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_reserve[_duration]$rand",
-            "date_end$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/planningend.php",
-            $params
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Item type') . "</td><td>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% if not reserve %}
+                <div id="makesearch" class="text-center mb-3">
+                    <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
+                        <i class="{{ 'Planning'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
+                    </a>
+                    <a class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
+                        <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
+                    </a>
+                </div>
+                <div id="viewresasearch" class="d-none text-center">
+            {% endif %}
+TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'          => 'itemtype',
@@ -516,8 +438,9 @@ class ReservationItem extends CommonDBChild
         ]);
 
         foreach ($iterator as $data) {
+            /** @var array{itemtype: string} $data */
             if (is_a($data['itemtype'], CommonDBTM::class, true)) {
-                $values[$data['itemtype']] = $data['itemtype']::getTypeName();
+                $reservation_types[$data['itemtype']] = $data['itemtype']::getTypeName();
             }
         }
 
@@ -551,56 +474,30 @@ class ReservationItem extends CommonDBChild
 
         foreach ($iterator as $ptype) {
             $id = $ptype['id'];
-            $values["Peripheral#$id"] = $ptype['name'];
+            $reservation_types["Peripheral#$id"] = $ptype['name'];
         }
 
-        Dropdown::showFromArray("reservation_types", $values, [
-            'class'               => "form-select",
-            'value'               => $_POST['reservation_types'],
-            'display_emptychoice' => true,
+        TemplateRenderer::getInstance()->display('pages/tools/find_available_reservation.html.twig', [
+            'reservation_types' => $reservation_types,
+            'default_location' => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0)
         ]);
-
-        echo "</td></tr>";
-
-        // Location dropdown
-        $locrand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
-        Location::dropdown([
-            // Fill with submitted data if any, otherwise use user's location
-            'value'  => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
-            'rand'   => $locrand,
-            'entity' => $_SESSION['glpiactiveentities'],
-        ]);
-
-        echo "</td></tr>";
-        echo "</table>";
-        Html::closeForm();
         echo "</div>";
 
-       // GET method passed to form creation
+        // GET method passed to form creation
         echo "<div id='nosearch' class='card'>";
         echo "<form name='form' method='GET' action='" . Reservation::getFormURL() . "'>";
-        echo "<div class='table-responsive'>";
-        echo "<table class='card-table table table-hover'>";
-        echo "<tr>";
-        echo "<th style='width: 30px;'>" . Html::getCheckAllAsCheckbox('nosearch') . "</th>";
-        echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
-        echo "<th>" . Location::getTypeName(1) . "</th>";
-        echo "<th>" . _n('Comment', 'Comments', 1) . "</th>";
-        if ($showentity) {
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
-        }
-        echo "<th style='width: 50px;'>" . __("Booking calendar") . "</th>";
-        echo "</tr>";
 
+        $entries = [];
+        $location_cache = [];
+        $entity_cache = [];
         foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
             $itemtable = getTableForItemType($itemtype);
-            $itemname  = $item->getNameField();
+            $itemname  = $item::getNameField();
 
-            $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB::quoteName('otherserial'));
             if ($item->isField('otherserial')) {
                 $otherserial = "$itemtable.otherserial AS otherserial";
             }
@@ -647,7 +544,7 @@ class ReservationItem extends CommonDBChild
 
             $begin = $_POST['reserve']["begin"];
             $end   = $_POST['reserve']["end"];
-            if (isset($_POST['submit']) && isset($begin) && isset($end)) {
+            if (isset($_POST['submit'], $begin, $end)) {
                 $criteria['LEFT JOIN']['glpi_reservations'] = [
                     'ON'  => [
                         'glpi_reservationitems' => 'id',
@@ -661,12 +558,12 @@ class ReservationItem extends CommonDBChild
                 ];
                 $criteria['WHERE'][] = ['glpi_reservations.id' => null];
             }
-            if (isset($_POST["reservation_types"]) && !empty($_POST["reservation_types"])) {
+            if (!empty($_POST["reservation_types"])) {
                 $tmp = explode('#', $_POST["reservation_types"]);
                 $criteria['WHERE'][] = ['glpi_reservationitems.itemtype' => $tmp[0]];
                 if (
-                    isset($tmp[1]) && ($tmp[0] == 'Peripheral')
-                    && ($itemtype == 'Peripheral')
+                    isset($tmp[1]) && ($tmp[0] === Peripheral::class)
+                    && ($itemtype === Peripheral::class)
                 ) {
                     $criteria['LEFT JOIN']['glpi_peripheraltypes'] = [
                         'ON' => [
@@ -687,19 +584,23 @@ class ReservationItem extends CommonDBChild
 
             $iterator = $DB->request($criteria);
             foreach ($iterator as $row) {
-                echo "<tr><td>";
-                echo Html::getCheckbox([
-                    'name'  => "item[" . $row["id"] . "]",
-                    'value' => $row["id"],
-                    'zero_on_empty' => false,
-                ]);
-                echo "</td>";
-                $typename = $item->getTypeName();
-                if ($itemtype == 'Peripheral') {
+                $entry = [
+                    'itemtype' => $itemtype,
+                    'id'       => $row['id'],
+                    'checkbox' => Html::getCheckbox([
+                        'name'  => "item[" . $row["id"] . "]",
+                        'value' => $row["id"],
+                        'zero_on_empty' => false,
+                    ]),
+                    'entity'   => '',
+                ];
+
+                $typename = $item::getTypeName();
+                if ($itemtype === Peripheral::class) {
                      $item->getFromDB($row['items_id']);
                     if (
                         isset($item->fields["peripheraltypes_id"])
-                         && ($item->fields["peripheraltypes_id"] != 0)
+                         && ((int) $item->fields["peripheraltypes_id"] !== 0)
                     ) {
                         $typename = Dropdown::getDropdownName(
                             "glpi_peripheraltypes",
@@ -707,62 +608,100 @@ class ReservationItem extends CommonDBChild
                         );
                     }
                 }
-                $item_link = sprintf(__('%1$s - %2$s'), $typename, $row["name"]);
+                $item_link = htmlspecialchars(sprintf(__('%1$s - %2$s'), $typename, $row["name"]));
                 if ($itemtype::canView()) {
-                    $item_link = "<a href='" . $itemtype::getFormURLWithId($row['items_id']) . "&forcetab=Reservation$1'>" .
+                    $item_link = "<a href='" . htmlspecialchars($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
                         $item_link .
                         "</a>";
                 }
-                echo "<td>$item_link</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_locations", $row["location"]) . "</td>";
-                echo "<td>" . nl2br(($row["comment"] ?? "")) . "</td>";
-                if ($showentity) {
-                    echo "<td>" . Dropdown::getDropdownName("glpi_entities", $row["entities_id"]) .
-                     "</td>";
+                $entry['item'] = $item_link;
+
+                if (!isset($location_cache[$row["location"]])) {
+                    $location_cache[$row["location"]] = Dropdown::getDropdownName("glpi_locations", $row["location"]);
                 }
-                echo "<td class='center'><a href='reservation.php?reservationitems_id=" . $row['id'] . "'>
-                     <i class='far fa-calendar-plus fa-2x pointer' title=\"" . __s("Reserve this item") . "\"></i>
-                  </a></td>";
-                echo "</tr>";
+                $entry['location'] = $location_cache[$row["location"]];
+
+                $entry['comment'] = nl2br(htmlspecialchars($row["comment"] ?? ""));
+
+                if ($showentity) {
+                    if (!isset($entity_cache[$row["entities_id"]])) {
+                        $entity_cache[$row["entities_id"]] = Dropdown::getDropdownName("glpi_entities", $row["entities_id"]);
+                    }
+                    $entry['entity'] = $entity_cache[$row["entities_id"]];
+                }
+                $cal_href = htmlspecialchars(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
+                $entry['calendar'] = "<a href='$cal_href'>";
+                $entry['calendar'] .= "<i class='" . Planning::getIcon() . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+
                 $ok = true;
+                $entries[] = $entry;
             }
         }
+
+        $columns = [
+            'checkbox' => [
+                'label' => Html::getCheckAllAsCheckbox('nosearch'),
+                'raw_header' => true
+            ],
+            'item' => self::getTypeName(1),
+            'location' => Location::getTypeName(1),
+            'comment' => _n('Comment', 'Comments', 1),
+        ];
+        if ($showentity) {
+            $columns['entity'] = Entity::getTypeName(1);
+        }
+        $columns['calendar'] = __("Booking calendar");
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'checkbox' => 'raw_html',
+                'item' => 'raw_html',
+                'comment' => 'raw_html', // To preserve <br>. Text was already sanitized.
+                'calendar' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false,
+        ]);
+
         if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<th><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></th>";
+            echo "<i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
                 echo Html::hidden('end', ['value'   => $_POST['reserve']["end"]]);
             }
             echo Html::submit("<i class='fas fa-lg fa-calendar-plus'></i>&nbsp;" . _sx('button', 'Book'));
-            echo "</th></tr>";
         }
-        echo "</table>";
-        echo "</div>";
+
         echo "<input type='hidden' name='id' value=''>";
         echo "</form>";// No CSRF token needed
         echo "</div>";
     }
 
-
     /**
      * @param $name
      *
      * @return array
+     * @used-by CronTask
      **/
     public static function cronInfo($name)
     {
         return ['description' => __('Alerts on reservations')];
     }
 
-
     /**
      * Cron action on reservation : alert on end of reservations
      *
-     * @param $task to log, if NULL use display (default NULL)
+     * @param CronTask $task Task to log, if NULL use display (default NULL)
      *
-     * @return 0 : nothing to do 1 : done with success
+     * @return integer 0 : nothing to do 1 : done with success
+     * @used-by CronTask
      **/
     public static function cronReservation($task = null)
     {
@@ -776,7 +715,6 @@ class ReservationItem extends CommonDBChild
             return 0;
         }
 
-        $message        = [];
         $cron_status    = 0;
         $items_infos    = [];
         $items_messages = [];
@@ -813,8 +751,11 @@ class ReservationItem extends CommonDBChild
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
-                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('glpi_reservations.end') . ') - ' . $secs . ') < UNIX_TIMESTAMP()'),
-                    'glpi_reservations.begin'  => ['<', new \QueryExpression('NOW()')],
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    ),
+                    'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null
                 ]
             ];
@@ -832,7 +773,7 @@ class ReservationItem extends CommonDBChild
                         }
                         $items_messages[$entity] .= sprintf(
                             __('%1$s - %2$s'),
-                            $item_resa->getTypeName(),
+                            $item_resa::getTypeName(),
                             $item_resa->getName()
                         ) . "<br>";
                     }
@@ -862,14 +803,14 @@ class ReservationItem extends CommonDBChild
                     ));
                 } else {
                    //TRANS: %1$s is a name, %2$s is text of message
-                    Session::addMessageAfterRedirect(sprintf(
+                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
                             $entity
                         ),
                         $message
-                    ));
+                    )));
                 }
 
                 $alert             = new Alert();
@@ -887,40 +828,16 @@ class ReservationItem extends CommonDBChild
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect($msg, false, ERROR);
+                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                 }
             }
         }
         return $cron_status;
     }
 
-
-    /**
-     * Display debug information for reservation of current object
-     **/
-    public function showDebugResa()
-    {
-
-        $resa                                = new Reservation();
-        $resa->fields['id']                  = '1';
-        $resa->fields['reservationitems_id'] = $this->getField('id');
-        $resa->fields['begin']               = $_SESSION['glpi_currenttime'];
-        $resa->fields['end']                 = $_SESSION['glpi_currenttime'];
-        $resa->fields['users_id']            = Session::getLoginUserID();
-        $resa->fields['comment']             = '';
-
-        NotificationEvent::debugEvent($resa);
-    }
-
-
-    /**
-     * @since 0.85
-     *
-     * @see commonDBTM::getRights()
-     **/
     public function getRights($interface = 'central')
     {
-        if ($interface == 'central') {
+        if ($interface === 'central') {
             $values = parent::getRights();
         } else {
             $values = [READ => __('Read')];
@@ -930,37 +847,23 @@ class ReservationItem extends CommonDBChild
         return $values;
     }
 
-
-    /**
-     * @see CommonGLPI::defineTabs()
-     *
-     * @since 0.85
-     **/
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $ong['no_all_tab'] = true;
         return $ong;
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @since 0.85
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             $tabs = [];
-            if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+            if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
                 $tabs[1] = Reservation::getTypeName(1);
             }
             if (
-                (Session::getCurrentInterface() == "central")
+                (Session::getCurrentInterface() === "central")
                 && Session::haveRight("reservation", READ)
             ) {
                 $tabs[2] = __('Administration');
@@ -970,20 +873,13 @@ class ReservationItem extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param $item         CommonGLPI object
-     * @param $tabnum       (default1)
-     * @param $withtemplate (default0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1:
                     $item->showListSimple();
                     break;
-
                 case 2:
                     Search::show('ReservationItem');
                     break;
@@ -992,16 +888,10 @@ class ReservationItem extends CommonDBChild
         return true;
     }
 
-    /**
-     * @see CommonDBTM::isNewItem()
-     *
-     * @since 0.85
-     **/
     public function isNewItem()
     {
         return false;
     }
-
 
     public static function getIcon()
     {
@@ -1011,9 +901,11 @@ class ReservationItem extends CommonDBChild
     /**
      * Display a dropdown with only reservable items
      *
-     * @param array $post with these options
-     * - idtable: itemtype of items to show
-     * - name: input name
+     * @param array{idtable: string, name: string} $post
+     * <ul>
+     *     <li>idtable: itemtype of items to show</li>
+     *     <li>name: input name</li>
+     * </ul>
      *
      * @return void
      */
@@ -1022,8 +914,8 @@ class ReservationItem extends CommonDBChild
         if ($post['idtable'] && class_exists($post['idtable'])) {
             $result = self::getAvailableItems($post['idtable']);
 
-            if ($result->count() == 0) {
-                 echo __('No reservable item!');
+            if ($result->count() === 0) {
+                 echo __s('No reservable item!');
             } else {
                 $items = [];
                 foreach ($result as $row) {
@@ -1041,7 +933,7 @@ class ReservationItem extends CommonDBChild
     /**
      * Get available items for a given itemtype
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return DBmysqlIterator
      */
@@ -1050,7 +942,7 @@ class ReservationItem extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $reservation_table = ReservationItem::getTable();
+        $reservation_table = self::getTable();
         $item_table = $itemtype::getTable();
 
         $criteria = self::getAvailableItemsCriteria($itemtype);
@@ -1065,7 +957,7 @@ class ReservationItem extends CommonDBChild
     /**
      * Get available items for a given itemtype
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return int
      */
@@ -1083,13 +975,13 @@ class ReservationItem extends CommonDBChild
     /**
      * Get common criteria for getAvailableItems and countAvailableItems functions
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array
      */
     private static function getAvailableItemsCriteria(string $itemtype): array
     {
-        $reservation_table = ReservationItem::getTable();
+        $reservation_table = self::getTable();
         /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item_table = $itemtype::getTable();

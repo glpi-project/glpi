@@ -52,6 +52,7 @@ TESTS_SUITES=(
   "imap"
   "web"
   "javascript"
+  "e2e"
 )
 
 # Extract named options
@@ -77,6 +78,9 @@ SELECTED_METHODS="all"
 
 # Extract list of tests suites to run
 SELECTED_TESTS_TO_RUN=()
+
+# Flag to indicate the DB needs to be reinstalled. Required after e2e tests are run before functional or unit tests can be run.
+NEED_DB_REINSTALL=true
 
 if [[ $# -gt 0 ]]; then
   ARGS=("$@")
@@ -152,14 +156,15 @@ Available tests suites:
  - imap
  - web
  - javascript
+ - e2e
 EOF
 
   exit 0
 fi
 
 # Check for system dependencies
-if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; then
-  echo "This scripts requires both \"docker\" and \"docker-compose\" utilities to be installed"
+if [[ ! -x "$(command -v docker)" ]]; then
+  echo "This scripts requires the \"docker\" utility to be installed"
   exit 1
 fi
 
@@ -177,14 +182,14 @@ fi
 # Define variables (some may be defined in .env file)
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
-[[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.1
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.4
+[[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mariadb:10.11
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php-apache:8.3
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
 find "$APPLICATION_ROOT/tests/config" -mindepth 1 ! -iname ".gitignore" -exec mv {} $BACKUP_DIR \;
 
-# Export variables to env (required for docker-compose) and start containers
+# Export variables to env (required for docker compose) and start containers
 export COMPOSE_FILE="$APPLICATION_ROOT/.github/actions/docker-compose-app.yml"
 if [[ "$USE_SERVICES_CONTAINERS" ]]; then
   export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
@@ -206,8 +211,16 @@ INSTALL_TESTS_RUN=false
 run_single_test () {
   local TEST_TO_RUN=$1
   local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
-  if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
+  #Need reinstall if current test is not e2e and $NEED_DB_REINSTALL is true
+  #e2e tests are written to not care about extra data in the database
+  local REINSTALL_NOW=false
+  if [[ $NEED_DB_REINSTALL == true && $TEST_TO_RUN != "e2e" ]]; then
+    REINSTALL_NOW=true
+  fi
+  if [[ ($INSTALL_TESTS_RUN == false || $REINSTALL_NOW == true) && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
     echo "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
+    echo "Install tests run status: $INSTALL_TESTS_RUN"
+    echo "Reinstall now status: $REINSTALL_NOW"
     # Run install test suite before any other test suite
     run_single_test "install"
   fi
@@ -257,7 +270,7 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "update")
-         $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
+         $APPLICATION_ROOT/.github/actions/init_initialize-0.85.5-db.sh \
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
@@ -289,13 +302,23 @@ run_single_test () {
          docker compose exec -T app .github/actions/test_javascript.sh \
       || LAST_EXIT_CODE=$?
       ;;
+    "e2e")
+         docker compose exec -T app .github/actions/test_tests-e2e.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
   esac
+
+  if [[ $TEST_TO_RUN == "e2e" ]]; then
+    NEED_DB_REINSTALL=true
+  fi
+
   if [[ $LAST_EXIT_CODE -ne 0 ]]; then
     echo -e "\e[1;39;41m Tests \"$TEST_TO_RUN\" failed \e[0m\n"
   else
     echo -e "\e[1;30;42m Tests \"$TEST_TO_RUN\" passed \e[0m\n"
     if [[ $TEST_TO_RUN == "install" ]]; then
       INSTALL_TESTS_RUN=true
+      NEED_DB_REINSTALL=false
     fi
   fi
 }

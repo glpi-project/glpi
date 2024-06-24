@@ -39,6 +39,11 @@ const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
 const DELTA_ACTION_DELETE = 3;
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -126,7 +131,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (!is_array($data)) {
             Response::sendError(400, "Payload should be an array");
         }
-        $data = Toolbox::addslashes_deep($data);
 
         $readonly = true;
 

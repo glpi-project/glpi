@@ -48,16 +48,16 @@ class ProjectCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
-    /**
-     * @see CommonDBChild::prepareInputForAdd()
-     **/
     public function prepareInputForAdd($input)
     {
-
         if (
             empty($input['end_date'])
-            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] === 'NULL')
             || ($input['end_date'] < $input['begin_date'])
         ) {
             $input['end_date'] = $input['begin_date'];
@@ -66,16 +66,11 @@ class ProjectCost extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-
-    /**
-     * @see CommonDBTM::prepareInputForUpdate()
-     **/
     public function prepareInputForUpdate($input)
     {
-
         if (
             empty($input['end_date'])
-            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] === 'NULL')
             || ($input['end_date'] < $input['begin_date'])
         ) {
             $input['end_date'] = $input['begin_date'];
@@ -84,37 +79,24 @@ class ProjectCost extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-       // can exists for template
-        if (($item->getType() == 'Project') && Project::canView()) {
+        // can exist for template
+        if (($item::class === Project::class) && Project::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
 
-
-    /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         self::showForProject($item, $withtemplate);
         return true;
     }
-
 
     public function rawSearchOptions()
     {
@@ -127,7 +109,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Title'),
             'searchtype'         => 'contains',
@@ -137,7 +119,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -146,7 +128,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -154,7 +136,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
             'datatype'           => 'datetime'
@@ -162,7 +144,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
             'datatype'           => 'datetime'
@@ -170,7 +152,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'cost',
             'name'               => _n('Cost', 'Costs', 1),
             'datatype'           => 'decimal'
@@ -196,13 +178,11 @@ class ProjectCost extends CommonDBChild
         return $tab;
     }
 
-
     /**
      * Init cost for creation based on previous cost
      **/
     public function initBasedOnPrevious()
     {
-
         $ticket = new Ticket();
         if (
             !isset($this->fields['projects_id'])
@@ -230,7 +210,7 @@ class ProjectCost extends CommonDBChild
     /**
      * Get last datas for a project
      *
-     * @param $projects_id        integer  ID of the project
+     * @param integer $projects_id ID of the project
      **/
     public function getLastCostForProject($projects_id)
     {
@@ -238,7 +218,7 @@ class ProjectCost extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => ['projects_id' => $projects_id],
             'ORDER'  => ['end_date DESC', 'id DESC']
         ]);
@@ -253,12 +233,11 @@ class ProjectCost extends CommonDBChild
     /**
      * Print the project cost form
      *
-     * @param $ID        integer  ID of the item
-     * @param $options   array    options used
+     * @param integer $ID ID of the item
+     * @param array $options options used
      **/
     public function showForm($ID, array $options = [])
     {
-
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
@@ -307,12 +286,11 @@ class ProjectCost extends CommonDBChild
         return true;
     }
 
-
     /**
      * Print the project costs
      *
-     * @param $project               Project object
-     * @param $withtemplate  boolean  Template or basic item (default 0)
+     * @param Project $project object
+     * @param boolean $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/

@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Template for task
  * @since 9.1
  **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    use Clonable;
+
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -88,7 +92,12 @@ class TaskTemplate extends AbstractITILChildTemplate
             ['name'  => 'groups_id_tech',
                 'label' => Group::getTypeName(1),
                 'type'  => 'groups_id_tech'
-            ],
+            ], [
+                'name'  => 'pendingreasons_id',
+                'label' => PendingReason::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ]
         ];
     }
 
@@ -244,5 +253,10 @@ class TaskTemplate extends AbstractITILChildTemplate
     public static function getIcon()
     {
         return "fas fa-layer-group";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

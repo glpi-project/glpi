@@ -1,0 +1,419 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+use Glpi\Application\View\TemplateRenderer;
+
+/**
+ * @since 11.0
+ */
+class ItemAntivirus extends CommonDBChild
+{
+   // From CommonDBChild
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
+    public $dohistory       = true;
+
+
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Antivirus', 'Antiviruses', $nb);
+    }
+
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+
+       // can exists for template
+        if ($item::canView()) {
+            $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = countElementsInTable(
+                    self::getTable(),
+                    ['itemtype' => $item->getType(), 'items_id' => $item->getID(), 'is_deleted' => 0 ]
+                );
+            }
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        }
+        return '';
+    }
+
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+
+        self::showForItem($item, $withtemplate);
+        return true;
+    }
+
+
+    public function defineTabs($options = [])
+    {
+
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
+
+        return $ong;
+    }
+
+    public function rawSearchOptions()
+    {
+
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
+        ];
+
+        $tab[] = [
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '2',
+            'table'              => $this->getTable(),
+            'field'              => 'antivirus_version',
+            'name'               => _n('Version', 'Versions', 1),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'signature_version',
+            'name'               => __('Signature database version'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'itemantivirus_types',
+            'massiveaction'      => false
+        ];
+
+        return $tab;
+    }
+
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+        $name = _n('Antivirus', 'Antiviruses', Session::getPluralNumber());
+
+        $tab[] = [
+            'id'                 => 'antivirus',
+            'name'               => $name
+        ];
+
+        $tab[] = [
+            'id'                 => '167',
+            'table'              => static::getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'searchtype'         => ['contains'],
+        ];
+
+        $tab[] = [
+            'id'                 => '168',
+            'table'              => static::getTable(),
+            'field'              => 'antivirus_version',
+            'name'               => _n('Version', 'Versions', 1),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'text',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '169',
+            'table'              => static::getTable(),
+            'field'              => 'is_active',
+            'linkfield'          => '',
+            'name'               => __('Active'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'searchtype'         => ['equals']
+        ];
+
+        $tab[] = [
+            'id'                 => '170',
+            'table'              => static::getTable(),
+            'field'              => 'is_uptodate',
+            'linkfield'          => '',
+            'name'               => __('Is up to date'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ],
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'searchtype'         => ['equals']
+        ];
+
+        $tab[] = [
+            'id'                 => '171',
+            'table'              => static::getTable(),
+            'field'              => 'signature_version',
+            'name'               => __('Signature database version'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'text',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '172',
+            'table'              => static::getTable(),
+            'field'              => 'date_expiration',
+            'name'               => __('Expiration date'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'date',
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item'
+            ]
+        ];
+
+        return $tab;
+    }
+
+    /**
+     * Display form for antivirus
+     *
+     * @param integer $ID      id of the antivirus
+     * @param array   $options
+     *
+     * @return boolean TRUE if form is ok
+     **/
+    public function showForm($ID, array $options = [])
+    {
+        /** @var CommonDBTM $itemtype */
+        $itemtype = $this->fields['itemtype'];
+
+        if (!Session::haveRight($itemtype::$rightname, READ)) {
+            return false;
+        }
+
+        $asset = new $itemtype();
+        if ($ID > 0) {
+            $this->check($ID, READ);
+            $asset->getFromDB($this->fields['items_id']);
+        } else {
+            $this->check(-1, CREATE, $options);
+            $asset->getFromDB($options['items_id']);
+        }
+
+        $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/item_antivirus.html.twig', [
+            'item'   => $this,
+            'asset'  => $asset,
+            'params' => $options,
+        ]);
+
+        return true;
+    }
+
+
+    /**
+     * Print the items antiviruses
+     *
+     * @param CommonDBTM $asset         Asset
+     * @param integer    $withtemplate Template or basic item (default 0)
+     *
+     * @return void
+     **/
+    private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $ID = $asset->fields['id'];
+        $itemtype = $asset->getType();
+
+        if (
+            !$asset->getFromDB($ID)
+            || !$asset->can($ID, READ)
+        ) {
+            return;
+        }
+        $canedit = $asset->canEdit($ID);
+
+        if (
+            $canedit
+            && !(!empty($withtemplate) && ($withtemplate == 2))
+        ) {
+            echo "<div class='center firstbloc'>" .
+               "<a class='btn btn-primary' href='" . ItemAntivirus::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID&amp;withtemplate=" .
+                  $withtemplate . "'>";
+            echo __('Add an antivirus');
+            echo "</a></div>\n";
+        }
+
+        echo "<div class='spaced center table-responsive'>";
+
+        $result = $DB->request(
+            [
+                'FROM'  => ItemAntivirus::getTable(),
+                'WHERE' => [
+                    'itemtype' => $itemtype,
+                    'items_id' => $ID,
+                    'is_deleted'   => 0,
+                ],
+            ]
+        );
+
+        echo "<table class='tab_cadre_fixehov'>";
+        $colspan = 8;
+        echo "<tr class='noHover'><th colspan='$colspan'>" . self::getTypeName($result->numrows()) .
+           "</th></tr>";
+
+        if ($result->numrows() != 0) {
+            $header = "<tr><th>" . __('Name') . "</th>";
+            $header .= "<th>" . __('Automatic inventory') . "</th>";
+            $header .= "<th>" . Manufacturer::getTypeName(1) . "</th>";
+            $header .= "<th>" . __('Antivirus version') . "</th>";
+            $header .= "<th>" . __('Signature database version') . "</th>";
+            $header .= "<th>" . __('Active') . "</th>";
+            $header .= "<th>" . __('Up to date') . "</th>";
+            $header .= "<th>" . __('Expiration date') . "</th>";
+            $header .= "</tr>";
+            echo $header;
+
+            Session::initNavigateListItems(
+                __CLASS__,
+                //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(
+                                            __('%1$s = %2$s'),
+                                            $asset->getTypeName(1),
+                                            $asset->getName()
+                                        )
+            );
+
+            $antivirus = new self();
+            foreach ($result as $data) {
+                 $antivirus->getFromDB($data['id']);
+                 echo "<tr class='tab_bg_2'>";
+                 echo "<td>" . $antivirus->getLink() . "</td>";
+                 echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
+                 echo "<td>";
+                if ($data['manufacturers_id']) {
+                    echo Dropdown::getDropdownName(
+                        'glpi_manufacturers',
+                        $data['manufacturers_id']
+                    ) . "</td>";
+                } else {
+                    echo "</td>";
+                }
+                echo "<td>" . $data['antivirus_version'] . "</td>";
+                echo "<td>" . $data['signature_version'] . "</td>";
+                echo "<td>" . Dropdown::getYesNo($data['is_active']) . "</td>";
+                echo "<td>" . Dropdown::getYesNo($data['is_uptodate']) . "</td>";
+                echo "<td>" . Html::convDate($data['date_expiration']) . "</td>";
+                echo "</tr>";
+                Session::addToNavigateListItems(__CLASS__, $data['id']);
+            }
+            echo $header;
+        } else {
+            echo "<tr class='tab_bg_2'><th colspan='$colspan'>" . __('No item found') . "</th></tr>";
+        }
+
+        echo "</table>";
+        echo "</div>";
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
+        }
+
+        return $input;
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-virus-search";
+    }
+}

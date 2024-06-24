@@ -49,7 +49,7 @@ class Provider extends DbTestCase
         global $DB;
 
        // Prepare context
-        $slm = new \Slm();
+        $slm = new \SLM();
         $slm->add([
             'name' => 'SLM',
         ]);
@@ -319,7 +319,7 @@ class Provider extends DbTestCase
         global $DB;
 
        // Prepare context
-        $slm = new \Slm();
+        $slm = new \SLM();
         $slm->add([
             'name' => 'SLM',
         ]);

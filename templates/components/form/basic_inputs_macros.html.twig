@@ -1,0 +1,469 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro input(name, value, options = {}) %}
+    {% set options = {
+        'id': null,
+        'type': 'text',
+        'input_addclass': '',
+        'additional_attributes': {},
+        'readonly': false,
+        'disabled': false,
+        'multiple': false,
+        'required': false,
+        'is_disclosable': false,
+        'is_copyable': false,
+        'clearable': false,
+    }|merge(options) %}
+
+    {% if options.fields_template.isMandatoryField(name) %}
+        {% set options = options|merge({'required': true}) %}
+    {% endif %}
+
+    {% if options.fields_template.isReadonlyField(name) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
+
+   {% if (options.is_disclosable or options.is_copyable) and id is null %}
+      {% set options = options|merge({
+         id: name|slug ~ '_' ~ random()
+      }) %}
+   {% endif %}
+
+    {% set input %}
+        <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
+               class="form-control {{ options.input_addclass }}"
+               name="{{ name }}" value="{{ value }}"
+            {% for attr, value in options.additional_attributes %}
+               {{ attr }}="{{ value }}"
+            {% endfor %}
+               {{ options.maxlength ? 'maxlength=' ~ options.maxlength : '' }}
+               {{ options.readonly ? 'readonly' : '' }}
+               {{ options.disabled ? 'disabled' : '' }}
+               {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
+               {{ options.required ? 'required' : '' }}
+               {% if options.pattern is defined %}pattern="{{ options.pattern }}"{% endif %}
+               {% if options.min is defined %}min="{{ options.min }}"{% endif %}
+               {% if options.max is defined %}max="{{ options.max }}"{% endif %}
+               {% if options.step is defined %}step="{{ options.step }}"{% endif %} />
+    {% endset %}
+
+    {% set more_html %}
+        {% if options.is_disclosable %}
+            <div class="btn btn-outline-secondary"
+                 onmousedown="showDisclosablePasswordField('{{ options.id }}')"
+                 onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
+                 onmouseout="hideDisclosablePasswordField('{{ options.id }}')">
+                <i class="ti ti-eye disclose"></i>
+            </div>
+        {% endif %}
+
+        {% if options.is_copyable %}
+            <div class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')">
+                <i class="ti ti-clipboard-copy disclose"></i>
+            </div>
+        {% endif %}
+    {% endset %}
+
+    {% if more_html|trim|length > 0 %}
+        {% set input %}
+            <div class="btn-group btn-group-sm d-flex">
+                {{ input }}
+                {{ more_html }}
+            </div>
+        {% endset %}
+    {% endif %}
+
+    {{ input }}
+
+    {% if options.clearable %}
+        <span class="d-inline-flex">
+            <input type="checkbox" name="_blank_{{ name }}" id="_blank_{{ name }}" class="ms-1">
+            <label for="_blank_{{ name }}" class="ms-1">
+                {{ __('Clear') }}
+            </label>
+        </span>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro text(name, value, options = {}) %}
+    {% if options.copyable %}
+        <div class="copy_to_clipboard_wrapper">
+    {% endif %}
+    {{ _self.input(name, value, options|merge({'type': 'text'})) }}
+    {% if options.copyable %}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro number(name, value, options = {}) %}
+    {% set options = {
+        'step': 1,
+    }|merge(options) %}
+
+    {% if value == "" %}
+        {% set value = (options.min is defined ? options.min : 0) %}
+    {% endif %}
+
+    {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
+        {# Only format number if not a whole number #}
+        {% set value = call('Html::formatNumber', [value, true]) %}
+    {% endif %}
+
+    {{ _self.input(name, value, options|merge({'type': 'number'})) }}
+{% endmacro %}
+
+
+{% macro color(name, value, options = {}) %}
+    {% set options = {
+        id: name ~ '_' ~ options.rand
+    }|merge(options) %}
+
+    {{ _self.input(name, value, options|merge({'type': 'text'})) }}
+    <script>
+        $(function () {
+            $("#{{ options.id }}").spectrum({
+                showInput: true,
+                preferredFormat: "hex",
+                type: "text",
+                cancelText: "{{ __('Cancel') }}",
+                chooseText: "{{ __('Validate') }}",
+                change: function (color) {
+                    if (color !== null && color.getAlpha() !== 1) {
+                        let hex = color.toHexString();
+                        hex += ("0" + Math.round(parseFloat(color.getAlpha()) * 255).toString(16)).slice(-2);
+                        this.value = hex;
+                    }
+                }
+            });
+        });
+    </script>
+{% endmacro %}
+
+
+{% macro password(name, value, options = {}) %}
+    {{ _self.input(name, value, options|merge({'type': 'password'})) }}
+{% endmacro %}
+
+
+{% macro email(name, value, options = {}) %}
+    {{ _self.input(name, value, options|merge({'type': 'email'})) }}
+{% endmacro %}
+
+
+{% macro file(name, value, options = {}) %}
+    {% set options = {
+        'simple': false,
+    }|merge(options) %}
+
+    {% if options.simple %}
+        {{ _self.input(name, value, options|merge({'type': 'file'})) }}
+    {% else %}
+        {% do call('Html::file', [
+            options|merge({
+                'name': name,
+            })
+        ]) %}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro hidden(name, value, options = {}) %}
+    {{ _self.input(name, value, options|merge({'type': 'hidden'})) }}
+{% endmacro %}
+
+
+{% macro date(name, value, options = {}) %}
+    {% set options = {
+        'rand': random(),
+        'enableTime': false,
+        'checkIsExpired ': false,
+        'clearable': false,
+    }|merge(options) %}
+
+    {% set options = {
+        'id': name|slug ~ '_' ~ options.rand
+    }|merge(options) %}
+
+    {% if value == 'NULL' %}
+      {% set value = null %}
+   {% endif %}
+
+    {% set final_expiration_class = '' %}
+    {% if options.checkIsExpired %}
+        {% if value|date('Y-m-d H:i:s') < "now"|date('Y-m-d H:i:s') %}
+            {% set final_expiration_class = ' warn' %}
+        {% endif %}
+    {% else %}
+        {% if options.expiration_class is defined %}
+            {% set final_expiration_class = ' ' ~ options.expiration_class %}
+        {% else %}
+            {% set final_expiration_class = '' %}
+        {% endif %}
+    {% endif %}
+
+    <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
+        {{ _self.input(name, value, options|merge({
+            'type': 'text',
+            'id': options.id ~ '_input',
+            'additional_attributes': {'data-input': ''},
+            'input_addclass': options.input_addclass ~ final_expiration_class,
+            'clearable': false
+        })) }}
+
+        {% if not options.readonly %}
+            {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+                <i class="{{ calendar_icon }}"></i>
+            </button>
+            {# maybeempty has no distinct purpose, but it was here first #}
+            {% if options.clearable or options.maybeempty %}
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Clear') }}">
+                    <i class="ti ti-circle-x" data-clear></i>
+                </button>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% set locale = get_current_locale() %}
+    {% set date_format = options.enableTime ? 'Y-m-d H:i:S' : 'Y-m-d' %}
+    {% set alt_format = call('Toolbox::getDateFormat', ['js']) ~ (options.enableTime ? ' H:i:S' : '') %}
+    <script>
+        $(function() {
+            $("#{{ options.id }}").flatpickr({
+                wrap: true,
+                altInput: true,
+                dateFormat: '{{ date_format }}',
+                altFormat: '{{ alt_format }}',
+                enableTime: {{ options.enableTime ? "true" : "false" }},
+                enableSeconds: {{ options.enableTime ? "true" : "false" }},
+                weekNumbers: true,
+                time_24hr: true,
+                allowInput: {{ options.readonly ? 'false' : 'true' }},
+                clickOpens: {{ options.readonly ? 'false' : 'true' }},
+                locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
+                onClose(dates, currentdatestring, picker) {
+                    picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+                },
+                plugins: [
+                    CustomFlatpickrButtons()
+                ]
+            });
+        });
+    </script>
+{% endmacro %}
+
+
+{% macro datetime(name, value, options = {}) %}
+    {{ _self.date(name, value, options|merge({
+        'enableTime': true
+    })) }}
+{% endmacro %}
+
+
+{% macro textarea(name, value, options = {}) %}
+    {% set options = {
+        'rand': random(),
+        'rows': 3,
+        'enable_richtext': false,
+        'enable_images': true,
+        'enable_mentions': false,
+        'entities_id': session('glpiactive_entity'),
+        'readonly': false,
+        'disabled': false,
+        'required': false,
+        'add_body_classes': [],
+        'toolbar_location': 'top',
+        'init': true,
+        'placeholder': "",
+        'enable_form_tags': false,
+        'form_tags_form_id': null,
+        'aria_label': "",
+    }|merge(options) %}
+
+    {% if options.fields_template.isMandatoryField(name) %}
+        {% set options = {'required': true}|merge(options) %}
+    {% endif %}
+    {% set options = options|merge({
+        'id': options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand)
+    }) %}
+
+    {# 100% width is here to prevent width issues with tinymce #}
+    <textarea class="form-control {{ options.input_addclass }}"
+            id="{{ options.id }}" name="{{ name }}" rows="{{ options.rows }}"
+            style="width: 100%;"
+            {% if not options.aria_label is empty %}
+                aria-label="{{ options.aria_label }}"
+            {% endif %}
+            {{ options.disabled ? 'disabled' : '' }}
+            {{ options.readonly ? 'readonly' : '' }}
+            {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value }}</textarea>
+
+    {% if options.enable_richtext %}
+        {% do call('Html::initEditorSystem', [
+            options.id,
+            options.rand,
+            true,
+            options.disabled|default(false),
+            options.enable_images,
+            options.editor_height|default(150),
+            options.add_body_classes,
+            options.toolbar_location,
+            options.init,
+            options.placeholder,
+        ]) %}
+   {% endif %}
+
+   {% if options.enable_form_tags %}
+        <script>
+            $(function() {
+                const form_tags = new GLPI.RichText.FormTags(
+                    tinymce.get('{{ options.id }}'),
+                    {{ options.form_tags_form_id }},
+                );
+                form_tags.register();
+            });
+        </script>
+    {% endif %}
+
+    {% if options.enable_mentions and config('use_notifications') %}
+        <script>
+            $(function() {
+                const user_mention = new GLPI.RichText.UserMention(
+                    tinymce.get('{{ options.id }}'),
+                    {{ options.entities_id }},
+                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
+                );
+                user_mention.register();
+            });
+        </script>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro checkbox(name, value, options = {}) %}
+    {% set options = {
+        'id': null,
+        'input_addclass': '',
+        'readonly': false,
+        'disabled': false,
+        'required': false,
+    }|merge(options) %}
+
+    <input type="hidden"   name="{{ name }}" value="0" />
+    <input type="checkbox" name="{{ name }}" value="1"
+           class="form-check-input {{ options.input_addclass }}"
+           {{ (options.id != null ? 'id="' ~ options.id|escape ~ '"' : '')|raw }}
+           {{ value == 1 ? 'checked' : '' }}
+           {{ options.readonly ? 'readonly' : '' }}
+           {{ options.required ? 'required' : '' }}
+           {{ options.disabled ? 'disabled' : '' }} />
+{% endmacro %}
+
+
+{% macro button(name, label = '', type = 'button', value = '', options = {}) %}
+    {% set options = {
+        'type': 'submit',
+        'class': 'btn btn-primary',
+        'icon': '',
+        'icon_title': '',
+        'additional_attributes': {},
+    }|merge(options) %}
+
+    <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
+        {% for attr, value in options.additional_attributes %}
+            {{ attr }}="{{ value }}"
+        {% endfor %}>
+        {% if options.icon is not empty %}
+            <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
+        {% endif %}
+        {% if label is not empty %}
+            <span>{{ label }}</span>
+        {% endif %}
+    </button>
+{% endmacro %}
+
+
+{% macro submit(name, label = '', value = '', options = {}) %}
+    {{ _self.button(name, label, 'submit', value, options) }}
+{% endmacro %}
+
+{% macro label(label, id, options = {}, class = 'form-label') %}
+    {% set options = {
+        locked: false,
+        locked_value: null
+    }|merge(options) %}
+
+    {% set required_mark = '' %}
+    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+        {% set required_mark = '<span class="required">*</span>' %}
+    {% endif %}
+
+    {% set helper = '' %}
+    {% if options.helper %}
+        {# `|escape` must be called before call to `|nl2br` to ensure that special chars in the text will escaped twice. #}
+        {# Indeed, otherwise, due to the usage of `data-bs-html="true"`, any code snippet would be interpreted. #}
+        {% set helper_safe_text = options.helper|escape|nl2br %}
+        {% set helper %}
+        <span class="form-help"
+              data-bs-toggle="popover"
+              data-bs-placement="top"
+              data-bs-html="true"
+              data-bs-content="{{ helper_safe_text }}">
+            ?
+        </span>
+        {% endset %}
+    {% endif %}
+
+    {% set locked_mark = '' %}
+    {% if options.locked %}
+        {% set locked_mark %}
+        {% set locked_title %}{{ __('Field will not be updated from inventory') }}{% endset %}
+        {% if options.locked_value is not empty %}
+            {% set locked_title %}{{ locked_title }}
+            -
+            {{ __('Last inventory value was:') ~ ' ' ~ options.locked_value }}{% endset %}
+        {% endif %}
+        <i class="ti ti-lock" title="{{ locked_title }}" data-bs-toggle="tooltip"></i>
+        {% endset %}
+    {% endif %}
+
+    <label class="{{ class }}" for="{{ id }}">
+        {{ label }}
+        {{ locked_mark|raw }}
+        {{ required_mark|raw }}
+        {{ helper|raw }}
+    </label>
+{% endmacro %}

@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 // Class PlanningRecall
 // @since 0.84
 class PlanningRecall extends CommonDBChild
@@ -46,33 +50,28 @@ class PlanningRecall extends CommonDBChild
         return _n('Planning reminder', 'Planning reminders', $nb);
     }
 
-
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return true;
     }
 
-
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
-        return $this->fields['users_id'] == Session::getLoginUserID();
+        return (int) $this->fields['users_id'] === Session::getLoginUserID();
     }
-
 
     public function cleanDBonPurge()
     {
-
         $class = new Alert();
-        $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
-
 
     public static function isAvailable()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Cache in session
+        // Cache in session
         if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
             return $_SESSION['glpiplanningreminder_isavailable'];
         }
@@ -81,8 +80,8 @@ class PlanningRecall extends CommonDBChild
         if ($CFG_GLPI["use_notifications"]) {
             $task = new CronTask();
             if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
-               // Only disabled by config
-                if ($task->isDisabled() != 1) {
+                // Only disabled by config
+                if ($task->isDisabled() !== 1) {
                     if (
                         Session::haveRightsOr(
                             "planning",
@@ -98,35 +97,28 @@ class PlanningRecall extends CommonDBChild
         return $_SESSION['glpiplanningreminder_isavailable'];
     }
 
-
     /**
      * Retrieve an item from the database
      *
-     * @param string $itemtype     string   itemtype to get
-     * @param integer $items_id     integer  id of the item
-     * @param integer $users_id     integer  id of the user
+     * @param string $itemtype itemtype to get
+     * @param integer $items_id id of the item
+     * @param integer $users_id id of the user
      *
      * @return boolean true if succeed else false
      **/
     public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
     {
-
         return $this->getFromDBByCrit([
-            $this->getTable() . '.itemtype'  => $itemtype,
-            $this->getTable() . '.items_id'  => $items_id,
-            $this->getTable() . '.users_id'  => $users_id
+            static::getTable() . '.itemtype'  => $itemtype,
+            static::getTable() . '.items_id'  => $items_id,
+            static::getTable() . '.users_id'  => $users_id
         ]);
     }
 
-
-    /**
-     * @see CommonDBTM::post_updateItem()
-     **/
     public function post_updateItem($history = true)
     {
-
         $alert = new Alert();
-        $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);
+        $alert->clear(static::class, $this->fields['id'], Alert::ACTION);
 
         parent::post_updateItem($history);
     }
@@ -134,12 +126,11 @@ class PlanningRecall extends CommonDBChild
     /**
      * Manage recall set
      *
-     * @param $data array of data to manage
+     * @param array $data array of data to manage
      **/
     public static function manageDatas(array $data)
     {
-
-       // Check data information
+        // Check data information
         if (
             !isset($data['itemtype'])
             || !isset($data['items_id'])
@@ -151,7 +142,7 @@ class PlanningRecall extends CommonDBChild
         }
 
         $pr = new self();
-       // Datas OK : check if recall already exists
+        // Data OK : check if recall already exists
         if (
             $pr->getFromDBForItemAndUser(
                 $data['itemtype'],
@@ -159,7 +150,7 @@ class PlanningRecall extends CommonDBChild
                 $data['users_id']
             )
         ) {
-            if ($data['before_time'] != $pr->fields['before_time']) {
+            if ($data['before_time'] !== $pr->fields['before_time']) {
                // Recall exists and is different : update datas and clean alert
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     if (
@@ -193,7 +184,6 @@ class PlanningRecall extends CommonDBChild
                     $item->getFromDB($data['items_id']);
                     if (
                         $item->getFromDB($data['items_id'])
-                        && isset($item->fields[$data['field']])
                         && !empty($item->fields[$data['field']])
                     ) {
                         $data['when'] = date(
@@ -210,13 +200,12 @@ class PlanningRecall extends CommonDBChild
         }
     }
 
-
     /**
      * Update planning recal date when changing begin of planning
      *
-     * @param string $itemtype  string   itemtype to get
-     * @param integer $items_id  integer  id of the item
-     * @param string $begin     datetime new begin date
+     * @param string $itemtype itemtype to get
+     * @param integer $items_id id of the item
+     * @param string $begin new begin date
      *
      * @return boolean true if succeed else false
      **/
@@ -229,40 +218,58 @@ class PlanningRecall extends CommonDBChild
             unset($_SESSION['glpiplanningreminder_isavailable']);
         }
 
-       //nedds DB::update() to support SQL functions to get migrated
-        $result = $DB->update(
+        return $DB->update(
             'glpi_planningrecalls',
             [
-                'when'   => new \QueryExpression(
-                    "DATE_SUB('$begin', INTERVAL " . $DB->quoteName('before_time') . " SECOND)"
-                ),
+                'when'   => QueryFunction::dateSub(
+                    date: new QueryExpression($DB::quoteValue($begin)),
+                    interval: new QueryExpression($DB::quoteName('before_time')),
+                    interval_unit: 'SECOND'
+                )
             ],
             [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id
             ]
         );
-        return $result;
     }
 
+    /**
+     * Get the planning recall for an item if it exists
+     * @param class-string<CommonDBTM> $itemtype The itemtype
+     * @param int $items_id The item id
+     * @param int $users_id The user id. If 0 (default), the current user is used.
+     * @return PlanningRecall|null
+     */
+    public static function getForItem(string $itemtype, int $items_id, int $users_id = 0): ?PlanningRecall
+    {
+        $pr = new self();
+        if ($users_id === 0) {
+            $users_id = Session::getLoginUserID();
+        }
+        if ($pr->getFromDBForItemAndUser($itemtype, $items_id, $users_id)) {
+            return $pr;
+        }
+        return null;
+    }
 
     /**
      * Make a select box with recall times
      *
      * Mandatory options : itemtype, items_id
      *
-     * @param $options array of possible options:
+     * @param array $options array of possible options:
      *    - itemtype : string itemtype
      *    - items_id : integer id of the item
      *    - users_id : integer id of the user (if not set used login user)
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
+     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
      **/
     public static function dropdown($options = [])
     {
-       // Default values
+        // Default values
         $p['itemtype'] = '';
         $p['items_id'] = 0;
         $p['users_id'] = Session::getLoginUserID();
@@ -275,12 +282,12 @@ class PlanningRecall extends CommonDBChild
                 $p[$key] = $val;
             }
         }
-        if (!($item = getItemForItemtype($p['itemtype']))) {
+        if (!(getItemForItemtype($p['itemtype']))) {
             return false;
         }
 
         $pr = new self();
-       // Get recall for item and user
+        // Get recall for item and user
         if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
             $p['value'] = $pr->fields['before_time'];
         }
@@ -315,55 +322,14 @@ class PlanningRecall extends CommonDBChild
             'value' => $p['value'],
             'rand'  => $p['rand'],
         ]);
-        echo "<input type='hidden' name='_planningrecall[itemtype]' value='" . $p['itemtype'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[items_id]' value='" . $p['items_id'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[users_id]' value='" . $p['users_id'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[field]' value='" . $p['field'] . "'>";
-        return true;
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <input type="hidden" name="_planningrecall[itemtype]" value="{{ itemtype }}">
+            <input type="hidden" name="_planningrecall[items_id]" value="{{ items_id }}">
+            <input type="hidden" name="_planningrecall[users_id]" value="{{ users_id }}">
+            <input type="hidden" name="_planningrecall[field]" value="{{ field }}">
+TWIG, $p);
     }
-
-
-    /**
-     * Dispaly specific form when no edit right
-     *
-     * Mandatory options : itemtype, items_id
-     *
-     * @param $options array of possible options:
-     *    - itemtype : string itemtype
-     *    - items_id : integer id of the item
-     *    - users_id : integer id of the user (if not set used login user)
-     *    - value    : integer preselected value for before_time
-     *    - field    : string  field used as time mark (default begin)
-     *
-     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
-     **/
-    public static function specificForm($options = [])
-    {
-       // Default values
-        $p['itemtype'] = '';
-        $p['items_id'] = 0;
-        $p['users_id'] = Session::getLoginUserID();
-        $p['value']    = Entity::CONFIG_NEVER;
-        $p['field']    = 'begin';
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
-        if (!($item = getItemForItemtype($p['itemtype']))) {
-            return false;
-        }
-
-        echo "<form method='post' action='" . PlanningRecall::getFormURL() . "'>";
-        echo "<table width='100%'><tr><td>";
-        self::dropdown($options);
-        echo "&nbsp;";
-        echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-        echo "</td></tr></table>";
-        Html::closeForm();
-    }
-
 
     /**
      * Give cron information
@@ -371,10 +337,10 @@ class PlanningRecall extends CommonDBChild
      * @param $name : task's name
      *
      * @return array of information
+     * @used-by CronTask
      **/
     public static function cronInfo($name)
     {
-
         switch ($name) {
             case 'planningrecall':
                 return ['description' => __('Send planning recalls')];
@@ -382,11 +348,11 @@ class PlanningRecall extends CommonDBChild
         return [];
     }
 
-
     /**
      * Cron action on contracts : alert depending of the config : on notice and expire
      *
-     * @param $task for log, if NULL display (default NULL)
+     * @param CronTask $task for log, if NULL display (default NULL)
+     * @used-by CronTask
      **/
     public static function cronPlanningRecall($task = null)
     {
@@ -419,7 +385,7 @@ class PlanningRecall extends CommonDBChild
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
-                'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
+                'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
                 'glpi_alerts.date'            => null
             ]
         ]);
@@ -446,7 +412,7 @@ class PlanningRecall extends CommonDBChild
                     }
                 }
 
-                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options)) {
+                if (NotificationEvent::raiseEvent('planningrecall', $pr, $options, $itemToNotify)) {
                     $cron_status         = 1;
                     $task->addVolume(1);
                     $alert               = new Alert();
@@ -457,7 +423,7 @@ class PlanningRecall extends CommonDBChild
                     $alert->add($input);
                 }
             } else {
-               // Clean item
+                // Clean item
                 $pr->delete($data);
             }
         }

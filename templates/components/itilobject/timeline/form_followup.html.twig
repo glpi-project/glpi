@@ -41,6 +41,7 @@
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or params['nokb'] == true %}
 {% set rand = random() %}
+{% set is_default_pending = call('PendingReason::isDefaultPending') %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -64,7 +65,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set merged_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
                      </span>
                   {% endset %}
@@ -76,7 +77,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set promoted_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
                      </span>
                   {% endset %}
@@ -161,7 +162,7 @@
                         ) }}
 
                         {% set fup_private_lbl %}
-                           <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
+                           <i class="ti ti-eye-off fa-fw me-1" title="{{ __('Private') }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            'is_private',
@@ -171,6 +172,9 @@
                               'full_width': true,
                               'icon_label': true,
                               'rand': rand,
+                              'additional_attributes': {
+                                'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                              }
                            }
                         ) }}
 
@@ -217,7 +221,7 @@
             {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
             <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
                {% set pending_reasons %}
-                  {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen %}
+                  {% set show_pending_reasons_actions = (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen %}
                   {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) and call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
                      <span
                         class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
@@ -231,7 +235,7 @@
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
-                                    {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
+                                    {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
                                     data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                            </label>
                         </span>
@@ -254,7 +258,8 @@
                         <i class="fas fa-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
-                     {{ pending_reasons|raw }}
+                    {{ pending_reasons|raw }}
+
                   </div>
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
@@ -306,6 +311,31 @@
                   .prop("checked", data.is_private == "0"
                      ? false
                      : true);
+
+               // set predefined pending reason
+               $("#enable-pending-reasons-{{ rand }}")
+                  .prop("checked", data.pendingreasons_id > 0);
+               if (data.pendingreasons_id > 0) {
+                  $("#pending-reasons-setup-{{ rand }}")
+                     .collapse('show');
+
+                  //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+                  //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+                  var newOption = new Option(data.pendingreasons_name, data.pendingreasons_id, true, true);
+                  $("#dropdown_pendingreasons_id{{ rand }}")
+                     .append(newOption)
+                     .trigger('change');
+               } else if (
+                  $("#dropdown_pendingreasons_id{{ rand }}").val() > 0
+                     && $("#pending-reasons-setup-{{ rand }}").hasClass('show')
+               ) {
+                  $("#pending-reasons-setup-{{ rand }}")
+                     .collapse('hide');
+
+                  $("#dropdown_pendingreasons_id{{ rand }}")
+                     .val(0)
+                     .trigger('change');
+               }
             });
          }
       </script>

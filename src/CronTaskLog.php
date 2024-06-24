@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * CronTaskLog class
  **/
@@ -44,6 +46,10 @@ class CronTaskLog extends CommonDBTM
     const STATE_STOP  = 2;
     const STATE_ERROR = 3;
 
+    public static function getIcon()
+    {
+        return "ti ti-news";
+    }
 
     /**
      * Clean old event for a task
@@ -64,7 +70,7 @@ class CronTaskLog extends CommonDBTM
             'glpi_crontasklogs',
             [
                 'crontasks_id' => $id,
-                new \QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
             ]
         );
 
@@ -78,17 +84,17 @@ class CronTaskLog extends CommonDBTM
         if (!$withtemplate) {
             $nb = 0;
             if ($item instanceof CronTask) {
-                $ong = [];
-                $ong[1] = __('Statistics');
+                $ong    = [];
+                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
+                    $nb =  countElementsInTable(
                         $this->getTable(),
                         ['crontasks_id' => $item->getID(),
-                            'state' => self::STATE_STOP
+                            'state'        => self::STATE_STOP
                         ]
                     );
                 }
-                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb);
+                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
                 return $ong;
             }
         }

@@ -53,7 +53,6 @@ var GLPIPlanning  = {
                 'dayGrid', 'interaction', 'list', 'timeGrid',
                 'resourceTimeline', 'rrule', 'bootstrap'
             ],
-            license_key: "",
             resources: [],
             now: null,
             can_create: false,
@@ -96,7 +95,7 @@ var GLPIPlanning  = {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
             maxTime:     CFG_GLPI.planning_end,
-            schedulerLicenseKey: options.license_key,
+            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
             editable: true, // we can drag / resize items
             droppable: false, // we cant drop external items by default
@@ -602,6 +601,7 @@ var GLPIPlanning  = {
                             end: end.toISOString(),
                             res_itemtype: itemtype,
                             res_items_id: items_id,
+                            in_modal: 1
                         },
                         dialogclass: 'modal-lg planning-modal',
                         title: __('Add an event'),
@@ -727,21 +727,7 @@ var GLPIPlanning  = {
         });
 
         $('#planning_filter .delete_planning').on( 'click', function() {
-            var deleted = $(this);
-            var li = deleted.closest('ul.filters > li');
-            $.ajax({
-                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
-                type: 'POST',
-                data: {
-                    action: 'delete_filter',
-                    filter: deleted.attr('value'),
-                    type: li.attr('event_type')
-                },
-                success: function() {
-                    li.remove();
-                    GLPIPlanning.refresh();
-                }
-            });
+            GLPIPlanning.deletePlanning(this);
         });
 
         var sendDisplayEvent = function(current_checkbox, refresh_planning) {
@@ -839,6 +825,24 @@ var GLPIPlanning  = {
                 $('#planning_filter').toggleClass('folded');
                 $('#planning_container').toggleClass('folded');
             });
+        });
+    },
+
+    deletePlanning: (trigger_element) => {
+        const deleted = $(trigger_element);
+        const li = deleted.closest('ul.filters > li');
+        $.ajax({
+            url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+            type: 'POST',
+            data: {
+                action: 'delete_filter',
+                filter: deleted.attr('value'),
+                type: li.attr('event_type')
+            },
+            success: function() {
+                li.remove();
+                GLPIPlanning.refresh();
+            }
         });
     },
 

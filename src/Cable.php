@@ -40,6 +40,9 @@ use Glpi\SocketModel;
 /// Class Cable
 class Cable extends CommonDBTM
 {
+    use Glpi\Features\Clonable;
+    use Glpi\Features\State;
+
    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';
@@ -59,7 +62,7 @@ class Cable extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
@@ -72,6 +75,16 @@ class Cable extends CommonDBTM
         $this->fields['color'] = '#dddddd';
         $this->fields['itemtype_endpoint_a'] = 'Computer';
         $this->fields['itemtype_endpoint_b'] = 'Computer';
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class,
+            Item_Ticket::class,
+            Item_Problem::class,
+            Change_Item::class,
+        ];
     }
 
     public static function getAdditionalMenuLinks()
@@ -287,11 +300,11 @@ class Cable extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_cable' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -380,8 +393,8 @@ class Cable extends CommonDBTM
                 $itemtype = isset($values['itemtype_endpoint_b']) ? $values['itemtype_endpoint_b'] : $values['itemtype_endpoint_a'];
                 $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
 
-                if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
+                if (method_exists($itemtype, 'renderDcBreadcrumb')) {
+                    return $itemtype::renderDcBreadcrumb($items_id);
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

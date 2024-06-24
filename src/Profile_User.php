@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Profile_User Class
@@ -76,7 +77,7 @@ class Profile_User extends CommonDBRelation
 
 
    // TODO CommonDBConnexity : check in details if we can replace canCreateItem by canRelationItem ...
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         $user = new User();
@@ -87,7 +88,7 @@ class Profile_User extends CommonDBRelation
              && Session::haveAccessToEntity($this->fields['entities_id']);
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         // We can't delete the last super admin profile authorization
         if ($this->isLastSuperAdminAuthorization()) {
@@ -105,7 +106,7 @@ class Profile_User extends CommonDBRelation
         $valid_user = isset($input['users_id']) && $input['users_id'] > 0;
         if (!$valid_entity || !$valid_user || !$valid_profile) {
             Session::addMessageAfterRedirect(
-                __('One or more required fields are missing'),
+                __s('No selected element or badly defined operation'),
                 false,
                 ERROR
             );
@@ -115,11 +116,10 @@ class Profile_User extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-
     /**
      * Show rights of a user
      *
-     * @param $user User object
+     * @param User $user object
      **/
     public static function showForUser(User $user)
     {
@@ -131,144 +131,112 @@ class Profile_User extends CommonDBRelation
         $canedit = $user->canEdit($ID);
 
         $strict_entities = self::getUserEntities($ID, false);
-        if (
-            !Session::haveAccessToOneOfEntities($strict_entities)
-            && !Session::canViewAllEntities()
-        ) {
+        if (!Session::haveAccessToOneOfEntities($strict_entities) && !Session::canViewAllEntities()) {
             $canedit = false;
         }
 
         $canshowentity = Entity::canView();
-        $rand          = mt_rand();
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Add an authorization to a user') . "</tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<input type='hidden' name='users_id' value='$ID'>";
-            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
-            echo "</td><td class='center'>" . self::getTypeName(1) . "</td><td>";
-            Profile::dropdownUnder(['value' => Profile::getDefault()]);
-            echo "</td><td>" . __('Recursive') . "</td><td>";
-            Dropdown::showYesNo("is_recursive", 0);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
+                'source_itemtype' => User::class,
+                'source_items_id' => $ID,
+            ]);
         }
 
-        $iterator = self::getListForItem($user);
-        $num = count($iterator);
+        $start       = (int) ($_GET["start"] ?? 0);
+        $limit       = $_SESSION["glpilist_limit"];
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+        $sort_params = [];
+        if ($sort !== '') {
+            $sort_params = [$sort => $order === 'DESC' ? 'DESC' : 'ASC'];
+        }
+        $iterator = self::getListForItem($user, $start, $limit, $sort_params);
+        $total_num = self::countForItem($user);
 
-        echo "<div class='spaced'>";
-        Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-
-        if ($canedit && $num) {
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $num),
-                'container'     => 'mass' . __CLASS__ . $rand
+        $entries = [];
+        foreach ($iterator as $data) {
+            $entry = [
+                'itemtype' => __CLASS__,
+                'id'       => $data['linkid'],
             ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        if ($num > 0) {
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_end    .= "</th>";
+            $link = $data["completename"];
+            if ($_SESSION["glpiis_ids_visible"]) {
+                $link = sprintf(__('%1$s (%2$s)'), $link, $data["entities_id"]);
             }
-            $header_end .= "<th>" . Entity::getTypeName(Session::getPluralNumber()) . "</th>";
-            $header_end .= "<th>" . sprintf(
-                __('%1$s (%2$s)'),
-                self::getTypeName(Session::getPluralNumber()),
-                __('D=Dynamic, R=Recursive')
-            );
-            $header_end .= "</th></tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            foreach ($iterator as $data) {
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    if (in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    } else {
-                        echo "&nbsp;";
-                    }
-                    echo "</td>";
-                }
-                echo "<td>";
-
-                $link = $data["completename"];
-                if ($_SESSION["glpiis_ids_visible"]) {
-                    $link = sprintf(__('%1$s (%2$s)'), $link, $data["entities_id"]);
-                }
-
-                if ($canshowentity) {
-                     echo "<a href='" . Toolbox::getItemTypeFormURL('Entity') . "?id=" .
-                     $data["entities_id"] . "'>";
-                }
-                echo $link . ($canshowentity ? "</a>" : '');
-                echo "</td>";
-
-                if (Profile::canView()) {
-                    $entname = "<a href='" . Toolbox::getItemTypeFormURL('Profile') . "?id=" . $data["id"] . "'>" .
-                           $data["name"] . "</a>";
-                } else {
-                    $entname =  $data["name"];
-                }
-
-                if ($data["is_dynamic"] || $data["is_recursive"]) {
-                    $entname = sprintf(__('%1$s %2$s'), $entname, "<span class='b'>(");
-                    if ($data["is_dynamic"]) {
-                       //TRANS: letter 'D' for Dynamic
-                        $entname = sprintf(__('%1$s%2$s'), $entname, __('D'));
-                    }
-                    if ($data["is_dynamic"] && $data["is_recursive"]) {
-                        $entname = sprintf(__('%1$s%2$s'), $entname, ", ");
-                    }
-                    if ($data["is_recursive"]) {
-                        //TRANS: letter 'R' for Recursive
-                        $entname = sprintf(__('%1$s%2$s'), $entname, __('R'));
-                    }
-                    $entname = sprintf(__('%1$s%2$s'), $entname, ")</span>");
-                }
-                echo "<td>" . $entname . "</td>";
-                echo "</tr>";
+            if ($canshowentity) {
+                $link = sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars(Entity::getFormURLWithID($data["entities_id"])),
+                    htmlspecialchars($link)
+                );
             }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>";
-        } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>\n";
+            $entry['entity'] = $link;
+
+            if (Profile::canView()) {
+                $profile_name = sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars(Profile::getFormURLWithID($data['id'])),
+                    htmlspecialchars($data['name'])
+                );
+            } else {
+                $profile_name = htmlspecialchars($data['name']);
+            }
+
+            if ($data['is_dynamic'] || $data['is_recursive']) {
+                $profile_name = sprintf(__('%1$s %2$s'), $profile_name, "<span class='b'>(");
+                if ($data['is_dynamic']) {
+                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, __('D'));
+                }
+                if ($data['is_dynamic'] && $data['is_recursive']) {
+                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, ", ");
+                }
+                if ($data['is_recursive']) {
+                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, __('R'));
+                }
+                $profile_name = sprintf(__('%1$s%2$s'), $profile_name, ")</span>");
+            }
+            $entry['profile'] = $profile_name;
+            $entries[] = $entry;
         }
 
-        if ($canedit && $num) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-        }
-        Html::closeForm();
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $limit,
+            'sort' => $sort,
+            'order' => $order,
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'entity' => Entity::getTypeName(Session::getPluralNumber()),
+                'profile' => sprintf(
+                    __('%1$s (%2$s)'),
+                    self::getTypeName(Session::getPluralNumber()),
+                    __('D=Dynamic, R=Recursive')
+                )
+            ],
+            'formatters' => [
+                'entity' => 'raw_html',
+                'profile' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => $total_num,
+            'filtered_number' => $total_num,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+            ],
+        ]);
     }
 
 
     /**
      * Show users of an entity
      *
-     * @param $entity Entity object
+     * @param Entity $entity object
      **/
     public static function showForEntity(Entity $entity)
     {
@@ -281,44 +249,65 @@ class Profile_User extends CommonDBRelation
         }
 
         $canedit     = $entity->canEdit($ID);
-        $canshowuser = User::canView();
-        $nb_per_line = 3;
         $rand        = mt_rand();
 
         if ($canedit) {
-            $headerspan = $nb_per_line * 2;
-        } else {
-            $headerspan = $nb_per_line;
-        }
-
-        if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Add an authorization to a user') . "</tr>";
-            echo "<tr class='tab_bg_1'><td class='tab_bg_2 center'>" . User::getTypeName(1) . "&nbsp;";
-            echo "<input type='hidden' name='entities_id' value='$ID'>";
-            User::dropdown(['right' => 'all']);
-            echo "</td><td class='tab_bg_2 center'>" . self::getTypeName(1) . "</td><td>";
-            Profile::dropdownUnder(['value' => Profile::getDefault()]);
-            echo "</td><td class='tab_bg_2 center'>" . __('Recursive') . "</td><td>";
-            Dropdown::showYesNo("is_recursive", 0);
-            echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
+                'source_itemtype' => Entity::class,
+                'source_items_id' => $ID,
+                'used_users'      => [],
+            ]);
         }
 
         $putable = Profile_User::getTable();
         $ptable = Profile::getTable();
         $utable = User::getTable();
+        $start       = (int) ($_GET["start"] ?? 0);
+        $limit       = $_SESSION["glpilist_limit"];
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+        $sort_params = [];
+        $filters = $_GET['filters'] ?? [];
 
-        $iterator = $DB->request([
+        if ($sort === 'name') {
+            $sort_params = [
+                "$utable.name $order",
+                "$utable.realname $order",
+                "$utable.firstname $order"
+            ];
+        } else if ($sort === 'profile') {
+            $sort_params = ["$ptable.name $order"];
+        } else if ($sort !== '') {
+            $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
+        }
+        if (empty($sort_params)) {
+            $sort_params = [
+                "$utable.name ASC",
+                "$utable.realname ASC",
+                "$utable.firstname ASC"
+            ];
+        }
+
+        $filter_conditions = [];
+        foreach ($filters as $k => $v) {
+            if ($k === 'name') {
+                $filter_conditions[] = [
+                    'OR' => [
+                        "$utable.name" => ['LIKE', "%$v%"],
+                        "$utable.realname" => ['LIKE', "%$v%"],
+                        "$utable.firstname" => ['LIKE', "%$v%"]
+                    ]
+                ];
+            } else if ($k === 'profile') {
+                $filter_conditions[] = [
+                    "$ptable.name" => ['LIKE', "%$v%"]
+                ];
+            }
+        }
+
+        $criteria = [
             'SELECT'       => [
-                "glpi_users.*",
+                "glpi_users" => ['id', 'name', 'realname', 'firstname', 'picture'],
                 "$putable.id AS linkid",
                 "$putable.is_recursive",
                 "$putable.is_dynamic",
@@ -344,123 +333,103 @@ class Profile_User extends CommonDBRelation
                 "$utable.is_deleted"    => 0,
                 "$putable.entities_id"  => $ID
             ],
-            'ORDERBY'      => [
-                "$putable.profiles_id",
-                "$utable.name",
-                "$utable.realname",
-                "$utable.firstname"
-            ]
-        ]);
-
+            'ORDER'      => $sort_params,
+            'START'      => $start,
+            'LIMIT'      => $limit
+        ];
+        if (count($filter_conditions)) {
+            $criteria['WHERE'] += $filter_conditions;
+        }
+        $iterator = $DB->request($criteria);
         $nb = count($iterator);
 
-        echo "<div class='spaced'>";
-        if ($canedit && $nb) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams
-            = ['container'
-                        => 'mass' . __CLASS__ . $rand,
-                'specific_actions'
-                        => ['purge' => _x('button', 'Delete permanently')]
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<thead><tr>";
+        $count_criteria = $criteria;
+        unset($count_criteria['START'], $count_criteria['LIMIT'], $count_criteria['SELECT']);
+        $count_criteria['COUNT'] = 'cpt';
+        $total_count = $DB->request($count_criteria)->current()['cpt'];
 
-        echo "<th class='noHover' colspan='$headerspan'>";
-        printf(__('%1$s (%2$s)'), User::getTypeName(Session::getPluralNumber()), __('D=Dynamic, R=Recursive'));
-        echo "</th></tr></thead>";
-
-        if ($nb) {
-            Session::initNavigateListItems(
-                'User',
-                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                sprintf(
-                    __('%1$s = %2$s'),
-                    Entity::getTypeName(1),
-                    $entity->getName()
-                )
+        $entries = [];
+        foreach ($iterator as $data) {
+            $username = formatUserName(
+                $data["id"],
+                $data["name"],
+                $data["realname"],
+                $data["firstname"],
+                1
             );
-
-            $current_pid = null;
-            $i = 0;
-            foreach ($iterator as $data) {
-                if ($data['pid'] != $current_pid) {
-                    echo "<tbody><tr class='noHover'>";
-                    $reduce_header = 0;
-                    if ($canedit && $nb) {
-                        echo "<th width='10'>";
-                        echo Html::getCheckAllAsCheckbox("profile" . $data['pid'] . "_$rand");
-                        echo "</th>";
-                        $reduce_header++;
-                    }
-                    echo "<th colspan='" . ($headerspan - $reduce_header) . "'>";
-                    printf(__('%1$s: %2$s'), Profile::getTypeName(1), $data["pname"]);
-                    echo "</th></tr></tbody>";
-                    echo "<tbody id='profile" . $data['pid'] . "_$rand'>";
-                    $i = 0;
+            if ($data["is_dynamic"] || $data["is_recursive"]) {
+                $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+                if ($data["is_dynamic"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, __('D'));
                 }
-
-                Session::addToNavigateListItems('User', $data["id"]);
-
-                if (($i % $nb_per_line) == 0) {
-                    if ($i  != 0) {
-                        echo "</tr>";
-                    }
-                    echo "<tr class='tab_bg_1'>";
+                if ($data["is_dynamic"] && $data["is_recursive"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, ", ");
                 }
-                if ($canedit) {
-                     echo "<td width='10'>";
-                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                     echo "</td>";
+                if ($data["is_recursive"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, __('R'));
                 }
-
-                $username = formatUserName(
-                    $data["id"],
-                    $data["name"],
-                    $data["realname"],
-                    $data["firstname"],
-                    $canshowuser
-                );
-
-                if ($data["is_dynamic"] || $data["is_recursive"]) {
-                     $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
-                    if ($data["is_dynamic"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, __('D'));
-                    }
-                    if ($data["is_dynamic"] && $data["is_recursive"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, ", ");
-                    }
-                    if ($data["is_recursive"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, __('R'));
-                    }
-                    $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
-                }
-                 echo "<td>" . $username . "</td>";
-                 $i++;
-
-                 $current_pid = $data['pid'];
-                if ($data['pid'] != $current_pid) {
-                    echo "</tr>";
-                    echo "</tbody>";
-                }
+                $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
             }
-        }
-        echo "</table>";
-        if ($canedit && $nb) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
-    }
+            $initials = User::getInitialsForUserName($data['name'], $data['firstname'] ?? '', $data['realname'] ?? '');
+            $avatar_params = [
+                'picture' => User::getThumbnailURLForPicture($data['picture'] ?? ''),
+                'initials' => $initials,
+                'initials_bg' => Toolbox::getColorForString($initials)
+            ];
+            $username = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% set bg_color = picture is not empty ? 'inherit' : initials_bg %}
+                <span class="avatar avatar-md me-2"
+                    style="{% if picture is not null %} background-image: url({{ picture }}); {% endif %} background-color: {{ bg_color }}">
+                    {% if picture is empty %}
+                        {{ initials }}
+                    {% endif %}
+                </span>
+TWIG, $avatar_params) . $username;
 
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $data['id'],
+                'name' => $username,
+                'profile' => $data['pname']
+            ];
+        }
+
+        $super_header = sprintf(
+            __('%1$s (%2$s)'),
+            User::getTypeName(Session::getPluralNumber()),
+            __('D=Dynamic, R=Recursive')
+        );
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $limit,
+            'sort' => $sort,
+            'order' => $order,
+            'is_tab' => true,
+            'filters' => $filters,
+            'super_header' => $super_header,
+            'columns' => [
+                'name' => __('Name'),
+                'profile' => Profile::getTypeName(1),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'total_number' => $total_count,
+            'filtered_number' => $total_count,
+            'entries' => $entries,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+            ],
+        ]);
+    }
 
     /**
      * Show the User having a profile, in allowed Entity
      *
-     * @param $prof Profile object
+     * @param Profile $prof object
      **/
     public static function showForProfile(Profile $prof)
     {
@@ -474,12 +443,51 @@ class Profile_User extends CommonDBRelation
             return false;
         }
 
+        $start       = (int) ($_GET["start"] ?? 0);
+        $limit       = $_SESSION["glpilist_limit"];
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+        $sort_params = [];
+        $filters = $_GET['filters'] ?? [];
         $utable = User::getTable();
         $putable = Profile_User::getTable();
         $etable = Entity::getTable();
-        $iterator = $DB->request([
+
+        if ($sort === 'name') {
+            $sort_params = [
+                "$utable.name $order",
+                "$utable.realname $order",
+                "$utable.firstname $order"
+            ];
+        } else if ($sort === 'entity') {
+            $sort_params = ["$etable.completename $order"];
+        } else if ($sort !== '') {
+            $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
+        }
+        if (empty($sort_params)) {
+            $sort_params = ["$etable.completename ASC"];
+        }
+
+        $filter_conditions = [];
+        foreach ($filters as $k => $v) {
+            if ($k === 'name') {
+                $filter_conditions[] = [
+                    'OR' => [
+                        "$utable.name" => ['LIKE', "%$v%"],
+                        "$utable.realname" => ['LIKE', "%$v%"],
+                        "$utable.firstname" => ['LIKE', "%$v%"]
+                    ]
+                ];
+            } else if ($k === 'entity') {
+                $filter_conditions[] = [
+                    "$etable.completename" => ['LIKE', "%$v%"]
+                ];
+            }
+        }
+
+        $criteria = [
             'SELECT'          => [
-                "$utable.*",
+                $utable => ['id', 'name', 'realname', 'firstname', 'picture'],
                 "$putable.entities_id AS entity",
                 "$putable.id AS linkid",
                 "$putable.is_dynamic",
@@ -505,143 +513,111 @@ class Profile_User extends CommonDBRelation
                 "$putable.profiles_id"  => $ID,
                 "$utable.is_deleted"    => 0
             ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
-            'ORDERBY'         => "$etable.completename"
-        ]);
+            'ORDER'         => $sort_params,
+            'START'         => $start,
+            'LIMIT'         => $limit
+        ];
+        if (count($filter_conditions)) {
+            $criteria['WHERE'] += $filter_conditions;
+        }
+        $iterator = $DB->request($criteria);
 
         $nb = count($iterator);
 
-        echo "<div class='spaced'>";
+        $count_criteria = $criteria;
+        unset($count_criteria['START'], $count_criteria['LIMIT'], $count_criteria['SELECT'], $count_criteria['DISTINCT']);
+        $count_criteria['COUNT'] = 'cpt';
+        $total_count = $DB->request($count_criteria)->current()['cpt'];
 
-        if ($canedit && $nb) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                'container'     => 'mass' . __CLASS__ . $rand
+        $entries = [];
+        $entity_names = [];
+        $used_users = [];
+        foreach ($iterator as $data) {
+            $used_users[] = $data['id'];
+            if (!isset($entity_names[$data['entity']])) {
+                $entity_names[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
+            }
+            $username = formatUserName(
+                $data["id"],
+                $data["name"],
+                $data["realname"],
+                $data["firstname"],
+                1
+            );
+            if ($data["is_dynamic"] || $data["is_recursive"]) {
+                $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+                if ($data["is_dynamic"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, __('D'));
+                }
+                if ($data["is_dynamic"] && $data["is_recursive"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, ", ");
+                }
+                if ($data["is_recursive"]) {
+                    $username = sprintf(__('%1$s%2$s'), $username, __('R'));
+                }
+                $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
+            }
+            $initials = User::getInitialsForUserName($data['name'], $data['firstname'] ?? '', $data['realname'] ?? '');
+            $avatar_params = [
+                'picture' => User::getThumbnailURLForPicture($data['picture'] ?? ''),
+                'initials' => $initials,
+                'initials_bg' => Toolbox::getColorForString($initials)
             ];
-            Html::showMassiveActions($massiveactionparams);
+            $username = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% set bg_color = picture is not empty ? 'inherit' : initials_bg %}
+                <span class="avatar avatar-md me-2"
+                    style="{% if picture is not null %} background-image: url({{ picture }}); {% endif %} background-color: {{ bg_color }}">
+                    {% if picture is empty %}
+                        {{ initials }}
+                    {% endif %}
+                </span>
+TWIG, $avatar_params) . $username;
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $data['id'],
+                'name' => $username,
+                'entity' => $entity_names[$data['entity']]
+            ];
         }
-        echo "<table class='tab_cadre_fixe'><tr>";
-        echo "<th>" . sprintf(__('%1$s: %2$s'), Profile::getTypeName(1), $prof->fields["name"]) . "</th></tr>\n";
 
-        echo "<tr><th colspan='2'>" . sprintf(
+        if ($canedit) {
+            TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
+                'source_itemtype' => Profile::class,
+                'source_items_id' => $ID,
+                'used_users'      => $used_users,
+            ]);
+        }
+
+        $super_header = sprintf(
             __('%1$s (%2$s)'),
             User::getTypeName(Session::getPluralNumber()),
             __('D=Dynamic, R=Recursive')
-        ) . "</th></tr>";
-        echo "</table>\n";
-        echo "<table class='tab_cadre_fixe'>";
-
-        $i              = 0;
-        $nb_per_line    = 3;
-        $rand           = mt_rand(); // Just to avoid IDE warning
-        $canedit_entity = false;
-
-        if ($nb) {
-            $temp = -1;
-
-            foreach ($iterator as $data) {
-                if ($data["entity"] != $temp) {
-                    while (($i % $nb_per_line) != 0) {
-                        if ($canedit_entity) {
-                            echo "<td width='10'>&nbsp;</td>";
-                        }
-                        echo "<td class='tab_bg_1'>&nbsp;</td>\n";
-                        $i++;
-                    }
-
-                    if ($i != 0) {
-                        echo "</table>";
-                        echo "</div>";
-                        echo "</td></tr>\n";
-                    }
-
-                   // New entity
-                    $i              = 0;
-                    $temp           = $data["entity"];
-                    $canedit_entity = $canedit && in_array($temp, $_SESSION['glpiactiveentities']);
-                    $rand           = mt_rand();
-                    echo "<tr class='tab_bg_2'>";
-                    echo "<td>";
-                    echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '" .
-                        "fa-folder','fa-folder-open');\">";
-                    echo "<i id='imgcat$temp' class='fa fa-folder'></i>&nbsp;";
-                    echo "<span class='b'>" . Dropdown::getDropdownName('glpi_entities', $data["entity"]) .
-                     "</span>";
-                    echo "</a>";
-
-                    echo "</td></tr>\n";
-
-                    echo "<tr class='tab_bg_2'><td>";
-                    echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
-                    echo Html::getCheckAllAsCheckbox("entity$temp$rand") . __('All');
-
-                    echo "<table class='tab_cadre_fixe'>\n";
-                }
-
-                if (($i % $nb_per_line) == 0) {
-                    if ($i != 0) {
-                        echo "</tr>\n";
-                    }
-                    echo "<tr class='tab_bg_1'>\n";
-                    $i = 0;
-                }
-
-                if ($canedit_entity) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    echo "</td>";
-                }
-
-                $username = formatUserName(
-                    $data["id"],
-                    $data["name"],
-                    $data["realname"],
-                    $data["firstname"],
-                    1
-                );
-
-                if ($data["is_dynamic"] || $data["is_recursive"]) {
-                     $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
-                    if ($data["is_dynamic"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, __('D'));
-                    }
-                    if ($data["is_dynamic"] && $data["is_recursive"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, ", ");
-                    }
-                    if ($data["is_recursive"]) {
-                           $username = sprintf(__('%1$s%2$s'), $username, __('R'));
-                    }
-                    $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
-                }
-                echo "<td class='tab_bg_1'>" . $username . "</td>\n";
-                $i++;
-            }
-
-            if (($i % $nb_per_line) != 0) {
-                while (($i % $nb_per_line) != 0) {
-                    if ($canedit_entity) {
-                        echo "<td width='10'>&nbsp;</td>";
-                    }
-                    echo "<td class='tab_bg_1'>&nbsp;</td>";
-                    $i++;
-                }
-            }
-
-            if ($i != 0) {
-                echo "</table>";
-                echo "</div>";
-                echo "</td></tr>\n";
-            }
-        } else {
-            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>" . __('No user found') .
-               "</td></tr>\n";
-        }
-        echo "</table>";
-        if ($canedit && $nb) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>\n";
+        );
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $limit,
+            'sort' => $sort,
+            'order' => $order,
+            'is_tab' => true,
+            'filters' => $filters,
+            'super_header' => $super_header,
+            'columns' => [
+                'name' => __('Name'),
+                'entity' => Entity::getTypeName(1),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'total_number' => $total_count,
+            'filtered_number' => $total_count,
+            'entries' => $entries,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
+                'container'        => 'mass' . __CLASS__ . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+            ],
+        ]);
     }
 
 
@@ -768,8 +744,8 @@ class Profile_User extends CommonDBRelation
      *
      * @since 9.3 can pass sqlfilter as a parameter
      *
-     * @param $user_ID            user ID
-     * @param $sqlfilter  string  additional filter (default [])
+     * @param int $user_ID      User ID
+     * @param array $sqlfilter  Additional filter (default [])
      *
      * @return array of the IDs of the profiles
      **/
@@ -1065,7 +1041,7 @@ class Profile_User extends CommonDBRelation
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
                     }
                     break;
 
@@ -1074,7 +1050,7 @@ class Profile_User extends CommonDBRelation
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
 
@@ -1086,7 +1062,7 @@ class Profile_User extends CommonDBRelation
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb);
+                    ), $nb, $item::getType());
             }
         }
         return '';
@@ -1272,7 +1248,6 @@ class Profile_User extends CommonDBRelation
             if (count($profile_flags) > 0) {
                 $log_entry = sprintf(__('%s (%s)'), $log_entry, implode(', ', $profile_flags));
             }
-            $log_entry = Sanitizer::dbEscape($log_entry);
             $changes = [
                 '0',
                 $type === 'delete' ? $log_entry : '',

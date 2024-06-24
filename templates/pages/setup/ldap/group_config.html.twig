@@ -1,0 +1,59 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-4',
+        input_class: 'col-xxl-8'
+    } %}
+
+    {% set search_type_field %}
+        {% do call('AuthLDAP::dropdownGroupSearchType', [{
+            value: item.fields['group_search_type'],
+        }]) %}
+    {% endset %}
+    {{ fields.htmlField('', search_type_field, __('Search type'), field_options) }}
+    {{ fields.textField('group_field', item.fields['group_field'], __('User attribute containing its groups'), field_options) }}
+
+    {{ fields.textareaField('group_condition', item.fields['group_condition'], __('Filter to search in groups'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    }) }}
+
+    {{ fields.textField('group_member_field', item.fields['group_member_field'], __('Group attribute containing its users'), field_options) }}
+    {{ fields.dropdownYesNo('use_dn', item.fields['use_dn'], __('Use DN in the search'), field_options) }}
+{% endblock %}

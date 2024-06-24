@@ -40,6 +40,7 @@ class PDU extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -70,7 +71,7 @@ class PDU extends CommonDBTM
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
@@ -145,11 +146,11 @@ class PDU extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_pdu' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -211,6 +212,8 @@ class PDU extends CommonDBTM
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
+
+        $tab = array_merge($tab, PDUModel::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 

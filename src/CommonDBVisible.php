@@ -68,7 +68,7 @@ abstract class CommonDBVisible extends CommonDBTM
 
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'entities':
@@ -90,7 +90,7 @@ abstract class CommonDBVisible extends CommonDBTM
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'entities':
             case 'groups':
@@ -434,9 +434,16 @@ abstract class CommonDBVisible extends CommonDBTM
      */
     protected function getShowVisibilityDropdownParams()
     {
-        return [
-            'type'  => '__VALUE__',
-            'right' => strtolower($this::getType()) . '_public'
+        $params = [
+            'type'          => '__VALUE__',
+            'right'         => strtolower($this::getType()) . '_public',
         ];
+        if (isset($this->fields['entities_id'])) {
+            $params['entity'] = $this->fields['entities_id'];
+        }
+        if (isset($this->fields['is_recursive'])) {
+            $params['is_recursive'] = $this->fields['is_recursive'];
+        }
+        return $params;
     }
 }

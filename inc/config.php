@@ -46,8 +46,17 @@ use Glpi\Toolbox\VersionParser;
  * @var array $CFG_GLPI
  * @var \GLPI $GLPI;
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var bool|null $skip_db_check
+ * @var bool|null $dont_check_maintenance_mode
+ * @var bool|null $USEDBREPLICATE
+ * @var bool|null $DBCONNECTION_REQUIRED
  */
-global $CFG_GLPI, $GLPI, $GLPI_CACHE;
+global $CFG_GLPI,
+    $GLPI,
+    $GLPI_CACHE,
+    $skip_db_check, $dont_check_maintenance_mode,
+    $USEDBREPLICATE, $DBCONNECTION_REQUIRED
+;
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
 
@@ -81,38 +90,39 @@ if ($skip_db_check ?? false) {
 if ($missing_db_config) {
     Session::loadLanguage('', false);
 
-    // no translation
-    $title_text        = 'GLPI seems to not be configured properly.';
-    $missing_conf_text = sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php');
-    $hint_text         = 'You have to either restart the install process, either restore this file.';
-
     if (!isCommandLine()) {
         // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
         Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
-        echo '<div class="container-fluid mb-4">';
-        echo '<div class="row justify-content-center">';
-        echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
-        echo '<h2>' . $title_text . '</h2>';
-        echo '<p class="mt-2 mb-n2 alert alert-warning">';
-        echo $missing_conf_text;
-        echo ' ';
-        echo $hint_text;
-        echo '<br />';
-        echo '<br />';
-        if (file_exists(GLPI_ROOT . '/install/install.php')) {
-            echo '<a class="btn btn-primary" href="' . $CFG_GLPI['root_doc'] . '/install/install.php">Go to install page</a>';
-        }
-        echo '</p>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+        $twig_params = [
+            'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
+            'install_exists' => file_exists(GLPI_ROOT . '/install/install.php'),
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div class="container-fluid mb-4">
+                <div class="row justify-content-center">
+                    <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
+                        <h2>GLPI seems to not be configured properly.</h2>
+                        <p class="mt-2 mb-n2 alert alert-warning">
+                            Database configuration file "{{ config_db }}" is missing or is corrupted.
+                            You have to either restart the install process, either restore this file.
+                            <br />
+                            <br />
+                            {% if install_exists %}
+                                <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+TWIG, $twig_params);
         Html::nullFooter();
     } else {
-        echo $title_text . "\n";
-        echo $missing_conf_text . "\n";
-        echo $hint_text . "\n";
+        echo "GLPI seems to not be configured properly.\n";
+        echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
+        echo "You have to either restart the install process, either restore this file.\n";
     }
     die(1);
 } else {
@@ -198,6 +208,8 @@ if ($missing_db_config) {
     }
     // Check version
     if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
+        Session::checkCookieSecureConfig();
+
         // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
         Toolbox::setDebugMode(Session::NORMAL_MODE);
 
@@ -210,60 +222,63 @@ if ($missing_db_config) {
         }
 
         if (!defined('SKIP_UPDATES')) {
-            Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
-            echo "<div class='container-fluid mb-4'>";
-            echo "<div class='row justify-content-evenly'>";
-            echo "<div class='col-12 col-xxl-6'>";
-            echo "<div class='card text-center mb-4'>";
-
             /** @var \DBmysql $DB */
             global $DB;
-            $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
-            TemplateRenderer::getInstance()->display(
-                'install/blocks/requirements_table.html.twig',
-                [
-                    'requirements' => $core_requirements,
-                ]
-            );
 
-            if ($core_requirements->hasMissingMandatoryRequirements() || $core_requirements->hasMissingOptionalRequirements()) {
-                echo "<form action='" . $CFG_GLPI["root_doc"] . "/index.php' method='post'>";
-                echo Html::submit(__s('Try again'), [
-                    'class' => "btn btn-primary",
-                    'icon'  => "fas fa-redo",
-                ]);
-                Html::closeForm();
-            }
-            if (!$core_requirements->hasMissingMandatoryRequirements()) {
-                $outdated = version_compare(
+            $twig_params = [
+                'core_requirements' => (new RequirementsManager())->getCoreRequirementList($DB),
+                'try_again'         => __('Try again'),
+                'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
+                'upgrade'           => _sx('button', 'Upgrade'),
+                'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
+                'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
+                'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
+                'outdated'          => version_compare(
                     VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
                     VersionParser::getNormalizedVersion(GLPI_VERSION),
                     '>'
-                );
+                )
+            ];
 
-                if ($outdated !== true) {
-                    echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/install/update.php'>";
-                    if (!VersionParser::isStableRelease(GLPI_VERSION)) {
-                        echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
-                    }
-                    echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
-                    echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') . "</p>";
-                    echo Html::submit(_sx('button', 'Upgrade'), [
-                        'name'  => 'from_update',
-                        'class' => "btn btn-primary",
-                        'icon'  => "fas fa-check",
-                    ]);
-                    Html::closeForm();
-                } else {
-                    echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>" .
-                        __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') . "</p>";
-                }
-            }
-
-            echo "</div>";
-            echo "</div>";
-            echo "</div>";
-            echo "</div>";
+            Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="container-fluid mb-4">
+                    <div class="row justify-content-evenly">
+                        <div class="col-12 col-xxl-6">
+                            <div class="card text-center mb-4">
+                                {% include 'install/blocks/requirements_table.html.twig' with {'requirements': core_requirements} %}
+                                {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
+                                    <form action="{{ path('index.php') }}" method="post">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-redo"></i>{{ try_again }}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                {% if not core_requirements.hasMissingMandatoryRequirements() %}
+                                    {% if not outdated %}
+                                        <form method="post" action="{{ path('install/update.php') }}">
+                                            {% if not stable_release %}
+                                                {{ agree_unstable|raw }}
+                                            {% endif %}
+                                            <p class="mt-2 mb-n2 alert alert-important alert-warning">
+                                                {{ update_needed }}
+                                            </p>
+                                            <button type="submit" name="from_update" class="btn btn-primary">
+                                                <i class="fas fa-check"></i>{{ upgrade }}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p class="mt-2 mb-n2 alert alert-important alert-warning">
+                                            {{ outdated_files }}
+                                        </p>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+TWIG, $twig_params);
             Html::nullFooter();
             exit();
         }

@@ -4079,13 +4079,8 @@ var GLPIImpact = {
                     return;
                 }
 
-                // Set badge color, adjust contract as needed (target ratio is > 1.8)
-                var rgb = hexToRgb(node.data('badge').color);
-                while (contrast([255, 255, 255], [rgb.r, rgb.g, rgb.b]) < 1.8) {
-                    rgb.r *= 0.95;
-                    rgb.g *= 0.95;
-                    rgb.b *= 0.95;
-                }
+                const bg_color = window.tinycolor(node.data('badge').color);
+                const rgb = bg_color.toRgb();
 
                 // Set badge position (bottom right corner of the node)
                 var bbox = node.renderedBoundingBox({
@@ -4112,14 +4107,9 @@ var GLPIImpact = {
                 ctx.fillStyle = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
                 ctx.fill();
 
-                // Check if text should be light or dark by calculating the
-                // grayscale of the background color
-                var greyscale = (
-                    Math.round(rgb.r * 299)
-               + Math.round(rgb.g * 587)
-               + Math.round(rgb.b * 114)
-                ) / 1000;
-                ctx.fillStyle = (greyscale >= 138) ? '#4e4e4e' : 'white';
+                ctx.fillStyle = window.tinycolor.mostReadable(bg_color, window.tinycolor(bg_color).monochromatic(), {
+                    includeFallbackColors: true
+                }).toHexString();
 
                 // Print number
                 ctx.font = 6 * GLPIImpact.cy.zoom() + "px sans-serif";

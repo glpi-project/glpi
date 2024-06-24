@@ -33,49 +33,51 @@
  * ---------------------------------------------------------------------
  */
 
-/// HTMLTable class
-/// Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
-/// possible to have rowspan for cells that are "father" of other ones. If a "father" has several
-/// sons, then, it "rowspans" on all.
-/// The table integrates the notion of group of rows (HTMLTableGroup). For instance, for
-/// Computer_Device, each group represents a kind of device (network card, graphique card,
-/// processor, memory, ...).
-/// There is HTMLTableSuperHeader that defines global headers for all groups. Each group can cut
-/// these HTMLTableSuperHeader as many HTMLTableSubHeader as necessary. There is an automatic
-/// organisation of the headers between groups.
-///
-/// The (strict) order of definition of the table is:
-///    * Define all HTMLTableSuperHeader that are used by each group: HTMLTableMain::addHeader()
-///    * Define one HTMLTableGroup: HTMLTableMain::createGroup()
-///      * Define all HTMLTableSubHeader depending of previously defined HTMLTableSuperHeader
-///                                       for the given group: HTMLTableGroup::addHeader()
-///      * Create all HTMLTableRow for the given group: HTMLTableGroup::createRow()
-///          * Create all HTMLTableCell for the given row : HTMLTableRow::addCell()
-/// and so on for each group.
-/// When done, call HTMLTableMain::display() to render the table.
-///
-/// A column that don't have any content is collapse
-///
-/// For further explaination, refer to NetworkPort and all its dependencies (NetworkName, IPAddress,
-/// IPNetwork, ...) or Computer_Device and each kind of device.
-/// @since 0.84
+/**
+ * Consider using the {@link templates/components/datatable.html.twig} template instead when possible.
+ *
+ * Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
+ * possible to have rowspan for cells that are "father" of other ones. If a "father" has several
+ * sons, then, it "rowspans" on all.
+ * The table integrates the notion of group of rows ({@link HTMLTableGroup}). For instance, for
+ * {@link Item_Devices}, each group represents a kind of device (network card, graphics card,
+ * processor, memory, ...).
+ * There is {@link HTMLTableSuperHeader} that defines global headers for all groups. Each group can cut
+ * these {@link HTMLTableSuperHeader} as many {@link HTMLTableSubHeader} as necessary. There is an automatic
+ * organisation of the headers between groups.
+ *
+ * The (strict) order of definition of the table is:
+ * * Define all {@link HTMLTableSuperHeader} that are used by each group: {@link HTMLTableMain::addHeader()}
+ * * Define one {@link HTMLTableGroup}: {@link HTMLTableMain::createGroup()}
+ * * Define all{@link  HTMLTableSubHeader} depending of previously defined {@link  HTMLTableSuperHeader}
+ *   for the given group: {@link HTMLTableGroup::addHeader()}
+ * * Create all {@link HTMLTableRow} for the given group: {@link HTMLTableGroup::createRow()}
+ * * Create all {@link HTMLTableCell} for the given row : {@link HTMLTableRow::addCell()}
+ * and so on for each group.
+ * When done, call {@link HTMLTableMain::display()} to render the table.
+ *
+ * A column that don't have any content is collapsed
+ *
+ * For further explaination, refer to {@link NetworkPort} and all its dependencies (NetworkName, IPAddress,
+ * IPNetwork, ...) or {@link Item_Devices} and each kind of device.
+ * @since 0.84
+ */
 class HTMLTableMain extends HTMLTableBase
 {
     private $title;
 
+    /** @var array<HTMLTableGroup> */
     private $groups    = [];
     private $itemtypes = [];
-
 
     public function __construct()
     {
         parent::__construct(true);
     }
 
-
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'title':
@@ -94,7 +96,7 @@ class HTMLTableMain extends HTMLTableBase
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'title':
                 $this->$property = $value;
@@ -121,37 +123,30 @@ class HTMLTableMain extends HTMLTableBase
         $this->title = $name;
     }
 
-
     public function tryAddHeader()
     {
-
         if (count($this->groups) > 0) {
             throw new \Exception('Implementation error: must define all headers before any subgroups');
         }
     }
 
-
     /**
-     * @param $name      string   The name of the group, to be able to retrieve the group
-     *                            later with HTMLTableMain::getHeaderByName()
-     * @param $content            (@see HTMLTableEntity::content)
-     *                             The title of the group : display before the group itself
+     * @param string $name The name of the group, to be able to retrieve the group
+     *                            later with {@link HTMLTableMain::getHeaderByName()}
+     * @param mixed $content            The title of the group : display before the group itself
      *
      * TODO : study to be sure that the order is the one we have defined ...
      *
      * @return boolean|HTMLTableGroup
+     * @see HTMLTableEntity::content
      **/
     public function createGroup($name, $content)
     {
-
-        if (!empty($name)) {
-            if (!isset($this->groups[$name])) {
-                $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
-            }
+        if (!empty($name) && !isset($this->groups[$name])) {
+            $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
         }
         return $this->getGroup($name);
     }
-
 
     /**
      * @param $itemtype
@@ -162,30 +157,23 @@ class HTMLTableMain extends HTMLTableBase
         $this->itemtypes[$itemtype] = $title;
     }
 
-
     /**
      * Retrieve a group by its name
      *
-     * @param $group_name (string) the group name
+     * @param string $group_name the group name
      *
      * @return boolean|HTMLTableGroup
      **/
     public function getGroup($group_name)
     {
-
-        if (isset($this->groups[$group_name])) {
-            return $this->groups[$group_name];
-        }
-        return false;
+        return $this->groups[$group_name] ?? false;
     }
-
 
     /**
      * Display the super headers, for the global table, or the groups
      **/
     public function displaySuperHeader()
     {
-
         echo "\t\t<tr class='noHover'>\n";
         foreach ($this->getHeaderOrder() as $header_name) {
             $header = $this->getSuperHeaderByName($header_name);
@@ -196,7 +184,6 @@ class HTMLTableMain extends HTMLTableBase
         echo "\t\t</tr>\n";
     }
 
-
     /**
      * get the total number of rows (ie.: the sum of each group number of rows)
      *
@@ -206,7 +193,6 @@ class HTMLTableMain extends HTMLTableBase
      **/
     public function getNumberOfRows()
     {
-
         $numberOfRow = 0;
         foreach ($this->groups as $group) {
             $numberOfRow += $group->getNumberOfRows();
@@ -214,11 +200,10 @@ class HTMLTableMain extends HTMLTableBase
         return $numberOfRow;
     }
 
-
     /**
      * Display the table itself
      *
-     * @param $params    array of possible options:
+     * @param array $params    array of possible options:
      *    'html_id'                                the global HTML ID of the table
      *    'display_thead'                          display the header before the first group
      *    'display_tfoot'                          display the header at the end of the table
@@ -231,14 +216,11 @@ class HTMLTableMain extends HTMLTableBase
      **/
     public function display(array $params)
     {
-
-        $p['html_id']        = '';
-        $p['display_thead']  = true;
-        $p['display_tfoot']  = true;
-
-        foreach ($params as $key => $val) {
-            $p[$key] = $val;
-        }
+        $p = array_replace([
+            'html_id' => '',
+            'display_thead' => true,
+            'display_tfoot' => true,
+        ], $params);
 
         foreach ($this->groups as $group) {
             $group->prepareDisplay();
@@ -258,7 +240,7 @@ class HTMLTableMain extends HTMLTableBase
 
         echo "\n<table class='tab_cadre_fixehov'";
         if (!empty($p['html_id'])) {
-            echo " id='" . $p['html_id'] . "'";
+            echo " id='" . htmlspecialchars($p['html_id']) . "'";
         }
         echo ">\n";
 
@@ -268,17 +250,17 @@ class HTMLTableMain extends HTMLTableBase
         }
 
         if (!empty($this->title)) {
-            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . $this->title .
+            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . htmlspecialchars($this->title) .
               "</th></tr>\n";
         }
 
-        if ($totalNumberOfRow == 0) {
+        if ($totalNumberOfRow === 0) {
             if ($open_thead) {
                 echo "\t</thead>\n";
             }
 
             echo "\t\t<tr class='tab_bg_1'>" .
-              "<td class='center' colspan='$totalNumberOfColumn'>" . __('None') . "</td></tr>\n";
+              "<td class='center' colspan='$totalNumberOfColumn'>" . __s('None') . "</td></tr>\n";
         } else {
             if ($p['display_thead']) {
                 $this->displaySuperHeader();

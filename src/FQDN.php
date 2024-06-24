@@ -82,7 +82,7 @@ class FQDN extends CommonDropdown
         ) {
            // Check that FQDN is not empty
             if (empty($input['fqdn'])) {
-                Session::addMessageAfterRedirect(__('FQDN must not be empty'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('FQDN must not be empty'), false, ERROR);
                 return false;
             }
 
@@ -91,7 +91,7 @@ class FQDN extends CommonDropdown
 
            // Then check its validity
             if (!self::checkFQDN($input["fqdn"])) {
-                Session::addMessageAfterRedirect(__('FQDN is not valid'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('FQDN is not valid'), false, ERROR);
                 return false;
             }
         }

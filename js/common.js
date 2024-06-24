@@ -33,9 +33,21 @@
 
 /* global bootstrap */
 /* global L */
+/* global fuzzy */
 /* global glpi_html_dialog */
+/* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 
 var timeoutglobalvar;
+
+// Store configuration of tinymce editors
+// This is needed if an editor need to be destroyed and recreated as tinymce
+// api does not provide any method to get the current configuration
+var tinymce_editor_configs = {};
+
+// Store select2 configurations
+// This is needed if a select2 need to be destroyed and recreated as select2
+// api does not provide any method to get the current configuration
+var select2_configs = {};
 
 /**
  * modifier la propriete display d'un element
@@ -211,7 +223,7 @@ $.fn.shiftSelectable = function() {
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
 **/
-function showHideDiv(id, img_name, img_src_close, img_src_open) {
+function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
 
     if (img_name !== '') {
@@ -668,30 +680,32 @@ var stopEvent = function(event) {
     event.stopPropagation();
 };
 
-/**
- * Back to top implementation
- */
-if ($('#backtotop').length) {
-    var scrollTrigger = 100, // px
-        backToTop = function () {
-            var scrollTop = $(window).scrollTop();
-            if (scrollTop > scrollTrigger) {
-                $('#backtotop').addClass('d-md-block');
-            } else {
-                $('#backtotop').removeClass('d-md-block');
-            }
-        };
-    backToTop();
-    $(window).on('scroll', function () {
+$(() => {
+    /**
+     * Back to top implementation
+     */
+    if ($('#backtotop').length) {
+        var scrollTrigger = 100, // px
+            backToTop = function () {
+                var scrollTop = $(window).scrollTop();
+                if (scrollTop > scrollTrigger) {
+                    $('#backtotop').addClass('d-md-block');
+                } else {
+                    $('#backtotop').removeClass('d-md-block');
+                }
+            };
         backToTop();
-    });
-    $('#backtotop').on('click', function (e) {
-        e.preventDefault();
-        $('html,body').animate({
-            scrollTop: 0
-        }, 700);
-    });
-}
+        $(window).on('scroll', function () {
+            backToTop();
+        });
+        $('#backtotop').on('click', function (e) {
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+        });
+    }
+});
 
 /**
  * Returns element height, including margins
@@ -1041,50 +1055,6 @@ function updateProgress(progressid) {
     });
 }
 
-/**
- * Get RGB object from an hexadecimal color code
- *
- * @param {*} hex
- * @returns {Object} {r, g, b}
- */
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-/**
- * Get luminance for a color
- * https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
- *
- * @param {Array} rgb [r, g, b] array
- * @returns {Number}
- */
-function luminance(rgb) {
-    var a = rgb.map(function (v) {
-        v /= 255;
-        return v <= 0.03928
-            ? v / 12.92
-            : Math.pow( (v + 0.055) / 1.055, 2.4 );
-    });
-    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-}
-
-/**
- * Get contrast ratio between two colors
- * https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
- *
- * @param {Array} rgb1 [r, g, b] array
- * @param {Array} rgb2 [r, g, b] array
- * @returns {Number}
- */
-function contrast(rgb1, rgb2) {
-    return (luminance(rgb1) + 0.05) / (luminance(rgb2) + 0.05);
-}
-
 // fullscreen api
 function GoInFullscreen(element) {
     if (element.requestFullscreen) {
@@ -1137,7 +1107,11 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('submit', 'form', function() {
+    $(document).on('submit', 'form', (e) => {
+        // if the submitter has a data-block-on-unsaved attribute, do not clear the unsaved changes flag
+        if (e.originalEvent && $(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
+            return;
+        }
         window.glpiUnsavedFormChanges = false;
     });
 });
@@ -1442,15 +1416,75 @@ function blockFormSubmit(form, e) {
     form.attr('data-submitted', 'true');
 }
 
+window.validateFormWithBootstrap = function (event) {
+    const form = $(event.target).closest('form');
+    const valid = form[0].checkValidity();
+
+    if (form.hasClass('needs-validation')) {
+        if (!valid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        form.addClass('was-validated');
+    }
+
+    return valid;
+};
+
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
+        if (!window.validateFormWithBootstrap(e)) {
+            return false;
+        }
+
         const form = $(e.target).closest('form');
         if (form.attr('data-submitted') === 'true') {
             e.preventDefault();
             return false;
         } else {
+            let submitter = null;
+            if (e.originalEvent && e.originalEvent.submitter) {
+                submitter = $(e.originalEvent.submitter);
+            }
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+                // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
+                // We fall back to a timed block
+                const block = function(e) {
+                    e.preventDefault();
+                };
+                submitter.on('click', block);
+                submitter.data('original_html', submitter.html());
+                submitter.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+                window.setTimeout(() => {
+                    submitter.off('click', block);
+                    submitter.html(submitter.data('original_html'));
+                }, 100);
+                return;
+            }
             blockFormSubmit(form, e);
         }
+    });
+
+    // Clear focus on content-editable-tinymce items when clicking outside of their content
+    $(document).on('click focus', 'body', function(e) {
+        if (
+            // Event must be outside of our simulate-focus item
+            $(e.target).closest('.simulate-focus').length == 0
+            // Special case when target is part of tinymce toolbar/aux, must NOT drop focus in this case
+            && $(e.target).closest('.tox-toolbar__overflow').length == 0
+            && $(e.target).closest('.tox-tinymce-aux').length == 0
+        ) {
+            $('.content-editable-tinymce').removeClass('simulate-focus');
+        }
+    });
+
+    // General "copy to clipboard" handler.
+    // TODO: refactorate existing code to use this unique handler.
+    $(document).on('click', '[data-glpi-clipboard-text]', function() {
+        const text = $(this).data('glpi-clipboard-text');
+        navigator.clipboard.writeText(text);
+        glpi_toast_info(__("Copied to clipboard"));
     });
 });
 
@@ -1507,14 +1541,19 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    showDisclosablePasswordField(item);
+    const is_password_input = $("#" + item).prop("type") === "password";
+    if (is_password_input) {
+        showDisclosablePasswordField(item);
+    }
     $("#" + item).select();
     try {
         document.execCommand("copy");
     } catch (e) {
         alert("Copy to clipboard failed'");
     }
-    hideDisclosablePasswordField(item);
+    if (is_password_input) {
+        hideDisclosablePasswordField(item);
+    }
 }
 
 /**
@@ -1579,6 +1618,349 @@ function initSortableTable(element_id) {
     element.find('thead th').each((index, header) => {
         $(header).on('click', () => {
             sort_table(index);
+        });
+    });
+}
+
+/**
+ * Wait for an element to be available in the DOM
+ * @param {string} selector The selector to wait for
+ */
+function waitForElement(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(() => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+/**
+ * Get the ideal width of an input element based on its content.
+ * This allow to make dynamic inputs that grow and shrink based on their content.
+ *
+ * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
+ *
+ * @param {HTMLElement} input
+ * @param {String} real_font_size It seems the font size computed by styles.fontSize
+ *                                 is not really accurate when using rem units.
+ *                                 This parameter allows to directly provide the
+ *                                 accurate font size if it's known.
+ *
+ * @return {String} The ideal width of the input element
+ */
+function getRealInputWidth(input, real_font_size = null)
+{
+    let fakeEle = $("#fake_dom_getRealInputWidth");
+
+    // Initialize our fake element only once to prevent useless computations
+    if (fakeEle.length === 0) {
+        // Create a div element
+        fakeEle = document.createElement('div');
+        fakeEle.id = "fake_dom_getRealInputWidth";
+
+        // Hide it completely
+        fakeEle.style.position = 'absolute';
+        fakeEle.style.top = '0';
+        fakeEle.style.left = '0';
+        fakeEle.style.left = '-9999px';
+        fakeEle.style.overflow = 'hidden';
+        fakeEle.style.visibility = 'hidden';
+        fakeEle.style.whiteSpace = 'nowrap';
+        fakeEle.style.height = '0';
+
+        // Append the fake element to `body`
+        document.body.appendChild(fakeEle);
+    } else {
+        fakeEle = fakeEle[0];
+    }
+
+    // We copy some styles from the textbox that effect the width
+    const styles = window.getComputedStyle(input);
+
+    // Copy font styles from the textbox
+    fakeEle.style.fontFamily = styles.fontFamily;
+    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
+    fakeEle.style.fontStyle = styles.fontStyle;
+    fakeEle.style.fontWeight = styles.fontWeight;
+    fakeEle.style.letterSpacing = styles.letterSpacing;
+    fakeEle.style.textTransform = styles.textTransform;
+
+    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
+    fakeEle.style.borderRightWidth = styles.borderRightWidth;
+    fakeEle.style.paddingLeft = styles.paddingLeft;
+    fakeEle.style.paddingRight = styles.paddingRight;
+
+    // Compute width
+    const string = input.value || input.getAttribute('placeholder') || '';
+    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
+
+    const fakeEleStyles = window.getComputedStyle(fakeEle);
+    const width = fakeEleStyles.width;
+
+    return width;
+}
+
+/**
+ * Get UUID using crypto.randomUUID() if possible
+ * Else fallback to uniqid()
+ */
+function getUUID() {
+    // crypto functions are only available when using secure context
+    if (typeof crypto === "undefined" || typeof crypto.randomUUID === "undefined") {
+        // Fallback to another method that is always available but collisions
+        // are not totally impossible.
+        return uniqid();
+    }
+
+    return crypto.randomUUID();
+}
+
+// Init the AJAX controller
+/* global GlpiCommonAjaxController */
+if (typeof GlpiCommonAjaxController == "function") {
+    new GlpiCommonAjaxController();
+}
+
+function setupAjaxDropdown(config) {
+    // Field ID is used as a selector, so we need to escape special characters
+    // to avoid issues with jQuery.
+    const field_id = $.escapeSelector(config.field_id);
+
+    const select2_el = $('#' + field_id).select2({
+        width: config.width,
+        multiple: config.multiple,
+        placeholder: config.placeholder,
+        allowClear: config.allowclear,
+        minimumInputLength: 0,
+        quietMillis: 100,
+        dropdownAutoWidth: true,
+        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        minimumResultsForSearch: config.ajax_limit_count,
+        ajax: {
+            url: config.url,
+            dataType: 'json',
+            type: 'POST',
+            data: function (params) {
+                query = params;
+                var data = $.extend({}, config.params, {
+                    searchText: params.term,
+                });
+
+                if (config.parent_id_field !== '') {
+                    data.parent_id = document.getElementById(config.parent_id_field).value;
+                }
+
+                data.page_limit = config.dropdown_max; // page size
+                data.page = params.page || 1; // page number
+
+                return data;
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                var more = (data.count >= config.dropdown_max);
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: more
+                    }
+                };
+            }
+        },
+        templateResult: config.templateResult,
+        templateSelection: config.templateSelection
+    })
+        .bind('setValue', function (e, value) {
+            $.ajax(config.url, {
+                data: $.extend({}, config.params, {
+                    _one_id: value,
+                }),
+                dataType: 'json',
+                type: 'POST',
+            }).done(function (data) {
+
+                var iterate_options = function (options, value) {
+                    var to_return = false;
+                    $.each(options, function (index, option) {
+                        if (Object.prototype.hasOwnProperty.call(option, 'id') && option.id == value) {
+                            to_return = option;
+                            return false; // act as break;
+                        }
+
+                        if (Object.prototype.hasOwnProperty.call(option, 'children')) {
+                            to_return = iterate_options(option.children, value);
+                        }
+                    });
+
+                    return to_return;
+                };
+
+                var option = iterate_options(data.results, value);
+                if (option !== false) {
+                    var newOption = new Option(option.text, option.id, true, true);
+                    $('#' + field_id).append(newOption).trigger('change');
+                }
+            });
+        });
+
+    if (config.on_change !== '') {
+        $('#' + field_id).on('change', function () { eval(config.on_change); });
+    }
+
+    $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
+    $('#' + field_id).on('select2:open', function (e) {
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${e.target.id}-results']`);
+        if (search_input) {
+            search_input.focus();
+        }
+    });
+
+    return select2_el;
+}
+
+function setupAdaptDropdown(config)
+{
+    // Field ID is used as a selector, so we need to escape special characters
+    // to avoid issues with jQuery.
+    const field_id = $.escapeSelector(config.field_id);
+
+    const select2_el = $('#' + field_id).select2({
+        placeholder: config.placeholder,
+        width: config.width,
+        dropdownAutoWidth: true,
+        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        quietMillis: 100,
+        minimumResultsForSearch: config.ajax_limit_count,
+        matcher: function (params, data) {
+            // store last search in the global var
+            query = params;
+
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            var searched_term = getTextWithoutDiacriticalMarks(params.term);
+            var data_text = typeof (data.text) === 'string'
+                ? getTextWithoutDiacriticalMarks(data.text)
+                : '';
+            var select2_fuzzy_opts = {
+                pre: '<span class="select2-rendered__match">',
+                post: '</span>',
+            };
+
+            if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
+                // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
+            }
+
+            // Skip if there is no 'children' property
+            if (typeof data.children === 'undefined') {
+                var match = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
+                if (match == null) {
+                    return false;
+                }
+                data.rendered_text = match.rendered_text;
+                data.score = match.score;
+                return data;
+            }
+
+            // `data.children` contains the actual options that we are matching against
+            // also check in `data.text` (optgroup title)
+            var filteredChildren = [];
+
+            $.each(data.children, function (idx, child) {
+                var child_text = typeof (child.text) === 'string'
+                    ? getTextWithoutDiacriticalMarks(child.text)
+                    : '';
+
+                if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
+                    // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                    child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
+                }
+
+                var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
+                var match_text = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
+                if (match_child !== null || match_text !== null) {
+                    if (match_text !== null) {
+                        data.score = match_text.score;
+                        data.rendered_text = match_text.rendered;
+                    }
+
+                    if (match_child !== null) {
+                        child.score = match_child.score;
+                        child.rendered_text = match_child.rendered;
+                    }
+                    filteredChildren.push(child);
+                }
+            });
+
+            // If we matched any of the group's children, then set the matched children on the group
+            // and return the group object
+            if (filteredChildren.length) {
+                var modifiedData = $.extend({}, data, true);
+                modifiedData.children = filteredChildren;
+
+                // You can return modified objects from here
+                // This includes matching the `children` how you want in nested data sets
+                return modifiedData;
+            }
+
+            // Return `null` if the term should not be displayed
+            return null;
+        },
+        templateResult: config.templateresult,
+        templateSelection: config.templateselection,
+    })
+        .bind('setValue', function (e, value) {
+            $('#' + field_id).val(value).trigger('change');
+        });
+    $('label[for=' + field_id + ']').on('click', function () {
+        $('#' + field_id).select2('open');
+    });
+    $('#' + field_id).on('select2:open', function () {
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
+        if (search_input) {
+            search_input.focus();
+        }
+    });
+
+    return select2_el;
+}
+
+function displaySessionMessages() {
+    $.ajax({
+        method: 'GET',
+        url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
+        data: {
+            'get_raw': true
+        }
+    }).done((messages) => {
+        $.each(messages, (level, level_messages) => {
+            $.each(level_messages, (index, message) => {
+                switch (parseInt(level)) {
+                    case 1:
+                        glpi_toast_error(message);
+                        break;
+                    case 2:
+                        glpi_toast_warning(message);
+                        break;
+                    default:
+                        glpi_toast_info(message);
+                }
+            });
         });
     });
 }

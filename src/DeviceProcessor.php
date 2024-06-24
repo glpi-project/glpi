@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice
 {
@@ -43,10 +46,8 @@ class DeviceProcessor extends CommonDevice
         return _n('Processor', 'Processors', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -85,14 +86,13 @@ class DeviceProcessor extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'frequency_default',
             'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency by default'), __('MHz')),
             'datatype'           => 'integer',
@@ -100,7 +100,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'frequence',
             'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
             'datatype'           => 'integer',
@@ -108,7 +108,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'nbcores_default',
             'name'               => __('Number of cores'),
             'datatype'           => 'integer'
@@ -116,7 +116,7 @@ class DeviceProcessor extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'nbthreads_default',
             'name'               => __('Number of threads'),
             'datatype'           => 'integer'
@@ -133,16 +133,14 @@ class DeviceProcessor extends CommonDevice
         return $tab;
     }
 
-
     /**
      * @since 0.85
-     * @param $input
+     * @param array $input
      *
-     * @return number
+     * @return array
      **/
     public function prepareInputForAddOrUpdate($input)
     {
-
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
                 'nbthreads_default'
@@ -155,18 +153,15 @@ class DeviceProcessor extends CommonDevice
         return $input;
     }
 
-
     public function prepareInputForAdd($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-
     public function prepareInputForUpdate($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -189,32 +184,30 @@ class DeviceProcessor extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
+        switch ($item::class) {
+            case Computer::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
-
 
     public function getImportCriteria()
     {
-
-        return ['designation'          => 'equal',
+        return [
+            'designation'          => 'equal',
             'manufacturers_id'     => 'equal',
             'frequence'            => 'delta:10'
         ];
@@ -222,9 +215,6 @@ class DeviceProcessor extends CommonDevice
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
@@ -254,9 +244,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbcores') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum('TABLE.nbcores') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+                distinct: true
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -270,9 +261,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum('TABLE.nbthreads') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+                distinct: true
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -288,15 +280,14 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.frequency') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => QueryFunction::sum('TABLE.frequency') . ' * ' . QueryFunction::count(
+                expression: 'TABLE.id',
+            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
         return $tab;
     }
-
 
     public static function getIcon()
     {

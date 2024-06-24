@@ -1,0 +1,76 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+   {{ fields.textField('name', item.fields['name'], __('Name')) }}
+   {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
+   {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+   {{ fields.dropdownYesNo('allow_response', item.fields['allow_response'], __('Allow response')) }}
+
+   {% if not has_profile_right('config', constant('UPDATE')) %}
+      {{ fields.htmlField('', item.fields['itemtype'], _n('Type', 'Types', 1)) }}
+   {% elseif call('Config::canUpdate') and item.getEntityID == 0 %}
+      {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype'], _n('Type', 'Types', 1), {
+         types: config('notificationtemplates_types'),
+         rand: rand
+      }) }}
+   {% else %}
+      {% set types_root_entity_only = ['CronTask', 'DBConnection', 'User'] %}
+      {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype'], _n('Type', 'Types', 1), {
+         types: config('notificationtemplates_types')|filter((v) => v not in types_root_entity_only),
+         rand: rand
+      }) }}
+   {% endif %}
+   {% do call('Ajax::updateItemOnSelectEvent', ['dropdown_itemtype' ~ rand, 'show_events', path('/ajax/dropdownNotificationEvent.php'), {
+      itemtype: '__VALUE__'
+   }]) %}
+   {% do call('Ajax::updateItemOnSelectEvent', ['dropdown_itemtype' ~ rand, 'show_templates', path('/ajax/dropdownNotificationTemplate.php'), {
+      itemtype: '__VALUE__'
+   }]) %}
+   <span id="show_events">
+      {{ fields.htmlField('', call('NotificationEvent::dropdownEvents', [item.fields['itemtype'], {
+         value: item.fields['event'],
+         display: false
+      }]), 'NotificationEvent'|itemtype_name(1)) }}
+   </span>
+
+   {{ fields.dropdownArrayField('attach_documents', item.fields['attach_documents'], {
+      (constant('NotificationSetting::ATTACH_INHERIT')): __('Use global config'),
+      (constant('NotificationSetting::ATTACH_NO_DOCUMENT')): __('No documents'),
+      (constant('NotificationSetting::ATTACH_ALL_DOCUMENTS')): __('All documents'),
+      (constant('NotificationSetting::ATTACH_FROM_TRIGGER_ONLY')): __('Only documents related to the item that triggers the event'),
+   }, __('Add documents')) }}
+{% endblock %}

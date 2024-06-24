@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
 {
@@ -43,10 +45,8 @@ class DeviceHardDrive extends CommonDevice
         return _n('Hard drive', 'Hard drives', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -77,11 +77,15 @@ class DeviceHardDrive extends CommonDevice
                     'name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
                     'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'deviceharddrivetypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
                 ]
             ]
         );
     }
-
 
     public function rawSearchOptions()
     {
@@ -89,7 +93,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'capacity_default',
             'name'               => __('Capacity by default'),
             'datatype'           => 'integer',
@@ -97,7 +101,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'rpm',
             'name'               => __('Rpm'),
             'datatype'           => 'string',
@@ -105,7 +109,7 @@ class DeviceHardDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'cache',
             'name'               => __('Cache'),
             'datatype'           => 'integer',
@@ -127,19 +131,25 @@ class DeviceHardDrive extends CommonDevice
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '17',
+            'table'              => 'glpi_deviceharddrivetypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
+        ];
+
         return $tab;
     }
 
-
     /**
      * @since 0.85
-     * @param $input
+     * @param array $input
      *
-     * @return number
+     * @return array
      **/
     public function prepareInputForAddOrUpdate($input)
     {
-
         foreach (['capacity_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
                 $input[$field] = 0;
@@ -148,18 +158,15 @@ class DeviceHardDrive extends CommonDevice
         return $input;
     }
 
-
     public function prepareInputForAdd($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-
     public function prepareInputForUpdate($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -168,7 +175,6 @@ class DeviceHardDrive extends CommonDevice
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
@@ -180,11 +186,11 @@ class DeviceHardDrive extends CommonDevice
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 $base->addHeader('deviceharddriver_rpm', __('Rpm'), $super, $father);
                 $base->addHeader('deviceharddriver_cache', __('Cache'), $super, $father);
+                $base->addHeader('deviceharddriver_type', _n('Type', 'Types', 1), $super, $father);
                 InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 break;
         }
     }
-
 
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
@@ -192,7 +198,6 @@ class DeviceHardDrive extends CommonDevice
         HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -213,40 +218,40 @@ class DeviceHardDrive extends CommonDevice
                     );
                 }
 
+                if ($this->fields["deviceharddrivetypes_id"]) {
+                    $row->addCell(
+                        $row->getHeaderByName('deviceharddriver_type'),
+                        Dropdown::getDropdownName(
+                            "glpi_deviceharddrivetypes",
+                            $this->fields["deviceharddrivetypes_id"]
+                        ),
+                        $father
+                    );
+                }
                 InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
 
-
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 0.84
-     **/
     public function getImportCriteria()
     {
-
         return ['designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'interfacetypes_id' => 'equal'
+            'interfacetypes_id' => 'equal',
+            'deviceharddrivetypes_id' => 'equal'
         ];
     }
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $tab = [];
 
         $tab[] = [
             'id'                 => '114',
             'table'              => 'glpi_deviceharddrives',
             'field'              => 'designation',
-            'name'               => __('Hard drive type'),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Name')),
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
@@ -263,7 +268,7 @@ class DeviceHardDrive extends CommonDevice
             'id'                 => '115',
             'table'              => 'glpi_items_deviceharddrives',
             'field'              => 'capacity',
-            'name'               => __('Hard drive size'),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Capacity by default')),
             'unit'               => 'auto',
             'forcegroupby'       => true,
             'usehaving'          => true,
@@ -271,19 +276,38 @@ class DeviceHardDrive extends CommonDevice
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.capacity') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' .
+                QueryFunction::sum('TABLE.capacity') . ' / ' .
+                QueryFunction::count('TABLE.id') . ') * ' .
+                QueryFunction::count(expression: 'TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
+        ];
+
+        $tab[] = [
+            'id'                 => '116',
+            'table'              => 'glpi_deviceharddrivetypes',
+            'field'              => 'name',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => self::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceHardDrive::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
         ];
 
         return $tab;
     }
 
-
     public static function getIcon()
     {
-        return "fas fa-hdd";
+        return "far fa-hdd";
     }
 }

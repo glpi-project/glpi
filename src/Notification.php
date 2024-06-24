@@ -33,11 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\FilterableInterface;
+use Glpi\Search\FilterableTrait;
+
 /**
  * Notification Class
  **/
-class Notification extends CommonDBTM
+class Notification extends CommonDBTM implements FilterableInterface
 {
+    use FilterableTrait;
+
    // MAILING TYPE
    //Notification to a user (sse mailing users type below)
     const USER_TYPE             = 1;
@@ -132,19 +138,39 @@ class Notification extends CommonDBTM
     const PLANNING_EVENT_GUESTS               = 38;
    //Notification to the mentionned user
     const MENTIONNED_USER                     = 39;
+    //Notification to the ticket's validation target (Who was asked to approve)
+    const VALIDATION_TARGET                   = 40;
 
    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'notification';
 
+    // Filterable implementation
+    public function getItemtypeToFilter(): string
+    {
+        return $this->fields['itemtype'];
+    }
 
+    public function getItemtypeField(): string
+    {
+        return 'itemtype';
+    }
+
+    public function getInfoTitle(): string
+    {
+        return __("Notification target filter");
+    }
+
+    public function getInfoDescription(): string
+    {
+        return __("Notifications will only be sent for items that match the defined filter.");
+    }
 
     public static function getTypeName($nb = 0)
     {
         return _n('Notification', 'Notifications', $nb);
     }
-
 
     /**
      *  @see CommonGLPI::getMenuContent()
@@ -191,95 +217,37 @@ class Notification extends CommonDBTM
 
     public function defineTabs($options = [])
     {
+        // Get parents tabs
+        $parent_tabs = parent::defineTabs();
 
-        $ong = [];
-        $this->addDefaultFormTab($ong);
-        $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
-        $this->addStandardTab('NotificationTarget', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        // Main tab shoud be first, then the most relevants tabs, then inherited common tabs and finish with the history
+        $tabs = [
+            // Main tab retrieved from parents
+            array_keys($parent_tabs)[0] => array_shift($parent_tabs)
+        ];
 
-        return $ong;
+        // Most relevant tabs first
+        $this->addStandardTab('Notification_NotificationTemplate', $tabs, $options);
+        $this->addStandardTab('NotificationTarget', $tabs, $options);
+
+        // Add common tabs
+        $tabs = array_merge($tabs, $parent_tabs);
+
+        // Keep log at the end
+        $this->addStandardTab('Log', $tabs, $options);
+
+        return $tabs;
     }
 
 
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-
-        echo "<td rowspan='4' class='middle right'>" . __('Comments') . "</td>";
-        echo "<td class='center middle' rowspan='4'><textarea class='form-control' rows='9' name='comment' >" .
-             $this->fields["comment"] . "</textarea></td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Allow response') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('allow_response', $this->allowResponse());
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
-        echo "<td>";
-        if (!Session::haveRight(static::$rightname, UPDATE)) {
-            $itemtype = $this->fields['itemtype'];
-            echo $itemtype::getTypeName(1);
-            $rand = '';
-        } else if (
-            Config::canUpdate()
-            && ($this->getEntityID() == 0)
-        ) {
-            $rand = Dropdown::showItemTypes(
-                'itemtype',
-                $CFG_GLPI["notificationtemplates_types"],
-                ['value' => $this->fields['itemtype']]
-            );
-        } else {
-            $rand = Dropdown::showItemTypes(
-                'itemtype',
-                array_diff(
-                    $CFG_GLPI["notificationtemplates_types"],
-                    ['CronTask', 'DBConnection', 'User']
-                ),
-                ['value' => $this->fields['itemtype']]
-            );
-        }
-
-        $params = ['itemtype' => '__VALUE__'];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "show_events",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationEvent.php",
-            $params
-        );
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "show_templates",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownNotificationTemplate.php",
-            $params
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
-        echo "<td><span id='show_events'>";
-        NotificationEvent::dropdownEvents(
-            $this->fields['itemtype'],
-            ['value' => $this->fields['event']]
-        );
-        echo "</span></td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [
+            'item' => $this,
+            'params' => [
+                'target' => static::getFormURL()
+            ],
+        ]);
         return true;
     }
 
@@ -494,8 +462,8 @@ class Notification extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _x('button', 'Add notification template');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _x('button', 'Remove all notification templates');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _sx('button', 'Add notification template');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _sx('button', 'Remove all notification templates');
         }
 
         return $actions;
@@ -567,7 +535,7 @@ class Notification extends CommonDBTM
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (
@@ -586,7 +554,7 @@ class Notification extends CommonDBTM
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (
@@ -714,8 +682,7 @@ class Notification extends CommonDBTM
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 
@@ -727,8 +694,7 @@ class Notification extends CommonDBTM
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 

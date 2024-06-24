@@ -43,8 +43,7 @@ $category = new KnowbaseItem_KnowbaseItemCategory();
 
 if (isset($_POST["add"])) {
     if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['knowbaseitemcategories_id'])) {
-        $message = __('Mandatory fields are not filled!');
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(__('Mandatory fields are not filled!'), false, ERROR);
         Html::back();
     }
 

@@ -74,7 +74,7 @@ class PCIVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-                'name'  => addslashes("UnAllied Telesis, Inc (Good ID)"),
+                'name'  => "UnAllied Telesis, Inc (Good ID)",
                 'vendorid'  => '0010'
             ])
         )->isGreaterThan(0);

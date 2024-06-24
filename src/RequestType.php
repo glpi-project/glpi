@@ -193,7 +193,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_helpdesk_default"]) {
                 $update['is_helpdesk_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -201,7 +201,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_followup_default"]) {
                 $update['is_followup_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -209,7 +209,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_mail_default"]) {
                 $update['is_mail_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -217,7 +217,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_mailfollowup_default"]) {
                 $update['is_mailfollowup_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -249,7 +249,8 @@ class RequestType extends CommonDropdown
             return 0;
         }
 
-        foreach ($DB->request('glpi_requesttypes', ['is_' . $source . '_default' => 1, 'is_active' => 1]) as $data) {
+        $types = $DB->request(['FROM' => 'glpi_requesttypes', 'WHERE' => ['is_' . $source . '_default' => 1, 'is_active' => 1]]);
+        foreach ($types as $data) {
             return $data['id'];
         }
         return 0;

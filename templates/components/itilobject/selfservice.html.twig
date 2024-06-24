@@ -61,9 +61,9 @@
 
    <div class="card">
         <div class="card-header">
-            <h3 class="card-title">
+            <h1 class="card-title fs-3">
                 {{ __('Describe the incident or request') }}
-            </h3>
+            </h1>
         </div>
 
         <div class="card-body bg-secondary-lt pt-0">
@@ -98,8 +98,11 @@
                                 <div class="card-body">
                                     {% set user = get_current_user() %}
                                     {% set user_fields = user.fields %}
-                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()}) %}
                                     {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                    {% if has_profile_right('user', constant('READ')) %}
+                                        {% set user_fields = user_fields|merge({login: entry_user.fields['name']}) %}
+                                    {% endif %}
                                     {{ include('components/user/info_card.html.twig', {
                                         'user': user_fields,
                                         'can_edit': true
@@ -171,7 +174,7 @@
                      <a class="btn btn-sm btn-ghost-secondary mt-2" role="button"
                         id="btn-collapse-items{{ rand }}"
                         aria-expanded="false" aria-controls="collapse-items{{ rand }}"
-                        data-bs-toggle="collapse" href="#collapse-items{{ rand }}" >
+                        data-bs-toggle="collapse" href="#collapse-items{{ rand }}" title="{{ __('Add a new item') }}">
                         <i class="fas fa-plus"></i>
                      </a>
                      <div class="collapse" id="collapse-items{{ rand }}">
@@ -208,7 +211,7 @@
                   {{ fields.field(
                      'observer',
                      observer_field,
-                     _n('Watcher', 'Watchers', get_plural_number()),
+                     _n('Observer', 'Observers', get_plural_number()),
                      right_field_options|merge({
                         required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
                      })

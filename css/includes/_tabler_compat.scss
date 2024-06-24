@@ -1,0 +1,134 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+// Redeclared variables/functions/etc from Tabler and Bootstrap so GLPI custom CSS can be compiled without being linked to Tabler or Bootstrap
+// Make sure you don't import this file anywhere the actual Tabler or Bootstrap CSS is imported as it will override some stuff and result in incorrect styles
+
+$bs-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+
+@function max-width-value($max) {
+  @return $max - .02;
+}
+
+@mixin media-breakpoint-up($min) {
+    @media (min-width: map-get($bs-breakpoints, $min)) {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-down($max) {
+    $max: max-width-value(map-get($bs-breakpoints, $max));
+
+    @media (max-width: $max) {
+        @content;
+    }
+}
+
+$theme-colors: (
+    "primary": var(--tblr-primary),
+    "secondary": var(--tblr-secondary),
+    "success": var(--tblr-success),
+    "info": var(--tblr-info),
+    "warning": var(--tblr-warning),
+    "danger": var(--tblr-danger),
+    "light": var(--tblr-light),
+    "dark": var(--tblr-dark),
+    "muted": var(--tblr-muted),
+);
+$extra-colors: (
+    "blue": var(--tblr-blue),
+    "azure": var(--tblr-azure),
+    "indigo": var(--tblr-indigo),
+    "purple": var(--tblr-purple),
+    "pink": var(--tblr-pink),
+    "red": var(--tblr-red),
+    "orange": var(--tblr-orange),
+    "yellow": var(--tblr-yellow),
+    "lime": var(--tblr-lime),
+    "green": var(--tblr-green),
+    "teal": var(--tblr-teal),
+    "cyan": var(--tblr-cyan),
+);
+$social-colors: (
+    "facebook": var(--tblr-facebook),
+    "twitter": var(--tblr-twitter),
+    "linkedin": var(--tblr-linkedin),
+    "google": var(--tblr-google),
+    "youtube": var(--tblr-youtube),
+    "vimeo": var(--tblr-vimeo),
+    "dribbble": var(--tblr-dribbble),
+    "github": var(--tblr-github),
+    "instagram": var(--tblr-instagram),
+    "pinterest": var(--tblr-pinterest),
+    "vk": var(--tblr-vk),
+    "rss": var(--tblr-rss),
+    "flickr": var(--tblr-flickr),
+    "bitbucket": var(--tblr-bitbucket),
+    "tabler": var(--tblr-tabler),
+);
+$zindex-dropdown: 1000;
+$zindex-sticky: 1020;
+$zindex-fixed: 1030;
+$zindex-offcanvas-backdrop: 1040;
+$zindex-offcanvas: 1045;
+$zindex-modal-backdrop: 1050;
+$zindex-modal: 1055;
+$zindex-popover: 1070;
+$zindex-tooltip: 1080;
+$zindex-toast: 1090;
+$sidebar-width: 15rem;
+$popover-arrow-outer-color: var(--tblr-border-color);
+$input-transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+$input-line-height: calc(20em / 14);
+$input-btn-padding-y: 0.625rem - 0.0625rem;
+$input-btn-padding-y-sm: 0.125rem !default;
+$input-btn-padding-y-lg: 0.5rem !default;
+$input-height: calc(#{$input-line-height} + (#{$input-btn-padding-y} * 2) + 2px);
+$input-font-size: var(--tblr-body-font-size);
+$input-font-size-sm: calc(#{$input-font-size} * 0.875);
+$input-font-size-lg: calc(#{$input-font-size} * 1.25);
+$input-height-sm: calc((#{$input-line-height} * 1em) + (#{$input-btn-padding-y-sm} * 2) + 2px);
+$input-height-lg: calc((#{$input-line-height} * 1em) + (#{$input-btn-padding-y-lg} * 2) + 2px);
+$component-active-bg: var(--tblr-primary);
+$input-focus-border-color: color-mix(in srgb, var(--tblr-primary), white 50%);
+$input-focus-box-shadow: 0 0 1 .25rem color-mix(in srgb, var(--tblr-primary), transparent 75%);
+
+// RFS. Done as import because of complexity.
+@import "../lib/bootstrap/scss/vendor/rfs";

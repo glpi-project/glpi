@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Store ports connections log
  *
@@ -61,18 +63,17 @@ class NetworkPortConnectionLog extends CommonDBChild
     /**
      * Get the tab name used for item
      *
-     * @param object $item the item object
+     * @param CommonGLPI $item the item object
      * @param integer $withtemplate 1 if is a template form
-     * @return string|array name of the tab
+     * @return array name of the tab
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $array_ret = [];
 
-        if ($item->getType() == 'NetworkPort') {
+        if ($item::class === NetworkPort::class) {
             $cnt = countElementsInTable([static::getTable()], $this->getCriteria($item));
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
         }
         return $array_ret;
     }
@@ -90,14 +91,14 @@ class NetworkPortConnectionLog extends CommonDBChild
     /**
      * Display the content of the tab
      *
-     * @param object $item
+     * @param CommonGLPI $item
      * @param integer $tabnum number of the tab to display
      * @param integer $withtemplate 1 if is a template form
      * @return boolean
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {
+        if ($item::class === NetworkPort::class && $item->getID() > 0) {
             $connectionlog = new self();
             $connectionlog->showForItem($item);
             return true;
@@ -111,40 +112,21 @@ class NetworkPortConnectionLog extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => $this->getCriteria($netport)
         ]);
 
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<thead><tr>";
-        echo "<th>" . _n('State', 'States', 1)  . "</th>";
-        echo "<th>" . _n('Date', 'Dates', 1)  . "</th>";
-        echo "<th>" . __('Connected item')  . "</th>";
-        echo "</tr></thead>";
-
-        echo "<tbody>";
-
-        if (!count($iterator)) {
-            echo "<tr><td colspan='4' class='center'>" . __('No result found')  . "</td></tr>";
-        }
-
+        $entries = [];
         foreach ($iterator as $row) {
-            echo "<tr>";
-            echo "<td>";
-
-            if ($row['connected'] == 1) {
-                $co_class = 'fa-link netport green';
-                $title = __('Connected');
+            if ($row['connected'] === 1) {
+                $co_class = 'ti-link netport text-success';
+                $title = __s('Connected');
             } else {
-                $co_class = 'fa-unlink netport red';
-                $title = __('Not connected');
+                $co_class = 'ti-unlink netport text-danger';
+                $title = __s('Not connected');
             }
-            echo "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
-            echo "</td>";
-            echo "<td>" . $row['date']  . "</td>";
-            echo "<td>";
 
-            $is_source = $netport->fields['id'] == $row['networkports_id_source'];
+            $is_source = $netport->fields['id'] === $row['networkports_id_source'];
             $netports_id = $row[($is_source ? 'networkports_id_destination' : 'networkports_id_source')];
 
             $cport = new NetworkPort();
@@ -153,23 +135,53 @@ class NetworkPortConnectionLog extends CommonDBChild
                 $citem->getFromDB($cport->fields["items_id"]);
 
                 $cport_link = sprintf(
-                    "<a href='%1\$s'>%2\$s</a>",
-                    $cport->getFormURLWithID($cport->fields['id']),
-                    (trim($cport->fields['name']) == '' ? __('Without name') : $cport->fields['name'])
+                    '<a href="%1$s">%2$s</a>',
+                    htmlspecialchars($cport::getFormURLWithID($cport->fields['id'])),
+                    htmlspecialchars(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
 
-                echo sprintf(
-                    '%1$s on %2$s',
-                    $cport_link,
-                    $citem->getLink(1)
-                );
-            } else if ($row['connected'] == 1) {
-                echo __('No longer exists in database');
+                $entries = [
+                    'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
+                    'date' => $row['date'],
+                    'connected_item' => sprintf(
+                        '%1$s on %2$s',
+                        $cport_link,
+                        $citem->getLink(1)
+                    )
+                ];
+            } else if ($row['connected'] === 1) {
+                $entries[] = [
+                    'status' => __s('No longer exists in database'),
+                    'date' => $row['date'],
+                    'connected_item' => __s('Unknown')
+                ];
             }
-
-            echo "</td>";
-            echo "</tr>";
         }
-        echo "</tbody>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'status' => _n('State', 'States', 1),
+                'date' => _n('Date', 'Dates', 1),
+                'connected_item' => __('Connected item'),
+            ],
+            'formatters' => [
+                'status' => 'raw_html',
+                'date' => 'datetime',
+                'connected_item' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false,
+        ]);
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-history';
     }
 }

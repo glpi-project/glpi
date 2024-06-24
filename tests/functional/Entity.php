@@ -103,14 +103,14 @@ class Entity extends DbTestCase
                 'name' => ''
             ])
         )->isFalse();
-        $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
+        $this->hasSessionMessages(ERROR, ["You can&#039;t add an entity without name"]);
 
         $this->boolean(
             $entity->prepareInputForAdd([
                 'anykey' => 'anyvalue'
             ])
         )->isFalse();
-        $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
+        $this->hasSessionMessages(ERROR, ["You can&#039;t add an entity without name"]);
 
         $this->array(
             $entity->prepareInputForAdd([
@@ -220,7 +220,7 @@ class Entity extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $expected = [0 => 0, 1 => $ent0];
+        $expected = [0 => 0, 2 => $ent0];
         $ancestors = getAncestorsOf('glpi_entities', $ent1);
         $this->array($ancestors)->isIdenticalTo($expected);
 
@@ -891,18 +891,26 @@ class Entity extends DbTestCase
        // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
        // Case 2: test values recovered from CommonITILObject:::showShort()
-        ob_start();
-        Ticket::showShort($tickets_id);
-        $html = ob_get_clean();
+        $entries = Ticket::getDatatableEntries([
+            [
+                'item_id' => $tickets_id,
+                'id' => $tickets_id,
+                'itemtype' => 'Ticket',
+            ]
+        ]);
+        $entry = $entries[0];
 
+        $entry_contents = array_reduce(array_keys($entry), static function ($carry, $key) use ($entry) {
+            return $carry . $entry[$key];
+        }, '');
         foreach ($possible_values as $value) {
-            if ($value == $expected) {
-                $this->string($html)->contains(
+            if ($value === $expected) {
+                $this->string($entry_contents)->contains(
                     $value,
-                    "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
+                    "Ticket getDatatableEntries must contains '$value' in interface '$interface' with settings '$setting'"
                 );
             } else {
-                $this->string($html)->notContains(
+                $this->string($entry_contents)->notContains(
                     $value,
                     "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
                 );
@@ -1159,6 +1167,7 @@ class Entity extends DbTestCase
 
     protected function entityTreeProvider(): iterable
     {
+        $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
@@ -1169,6 +1178,10 @@ class Entity extends DbTestCase
                 0 => [
                     'name' => 'Root entity',
                     'tree' => [
+                        $e2e_test_root => [
+                            'name' => 'E2ETestEntity',
+                            'tree' => []
+                        ],
                         $entity_test_root->getID() => [
                             'name' => $entity_test_root->fields['name'],
                             'tree' => [
@@ -1191,7 +1204,7 @@ class Entity extends DbTestCase
             'entity_id' => $entity_test_root->getID(),
             'result'    => [
                 $entity_test_root->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_root->fields['completename']),
+                    'name' => $entity_test_root->fields['completename'],
                     'tree' => [
                         $entity_test_child_1->getID() => [
                             'name' => $entity_test_child_1->fields['name'],
@@ -1210,7 +1223,7 @@ class Entity extends DbTestCase
             'entity_id' => $entity_test_child_1->getID(),
             'result'    => [
                 $entity_test_child_1->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_1->fields['completename']),
+                    'name' => $entity_test_child_1->fields['completename'],
                     'tree' => [
                     ]
                 ]
@@ -1221,7 +1234,7 @@ class Entity extends DbTestCase
             'entity_id' => $entity_test_child_2->getID(),
             'result'    => [
                 $entity_test_child_2->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_2->fields['completename']),
+                    'name' => $entity_test_child_2->fields['completename'],
                     'tree' => [
                     ]
                 ]

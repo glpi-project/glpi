@@ -38,10 +38,10 @@ namespace tests\units;
 use Change;
 use CommonITILActor;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\Search\SearchEngine;
 use ITILFollowup as CoreITILFollowup;
 use Problem;
-use QueryExpression;
 use Search;
 use Ticket;
 use Ticket_User;
@@ -417,11 +417,10 @@ class ITILFollowup extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a followup',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -446,11 +445,10 @@ HTML
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -555,7 +553,7 @@ HTML
         ]);
         $this->integer($fups_id)->isGreaterThan(0);
 
-        $this->string($fup->fields['content'])->isEqualTo(Sanitizer::sanitize('<p>test template</p>', false));
+        $this->string($fup->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($fup->fields['is_private'])->isEqualTo(1);
 
         $fups_id = $fup->add([
@@ -637,6 +635,56 @@ HTML
         $this->boolean(
             $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
         )->isEqualTo($is_parent_loaded);
+    }
+
+    public function testParentMetaSearchOptions()
+    {
+        $this->login();
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $change = $this->getNewITILObject('Change', true);
+        $followup = new CoreITILFollowup();
+        $this->integer($ticket_followups_id = $followup->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+        $this->integer($change_followups_id = $followup->add([
+            'itemtype' => 'Change',
+            'items_id' => $change->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Ticket',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Ticket title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('Ticket title');
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Change',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Change title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Change_1'][0]['name'])->isEqualTo('Change title');
     }
 
     public function testAddDefaultWhereTakeEntitiesIntoAccount(): void

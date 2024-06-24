@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var \Glpi\Form\AccessControl\ControlType\DirectAccessConfig config #}
+{# @var string                                                  url #}
+
+{# Readonly input used to display the link, can be copied by clicking on it #}
+<div
+    class="input-icon cursor-pointer mb-3"
+    data-glpi-clipboard-text="{{ url }}"
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="{{ __("Click to copy to clipboard") }}"
+>
+    <input
+        type="text"
+        class="form-control cursor-pointer"
+        readonly=""
+        value="{{ url }}"
+    >
+    <span class="input-icon-addon">
+        <i class="ti ti-files"></i>
+    </span>
+</div>
+
+{# Unauthenticated access configuration #}
+<label class="form-check form-switch">
+    <input
+        class="form-check-input"
+        name="_allow_unauthenticated"
+        type="hidden"
+        value="0"
+    >
+    <input
+        class="form-check-input"
+        name="_allow_unauthenticated"
+        type="checkbox"
+        value="1"
+        {{ config.allowUnauthenticated() ? 'checked' : '' }}
+    >
+    <span class="form-check-label">
+        <i class="ti ti-lock-open"></i>
+        {{ __("Allow unauthenticated users") }}
+        <span class="form-help"
+            data-bs-toggle="popover"
+            data-bs-placement="top"
+            data-bs-html="true"
+            data-bs-content="{{ __("Users without accounts will be able to answer anonymously to this form. Authenticated users will not see this form.") }}">
+            ?
+        </span>
+    </span>
+</label>
+
+<input type="hidden" name="_token" value="{{ config.getToken() }}">

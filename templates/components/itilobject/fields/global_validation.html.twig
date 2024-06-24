@@ -61,12 +61,16 @@
          {{ fields.field(
             '_add_validation',
             validation.dropdownValidator({
-               'name': 'users_id_validate',
+               'prefix': '_validation_targets[0]',
                'entity': item.fields['entities_id'],
+               'itemtype_target': params['_validation_targets'][0]['itemtype_target'] ?? '',
+               'items_id_target': params['_validation_targets'][0]['items_id_target'] ?? '',
+               'groups_id': params['_validation_targets'][0]['groups_id'] ?? '',
+               'users_id_requester': params['_users_id_requester'] ?? '',
                'right': validation_right,
-               'users_id_validate': params['users_id_validate'],
                'display': false,
                'disabled': (not canupdate),
+               'readonly': (field_options.fields_template.isReadonlyField('_add_validation')),
             }|merge(required)),
             __('Approval request'),
             field_options

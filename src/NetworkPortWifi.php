@@ -33,9 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/// NetworkPortWifi class : wifi instantitation of NetworkPort
-/// @todo : add connection to other wifi networks
-/// @since 0.84
+/**
+ * Wi-Fi instantitation of NetworkPort
+ * @since 0.84
+ * @todo Add connection to other wifi networks
+ */
 class NetworkPortWifi extends NetworkPortInstantiation
 {
     public static function getTypeName($nb = 0)
@@ -43,26 +45,23 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return __('Wifi port');
     }
 
-
     public function getNetworkCardInterestingFields()
     {
         return ['link.mac' => 'mac'];
     }
 
-
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
-
         if (!$options['several']) {
             echo "<tr class='tab_bg_1'>\n";
             $this->showNetworkCardField($netport, $options, $recursiveItems);
-            echo "<td>" . WifiNetwork::getTypeName(1) . "</td><td>";
+            echo "<td>" . htmlspecialchars(WifiNetwork::getTypeName(1)) . "</td><td>";
             WifiNetwork::dropdown(['value'  => $this->fields["wifinetworks_id"]]);
             echo "</td>";
             echo "</tr>\n";
 
             echo "<tr class='tab_bg_1'>\n";
-            echo "<td>" . __('Wifi mode') . "</td>";
+            echo "<td>" . __s('Wifi mode') . "</td>";
             echo "<td>";
 
             Dropdown::showFromArray(
@@ -72,7 +71,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
             );
 
             echo "</td>\n";
-            echo "<td>" . __('Wifi protocol version') . "</td><td>";
+            echo "<td>" . __s('Wifi protocol version') . "</td><td>";
 
             Dropdown::showFromArray(
                 'version',
@@ -88,52 +87,6 @@ class NetworkPortWifi extends NetworkPortInstantiation
             echo "</tr>\n";
         }
     }
-
-
-    public function getInstantiationHTMLTableHeaders(
-        HTMLTableGroup $group,
-        HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
-        array $options = []
-    ) {
-
-        DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, null, $options);
-
-        $group->addHeader('ESSID', __('ESSID'), $super);
-        $group->addHeader('Mode', __('Wifi mode'), $super);
-        $group->addHeader('Version', __('Wifi protocol version'), $super);
-
-        parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-        return null;
-    }
-
-
-    public function getInstantiationHTMLTable(
-        NetworkPort $netport,
-        HTMLTableRow $row,
-        HTMLTableCell $father = null,
-        array $options = []
-    ) {
-
-        DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, null, $options);
-
-        $row->addCell(
-            $row->getHeaderByName('Instantiation', 'ESSID'),
-            Dropdown::getDropdownName(
-                "glpi_wifinetworks",
-                $this->fields["wifinetworks_id"]
-            )
-        );
-
-        $row->addCell($row->getHeaderByName('Instantiation', 'Mode'), $this->fields['mode']);
-
-        $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
-
-        parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-        return null;
-    }
-
 
     public function rawSearchOptions()
     {
@@ -158,7 +111,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'mode',
             'name'               => __('Wifi mode'),
             'massiveaction'      => false,
@@ -167,7 +120,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'version',
             'name'               => __('Wifi protocol version'),
             'massiveaction'      => false
@@ -185,46 +138,25 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return $tab;
     }
 
-
-    /**
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
         switch ($field) {
             case 'mode':
                 $tab = WifiNetwork::getWifiCardModes();
-                if (isset($tab[$values[$field]])) {
-                    return $tab[$values[$field]];
-                }
-                return NOT_AVAILABLE;
+                return $tab[$values[$field]] ?? NOT_AVAILABLE;
 
             case 'version':
                 $tab = WifiNetwork::getWifiCardVersion();
-                if (isset($tab[$values[$field]])) {
-                    return $tab[$values[$field]];
-                }
-                return NOT_AVAILABLE;
+                return $tab[$values[$field]] ?? NOT_AVAILABLE;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
-    /**
-     * @param $field
-     * @param $name            (default'')
-     * @param $values           (default '')
-     * @param $options   array
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -241,14 +173,8 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
-    /**
-     * @param $tab          array
-     * @param $joinparams   array
-     **/
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
-
         $tab[] = [
             'id'                 => '157',
             'table'              => 'glpi_wifinetworks',

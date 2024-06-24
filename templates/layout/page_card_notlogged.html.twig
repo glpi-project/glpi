@@ -31,11 +31,13 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set theme = config('palette') %}
+{% set theme = config('palette')|default('auror') %}
 {% if css_files is not defined %}
    {% set css_files = [
        {'path': 'public/lib/base.css'},
-       {'path': 'css/palettes/' ~ theme ~ '.scss'}
+       {'path': 'css/tabler.scss'},
+       {'path': 'css/glpi.scss'},
+       {'path': 'css/core_palettes.scss'}
    ] %}
    {# TODO : load hight contrast css #}
 {% endif %}
@@ -65,9 +67,11 @@
                   <span class="glpi-logo mb-4" title="GLPI"></span>
                </div>
             </div>
-            <div class="card card-md">
+            <div class="card card-md main-content-card">
+               {# Keep the header on one line so that the :empty CSS selector will work #}
+               <div class="card-header">{% block header_block %}{% endblock %}</div>
                <div class="card-body">
-               {% block content_block %}{% endblock %}
+                  {% block content_block %}{% endblock %}
                </div>
             </div>
 

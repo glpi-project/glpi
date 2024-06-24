@@ -1,0 +1,205 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set fields_options = {
+    full_width: true,
+    full_width_adapt_column: false,
+    is_horizontal: false,
+} %}
+
+<div class="my-3">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form">
+        <i class="ti ti-plus"></i>
+        <span>{{ __('Add a note') }}</span>
+    </button>
+
+    <div id="new-note-form" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="ti ti-notes"></i>
+                        {{ __('Add a note') }}
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                    <div class="modal-body">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="itemtype" value="{{ itemtype }}" />
+                        <input type="hidden" name="items_id" value="{{ items_id }}" />
+                        {{ fields.textareaField(
+                            'content',
+                            '',
+                            __("Content"),
+                            fields_options|merge({
+                                enable_richtext: true,
+                                enable_fileupload: true,
+                            })
+                        ) }}
+
+                        {% if itemtype == "Entity" %}
+                            {{ fields.sliderField(
+                                'visible_from_ticket',
+                                false,
+                                __('Visible on tickets'),
+                                fields_options
+                            ) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" value="Add" name="add" class="btn btn-primary">
+                            <span>{{ __('Add') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="accordion">
+    {% for note in notes %}
+        {% set id = "note#{ note['id'] }#{ rand }" %}
+        <div class="accordion-item">
+            <div class="accordion-header">
+                <button class="accordion-button collapsed d-flex align-self-center" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#{{ id }}"
+                        aria-expanded="false" aria-controls="{{ id }}">
+                    <i class="ti ti-notes me-1"></i>
+                    <span>#{{ id }}</span>
+                </button>
+            </div>
+
+            <div id="{{ id }}" class="accordion-collapse collapse">
+                <div class="accordion-body pt-0">
+                    <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="id" value="{{ note['id'] }}" />
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="d-inline-flex creator">
+                                {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+                                    'users_id': note['users_id'],
+                                    'date_creation': note['date_creation'],
+                                    'date_mod': note['date_mod'],
+                                    'users_id_editor': note['users_id_lastupdater'],
+                                }, with_context = false) }}
+                            </span>
+
+                            <span>
+                                <button class="btn btn-sm btn-ghost-danger delete-note" name="purge" type="submit" value="1"
+                                        onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
+                                        data-id="{{ id }}">
+                                    <i class="fa-fw ti ti-trash"></i>
+                                    <span>{{ __('Delete') }}</span>
+                                </button>
+
+                                <button class="btn btn-sm btn-ghost-secondary edit-note" type="button"
+                                        data-id="{{ id }}"
+                                        data-bs-toggle="modal" data-bs-target="#edit-{{ id }}">
+                                    <i class="fa-fw ti ti-edit"></i>
+                                    <span>{{ __('Edit') }}</span>
+                                </button>
+                            </span>
+                        </div>
+
+                        <div class="rich_text_container" id="contentread{{ id }}">
+                            {{ note['content']|safe_html }}
+                        </div>
+
+                        {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                            'item': note,
+                            'entry': note
+                        }) }}
+
+                        <div id="edit-{{ id }}" class="modal fade">
+
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title">
+                                            <i class="ti ti-notes"></i>
+                                            {{ __('Edit a note') }}
+                                        </h3>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        {{ fields.textareaField(
+                                            'content',
+                                            note['content'],
+                                            __('Content'),
+                                            fields_options|merge({
+                                                enable_richtext: true,
+                                                enable_fileupload: true,
+                                            })
+                                        ) }}
+                                        <br>
+
+                                        {% if itemtype == "Entity" %}
+                                            {{ fields.sliderField(
+                                                'visible_from_ticket',
+                                                note['visible_from_ticket'],
+                                                __('Visible on tickets'),
+                                                fields_options
+                                            ) }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-outline-danger" type="submit" name="purge" value="1"
+                                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
+                                                data-bs-toggle="tooltip" data-bs-position="top"
+                                                title="{{ _x('button', 'Delete permanently') }}">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+
+                                        <button type="submit" value="Update" name="update" class="btn btn-primary">
+                                            <i class="ti ti-device-floppy"></i>
+                                            <span>{{ __('Update') }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

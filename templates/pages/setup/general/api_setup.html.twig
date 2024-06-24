@@ -1,0 +1,79 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block config_fields %}
+   {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
+
+   {{ fields.smallTitle(__('General API')) }}
+   {{ fields.sliderField('enable_api', config['enable_api'], __("Enable REST API")) }}
+
+   {% if config['enable_api'] %}
+      {{ fields.smallTitle(__('API')) }}
+      {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
+      {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
+      {{ fields.htmlField(
+         '',
+         getting_started_doc
+      ) }}
+      {{ fields.htmlField(
+         '',
+         endpoint_doc
+      ) }}
+      {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
+         readonly: true,
+         copyable: true
+      }) }}
+
+      {{ fields.smallTitle(__('Legacy API')) }}
+      {% set legacy_doc %}<a href="{{ legacy_doc_url }}">{{ __('API inline Documentation') }}</a>{% endset %}
+      {{ fields.htmlField(
+         '',
+         legacy_doc
+      ) }}
+      {{ fields.nullField() }}
+      {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
+         readonly: true,
+         copyable: true
+      }) }}
+      {{ fields.nullField() }}
+      {{ fields.sliderField('enable_api_login_credentials', config['enable_api_login_credentials'], __("Enable login with credentials"), {
+         helper: __("Allow to login to API and get a session token with user credentials")
+      }) }}
+      {{ fields.sliderField('enable_api_login_external_token', config['enable_api_login_external_token'], __("Enable login with external token"), {
+         helper: __("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab")
+      }) }}
+   {% endif %}
+{% endblock %}

@@ -31,57 +31,105 @@
  * ---------------------------------------------------------------------
  */
 
-$mainmenu_bg: $dark !default;
-$mainmenu_fg: $light !default;
-$search_bg: transparentize($mainmenu_bg, 0.95) !default;
-$search_fg: lighten($mainmenu_bg, 5%) !default;
-$search_border: lighten($color: $search_fg, $amount: 35) !default;
-$table_border: #eee !default;
-$table_header_bg: #f8f8f8 !default;
-$header-fg: $blue !default;
-$header-bg: theme-color-lighter($header-fg, true) !default;
-$header-border-color: tint-color($header-fg, 75%) !default;
-$header-danger-bg: $danger !default;
-$header-badge-bg: tint-color($header-fg, 80%) !default;
-$header-badge-fg: darken($header-fg, 20%) !default;
-$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 80%) !default;
-$scrollbar-color-track: transparent !default;
-$tabs-bg: $card-cap-bg !default;
-$tabs-fg: $text-muted !default;
-$tabs-border: $card-border-color !default;
-$tabs-active-bg: #fff !default;
-$tabs-active-fg: $dark !default;
-$tabs-active-border: $tabs-border !default;
-$badge-bg: $secondary !default;
-$badge-fg: $light !default;
-$itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
-$timeline-itilc-bg: #e2f2e3 !default;
-$timeline-itilc-fg: #155210 !default;
-$timeline-itilc-border: #87aa8a !default;
-$timeline-fup-bg: #ececec !default;
-$timeline-fup-fg: #535353 !default;
-$timeline-fup-border: #ccc !default;
-$timeline-task-bg: #ffe8b9 !default;
-$timeline-task-fg: #38301f !default;
-$timeline-task-border: #e5c88c !default;
-$timeline-sol-bg: #9fd6ed !default;
-$timeline-sol-fg: #27363b !default;
-$timeline-sol-border: #90c2d8 !default;
-$timeline-doc-bg: #80cead !default;
-$timeline-doc-fg: #21352c !default;
-$timeline-doc-border: #68b997 !default;
-$timeline-log-bg: #cacaca21 !default;
-$timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
-$timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
-$input-border: $dark-mode-text !default;
-$dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
-$glpi-badge-bg: theme-color-lighter($link-color, true) !default;
-$glpi-badge-fg: $link-color !default;
+:root {
+    --tblr-primary-rgb: 254, 201, 92;
+    --tblr-primary: rgb(var(--tblr-primary-rgb));
+    --tblr-primary-fg: #1e293b;
+    --tblr-secondary: #606f91;
+    --tblr-secondary-fg: var(--tblr-body-bg);
+    --tblr-info: #80abe4;
+    --tblr-link-color-rgb: 58, 86, 147;
+    --tblr-link-color: rgb(var(--tblr-link-color-rgb));
+    --tblr-badge-bg: var(--tblr-secondary);
+    --tblr-badge-color: var(--tblr-secondary-fg);
+    --tblr-navbar-color: #2f3f64;
+    --tblr-body-bg: #f5f7fb;
+    --tblr-bg-surface: #fff;
+    --tblr-bg-surface-tertiary: var(--tblr-gray-50);
+    --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
+    --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
+    --glpi-tabs-fg: var(--tblr-muted);
+    --glpi-tabs-border-color: var(--tblr-border-color);
+    --glpi-tabs-active-bg: var(--tblr-bg-surface);
+    --glpi-tabs-active-fg: var(--tblr-body-color);
+    --glpi-tabs-active-border-color: var(--glpi-tabs-border-color);
+    --glpi-logo-light: url("../pics/logos/logo-GLPI-100-white.png");
+    --glpi-logo-light-reduced: url("../pics/logos/logo-G-100-white.png");
+    --glpi-logo-dark: url("../pics/logos/logo-GLPI-100-black.png");
+    --glpi-logo-dark-reduced: url("../pics/logos/logo-G-100-black.png");
+    --glpi-logo-dark-login: url("../pics/logos/logo-GLPI-250-black.png");
+    --glpi-logo-light-login: url("../pics/logos/logo-GLPI-250-white.png");
+    --glpi-logo: var(--glpi-logo-light);
+    --glpi-logo-reduced: var(--glpi-logo-light-reduced);
+    --glpi-mainmenu-bg: #2f3f64;
+    --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
+    --glpi-search-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), transparent 95%);
+    --glpi-search-fg: color-mix(in srgb, var(--glpi-mainmenu-fg), white 5%);
+    --glpi-search-border-color: color-mix(in srgb, var(--glpi-search-fg), white 65%);
+    --glpi-fg-secondary: #f4f6fa;
+    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-light) 91%);
+    --glpi-badge-fg: var(--tblr-link-color);
+    --glpi-form-header-fg: var(--tblr-blue);
+    --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
+    --glpi-form-header-border-color: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 75%);
+    --glpi-form-header-danger-fg: var(--tblr-danger);
+    --glpi-form-header-danger-bg: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 90%);
+    --glpi-form-header-danger-border-color: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 75%);
+    --glpi-form-toolbar-bg: #f5f5f5;
+    --glpi-topbar-height: 79px;
+    --glpi-contextbar-height: 56px;
+    --glpi-content-margin: 24px;
+    --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 20%);
+    --glpi-scrollbar-track-color: transparent;
+    --glpi-itil-secondary-bg: #f5f5f5;
+    --glpi-timeline-itil-content-bg: #e2f2e3;
+    --glpi-timeline-itil-content-fg: #155210;
+    --glpi-timeline-itil-content-border-color: #87aa8a;
+    --glpi-timeline-fup-bg: #ececec;
+    --glpi-timeline-fup-fg: #535353;
+    --glpi-timeline-fup-border-color: #b3b3b3;
+    --glpi-timeline-task-bg: #ffe8b9;
+    --glpi-timeline-task-fg: #38301f;
+    --glpi-timeline-task-border-color: #e5c88c;
+    --glpi-timeline-solution-bg: #9fd6ed;
+    --glpi-timeline-solution-fg: #27363b;
+    --glpi-timeline-solution-border-color: #90c2d8;
+    --glpi-timeline-document-bg: #80cead;
+    --glpi-timeline-document-fg: #21352c;
+    --glpi-timeline-document-border-color: #68b997;
+    --glpi-timeline-log-bg: #cacaca21;
+    --glpi-timeline-badge-bg: rgba(97, 97, 97, 15%);
+    --glpi-timeline-badge-fg: rgba(43, 43, 43, 80%);
+    --glpi-hover-bg: rgba(var(--tblr-secondary-rgb), .08);
+    --tblr-gray-100: var(--tblr-light);
+    --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
+    --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
+    --tblr-gray-400: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 12%);
+    --tblr-gray-500: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 22%);
+    --tblr-gray-600: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 40%);
+    --tblr-gray-700: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%);
+    --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
+    --tblr-gray-900: var(--tblr-dark);
+    --tblr-gray-50: var(--tblr-gray-200);
+    --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
+    --glpi-zindex-dropdown: $zindex-dropdown;
+    --glpi-zindex-sticky: $zindex-sticky;
+    --glpi-zindex-fixed: $zindex-fixed;
+    --glpi-zindex-offcanvas-backdrop: $zindex-offcanvas-backdrop;
+    --glpi-zindex-offcanvas: $zindex-offcanvas;
+    --glpi-zindex-modal-backdrop: $zindex-modal-backdrop;
+    --glpi-zindex-modal: $zindex-modal;
+    --glpi-zindex-popover: $zindex-popover;
+    --glpi-zindex-tooltip: $zindex-tooltip;
+    --glpi-zindex-toast: $zindex-toast;
+}
 
-// helpers
-$topbar-height: 79px;
-$contextbar-height: 56px;
-$content-margin: 20px;
+@media(prefers-reduced-motion) {
+    :root {
+        --animate-duration: 0s !important; // No prefix because it is overrides animate.js default
+    }
+}
 
 body.iframed,
 body.in_modal {
@@ -91,7 +139,7 @@ body.in_modal {
 
 .page {
     .glpi-logo {
-        background: url($logo) no-repeat;
+        background: var(--glpi-logo) no-repeat;
         height: 55px;
         width: 100px;
     }
@@ -106,10 +154,14 @@ body.in_modal {
     }
 }
 
+.breadcrumb a {
+    --tblr-breadcrumb-link-color: var(--tblr-muted);
+}
+
 .breadcrumb-alternate {
     a {
         &:hover {
-            text-decoration: $link-hover-decoration;
+            text-decoration: var(--tblr-link-hover-decoration);
         }
     }
 }
@@ -183,13 +235,13 @@ body.in_modal {
         i.fa-brands,
         i.ti {
             margin-right: 0;
-            line-height: 1.5em;
+
+            &:not(.ti) {
+                line-height: 1.5em;
+            }
         }
 
         &.btn-sm {
-            // try to have same height for ti and fa icons
-            min-height: 24px;
-
             .fa-stack {
                 height: 1.65em;
                 line-height: 1.2em;
@@ -207,8 +259,7 @@ body.in_modal {
             i.far,
             i.fa-regular,
             i.fab,
-            i.fa-brands,
-            i.ti {
+            i.fa-brands {
                 line-height: 1.2em;
             }
         }
@@ -218,6 +269,22 @@ body.in_modal {
 .toast-container {
     z-index: 999999;
     position: fixed;
+
+    &.top-left {
+        inset: 0 auto auto 0;
+    }
+
+    &.top-right {
+        inset: 0 0 auto auto;
+    }
+
+    &.bottom-left {
+        inset: auto auto 0 0;
+    }
+
+    &.bottom-right {
+        inset: auto 0 0 auto;
+    }
 }
 
 .img-overlay-wrapper {
@@ -226,11 +293,17 @@ body.in_modal {
 
 .page-anonymous {
     .glpi-logo {
-        --logo: url(#{$logo-dark-login});
+        --logo: var(--glpi-logo-dark-login);
 
         content: var(--logo);
         width: 200px;
         height: 110px;
+    }
+
+    .main-content-card {
+        .card-header:empty {
+            display: none;
+        }
     }
 }
 
@@ -241,8 +314,8 @@ table {
 
     td.active,
     td.tab_bg_4 {
-        background-color: $table-active-bg;
-        color: $table-active-color;
+        background-color: var(--tblr-table-active-bg);
+        color: var(--tblr-table-active-color);
     }
 
     &.deleted-results {
@@ -257,8 +330,8 @@ table {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background: $glpi-badge-bg;
-    color: $glpi-badge-fg !important;
+    background: var(--glpi-badge-bg);
+    color: var(--glpi-badge-fg) !important;
     padding: calc(0.25rem - 1px) 0.25rem;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -286,38 +359,18 @@ table {
     }
 
     .fancytree-selected {
-        background-color: $component-active-bg;
-    }
-
-    .plain-scrollbar {
-        &[data-scrollable="false"] {
-            visibility: hidden;
-        }
-
-        &.scrollbar-vertical {
-            width: 8px;
-        }
-
-        .arrow-up,
-        .arrow-down {
-            display: none;
-        }
-
-        .slider-area {
-            top: 0 !important;
-            bottom: 0 !important;
-        }
+        background-color: var(--tblr-primary);
     }
 }
 
 .qtip-bootstrap,
 .popover .popover-body {
-    background-color: $color-contrast-light;
-    color: $dark;
+    background-color: var(--tblr-bg-surface);
+    color: var(--tblr-dark);
 }
 
 .popover .popover-arrow::after {
-    border-top-color: $color-contrast-light;
+    border-top-color: var(--tblr-bg-surface);
 }
 
 kbd {
@@ -340,4 +393,31 @@ body input {
 
 &:-webkit-autofill {
    -webkit-text-fill-color: var(--tblr-body-color);
+}
+
+body .dropdown-menu {
+    --tblr-dropdown-divider-margin-y: calc(var(--tblr-spacer) * 0.5);
+    --tblr-dropdown-item-padding-x: var(--tblr-spacer);
+    --tblr-dropdown-item-padding-y: calc(var(--tblr-spacer) * 0.5);
+}
+
+body .toast {
+    background: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
+}
+
+.card {
+    --tblr-card-cap-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%) !important;
+}
+
+.accordion {
+    --tblr-accordion-color: var(--tblr-muted);
+}
+
+.monaco-editor {
+    outline: none !important;
+}
+
+.tooltip {
+    --tblr-tooltip-color: var(--tblr-body-color);
 }

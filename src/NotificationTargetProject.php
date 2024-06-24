@@ -468,12 +468,13 @@ class NotificationTargetProject extends NotificationTarget
         }
         $this->data["##project.numberofcosts##"] = count($this->data['costs']);
 
-       // History infos
+        // History infos
         $this->data['log'] = [];
-       // Use list_limit_max or load the full history ?
-        foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
+        // Use list_limit_max or load the full history ?
+        $log_data = Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']);
+        foreach ($log_data as $data) {
             $tmp                            = [];
-            $tmp["##project.log.date##"]    = $data['date_mod'];
+            $tmp["##project.log.date##"]    = Html::convDateTime($data['date_mod']);
             $tmp["##project.log.user##"]    = $data['user_name'];
             $tmp["##project.log.field##"]   = $data['field'];
             $tmp["##project.log.content##"] = $data['change'];

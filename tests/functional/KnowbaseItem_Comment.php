@@ -71,11 +71,12 @@ class KnowbaseItem_Comment extends DbTestCase
        // second, test what we retrieve
         $comments = \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
         $this->array($comments)->hasSize(2);
-        $this->array($comments[0])->hasSize(9);
+        $this->array($comments[0])->hasSize(10);
         $this->array($comments[0]['answers'])->hasSize(2);
         $this->array($comments[0]['answers'][0]['answers'])->hasSize(1);
         $this->array($comments[0]['answers'][1]['answers'])->hasSize(0);
-        $this->array($comments[1])->hasSize(9);
+        $this->array($comments[0]['user_info'])->hasKeys(['avatar', 'link', 'initials', 'initials_bg_color']);
+        $this->array($comments[1])->hasSize(10);
         $this->array($comments[1]['answers'])->hasSize(0);
     }
 
@@ -141,15 +142,15 @@ class KnowbaseItem_Comment extends DbTestCase
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Comments');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
 
         // Change knowbase rights to be empty
         $_SESSION['glpiactiveprofile']['knowbase'] = 0;
@@ -158,52 +159,51 @@ class KnowbaseItem_Comment extends DbTestCase
 
         // Add comment and read right
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
-        // Tab name should be filled (start with "Comments")
-        $this->string($kbcom->getTabNameForItem($kb1))->matches('/^Comments/');
+        // Tab name should be filled
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
     }
 
     public function testDisplayComments()
     {
+        //TODO This should be part of an E2E test
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
-        preg_match_all("/li class='comment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(2);
 
-        preg_match_all("/li class='comment subcomment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(3);
 
-        preg_match_all("/span class='ti ti-edit edit_item pointer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->array($results[0])->hasSize(4);
 
-        preg_match_all("/span class='add_answer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->array($results[0])->hasSize(5);
 
-       //same tests, from another user
+        // same tests, from another user
         $auth = new \Auth();
         $result = $auth->login('glpi', 'glpi', true);
         $this->boolean($result)->isTrue();
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
-        preg_match_all("/li class='comment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(2);
 
-        preg_match_all("/li class='comment subcomment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(3);
 
-        preg_match_all("/span class='ti ti-edit edit_item pointer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->array($results[0])->hasSize(1);
 
-        preg_match_all("/span class='add_answer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->array($results[0])->hasSize(5);
     }
 }

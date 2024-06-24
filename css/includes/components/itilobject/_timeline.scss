@@ -38,18 +38,9 @@
         margin-top: -0.5rem;
         margin-bottom: 1rem;
 
-        .creator {
-            .badge {
-                background-color: $timeline-badge-bg;
-                color: $timeline-badge-fg;
-
-                @include tabler-badge-fix;
-            }
-        }
-
         .timeline-item-buttons {
             .is-private {
-                color: $timeline-badge-fg;
+                color: var(--glpi-timeline-badge-fg);
             }
         }
     }
@@ -102,6 +93,7 @@
         max-width: 820px;
         min-width: 100%;
         word-break: break-word;
+        border: 1px solid transparent;
 
         @include media-breakpoint-up(sm) {
             &::before {
@@ -113,7 +105,7 @@
                 right: auto;
                 top: -1px;
                 bottom: auto;
-                border: 7px solid transparent;
+                border: 7px dashed transparent;
             }
 
             &::after {
@@ -125,7 +117,7 @@
                 right: auto;
                 top: 0;
                 bottom: auto;
-                border: 6px solid transparent;
+                border: 6px dashed transparent;
             }
 
             &.t-right {
@@ -144,27 +136,55 @@
         }
     }
 
-    &.ITILContent,
-    &.ITILValidation {
+    &.private-item {
         .timeline-content {
-            background-color: $timeline-itilc-bg;
-            color: $timeline-itilc-fg;
-            border-color: $timeline-itilc-border;
+            border-style: dashed;
+            border-width: 3px;
 
             &::before {
-                border-color: $timeline-itilc-border $timeline-itilc-border transparent transparent;
+                top: -3px;
             }
 
             &::after {
-                border-color: $timeline-itilc-bg $timeline-itilc-bg transparent transparent;
+                left: -7px;
+            }
+
+            &.t-right {
+                &::after {
+                    left: auto;
+                    right: -7px;
+                }
+            }
+        }
+    }
+
+    &:not(.private-item) {
+        .timeline-content {
+            padding: 2px; // compensate border
+        }
+    }
+
+    &.ITILContent,
+    &.ITILValidation {
+        .timeline-content {
+            background-color: var(--glpi-timeline-itil-content-bg);
+            color: var(--glpi-timeline-itil-content-fg);
+            border-color: var(--glpi-timeline-itil-content-border-color);
+
+            &::before {
+                border-color: var(--glpi-timeline-itil-content-border-color) var(--glpi-timeline-itil-content-border-color) transparent transparent;
+            }
+
+            &::after {
+                border-color: var(--glpi-timeline-itil-content-bg) var(--glpi-timeline-itil-content-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: $timeline-itilc-border transparent transparent $timeline-itilc-border;
+                border-color: var(--glpi-timeline-itil-content-border-color) transparent transparent var(--glpi-timeline-itil-content-border-color);
             }
 
             &.t-right::after {
-                border-color: $timeline-itilc-bg transparent transparent $timeline-itilc-bg;
+                border-color: var(--glpi-timeline-itil-content-bg) transparent transparent var(--glpi-timeline-itil-content-bg);
             }
         }
     }
@@ -172,61 +192,61 @@
     &.ITILFollowup,
     &.KnowbaseItemComment {
         .timeline-content {
-            background-color: $timeline-fup-bg;
-            color: $timeline-fup-fg;
-            border-color: $timeline-fup-border;
+            background-color: var(--glpi-timeline-fup-bg);
+            color: var(--glpi-timeline-fup-fg);
+            border-color: var(--glpi-timeline-fup-border-color);
             background-image: url("../pics/timeline/followup.png");
             background-repeat: no-repeat;
 
             &::before {
-                border-color: $timeline-fup-border $timeline-fup-border transparent transparent;
+                border-color: var(--glpi-timeline-fup-border-color) var(--glpi-timeline-fup-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: $timeline-fup-bg $timeline-fup-bg transparent transparent;
+                border-color: var(--glpi-timeline-fup-bg) var(--glpi-timeline-fup-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: $timeline-fup-border transparent transparent $timeline-fup-border;
+                border-color: var(--glpi-timeline-fup-border-color) transparent transparent var(--glpi-timeline-fup-border-color);
             }
 
             &.t-right::after {
-                border-color: $timeline-fup-bg transparent transparent $timeline-fup-bg;
+                border-color: var(--glpi-timeline-fup-bg) transparent transparent var(--glpi-timeline-fup-bg);
             }
         }
     }
 
     &.ITILTask {
         .timeline-content {
-            background-color: $timeline-task-bg;
-            color: $timeline-task-fg;
-            border-color: $timeline-task-border;
+            background-color: var(--glpi-timeline-task-bg);
+            color: var(--glpi-timeline-task-fg);
+            border-color: var(--glpi-timeline-task-border-color);
             background-image: url("../pics/timeline/task.png");
             background-repeat: no-repeat;
 
             &::before {
-                border-color: $timeline-task-border $timeline-task-border transparent transparent;
+                border-color: var(--glpi-timeline-task-border-color) var(--glpi-timeline-task-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: $timeline-task-bg $timeline-task-bg transparent transparent;
+                border-color: var(--glpi-timeline-task-bg) var(--glpi-timeline-task-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: $timeline-task-border transparent transparent $timeline-task-border;
+                border-color: var(--glpi-timeline-task-border-color) transparent transparent var(--glpi-timeline-task-border-color);
             }
 
             &.t-right::after {
-                border-color: $timeline-task-bg transparent transparent $timeline-task-bg;
+                border-color: var(--glpi-timeline-task-bg) transparent transparent var(--glpi-timeline-task-bg);
             }
         }
     }
 
     &.ITILSolution {
         .timeline-content {
-            background-color: $timeline-sol-bg;
-            color: $timeline-sol-fg;
-            border-color: $timeline-sol-border;
+            background-color: var(--glpi-timeline-solution-bg);
+            color: var(--glpi-timeline-solution-fg);
+            border-color: var(--glpi-timeline-solution-border-color);
             border-left: 1em transparent solid;
 
             .solimg {
@@ -236,19 +256,19 @@
             }
 
             &::before {
-                border-color: $timeline-sol-border $timeline-sol-border transparent transparent;
+                border-color: var(--glpi-timeline-solution-border-color) var(--glpi-timeline-solution-border-color) transparent transparent;
             }
 
             &::after {
-                border-color: $timeline-sol-bg $timeline-sol-bg transparent transparent;
+                border-color: var(--glpi-timeline-solution-bg) var(--glpi-timeline-solution-bg) transparent transparent;
             }
 
             &.t-right::before {
-                border-color: $timeline-sol-border transparent transparent $timeline-sol-border;
+                border-color: var(--glpi-timeline-solution-border-color) transparent transparent var(--glpi-timeline-solution-border-color);
             }
 
             &.t-right::after {
-                border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
+                border-color: var(--glpi-timeline-solution-bg) transparent transparent var(--glpi-timeline-solution-bg);
             }
         }
     }
@@ -278,14 +298,15 @@
 
         &#new-Document_Item-block {
             .timeline-content {
-                border: 1px solid $timeline-doc-border;
+                border: 1px solid var(--glpi-timeline-document-border-color);
                 box-shadow: inherit;
-                color: $timeline-doc-fg;
+                color: var(--glpi-timeline-document-fg);
             }
         }
     }
 
-    &.Log {
+    &.Log,
+    &.ITILReminder {
         width: 100%;
 
         .user-part {
@@ -313,6 +334,7 @@
                     .timeline-header {
                         margin-left: 1rem;
                         margin-top: 0;
+                        margin-bottom: 0;
                     }
                 }
             }
@@ -348,12 +370,9 @@
 }
 
 #new-itilobject-form {
-    min-width: 65%;
-    max-width: 100%;
+    width: 100%;
 
     .timeline-item {
-        min-width: 100%;
-
         &.ITILSolution {
             .timeline-content {
                 border-left: 1px solid transparent;
@@ -365,29 +384,29 @@
 .filter-timeline-popover {
     .form-check {
         .form-check-input:checked {
-            background-color: $timeline-fup-bg;
-            border-color: $timeline-fup-border;
+            background-color: var(--glpi-timeline-fup-bg);
+            border-color: var(--glpi-timeline-fup-border-color);
         }
 
         &.ITILContent,
         &.ITILValidation {
             .form-check-input:checked {
-                background-color: $timeline-itilc-bg;
-                border-color: $timeline-itilc-border;
+                background-color: var(--glpi-timeline-itil-content-bg);
+                border-color: var(--glpi-timeline-itil-content-border-color);
             }
         }
 
         &.ITILTask {
             .form-check-input:checked {
-                background-color: $timeline-task-bg;
-                border-color: $timeline-task-border;
+                background-color: var(--glpi-timeline-task-bg);
+                border-color: var(--glpi-timeline-task-border-color);
             }
         }
 
         &.ITILSolution {
             .form-check-input:checked {
-                background-color: $timeline-sol-bg;
-                border-color: $timeline-sol-border;
+                background-color: var(--glpi-timeline-solution-bg);
+                border-color: var(--glpi-timeline-solution-border-color);
             }
         }
     }

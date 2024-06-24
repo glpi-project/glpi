@@ -40,19 +40,18 @@ class AuthLdapReplicate extends CommonDBTM
 {
     public static $rightname = 'config';
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -60,8 +59,7 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
-        if (isset($input["port"]) && (intval($input["port"]) == 0)) {
+        if (isset($input["port"]) && ((int) $input["port"] == 0)) {
             $input["port"] = 389;
         }
         return $input;
@@ -69,7 +67,6 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-
         return $this->prepareInputForAdd($input);
     }
 
@@ -83,7 +80,6 @@ class AuthLdapReplicate extends CommonDBTM
      */
     public static function addNewReplicateForm($target, $master_id)
     {
-
         echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";
         echo "<div class='center'>";
         echo "<table class='tab_cadre_fixe'>";

@@ -52,7 +52,7 @@ class RuleRight extends DbTestCase
     {
         $rule = new \RuleRight();
         $actions  = $rule->getActions();
-        $this->array($actions)->size->isGreaterThan(11);
+        $this->array($actions)->size->isGreaterThan(12);
     }
 
     public function testDefaultRuleExists()
@@ -220,5 +220,44 @@ class RuleRight extends DbTestCase
 
        // Clean session
         $this->login();
+    }
+
+    public function testDenyLogin()
+    {
+        $rule = new \RuleRight();
+        $this->integer($rules_id = $rule->add([
+            'sub_type'     => 'RuleRight',
+            'name'         => 'deny login',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]));
+        $criteria = new \RuleCriteria();
+        $this->integer($criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => TU_USER,
+        ]))->isGreaterThan(0);
+
+        $actions = new \RuleAction();
+        $this->integer($actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_deny_login',
+            'value'       => 1,
+        ]))->isGreaterThan(0);
+
+        $this->login(TU_USER, TU_PASS, true, false);
+        $events = getAllDataFromTable('glpi_events', [
+            'service' => 'login',
+            'type' => 'system',
+            'items_id' => 0,
+        ]);
+        $username = TU_USER;
+        $this->array(array_filter($events, static function ($event) use ($username) {
+            return str_starts_with($event['message'], "Login for {$username} denied by authorization rules from IP ");
+        }))->size->isIdenticalTo(1);
     }
 }

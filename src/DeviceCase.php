@@ -43,10 +43,8 @@ class DeviceCase extends CommonDevice
         return _n('Case', 'Cases', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'devicecasetypes_id',
@@ -60,7 +58,6 @@ class DeviceCase extends CommonDevice
             ]
         );
     }
-
 
     public function rawSearchOptions()
     {
@@ -84,7 +81,6 @@ class DeviceCase extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -114,7 +110,6 @@ class DeviceCase extends CommonDevice
         HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -126,20 +121,13 @@ class DeviceCase extends CommonDevice
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
 
-
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 0.84
-     **/
     public function getImportCriteria()
     {
-
-        return ['designation'        => 'equal',
+        return [
+            'designation'        => 'equal',
             'manufacturers_id'   => 'equal',
             'devicecasetypes_id' => 'equal'
         ];

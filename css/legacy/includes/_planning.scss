@@ -71,8 +71,8 @@
       }
 
       h3 {
-         background: $header-bg;
-         color: $header-fg;
+         background: var(--glpi-form-header-bg);
+         color: var(--glpi-form-header-fg);
          margin: 2px 0 0 0;
          padding: .5em .5em .5em .7em;
          font-weight: normal;
@@ -93,13 +93,6 @@
             flex-wrap: wrap;
             align-items: center;
 
-            .actor_icon {
-               padding-bottom: 2px;
-               vertical-align: top;
-               font-size: 14px;
-               margin-left: 5px;
-            }
-
             label {
                padding-left: 5px;
                line-height: 16px;
@@ -110,7 +103,7 @@
                white-space: nowrap;
 
                > i {
-                  color: $warning;
+                  color: var(--tblr-warning);
                   float: right;
                }
             }

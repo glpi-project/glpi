@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Printer_CartridgeInfo extends CommonDBChild
 {
     public static $itemtype        = 'Printer';
@@ -50,7 +52,7 @@ class Printer_CartridgeInfo extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
                 self::$items_id => $printer->fields['id']
             ]
@@ -68,13 +70,9 @@ class Printer_CartridgeInfo extends CommonDBChild
     {
         $info = $this->getInfoForPrinter($printer);
 
-        echo "<h3>" . $this->getTypeName(Session::getPluralNumber()) . "</h3>";
-
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<thead><tr><th>" . __('Property') . "</th><th>" . __('Value') . "</th></tr></thead>";
-
         $asset = new Glpi\Inventory\Asset\Cartridge($printer);
         $tags = $asset->knownTags();
+        $entries = [];
 
         foreach ($info as $row) {
             $property   = $row['property'];
@@ -82,19 +80,16 @@ class Printer_CartridgeInfo extends CommonDBChild
 
             preg_match("/^toner(\w+.*$)/", $property, $matches);
             $bar_color = $matches[1] ?? 'green';
-            $text_color = ($bar_color == "black") ? 'white' : 'black';
+            $text_color = ($bar_color === "black") ? 'white' : 'black';
 
-            echo "<tr>";
-            echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
-
-            if (strstr($value, 'pages')) {
+            if (str_contains($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);
                 $value = sprintf(
-                    _x('%1$s remaining page', '%1$s remaining pages', $pages),
+                    _sx('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
-            } else if ($value == 'OK') {
-                $value = __('OK');
+            } else if ($value === 'OK') {
+                $value = __s('OK');
             }
 
             if (is_numeric($value)) {
@@ -125,10 +120,148 @@ HTML;
             } else {
                 $out = $value;
             }
-            echo sprintf("<td>%s</td>", $out);
-
-            echo "</tr>";
+            $entries[] = [
+                'property' => $tags[$property]['name'] ?? $property,
+                'value'    => $out
+            ];
         }
-        echo "</table>";
+
+        if (count($entries)) {
+            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+                'is_tab' => true,
+                'nopager' => true,
+                'nofilter' => true,
+                'nosort' => true,
+                'super_header' => self::getTypeName(Session::getPluralNumber()),
+                'columns' => [
+                    'property' => __('Property'),
+                    'value' => __('Value')
+                ],
+                'formatters' => [
+                    'value' => 'raw_html'
+                ],
+                'entries' => $entries,
+                'total_number' => count($entries),
+                'filtered_number' => count($entries),
+                'showmassiveactions' => false
+            ]);
+        }
+    }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id' => strtolower(self::getType()),
+            'name' => self::getTypeName(1)
+        ];
+
+        $tab[] = [
+            'id'                => 1400,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_toner_percent",
+            'name'              => __('Toner percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
+
+        $tab[] = [
+            'id'                => 1401,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_drum_percent",
+            'name'              => __('Drum percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
+
+        return $tab;
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    /**
+     * Create a badge for a specific type of cartridge information
+     *
+     * @param array $data
+     * @param string $type
+     * @return string|null
+     */
+    private static function createCartridgeInformationBadge(array $data, string $type): ?string
+    {
+        $color_aliases = [
+            'magenta'   => 'purple',
+        ];
+        $color_translations = [
+            'black'         => __('Black'),
+            'cyan'          => __('Cyan'),
+            'magenta'       => __('Magenta'),
+            'yellow'        => __('Yellow'),
+        ];
+
+        if (isset($data['property'], $data['value']) && is_array($data) && str_starts_with($data['property'], $type)) {
+            $color = str_replace($type, '', $data['property']);
+            $twig_params = [
+                'color_translated' => $color_translations[$color] ?? ucwords($color),
+                'color' => $color_aliases[$color] ?? $color,
+                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value']
+            ];
+            // language=Twig
+            return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold">
+                    {{ color_translated }} : {{ status }}
+                </span>
+TWIG, $twig_params);
+        }
+
+        return null;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        $printer = new Printer();
+        if (str_starts_with($field, '_virtual_')) {
+            $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $badges = array_filter(array_map(
+                static function ($data) use ($type) {
+                    return self::createCartridgeInformationBadge($data, $type);
+                },
+                $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
+            ));
+
+            if ($badges) {
+                // language=Twig
+                return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for badge in badges %}
+                            {{ badge|raw }}
+                        {% endfor %}
+                    </div>
+TWIG, ['badges' => $badges]);
+            }
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 }

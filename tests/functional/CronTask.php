@@ -177,7 +177,7 @@ class CronTask extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
         ]);
         $this->integer($iterator->count())->isEqualTo(1);
 
@@ -189,7 +189,7 @@ class CronTask extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
         ]);
         $this->integer($iterator->count())->isEqualTo($should_unregister ? 0 : 1);
     }

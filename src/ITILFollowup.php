@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * @since 9.4.0
@@ -105,18 +105,25 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-
-    public static function canView()
+    public static function canView(): bool
     {
-        return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN))
-              || Session::haveRight('ticket', READ)
-              || Session::haveRight('change', READ)
-              || Session::haveRight('problem', READ);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])) {
+            return false;
+        }
+        $itil_types = $CFG_GLPI['itil_types'];
+        /** @var class-string<CommonITILObject> $type */
+        foreach ($itil_types as $type) {
+            if ($type::canView()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('change', UPDATE)
              || Session::haveRight('problem', UPDATE)
@@ -128,7 +135,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if ($this->isParentAlreadyLoaded()) {
@@ -159,7 +166,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (
             !isset($this->fields['itemtype'])
@@ -186,7 +193,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
@@ -205,7 +212,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (
@@ -282,7 +289,7 @@ class ITILFollowup extends CommonDBChild
             $options = ['followup_id' => $this->fields["id"],
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
+            NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
 
         PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
@@ -301,7 +308,22 @@ class ITILFollowup extends CommonDBChild
             Log::HISTORY_ADD_SUBITEM
         );
 
+        self::addToMergedTickets();
+
         parent::post_addItem();
+    }
+
+    private function addToMergedTickets(): void
+    {
+        $merged = Ticket::getMergedTickets($this->fields['items_id']);
+        foreach ($merged as $ticket_id) {
+            $input = $this->input;
+            $input['items_id'] = $ticket_id;
+            $input['sourceitems_id'] = $this->fields['items_id'];
+
+            $followup = new self();
+            $followup->add($input);
+        }
     }
 
 
@@ -338,7 +360,7 @@ class ITILFollowup extends CommonDBChild
                            // Force is_private with data / not available
                 'is_private'  => $this->fields['is_private']
             ];
-            NotificationEvent::raiseEvent('delete_followup', $job, $options);
+            NotificationEvent::raiseEvent('delete_followup', $job, $options, $this);
         }
     }
 
@@ -357,12 +379,23 @@ class ITILFollowup extends CommonDBChild
             }
             $input = array_replace(
                 [
-                    'content'         => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'         => $template->getRenderedContent($parent_item),
                     'is_private'      => $template->fields['is_private'],
                     'requesttypes_id' => $template->fields['requesttypes_id'],
                 ],
                 $input
             );
+
+            $pendingReason = new PendingReason();
+            if (
+                $template->fields['pendingreasons_id'] > 0
+                && $pendingReason->getFromDB($template->fields['pendingreasons_id'])
+            ) {
+                $input['pending']           = 1;
+                $input['pendingreasons_id'] = $pendingReason->getID();
+                $input['followup_frequency'] = $pendingReason->fields['followup_frequency'];
+                $input['followups_before_resolution'] = $pendingReason->fields['followups_before_resolution'];
+            }
         }
 
         $input["_job"] = new $input['itemtype']();
@@ -373,7 +406,7 @@ class ITILFollowup extends CommonDBChild
             && !isset($input['add_reopen'])
         ) {
             Session::addMessageAfterRedirect(
-                __("You can't add a followup without description"),
+                __s("You can't add a followup without description"),
                 false,
                 ERROR
             );
@@ -411,14 +444,14 @@ class ITILFollowup extends CommonDBChild
                 if (isset($input["_add"])) {
                     // Reopen using add form
                     Session::addMessageAfterRedirect(
-                        __('If you want to reopen this item, you must specify a reason'),
+                        __s('If you want to reopen this item, you must specify a reason'),
                         false,
                         ERROR
                     );
                 } else {
                    // Refuse solution
                     Session::addMessageAfterRedirect(
-                        __('If you reject the solution, you must specify a reason'),
+                        __s('If you reject the solution, you must specify a reason'),
                         false,
                         ERROR
                     );
@@ -431,6 +464,10 @@ class ITILFollowup extends CommonDBChild
        // }
 
         $itemtype = $input['itemtype'];
+
+        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
+            Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
+        }
 
        // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
@@ -507,7 +544,7 @@ class ITILFollowup extends CommonDBChild
                     'is_private'  => $this->fields['is_private']
                 ];
 
-                NotificationEvent::raiseEvent("update_followup", $job, $options);
+                NotificationEvent::raiseEvent("update_followup", $job, $options, $this);
             }
         }
 
@@ -577,7 +614,7 @@ class ITILFollowup extends CommonDBChild
     public function post_getFromDB()
     {
         // Bandaid to avoid loading parent item if not needed
-        // TODO: replace by proper lazy loading in GLPI 10.1
+        // TODO: replace by proper lazy loading in GLPI 11.0
         if (!$this->isParentAlreadyLoaded()) {
             $this->item = new $this->fields['itemtype']();
             $this->item->getFromDB($this->fields['items_id']);
@@ -606,6 +643,15 @@ class ITILFollowup extends CommonDBChild
         $tab[] = [
             'id'                 => 'common',
             'name'               => __('Characteristics')
+        ];
+
+        $tab[] = [
+            'id'                 => '7',
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -655,8 +701,10 @@ class ITILFollowup extends CommonDBChild
             'id'                 => '6',
             'table'              => $this->getTable(),
             'field'              => 'itemtype',
-            'name'               => RequestType::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'name'               => __('Itemtype'),
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -785,6 +833,40 @@ class ITILFollowup extends CommonDBChild
         return $tab;
     }
 
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'itemtype':
+                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                    return $values['itemtype']::getTypeName(1);
+                }
+                return $values['itemtype'];
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+
+        switch ($field) {
+            case 'itemtype':
+                return Dropdown::showFromArray($field, [
+                    'Ticket' => Ticket::getTypeName(1),
+                    'Change' => Change::getTypeName(1),
+                    'Problem' => Problem::getTypeName(1),
+                ], $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
 
     public static function getFormURL($full = true)
     {
@@ -834,8 +916,8 @@ class ITILFollowup extends CommonDBChild
         $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
             'long'  => __('Add a followup to tickets (requester)')
         ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
-            'long'  => __('Add a followup to tickets (watcher)')
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (observer)'),
+            'long'  => __('Add a followup to tickets (observer)')
         ];
         $values[self::SEEPUBLIC]   = __('See public ones');
 
@@ -1081,7 +1163,7 @@ class ITILFollowup extends CommonDBChild
      * before loading the item, thus avoiding one useless DB query (or many more queries
      * when looping on children items)
      *
-     * TODO 10.1 move method and `item` property into parent class
+     * TODO 11.0 move method and `item` property into parent class
      *
      * @param CommonITILObject Parent item
      *

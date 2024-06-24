@@ -123,6 +123,22 @@ class Item_DeviceSimcard extends Item_Devices
                 'id'         => 22,
                 'datatype'   => 'dropdown'
             ],
+            'users_id_tech'  => [
+                'long name'  => __('Technician in charge'),
+                'short name' => __('Technician in charge'),
+                'size'       => 20,
+                'id'         => 23,
+                'datatype'   => 'dropdown',
+                'dropdown_options' => ['right' => 'own_ticket']
+            ],
+            'groups_id_tech' => [
+                'long name'  => __('Group in charge'),
+                'short name' => __('Group in charge'),
+                'size'       => 20,
+                'id'         => 24,
+                'datatype'   => 'dropdown',
+                'dropdown_options' => ['condition' => ['is_assign' => 1]]
+            ],
         ];
     }
 

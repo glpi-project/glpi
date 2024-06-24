@@ -1,0 +1,229 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+ .form-editor {
+    // Use all available parent space
+    flex-grow: 1;
+
+    // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
+    // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
+    background: linear-gradient(
+        169deg,
+        rgb(255,255,255) 0%,
+        rgb(254,254,254) 14%,
+        rgb(253,253,253) 22%,
+        rgb(252,252,252) 33%,
+        rgb(251,251,252) 41%,
+        rgb(248,250,252) 48%
+    );
+
+    .designer {
+        .form-details {
+            .card-title {
+                // Emphasis form title with an above average font size
+                font-size: 1.2rem !important;
+            }
+        }
+    }
+
+    overflow: scroll;
+
+    // Revert border radius change from parent div
+    .card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+    }
+}
+
+.editor-footer {
+    border-top: 1px solid var(--tblr-border-color);
+    background: var(--glpi-form-toolbar-bg);
+}
+
+// Show required mark on mandatory question
+.mandatory-question {
+    [data-glpi-form-editor-required-mark] {
+        display: inline !important;
+    }
+}
+
+[data-glpi-form-editor-form] {
+    &[data-glpi-form-editor-active-form] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-form-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-form]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-form-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-form-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
+[data-glpi-form-editor-section] {
+    &[data-glpi-form-editor-active-section] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-section-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-section]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-section-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-section-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
+[data-glpi-form-editor-question] {
+    &[data-glpi-form-editor-active-question] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-question-extra-details] {
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-question]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-question-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-question-extra-details] {
+            position: absolute;
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        // Hide tinymce toolbar on inactive questions
+        .tox-editor-header {
+            display: none !important;
+        }
+    }
+}
+
+[data-glpi-form-editor-comment] {
+    &[data-glpi-form-editor-active-comment] {
+        // Show secondary data on active comments
+        [data-glpi-form-editor-comment-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-comment]) {
+        // Do not highlight inactive comments
+        [data-glpi-form-editor-active-comment-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive comments
+        [data-glpi-form-editor-comment-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
+.glpi-form-editor-drag-question-placeholder {
+    border: 2px dashed var(--tblr-primary);
+    background: rgba(var(--tblr-primary), 0.1);
+    opacity: 0.5;
+    height: 70px !important;
+}
+
+.glpi-form-editor-drag-question-option-placeholder {
+    border: 2px dashed var(--tblr-primary);
+    background: rgba(var(--tblr-primary), 0.1);
+    opacity: 0.5;
+    height: 40px !important;
+}
+
+.glpi-form-editor-drag-section-placeholder {
+    border: 2px dashed var(--tblr-primary);
+    background: rgba(var(--tblr-primary), 0.1);
+    opacity: 0.5;
+    height: 60px !important;
+}
+
+// Hide handle until question is hovered
+.glpi-form-editor-question-handle {
+    opacity: 0;
+}
+
+[data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
+    &:hover {
+        .glpi-form-editor-question-handle {
+            opacity: 0.7;
+        }
+    }
+}
+
+// Hide content of collapsed sections
+[data-glpi-form-editor-section].section-collapsed {
+    [data-glpi-form-editor-section-description],
+    [data-glpi-form-editor-section-blocks],
+    [data-glpi-form-editor-section-extra-details] {
+        display: none;
+    }
+
+    margin-bottom: 1rem !important;
+}

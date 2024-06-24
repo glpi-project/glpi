@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block more_fields %}
+    {{ fields.dropdownField('Datacenter', 'datacenters_id', item.fields['datacenters_id'], 'Datacenter'|itemtype_name, {
+        rand: rand
+    }) }}
+    <script>
+        $(() => {
+            $(`#dropdown_datacenters_id{{ rand }}`).on('change', (e) => {
+                const val = e.target.value;
+                $.ajax({
+                    url: '{{ path('/ajax/dropdownLocation.php') }}',
+                    method: 'GET',
+                    data: {
+                        items_id: val,
+                        itemtype: 'Datacenter',
+                        rand: '{{ rand }}'
+                    }
+                }).then((new_location_dropdown) => {
+                    $(`#dropdown_locations_id{{ rand }}`).select2('destroy');
+                    const new_el = $(new_location_dropdown);
+                    $(`#dropdown_locations_id{{ rand }}`).closest('.btn-group').replaceWith(new_el);
+                    // Fix width
+                    new_el.closest('.btn-group').css({width: '100%'});
+                });
+            });
+        });
+    </script>
+    {% if item.isNewItem %}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {{ fields.dropdownNumberField('vis_cols', item.fields['vis_cols'], __('Number of columns'), {
+        min: 1,
+        max: 100
+    }) }}
+    {{ fields.dropdownNumberField('vis_rows', item.fields['vis_rows'], __('Number of rows'), {
+        min: 1,
+        max: 100
+    }) }}
+
+    {{ fields.dropdownNumberField('vis_cell_width', item.fields['vis_cell_width']|default(40), __('Cell width'), {
+        min: 10,
+        max: 200
+    }) }}
+    {{ fields.dropdownNumberField('vis_cell_height', item.fields['vis_cell_height']|default(40), __('Cell height'), {
+        min: 10,
+        max: 200
+    }) }}
+
+    {% if item.fields['blueprint'] is not empty %}
+        {{ fields.imageField('blueprint', item.fields['blueprint']|picture_url, __('Background picture (blueprint)'), {
+            class: 'picture_square',
+            clearable: true
+        }) }}
+    {% else %}
+        {{ fields.fileField('blueprint', null, __('Background picture (blueprint)'), {
+            onlyimages: true,
+        }) }}
+    {% endif %}
+{% endblock %}

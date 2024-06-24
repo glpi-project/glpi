@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-$SECURITY_STRATEGY = 'no_check';
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+$SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');
 
@@ -78,34 +82,37 @@ if (array_key_exists('update', $_POST)) {
         ];
         if ($input['password'] === $input['current_password']) {
             $error_messages = [__('The new password must be different from current password')];
-        } else if ($input['password'] !== $input['password2']) {
+        } elseif ($input['password'] !== $input['password2']) {
             $error_messages = [__('The two passwords do not match')];
-        } else {
-            try {
-                Config::validatePassword($input['password'], false);
-                if ($user->update($input)) {
-                    $success = true;
-                } else {
-                    $error_messages = [__('An error occurred during password update')];
-                }
-            } catch (\Glpi\Exception\PasswordTooWeakException $exception) {
-                $error_messages = $exception->getMessages();
+        } elseif ($user->validatePassword($input['password'], $error_messages)) {
+            // Password validation was successfull
+            if ($user->update($input)) {
+                $success = true;
+            } else {
+                $error_messages = [__('An error occurred during password update')];
             }
         }
     }
 }
 
 if ($success) {
-    echo '<table class="tab_cadre">';
-    echo '<tr><th colspan="2">' . __('Password update') . '</th></tr>';
-    echo '<tr>';
-    echo '<td>';
-    echo __('Your password has been successfully updated.');
-    echo '<br />';
-    echo '<a href="' . $CFG_GLPI['root_doc'] . '/front/logout.php?noAUTO=1">' . __('Log in') . '</a>';
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
+    $twig_params = [
+        'title' => __('Password update'),
+        'message' => __('Your password has been successfully updated.'),
+        'btn_label' => __('Log in'),
+    ];
+    // language=Twig
+    echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        <div class="d-flex justify-content-center">
+            <div class="alert alert-success">
+                <div class="alert-title">{{ title }}</div>
+                <div>{{ message }}</div>
+                <div class="d-flex flex-row-reverse mt-3">
+                    <a href="{{ path('front/logout.php') }}?noAUTO=1" role="button" class="btn btn-primary">{{ btn_label }}</a>
+                </div>
+            </div>
+        </div>
+TWIG, $twig_params);
 } else {
     $user->showPasswordUpdateForm($error_messages);
 }

@@ -34,7 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryParam;
+use Glpi\Search\SearchOption;
 
 /**
  * Log Class
@@ -68,6 +69,8 @@ class Log extends CommonDBTM
     const HISTORY_LOCK_ITEM          = 26;
     const HISTORY_UNLOCK_ITEM        = 27;
 
+    const HISTORY_SEND_WEBHOOK       = 28;
+
    // Plugin must use value starting from
     const HISTORY_PLUGIN             = 1000;
 
@@ -84,6 +87,10 @@ class Log extends CommonDBTM
         return __('Historical');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-history';
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -100,7 +107,7 @@ class Log extends CommonDBTM
                 ]
             );
         }
-        return self::createTabEntry(self::getTypeName(1), $nb);
+        return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
     }
 
 
@@ -129,7 +136,7 @@ class Log extends CommonDBTM
         }
        // needed to have  $SEARCHOPTION
         list($real_type, $real_id) = $item->getLogTypeID();
-        $searchopt                 = Search::getOptions($real_type);
+        $searchopt                 = SearchOption::getOptionsForItemtype($real_type);
         if (!is_array($searchopt)) {
             return false;
         }
@@ -157,7 +164,7 @@ class Log extends CommonDBTM
                         && ($val2['rightname'] == $item->fields['name'])
                     ) {
                         $id_search_option = $key2;
-                        $changes          =  [$id_search_option, addslashes($oldval ?? ''), $values[$key] ?? ''];
+                        $changes          =  [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     }
                 } else if (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -168,33 +175,27 @@ class Log extends CommonDBTM
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
-                        if ($val2['field'] === 'completename') {
-                            $oldval = CommonTreeDropdown::sanitizeSeparatorInCompletename($oldval);
-                            $values[$key] = CommonTreeDropdown::sanitizeSeparatorInCompletename($values[$key]);
-                        }
-                        $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key] ?? ''];
+                        $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
                        // other cases; link field -> get data from dropdown
-                        if ($val2["table"] != 'glpi_auth_tables') {
-                            $changes = [$id_search_option,
-                                addslashes(sprintf(
-                                    __('%1$s (%2$s)'),
-                                    Dropdown::getDropdownName(
-                                        $val2["table"],
-                                        $oldval
-                                    ),
+                        $changes = [$id_search_option,
+                            sprintf(
+                                __('%1$s (%2$s)'),
+                                Dropdown::getDropdownName(
+                                    $val2["table"],
                                     $oldval
-                                )),
-                                addslashes(sprintf(
-                                    __('%1$s (%2$s)'),
-                                    Dropdown::getDropdownName(
-                                        $val2["table"],
-                                        $values[$key]
-                                    ),
+                                ),
+                                $oldval
+                            ),
+                            sprintf(
+                                __('%1$s (%2$s)'),
+                                Dropdown::getDropdownName(
+                                    $val2["table"],
                                     $values[$key]
-                                ))
-                            ];
-                        }
+                                ),
+                                $values[$key]
+                            )
+                        ];
                     }
                     break;
                 }
@@ -252,8 +253,8 @@ class Log extends CommonDBTM
             );
         }
 
-        $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-        $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+        $old_value = Toolbox::substr($old_value, 0, 180);
+        $new_value = Toolbox::substr($new_value, 0, 180);
 
         // Security to be sure that values do not pass over the max length
         if (Toolbox::strlen($old_value) > 255) {
@@ -268,7 +269,7 @@ class Log extends CommonDBTM
             'itemtype'          => $itemtype,
             'itemtype_link'     => $itemtype_link,
             'linked_action'     => $linked_action,
-            'user_name'         => addslashes($username),
+            'user_name'         => $username,
             'date_mod'          => $date_mod,
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,
@@ -329,7 +330,7 @@ class Log extends CommonDBTM
             'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
             'is_tab'            => true,
             'items_id'          => $items_id,
-            'filters'           => Sanitizer::dbEscapeRecursive($filters),
+            'filters'           => $filters,
             'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],
@@ -366,7 +367,7 @@ class Log extends CommonDBTM
         $items_id  = $item->getField('id');
         $itemtable = $item->getTable();
 
-        $SEARCHOPTION = Search::getOptions($itemtype);
+        $SEARCHOPTION = SearchOption::getOptionsForItemtype($itemtype);
 
         $query = [
             'FROM'   => self::getTable(),
@@ -390,7 +391,7 @@ class Log extends CommonDBTM
 
             $tmp['display_history'] = true;
             $tmp['id']              = $data["id"];
-            $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
+            $tmp['date_mod']        = $data["date_mod"];
             $tmp['user_name']       = $data["user_name"];
             $tmp['field']           = "";
             $tmp['change']          = "";
@@ -562,7 +563,7 @@ class Log extends CommonDBTM
                                 } else if (!$isr && $isa && !$iso) {
                                     $as = __('Assigned to');
                                 } else if (!$isr && !$isa && $iso) {
-                                    $as = _n('Watcher', 'Watchers', 1);
+                                    $as = _n('Observer', 'Observers', 1);
                                 } else {
                       // Deleted or Ambiguous
                                     $as = false;
@@ -678,6 +679,14 @@ class Log extends CommonDBTM
                         );
                         break;
 
+                    case self::HISTORY_SEND_WEBHOOK:
+                        $tmp['change'] = sprintf(
+                            __('%1$s: %2$s'),
+                            $action_label,
+                            sprintf(__('%1$s (Status %2$s -> %3$s)'), $data["itemtype_link"], $data["old_value"], $data["new_value"])
+                        );
+                        break;
+
                     default:
                         $fct = [$data['itemtype_link'], 'getHistoryEntry'];
                         if (
@@ -735,7 +744,7 @@ class Log extends CommonDBTM
                         if ($oldval_expl[0] == '&nbsp;') {
                             $oldval = $data["old_value"];
                         } else {
-                            $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
+                            $old_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $oldval_expl[0]]]);
                             foreach ($old_iterator as $val) {
                                 $oldval = sprintf(
                                     __('%1$s %2$s'),
@@ -753,7 +762,7 @@ class Log extends CommonDBTM
                         if ($newval_expl[0] == '&nbsp;') {
                             $newval = $data["new_value"];
                         } else {
-                            $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
+                            $new_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $newval_expl[0]]]);
                             foreach ($new_iterator as $val) {
                                 $newval = sprintf(
                                     __('%1$s %2$s'),
@@ -961,7 +970,8 @@ class Log extends CommonDBTM
                 }
             } else {
                // It's not an internal device
-                foreach (Search::getOptions($itemtype) as $search_opt_key => $search_opt_val) {
+                $opts = SearchOption::getOptionsForItemtype($itemtype);
+                foreach ($opts as $search_opt_key => $search_opt_val) {
                     if ($search_opt_key == $data["id_search_option"]) {
                         $key = 'id_search_option::' . $data['id_search_option'] . ';';
                         $value = $search_opt_val["name"];
@@ -1170,6 +1180,10 @@ class Log extends CommonDBTM
                 $label = __('Unlock an item');
                 break;
 
+            case self::HISTORY_SEND_WEBHOOK:
+                $label = __('Send a queued webhook');
+                break;
+
             case self::HISTORY_LOG_SIMPLE_MESSAGE:
             default:
                 break;
@@ -1194,9 +1208,6 @@ class Log extends CommonDBTM
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $sql_filters = [];
 
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
@@ -1299,9 +1310,10 @@ class Log extends CommonDBTM
             return;
         }
 
+        $dparams = array_fill_keys(array_keys($queue[0]), new QueryParam());
         $update = $DB->buildInsert(
             static::getTable(),
-            array_fill_keys(array_keys($queue[0]), new \QueryParam())
+            $dparams
         );
         $stmt = $DB->prepare($update);
 

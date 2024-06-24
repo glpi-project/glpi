@@ -46,8 +46,8 @@ if (Config::canUpdate()) {
     );
     Session::addMessageAfterRedirect(
         $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
-         __('Debug mode has been enabled!') :
-         __('Debug mode has been disabled!')
+         __s('Debug mode has been enabled!') :
+         __s('Debug mode has been disabled!')
     );
 }
 

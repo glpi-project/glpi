@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';
@@ -74,13 +76,13 @@ class Appliance_Item_Relation extends CommonDBRelation
         return $types;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Appliance_Item::canUpdate();
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $app_item = new Appliance_Item();
         $app_item->getFromDB($this->fields[Appliance_Item::getForeignKeyField()]);
@@ -114,19 +116,19 @@ class Appliance_Item_Relation extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input[self::$items_id_1]) || empty($input[self::$items_id_1])))
             || (isset($input[self::$items_id_1]) && empty($input[self::$items_id_1]))
         ) {
-            $error_detected[] = __('An appliance item is required');
+            $error_detected[] = __s('An appliance item is required');
         }
 
         if (count($error_detected)) {
@@ -158,7 +160,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         if (count($types)) {
             $clause = ['itemtype' => $types];
         } else {
-            $clause = [new \QueryExpression('true = false')];
+            $clause = [new QueryExpression('true = false')];
         }
         $extra_types_where = array_merge(
             $extra_types_where,
@@ -166,7 +168,6 @@ class Appliance_Item_Relation extends CommonDBRelation
         );
         return parent::countForMainItem($item, $extra_types_where);
     }
-
 
     /**
      * return an array of relations for a given Appliance_Item's id
@@ -181,6 +182,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 Appliance_Item::getForeignKeyField() => $appliances_items_id
@@ -215,18 +217,17 @@ class Appliance_Item_Relation extends CommonDBRelation
     public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true)
     {
         $relations_str = "";
-        foreach (Appliance_Item_Relation::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
+        foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
             $del = "";
             if ($canedit) {
-                $del = "<i class='delete_relation pointer fas fa-times'
-                       data-relations-id='$rel_id'></i>";
+                $del = "<i class='delete_relation pointer fas fa-times' data-relations-id='$rel_id'></i>";
             }
             $relations_str .= "<li>$link $del</li>";
         }
 
         return "<ul>$relations_str</ul>
-         <span class='pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
-            <i class='fa fa-plus' title='" . __('New relation') . "'></i>
+         <span class='cursor-pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
+            <i class='ti ti-plus' title='" . __('New relation') . "'></i>
             <span class='sr-only'>" . __('New relation') . "</span>
          </span>
       </td>";

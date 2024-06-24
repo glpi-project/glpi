@@ -33,23 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_CONFIG_DIR', __DIR__ . '/config');
-define('GLPI_VAR_DIR', __DIR__ . '/files');
-
-define(
-    'PLUGINS_DIRECTORIES',
-    [
-        __DIR__ . '/fixtures/plugins',
-    ]
-);
-
-// Avoid warnings because of missing globals
-$DEBUG_SQL = [
-    'queries' => [],
-    'errors'  => [],
-    'times'   => [],
-];
+define('GLPI_ENVIRONMENT_TYPE', 'testing');
 
 ini_set("log_error", 1);
+
+// Forward to GLPI router
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+require(__DIR__ . '/../public/index.php');
 
 return false;

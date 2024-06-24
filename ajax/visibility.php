@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE;
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
@@ -98,12 +102,14 @@ if (
 
         case 'Entity':
             echo "<td>";
-            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
-                'value'  => $_SESSION['glpiactive_entity'],
-                'name'   => $prefix . 'entities_id' . $suffix
+            Entity::dropdown([
+                'value'       => $_SESSION['glpiactive_entity'],
+                'name'        => $prefix . 'entities_id' . $suffix,
+                'entity'      => $_POST['entity'] ?? -1,
+                'entity_sons' => $_POST['is_recursive'] ?? false,
             ]);
             echo "</td><td>";
-            echo __('Child entities');
+            echo __s('Child entities');
             echo "</td><td>";
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
             echo "</td>";

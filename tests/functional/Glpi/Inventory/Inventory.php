@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use InventoryTestCase;
 use Item_OperatingSystem;
 use Lockedfield;
@@ -43,6 +44,7 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use RuleCriteria;
+use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends InventoryTestCase
@@ -136,11 +138,20 @@ class Inventory extends InventoryTestCase
         ]);
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
-        $monitor_link = $iterator->current();
-        unset($monitor_link['date_mod']);
-        unset($monitor_link['date_creation']);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
+        $connection = $connections[array_key_first($connections)];
+        $monitor = new \Monitor();
+        $this->boolean($monitor->getFromDB($connection['items_id_peripheral']))->isTrue();
+        $monitor_fields = $monitor->fields;
+        unset($monitor_fields['date_mod'], $monitor_fields['date_creation']);
 
         $mmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($mmanuf);
@@ -151,7 +162,7 @@ class Inventory extends InventoryTestCase
         $models_id = $mmodel['id'];
 
         $expected = [
-            'id' => $monitor_link['id'],
+            'id' => $monitor_fields['id'],
             'entities_id' => 0,
             'name' => 'DJCP6',
             'contact' => 'trasher/root',
@@ -185,17 +196,9 @@ class Inventory extends InventoryTestCase
             'is_dynamic' => 1,
             'autoupdatesystems_id' => 0,
             'uuid' => null,
-            'is_recursive' => 0,
-            'linkid' => $monitor_link['linkid'],
-            'glpi_computers_items_is_dynamic' => 1,
-            'entity' => 0,
+            'is_recursive' => 0
         ];
-        $this->array($monitor_link)->isIdenticalTo($expected);
-
-        $monitor = new \Monitor();
-        $this->boolean($monitor->getFromDB($monitor_link['id']))->isTrue();
-        $this->boolean((bool)$monitor->fields['is_dynamic'])->isTrue();
-        $this->string($monitor->fields['name'])->isIdenticalTo('DJCP6');
+        $this->array($monitor_fields)->isIdenticalTo($expected);
 
         //check network ports
         $iterator = $DB->request([
@@ -843,13 +846,23 @@ class Inventory extends InventoryTestCase
         }
 
         //check printer
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Printer');
-        $this->integer(count($iterator))->isIdenticalTo(1);
-        $printer_link = $iterator->current();
-        unset($printer_link['date_mod'], $printer_link['date_creation']);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Printer',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
+        $connection = $connections[array_key_first($connections)];
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDB($connection['items_id_peripheral']))->isTrue();
+        $printer_fields = $printer->fields;
+        unset($printer_fields['date_mod'], $printer_fields['date_creation']);
 
         $expected = [
-            'id' => $printer_link['id'],
+            'id' => $printer_fields['id'],
             'entities_id' => 0,
             'is_recursive' => 0,
             'name' => 'Officejet_Pro_8600_34AF9E_',
@@ -886,17 +899,9 @@ class Inventory extends InventoryTestCase
             'sysdescr' => null,
             'last_inventory_update' => $_SESSION['glpi_currenttime'],
             'snmpcredentials_id' => 0,
-            'autoupdatesystems_id' => $autoupdatesystems_id,
-            'linkid' => $printer_link['linkid'],
-            'glpi_computers_items_is_dynamic' => 1,
-            'entity' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id
         ];
-        $this->array($printer_link)->isIdenticalTo($expected);
-
-        $printer = new \Printer();
-        $this->boolean($printer->getFromDB($printer_link['id']))->isTrue();
-        $this->boolean((bool)$printer->fields['is_dynamic'])->isTrue();
-        $this->string($printer->fields['name'])->isIdenticalTo('Officejet_Pro_8600_34AF9E_');
+        $this->array($printer_fields)->isIdenticalTo($expected);
 
         return $computer;
     }
@@ -1379,8 +1384,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
 
         //check network ports
         $iterator = $DB->request([
@@ -1548,8 +1560,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(1);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(1);
 
         //check network ports
         $iterator = $DB->request([
@@ -1715,8 +1734,15 @@ class Inventory extends InventoryTestCase
         }
 
         //connections
-        $iterator = \Computer_Item::getTypeItems($computers_id, 'Monitor');
-        $this->integer(count($iterator))->isIdenticalTo(0);
+        $connections = getAllDataFromTable(
+            Asset_PeripheralAsset::getTable(),
+            [
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+            ]
+        );
+        $this->integer(count($connections))->isIdenticalTo(0);
 
         //check network ports
         $iterator = $DB->request([
@@ -4639,7 +4665,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4656,7 +4682,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //change config to import vms as computers
         $this->login();
@@ -4679,7 +4705,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //one does not have an uuid, so no computer is created.
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //partial inventory: postgres vm has been stopped
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json'));
@@ -4687,25 +4713,25 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         $iterator = $DB->request([
             'SELECT' => [
-                \ComputerVirtualMachine::getTable() . '.id',
-                \ComputerVirtualMachine::getTable() . '.name AS vm_name',
+                \ItemVirtualMachine::getTable() . '.id',
+                \ItemVirtualMachine::getTable() . '.name AS vm_name',
                 \VirtualMachineState::getTable() . '.name AS state_name',
             ],
-            'FROM' => \ComputerVirtualMachine::getTable(),
+            'FROM' => \ItemVirtualMachine::getTable(),
             'INNER JOIN' => [
                 \VirtualMachineState::getTable() => [
                     'ON' => [
                         \VirtualMachineState::getTable() => 'id',
-                        \ComputerVirtualMachine::getTable() => 'virtualmachinestates_id'
+                        \ItemVirtualMachine::getTable() => 'virtualmachinestates_id'
                     ]
                 ]
             ],
             'WHERE' => [
-                \ComputerVirtualMachine::getTable() . '.name' => 'db',
+                \ItemVirtualMachine::getTable() . '.name' => 'db',
                 \VirtualMachineState::getTable() . '.name' => 'off'
             ]
         ]);
@@ -4721,7 +4747,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(1);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4750,10 +4776,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-        $cvms = new \ComputerVirtualMachine();
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $cvms = new \ItemVirtualMachine();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4771,7 +4797,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
 
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4788,7 +4814,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
 
         //change config to import vms as computers
@@ -4864,7 +4890,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
 
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($count_vms);
 
         //check we add main computer and one computer per vm
         //one does not have an uuid, so no computer is created.
@@ -5660,6 +5686,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'lines_id' => 0,
                     'users_id' => 0,
                     'groups_id' => 0,
+                    'users_id_tech' => 0,
+                    'groups_id_tech' => 0,
                     'pin' => '',
                     'pin2' => '',
                     'puk' => '',
@@ -5678,6 +5706,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'entities_id' => 0,
                     'is_recursive' => 0,
                     'locations_id' => 0,
+                    'states_id' => 0,
                 ], [
                     'items_id' => $phones_id,
                     'itemtype' => 'Phone',
@@ -5687,6 +5716,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'entities_id' => 0,
                     'is_recursive' => 0,
                     'locations_id' => 0,
+                    'states_id' => 0,
                 ]
             ]
         ];
@@ -5701,7 +5731,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     }
                 }
             }
-            $this->array($component)->isIdenticalTo($expected);
+            $this->array($component)->isEqualTo($expected);
         }
 
         //software
@@ -7973,7 +8003,244 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
     }
 
-    public function testLocationHIerarchy()
+    protected function getAssignUserByFieldAndRegexRules()
+    {
+        $glpi_id = \User::getIDByName('glpi');
+        $this->createItem(UserEmail::class, [
+            'users_id' => $glpi_id,
+            'is_default' => 1,
+            'email' => 'glpi@teclib.com'
+        ]);
+        $normal_id = \User::getIDByName('normal');
+        $this->updateItem(\User::class, $normal_id, [
+            'registration_number' => 'normal1234567890',
+        ]);
+        $test_id = \User::getIDByName('_test_user');
+        $this->updateItem(\User::class, $test_id, [
+            'realname' => '_test_user',
+            'authtype' => \Auth::EXTERNAL,
+            'sync_field' => '_test_user@toto'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0i',
+                'condition' => \Rule::PATTERN_NOT_CONTAIN,
+                'pattern' => 'admin'
+            ],
+            "xml_fields" => [
+                'name' => 'adminglp',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => 0,
+            ]
+        ];
+        $contain_test_user = $this->createItem(\User::class, [
+            'name' => 'contain_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'contain'
+            ],
+            "xml_fields" => [
+                'name' => 'logcontain_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $contain_test_user->fields['id'],
+            ]
+        ];
+        $begin_test_user = $this->createItem(\User::class, [
+            'name' => 'begin_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_BEGIN,
+                'pattern' => 'logbegin'
+            ],
+            "xml_fields" => [
+                'name' => 'logbegin_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $begin_test_user->fields['id'],
+            ]
+        ];
+        $end_test_user = $this->createItem(\User::class, [
+            'name' => 'end_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_END,
+                'pattern' => 'END'
+            ],
+            "xml_fields" => [
+                'name' => 'logend_test',
+                'domain' => 'END'
+            ],
+            'result' => [
+                'users_id'    => $end_test_user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0h',
+            ],
+            "xml_fields" => [
+                'name' => 'logtec',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => \User::getIDByName('tech'),
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by registration number',
+                'action' => '_affect_user_by_registration_number_and_regex',
+                'value' => '#0l1234567890',
+            ],
+            "xml_fields" => [
+                'name' => 'lognorma',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $normal_id,
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by email',
+                'action' => '_affect_user_by_email_and_regex',
+                'value' => '#0i@teclib.com',
+            ],
+            "xml_fields" => [
+                'name' => 'logglp',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $glpi_id,
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by sync field',
+                'action' => '_affect_user_by_sync_field_and_regex',
+                'value' => '#0r@toto',
+            ],
+            "xml_fields" => [
+                'name' => 'log_test_use',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $test_id,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getAssignUserByFieldAndRegexRules
+     */
+    public function testAssignUserByFieldAndRegex($rules_fields, $xml_fields, $result)
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => $rules_fields['name'],
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        if (isset($rules_fields['condition']) && isset($rules_fields['pattern'])) {
+            $input_criteria2 = [
+                'rules_id'  => $rules_id,
+                'criteria'      => '_inventory_users',
+                'condition' => $rules_fields['condition'],
+                'pattern' => $rules_fields['pattern'],
+            ];
+            $rule_criteria2 = new \RuleCriteria();
+            $rule_criteria2_id = $rule_criteria2->add($input_criteria2);
+            $this->integer($rule_criteria2_id)->isGreaterThan(0);
+        }
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_inventory_users',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern' => '/^log([^@]+)/'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'regex_result',
+            'field' => $rules_fields['action'],
+            'value' => $rules_fields['value']
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <USERS>
+            <DOMAIN>" . $xml_fields['domain'] . "</DOMAIN>
+            <LOGIN>" . $xml_fields['name'] . "</LOGIN>
+          </USERS>
+          <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_assign_user_by_field_and_regex</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        \SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_assign_user_by_field_and_regex']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['users_id'])->isIdenticalTo($result['users_id']);
+    }
+
+    public function testLocationHierarchy()
     {
         global $DB;
 

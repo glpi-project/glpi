@@ -42,7 +42,6 @@ class DeviceBattery extends CommonDevice
         return _n('Battery', 'Batteries', $nb);
     }
 
-
     public function getAdditionalFields()
     {
         return array_merge(
@@ -71,14 +70,13 @@ class DeviceBattery extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'capacity',
             'name'               => __('Capacity'),
             'datatype'           => 'integer',
@@ -86,7 +84,7 @@ class DeviceBattery extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'integer',
@@ -129,7 +127,6 @@ class DeviceBattery extends CommonDevice
         HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -164,12 +161,11 @@ class DeviceBattery extends CommonDevice
                 $father
             );
         }
+        return null;
     }
-
 
     public function getImportCriteria()
     {
-
         return [
             'designation'           => 'equal',
             'devicebatterytypes_id' => 'equal',
@@ -178,7 +174,6 @@ class DeviceBattery extends CommonDevice
             'voltage'               => 'delta:10'
         ];
     }
-
 
     public static function getIcon()
     {

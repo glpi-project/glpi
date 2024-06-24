@@ -33,13 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
 {
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -69,13 +66,8 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                          = [];
         $actions['name']['name']          = OperatingSystem::getTypeName(1);
         $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];

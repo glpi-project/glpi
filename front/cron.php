@@ -33,20 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
 $SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
 
+// Try detecting if we are running with the root user (Not available on Windows)
+if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    // Translation functions not available here
+    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+    if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
+        echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+        exit(1);
+    }
+}
+
 include('../inc/includes.php');
 
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
-    echo "\t" . sprintf(__('ERROR: %s is not writable') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __('run script as apache user') . "\n";
+    echo "\t" . sprintf(__('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
+    echo "\t" . __('Run the script as the same user that your web server runs as.') . "\n";
     exit(1);
 }
 

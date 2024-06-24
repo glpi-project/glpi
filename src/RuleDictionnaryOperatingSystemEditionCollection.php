@@ -38,9 +38,6 @@ class RuleDictionnaryOperatingSystemEditionCollection extends RuleDictionnaryDro
     public $item_table  = "glpi_operatingsystemeditions";
     public $menu_option = "os_edition";
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of operating system editions');

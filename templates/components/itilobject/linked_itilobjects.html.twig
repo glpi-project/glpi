@@ -1,0 +1,109 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<input type="hidden" name="_link[itemtype_1]" value="{{ item.getType() }}" />
+<input type="hidden" name="_link[items_id_1]" value="{{ item.fields['id'] }}" />
+
+{% set linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::getAllLinkedTo', [item.getType(), item.getId()]) %}
+{% if linked_itilobjects|length %}
+   <div class="card">
+      <div class="list-group list-group-flush list-group-hoverable">
+         {% for id, linked in linked_itilobjects %}
+            {% set new_itilobject = get_item(linked['itemtype'], linked['items_id']) %}
+            <div class="list-group-item">
+               <div class="row">
+                  <div class="col-auto">
+                     {{ call('CommonITILObject_CommonITILObject::getLinkName', [
+                        linked['link'],
+                        linked['itemtype_2'] == item.getType() and linked['items_id_2'] == item.fields['id'],
+                        true
+                     ])|raw }}
+                  </div>
+                  <div class="col text-truncate">
+                     <a href="{{ linked['itemtype']|itemtype_form_path(linked['items_id']) }}" class="col-9 overflow-hidden text-nowrap">
+                        <i class="{{ linked['itemtype']|itemtype_icon }}" title="{{ linked['itemtype']|itemtype_name }}" data-bs-toggle="tootlip"></i>
+                        {{ new_itilobject.getStatusIcon(new_itilobject.fields['status'])|raw }}
+                        <span title="{{ new_itilobject.fields['name'] }}" data-bs-toggle="tooltip">
+                     {{ new_itilobject.fields['name'] }}
+                  </span>
+                        ({{ new_itilobject.fields['id'] }})
+                     </a>
+                  </div>
+
+                  {% if canupdate %}
+                     <div class="col-auto">
+                        <button type="submit"
+                                form="linked_itilobjects_{{ main_rand }}"
+                                name="id"
+                                value="{{ id }}"
+                                class="btn btn-sm btn-ghost-danger"
+                                title="{{ _x('button', 'Delete permanently') }}"
+                                data-bs-toggle="tooltip">
+                           <i class="fas fa-unlink"></i>
+                        </button>
+                     </div>
+                  {% endif %}
+               </div>
+            </div>
+         {% endfor %}
+      </div>
+   </div>
+{% endif %}
+
+{% if canupdate and not params['template_preview'] %}
+   {% set has_pending_link = params['_link']['items_id_2']|length > 0 %}
+   <div class="mt-2">
+      <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
+              data-bs-toggle="collapse" data-bs-target="#link_itilobject_dropdowns"
+              aria-expanded="false" aria-controls="link_itilobject_dropdowns" onclick="$(this).hide();">
+         <i class="fas fa-plus"></i>
+         <span>{{ __('Add') }}</span>
+      </button>
+
+      <span class="collapse {{ has_pending_link ? "show" : "" }}" id="link_itilobject_dropdowns">
+         {% do call('CommonITILObject_CommonITILObject::dropdownLinks', [
+            '_link[link]',
+            params['_link']['link'] ?? ''
+         ]) %}
+         {% do call('Dropdown::showSelectItemFromItemtypes', [{
+            'items_id_name': '_link[items_id_2]',
+            'itemtype_name': '_link[itemtype_2]',
+            'itemtypes': ['Ticket', 'Change', 'Problem'],
+            'checkright': true,
+            'entity_restrict': session('glpiactive_entity'),
+            'default_itemtype': params['_link']['itemtype_2'] ?? '',
+            'default_items_id': params['_link']['items_id_2'] ?? ''
+         }]) %}
+      </span>
+   </div>
+{% endif %}

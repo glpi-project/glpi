@@ -31,145 +31,201 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
-{% set field_options = field_options ?? {} %}
 
-{% block more_fields %}
-    {{ fields.dropdownYesNo(
-       'locked',
-       item.fields['locked'],
-       __('Locked'),
-       field_options
-    ) }}
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set bg = '' %}
+{% if item.isDeleted() %}
+   {% set bg = 'asset-deleted' %}
+{% endif %}
 
-    {{ fields.textField(
-        'deviceid',
-        item.fields['deviceid'],
-        __('Device id'),
-        field_options
-    ) }}
+<div class="asset {{ bg }}">
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
-    {{ fields.numberField(
-        'port',
-        item.fields['port'],
-        _n('Port', 'Ports', 1),
-        field_options
-    ) }}
+   {% set rand = random() %}
+   {% set params  = params ?? [] %}
+   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set withtemplate = params['withtemplate'] ?? '' %}
+   {% set item_type = item.getType() %}
+   {% set field_options = {
+       'locked_fields': item.getLockedFields(),
+       'rand': rand,
+   } %}
 
-    {{ fields.htmlField(
-        "Agent",
-        item.fields['remote_addr'],
-        __('Public contact address'),
-        field_options
-    ) }}
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
 
-    {{ fields.dropdownArrayField(
-        'itemtype',
-        item.fields['itemtype'],
-        itemtypes,
-        __('Item type'),
-        field_options
-    ) }}
+                    {{ fields.htmlField(
+                        'name',
+                        item.fields['name'],
+                        __('Name'),
+                        field_options
+                    ) }}
 
-    {% if not item.isNewItem() %}
-        {% set asset_item = get_item(item.fields['itemtype'], item.fields['items_id']) %}
-        {{ fields.htmlField(
-            'items_id',
-            asset_item.getLink(),
-            __('Item link'),
-            field_options
-        ) }}
-        <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
+                    {{ fields.htmlField(
+                        'agenttypes_id',
+                        get_item_name('AgentType', item.fields['agenttypes_id']),
+                        _n('Agent type', 'Agents types', 1),
+                        field_options
+                    ) }}
 
-        {% set versions %}
-            {% set versions_array = call("importArrayFromDB", [versions_field]) %}
-            {% if versions_array|length %}
-                <ul>
-                {% for module, version in versions_array %}
-                    <li><strong>{{ module }}</strong>: {{ version }}</li>
-                {% endfor %}
-                </ul>
-            {% elseif versions_field|length %}
-                {{ versions_field }}
-            {% endif %}
-        {% endset %}
-        {{ fields.htmlField(
-            'versions',
-            versions,
-            _n('Version', 'Versions', 1),
-            field_options
-        ) }}
+                    {{ fields.dropdownYesNo(
+                    'locked',
+                    item.fields['locked'],
+                    __('Locked'),
+                    field_options
+                    ) }}
 
-        {{ fields.readOnlyField(
-            'tag',
-            item.fields['tag'],
-            __('Tag'),
-            field_options
-        ) }}
+                    {{ fields.htmlField(
+                        'deviceid',
+                        item.fields['deviceid'],
+                        __('Device ID'),
+                        field_options
+                    ) }}
 
-        {{ fields.readOnlyField(
-            'useragent',
-            item.fields['useragent'],
-            __('Useragent'),
-            field_options
-        ) }}
+                    {{ fields.numberField(
+                        'port',
+                        item.fields['port'],
+                        _n('Port', 'Ports', 1),
+                        field_options
+                    ) }}
 
-        {{ fields.htmlField(
-            'last_contact',
-            call("Html::convDateTime", [item.fields['last_contact']]),
-            __('Last contact'),
-            field_options
-        ) }}
+                    {{ fields.htmlField(
+                        "Agent",
+                        item.fields['remote_addr'],
+                        __('Public contact address'),
+                        field_options
+                    ) }}
 
-        <h2 class="header">{{ __('Agent configuration') }}</h2>
+                    {{ fields.htmlField(
+                        "itemtype",
+                        item.fields['itemtype']|itemtype_name,
+                        __('Item type'),
+                        field_options
+                    ) }}
 
-        {% for netfield, netlabel in {
-            'threads_networkdiscovery': __('Network discovery threads'),
-            'timeout_networkdiscovery': __('Network discovery timeout'),
-            'threads_networkinventory': __('Network inventory threads'),
-            'timeout_networkinventory': __('Network inventory timeout'),
-        } %}
-            {% set general = __('General setup') %}
-            {% if config(netfield) != null %}
-                {% set general = "%1$s (%2$s)"|format(general, config(netfield)) %}
-            {% endif %}
+                    {% if not item.isNewItem() %}
+                        {% set asset_item = get_item(item.fields['itemtype'], item.fields['items_id']) %}
+                        {{ fields.htmlField(
+                            'items_id',
+                            asset_item.getLink(),
+                            __('Item link'),
+                            field_options
+                        ) }}
+                        <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
 
-            {{ fields.dropdownNumberField(
-                netfield,
-                item.fields[netfield],
-                netlabel,
-                field_options|merge({
-                    'min': 1,
-                    'toadd': [
-                        general
-                    ]
-                })
-            ) }}
-        {% endfor %}
+                        {% set versions %}
+                            {% set versions_array = call("importArrayFromDB", [versions_field]) %}
+                            {% if versions_array|length %}
+                                <ul>
+                                {% for module, version in versions_array %}
+                                    <li><strong>{{ module }}</strong>: {{ version }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% elseif versions_field|length %}
+                                {{ versions_field }}
+                            {% endif %}
+                        {% endset %}
+                        {{ fields.htmlField(
+                            'versions',
+                            versions,
+                            _n('Version', 'Versions', 1),
+                            field_options
+                        ) }}
 
-        <h2 class="header">{{ __('Supported tasks') }}*</h2>
+                        {{ fields.htmlField(
+                            'tag',
+                            item.fields['tag'],
+                            __('Tag'),
+                            field_options
+                        ) }}
 
-        {% for modulefield, modulelabel in {
-            'use_module_wake_on_lan': __('Wake on LAN'),
-            'use_module_computer_inventory': __('Computer inventory'),
-            'use_module_esx_remote_inventory': __('ESX remote inventory'),
-            'use_module_network_inventory': __('Network inventory (SNMP)'),
-            'use_module_network_discovery': __('Network discovery (SNMP)'),
-            'use_module_package_deployment': __('Package Deployment'),
-            'use_module_collect_data': __('Collect data'),
-            'use_module_remote_inventory': __('Remote inventory'),
-        } %}
+                        {{ fields.htmlField(
+                            'useragent',
+                            item.fields['useragent'],
+                            __('Useragent'),
+                            field_options
+                        ) }}
 
-        {% if item.fields[modulefield] %}
-            {% set html = '<i class="ti ti-check"></i>' %}
-        {% else %}
-            {% set html = '' %}
-        {% endif %}
+                        {{ fields.htmlField(
+                            'last_contact',
+                            call("Html::convDateTime", [item.fields['last_contact']]),
+                            __('Last contact'),
+                            field_options
+                        ) }}
 
-        {{ fields.htmlField('', html, modulelabel) }}
-        {% endfor %}
-        <i>* {{ __('when reported by GLPI agent via native inventory') }}</i>
-    {% endif %}
-{% endblock %}
+                        <div class="hr-text">
+                            <i class="ti ti-adjustments"></i>
+                            <span>{{ __('Agent configuration') }}</span>
+                        </div>
+
+                        {% for netfield, netlabel in {
+                            'threads_networkdiscovery': __('Network discovery threads'),
+                            'timeout_networkdiscovery': __('Network discovery timeout'),
+                            'threads_networkinventory': __('Network inventory threads'),
+                            'timeout_networkinventory': __('Network inventory timeout'),
+                        } %}
+                            {% set general = __('General setup') %}
+                            {% if config(netfield) != null %}
+                                {% set general = "%1$s (%2$s)"|format(general, config(netfield)) %}
+                            {% endif %}
+
+                            {{ fields.dropdownNumberField(
+                                netfield,
+                                item.fields[netfield],
+                                netlabel,
+                                field_options|merge({
+                                    'min': 1,
+                                    'toadd': [
+                                        general
+                                    ]
+                                })
+                            ) }}
+                        {% endfor %}
+
+                        <div class="hr-text">
+                            <i class="ti ti-list"></i>
+                            <span>{{ __('Supported tasks') }} </span>
+                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                                  data-bs-content="{{ '<i>' ~ __('When reported by GLPI agent via native inventory') ~ '</i>' }}">?</span>
+                        </div>
+
+                        {% for modulefield, modulelabel in {
+                            'use_module_wake_on_lan': __('Wake on LAN'),
+                            'use_module_computer_inventory': __('Computer inventory'),
+                            'use_module_esx_remote_inventory': __('ESX remote inventory'),
+                            'use_module_network_inventory': __('Network inventory (SNMP)'),
+                            'use_module_network_discovery': __('Network discovery (SNMP)'),
+                            'use_module_package_deployment': __('Package Deployment'),
+                            'use_module_collect_data': __('Collect data'),
+                            'use_module_remote_inventory': __('Remote inventory'),
+                        } %}
+
+                        {% if item.fields[modulefield] %}
+                            {% set html = '<i class="ti ti-check green"></i>' %}
+                        {% else %}
+                            {% set html = '<i class="ti ti-x red"></i>' %}
+                        {% endif %}
+
+                        {{ fields.htmlField('', html, modulelabel) }}
+                        {% endfor %}
+                    {% endif %}
+                </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div>
+   </div> {# .card-body #}
+
+   {% if no_form_buttons is not defined or no_form_buttons == false %}
+      {{ include('components/form/buttons.html.twig') }}
+   {% endif %}
+
+   {% if params['formfooter'] is null or params['formfooter'] == true %}
+      <div class="card-footer mx-n2 mb-n2 mt-4">
+         {{ include('components/form/dates.html.twig') }}
+      </div>
+   {% endif %}
+</div>

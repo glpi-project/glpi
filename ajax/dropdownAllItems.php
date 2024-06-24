@@ -60,7 +60,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 
-    $displaywith = ['otherserial', 'serial'];
+    $displaywith = is_a($_POST['idtable'], CommonITILObject::class, true) ? ['id'] : ['otherserial', 'serial'];
     $p = [
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,
@@ -73,6 +73,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     ];
     if (isset($_POST['value'])) {
         $p['value'] = $_POST['value'];
+    }
+    if (isset($_POST['valuename'])) {
+        $p['valuename'] = $_POST['valuename'];
     }
     if (isset($_POST['entity_restrict'])) {
         $p['entity_restrict']           = $_POST['entity_restrict'];
@@ -108,13 +111,14 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];
         }
 
+        $name = htmlspecialchars($_POST["name"]);
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "showItemSpecificity_" . $_POST["name"] . "$rand",
+            "showItemSpecificity_" . $name . "$rand",
             $_POST['showItemSpecificity'],
             $params
         );
 
-        echo "<br><span id='showItemSpecificity_" . $_POST["name"] . "$rand'>&nbsp;</span>\n";
+        echo "<br><span id='showItemSpecificity_" . $name . "$rand'>&nbsp;</span>\n";
     }
 }

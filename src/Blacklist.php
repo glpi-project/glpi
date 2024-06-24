@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Blacklist Class
  *
@@ -40,6 +42,8 @@
  **/
 class Blacklist extends CommonDropdown
 {
+    use Clonable;
+
    // From CommonDBTM
     public $dohistory = true;
 
@@ -68,7 +72,7 @@ class Blacklist extends CommonDropdown
         return 0;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
@@ -77,7 +81,7 @@ class Blacklist extends CommonDropdown
     /**
      * @since 0.85
      */
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }
@@ -560,5 +564,10 @@ class Blacklist extends CommonDropdown
     public static function getIcon()
     {
         return "fas fa-ban";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

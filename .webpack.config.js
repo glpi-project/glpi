@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const { globSync } = require('glob');
 const path = require('path');
@@ -40,11 +41,9 @@ let config = {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'node_modules/@fullcalendar'),
-                    path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/cystoscape'),
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
-                    path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/rrule'),
                     path.resolve(__dirname, 'lib/blueimp/jquery-file-upload'),
                 ],
@@ -87,6 +86,9 @@ let config = {
         ],
     },
     plugins: [
+        new webpack.optimize.LimitChunkCountPlugin({
+            maxChunks: 1,
+        }),
         new webpack.ProvidePlugin(
             {
                 process: 'process/browser', // required by some libs (including `popper.js`)
@@ -101,8 +103,15 @@ let config = {
             }
         ), // Clean lib dir content
         new MiniCssExtractPlugin(), // Extract styles into CSS files
+        new MonacoWebpackPlugin({
+            'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss', 'shell'],
+            'publicPath': '/public/lib/'
+        }),
     ],
     resolve: {
+        fallback: {
+            "path": require.resolve("path-browserify"),
+        },
         // Use only main file in requirement resolution as we do not yet handle modules correctly
         mainFields: [
             'main',
@@ -165,7 +174,7 @@ var filesToCopy = [
     },
     {
         package: '@tabler/icons-webfont',
-        from: '{fonts/*,tabler-icons.scss}',
+        from: 'dist/{fonts/*,tabler-icons.scss}',
         to: scssOutputPath,
     },
     {
@@ -178,6 +187,15 @@ var filesToCopy = [
         from: 'src/scss/**/*.scss',
         to: scssOutputPath,
     },
+    {
+        package: 'tinymce',
+        from: 'skins/ui/oxide*/skin.css',
+        to: scssOutputPath,
+    },
+    {
+        package: 'swagger-ui-dist',
+        from: 'oauth2-redirect.html'
+    }
 ];
 
 let copyPatterns = [];

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 
 /**
  * Monitor Class
@@ -43,6 +44,8 @@ class Monitor extends CommonDBTM
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
+    use Glpi\Features\AssignableAsset;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -61,7 +64,7 @@ class Monitor extends CommonDBTM
             Infocom::class,
             Contract_Item::class,
             Document_Item::class,
-            Computer_Item::class,
+            Asset_PeripheralAsset::class,
             KnowbaseItem_Item::class
         ];
     }
@@ -97,13 +100,13 @@ class Monitor extends CommonDBTM
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
-        $this->addStandardTab('Computer_Item', $ong, $options);
+        $this->addStandardTab(Asset_PeripheralAsset::class, $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
@@ -156,7 +159,7 @@ class Monitor extends CommonDBTM
 
 
     /**
-     * Return the linked items (in computers_items)
+     * Return the linked items (`Asset_PeripheralAsset` relations)
      *
      * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
@@ -167,16 +170,19 @@ class Monitor extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => 'computers_id',
-            'FROM'   => 'glpi_computers_items',
+            'SELECT' => [
+                'itemtype_asset',
+                'items_id_asset'
+            ],
+            'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype'  => $this->getType(),
-                'items_id'  => $this->fields['id']
+                'itemtype_peripheral' => $this->getType(),
+                'items_id_peripheral' => $this->fields['id']
             ]
         ]);
         $tab = [];
         foreach ($iterator as $data) {
-            $tab['Computer'][$data['computers_id']] = $data['computers_id'];
+            $tab[$data['itemtype_asset']][$data['items_id_asset']] = $data['items_id_asset'];
         }
         return $tab;
     }
@@ -187,11 +193,11 @@ class Monitor extends CommonDBTM
 
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
-            Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+            Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _x('button', 'Add a license')
+                  _sx('button', 'Add a license')
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
@@ -233,11 +239,11 @@ class Monitor extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_monitor' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -459,6 +465,8 @@ class Monitor extends CommonDBTM
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, MonitorModel::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
         return $tab;
@@ -480,7 +488,7 @@ class Monitor extends CommonDBTM
 
         $tab[] = [
             'id'                 => '1429',
-            'table'              => 'glpi_computers_items',
+            'table'              => Asset_PeripheralAsset::getTable(),
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of monitors'),
             'forcegroupby'       => true,
@@ -488,14 +496,15 @@ class Monitor extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.itemtype' => 'Monitor']
+                'jointype'                  => 'itemtype_item',
+                'specific_items_id_column'  => 'items_id_asset',
+                'specific_itemtype_column'  => 'itemtype_asset',
+                'condition'                 => ['NEWTABLE.' . 'itemtype_peripheral' => 'Monitor']
             ]
         ];
 
         return $tab;
     }
-
 
     public static function getIcon()
     {

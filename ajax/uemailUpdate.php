@@ -33,6 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
     include('../inc/includes.php');
@@ -70,8 +77,7 @@ if (
     $default_notif = $_POST['use_notification'][$user_index] ?? true;
 
     if (
-        isset($_POST['alternative_email'][$user_index])
-        && !empty($_POST['alternative_email'][$user_index])
+        !empty($_POST['alternative_email'][$user_index])
         && empty($default_email)
     ) {
         if (NotificationMailing::isUserAddressValid($_POST['alternative_email'][$user_index])) {
@@ -85,7 +91,7 @@ if (
     echo "<div class='my-1 d-flex align-items-center'>
          <label  for='email_fup_check'>
             <i class='far fa-envelope me-1'></i>
-            " . __('Email followup') . "
+            " . __s('Email followup') . "
          </label>
          <div class='ms-2'>
             " . Dropdown::showYesNo($_POST['field'] . '[use_notification][]', $default_notif, -1, ['display' => false]) . "

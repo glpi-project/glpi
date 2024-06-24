@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -78,14 +83,18 @@ switch ($_REQUEST['widget']) {
                 $showgrouptickets = isset($params['showgrouptickets']) ? ($params['showgrouptickets'] !== 'false') : false;
                 $itemtype::showCentralList($params['start'], $params['status'] ?? 'process', $showgrouptickets);
             }
-        } else if ($itemtype === RSSFeed::class) {
+        } elseif ($itemtype === RSSFeed::class) {
             $personal = $params['personal'] !== 'false';
             $itemtype::showListForCentral($personal);
-        } else if ($itemtype === Planning::class) {
+        } elseif ($itemtype === Planning::class) {
             $itemtype::showCentral($params['who']);
-        } else if ($itemtype === Reminder::class) {
+        } elseif ($itemtype === Reminder::class) {
             $personal = ($params['personal'] ?? true) !== 'false';
             $itemtype::showListForCentral($personal);
+        } elseif ($itemtype === Project::class) {
+            $itemtype::showListForCentral($params['itemtype']);
+        } elseif ($itemtype === ProjectTask::class) {
+            $itemtype::showListForCentral($params['itemtype']);
         }
         break;
     default:

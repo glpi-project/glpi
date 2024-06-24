@@ -39,11 +39,12 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("config", UPDATE);
+Session::checkRight("config", READ);
 
 $crontask = new CronTask();
 
 if (isset($_POST['execute'])) {
+    Session::checkRight("config", UPDATE);
     if (is_numeric($_POST['execute'])) {
        // Execute button from list.
         $name = CronTask::launch(CronTask::MODE_INTERNAL, intval($_POST['execute']));
@@ -53,7 +54,7 @@ if (isset($_POST['execute'])) {
     }
     if ($name) {
        //TRANS: %s is a task name
-        Session::addMessageAfterRedirect(sprintf(__('Task %s executed'), $name));
+        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Task %s executed'), $name)));
     }
     Html::back();
 } else if (isset($_POST["update"])) {

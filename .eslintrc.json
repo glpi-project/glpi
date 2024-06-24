@@ -15,8 +15,8 @@
     ],
     "env": {
         "browser": true,
-        "es6": true,
-        "jquery": true
+        "jquery": true,
+        "es2021": true
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -28,7 +28,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 8
+        "ecmaVersion": 13
     },
     "rules": {
         "eol-last": [
@@ -78,7 +78,28 @@
             }
         },
         {
-            "files": [".stylelintrc.js", ".webpack.config.js"],
+            "files": ["js/src/**"],
+            "extends": ["plugin:vue/essential", "eslint:recommended"],
+            "plugins": ["vue"],
+            "parser": "vue-eslint-parser",
+            "parserOptions": {
+                "sourceType": "module"
+            },
+            "rules": {
+                "vue/script-indent": ["error", 4, {
+                    "baseIndent": 1,
+                    "switchCase": 1
+                }],
+                "vue/html-indent": ["error", 4, {
+                    "baseIndent": 1,
+                    "switchCase": 1
+                }],
+                "vue/multi-word-component-names": "off",
+                "indent": "off"
+            }
+        },
+        {
+            "files": [".stylelintrc.js", ".webpack.config.js", "tests/cypress.config.js"],
             "env": {
                 "node": true
             }
@@ -91,9 +112,16 @@
                 "es2021": true
             },
             "parserOptions": {
-                "ecmaVersion": 12,
                 "sourceType": "module"
             }
+        },
+        {
+            "files": ["tests/cypress/**"],
+            "env": {
+                "node": true,
+                "es2021": true
+            },
+            "extends": ["plugin:cypress/recommended"]
         }
     ]
 }

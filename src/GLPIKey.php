@@ -34,7 +34,6 @@
  */
 
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  GLPI security key
@@ -63,6 +62,7 @@ class GLPIKey
     protected $fields = [
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
+        'glpi_oauthclients.secret',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
     ];
@@ -391,10 +391,11 @@ class GLPIKey
     /**
      * Descrypt a string.
      *
-     * @param string|null   $string  String to decrypt.
-     * @param string|null   $key     Key to use, fallback to default key if null.
+     * @param string|null $string String to decrypt.
+     * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
+     * @throws SodiumException
      */
     public function decrypt(?string $string, $key = null): ?string
     {
@@ -472,6 +473,9 @@ class GLPIKey
             $result .= $char;
         }
 
-        return Sanitizer::unsanitize($result);
+        // In legacy password encrytion logic, an HTML encoded value of password was sometimes stored
+        $result = str_replace(['<', '>'], ['&lt;', '&gt;'], $result);
+
+        return $result;
     }
 }

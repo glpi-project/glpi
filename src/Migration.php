@@ -33,7 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Console\Application;
+use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -69,8 +71,8 @@ class Migration
      */
     private $context = 'core';
 
-    const PRE_QUERY = 'pre';
-    const POST_QUERY = 'post';
+    public const PRE_QUERY = 'pre';
+    public const POST_QUERY = 'post';
 
     /**
      * Output handler to use. If not set, output will be directly echoed on a format depending on
@@ -85,7 +87,6 @@ class Migration
      **/
     public function __construct($ver)
     {
-
         $this->deb = time();
         $this->version = $ver;
 
@@ -108,11 +109,9 @@ class Migration
      **/
     public function setVersion($ver)
     {
-
         $this->version = $ver;
         $this->addNewMessageArea("migration_message_$ver");
     }
-
 
     /**
      * Add new message
@@ -125,15 +124,13 @@ class Migration
      **/
     public function addNewMessageArea($id)
     {
-
         if (!isCommandLine() && $id != $this->current_message_area_id) {
             $this->current_message_area_id = $id;
-            echo "<div id='" . $this->current_message_area_id . "'></div>";
+            echo "<div id='" . htmlspecialchars($this->current_message_area_id) . "'></div>";
         }
 
-        $this->displayMessage(__('Work in progress...'));
+        $this->displayMessage(isCommandLine() ? __('Work in progress...') : __s('Work in progress...'));
     }
-
 
     /**
      * Flush previous displayed message in log file
@@ -144,14 +141,12 @@ class Migration
      **/
     public function flushLogDisplayMessage()
     {
-
         if (isset($this->lastMessage)) {
             $tps = Html::timestampToString(time() - $this->lastMessage['time']);
             $this->log($tps . ' for "' . $this->lastMessage['msg'] . '"', false);
             unset($this->lastMessage);
         }
     }
-
 
     /**
      * Additional message in global message
@@ -162,7 +157,6 @@ class Migration
      **/
     public function displayMessage($msg)
     {
-
         $this->flushLogDisplayMessage();
 
         $now = time();
@@ -174,7 +168,6 @@ class Migration
             'msg'  => $msg
         ];
     }
-
 
     /**
      * Log message for this migration
@@ -188,7 +181,6 @@ class Migration
      **/
     public function log($message, $warning)
     {
-
         if ($warning) {
             $log_file_name = 'warning_during_migration_to_' . $this->version;
         } else {
@@ -204,7 +196,6 @@ class Migration
         }
     }
 
-
     /**
      * Display a title
      *
@@ -212,13 +203,12 @@ class Migration
      *
      * @return void
      **/
-    public function displayTitle($title)
+    public function displayTitle($title): void
     {
         $this->flushLogDisplayMessage();
 
         $this->outputMessage($title, 'title');
     }
-
 
     /**
      * Display a Warning
@@ -228,17 +218,16 @@ class Migration
      *
      * @return void
      **/
-    public function displayWarning($msg, $red = false)
+    public function displayWarning($msg, $red = false): void
     {
         $this->outputMessage($msg, $red ? 'warning' : 'strong');
         $this->log($msg, true);
     }
 
-
     /**
      * Display an error
      *
-     * @param string  $msg Message to display
+     * @param string  $message Message to display
      *
      * @return void
      **/
@@ -247,7 +236,6 @@ class Migration
         $this->outputMessage($message, 'error');
         $this->log($message, true);
     }
-
 
     /**
      * Define field's format
@@ -259,7 +247,7 @@ class Migration
      *
      * @return string
      **/
-    private function fieldFormat($type, $default_value, $nodefault = false)
+    private function fieldFormat($type, $default_value, $nodefault = false): string
     {
 
         $format = '';
@@ -378,13 +366,11 @@ class Migration
                 break;
 
             default:
-               // for compatibility with old 0.80 migrations
                 $format = $type;
                 break;
         }
         return $format;
     }
-
 
     /**
      * Add a new GLPI normalized field
@@ -427,7 +413,7 @@ class Migration
         $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
         if (!empty($params['comment'])) {
-            $params['comment'] = " COMMENT '" . addslashes($params['comment']) . "'";
+            $params['comment'] = " COMMENT " . $DB->quote($params['comment']);
         }
 
         if (!empty($params['after'])) {
@@ -457,7 +443,6 @@ class Migration
         }
         return false;
     }
-
 
     /**
      * Modify field for migration
@@ -497,7 +482,7 @@ class Migration
         $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
         if ($params['comment']) {
-            $params['comment'] = " COMMENT '" . addslashes($params['comment']) . "'";
+            $params['comment'] = " COMMENT " . $DB->quote($params['comment']);
         }
 
         if (!empty($params['after'])) {
@@ -514,7 +499,7 @@ class Migration
            // in order the function to be replayed
            // Drop new field if name changed
             if (
-                ($oldfield != $newfield)
+                ($oldfield !== $newfield)
                 && $DB->fieldExists($table, $newfield)
             ) {
                 $this->change[$table][] = $DB->buildDrop($newfield, 'FIELD');
@@ -529,7 +514,6 @@ class Migration
 
         return false;
     }
-
 
     /**
      * Drop field for migration
@@ -549,7 +533,6 @@ class Migration
         }
     }
 
-
     /**
      * Drop immediately a table if it exists
      *
@@ -567,7 +550,6 @@ class Migration
         }
     }
 
-
     /**
      * Add index for migration
      *
@@ -581,8 +563,7 @@ class Migration
      **/
     public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0)
     {
-
-       // si pas de nom d'index, on prend celui du ou des champs
+        // if no index name, we take that of the field(s)
         if (!$indexname) {
             if (is_array($fields)) {
                 $indexname = implode("_", $fields);
@@ -604,16 +585,15 @@ class Migration
                 $fields = "`$fields`";
             }
 
-            if ($type == 'FULLTEXT') {
+            if ($type === 'FULLTEXT') {
                 $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
-            } else if ($type == 'UNIQUE') {
+            } else if ($type === 'UNIQUE') {
                 $this->uniques[$table][] = "ADD $type `$indexname` ($fields)";
             } else {
                 $this->change[$table][] = "ADD $type `$indexname` ($fields)";
             }
         }
     }
-
 
     /**
      * Drop index for migration
@@ -632,7 +612,6 @@ class Migration
         }
     }
 
-
     /**
      * Drop foreign key for migration
      *
@@ -649,7 +628,6 @@ class Migration
             $this->change[$table][] = $DB->buildDrop($keyname, 'FOREIGN KEY');
         }
     }
-
 
     /**
      * Rename table for migration
@@ -705,12 +683,11 @@ class Migration
             if (isCommandLine()) {
                 throw new \RuntimeException($message);
             } else {
-                echo $message . "\n";
+                echo htmlspecialchars($message) . "\n";
                 die(1);
             }
         }
     }
-
 
     /**
      * Copy table for migration
@@ -734,7 +711,7 @@ class Migration
         ) {
            // Try to do a flush tables if RELOAD privileges available
            // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-           // $DB->query($query);
+           // $DB->doQuery($query);
 
             $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
             $DB->doQueryOrDie($query, $this->version . " create $newtable");
@@ -746,7 +723,6 @@ class Migration
             }
         }
     }
-
 
     /**
      * Insert an entry inside a table
@@ -781,7 +757,6 @@ class Migration
 
         return null;
     }
-
 
     /**
      * Execute migration for only one table
@@ -821,7 +796,6 @@ class Migration
         }
     }
 
-
     /**
      * Execute global migration
      *
@@ -858,7 +832,6 @@ class Migration
         $this->displayMessage(__('Task completed.'));
     }
 
-
     /**
      * Register a new rule
      *
@@ -876,7 +849,7 @@ class Migration
         global $DB;
 
        // Avoid duplicate - Need to be improved using a rule uuid of other
-        if (countElementsInTable('glpi_rules', ['name' => $DB->escape($rule['name'])])) {
+        if (countElementsInTable('glpi_rules', ['name' => $rule['name']])) {
             return 0;
         }
         $rule['comment']     = sprintf(__('Automatically generated by GLPI %s'), $this->version);
@@ -918,7 +891,6 @@ class Migration
         return $rid;
     }
 
-
     /**
      * Update display preferences
      *
@@ -955,7 +927,9 @@ class Migration
                 // Add new search options with an higher rank.
                 foreach ($iterator as $data) {
                     $max_rank = $DB->request([
-                        'SELECT' => ['MAX' => 'rank AS max_rank'],
+                        'SELECT' => [
+                            QueryFunction::max('rank', 'max_rank')
+                        ],
                         'FROM'   => 'glpi_displaypreferences',
                         'WHERE'  => [
                             'users_id' => $data['users_id'],
@@ -1117,7 +1091,37 @@ class Migration
     }
 
     /**
-     * Store configuration values that does not exists
+     * Remove configuration value(s) to current context; @see Migration::removeConfig()
+     *
+     * @since 11.0.0
+     *
+     * @param array  $values  Value(s) to remove
+     * @param ?string $context Context to remove on. Defaults to the context of this migration instance.
+     *
+     * @return Migration
+     */
+    public function removeConfig(array $values, ?string $context = null)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (empty($values)) {
+            return $this;
+        }
+
+        $context = $context ?? $this->context;
+        $DB->delete(
+            'glpi_configs',
+            [
+                'context' => $context,
+                'name'    => $values
+            ]
+        );
+        return $this;
+    }
+
+    /**
+     * Store configuration values that does not exist
      *
      * @since 9.2
      *
@@ -1130,13 +1134,13 @@ class Migration
 
         foreach ($this->configs as $context => $config) {
             if (count($config)) {
-                $existing = $DB->request(
-                    "glpi_configs",
-                    [
+                $existing = $DB->request([
+                    'FROM' => 'glpi_configs',
+                    'WHERE' => [
                         'context'   => $context,
                         'name'      => array_keys($config)
                     ]
-                );
+                ]);
                 foreach ($existing as $conf) {
                      unset($config[$conf['name']]);
                 }
@@ -1152,7 +1156,6 @@ class Migration
             unset($this->configs[$context]);
         }
     }
-
 
     /**
      * Add new right to profiles that match rights requirements
@@ -1202,7 +1205,7 @@ class Migration
         foreach ($requiredrights as $reqright => $reqvalue) {
             $where['OR'][] = [
                 'name'   => $reqright,
-                new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
+                new QueryExpression("{$DB::quoteName('rights')} & $reqvalue = $reqvalue")
             ];
         }
 
@@ -1219,7 +1222,7 @@ class Migration
                     'WHERE'  => $where + ['profiles_id' => $profile['id']]
                 ]);
 
-                $reqmet = (count($iterator) == count($requiredrights));
+                $reqmet = (count($iterator) === count($requiredrights));
             }
 
             $DB->insertOrDie(
@@ -1232,6 +1235,8 @@ class Migration
                 ],
                 sprintf('%1$s add right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1282,7 +1287,7 @@ class Migration
         ]);
 
         foreach ($prof_iterator as $profile) {
-            if (intval($profile['rights']) & $right) {
+            if ((int) $profile['rights'] & $right) {
                 continue;
             }
             $DB->updateOrInsert(
@@ -1296,6 +1301,8 @@ class Migration
                 ],
                 sprintf('%1$s update right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1337,7 +1344,7 @@ class Migration
                     [
                         'AND' => [
                             "right$i.name"   => $reqright,
-                            new QueryExpression("{$DB->quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                            new QueryExpression("{$DB::quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
                         ]
                     ]
                 ]
@@ -1365,6 +1372,8 @@ class Migration
                 ],
                 sprintf('%1$s update right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1376,22 +1385,50 @@ class Migration
         );
     }
 
-    public function setOutputHandler($output_handler)
+    /**
+     * Update last rights update for given profile.
+     *
+     * @param int $profile_id
+     * @return void
+     */
+    private function updateProfileLastRightsUpdate(int $profile_id): void
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
+        // Check if the 'last_rights_update' field exists before trying to update it.
+        // This field may not exist yet as it is added by a migration, and other migrations
+        // that add a right could be executed before the migration that adds this field.
+        if (!$DB->fieldExists('glpi_profiles', 'last_rights_update')) {
+            return;
+        }
+
+        $DB->updateOrDie(
+            'glpi_profiles',
+            [
+                'last_rights_update' => Session::getCurrentTime()
+            ],
+            [
+                'id' => $profile_id,
+            ]
+        );
+    }
+
+    public function setOutputHandler($output_handler): void
+    {
         $this->output_handler = $output_handler;
     }
 
     /**
      * Output a message.
      *
-     * @param string $msg      Message to output.
-     * @param string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
-     * @param string $area_id  Display area to use.
+     * @param string $msg       Message to output.
+     * @param ?string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
+     * @param ?string $area_id  Display area to use.
      *
      * @return void
      */
-    protected function outputMessage($msg, $style = null, $area_id = null)
+    protected function outputMessage(string $msg, ?string $style = null, ?string $area_id = null): void
     {
         if (isCommandLine()) {
             $this->outputMessageToCli($msg, $style);
@@ -1404,42 +1441,28 @@ class Migration
      * Output a message in console output.
      *
      * @param string $msg    Message to output.
-     * @param string $style  Style to use, see self::outputMessage() for possible values.
+     * @param ?string $style  Style to use, see {@link self::outputMessage()} for possible values.
      *
      * @return void
      */
-    private function outputMessageToCli($msg, $style = null)
+    private function outputMessageToCli(string $msg, ?string $style = null): void
     {
-
-        $format = null;
-        $verbosity = OutputInterface::VERBOSITY_NORMAL;
-        switch ($style) {
-            case 'title':
-                $msg       = str_pad(" $msg ", 100, '=', STR_PAD_BOTH);
-                $format    = 'info';
-                $verbosity = OutputInterface::VERBOSITY_NORMAL;
-                break;
-            case 'warning':
-                $msg       = str_pad("** {$msg}", 100);
-                $format    = 'comment';
-                $verbosity = OutputInterface::VERBOSITY_NORMAL;
-                break;
-            case 'strong':
-                $msg       = str_pad($msg, 100);
-                $format    = 'comment';
-                $verbosity = OutputInterface::VERBOSITY_NORMAL;
-                break;
-            case 'error':
-                $msg       = str_pad("!! {$msg}", 100);
-                $format    = 'error';
-                $verbosity = OutputInterface::VERBOSITY_QUIET;
-                break;
-            default:
-                $msg       = str_pad($msg, 100);
-                $format    = 'comment';
-                $verbosity = OutputInterface::VERBOSITY_VERBOSE;
-                break;
-        }
+        $msg = match ($style) {
+            'title' => str_pad(" $msg ", 100, '=', STR_PAD_BOTH),
+            'warning' => str_pad("** {$msg}", 100),
+            'error' => str_pad("!! {$msg}", 100),
+            default => str_pad($msg, 100),
+        };
+        $format = match ($style) {
+            'title' => 'info',
+            'error' => 'error',
+            default => 'comment',
+        };
+        $verbosity = match ($style) {
+            'error' => OutputInterface::VERBOSITY_QUIET,
+            'title', 'warning', 'strong' => OutputInterface::VERBOSITY_NORMAL,
+            default => OutputInterface::VERBOSITY_VERBOSE,
+        };
 
         if ($this->output_handler instanceof OutputInterface) {
             if (null !== $format) {
@@ -1454,32 +1477,22 @@ class Migration
     /**
      * Output a message in html page.
      *
-     * @param string $msg      Message to output.
-     * @param string $style    Style to use, see self::outputMessage() for possible values.
-     * @param string $area_id  Display area to use.
+     * @param string $msg       Message to output.
+     * @param ?string $style    Style to use, see self::outputMessage() for possible values.
+     * @param ?string $area_id  Display area to use.
      *
      * @return void
      */
-    private function outputMessageToHtml($msg, $style = null, $area_id = null)
+    private function outputMessageToHtml(string $msg, ?string $style = null, ?string $area_id = null): void
     {
+        $msg = htmlspecialchars($msg);
 
-        $msg = Html::entities_deep($msg);
-
-        switch ($style) {
-            case 'title':
-                $msg = '<h3>' . $msg . '</h3>';
-                break;
-            case 'warning':
-            case 'error':
-                $msg = '<div class="migred"><p>' . $msg . '</p></div>';
-                break;
-            case 'strong':
-                $msg = '<p><span class="b">' . $msg . '</span></p>';
-                break;
-            default:
-                $msg = '<p class="center">' . $msg . '</p>';
-                break;
-        }
+        $msg = match ($style) {
+            'title' => '<h3>' . $msg . '</h3>',
+            'warning', 'error' => '<div class="migred"><p>' . $msg . '</p></div>',
+            'strong' => '<p><span class="b">' . $msg . '</span></p>',
+            default => '<p class="center">' . $msg . '</p>',
+        };
 
         if (null !== $area_id) {
             echo "<script type='text/javascript'>
@@ -1591,8 +1604,8 @@ class Migration
                 $fkey_oldname = $fkey_column['COLUMN_NAME'];
                 $fkey_newname = preg_replace('/^' . preg_quote($old_fkey, '/') . '/', $new_fkey, $fkey_oldname);
 
-                if ($fkey_table == $old_table) {
-                  // Special case, foreign key is inside renamed table, use new name
+                if ($fkey_table === $old_table) {
+                    // Special case, foreign key is inside renamed table, use new name
                     $fkey_table = $new_table;
                 }
 
@@ -1694,7 +1707,7 @@ class Migration
                                 'old' => 'itemtype',
                                 [
                                     'AND' => [
-                                        'new.users_id' => new QueryExpression($DB->quoteName('old.users_id')),
+                                        'new.users_id' => new QueryExpression($DB::quoteName('old.users_id')),
                                         'new.itemtype' => $itemtype,
                                         'new.num'      => $new_search_opt,
                                         'old.num'      => $old_search_opt,
@@ -1803,8 +1816,8 @@ class Migration
      * - foreign key 2 (second itemtype)
      *
      * @param string $table Table name
-     * @param string $class_1 First itemtype (CommonDBTM)
-     * @param string $class_2 Second itemtype (CommonDBTM)
+     * @param class-string<CommonDBTM> $class_1 First itemtype (CommonDBTM)
+     * @param class-string<CommonDBTM> $class_2 Second itemtype (CommonDBTM)
      */
     public function createLinkTable(
         string $table,

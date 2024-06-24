@@ -37,8 +37,12 @@
  * @since 0.85
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var array $CFG_GLPI
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $CFG_GLPI,
+    $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
@@ -47,33 +51,64 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
-    switch ($_POST["validatortype"]) {
-        case 'user':
-            echo "<input type='hidden' name='groups_id' value=0 />";
-            User::dropdown(['name'   => 'users_id_validate',
-                'entity' => $_SESSION["glpiactive_entity"],
-                'right'  => ['validate_request', 'validate_incident']
-            ]);
+    $validation_class   = $_POST['validation_class'];
+    $itemtype_name      = 'itemtype_target';
+    $items_id_name      = 'items_id_target';
+    $groups_id_name     = 'groups_id';
+    $types_mapping = [
+        'group'      => 'group',
+        'group_user' => 'group_user',
+        'list_users' => 'list_users',
+    ];
 
-            echo "<br><br>" . __('Comments') . " ";
+    switch (strtolower($_POST['validatortype'])) {
+        case 'user':
+            User::dropdown([
+                'name'   => $items_id_name,
+                'entity' => $_SESSION["glpiactive_entity"],
+                'right'  => $_POST['right'],
+            ]);
+            echo Html::hidden($itemtype_name, ['value' => 'User']);
+
+            echo "<br><br>" . __s('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             break;
 
-        case 'group':
-            echo "<input type='hidden' name='users_id_validate' value=0 />";
-            $rand = Group::dropdown(['name'      => 'groups_id',
+        case $types_mapping['group']:
+            Group::dropdown([
+                'name'   => $items_id_name,
+                'entity' => $_POST['entity'],
+                'right'  => $_POST['right'],
+                'width'  => '100%',
+            ]);
+            echo Html::hidden($itemtype_name, ['value' => 'Group']);
+
+            echo "<br><br>" . __s('Comments') . " ";
+            echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
+
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            break;
+
+        case $types_mapping['group_user']:
+            $rand = Group::dropdown([
+                'name'      => $groups_id_name,
                 'entity'    => $_SESSION["glpiactive_entity"]
             ]);
+            echo Html::hidden($itemtype_name, ['value' => 'User']);
 
-            $param = ['validatortype'      => 'group_user',
-                'groups_id' => '__VALUE__',
-                'right'     => ['validate_request', 'validate_incident']
+            $param = [
+                'validatortype' => $types_mapping['list_users'],
+                'groups_id'     => '__VALUE__',
+                'right'         => ['validate_request', 'validate_incident']
             ];
+            if (array_key_exists('validation_class', $_POST)) {
+                $param['validation_class'] = $_POST['validation_class'];
+            }
 
             Ajax::updateItemOnSelectEvent(
-                "dropdown_groups_id$rand",
+                "dropdown_{$groups_id_name}{$rand}",
                 "show_groups_users",
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveActionAddValidator.php",
                 $param
@@ -82,13 +117,14 @@ if (isset($_POST["validatortype"])) {
             echo "<br><span id='show_groups_users'>&nbsp;</span>\n";
             break;
 
-        case 'group_user':
-            $opt = ['groups_id'   => $_POST["groups_id"],
+        case $types_mapping['list_users']:
+            $opt = [
+                'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
                 'entity'    => $_SESSION["glpiactive_entity"]
             ];
 
-            $groups_users = TicketValidation::getGroupUserHaveRights($opt);
+            $groups_users = $validation_class::getGroupUserHaveRights($opt);
 
             $users           = [];
             $param['values'] =  [];
@@ -101,48 +137,11 @@ if (isset($_POST["validatortype"])) {
                 );
             }
 
-            if (
-                isset($_POST['all_users'])
-                && $_POST['all_users']
-            ) {
-                $param['values'] =  array_keys($users);
-            }
-
             $param['multiple'] = true;
             $param['display'] = true;
             $param['size']    = count($users);
 
-            Dropdown::showFromArray("users_id_validate", $users, $param);
-
-           // Display all/none buttons to select all or no users in group
-            if (!empty($_POST['groups_id'])) {
-                echo "<a id='all_users' class='btn btn-primary'>" . __('All') . "</a>";
-                $param_button = [
-                    'validatortype'     => 'group_user',
-                    'users_id_validate' => '',
-                    'all_users'         => 1,
-                    'groups_id'         => $_POST['groups_id'],
-                    'right'             => ['validate_request', 'validate_incident'],
-                    'entity'            => $_SESSION["glpiactive_entity"],
-                ];
-                Ajax::updateItemOnEvent(
-                    'all_users',
-                    'show_groups_users',
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveActionAddValidator.php",
-                    $param_button,
-                    ['click']
-                );
-
-                echo "&nbsp;<a id='no_users' class='btn btn-primary'>" . __('None') . "</a>";
-                $param_button['all_users'] = 0;
-                Ajax::updateItemOnEvent(
-                    'no_users',
-                    'show_groups_users',
-                    $CFG_GLPI["root_doc"] . "/ajax/dropdownMassiveActionAddValidator.php",
-                    $param_button,
-                    ['click']
-                );
-            }
+            Dropdown::showFromArray($items_id_name, $users, $param);
 
             echo "<br><br>" . __('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";

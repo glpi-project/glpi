@@ -1,0 +1,77 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+{% if actions|length > 0 %}
+   {% set searchtype_name = fieldname ~ prefix ~ "[" ~ num ~ "][searchtype]" %}
+   <div class="col-auto">
+      {{ fields.dropdownArrayField(searchtype_name, searchtype, actions, '', {
+         rand: rand,
+         full_width: true,
+         input_class: 'col-12',
+         full_width_adapt_column: false,
+         no_label: true,
+         mb: 'mb-0',
+      }) }}
+   </div>
+{% endif %}
+
+<div class="col-auto" id="{{ dropdownname }}" data-itemtype="{{ itemtype }}" data-fieldname="{{ fieldname }}" data-prefix="{{ prefix }}" data-num="{{ num }}">
+   {% set params = {
+      value: value,
+      searchopt: searchopt,
+      searchtype: searchtype,
+      num: num,
+      itemtype: itemtype,
+      _idor_token: idor_token(itemtype),
+      from_meta: from_meta is defined ? from_meta : false,
+      field: field,
+      prefix: prefix,
+      p: p,
+   } %}
+   {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}
+</div>
+
+{% if actions|length > 0 %}
+    {% do call('Ajax::updateItemOnSelectEvent', [
+       ("dropdown_" ~ searchtype_name ~ rand),
+       dropdownname,
+       config('root_doc') ~ "/ajax/search.php",
+       params|merge({
+          action: 'display_searchoption_value',
+          searchtype: '__VALUE__',
+       })
+    ]) %}
+{% endif %}

@@ -33,7 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * @since 9.2
@@ -47,6 +49,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Certificate extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
     public $dohistory           = true;
     public static $rightname           = "certificate";
@@ -254,11 +257,11 @@ class Certificate extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_certificate' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -460,7 +463,7 @@ class Certificate extends CommonDBTM
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
@@ -527,14 +530,6 @@ class Certificate extends CommonDBTM
         return true;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getSpecificMassiveActions()
-     * @param null $checkitem
-     * @return array
-     */
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -542,22 +537,14 @@ class Certificate extends CommonDBTM
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-                 = _x('button', 'Associate certificate');
+                 = _sx('button', 'Associate certificate');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-                 = _x('button', 'Dissociate certificate');
+                 = _sx('button', 'Dissociate certificate');
             }
         }
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     * @param MassiveAction $ma
-     * @return bool|false
-     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -723,7 +710,15 @@ class Certificate extends CommonDBTM
                 $where_date = [
                     'OR' => [
                         ['glpi_alerts.date' => null],
-                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                        [
+                            'glpi_alerts.date' => ['<',
+                                QueryFunction::dateSub(
+                                    date: QueryFunction::now(),
+                                    interval: $repeat,
+                                    interval_unit: 'SECOND'
+                                )
+                            ]
+                        ],
                     ]
                 ];
             } else {
@@ -789,7 +784,7 @@ class Certificate extends CommonDBTM
                         $task->log($msg);
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect($msg);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg));
                     }
 
                     // Add alert
@@ -813,21 +808,13 @@ class Certificate extends CommonDBTM
                     if ($task) {
                         $task->log($msg);
                     } else {
-                        Session::addMessageAfterRedirect($msg, false, ERROR);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                     }
                 }
             }
         }
 
         return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
-    }
-
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
     }
 
 

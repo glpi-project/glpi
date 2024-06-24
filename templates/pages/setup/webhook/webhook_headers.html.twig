@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      <template id="custom-header-fields-template">
+         {% set header_field_pair %}
+            {{ fields.textField('header_name[]', '', '', {
+               no_label: true,
+               field_class: 'col-4',
+            }) }}
+            {% set remove_btn %}
+               <button class="btn btn-danger btn-icon" name="remove_header" type="button" title="{{ __('Remove') }}">
+                  <i class="ti ti-trash"></i>
+               </button>
+            {% endset %}
+            {% set header_value_autocomplete %}
+                <div class="header_value form-control overflow-hidden" style="height: 36px"></div>
+            {% endset %}
+            {{ fields.htmlField('header_value[]', header_value_autocomplete, '', {
+               no_label: true,
+               field_class: 'ms-2 h-100 d-flex col-5 justify-content-center',
+               wrapper_class: 'd-flex flex-grow-1',
+               add_field_html: remove_btn,
+            }) }}
+         {% endset %}
+         {{ fields.field('custom_header[]', header_field_pair, '', {
+            no_label: true,
+            field_class: 'col-12 d-flex custom-header-field-pair',
+         }) }}
+      </template>
+
+      <div class="custom-header-fields">
+         <button class="btn btn-secondary" name="add_header" type="button">
+            <i class="ti ti-plus"></i>
+            {{ __('Add a custom header') }}
+         </button>
+      </div>
+
+      <script>
+          const add_custom_header = (name, value, readonly) => {
+              const custom_header_fields_container = $('div.custom-header-fields');
+              const template = $($('#custom-header-fields-template').html());
+              const header_name_field = template.find('input[name="header_name[]"]');
+              const header_value_id = `header_value${Math.round(Math.random() * 1000000)}`;
+              $(``).insertAfter(template.find('input[name="header_value[]"]'));
+              template.find('div.header_value').prop('id', header_value_id);
+              header_name_field.val(name);
+              const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
+              if (readonly) {
+                  header_name_field.prop('readonly', true);
+                  // Delete the remove button
+                  template.find('button[name="remove_header"]').remove();
+                  editor_options.readOnly = true;
+              }
+              // insert the template before the add button
+              $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
+              window.GLPI.Monaco.createEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
+          };
+          $(() => {
+              const known_custom = {{ item.fields['custom_headers']|default([])|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+              add_custom_header('X-GLPI-signature', __('Filled automatically'), true);
+              add_custom_header('X-GLPI-timestamp', __('Filled automatically'), true);
+              {% if item.fields['use_oauth'] %}
+                 add_custom_header('Authorization', __('Filled automatically'), true);
+              {% endif %}
+              for (const [name, value] of Object.entries(known_custom)) {
+                  add_custom_header(name, value);
+              }
+              $('div.custom-header-fields').on('click', 'button[name="add_header"]', () => {
+                  add_custom_header('', '');
+              }).on('click', 'button[name="remove_header"]', (e) => {
+                  $(e.target).closest('.custom-header-field-pair').remove();
+              });
+
+              // Add formdata handler to inject the custom header values from the monaco editors
+              $('div.custom-header-fields').closest('form').on('formdata', (e) => {
+                  const editors = window.monaco.editor.getEditors().filter((editor) => {
+                      return editor._domElement.classList.contains('header_value');
+                  });
+                  // remove all header_name[] and header_value[] from the formdata
+                  e.originalEvent.formData.delete('header_name[]');
+                  e.originalEvent.formData.delete('header_value[]');
+
+                  $(editors).each((i, editor) => {
+                      const header_name = $(editor._domElement).closest('.custom-header-field-pair').find('input[name="header_name[]"]').val();
+                      const header_value = editor.getValue();
+                      e.originalEvent.formData.append('header_name[]', header_name);
+                      e.originalEvent.formData.append('header_value[]', header_value);
+                  });
+              });
+          });
+      </script>
+   {% endblock %}
+{% endblock %}

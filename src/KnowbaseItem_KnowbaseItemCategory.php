@@ -52,15 +52,9 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 
     public static $rightname = 'knowbase';
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
-    }
-
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-        self::showForItem($item, $withtemplate);
-        return true;
     }
 
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
@@ -105,8 +99,8 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         }
 
         if ($limit) {
-            $criteria['START'] = intval($start);
-            $criteria['LIMIT'] = intval($limit);
+            $criteria['START'] = (int)$start;
+            $criteria['LIMIT'] = (int)$limit;
         }
 
         $linked_items = [];
@@ -115,158 +109,11 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             if ($used === false) {
                 $linked_items[] = $data;
             } else {
-                $key = $item::getType() == KnowbaseItem::getType() ? 'items_id' : 'knowbaseitems_id';
+                $key = $item::class === KnowbaseItem::class ? 'items_id' : 'knowbaseitems_id';
                 $linked_items[$data[$key]] = $data[$key];
             }
         }
         return $linked_items;
-    }
-
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-    {
-
-        if (static::canView()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    self::getTable(),
-                    ['knowbaseitems_id' => $item->getID()]
-                );
-            }
-
-            $type_name = _n('Category', 'Categories', 1);
-
-            return self::createTabEntry($type_name, $nb);
-        }
-        return '';
-    }
-
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
-    {
-        $item_id = $item->getID();
-        $item_type = $item::getType();
-
-        if (isset($_GET["start"])) {
-            $start = intval($_GET["start"]);
-        } else {
-            $start = 0;
-        }
-
-        $canedit = $item->can($item_id, UPDATE);
-
-       // Total Number of events
-        $number = countElementsInTable(
-            self::getTable(),
-            ['knowbaseitems_id' => $item->getID()]
-        );
-
-        $ok_state = true;
-        if ($item instanceof CommonITILObject) {
-            $ok_state = !in_array(
-                $item->fields['status'],
-                array_merge(
-                    $item->getClosedStatusArray(),
-                    $item->getSolvedStatusArray()
-                )
-            );
-        }
-
-        $rand = mt_rand();
-
-        if ($canedit && $ok_state) {
-            echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
-            echo "<div class='center'>";
-            echo "<table class=\"tab_cadre_fixe\">";
-            echo "<tr><th colspan=\"2\">";
-            echo  __('Add a category');
-            echo "</th><tr>";
-            echo "<tr class='tab_bg_2'><td>";
-            KnowbaseItemCategory::dropdown(['rand' => $rand]);
-            echo "</td><td>";
-            echo "<input type=\"submit\" name=\"add\" value=\"" . _sx('button', 'Add') . "\" class=\"btn btn-primary\">";
-            echo "</td></tr>";
-            echo "</table>";
-            echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
-            echo "</div>";
-            Html::closeForm();
-        }
-
-       // No Events in database
-        if ($number < 1) {
-            $no_txt = ($item_type == KnowbaseItem::getType()) ?
-            __('No linked items') :
-            __('No knowledge base entries linked');
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>$no_txt</th></tr>";
-            echo "</table>";
-            echo "</div>";
-            return;
-        }
-
-       // Display the pager
-        $type_name = self::getTypeName(1);
-        Html::printAjaxPager($type_name, $start, $number);
-
-       // Output events
-        echo "<div class='center'>";
-
-        if ($canedit) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams
-            = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], $number),
-                'container'
-                        => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-
-        $header = '<tr>';
-
-        if ($canedit) {
-            $header    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
-        }
-
-        $header .= "<th>" . __('Category name') . "</th>";
-        $header .= "</tr>";
-        echo $header;
-
-        foreach (self::getItems($item, $start, $_SESSION['glpilist_limit']) as $data) {
-            $linked_category = getItemForItemtype(KnowbaseItemCategory::getType());
-            $linked_category->getFromDB($data['knowbaseitemcategories_id']);
-
-            $name = $linked_category->fields['name'];
-            if (
-                $_SESSION["glpiis_ids_visible"]
-                || empty($name)
-            ) {
-                $name = sprintf(__('%1$s (%2$s)'), $name, $linked_category->getID());
-            }
-
-            $link = $linked_category::getFormURLWithID($linked_category->getID());
-
-           // show line
-            echo "<tr class='tab_bg_2'>";
-
-            if ($canedit) {
-                echo "<td width='10'>";
-                Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
-                echo "</td>";
-            }
-
-            echo "<td><a href=\"" . $link . "\">" . $name . "</a></td>";
-            echo "</tr>";
-        }
-        echo $header;
-        echo "</table>";
-
-        $massiveactionparams['ontop'] = false;
-        Html::showMassiveActions($massiveactionparams);
-
-        echo "</div>";
-        Html::printAjaxPager($type_name, $start, $number);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -290,7 +137,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 
             $actions[$action_prefix . 'add']
             = "<i class='ma-icon fas fa-book'></i>" .
-              _x('button', 'Link knowledgebase article');
+              _sx('button', 'Link knowledgebase article');
         }
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);

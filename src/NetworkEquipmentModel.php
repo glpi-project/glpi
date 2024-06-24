@@ -40,4 +40,19 @@ class NetworkEquipmentModel extends CommonDCModelDropdown
     {
         return _n('Networking equipment model', 'Networking equipment models', $nb);
     }
+
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+
+        // Add stencil tab if there is at least one picture field defined
+        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
+            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
+                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
+                break;
+            }
+        }
+
+        return $ong;
+    }
 }

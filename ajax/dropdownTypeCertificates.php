@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \DBmysql $DB */
-global $DB;
+/**
+ * @var \DBmysql $DB
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $DB,
+    $AJAX_INCLUDE;
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
     $AJAX_INCLUDE = 1;
@@ -56,12 +60,13 @@ if (
       && (count($_POST['used']) > 0)
 ) {
     foreach (
-        $DB->request(
-            'glpi_certificates',
-            ['id'                  => $_POST['used'],
+        $DB->request([
+            'FROM' => 'glpi_certificates',
+            'WHERE' => [
+                'id'                  => $_POST['used'],
                 'certificatetypes_id' => $_POST['certificatetype']
             ]
-        ) as $data
+        ]) as $data
     ) {
         $used[$data['id']] = $data['id'];
     }

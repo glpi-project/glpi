@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  *  NotificationAjax
@@ -93,8 +94,8 @@ class NotificationAjax implements NotificationInterface
 
         $queue = new QueuedNotification();
 
-        if (!$queue->add(Sanitizer::sanitize($data))) {
-            Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
+        if (!$queue->add($data)) {
+            Session::addMessageAfterRedirect(__s('Error inserting browser notification to queue'), true, ERROR);
             return false;
         } else {
            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
@@ -129,12 +130,17 @@ class NotificationAjax implements NotificationInterface
 
         $return = [];
         if ($CFG_GLPI['notifications_ajax']) {
+            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
             $iterator = $DB->request([
                 'FROM'   => 'glpi_queuednotifications',
                 'WHERE'  => [
                     'is_deleted'   => false,
                     'recipient'    => Session::getLoginUserID(),
-                    'mode'         => Notification_NotificationTemplate::MODE_AJAX
+                    'mode'         => Notification_NotificationTemplate::MODE_AJAX,
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
+                            ' > ' . QueryFunction::unixTimestamp()
+                    )
                 ]
             ]);
 

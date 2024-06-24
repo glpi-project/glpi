@@ -42,6 +42,7 @@ ini_set('session.use_cookies', 0);
 
 include_once(GLPI_ROOT . '/inc/includes.php');
 
+/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 $server = new Glpi\CalDAV\Server();

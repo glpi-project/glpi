@@ -46,6 +46,8 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Item_Devices extends CommonDBRelation
 {
+    use Glpi\Features\State;
+
     public static $itemtype_1            = 'itemtype';
     public static $items_id_1            = 'items_id';
     public static $mustBeAttached_1      = false;
@@ -540,7 +542,7 @@ class Item_Devices extends CommonDBRelation
             ]);
 
             foreach ($iterator as $row) {
-                 $input = Toolbox::addslashes_deep($row);
+                 $input = $row;
                  $item = new $link_type();
                  $item->getFromDB($input['id']);
                  $res[] = $item;
@@ -569,7 +571,8 @@ class Item_Devices extends CommonDBRelation
                 }
                 return self::createTabEntry(
                     _n('Component', 'Components', Session::getPluralNumber()),
-                    $nb
+                    $nb,
+                    $item::getType()
                 );
             }
             if ($item instanceof CommonDevice) {
@@ -585,7 +588,7 @@ class Item_Devices extends CommonDBRelation
                         ]
                     );
                 }
-                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -1064,7 +1067,7 @@ class Item_Devices extends CommonDBRelation
                                 $content = Html::progressBar("percent" . mt_rand(), [
                                     'create'  => true,
                                     'percent' => $percent,
-                                    'message' => $message,
+                                    'message' => htmlspecialchars($message),
                                     'display' => false
                                 ]);
                                 break;
@@ -1188,14 +1191,14 @@ class Item_Devices extends CommonDBRelation
     {
         if (isset($input['devicetype']) && !$input['devicetype']) {
             Session::addMessageAfterRedirect(
-                __('Please select a device type'),
+                __s('Please select a device type'),
                 false,
                 ERROR
             );
             return;
         } else if (isset($_POST['devices_id']) && !$_POST['devices_id']) {
             Session::addMessageAfterRedirect(
-                __('Please select a device'),
+                __s('Please select a device'),
                 false,
                 ERROR
             );
@@ -1211,7 +1214,7 @@ class Item_Devices extends CommonDBRelation
                     && (!isset($input['new_devices']) || !$input['new_devices'])
                 ) {
                     Session::addMessageAfterRedirect(
-                        __('You must choose any unaffected device or ask to add new.'),
+                        __s('You must choose any unaffected device or ask to add new.'),
                         false,
                         ERROR
                     );
@@ -1529,11 +1532,11 @@ class Item_Devices extends CommonDBRelation
 
         if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlspecialchars(sprintf(
                     __('%1$s: %2$s'),
                     static::getTypeName(),
                     __('A device ID is mandatory')
-                ),
+                )),
                 false,
                 ERROR
             );
@@ -1544,17 +1547,16 @@ class Item_Devices extends CommonDBRelation
 
         if ($computer instanceof CommonDBTM) {
             if (
-                isset($CFG_GLPI['is_location_autoupdate'])
-                && $CFG_GLPI["is_location_autoupdate"]
+                Entity::getUsedConfig('is_location_autoupdate', $computer->getEntityID())
                 && (!isset($input['locations_id'])
                 || $computer->fields['locations_id'] != $input['locations_id'])
             ) {
                 $input['locations_id'] = $computer->fields['locations_id'];
             }
 
+            $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $computer->getEntityID());
             if (
-                (isset($CFG_GLPI['state_autoupdate_mode'])
-                && $CFG_GLPI["state_autoupdate_mode"] < 0)
+                $state_autoupdate_mode < 0
                 && (!isset($input['states_id'])
                 || $computer->fields['states_id'] != $input['states_id'])
             ) {
@@ -1562,12 +1564,11 @@ class Item_Devices extends CommonDBRelation
             }
 
             if (
-                (isset($CFG_GLPI['state_autoupdate_mode'])
-                && $CFG_GLPI["state_autoupdate_mode"] > 0)
+                $state_autoupdate_mode > 0
                 && (!isset($input['states_id'])
-                || $input['states_id'] != $CFG_GLPI["state_autoupdate_mode"])
+                || $input['states_id'] != $state_autoupdate_mode)
             ) {
-                $input['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+                $input['states_id'] = $state_autoupdate_mode;
             }
         }
 
@@ -1584,7 +1585,7 @@ class Item_Devices extends CommonDBRelation
             }
             if (isset($input[$field]) && !$canUpdate) {
                 unset($input[$field]);
-                Session::addMessageAfterRedirect(__('Update of ' . $attributs['short name'] . ' denied'));
+                Session::addMessageAfterRedirect(htmlspecialchars(__('Update of ' . $attributs['short name'] . ' denied')));
             }
         }
 

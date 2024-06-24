@@ -34,7 +34,7 @@
  */
 
 use Glpi\Tests\Log\TestHandler;
-use Monolog\Logger;
+use Monolog\Level;
 use Psr\Log\LogLevel;
 
 // Main GLPI test case. All tests should extends this class.
@@ -42,7 +42,6 @@ use Psr\Log\LogLevel;
 class GLPITestCase extends atoum
 {
     private $int;
-    private $str;
     protected $has_failed = false;
 
     /**
@@ -60,13 +59,16 @@ class GLPITestCase extends atoum
        // By default, no session, not connected
         $this->resetSession();
 
+        // By default, there shouldn't be any pictures in the test files
+        $this->resetPictures();
+
        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
         // Init log handlers
         global $PHPLOGGER, $SQLLOGGER;
-        /** @var Monolog\Logger $PHPLOGGER */
+        /** @var \Monolog\Logger $PHPLOGGER */
         $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
         $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
@@ -92,11 +94,11 @@ class GLPITestCase extends atoum
             foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
                 $this->array($log_handler->getRecords());
                 $clean_logs = array_map(
-                    static function (array $entry): array {
+                    static function (\Monolog\LogRecord $entry): array {
                         return [
-                            'channel' => $entry['channel'],
-                            'level'   => $entry['level_name'],
-                            'message' => $entry['message'],
+                            'channel' => $entry->channel,
+                            'level'   => $entry->level->name,
+                            'message' => $entry->message,
                         ];
                     },
                     $log_handler->getRecords()
@@ -110,6 +112,32 @@ class GLPITestCase extends atoum
                     )
                 );
             }
+        }
+    }
+
+    protected function resetPictures()
+    {
+        // Delete contents of test files/_pictures
+        $dir = GLPI_PICTURE_DIR;
+        if (!str_contains($dir, '/tests/files/_pictures')) {
+            throw new \RuntimeException('Invalid picture dir: ' . $dir);
+        }
+        // Delete nested folders and files in dir
+        $fn_delete = function ($dir, $parent) use (&$fn_delete) {
+            $files = glob($dir . '/*') ?? [];
+            foreach ($files as $file) {
+                if (is_dir($file)) {
+                    $fn_delete($file, $parent);
+                } else {
+                    unlink($file);
+                }
+            }
+            if ($dir !== $parent) {
+                rmdir($dir);
+            }
+        };
+        if (file_exists($dir) && is_dir($dir)) {
+            $fn_delete($dir, $dir);
         }
     }
 
@@ -128,6 +156,26 @@ class GLPITestCase extends atoum
         $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
+    }
+
+    /**
+     * Call a private constructor, and get the created instance.
+     *
+     * @param string    $classname  Class to instanciate
+     * @param mixed     $arg        Constructor arguments
+     *
+     * @return mixed
+     */
+    protected function callPrivateConstructor($classname, $args)
+    {
+        $class = new ReflectionClass($classname);
+        $instance = $class->newInstanceWithoutConstructor();
+
+        $constructor = $class->getConstructor();
+        $constructor->setAccessible(true);
+        $constructor->invokeArgs($instance, $args);
+
+        return $instance;
     }
 
     protected function resetSession()
@@ -229,7 +277,10 @@ class GLPITestCase extends atoum
 
         $matching = null;
         foreach ($records as $record) {
-            if ($record['level'] === Logger::toMonologLevel($level) && strpos($record['message'], $message) !== false) {
+            if (
+                Level::fromValue($record['level']) === Level::fromName($level)
+                && strpos($record['message'], $message) !== false
+            ) {
                 $matching = $record;
                 break;
             }
@@ -283,7 +334,10 @@ class GLPITestCase extends atoum
 
         $matching = null;
         foreach ($handler->getRecords() as $record) {
-            if ($record['level'] === Logger::toMonologLevel($level) && preg_match($pattern, $record['message']) === 1) {
+            if (
+                Level::fromValue($record['level']) === Level::fromName($level)
+                && preg_match($pattern, $record['message']) === 1
+            ) {
                 $matching = $record;
                 break;
             }
@@ -299,10 +353,13 @@ class GLPITestCase extends atoum
      */
     protected function getUniqueString()
     {
-        if (is_null($this->str)) {
-            return $this->str = uniqid('str');
-        }
-        return $this->str .= 'x';
+        return substr(
+            str_shuffle(
+                str_repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 5)
+            ),
+            0,
+            16
+        );
     }
 
     /**

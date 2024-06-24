@@ -1,0 +1,236 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var form                   Glpi\Form #}
+{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
+{# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question               Glpi\Form\Question|null #}
+{# @var section                Glpi\Form\Section|null #}
+{# @var can_update             bool #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set base_field_options = {
+    'is_horizontal': false,
+    'full_width'   : true,
+    'no_label'     : true,
+} %}
+
+<div
+    class="mb-3"
+    data-glpi-form-editor-block
+    data-glpi-form-editor-question
+>
+    <section
+        data-glpi-form-editor-on-click="set-active"
+        data-glpi-form-editor-question-details
+        class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        aria-label="{{ __("Question details") }}"
+    >
+        <div
+            class="card-status-start bg-primary"
+            data-glpi-form-editor-active-question-status-indicator
+        ></div>
+        <div class="card-body">
+            <div class="d-flex">
+                <i
+                    class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                    data-glpi-form-editor-question-handle
+                    draggable="true"
+                ></i>
+            </div>
+            {# Display question's title #}
+            <div class="d-flex mt-n1 align-items-center">
+                <input
+                    title="{{ __("Question name") }}"
+                    class="form-control content-editable-h2 mb-0"
+                    type="text"
+                    name="name"
+                    value="{{ question is not null ? question.fields.name : '' }}"
+                    placeholder="{{ __("New question") }}"
+                    data-glpi-form-editor-dynamic-input
+                    data-glpi-form-editor-on-input="compute-dynamic-input"
+                    data-glpi-form-editor-question-details-name
+                />
+                <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+                {# Duplicate question #}
+                <i
+                    class="ti ti-copy ms-auto cursor-pointer"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ __("Duplicate question") }}"
+                    data-glpi-form-editor-on-click="duplicate-question"
+                    data-glpi-form-editor-question-extra-details
+                ></i>
+            </div>
+
+            {# Render the specific question type #}
+            <div
+                class="mt-3"
+                data-glpi-form-editor-question-type-specific
+            >
+                {{ question_type.renderAdministrationTemplate(question)|raw }}
+            </div>
+
+            {# Display common fields #}
+            <div
+                class="content-editable-tinymce"
+                data-glpi-form-editor-question-description
+                {# Mark as secondary if empty #}
+                {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
+            >
+                {{ fields.textareaField(
+                    'description',
+                    question is not null ? question.fields.description : '',
+                    __('Description'),
+                    base_field_options|merge({
+                        'placeholder': __('Add a description...'),
+                        'aria_label': __("Question description"),
+                        'enable_richtext': true,
+                        'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                        'editor_height': "0",
+                        'rows' : 1,
+                        'toolbar_location': 'bottom',
+                        'init': question is not null ? true : false,
+                        'mb': 'mb-0',
+                })
+                ) }}
+            </div>
+
+            <div
+                class="d-flex align-items-center mt-2"
+                data-glpi-form-editor-question-extra-details
+            >
+                <select
+                    {# Note: _type_category is not saved by the backend as we can guess it from the type itself #}
+                    name="_type_category"
+                    class="form-select form-select-sm me-2"
+                    aria-label="{{ __('Question type') }}"
+                    style="width: auto;"
+                    data-glpi-form-editor-on-change="change-question-type-category"
+                >
+
+                    {% for category in question_types_manager.getCategories() %}
+                        {# TODO: add icon, use select2 ? #}
+                        <option
+                            value="{{ category.value }}"
+                            {{ category.value == question_type.getCategory().value ? 'selected' : '' }}
+                        >
+                            {{ category.getLabel() }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
+                <select
+                    name="type"
+                    class="form-select form-select-sm {{ types|length == 1 ? 'd-none' : '' }}"
+                    aria-label="{{ __('Question sub type') }}"
+                    style="width: auto;"
+                    data-glpi-form-editor-on-change="change-question-type"
+                    data-glpi-form-editor-question-type-selector
+                >
+                    {% for possible_question_type in types %}
+                        {# TODO: add icon, use select2 ? #}
+                        <option
+                            value="{{ get_class(possible_question_type) }}"
+                            {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                        >
+                            {{ possible_question_type.getName() }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                {# Render the specific question options #}
+                <div class="ms-2" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
+                    {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
+                </div>
+
+                <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
+                    <input type="hidden" value="0" name="is_mandatory">
+                    <input
+                        class="form-check-input"
+                        name="is_mandatory"
+                        type="checkbox"
+                        value="1"
+                        {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
+                        data-glpi-form-editor-on-change="toggle-mandatory-question"
+                    >
+                    <span class="form-check-label">{{ __("Mandatory") }}</span>
+                </label>
+
+                <button
+                    class="btn btn-ghost-danger px-2"
+                    type="button"
+                    data-glpi-form-editor-on-click="delete-question"
+                >
+                    <i class="ti ti-trash me-2"></i>
+                    {{ __("Delete") }}
+                </button>
+            </div>
+        </div>
+
+        {# Common hidden data #}
+        <input
+            type="hidden"
+            name="_use_uuid"
+            value="{{ question is not null ? 0 : 1 }}"
+        />
+        <input
+            type="hidden"
+            name="id"
+            value="{{ question is not null ? question.fields.id : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="_use_uuid_for_sections_id"
+            value="{{ section is not null ? 0 : 1 }}"
+        />
+        <input
+            type="hidden"
+            name="forms_sections_id"
+            value="{{ section is not null ? section.fields.id : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="rank"
+            value="{{ question is not null ? question.fields.rank : 0 }}"
+        />
+    </section>
+    <div data-glpi-form-editor-question-extra-details>
+        {{ include('pages/admin/form/form_toolbar.html.twig', {
+            'can_update': can_update,
+            'form': form,
+        }, with_context = false) }}
+    </div>
+</div>

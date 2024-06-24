@@ -1281,6 +1281,105 @@ DIFF,
             ]
         );
 
+        // MariaDB does not have a JSON type and instead uses an alias
+        foreach (['', ' NOT NULL'] as $null_property) {
+            $tables = [
+                [
+                    'name' => sprintf('table_%s', ++$table_increment),
+                    'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin{$null_property} CHECK (json_valid(`json`)),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                    'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `json` json{$null_property},
+  PRIMARY KEY (`id`)
+)
+SQL,
+                    'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` json{$null_property},
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                    'differences'    => null,
+                ],
+            ];
+
+            yield $convert_to_provider_entry(
+                $tables,
+                [
+                    'strict' => true,
+                    'allow_signed_keys' => true,
+                    'ignore_innodb_migration' => true,
+                    'ignore_timestamps_migration' => true,
+                    'ignore_utf8mb4_migration' => true,
+                    'ignore_dynamic_row_format_migration' => true,
+                    'ignore_unsigned_keys_migration' => true
+                ]
+            );
+        }
+
+        $tables = [
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` longtext CHARACTER SET utf8 COLLATE utf8_bin NOT NULL CHECK (json_valid(`json`)),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `json` json NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` json,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Expected database schema
++++ Current database schema
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `json` json NOT NULL,
++  `json` json,
+   PRIMARY KEY (`id`)
+ )
+
+DIFF,
+                ],
+            ],
+        ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            [
+                'strict' => true,
+                'allow_signed_keys' => true,
+                'ignore_innodb_migration' => true,
+                'ignore_timestamps_migration' => true,
+                'ignore_utf8mb4_migration' => true,
+                'ignore_dynamic_row_format_migration' => true,
+                'ignore_unsigned_keys_migration' => true
+            ]
+        );
+
         // Always ignore key length when value is `250`,
         // but detect differences when value is not `250`.
         yield $convert_to_provider_entry(
@@ -1762,8 +1861,7 @@ SQL
             '10.0.1',
             '10.0.2',
             '10.0.3',
-            '10.1.0-dev',
-            '10.1.0',
+            '11.0.0-dev',
             '11.0.0-beta1',
             '11.0.0-rc2',
             '11.0.0',
@@ -1952,8 +2050,7 @@ SQL
             '10.0.1',
             '10.0.2',
             '10.0.3',
-            '10.1.0-dev',
-            '10.1.0',
+            '11.0.0-dev',
             '11.0.0-beta1',
             '11.0.0-rc2',
             '11.0.0',

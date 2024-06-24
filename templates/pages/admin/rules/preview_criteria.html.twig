@@ -1,0 +1,78 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form method="post" action="{{ target }}">
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="card-title">
+                {{ _n('Criterion', 'Criteria', get_plural_number()) }}
+            </div>
+        </div>
+        <div class="card-body d-flex flex-wrap">
+            {% set type_match = item.fields['match'] == constant('Rule::AND_MATCHING') ? __('AND') : __('OR') %}
+            {% for criterion in criterias %}
+                {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+                    no_label: true,
+                    field_class: 'col-2 align-self-center text-end pe-5',
+                    input_class: 'col-12',
+                    mb: 'mb-2'
+                }) }}
+                {% set field %}
+                    {% do call([item, 'displayCriteriaSelectPattern'], [
+                        criterion.fields['criteria'],
+                        criterion.fields['criteria'],
+                        criterion.fields['condition'],
+                        _post[criterion.fields['criteria']]|default(''),
+                        true
+                    ]) %}
+                {% endset %}
+                {{ fields.htmlField('', field, criteria_names[criterion.fields['criteria']], {
+                    field_class: 'col-10',
+                    label_class: 'col-5',
+                    input_class: 'col-7'
+                }) }}
+            {% endfor %}
+            {% do call([item, 'showSpecificCriteriasForPreview'], [_post]) %}
+        </div>
+        <div class="card-footer d-flex flex-row-reverse">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="{{ rules_id_field }}" value="{{ rules_id }}"/>
+            <input type="hidden" name="sub_type" value="{{ item.getType() }}"/>
+            <button type="submit" name="test_rule" class="btn btn-primary">
+                {{ _x('button', 'Test') }}
+            </button>
+        </div>
+    </div>
+</form>

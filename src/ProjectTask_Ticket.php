@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * ProjectTask_Ticket Class
@@ -52,66 +52,56 @@ class ProjectTask_Ticket extends CommonDBRelation
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
 
-
-
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'ProjectTask':
+            switch ($item::class) {
+                case ProjectTask::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
-                case 'Ticket':
+                case Ticket::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'ProjectTask':
+        switch ($item::class) {
+            case ProjectTask::class:
                 self::showForProjectTask($item);
                 break;
-
-            case 'Ticket':
+            case Ticket::class:
                 self::showForTicket($item);
                 break;
         }
         return true;
     }
 
-
     /**
      * Get total duration of tickets linked to a project task
      *
-     * @param $projecttasks_id    integer    $projecttasks_id ID of the project task
+     * @param integer $projecttasks_id ID of the project task
      *
      * @return integer total actiontime
      **/
@@ -121,7 +111,12 @@ class ProjectTask_Ticket extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT'       => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: 'glpi_tickets.actiontime',
+                    alias: 'duration'
+                )
+            ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
                 'glpi_tickets' => [
@@ -134,17 +129,13 @@ class ProjectTask_Ticket extends CommonDBRelation
             'WHERE'        => ['projecttasks_id' => $projecttasks_id]
         ]);
 
-        if ($row = $iterator->current()) {
-            return $row['duration'];
-        }
-        return 0;
+        return count($iterator) ? $iterator->current()['duration'] : 0;
     }
-
 
     /**
      * Show tickets for a projecttask
      *
-     * @param $projecttask ProjectTask object
+     * @param ProjectTask $projecttask object
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
@@ -157,7 +148,6 @@ class ProjectTask_Ticket extends CommonDBRelation
         $rand    = mt_rand();
 
         $iterator = self::getListForItem($projecttask);
-        $numrows = count($iterator);
 
         $tickets = [];
         $used    = [];
@@ -192,59 +182,35 @@ class ProjectTask_Ticket extends CommonDBRelation
             ]);
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                'container'        => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
+        [$columns, $formatters] = array_values(Ticket::getCommonDatatableColumns());
+        $entries = Ticket::getDatatableEntries(array_map(static function ($t) {
+            $t['itemtype'] = Ticket::class;
+            $t['item_id'] = $t['id'];
+            return $t;
+        }, $tickets));
 
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr><th colspan='12'>" . Ticket::getTypeName($numrows) . "</th>";
-        echo "</tr>";
-        if ($numrows) {
-            Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand);
-            Session::initNavigateListItems(
-                'Ticket',
-                //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(
-                                             __('%1$s = %2$s'),
-                                             ProjectTask::getTypeName(1),
-                                             $projecttask->fields["name"]
-                                         )
-            );
-
-            $i = 0;
-            foreach ($tickets as $data) {
-                Session::addToNavigateListItems('Ticket', $data["id"]);
-                Ticket::showShort(
-                    $data['id'],
-                    [
-                        'row_num'                => $i,
-                        'type_for_massiveaction' => __CLASS__,
-                        'id_for_massiveaction'   => $data['linkid']
-                    ]
-                );
-                 $i++;
-            }
-        }
-        echo "</table>";
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => $formatters,
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand,
+            ]
+        ]);
     }
-
 
     /**
      * Show projecttasks for a ticket
      *
-     * @param $ticket Ticket object
+     * @param Ticket $ticket object
      **/
     public static function showForTicket(Ticket $ticket)
     {
@@ -260,27 +226,22 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
 
         $canedit = $ticket->canEdit($ID);
-        $rand    = mt_rand();
+        $rand = mt_rand();
 
         $iterator = self::getListForItem($ticket);
-        $numrows = count($iterator);
 
-        $pjtasks = [];
         $used    = [];
         foreach ($iterator as $data) {
-            $pjtasks[$data['id']] = $data;
             $used[$data['id']]    = $data['id'];
         }
 
         if (
             $canedit
-            && !in_array($ticket->fields['status'], array_merge(
+            && !in_array((int)$ticket->fields['status'], array_merge(
                 $ticket->getClosedStatusArray(),
                 $ticket->getSolvedStatusArray()
-            ))
+            ), true)
         ) {
-            $rand = mt_rand();
-
             $finished_states_it = $DB->request(
                 [
                     'SELECT' => ['id'],
@@ -370,183 +331,151 @@ class ProjectTask_Ticket extends CommonDBRelation
             ]);
         }
 
-        echo "<div class='spaced'>";
+        $columns = [
+            'projectname'      => Project::getTypeName(Session::getPluralNumber()),
+            'name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
+            'tname'            => _n('Type', 'Types', 1),
+            'sname'            => __('Status'),
+            'percent_done'     => __('Percent done'),
+            'plan_start_date'  => __('Planned start date'),
+            'plan_end_date'    => __('Planned end date'),
+            'planned_duration' => __('Planned duration'),
+            '_effect_duration' => __('Effective duration'),
+            'fname'            => __('Father'),
+        ];
 
-        if ($numrows) {
-            $columns = ['projectname'      => Project::getTypeName(Session::getPluralNumber()),
-                'name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
-                'tname'            => _n('Type', 'Types', 1),
-                'sname'            => __('Status'),
-                'percent_done'     => __('Percent done'),
-                'plan_start_date'  => __('Planned start date'),
-                'plan_end_date'    => __('Planned end date'),
-                'planned_duration' => __('Planned duration'),
-                '_effect_duration' => __('Effective duration'),
-                'fname'            => __('Father'),
-            ];
+        if (isset($_GET["order"]) && ($_GET["order"] === "DESC")) {
+            $order = "DESC";
+        } else {
+            $order = "ASC";
+        }
 
-            if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
-                $order = "DESC";
-            } else {
-                $order = "ASC";
-            }
+        if (empty($_GET["sort"])) {
+            $_GET["sort"] = "plan_start_date";
+        }
 
-            if (!isset($_GET["sort"]) || empty($_GET["sort"])) {
-                $_GET["sort"] = "plan_start_date";
-            }
-
-            if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-                $sort = $_GET["sort"];
-            } else {
-                $sort = ["plan_start_date $order", 'name'];
-            }
-            $iterator = $DB->request([
-                'SELECT'    => [
-                    'glpi_projecttasks.*',
-                    'glpi_projecttasktypes.name AS tname',
-                    'glpi_projectstates.name AS sname',
-                    'glpi_projectstates.color',
-                    'father.name AS fname',
-                    'father.id AS fID',
-                    'glpi_projects.name AS projectname',
-                    'glpi_projects.content AS projectcontent'
-                ],
-                'FROM'      => 'glpi_projecttasks',
-                'LEFT JOIN' => [
-                    'glpi_projecttasktypes' => [
-                        'ON' => [
-                            'glpi_projecttasktypes' => 'id',
-                            'glpi_projecttasks'     => 'projecttasktypes_id'
-                        ]
-                    ],
-                    'glpi_projectstates'    => [
-                        'ON' => [
-                            'glpi_projectstates' => 'id',
-                            'glpi_projecttasks'  => 'projectstates_id'
-                        ]
-                    ],
-                    'glpi_projecttasks AS father' => [
-                        'ON' => [
-                            'father'             => 'id',
-                            'glpi_projecttasks'  => 'projecttasks_id'
-                        ]
-                    ],
-                    'glpi_projecttasks_tickets'   => [
-                        'ON' => [
-                            'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                            'glpi_projecttasks'           => 'id'
-                        ]
-                    ],
-                    'glpi_projects'               => [
-                        'ON' => [
-                            'glpi_projecttasks'  => 'projects_id',
-                            'glpi_projects'      => 'id'
-                        ]
+        if (!empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
+            $sort = $_GET["sort"];
+        } else {
+            $sort = ["plan_start_date $order", 'name'];
+        }
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_projecttasks.*',
+                'glpi_projecttasktypes.name AS tname',
+                'glpi_projectstates.name AS sname',
+                'glpi_projectstates.color',
+                'father.name AS fname',
+                'father.id AS fID',
+                'glpi_projects.name AS projectname',
+                'glpi_projects.content AS projectcontent',
+                'glpi_projecttasks_tickets.id AS linkid'
+            ],
+            'FROM'      => 'glpi_projecttasks',
+            'LEFT JOIN' => [
+                'glpi_projecttasktypes' => [
+                    'ON' => [
+                        'glpi_projecttasktypes' => 'id',
+                        'glpi_projecttasks'     => 'projecttasktypes_id'
                     ]
                 ],
-                'WHERE'     => [
-                    'glpi_projecttasks_tickets.tickets_id' => $ID
+                'glpi_projectstates'    => [
+                    'ON' => [
+                        'glpi_projectstates' => 'id',
+                        'glpi_projecttasks'  => 'projectstates_id'
+                    ]
                 ],
-                'ORDERBY'   => [
-                    "$sort $order"
+                'glpi_projecttasks AS father' => [
+                    'ON' => [
+                        'father'             => 'id',
+                        'glpi_projecttasks'  => 'projecttasks_id'
+                    ]
+                ],
+                'glpi_projecttasks_tickets'   => [
+                    'ON' => [
+                        'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                        'glpi_projecttasks'           => 'id'
+                    ]
+                ],
+                'glpi_projects'               => [
+                    'ON' => [
+                        'glpi_projecttasks'  => 'projects_id',
+                        'glpi_projects'      => 'id'
+                    ]
                 ]
-            ]);
+            ],
+            'WHERE'     => [
+                'glpi_projecttasks_tickets.tickets_id' => $ID
+            ],
+            'ORDERBY'   => [
+                "$sort $order"
+            ]
+        ]);
 
-            Session::initNavigateListItems(
-                'ProjectTask',
-                //TRANS : %1$s is the itemtype name,
-                                        //       %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $ticket::getTypeName(1),
-                                            $ticket->getName()
-                                        )
-            );
+        $entries = [];
+        foreach ($iterator as $data) {
+            $project_name = htmlspecialchars($data['projectname'] . (empty($data['projectname']) ? "({$data['projects_id']})" : ''));
+            $projectlink = "<a href='" . htmlspecialchars(Project::getFormURLWithID($data['projects_id'])) . "'>$project_name</a>";
+            $task_name = htmlspecialchars($data['name'] . (empty($data['name']) ? "({$data['id']})" : ''));
+            $tasklink = "<a href='" . htmlspecialchars(ProjectTask::getFormURLWithID($data['id'])) . "'>$task_name</a>";
 
-            if (count($iterator)) {
-                echo "<table class='tab_cadre_fixehov'>";
-                echo "<tr><th colspan='10'>" . ProjectTask::getTypeName($numrows) . "</th>";
-                echo "</tr>";
-
-                $header = '<tr>';
-                foreach ($columns as $key => $val) {
-                  // Non order column
-                    if ($key[0] == '_') {
-                        $header .= "<th>$val</th>";
-                    } else {
-                        $header .= "<th" . ($sort == "$key" ? " class='order_$order'" : '') . ">" .
-                              "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                                 (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
-                    }
-                }
-                $header .= "</tr>\n";
-                echo $header;
-
-                foreach ($iterator as $data) {
-                    Session::addToNavigateListItems('ProjectTask', $data['id']);
-                    $rand = mt_rand();
-                    echo "<tr class='tab_bg_2'>";
-                    echo "<td>";
-                    $link = "<a id='Project" . $data["projects_id"] . $rand . "' href='" .
-                          Project::getFormURLWithID($data['projects_id']) . "'>" . $data['projectname'] .
-                          (empty($data['projectname']) ? "(" . $data['projects_id'] . ")" : "") . "</a>";
-                    echo sprintf(
-                        __('%1$s %2$s'),
-                        $link,
-                        Html::showToolTip(
-                            $data['projectcontent'],
-                            ['display' => false,
-                                'applyto' => "Project" . $data["projects_id"] . $rand
-                            ]
-                        )
-                    );
-                    echo "</td>";
-                    echo "<td>";
-                    $link = "<a id='ProjectTask" . $data["id"] . $rand . "' href='" .
-                          ProjectTask::getFormURLWithID($data['id']) . "'>" . $data['name'] .
-                          (empty($data['name']) ? "(" . $data['id'] . ")" : "") . "</a>";
-                    echo sprintf(
-                        __('%1$s %2$s'),
-                        $link,
-                        Html::showToolTip(
-                            RichText::getEnhancedHtml($data['content']),
-                            ['display' => false,
-                                'applyto' => "ProjectTask" . $data["id"] . $rand
-                            ]
-                        )
-                    );
-                    echo "</td>";
-                    echo "<td>" . $data['tname'] . "</td>";
-                    echo "<td";
-                    echo " style=\"background-color:" . $data['color'] . "\"";
-                    echo ">" . $data['sname'] . "</td>";
-                    echo "<td>";
-                    echo Dropdown::getValueWithUnit($data["percent_done"], "%");
-                    echo "</td>";
-                    echo "<td>" . Html::convDateTime($data['plan_start_date']) . "</td>";
-                    echo "<td>" . Html::convDateTime($data['plan_end_date']) . "</td>";
-                    echo "<td>" . Html::timestampToString($data['planned_duration'], false) . "</td>";
-                    echo "<td>" . Html::timestampToString(
-                        ProjectTask::getTotalEffectiveDuration($data['id']),
-                        false
-                    ) . "</td>";
-                    echo "<td>";
-                    if ($data['projecttasks_id'] > 0) {
-                        $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                        echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
-                        ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
-                        (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
-                    }
-                    echo "</td></tr>";
-                }
-                echo $header;
-                echo "</table>\n";
-            } else {
-                echo "<table class='tab_cadre_fixe'>";
-                echo "<tr><th>" . __('No item found') . "</th></tr>";
-                echo "</table>\n";
+            $father = '';
+            if ($data['projecttasks_id'] > 0) {
+                $father_name = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+                $father = sprintf(
+                    '<a href="%s">%s</a>',
+                    ProjectTask::getFormURLWithID($data['projecttasks_id']),
+                    $father_name ?: "(" . $data['projecttasks_id'] . ")"
+                );
             }
-            echo "</div>";
+
+            $status = $data['sname'];
+
+            if (!empty($status)) {
+                $fg_color = Toolbox::getFgColor($data['color']);
+                $status_badge_style = "background-color:{$data['color']}; color:{$fg_color};";
+                $status = '<span class="badge" style="' . $status_badge_style . '">' . htmlspecialchars($data['sname']) . '</span>';
+            }
+
+            $entries[] = [
+                'itemtype' => self::class,
+                'id'       => $data['linkid'],
+                'projectname' => $projectlink,
+                'name' => $tasklink,
+                'tname' => $data['tname'],
+                'sname' => $status,
+                'percent_done' => Dropdown::getValueWithUnit($data["percent_done"], "%"),
+                'plan_start_date' => $data['plan_start_date'],
+                'plan_end_date' => $data['plan_end_date'],
+                'planned_duration' => $data['planned_duration'],
+                '_effect_duration' => ProjectTask::getTotalEffectiveDuration($data['id']),
+                'fname' => $father
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'projectname' => 'raw_html',
+                'name' => 'raw_html',
+                'sname' => 'raw_html',
+                'plan_start_date' => 'datetime',
+                'plan_end_date' => 'datetime',
+                'planned_duration' => 'duration',
+                '_effect_duration' => 'duration',
+                'fname' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand,
+            ]
+        ]);
     }
 }

@@ -42,7 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Line extends CommonDBTM
 {
-   // From CommonDBTM
+    use Glpi\Features\State;
+
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname                   = 'line';
@@ -72,6 +74,7 @@ class Line extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
@@ -145,11 +148,11 @@ class Line extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_line' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -216,9 +219,27 @@ class Line extends CommonDBTM
         return $tab;
     }
 
-
     public static function getIcon()
     {
         return "ti ti-phone-calling";
+    }
+
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+
+        $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
+            $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+                _sx('button', 'Add a line');
+            $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a line');
+        }
+        if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+            $actions[$action_prefix . 'add_item']    = _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = _sx('button', 'Remove an item');
+        }
     }
 }

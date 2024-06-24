@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
@@ -40,4 +45,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-echo Html::fuzzySearch($_REQUEST['action']);
+try {
+    echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);
+} catch (JsonException $e) {
+    die(500);
+}

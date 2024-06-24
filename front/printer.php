@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("printer", READ);
+Session::checkRightsOr(Printer::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 Html::header(Printer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "printer");
 

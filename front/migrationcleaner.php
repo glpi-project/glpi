@@ -46,43 +46,39 @@ global $CFG_GLPI, $DB;
 
 include('../inc/includes.php');
 
-Session::checkSeveralRightsOr(["networking" => UPDATE,
+Session::checkSeveralRightsOr([
+    "networking" => UPDATE,
     "internet"   => UPDATE
 ]);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {
-    Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
+    Session::addMessageAfterRedirect(__s('You don\'t need the "migration cleaner" tool anymore...'));
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
 
 Html::header(__('Migration cleaner'), $_SERVER['PHP_SELF'], "tools", "migration");
 
-echo "<div class='spaced' id='tabsbody'>";
-echo "<table class='tab_cadre_fixe'>";
-
-echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
-
-if (
-    Session::haveRight('internet', UPDATE)
-    // Check access to all entities
-    && Session::canViewAllEntities()
-) {
-    echo "<tr class='tab_bg_1'><td class='center'>";
-    Html::showSimpleForm(
-        IPNetwork::getFormURL(),
-        'reinit_network',
-        __('Reinit the network topology')
-    );
-    echo "</td></tr>";
-}
-if (Session::haveRight('networking', UPDATE)) {
-    echo "<tr class='tab_bg_1'><td class='center'>";
-    echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/networkportmigration.php'>" .
-         __('Clean the network port migration errors') . "</a>";
-    echo "</td></tr>";
-}
-echo "</table>";
-echo "</div>";
-
+$twig_params = [
+    'title' => __('"Migration cleaner" tool'),
+    'reinit_label' => __('Reinit the network topology'),
+    'clean_label' => __('Clean the network port migration errors'),
+];
+// language=Twig
+echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    <div class="mb-3 text-center">
+        <h1>{{ title }}</h1>
+        <div class="d-flex justify-content-center">
+            {% if can_view_all_entities() and has_profile_right('internet', constant('UPDATE')) %}
+                <form method="post" action="{{ 'IPNetwork'|itemtype_form_path }}" data-submit-once>
+                    <button type="submit" name="reinit_network" class="btn btn-primary mx-1">{{ reinit_label }}</button>
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                </form>
+            {% endif %}
+            {% if has_profile_right('networking', constant('UPDATE')) %}
+                <a href="{{ path('front/networkportmigration.php') }}" role="button" class="btn btn-primary mx-1">{{ clean_label }}</a>
+            {% endif %}
+        </div>
+    </div>
+TWIG, $twig_params);
 
 Html::footer();

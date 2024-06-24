@@ -38,8 +38,12 @@ use Glpi\Application\ErrorHandler;
 /**
  * @var array $CFG_GLPI
  * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+ * @var string|null $SECURITY_STRATEGY
+ * @var bool|null $dont_check_maintenance_mode
  */
-global $CFG_GLPI, $TRANSLATE;
+global $CFG_GLPI, $TRANSLATE,
+    $SECURITY_STRATEGY,
+    $dont_check_maintenance_mode;
 
 $SECURITY_STRATEGY = 'no_check'; // locales must be accessible also on public pages
 
@@ -52,13 +56,14 @@ session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
-$is_cacheable = !isset($_GET['debug']);
+$is_cacheable = GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT; // do not use browser cache on development env
 if (!Update::isDbUpToDate()) {
    // Make sure to not cache if in the middle of a GLPI update
     $is_cacheable = false;
 }
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies,
+    // unless when we are in the middle of a GLPI update.
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');

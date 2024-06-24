@@ -39,6 +39,11 @@
 
 use Glpi\Http\Response;
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');
@@ -110,6 +115,16 @@ if ($template->fields['taskcategories_id']) {
     }
 }
 
+if ($template->fields['pendingreasons_id'] ?? 0 > 0) {
+    $pendingReason = new PendingReason();
+    if ($pendingReason->getFromDB($template->fields['pendingreasons_id'])) {
+        $template->fields = array_merge($template->fields, [
+            'pendingreasons_name'         => $pendingReason->fields['name'],
+            'followup_frequency'          => $pendingReason->fields['followup_frequency'],
+            'followups_before_resolution' => $pendingReason->fields['followups_before_resolution'],
+        ]);
+    }
+}
 
 // Return json response with the template fields
 echo json_encode($template->fields);

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Ticket_Contract extends CommonDBRelation
 {
     public static $itemtype_1 = 'Ticket';
@@ -52,16 +54,16 @@ class Ticket_Contract extends CommonDBRelation
     {
         if (Contract::canView()) {
             $nb = 0;
-            if (get_class($item) == Ticket::class) {
+            if ($item::class === Ticket::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
-                return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
-            } else if (get_class($item) == Contract::class) {
+                return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+            } else if ($item::class === Contract::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
-                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             } else {
                 return '';
             }
@@ -76,19 +78,25 @@ class Ticket_Contract extends CommonDBRelation
     ) {
         $rand = mt_rand();
 
+        $twig_params = [
+            'item' => $item,
+            'btn_label' => _x('button', 'Add'),
+        ];
         if ($item instanceof Ticket) {
-            $add_label = __('Add a contract');
             $item_a_fkey = self::$items_id_1;
             $linked_itemtype = self::$itemtype_2;
         } else if ($item instanceof Contract) {
-            $add_label = __('Add a ticket');
             $item_a_fkey = self::$items_id_2;
             $linked_itemtype = self::$itemtype_1;
         } else {
             return false;
         }
+        $twig_params['item_a_fkey'] = $item_a_fkey;
+        /** @var class-string<Ticket|Contract> $linked_itemtype */
+        $twig_params['linked_itemtype'] = $linked_itemtype;
 
         $ID = $item->getField('id');
+        $twig_params['id'] = $ID;
 
         if (!static::canView() || !$item->can($ID, READ)) {
             return false;
@@ -96,89 +104,110 @@ class Ticket_Contract extends CommonDBRelation
 
         $canedit = $item->canEdit($ID);
 
-        $linked_items = self::getListForItem($item);
-        $used    = [];
+        $linked_items = array_map(static function ($entry) use ($linked_itemtype, $ID) {
+            $entry['itemtype'] = $linked_itemtype;
+            $entry['item_id'] = $ID;
+            return $entry;
+        }, iterator_to_array(self::getListForItem($item), false));
+        $twig_params['used'] = [];
         $numrows = count($linked_items);
         foreach ($linked_items as $linked_item) {
-            $used[$linked_item['id']] = $linked_item['id'];
+            $twig_params['used'][$linked_item['id']] = $linked_item['id'];
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            $form_action = Toolbox::getItemTypeFormURL(__CLASS__);
-            echo "<form name='ticketcontract_item_form$rand' id='changeticket_form$rand' method='post' action='$form_action'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . $add_label . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='$item_a_fkey' value='$ID'>";
-            $linked_itemtype::dropdown([
-                'used'         => $used,
-                'displaywith'  => ['id'],
-                'entity'       => $item->fields['entities_id'],
-                'nochecklimit' => true,
-            ]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'Ticket_Contract'|itemtype_form_path }}">
+                        <div class="d-flex">
+                            <input type="hidden" name="{{ item_a_fkey }}" value="{{ id }}">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {{ fields.dropdownField(linked_itemtype, linked_itemtype|itemtype_foreign_key, 0, null, {
+                                used: used,
+                                displaywith: ['id'],
+                                entity: item.fields['entities_id'],
+                                nochecklimit: true
+                            }) }}
+                            {% set btn %}
+                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                            {% endset %}
+                            {{ fields.htmlField('', btn, null) }}
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = [
-                'num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                'container'        => 'mass' . __CLASS__ . $rand,
+        if ($linked_itemtype === Ticket::class) {
+            [$columns, $formatters] = array_values(Ticket::getCommonDatatableColumns(['ticket_stats' => true]));
+            $entries = Ticket::getDatatableEntries($linked_items, ['ticket_stats' => true]);
+        } else {
+            $columns = [
+                'name' => __('Name'),
+                'entity' => Entity::getTypeName(1),
+                'type' => _n('Type', 'Types', 1),
+                'num' => _x('phone', 'Number'),
+                'begin_date' => __('Start date'),
+                'end_date' => __('End date'),
+                'comment' => __('Comments'),
+            ];
+            $formatters = [
+                'name' => 'raw_html',
+                'begin_date' => 'date', // No formatter for end_date as Infocom::getWarrantyExpir() already returns a formatted date
+            ];
+
+            $entries = [];
+            $entity_cache = [];
+            $type_cache = [];
+            foreach ($linked_items as $data) {
+                $item = new $linked_itemtype();
+                if (!$item->getFromDB($data['id'])) {
+                    continue;
+                }
+                $entry = [
+                    'itemtype' => self::class,
+                    'id' => $data['id'],
+                    'name' => $item->getLink(),
+                    'num' => $item->fields['num'],
+                    'begin_date' => $item->fields['begin_date'],
+                    'comment' => $item->fields['comment'],
+                ];
+                if (!isset($entity_cache[$item->fields['entities_id']])) {
+                    $entity_cache[$item->fields['entities_id']] = Dropdown::getDropdownName(Entity::getTable(), $item->fields['entities_id']);
+                }
+                $entry['entity'] = $entity_cache[$item->fields['entities_id']];
+                if (!isset($type_cache[$item->fields['contracttypes_id']])) {
+                    $type_cache[$item->fields['contracttypes_id']] = Dropdown::getDropdownName(ContractType::getTable(), $item->fields['contracttypes_id']);
+                }
+                $entry['type'] = $type_cache[$item->fields['contracttypes_id']];
+                $entry['end_date'] = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
+                $entries[] = $entry;
+            }
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => $formatters,
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => [
                     'purge' => _x('button', 'Delete permanently'),
                 ],
-                'extraparams'      => [$item_a_fkey => $item->getID()],
-                'width'            => 1000,
-                'height'           => 500
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='12'>" . $linked_itemtype::getTypeName($numrows) . "</th>";
-        echo "</tr>";
-        if ($numrows) {
-            $header_params = ['ticket_stats' => true];
-            $linked_itemtype::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand, $header_params);
-            Session::initNavigateListItems(
-                $linked_itemtype,
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $item::getTypeName(1),
-                    $item->fields["name"]
-                )
-            );
+                'extraparams'      => [$item_a_fkey => $item->getID()]
+            ]
+        ]);
 
-            $i = 0;
-            foreach ($linked_items as $data) {
-                Session::addToNavigateListItems($linked_itemtype, $data["id"]);
-                $linked_itemtype::showShort($data['id'], [
-                    'followups'              => false,
-                    'row_num'                => $i,
-                    'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid'],
-                    'ticket_stats'           => true,
-                ]);
-                 $i++;
-            }
-            $linked_itemtype::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand, $header_params);
-        }
-        echo "</table>";
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
         return true;
     }
 }

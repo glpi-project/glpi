@@ -35,9 +35,10 @@
 
 /**
  * @var array $CFG_GLPI
- * @var array $_UPOST
+ * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI, $_UPOST;
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
 $SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
 
@@ -68,7 +69,7 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
 
 if (isset($_POST['_actors']) && is_string($_POST['_actors'])) {
     try {
-        $_POST['_actors'] = json_decode($_UPOST['_actors'], true, 512, JSON_THROW_ON_ERROR);
+        $_POST['_actors'] = json_decode($_POST['_actors'], true, 512, JSON_THROW_ON_ERROR);
     } catch (\JsonException $e) {
         $_POST['_actors'] = [];
     }
@@ -80,8 +81,7 @@ if (isset($_POST['add'])) {
         $track->getEmpty();
     }
     $_POST['check_delegatee'] = true;
-    if (isset($_UPOST['_actors'])) {
-        $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+    if (isset($_POST['_actors'])) {
        // with self-service, we only have observers
         unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
     }
@@ -91,13 +91,13 @@ if (isset($_POST['add'])) {
         }
         if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
             echo "<div class='center spaced'>" .
-                __('Your ticket has been registered, its treatment is in progress.');
+                __s('Your ticket has been registered, its treatment is in progress.');
             Html::displayBackLink();
             echo "</div>";
         } else {
             echo "<div class='center b spaced'>";
             echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt='" . __s('OK') . "'>";
-            Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
+            Session::addMessageAfterRedirect(__s('Thank you for using our automatic helpdesk system.'));
             Html::displayMessageAfterRedirect();
             echo "</div>";
         }

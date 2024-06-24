@@ -33,8 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+use Glpi\Application\View\TemplateRenderer;
+
+/**
+ * @var array $CFG_GLPI
+ * @var string|null $SECURITY_STRATEGY
+ */
+global $CFG_GLPI,
+    $SECURITY_STRATEGY;
 
 $SECURITY_STRATEGY = 'no_check';
 
@@ -47,6 +53,14 @@ if (
         ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
     )
 ) {
+    Session::addMessageAfterRedirect(
+        __s('Sending password forget notification is not enabled.'),
+        true,
+        ERROR
+    );
+    TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
+        'messages_only' => true,
+    ]);
     exit();
 }
 

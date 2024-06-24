@@ -44,20 +44,13 @@ class ChangeTask extends CommonITILTask
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('change', UPDATE)
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
     }
 
-
-    public static function canView()
-    {
-        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
-    }
-
-
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return Session::haveRight('change', UPDATE)
           || Session::haveRight(self::$rightname, parent::UPDATEALL);
@@ -81,7 +74,7 @@ class ChangeTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return $this->canReadITILItem();
     }
@@ -92,7 +85,7 @@ class ChangeTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -120,7 +113,7 @@ class ChangeTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (!$this->canReadITILItem()) {
@@ -144,7 +137,7 @@ class ChangeTask extends CommonITILTask
      *
      * @return boolean
      **/
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return $this->canUpdateItem();
     }

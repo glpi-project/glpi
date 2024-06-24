@@ -33,6 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var string|null $SECURITY_STRATEGY
+ * @var bool|null $skip_db_check
+ * @var bool|null $dont_check_maintenance_mode
+ */
+global $SECURITY_STRATEGY,
+    $skip_db_check, $dont_check_maintenance_mode;
+
 $SECURITY_STRATEGY = 'no_check'; // CSS must be accessible also on public pages
 
 if (!defined('GLPI_ROOT')) {
@@ -40,13 +48,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\Application\ErrorHandler;
+use Glpi\UI\ThemeManager;
 
 $_GET["donotcheckversion"]   = true;
 $dont_check_maintenance_mode = true;
 $skip_db_check               = true;
 
 //std cache, with DB connection
-include_once GLPI_ROOT . "/inc/db.function.php";
 include_once GLPI_ROOT . '/inc/config.php';
 
 // Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).
@@ -59,11 +67,25 @@ if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
 // Ensure warnings will not break CSS output.
 ErrorHandler::getInstance()->disableOutput();
 
+// If a custom theme is requested, we need to get the real path of the theme
+if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_theme']) {
+    $theme = ThemeManager::getInstance()->getTheme($_GET['file']);
+
+    if (!$theme) {
+        trigger_error(sprintf('Unable to find theme `%s`.', $_GET['file']), E_USER_WARNING);
+        $theme = ThemeManager::getInstance()->getTheme(ThemeManager::DEFAULT_THEME);
+    }
+
+    $_GET['file'] = $theme->getPath();
+}
+
 $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
 
-$is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
+$is_cacheable = !isset($_GET['nocache'])
+    && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT // do not use browser cache on development env
+;
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;

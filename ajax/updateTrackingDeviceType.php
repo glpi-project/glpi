@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -40,6 +45,4 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkRight("ticket", UPDATE);
-Item_Ticket::dropdownMyDevices($_POST["userID"], Session::getMatchingActiveEntities($_POST['entity_restrict']));
-
-Html::ajaxFooter();
+CommonItilObject_Item::dropdownMyDevices($_POST["userID"], Session::getMatchingActiveEntities($_POST['entity_restrict']));

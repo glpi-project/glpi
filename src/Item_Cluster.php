@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Item_Cluster extends CommonDBRelation
 {
     public static $itemtype_1 = 'Cluster';
@@ -55,7 +57,7 @@ class Item_Cluster extends CommonDBRelation
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
         }
-        return self::createTabEntry(_n('Item', 'Items', $nb));
+        return self::createTabEntry(_n('Item', 'Items', $nb), $nb, $item::getType(), 'ti ti-package');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -96,180 +98,91 @@ class Item_Cluster extends CommonDBRelation
         $canedit = $cluster->canEdit($ID);
 
         $items = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'clusters_id' => $ID
             ]
         ]);
 
-        Session::initNavigateListItems(
-            self::getType(),
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $cluster->getTypeName(1),
-                $cluster->getName()
-            )
-        );
-
         if ($cluster->canAddItem('itemtype')) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                self::getFormURL(),
-                '_add_fromitem',
-                __('Add new item to this cluster...'),
-                [
-                    'cluster'   => $ID,
-                    'position'  => 1
-                ]
-            );
-            echo "</div>";
+            (new self())->showForm(-1, [
+                'clusters_id' => $ID,
+                'params' => [
+                    'formfooter' => false
+                ],
+                'no_header'  => true,
+            ]);
         }
 
-        $items = iterator_to_array($items);
-
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
-                ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                $item = new $row['itemtype']();
-                $item->getFromDB($row['items_id']);
-                echo "<tr lass='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
-            }
+        $entries = [];
+        foreach ($items as $row) {
+            $item = new $row['itemtype']();
+            $item->getFromDB($row['items_id']);
+            $entries[] = [
+                'itemtype' => static::class,
+                'id'       => $row['id'],
+                'item'     => $item->getLink()
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'item' => _n('Item', 'Items', 1)
+            ],
+            'formatters' => [
+                'item' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+        /** @var \DBmysql $DB */
+        global $DB;
 
         echo "<div class='center'>";
 
         $this->initForm($ID, $options);
-        $this->showFormHeader();
 
-        $cluster = new Cluster();
-        $cluster->getFromDB($this->fields['clusters_id']);
-
-        $rand = mt_rand();
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_itemtype$rand'>" . __('Item type') . "</label></td>";
-        echo "<td>";
-        $types = $CFG_GLPI['cluster_types'];
-        $translated_types = [];
-        foreach ($types as $type) {
-            $translated_types[$type] = $type::getTypeName(1);
-        }
-        Dropdown::showFromArray(
-            'itemtype',
-            $translated_types,
-            [
-                'display_emptychoice'   => true,
-                'value'                 => $this->fields["itemtype"],
-                'rand'                  => $rand
-            ]
-        );
-
-       //get all used items
+        // get all used items
         $used = [];
         $iterator = $DB->request([
-            'FROM'   => $this->getTable()
+            'SELECT' => ['itemtype', 'items_id'],
+            'FROM'   => static::getTable()
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
         }
 
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand",
-            "items_id",
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
-            [
-                'idtable'   => '__VALUE__',
-                'name'      => 'items_id',
-                'value'     => $this->fields['items_id'],
-                'rand'      => $rand,
-                'used'      => $used
-            ]
-        );
+        $twig_params = [
+            'item' => $this,
+            'used' => $used,
+            'item_label' => _n('Item', 'Items', 1),
+        ] + $options;
 
-        echo "</td>";
-        echo "<td><label for='dropdown_items_id$rand'>" . _n('Item', 'Items', 1) . "</label></td>";
-        echo "<td id='items_id'>";
-        if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
-            $itemtype = $this->fields['itemtype'];
-            $itemtype = new $itemtype();
-            $itemtype::dropdown([
-                'name'   => "items_id",
-                'value'  => $this->fields['items_id'],
-                'rand'   => $rand
-            ]);
-        } else {
-            Dropdown::showFromArray(
-                'items_id',
-                [],
-                [
-                    'display_emptychoice'   => true,
-                    'rand'                  => $rand
-                ]
-            );
-        }
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_clusters_id$rand'>" . Cluster::getTypeName(1) . "</label></td>";
-        echo "<td>";
-        Cluster::dropdown(['value' => $this->fields["clusters_id"], 'rand' => $rand]);
-        echo "</td>";
-        echo "</tr>";
-
-        $this->showFormButtons($options);
-
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% extends 'generic_show_form.html.twig' %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% block form_fields %}
+                {{ fields.dropdownItemsFromItemtypes('itemtype', item_label, {
+                    itemtypes: config('cluster_types'),
+                    used: used,
+                }) }}
+                <input type="hidden" name="clusters_id" value="{{ item.fields['clusters_id'] }}"/>
+            {% endblock %}
+TWIG, $twig_params);
         return true;
     }
 
@@ -299,19 +212,19 @@ class Item_Cluster extends CommonDBRelation
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
         ) {
-            $error_detected[] = __('An item type is required');
+            $error_detected[] = __s('An item type is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
             || (isset($input['items_id']) && empty($input['items_id']))
         ) {
-            $error_detected[] = __('An item is required');
+            $error_detected[] = __s('An item is required');
         }
         if (
             ($this->isNewItem() && (!isset($input['clusters_id']) || empty($input['clusters_id'])))
             || (isset($input['clusters_id']) && empty($input['clusters_id']))
         ) {
-            $error_detected[] = __('A cluster is required');
+            $error_detected[] = __s('A cluster is required');
         }
 
         if (count($error_detected)) {

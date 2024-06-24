@@ -59,7 +59,7 @@ TPL;
         $this->string($template->getRenderedContent($change))
          ->isEqualTo(<<<HTML
 Itemtype: Change
-<a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id={$change->fields['id']}" title="test change">test change</a>
+<a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id&#61;{$change->fields['id']}" title="test change">test change</a>
 HTML
         );
 
@@ -71,7 +71,7 @@ HTML
         $this->string($template->getRenderedContent($problem))
          ->isEqualTo(<<<HTML
 Itemtype: Problem
-<a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id={$problem->fields['id']}" title="test problem">test problem</a>
+<a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id&#61;{$problem->fields['id']}" title="test problem">test problem</a>
 HTML
         );
 
@@ -83,7 +83,7 @@ HTML
         $this->string($template->getRenderedContent($ticket))
          ->isEqualTo(<<<HTML
 Itemtype: Ticket
-<a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id={$ticket->fields['id']}" title="test ticket">test ticket</a>
+<a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id&#61;{$ticket->fields['id']}" title="test ticket">test ticket</a>
 HTML
         );
     }
@@ -102,9 +102,9 @@ HTML
         ];
 
         yield [
-            'content'  => 'Unauthorized tag {% set var = 15 %}',
+            'content'  => 'Unauthorized tag {% do 1 + 2 %}',
             'is_valid' => false,
-            'error'    => 'Content: Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
+            'error'    => 'Content: Invalid twig template (Tag &quot;do&quot; is not allowed in &quot;template&quot; at line 1.)',
         ];
     }
 

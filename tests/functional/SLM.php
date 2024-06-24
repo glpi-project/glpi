@@ -47,20 +47,6 @@ use Ticket;
 
 class SLM extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
-
     /**
      * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
      * And Delete IT to check clean os sons objects
@@ -88,7 +74,7 @@ class SLM extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -124,7 +110,7 @@ class SLM extends DbTestCase
 
        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => __METHOD__,
             'execution_time' => -DAY_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -188,7 +174,7 @@ class SLM extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -200,7 +186,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -234,8 +220,8 @@ class SLM extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
@@ -248,13 +234,13 @@ class SLM extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => __METHOD__
         ]);
         $ticket->update([
             'id'   => $tickets_id_2,
-            'name' => $this->method
+            'name' => __METHOD__
         ]);
-        $ticket_input_2['name'] = $this->method;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
         $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
@@ -302,7 +288,7 @@ class SLM extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -338,7 +324,7 @@ class SLM extends DbTestCase
 
        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => __METHOD__,
             'execution_time' => -MONTH_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -402,7 +388,7 @@ class SLM extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -414,7 +400,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -448,8 +434,8 @@ class SLM extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
@@ -462,7 +448,7 @@ class SLM extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => __METHOD__
         ]);
        //SLA/OLA  TTR/TTO not already set
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
@@ -472,9 +458,9 @@ class SLM extends DbTestCase
 
         $ticket->update([
             'id'   => $tickets_id_2,
-            'name' => $this->method
+            'name' => __METHOD__
         ]);
-        $ticket_input_2['name'] = $this->method;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
         $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
@@ -1425,7 +1411,7 @@ class SLM extends DbTestCase
                 }
 
                 // First OLA is added on creation
-                $builder = new RuleBuilder('Add first LA on creation');
+                $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONADD)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1434,7 +1420,7 @@ class SLM extends DbTestCase
                 $this->createRule($builder);
 
                 // First OLA is added on update
-                $builder = new RuleBuilder('Add second LA on update');
+                $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONUPDATE)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1639,7 +1625,7 @@ class SLM extends DbTestCase
             ]);
 
             // First OLA is added on creation
-            $builder = new RuleBuilder('Add first LA on creation');
+            $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONADD)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1780,7 +1766,7 @@ class SLM extends DbTestCase
             ]);
 
             // OLA is added on update
-            $builder = new RuleBuilder('Add second LA on update');
+            $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONUPDATE)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)

@@ -36,8 +36,10 @@
 /**
  * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var bool|null $AJAX_INCLUDE
  */
-global $CFG_GLPI, $GLPI_CACHE;
+global $CFG_GLPI, $GLPI_CACHE,
+    $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 

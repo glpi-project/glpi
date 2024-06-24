@@ -1,0 +1,138 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{{ fields.largeTitle(__('Information about system installation and configuration'), 'ti ti-file-info') }}
+{{ fields.htmlField('', inputs.button('copy-sysinfo', __('Copy system information'), 'button', 1, {
+   icon: 'ti ti-copy',
+   additional_attributes: {
+      onclick: "copyTextToClipboard(tableToDetails('#sysinfo_accordion'));flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);"
+   }
+}), '', {
+   no_label: true
+}) }}
+
+{% macro sysinfo_section(label, content, raw = false) %}
+   {% set rand = random() %}
+   {% set cleaned_content = content|trim|u.wordwrap(128) %}
+   <div class="accordion-item">
+      <h2 class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sysinfo_section_{{ rand }}">{{ label }}</button>
+      </h2>
+      <div id="sysinfo_section_{{ rand }}" class="accordion-collapse collapse" aria-labelledby="sysinfo_header_{{ rand }}" data-bs-parent="#sysinfo_accordion">
+         <pre class="section-content">{{ raw ? cleaned_content|raw : cleaned_content|e }}</pre>
+      </div>
+   </div>
+{% endmacro %}
+
+{% set glpi_info %}
+GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
+Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
+Current language: {{ language }}
+{% endset %}
+
+{% set setup_init_keys = ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode', 'session.save_handler', 'upload_max_filesize', 'disable_functions'] %}
+{% set server_info %}
+Operating system: {{ call('php_uname') }}
+
+PHP: {{ call('phpversion') }} {{ call('php_sapi_name') }}
+
+PHP extensions: {{ call('get_loaded_extensions')|join(', ') }}
+
+Setup: {% for k in setup_init_keys %}{{ k }}="{{ call('ini_get', [k]) }}" {% endfor %}
+
+
+Web server: {{ _server['SERVER_SOFTWARE']|default('') }} ({{ (_server['SERVER_SIGNATURE']|default(''))|trim|striptags }})
+
+User agent: {{ _server['HTTP_USER_AGENT']|default('') }}
+
+Database:
+{% for k, v in db_info %}
+   {{ "\n" ~ k }}: {{ v }}
+{% endfor %}
+
+Requirements:
+   {%- for requirement in core_requirements -%}
+      {{ "\n" }}<img src="{{ path('/pics/') ~ requirement['status'] ~ '_min.png' }}" alt="{{ requirement['messages']|join(' ') }}"/>{{ requirement['messages']|join("\n") }}
+   {%- endfor -%}
+{% endset %}
+
+{% set constants_info %}
+   {%- for name, value in call('get_defined_constants')|filter((v, k) => k|u.startsWith('GLPI_')) -%}
+      {{ "\n" ~ name }}: {{ value|json_encode(constant('JSON_UNESCAPED_SLASHES')) }}
+   {%- endfor -%}
+{% endset %}
+
+{% set lib_info %}
+   {%- for dep in call('Config::getLibraries') -%}
+      {% set path = call('Config::getLibraryDir', [dep['check']]) %}
+      {%- if path -%}
+         {{ "\n" ~ dep['name'] }} version {{ dep['version'] }} in {{ path }}
+      {%- else -%}
+         {{ "\n" ~ dep['name'] }} not found
+      {%- endif -%}
+   {%- endfor -%}
+{% endset %}
+
+{% set locale_info %}
+   {%- for file in locales_overrides -%}
+      {{ "\n" ~ file }}
+   {%- endfor -%}
+{% endset %}
+
+<div class="accordion" id="sysinfo_accordion">
+   {{ _self.sysinfo_section('GLPI information', glpi_info) }}
+   {{ _self.sysinfo_section('Server', server_info, true) }}
+   {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
+   {{ _self.sysinfo_section('Libraries', lib_info, true) }}
+   {% for info_obj in system_info_objs %}
+      {% set info = call([info_obj, 'getSystemInformation']) %}
+      {% if info['label'] is not empty and info['content'] is not empty %}
+      {{ _self.sysinfo_section(info['label'], info['content']) }}
+      {% endif %}
+   {% endfor %}
+   {% if locales_overrides is not empty %}
+      {{ _self.sysinfo_section('Locales overrides', locale_info) }}
+   {% endif %}
+</div>
+
+<script>
+   $(() => {
+       // Search all .section-content text content and Replace all instances of a '#' followed by a number so that there is a zero-width space between the # and the number
+       $('.section-content').each(function() {
+           $(this).html($(this).html().replace(/#(\d+)/g, '#\u200B$1'));
+       });
+   });
+</script>

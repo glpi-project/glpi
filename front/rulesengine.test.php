@@ -67,16 +67,11 @@ $rulecollection->checkGlobal(READ);
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
-// Need for RuleEngines
-foreach ($_POST as $key => $val) {
-    $_POST[$key] = stripslashes($val);
-}
 $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {
    //Unset values that must not be processed by the rule
-    unset($_POST["sub_type"]);
-    unset($_POST["test_all_rules"]);
+    unset($_POST["sub_type"], $_POST["test_all_rules"]);
 
     echo "<br>";
     $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST, $condition);

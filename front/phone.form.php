@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("phone", READ);
+Session::checkRightsOr(Phone::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
@@ -119,7 +120,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["unglobalize"])) {
     $phone->check($_POST["id"], UPDATE);
 
-    Computer_Item::unglobalizeItem($phone);
+    Asset_PeripheralAsset::unglobalizeItem($phone);
     Event::log(
         $_POST["id"],
         "phones",

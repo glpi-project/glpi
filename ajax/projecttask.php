@@ -37,7 +37,10 @@
  * @since 9.2
  */
 
-use Glpi\Toolbox\Sanitizer;
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 
@@ -51,16 +54,13 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
     $template = new ProjectTaskTemplate();
     $template->getFromDB($_POST['projecttasktemplates_id']);
 
-    if (DropdownTranslation::isDropdownTranslationActive()) {
-        $template->fields['description'] = DropdownTranslation::getTranslatedValue(
-            $template->getID(),
-            $template->getType(),
-            'description',
-            $_SESSION['glpilanguage'],
-            $template->fields['description']
-        );
-    }
+    $template->fields['description'] = DropdownTranslation::getTranslatedValue(
+        $template->getID(),
+        $template->getType(),
+        'description',
+        $_SESSION['glpilanguage'],
+        $template->fields['description']
+    );
 
-    $template->fields = Sanitizer::decodeHtmlSpecialCharsRecursive($template->fields);
     echo json_encode($template->fields);
 }

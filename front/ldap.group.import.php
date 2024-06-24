@@ -73,8 +73,8 @@ if (isset($_GET['next']) || !isset($_SESSION['ldap_server']) && !isset($_POST['l
 
         if (!AuthLDAP::testLDAPConnection($_SESSION["ldap_server"])) {
             unset($_SESSION["ldap_server"]);
-            echo "<div class='center b'>" . __('Unable to connect to the LDAP directory') . "<br>";
-            echo "<a href='" . $_SERVER['PHP_SELF'] . "?next=listservers'>" . __('Back') . "</a></div>";
+            echo "<div class='center b'>" . __s('Unable to connect to the LDAP directory') . "<br>";
+            echo "<a href='" . htmlspecialchars($_SERVER['PHP_SELF']) . "?next=listservers'>" . __s('Back') . "</a></div>";
         } else {
             if (!isset($_SESSION["ldap_group_filter"])) {
                 $_SESSION["ldap_group_filter"] = '';

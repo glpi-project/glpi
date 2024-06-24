@@ -63,7 +63,7 @@ class MigrationCleaner extends CommonGLPI
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -124,6 +124,9 @@ describe('Search Table', () => {
 `);
     window.GLPI.Search.Table.prototype.getResultsView = jest.fn(function () {
         return {
+            setID(id) {
+                return id;
+            },
             getElement: () => {
                 return $('#massformComputer');
             },
@@ -170,9 +173,9 @@ describe('Search Table', () => {
     test('getResultsView', () => {
         expect(real_table.getResultsView()).toBeObject();
     });
-    test('getSortState', () => {
+    test('setSortStateFromColumns', () => {
         const verify_initial_sort_state = () => {
-            let state = real_table.getSortState();
+            let state = real_table.setSortStateFromColumns();
             expect(state['sort'].length).toBe(1);
             expect(state['order'].length).toBe(1);
             expect(state['sort'][0]).toBe('1');
@@ -183,7 +186,7 @@ describe('Search Table', () => {
 
         // Manually modify data for existing sorted column and test again
         real_table.getElement().find('th').eq(0).attr('data-sort-order', 'DESC');
-        let state = real_table.getSortState();
+        let state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(1);
         expect(state['order'].length).toBe(1);
         expect(state['sort'][0]).toBe('1');
@@ -192,7 +195,7 @@ describe('Search Table', () => {
         // Manually add new sort
         real_table.getElement().find('th').eq(2).attr('data-sort-order', 'ASC');
         real_table.getElement().find('th').eq(2).attr('data-sort-num', '1');
-        state = real_table.getSortState();
+        state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(2);
         expect(state['order'].length).toBe(2);
         expect(state['sort'][1]).toBe('3');
@@ -200,7 +203,7 @@ describe('Search Table', () => {
 
         // Ctrl-Click to add new sort
         real_table.getElement().find('th').eq(3).trigger(ctrl_click);
-        state = real_table.getSortState();
+        state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(3);
         expect(state['order'].length).toBe(3);
         expect(state['sort'][2]).toBe('4');
@@ -208,7 +211,7 @@ describe('Search Table', () => {
 
         // Click previous column again to switch it to DESC. Expect the other columns to remain.
         real_table.getElement().find('th').eq(3).click();
-        state = real_table.getSortState();
+        state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(3);
         expect(state['order'].length).toBe(3);
         expect(state['sort'][2]).toBe('4');
@@ -216,7 +219,7 @@ describe('Search Table', () => {
 
         // Click previous column again. We should be back at a nosort state for it (excluded from sort state).
         real_table.getElement().find('th').eq(3).click();
-        state = real_table.getSortState();
+        state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(2);
         expect(state['order'].length).toBe(2);
         expect(state['sort'][0]).toBe('1');
@@ -226,7 +229,7 @@ describe('Search Table', () => {
 
         // Click new column to become the only sort
         real_table.getElement().find('th').eq(1).click();
-        state = real_table.getSortState();
+        state = real_table.setSortStateFromColumns();
         expect(state['sort'].length).toBe(1);
         expect(state['order'].length).toBe(1);
         expect(state['sort'][0]).toBe('2');
@@ -344,8 +347,8 @@ describe('Search Table', () => {
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
             return $('div.ajax-container').html();
         }));
-        const get_sort = jest.spyOn(real_table, 'getSortState');
-        get_sort.mockImplementation(() => {
+        const get_itemtype = jest.spyOn(real_table, 'getItemtype');
+        get_itemtype.mockImplementation(() => {
             throw 'Test exception';
         });
         real_table.refreshResults();

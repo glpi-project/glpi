@@ -22,10 +22,10 @@ Creating a dedicated database
 -----------------------------
 
 Use the **database:install** CLI command to create a new database,
-only used for the test suite, using the `--config-dir=./tests/config` option:
+only used for the test suite, using the `--env=testing` option:
 
 ```bash
-$ bin/console database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console database:install --env=testing --db-name=glpitests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
@@ -45,8 +45,8 @@ Changing database configuration
 
 Using the same database than the web application is not recommended. Use the `tests/config/config_db.php` file to adjust connection settings.
 
-Running the test suite on developpement env
--------------------------------------------
+Running the test suite on developpement machine
+-----------------------------------------------
 
 There are multiple directories for tests:
 - `tests/functional` for unit and functional tests;
@@ -68,7 +68,7 @@ In `tests\units\Html::testConvDateTime`, you may need to double the backslashes 
 If you want to run the API tests suite, you need to run a development server:
 
 ```bash
-php -S localhost:8088 tests/router.php &>/dev/null &
+php -S localhost:8088 -t public tests/router.php &>/dev/null &
 ```
 
 Running `atoum` without any arguments will show you the possible options. Most important are:

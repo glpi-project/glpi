@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Infocom class
@@ -148,7 +150,7 @@ class Infocom extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -159,7 +161,7 @@ class Infocom extends CommonDBChild
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb);
+                    return self::createTabEntry(__('Management'), $nb, $item::getType());
             }
         }
         return '';
@@ -271,6 +273,156 @@ class Infocom extends CommonDBChild
         return false;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
+     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @return ?array
+     */
+    public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $itemtable = getTableForItemType($itemtype);
+        if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
+            return null;
+        }
+
+        $criteria = [
+            'SELECT'       => [
+                'glpi_infocoms.*',
+                "$itemtable.name AS itemname",
+                "$itemtable.ticket_tco",
+                'glpi_entities.completename AS entityname',
+                'glpi_entities.id AS entID'
+
+            ],
+            'FROM'         => 'glpi_infocoms',
+            'INNER JOIN'   => [
+                $itemtable  => [
+                    'ON'  => [
+                        'glpi_infocoms'   => 'items_id',
+                        $itemtable        => 'id', [
+                            'AND' => [
+                                'glpi_infocoms.itemtype'   => $itemtype
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'LEFT JOIN'    => [
+                'glpi_entities'   => [
+                    'ON'  => [
+                        'glpi_entities'   => 'id',
+                        $itemtable        => 'entities_id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                "$itemtable.is_template" => 0
+            ] + getEntitiesRestrictCriteria($itemtable) + $itemtype::getSystemSQLCriteria(),
+            'ORDERBY'      => ['entityname ASC', 'buy_date', 'use_date']
+        ];
+
+        if (!empty($begin)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['>=', $begin],
+                    'glpi_infocoms.use_date'   => ['>=', $begin]
+                ]
+            ];
+        }
+
+        if (!empty($end)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['<=', $end],
+                    'glpi_infocoms.use_date'   => ['<=', $end]
+                ]
+            ];
+        }
+
+        return iterator_to_array($DB->request($criteria));
+    }
+
+    /**
+     * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
+     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @return ?array
+     */
+    public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $itemtable = getTableForItemType($itemtype);
+        if ($DB->fieldExists($itemtable, "ticket_tco", false)) {
+            // This is already handled by the asset infocom report
+            return null;
+        }
+
+        $criteria = [
+            'SELECT'       => 'glpi_infocoms.*',
+            'FROM'         => 'glpi_infocoms',
+            'INNER JOIN'   => [
+                $itemtable  => [
+                    'ON'  => [
+                        $itemtable        => 'id',
+                        'glpi_infocoms'   => 'items_id', [
+                            'AND' => [
+                                'glpi_infocoms.itemtype' => $itemtype
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'        => $itemtype::getSystemSQLCriteria(),
+        ];
+
+        switch ($itemtype) {
+            case 'SoftwareLicense':
+                $criteria['INNER JOIN']['glpi_softwares'] = [
+                    'ON'  => [
+                        'glpi_softwarelicenses' => 'softwares_id',
+                        'glpi_softwares'        => 'id'
+                    ]
+                ];
+                $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
+                break;
+            default:
+                if (is_a($itemtype, CommonDBChild::class, true)) {
+                    $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
+                    $criteria['INNER JOIN'][$childitemtype::getTable()] = [
+                        'ON'  => [
+                            $itemtype::getTable() => $itemtype::$items_id,
+                            $childitemtype::getTable() => 'id'
+                        ]
+                    ];
+                    $criteria['WHERE'][] =  getEntitiesRestrictCriteria($itemtable);
+                }
+                break;
+        }
+
+        if (!empty($begin)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['>=', $begin],
+                    'glpi_infocoms.use_date'   => ['>=', $begin]
+                ]
+            ];
+        }
+        if (!empty($end)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['<=', $end],
+                    'glpi_infocoms.use_date'   => ['<=', $end]
+                ]
+            ];
+        }
+
+        $criteria['WHERE'] = array_filter($criteria['WHERE']);
+        return iterator_to_array($DB->request($criteria));
+    }
 
     public function prepareInputForAdd($input)
     {
@@ -451,7 +603,7 @@ class Infocom extends CommonDBChild
                     Html::convDate($budget->fields['begin_date']),
                     Html::convDate($budget->fields['end_date'])
                 );
-                Session::addMessageAfterRedirect($msg, false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
             }
         }
     }
@@ -520,17 +672,20 @@ class Infocom extends CommonDBChild
                     ]
                 ],
                 'WHERE'     => [
-                    new \QueryExpression(
+                    new QueryExpression(
                         '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
-                    new \QueryExpression(
-                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                        $DB->quoteValue($before)
-                    ),
+                    new QueryExpression(QueryFunction::dateDiff(
+                        expression1: QueryFunction::dateAdd(
+                            date: 'glpi_infocoms.warranty_date',
+                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curdate()
+                    ) . ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);
@@ -582,14 +737,14 @@ class Infocom extends CommonDBChild
                     ));
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(sprintf(
+                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
                             $entity
                         ),
                         $message
-                    ));
+                    )));
                 }
 
                 $alert             = new Alert();
@@ -607,7 +762,7 @@ class Infocom extends CommonDBChild
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect($msg, false, ERROR);
+                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                 }
             }
         }
@@ -634,7 +789,7 @@ class Infocom extends CommonDBChild
             return $tmp;
         }
        // Default value for display
-        $tmp[0] = ' ';
+        $tmp[0] = __('None');
 
         if (isset($tmp[$val])) {
             return $tmp[$val];
@@ -761,12 +916,14 @@ class Infocom extends CommonDBChild
     /**
      * Show infocom link to display modal
      *
-     * @param $itemtype   integer  item type
-     * @param $device_id  integer  item ID
+     * @param integer $itemtype item type
+     * @param integer $device_id item ID
+     * @param boolean $display  display or not the link (default true)
      *
-     * @return void
+     * @return void|string
+     * @phpstan-return $display ? void : string
      **/
-    public static function showDisplayLink($itemtype, $device_id)
+    public static function showDisplayLink($itemtype, $device_id, bool $display = true)
     {
         /**
          * @var array $CFG_GLPI
@@ -799,16 +956,51 @@ class Infocom extends CommonDBChild
             return;
         }
 
+        $out = '';
         if ($item->canView()) {
-            echo "<span data-bs-toggle='modal' data-bs-target='#infocom$itemtype$device_id' style='cursor:pointer'>
+            $out .= "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
                <img src=\"" . $CFG_GLPI["root_doc"] . "/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
-            Ajax::createIframeModalWindow(
-                'infocom' . $itemtype . $device_id,
-                Infocom::getFormURL() .
-                                          "?itemtype=$itemtype&items_id=$device_id",
-                ['height' => 600]
-            );
+            $form_url = Infocom::getFormURL();
+            $html = <<<HTML
+                <div id="infocom_display_modal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <h3></h3>
+                            </div>
+                            <div class="modal-body">
+                                <iframe id='iframeinfocom_display_modal' class="iframe hidden border-0 w-100" style="height: 600px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+HTML;
+            $js = <<<JS
+                $(() => {
+                    if ($('#infocom_display_modal').length === 0) {
+                        $('body').append(`$html`);
+                        const modal_el = $('#infocom_display_modal');
+                        $(document).on('click', '.infocom_link', (e) => {
+                            modal_el.data('itemtype', e.currentTarget.getAttribute('data-itemtype'));
+                            modal_el.data('items_id', e.currentTarget.getAttribute('data-items_id'));
+                            modal_el.modal('show');
+                        });
+                        modal_el.on('shown.bs.modal', () => {
+                            $('#iframeinfocom_display_modal')
+                                .attr('src', '{$form_url}?itemtype=' + modal_el.data('itemtype') + '&items_id=' + modal_el.data('items_id'))
+                                .removeClass('hidden');
+                        });
+                    }
+                });
+JS;
+            $out .= Html::scriptBlock($js);
+        }
+        if ($display) {
+            echo $out;
+        } else {
+            return $out;
         }
     }
 
@@ -836,7 +1028,7 @@ class Infocom extends CommonDBChild
             $fiscaldate = new \DateTime($fiscaldate, new DateTimeZone($TZ));
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
-                __('Please fill you fiscal year date in preferences.'),
+                __s('Please fill you fiscal year date in preferences.'),
                 false,
                 ERROR
             );
@@ -855,7 +1047,7 @@ class Infocom extends CommonDBChild
             }
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
-                __('Please fill either buy or use date in preferences.'),
+                __s('Please fill either buy or use date in preferences.'),
                 false,
                 ERROR
             );
@@ -943,18 +1135,18 @@ class Infocom extends CommonDBChild
     }
 
     /**
-     * Calculate amortissement for an item
+     * Calculate depreciation for an item
      *
-     * @param integer $type_amort    type d'amortisssment "lineaire=2" ou "degressif=1"
+     * @param integer $type_amort    type of depreciation "linear=2" or "degressive=1"
      * @param number  $va            valeur d'acquisition
-     * @param number  $duree         duree d'amortissement
-     * @param number  $coef          coefficient d'amortissement
-     * @param string|null  $date_achat    Date d'achat
-     * @param string|null  $date_use      Date d'utilisation
-     * @param string|null  $date_tax      date du debut de l'annee fiscale
-     * @param string  $view          "n" pour l'annee en cours ou "all" pour le tableau complet (default 'n')
+     * @param number  $duree         acquisition value
+     * @param number  $coef          amortization coefficient
+     * @param string|null  $date_achat    Date of purchase
+     * @param string|null  $date_use      Startup date
+     * @param string|null  $date_tax      start date of fiscal year
+     * @param string  $view          "n" for the current year or "all" for the complete table (default 'n')
      *
-     * @return float|array
+     * @return float|array|string Depreciation value or array of values. If an error occurs, return '-'.
      **/
     public static function Amort(
         $type_amort,
@@ -1733,24 +1925,6 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * Display debug information for infocom of current object
-     **/
-    public function showDebug()
-    {
-
-        $item = ['item_name'          => '',
-            'warrantyexpiration' => '',
-            'itemtype'           => $this->fields['itemtype'],
-            'items_id'           => $this->fields['items_id']
-        ];
-
-        $options['entities_id'] = $this->getEntityID();
-        $options['items']       = [$item];
-        NotificationEvent::debugEvent($this, $options);
-    }
-
-
-    /**
      * Get date using a begin date and a period in month
      *
      * @param string  $from          begin date
@@ -1759,7 +1933,7 @@ class Infocom extends CommonDBChild
      * @param boolean $color         if show expire date in red color (false by default)
      * @param boolean $auto_renew
      *
-     * @return string expiration date
+     * @return string expiration date automatically converted to the user's preferred date format
      **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false)
     {
@@ -1807,7 +1981,7 @@ class Infocom extends CommonDBChild
             && static::canCreate()
         ) {
             $actions[$action_name] = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-                                  __('Enable the financial and administrative information');
+                                  __s('Enable the financial and administrative information');
         }
     }
 
@@ -1855,7 +2029,7 @@ class Infocom extends CommonDBChild
      * @since 9.1.7
      * @see CommonDBChild::canUpdateItem()
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
@@ -1865,7 +2039,7 @@ class Infocom extends CommonDBChild
      * @since 9.1.7
      * @see CommonDBChild::canPurgeItem()
      **/
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return Session::haveRight(static::$rightname, PURGE);
     }
@@ -1875,7 +2049,7 @@ class Infocom extends CommonDBChild
      * @since 9.1.7
      * @see CommonDBChild::canCreateItem()
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return Session::haveRight(static::$rightname, CREATE);
     }
@@ -1922,6 +2096,6 @@ class Infocom extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-wallet";
+        return "ti ti-wallet";
     }
 }

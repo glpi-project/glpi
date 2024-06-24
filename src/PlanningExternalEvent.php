@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\RichText\RichText;
@@ -49,7 +50,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     public $dohistory = true;
     public static $rightname = 'externalevent';
 
-    const MANAGE_BG_EVENTS =   1024;
+    public const MANAGE_BG_EVENTS =   1024;
 
     public static function getTypeName($nb = 0)
     {
@@ -66,10 +67,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return $ong;
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
-       // we permits globally to update this object,
-       // as users can update their onw items
+        // we permits globally to update this object,
+        // as users can update their onw items
         return Session::haveRightsOr(self::$rightname, [
             CREATE,
             UPDATE,
@@ -77,16 +78,16 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         ]);
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->canUpdateBGEvents()) {
             return false;
         }
 
-       // the current user can update only this own events without UPDATE right
-       // but not bg one, see above
+        // the current user can update only this own events without UPDATE right
+        // but not bg one, see above
         if (
-            $this->fields['users_id'] != Session::getLoginUserID()
+            (int) $this->fields['users_id'] !== Session::getLoginUserID()
             && !Session::haveRight(self::$rightname, UPDATE)
         ) {
             return false;
@@ -95,8 +96,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return parent::canUpdateItem();
     }
 
-
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if (!$this->canUpdateBGEvents()) {
             return false;
@@ -105,7 +105,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
        // the current user can update only this own events without PURGE right
        // but not bg one, see above
         if (
-            $this->fields['users_id'] != Session::getLoginUserID()
+            (int) $this->fields['users_id'] !== Session::getLoginUserID()
             && !Session::haveRight(self::$rightname, PURGE)
         ) {
             return false;
@@ -121,29 +121,19 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      */
     public function canUpdateBGEvents()
     {
-        if (
-            $this->fields["background"]
-            && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS)
-        ) {
-            return false;
-        }
-
-        return true;
+        return !($this->fields["background"]
+            && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS));
     }
-
 
     public function post_getFromDB()
     {
         $this->fields['users_id_guests'] = importArrayFromDB($this->fields['users_id_guests']);
     }
 
-
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $canedit    = $this->can($ID, UPDATE);
+        $this->initForm($ID, $options);
+        $options['canedit'] = $this->can($ID, UPDATE);
         $rand       = mt_rand();
         $rand_plan  = mt_rand();
         $rand_rrule = mt_rand();
@@ -154,228 +144,44 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         ) {
             $options['no_header'] = true;
         }
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
 
         $is_ajax  = isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax'];
-        $is_rrule = strlen($this->fields['rrule'] ?? '') > 0;
+        $is_rrule = ($this->fields['rrule'] ?? '') !== '';
 
-       // set event for another user
-        if (
-            isset($options['res_itemtype'])
-            && isset($options['res_items_id'])
-            && strtolower($options['res_itemtype']) == "user"
-        ) {
+        // set event for another user
+        if (isset($options['res_itemtype'], $options['res_items_id']) && strtolower($options['res_itemtype']) === "user") {
             $this->fields['users_id'] =  $options['res_items_id'];
         }
 
-        if ($canedit) {
-            $tpl_class = 'PlanningExternalEventTemplate';
-            echo "<tr class='tab_bg_1' style='vertical-align: top'>";
-            echo "<td colspan='2'>" . $tpl_class::getTypeName() . "</td>";
-            echo "<td colspan='2'>";
-            $tpl_class::dropdown([
-                'value'     => $this->fields['planningexternaleventtemplates_id'],
-                'entity'    => $this->getEntityID(),
-                'rand'      => $rand,
-                'on_change' => "template_update$rand(this.value)"
-            ]);
-
-            $ajax_url = $CFG_GLPI["root_doc"] . "/ajax/planning.php";
-            $JS = <<<JAVASCRIPT
-            function template_update{$rand}(value) {
-               $.ajax({
-                  url: '{$ajax_url}',
-                  type: "POST",
-                  data: {
-                     action: 'get_externalevent_template',
-                     planningexternaleventtemplates_id: value
-                  }
-               }).done(function(data) {
-                  // set common fields
-                  if (data.name.length > 0) {
-                     $("#textfield_name{$rand}").val(data.name);
-                  }
-                  $("#dropdown_state{$rand}").trigger("setValue", data.state);
-                  if (data.planningeventcategories_id > 0) {
-                     $("#dropdown_planningeventcategories_id{$rand}")
-                        .trigger("setValue", data.planningeventcategories_id);
-                  }
-                  $("#dropdown_background{$rand}").trigger("setValue", data.background);
-                  if (data.text.length > 0) {
-                     setRichTextEditorContent("text{$rand}", data.text);
-                  }
-
-                  // set planification fields
-                  if (data.duration > 0) {
-                     $("#dropdown_plan__duration_{$rand_plan}").trigger("setValue", data.duration);
-                  }
-                  $("#dropdown__planningrecall_before_time_{$rand_plan}")
-                     .trigger("setValue", data.before_time);
-
-                  // set rrule fields
-                  if (data.rrule != null
-                      && data.rrule.freq != null ) {
-                     $("#dropdown_rrule_freq_{$rand_rrule}").trigger("setValue", data.rrule.freq);
-                     $("#dropdown_rrule_interval_{$rand_rrule}").trigger("setValue", data.rrule.interval);
-                     $("#showdate{$rand_rrule}").val(data.rrule.until);
-                     $("#dropdown_rrule_byday_{$rand_rrule}").val(data.rrule.byday).trigger('change');
-                     $("#dropdown_rrule_bymonth_{$rand_rrule}").val(data.rrule.bymonth).trigger('change');
-                  }
-               });
-            }
-JAVASCRIPT;
-            echo Html::scriptBlock($JS);
-            echo "</tr>";
-        }
-
-        echo "<tr class='tab_bg_2'><td colspan='2'>" . __('Title') . "</td>";
-        echo "<td colspan='2'>";
-        if (isset($options['start'])) {
-            echo Html::hidden('day', ['value' => $options['start']]);
-        }
-        if ($canedit) {
-            echo Html::input(
-                'name',
-                [
-                    'value' => $this->fields['name'],
-                    'id'    => "textfield_name$rand",
-                ]
-            );
-        } else {
-            echo $this->fields['name'];
-        }
-        if (isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax']) {
-            echo Html::hidden('from_planning_edit_ajax');
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'><td colspan='2'>" . User::getTypeName(1) . "</td>";
-        echo "<td colspan='2'>";
-        User::dropdown([
-            'name'          => 'users_id',
-            'right'         => 'all',
-            'value'         => $this->fields['users_id']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'><td colspan='2'>" . __('Guests') . "</td>";
-        echo "<td colspan='2'>";
-        User::dropdown([
-            'name'          => 'users_id_guests[]',
-            'right'         => 'all',
-            'value'         => $this->fields['users_id_guests'],
-            'multiple'      => true,
-        ]);
-        echo "<div style='font-style: italic'>" .
-            __("Each guest will have a read-only copy of this event") .
-            "</div>";
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td colspan='2'>" . __('Status') . "</td>";
-        echo "<td colspan='2'>";
-        if ($canedit) {
-            Planning::dropdownState("state", $this->fields["state"], true, [
-                'rand' => $rand,
-            ]);
-        } else {
-            echo Planning::getState($this->fields["state"]);
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<tr class='tab_bg_2'>";
-        echo "<td colspan='2'>" . _n('Category', 'Categories', 1) . "</td>";
-        echo "<td colspan='2'>";
-        if ($canedit) {
-            PlanningEventCategory::dropdown([
-                'value' => $this->fields['planningeventcategories_id'],
-                'rand'  => $rand
-            ]);
-        } else {
-            echo Dropdown::getDropdownName(
-                PlanningEventCategory::getTable(),
-                $this->fields['planningeventcategories_id']
-            );
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td colspan='2'>" . __('Background event') . "</td>";
-        echo "<td colspan='2'>";
-        if ($canedit) {
-            Dropdown::showYesNo('background', $this->fields['background'], -1, [
-                'rand' => $rand,
-            ]);
-        } else {
-            echo Dropdown::getYesNo($this->fields['background']);
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'><td  colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
-        echo "<td>";
-        Planning::showAddEventClassicForm([
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => $this->getType(),
-            'begin'     => $this->fields['begin'],
-            'end'       => $this->fields['end'],
-            'rand_user' => $this->fields['users_id'],
-            'rand'      => $rand_plan,
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td  colspan='2'>" . __('Repeat') . "</td>";
-        echo "<td>";
-        echo self::showRepetitionForm($this->fields['rrule'] ?? '', [
-            'rand' => $rand_rrule
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __('Description') . "</td>" .
-           "<td colspan='3'>";
-
-        if ($canedit) {
-            Html::textarea([
-                'name'              => 'text',
-                'value'             => RichText::getSafeHtml($this->fields["text"], true),
-                'enable_richtext'   => true,
-                'enable_fileupload' => true,
-                'rand'              => $rand,
-                'editor_id'         => 'text' . $rand,
-            ]);
-        } else {
-            echo "<div class='rich_text_container'>";
-            echo RichText::getEnhancedHtml($this->fields["text"]);
-            echo "</div>";
-        }
-
-        echo "</td></tr>";
-
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
+            $options['addbuttons'] = [];
+            if ($this->can(-1, CREATE)) {
+                $options['addbuttons']['save_instance'] = [
+                    'text'  => __("Detach instance"),
+                    'icon'  => 'ti ti-unlink',
+                    'title' => __("Detach this instance from the series to create an independent event"),
+                ];
+            }
             if ($this->can($ID, PURGE)) {
-                $options['addbuttons'] = [
-                    'purge'          => [
-                        'text' => __("Delete serie"),
-                        'icon' => 'fas fa-trash-alt',
-                    ],
-                    'purge_instance' => [
-                        'text' => __("Delete instance"),
-                        'icon' => 'far fa-trash-alt',
-                    ],
+                $options['addbuttons']['purge'] = [
+                    'text' => __("Delete serie"),
+                    'icon' => 'fas fa-trash-alt',
+                ];
+                $options['addbuttons']['purge_instance'] = [
+                    'text' => __("Delete instance"),
+                    'icon' => 'far fa-trash-alt',
                 ];
             }
         }
 
-        $this->showFormButtons($options);
-
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/external_event.html.twig', [
+            'item' => $this,
+            'rand' => $rand,
+            'rand_plan' => $rand_plan,
+            'rand_rrule' => $rand_rrule,
+            'params' => $options,
+        ]);
         return true;
     }
 
@@ -390,13 +196,11 @@ JAVASCRIPT;
 
     public static function getGroupItemsAsVCalendars($groups_id)
     {
-
         return self::getItemsAsVCalendars([self::getTableField('groups_id') => $groups_id]);
     }
 
     public static function getUserItemsAsVCalendars($users_id)
     {
-
         return self::getItemsAsVCalendars([
             'OR' => [
                 self::getTableField('users_id')        => $users_id,
@@ -414,7 +218,6 @@ JAVASCRIPT;
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -440,7 +243,6 @@ JAVASCRIPT;
 
     public function getAsVCalendar()
     {
-
         if (!$this->canViewItem()) {
             return null;
         }
@@ -459,7 +261,6 @@ JAVASCRIPT;
 
     public function getInputFromVCalendar(VCalendar $vcalendar)
     {
-
         $vcomp = $vcalendar->getBaseComponent();
 
         $input = $this->getCommonInputFromVcomponent($vcomp, $this->isNewItem());
@@ -475,12 +276,10 @@ JAVASCRIPT;
         return $input;
     }
 
-
     public function rawSearchOptions()
     {
         return $this->trait_rawSearchOptions();
     }
-
 
     public static function getVisibilityCriteria(): array
     {
@@ -508,22 +307,5 @@ JAVASCRIPT;
         }
 
         return $condition;
-    }
-
-
-    public static function addVisibilityRestrict()
-    {
-        $criteria = self::getVisibilityCriteria();
-        if (!count($criteria)) {
-            return;
-        }
-        $criteria['FROM'] = self::getTable();
-
-        $it = new \DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
     }
 }

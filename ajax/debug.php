@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
+
 include('../inc/includes.php');
 Html::header_nocache();
 
@@ -65,6 +67,62 @@ if (isset($_GET['ajax_id'])) {
     }
     http_response_code(404);
     die();
+}
+
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    if ($action === 'get_itemtypes') {
+        $loaded = get_declared_classes();
+        $glpi_classes = array_filter($loaded, static function ($class) {
+            if (!is_subclass_of($class, 'CommonDBTM')) {
+                return false;
+            }
+
+            $reflection_class = new ReflectionClass($class);
+            if ($reflection_class->isAbstract()) {
+                return false;
+            }
+
+            return true;
+        });
+        sort($glpi_classes);
+        header('Content-Type: application/json');
+        echo json_encode($glpi_classes);
+        die();
+    }
+    if ($action === 'get_search_options' && isset($_GET['itemtype'])) {
+        header('Content-Type: application/json');
+        $class = $_GET['itemtype'];
+        if (!class_exists($class) || !is_subclass_of($class, 'CommonDBTM')) {
+            echo '[]';
+            die();
+        }
+        $reflection_class = new ReflectionClass($class);
+        if ($reflection_class->isAbstract()) {
+            echo '[]';
+            die();
+        }
+        // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
+        ErrorHandler::getInstance()->disableOutput();
+        try {
+            /** @var CommonGLPI $item */
+            $item = new $_GET['itemtype']();
+            $options = Search::getOptions($item::getType());
+        } catch (Throwable $e) {
+            $options = [];
+        }
+        $options = array_filter($options, static function ($k) {
+            return is_numeric($k);
+        }, ARRAY_FILTER_USE_KEY);
+        echo json_encode($options);
+        die();
+    }
+    if ($action === 'get_themes') {
+        header('Content-Type: application/json');
+        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
+        echo json_encode($themes);
+        die();
+    }
 }
 
 http_response_code(400);

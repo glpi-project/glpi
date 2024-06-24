@@ -207,14 +207,14 @@ class SNMPCredential extends CommonDBTM
     {
         // Require a snmpversion
         if (!isset($input['snmpversion']) || $input['snmpversion'] == '0') {
-            Session::addMessageAfterRedirect(__('You must select an SNMP version'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('You must select an SNMP version'), false, ERROR);
             return false;
         }
 
         // Require username if using version 3
         if ($input['snmpversion'] == 3) {
             if (empty($input['username'])) {
-                Session::addMessageAfterRedirect(__('You must enter a username'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('You must enter a username'), false, ERROR);
                 return false;
             }
         }

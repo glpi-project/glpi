@@ -37,6 +37,11 @@
  * @since 0.84
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -46,7 +51,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['type']) && isset($_POST['end'])) {
+if (isset($_POST['type'], $_POST['end'])) {
     echo "<table style='width: 90%'>";
     switch ($_POST['type']) {
         case 'day':
@@ -63,9 +68,9 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
             echo "<tr class='center'><td>&nbsp;</td>";
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             foreach ($days as $day) {
-                echo "<th>" . __($day) . "</th>";
+                echo "<th>" . __s($day) . "</th>";
             }
-            echo "</tr><tr class='center'><td>" . __('By day') . '</td>';
+            echo "</tr><tr class='center'><td>" . __s('By day') . '</td>';
 
             foreach ($days as $day) {
                 echo "<td><input type='checkbox' name='periodicity[days][$day]'></td>";
@@ -75,12 +80,13 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
 
         case 'month':
             echo "<tr><td colspan='2'>";
-            $values = ['date' => __('Each month, same date'),
+            $values = [
+                'date' => __('Each month, same date'),
                 'day'  => __('Each month, same day of week')
             ];
             Dropdown::showFromArray('periodicity[subtype]', $values);
             echo "</td></tr>";
-            echo "<tr><td>" . __('End date') . '</td><td>';
+            echo "<tr><td>" . __s('End date') . '</td><td>';
             Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
             echo "</td></tr>";
     }

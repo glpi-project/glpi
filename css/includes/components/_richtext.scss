@@ -30,14 +30,16 @@
  *
  * ---------------------------------------------------------------------
  */
+:root:not([glpi-theme-dark="1"]) {
+    body.mce-content-body {
+        background: transparent;
+    }
+}
 
 body.mce-content-body {
     margin: 15px 10px;
 
-    @if not $is-dark {
-        background: transparent;
-    }
-
+    [data-form-tag="true"],
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
     }
@@ -49,9 +51,8 @@ body.mce-content-body {
 }
 
 .tox.tox-tinymce {
-    border: $input-border-width solid $input-border-color;
-
-    @include border-radius($input-border-radius, 0);
+    border: var(--tblr-border-width) solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
 }
 
 .rich_text_container {
@@ -89,17 +90,19 @@ body.mce-content-body {
         overflow: hidden;
 
         .read_more {
-            @if not $is_dark {
-                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
-            } @else {
-                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, $dark 100%);
-            }
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
         }
     }
 }
 
 .user-mention,
 [data-user-mention="true"] {
+    background: rgba(0, 0, 0, 20%);
+    border-radius: 3px;
+    padding: 5px;
+}
+
+[data-form-tag="true"] {
     background: rgba(0, 0, 0, 20%);
     border-radius: 3px;
     padding: 5px;

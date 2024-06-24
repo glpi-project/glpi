@@ -103,8 +103,8 @@ class Html extends \GLPITestCase
     public function testCleanInputText()
     {
         $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->string(\Html::cleanInputText($origin))->isIdenticalTo($expected);
+        $expected = 'This is a &#039;string&#039; with some &quot;replacements&quot; needed, but not « others »!';
+        $this->string(@\Html::cleanInputText($origin))->isIdenticalTo($expected);
     }
 
     public function cleanParametersURL()
@@ -127,23 +127,6 @@ class Html extends \GLPITestCase
         $origin = 'A string that is longer than 10 characters.';
         $expected = 'A string t&nbsp;(...)';
         $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
-    }
-
-    public function testCleanPostForTextArea()
-    {
-        $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
-        $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
-        $this->string(\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
-
-        $aorigin = [
-            $origin,
-            "Another\\none!"
-        ];
-        $aexpected = [
-            $expected,
-            "Another\none!"
-        ];
-        $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
     }
 
     public function testFormatNumber()
@@ -345,21 +328,25 @@ class Html extends \GLPITestCase
             'Rule',
             'Profile',
             'QueuedNotification',
-            'Glpi\\Event',
-            'Glpi\Inventory\Inventory'
+            'Glpi\System\Log\LogViewer',
+            'Glpi\Inventory\Inventory',
+            'Glpi\Form\Form',
         ];
         $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
         $this->array($menu['admin']['types'])->isIdenticalTo($expected);
 
         $expected = [
+            'Glpi\Asset\AssetDefinition',
             'CommonDropdown',
             'CommonDevice',
             'Notification',
+            'Webhook',
             'SLM',
             'Config',
             'FieldUnicity',
             'CronTask',
             'Auth',
+            'OAuthClient',
             'MailCollector',
             'Link',
             'Plugin'
@@ -665,29 +652,18 @@ class Html extends \GLPITestCase
 
     public function testFuzzySearch()
     {
-       //login to get session
+        //login to get session
         $auth = new \Auth();
         $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
-       // init menu
+        // init menu
         \Html::generateMenuSession(true);
 
-       // test modal
-        $modal = \Html::FuzzySearch('getHtml');
-        $this->string($modal)
-         ->contains('id="fuzzysearch"')
-         ->matches('/class="results[^"]*"/');
+        // test retrieving entries
+        $entries = \Html::getMenuFuzzySearchList();
+        $this->array($entries)->size->isGreaterThan(5);
 
-       // test retrieving entries
-        $default = json_decode(\Html::FuzzySearch(), true);
-        $entries = json_decode(\Html::FuzzySearch('getList'), true);
-        $this->array($default)
-         ->isNotEmpty()
-         ->isIdenticalTo($entries)
-         ->hasKey(0)
-         ->size->isGreaterThan(5);
-
-        foreach ($default as $entry) {
+        foreach ($entries as $entry) {
             $this->array($entry)
             ->hasKey('title')
             ->hasKey('url');
@@ -745,29 +721,27 @@ class Html extends \GLPITestCase
             function () {
                 \Html::displayBackLink();
             }
-        )->isIdenticalTo("<a href='originalpage.html'>Back</a>");
+        )->isIdenticalTo('<a href="originalpage.html">Back</a>');
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 
     public function testAddConfirmationOnAction()
     {
         $string = 'Are U\' OK?';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ ;return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($string))->isIdenticalTo($expected);
 
         $strings = ['Are you', 'OK?'];
-        $expected = 'onclick="if (window.confirm(\'Are you\nOK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($strings))->isIdenticalTo($expected);
 
         $actions = '$("#mydiv").focus();';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ $("#mydiv").focus();return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($string, $actions))->isIdenticalTo($expected);
     }
 
     public function testJsFunctions()
     {
-        $this->string(\Html::jsHide('myid'))->isIdenticalTo("$('#myid').hide();\n");
-        $this->string(\Html::jsShow('myid'))->isIdenticalTo("$('#myid').show();\n");
         $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
         $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').trigger('setValue', 'myval');");
         $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");
@@ -812,11 +786,11 @@ class Html extends \GLPITestCase
         $options = [
             'confirm'   => 'U sure?'
         ];
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
         $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
 
         $options['confirmaction'] = 'window.close();';
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ window.close();return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
         $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
     }
 

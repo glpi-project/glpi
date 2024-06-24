@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Rule class store all information about a GLPI rule :
  *   - description
@@ -42,36 +44,23 @@
 class RuleDictionnarySoftware extends Rule
 {
     public $additional_fields_for_dictionnary = ['manufacturer'];
-    public $can_sort                          = true;
 
     public static $rightname                         = 'rule_dictionnary_software';
 
 
-
-    /**
-     * @see Rule::getTitle()
-     **/
     public function getTitle()
     {
-       //TRANS: plural for software
+        //TRANS: plural for software
         return __('Dictionary of software');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
     public function maxActionsCount()
     {
         return 4;
     }
 
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -97,13 +86,8 @@ class RuleDictionnarySoftware extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                  = parent::getActions();
 
         $actions['name']['name']                  = _n('Software', 'Software', 1);
@@ -137,44 +121,48 @@ class RuleDictionnarySoftware extends Rule
         return $actions;
     }
 
-
-    /**
-     * @see Rule::addSpecificParamsForPreview()
-     **/
     public function addSpecificParamsForPreview($params)
     {
-
         if (isset($_POST["version"])) {
             $params["version"] = $_POST["version"];
         }
         return $params;
     }
 
-
-    /**
-     * @see Rule::showSpecificCriteriasForPreview()
-     **/
     public function showSpecificCriteriasForPreview($fields)
     {
-
         if (isset($this->fields['id'])) {
             $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
         }
 
-       //if there's a least one action with type == append_regex_result, then need to display
-       //this field as a criteria
-        foreach ($this->actions as $action) {
-            if ($action->fields["action_type"] == "append_regex_result") {
-                $value = (isset($fields[$action->fields['field']]) ? $fields[$action->fields['field']] : '');
-               //Get actions for this type of rule
-                $actions = $this->getActions();
-
-               //display the additionnal field
-                echo "<tr class='tab_bg_1'>";
-                echo "<td>" . $this->fields['match'] . "</td>";
-                echo "<td>" . $actions[$action->fields['field']]['name'] . "</td>";
-                echo "<td><input type='text' name='version' value='$value'></td></tr>";
-            }
+        $twig_params = [
+            'actions' => $this->actions,
+            'fields' => $fields,
+            'action_names' => [],
+            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+        ];
+        $actions = $this->getActions();
+        foreach ($actions as $key => $action) {
+            $twig_params['action_names'][$key] = $action['name'];
         }
+
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% for action in actions %}
+                {% if action.fields['action_type'] == 'append_regex_result' %}
+                    {{ fields.htmlField('', type_match|e, '', {
+                        no_label: true,
+                        field_class: 'col-2',
+                        input_class: 'col-12'
+                    }) }}
+                    {{ fields.textField('version', fields[action.fields['field']]|default(''), action_names[action.fields['field']], {
+                        field_class: 'col-10',
+                        label_class: 'col-5',
+                        input_class: 'col-7'
+                    }) }}
+                {% endif %}
+            {% endfor %}
+TWIG, $twig_params);
     }
 }

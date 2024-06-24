@@ -39,8 +39,10 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use Profile_User;
+use RuleBuilder;
+use RuleRight;
 use UserTitle;
-use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/authldap.class.php */
 
@@ -131,7 +133,7 @@ class AuthLDAP extends DbTestCase
     {
         $ldap = new \AuthLDAP();
         $ldap->post_getEmpty();
-        $this->array($ldap->fields)->hasSize(28);
+        $this->array($ldap->fields)->hasSize(30);
     }
 
     public function testUnsetUndisclosedFields()
@@ -257,7 +259,7 @@ class AuthLDAP extends DbTestCase
         $ldap     = new \AuthLDAP();
         $tabs     = $ldap->defineTabs();
         $expected = [
-            'AuthLDAP$main' => 'LDAP directory',
+            'AuthLDAP$main' => "<span><i class='far fa-address-book me-2'></i>LDAP directory</span>",
         ];
         $this->array($tabs)->isIdenticalTo($expected);
     }
@@ -266,7 +268,7 @@ class AuthLDAP extends DbTestCase
     {
         $ldap     = new \AuthLDAP();
         $options  = $ldap->rawSearchOptions();
-        $this->array($options)->hasSize(34);
+        $this->array($options)->hasSize(36);
     }
 
     public function testGetSyncFields()
@@ -546,11 +548,12 @@ class AuthLDAP extends DbTestCase
 
         $ldap   = getItemByTypeName('AuthLDAP', 'LDAP1');
         $result = $ldap->getTabNameForItem($ldap);
-        $expected = [1 => 'Test',
-            2 => 'Users',
-            3 => 'Groups',
-            5 => 'Advanced information',
-            6 => 'Replicates'
+        $expected = [
+            1 => "<span><i class='ti ti-stethoscope me-2'></i>Test</span>",
+            2 => "<span><i class='ti ti-user me-2'></i>Users</span>",
+            3 => "<span><i class='ti ti-user me-2'></i>Groups</span>",
+            5 => "<span><i class='far fa-address-book me-2'></i>Advanced information</span>",
+            6 => "<span><i class='far fa-address-book me-2'></i>Replicates</span>"
         ];
         $this->array($result)->isIdenticalTo($expected);
 
@@ -681,7 +684,7 @@ class AuthLDAP extends DbTestCase
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
 
-        $this->checkLdapConnection($ldap->connect());
+        $this->object($ldap->connect())->isInstanceOf('\LDAP\Connection');
     }
 
     /**
@@ -824,7 +827,7 @@ class AuthLDAP extends DbTestCase
          ->variable['is_active']->isEqualTo(true)
          ->variable['auths_id']->isEqualTo($ldap->getID())
          ->variable['authtype']->isEqualTo(\Auth::LDAP)
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->integer((int)$user->fields['usertitles_id'])->isGreaterThan(0);
         $this->integer((int)$user->fields['usercategories_id'])->isGreaterThan(0);
@@ -842,7 +845,7 @@ class AuthLDAP extends DbTestCase
         $ldap = $this->ldap;
 
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         // Invalid group
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
@@ -1062,7 +1065,7 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('ecuador0')
          ->string['phone']->isIdenticalTo('034596780')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
        // update the user in ldap (change phone number)
         $this->boolean(
@@ -1094,7 +1097,7 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('ecuador0')
          ->string['phone']->isIdenticalTo('+33101010101')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org');
 
        // update sync field of user
         $this->boolean(
@@ -1251,10 +1254,10 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('brazil6');
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //import user; then try to login
         $ldap = $this->ldap;
@@ -1286,13 +1289,13 @@ class AuthLDAP extends DbTestCase
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil7')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $auth = $this->login('brazil7', 'password', false, true);
 
         $this->boolean($auth->user_present)->isTrue();
-        $this->string($auth->user_dn)->isIdenticalTo(Sanitizer::unsanitize($user->fields['user_dn']));
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //change user login, and try again. Existing user should be updated.
         $this->boolean(
@@ -1322,14 +1325,14 @@ class AuthLDAP extends DbTestCase
         $this->boolean($user->getFromDB($user->getID()))->isTrue();
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('brazil7test')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean($auth->user_present)->isTrue();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
        //ensure duplicated DN on different authldaps_id does not prevent login
         $this->boolean(
-            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org'])
+            $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org'])
         )->isTrue();
 
         $dup = $user->fields;
@@ -1348,7 +1351,7 @@ class AuthLDAP extends DbTestCase
         $this->array($auth->user->fields)
          ->integer['auths_id']->isIdenticalTo($aid)
          ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org');
 
         global $DB;
         $DB->updateOrDie(
@@ -1477,28 +1480,78 @@ class AuthLDAP extends DbTestCase
     }
 
     /**
-     * Test removed users
+     * Data provider for testRemovedUser
+     *
+     * @return iterable
+     */
+    protected function testRemovedUserProvider(): iterable
+    {
+        $user_options = [
+            \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+            \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
+        ];
+
+        $groups_options = [
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
+            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
+        ];
+
+        $authorizations_options = [
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
+            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL,
+        ];
+
+        // Yield all possible combinations
+        foreach ($user_options as $user_option) {
+            foreach ($groups_options as $groups_option) {
+                foreach ($authorizations_options as $authorizations_option) {
+                    yield[$user_option, $groups_option, $authorizations_option];
+                }
+            }
+        }
+    }
+
+    /**
+     * Test expected behaviors when a user is deleted from ldap
      *
      * @extensions ldap
      *
+     * @dataprovider testRemovedUserProvider
+     *
+     * @param int $user_option_value
+     * @param int $groups_option_value
+     * @param int $authorizations_option_value
+     *
      * @return void
      */
-    public function testRemovedUser()
-    {
+    public function testRemovedUser(
+        int $user_option_value,
+        int $groups_option_value,
+        int $authorizations_option_value,
+    ): void {
         global $CFG_GLPI;
 
         $ldap = $this->ldap;
 
-       //put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap'] = 1;
+        // Set config
+        $CFG_GLPI['user_deleted_ldap_user'] = $user_option_value;
+        $CFG_GLPI['user_deleted_ldap_groups'] = $groups_option_value;
+        $CFG_GLPI['user_deleted_ldap_authorizations'] = $authorizations_option_value;
 
-       //add a new user in directory
+        // Unique user for each tests
+        $rand = mt_rand();
+        $uid = "toremovetest$rand";
+
+        // Add a new user in directory
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
-                'uid=toremovetest,ou=people,ou=R&D,dc=glpi,dc=org',
+                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org",
                 [
-                    'uid'          => 'toremovetest',
+                    'uid'          => $uid,
                     'sn'           => 'A SN',
                     'cn'           => 'A CN',
                     'userpassword' => 'password',
@@ -1510,26 +1563,189 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-       //import the user
+        // Import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
-                'value'  => 'toremovetest'
+                'value'  => $uid
             ],
             \AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+            ->integer['id']->isGreaterThan(0);
 
-       //check created user
+        // Check created user
         $user = new \User();
         $this->boolean($user->getFromDB($import['id']))->isTrue();
 
-       //check sync from an non reachable directory
+        // Add groups
+        $this->createItems("Group", [
+            ["name" => "Dyn group 1 $rand"],
+            ["name" => "Dyn group 2 $rand"],
+            ["name" => "Group 1 $rand"],
+            ["name" => "Group 2 $rand"],
+            ["name" => "Group 3 $rand"],
+        ]);
+        $dyn_group_1 = getItemByTypeName("Group", "Dyn group 1 $rand", true);
+        $dyn_group_2 = getItemByTypeName("Group", "Dyn group 2 $rand", true);
+        $group_1 = getItemByTypeName("Group", "Group 1 $rand", true);
+        $group_2 = getItemByTypeName("Group", "Group 2 $rand", true);
+        $group_3 = getItemByTypeName("Group", "Group 3 $rand", true);
+        $this->createItems("Group_User", [
+            ['users_id' => $import['id'], 'groups_id' => $dyn_group_1, "is_dynamic" => true],
+            ['users_id' => $import['id'], 'groups_id' => $dyn_group_2, "is_dynamic" => true],
+            ['users_id' => $import['id'], 'groups_id' => $group_1],
+            ['users_id' => $import['id'], 'groups_id' => $group_2],
+            ['users_id' => $import['id'], 'groups_id' => $group_3],
+        ]);
+
+        // Check groups have been assigned correctly
+        $gu = new Group_User();
+        $this->array($gu->find(['users_id' => $import['id']]))->hasSize(5);
+        $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+        $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+
+        // Create profiles
+        $this->createItems("Profile", [
+            ["name" => "Dyn profile 1 $rand"],
+            ["name" => "Profile 1 $rand"],
+            ["name" => "Profile 2 $rand"],
+        ]);
+        $dyn_profile_1 = getItemByTypeName("Profile", "Dyn profile 1 $rand", true);
+        $profile_1 = getItemByTypeName("Profile", "Profile 1 $rand", true);
+        $profile_2 = getItemByTypeName("Profile", "Profile 2 $rand", true);
+        $this->createItems("Profile_User", [
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $dyn_profile_1, "is_dynamic" => true],
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $profile_1],
+            ['entities_id' => 0, 'users_id' => $import['id'], 'profiles_id' => $profile_2],
+        ]);
+        // + 1 dyn profile that was already attributed on creation
+
+        // Check profiles have been assigned correctly
+        $pu = new Profile_User();
+        $this->array($pu->find(['users_id' => $import['id']]))->hasSize(4);
+        $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+        $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+
+        // Drop test user
+        $this->boolean(
+            ldap_delete(
+                $ldap->connect(),
+                "uid=$uid,ou=people,ou=R&D,dc=glpi,dc=org"
+            )
+        )->isTrue();
+
+        $synchro = $ldap->forceOneUserSynchronization($user);
+        $this->array($synchro)
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+            ->variable['id']->isEqualTo($import['id']);
+
+        // Refresh user
+        $user = new \User();
+        $user->getFromDB($import['id']);
+
+        // Check expected behavior according to user config
+        switch ($user_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(true);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(false);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(false);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(false);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN:
+                $this->boolean((bool)$user->fields['is_active'])->isEqualTo(true);
+                $this->boolean((bool)$user->fields['is_deleted'])->isEqualTo(true);
+                break;
+        }
+
+        // Check expected behavior according to groups config
+        switch ($groups_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(5);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(3);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(0);
+                $this->array($gu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(3);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL:
+                $this->array($gu->find(['users_id' => $import['id']]))->hasSize(0);
+                break;
+        }
+
+        // Check expected behavior according to authorizations config
+        switch ($authorizations_option_value) {
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(4);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(2);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(2);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => true]))->hasSize(0);
+                $this->array($pu->find(['users_id' => $import['id'], "is_dynamic" => false]))->hasSize(2);
+                break;
+
+            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL:
+                $this->array($pu->find(['users_id' => $import['id']]))->hasSize(0);
+                break;
+        }
+    }
+
+    public function testUnreachable(): void
+    {
+        $ldap = $this->ldap;
+
+        $this->boolean(
+            ldap_add(
+                $ldap->connect(),
+                'uid=testunreachable,ou=people,ou=R&D,dc=glpi,dc=org',
+                [
+                    'uid'          => 'testunreachable',
+                    'sn'           => 'A SN',
+                    'cn'           => 'A CN',
+                    'userpassword' => 'password',
+                    'objectClass'  => [
+                        'top',
+                        'inetOrgPerson'
+                    ]
+                ]
+            )
+        )->isTrue();
+
+        $import = \AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'testunreachable'
+            ],
+            \AuthLDAP::ACTION_IMPORT,
+            $ldap->getID(),
+            true
+        );
+        $this->array($import)
+            ->hasSize(2)
+            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+            ->integer['id']->isGreaterThan(0);
+
+        // Check created user
+        $user = new \User();
+        $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+        // Check sync from an non reachable directory
         $host = $ldap->fields['host'];
         $port = $ldap->fields['port'];
         $this->boolean(
@@ -1552,38 +1768,10 @@ class AuthLDAP extends DbTestCase
                 ->withMessage("Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
             ->exists();
 
-        //reset directory configuration
-        $this->boolean(
-            $ldap->update([
-                'id'     => $ldap->getID(),
-                'host'   => $host,
-                'port'   => $port
-            ])
-        )->isTrue();
-
-       //check that user still exists
+        // Check that user still exists
         $uid = $import['id'];
         $this->boolean($user->getFromDB($uid))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
-
-       //drop test user
-        $this->boolean(
-            ldap_delete(
-                $ldap->connect(),
-                'uid=toremovetest,ou=people,ou=R&D,dc=glpi,dc=org'
-            )
-        )->isTrue();
-
-        $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
-         ->variable['id']->isEqualTo($uid);
-        $CFG_GLPI['user_deleted_ldap'] = 0;
-
-       //check that user no longer exists
-        $this->boolean($user->getFromDB($uid))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
     }
 
     /**
@@ -1599,7 +1787,7 @@ class AuthLDAP extends DbTestCase
 
         $ldap = $this->ldap;
 
-       //add a new user in directory
+        // add a new user in directory
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
@@ -1617,7 +1805,7 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-       //import the user
+        // import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -1632,13 +1820,13 @@ class AuthLDAP extends DbTestCase
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
          ->integer['id']->isGreaterThan(0);
 
-       //check created user
+        // check created user
         $user = new \User();
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
         $this->boolean((bool)$user->fields['is_deleted_ldap'])->isFalse();
 
-       // delete the user in LDAP
+        // delete the user in LDAP
         $this->boolean(
             ldap_delete(
                 $ldap->connect(),
@@ -1646,22 +1834,22 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
-       //put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap'] = 1;
+        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap_user'] ?? \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
+        // put deleted LDAP users in trashbin
+        $CFG_GLPI['user_deleted_ldap_user'] = \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
+        $CFG_GLPI['user_deleted_ldap_user'] = $user_deleted_ldap_original;
         $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
 
-       //reload user from DB
+        // reload user from DB
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
         $this->boolean((bool)$user->fields['is_deleted_ldap'])->isTrue();
 
-       // manually re-add the user in LDAP to simulate a restore
+        // manually re-add the user in LDAP to simulate a restore
         $this->boolean(
             ldap_add(
                 $ldap->connect(),
@@ -1688,7 +1876,7 @@ class AuthLDAP extends DbTestCase
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
          ->variable['id']->isEqualTo($import['id']);
 
-       //reload user from DB
+        // reload user from DB
         $this->boolean($user->getFromDB($import['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
     }
@@ -1697,7 +1885,7 @@ class AuthLDAP extends DbTestCase
     {
         global $DB;
 
-        $iterator = $DB->request(\SsoVariable::getTable());
+        $iterator = $DB->request(['FROM' => \SsoVariable::getTable()]);
         $sso_vars = [];
         foreach ($iterator as $current) {
             $sso_vars[] = [$current['id'], $current['name']];
@@ -1830,7 +2018,7 @@ class AuthLDAP extends DbTestCase
 
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('verylongdn')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean(
             ldap_modify(
@@ -1850,7 +2038,7 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('verylongdn')
          ->string['phone']->isIdenticalTo('+33102020202')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org');
 
        //drop test user
         $this->boolean(
@@ -1934,7 +2122,7 @@ class AuthLDAP extends DbTestCase
 
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('Тестов Тест Тестович')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org');
 
         $this->boolean(
             ldap_modify(
@@ -1954,7 +2142,7 @@ class AuthLDAP extends DbTestCase
         $this->array($user->fields)
          ->string['name']->isIdenticalTo('Тестов Тест Тестович')
          ->string['phone']->isIdenticalTo('+33103030303')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org');
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org');
 
        //drop test user
         $this->boolean(
@@ -2078,7 +2266,7 @@ class AuthLDAP extends DbTestCase
        // lowercase ("," -> \2c) but some ldap software store them in uppercase
         $this
          ->string(strtolower($manager->fields['user_dn']))
-         ->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars(strtolower($manager_full_dn)));
+         ->isIdenticalTo(strtolower($manager_full_dn));
 
        // Check created user
         $user = new \User();
@@ -2087,7 +2275,7 @@ class AuthLDAP extends DbTestCase
         $this
          ->array($user->fields)
          ->string['name']->isIdenticalTo($user_entry['uid'])
-         ->string['user_dn']->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars($user_full_dn))
+         ->string['user_dn']->isIdenticalTo($user_full_dn)
          ->integer['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
 
        // Drop both
@@ -2181,6 +2369,59 @@ class AuthLDAP extends DbTestCase
         $this->array($gus)->hasSize(1);
     }
 
+
+    /**
+     * Test if ruleright '_groups_id' criteria is working
+     *
+     * @return void
+     */
+    public function testRuleRightGroupCriteria()
+    {
+
+        // create manual group
+        $group = $this->createItem(Group::class, [
+            'name'         => "test",
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $group_id = $group->getID();
+
+        // create RuleRight
+        $builder = new RuleBuilder('Test _groups_id criteria', RuleRight::class);
+        $builder->addCriteria('_groups_id', \Rule::PATTERN_IS, $group_id);
+        $builder->addAction('assign', 'profiles_id', 4); // Super admin
+        $builder->addAction('assign', 'entities_id', 1);
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // login the user to force a real synchronisation (and creation into DB)
+        $this->login('brazil7', 'password', false);
+        $users_id = \User::getIdByName('brazil7');
+
+        // Add group to user
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group_id,
+            'users_id'  => $users_id,
+        ]);
+
+        // Check that the user is not attached to the profile at creation
+        $rights = (new Profile_User())->find([
+            'users_id' => $users_id,
+            'profiles_id' => 4,
+        ]);
+        $this->array($rights)->hasSize(0);
+
+        // Log in again to trigger rule
+        $this->login('brazil7', 'password', false);
+
+        // Check that the correct profile was set
+        $rights = (new Profile_User())->find([
+            'users_id' => $users_id,
+            'profiles_id' => 4,
+        ]);
+
+        $this->array($rights)->hasSize(1);
+    }
     /**
      * @extensions ldap
      */
@@ -2193,10 +2434,10 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('brazil5');
         $this->array($user->fields)
             ->string['name']->isIdenticalTo('brazil5')
-            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
-        $this->checkLdapConnection($auth->ldap_connection);
+        $this->object($auth->ldap_connection)->isInstanceOf('\LDAP\Connection');
 
         // Add a second LDAP server that is accessible but where user will not be found.
         $input = $this->ldap->fields;
@@ -2263,7 +2504,7 @@ class AuthLDAP extends DbTestCase
         $user->getFromDBbyName('logintest');
         $this->array($user->fields)
             ->string['name']->isIdenticalTo('logintest')
-            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org');
         $this->boolean($auth->user_present)->isFalse();
         $this->boolean($auth->user_dn)->isFalse();
         $this->checkLdapConnection($auth->ldap_connection);
@@ -2347,6 +2588,13 @@ class AuthLDAP extends DbTestCase
             'name' => 'manager',
         ]);
         $this->array($uts)->hasSize(0);
+    }
+
+    public function testGetLdapDateValue()
+    {
+        $auth = new \AuthLDAP();
+        $this->string($auth->getLdapDateValue('20230224150800.0Z'))->isIdenticalTo('2023-02-24 15:08:00');
+        $this->string($auth->getLdapDateValue('133217216420000000'))->isIdenticalTo('2023-02-24 14:14:02');
     }
 
     protected function connectToServerErrorsProvider(): iterable
@@ -2465,7 +2713,7 @@ class AuthLDAP extends DbTestCase
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $error = implode(
             "\n",
@@ -2528,7 +2776,7 @@ class AuthLDAP extends DbTestCase
     ) {
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $this->when(
             function () use ($connection, $basedn, $filter) {
@@ -2614,7 +2862,7 @@ class AuthLDAP extends DbTestCase
         $ldap->fields = array_merge($ldap->fields, $config_fields);
 
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $this->when(
             function () use ($ldap, $connection, $basedn, $filter) {
@@ -2679,7 +2927,7 @@ class AuthLDAP extends DbTestCase
     ) {
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $this->when(
             function () use ($connection, $options) {
@@ -2768,7 +3016,7 @@ class AuthLDAP extends DbTestCase
         $ldap->fields = array_merge($ldap->fields, $config_fields);
 
         $connection = $ldap->connect();
-        $this->checkLdapConnection($connection);
+        $this->object($connection)->isInstanceOf('\LDAP\Connection');
 
         $this->when(
             function () use ($ldap, $connection, $filter) {

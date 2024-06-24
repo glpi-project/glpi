@@ -86,6 +86,7 @@ $stat_params = [
     'date2'    => $_GET['date2'],
 ];
 
+echo "<div class='text-center mt-3'>";
 $stat->displayLineGraphFromData(new StatDataTicketNumber($stat_params));
 $stat->displayLineGraphFromData(new StatDataTicketAverageTime($stat_params));
 
@@ -93,5 +94,6 @@ if ($_GET['itemtype'] == 'Ticket') {
     $stat->displayLineGraphFromData(new StatDataSatisfaction($stat_params));
     $stat->displayLineGraphFromData(new StatDataAverageSatisfaction($stat_params));
 }
+echo "</div>";
 
 Html::footer();

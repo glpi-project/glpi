@@ -33,7 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
 
 $AJAX_INCLUDE = 1;
 
@@ -46,6 +49,6 @@ Session::checkLoginUser();
 if (isset($_POST['name'])) {
     echo "<textarea " . (isset($_POST['rows']) ? " rows='" . $_POST['rows'] . "' " : "") . " " .
          (isset($_POST['cols']) ? " cols='" . $_POST['cols'] . "' " : "") . "  name='" . $_POST['name'] . "'>";
-    echo Html::cleanPostForTextArea(Sanitizer::encodeHtmlSpecialChars(rawurldecode(($_POST["data"]))));
+    echo htmlspecialchars(rawurldecode(($_POST["data"])));
     echo "</textarea>";
 }

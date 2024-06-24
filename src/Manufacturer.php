@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /// Class Manufacturer
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown
 {
+    use Clonable;
+
     public $can_be_translated = false;
 
 
@@ -51,6 +55,7 @@ class Manufacturer extends CommonDropdown
 
         switch ($field['type']) {
             case 'registeredIDChooser':
+                RegisteredID::showAddChildButtonForItemForm($this, '_registeredID');
                 RegisteredID::showChildsForItemForm($this, '_registeredID');
                 break;
         }
@@ -60,16 +65,12 @@ class Manufacturer extends CommonDropdown
     public function getAdditionalFields()
     {
 
-        return [['name'  => 'none',
-            'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
-                                       RegisteredID::showAddChildButtonForItemForm(
-                                           $this,
-                                           '_registeredID',
-                                           null,
-                                           false
-                                       ),
-            'type'  => 'registeredIDChooser'
-        ]
+        return [
+            [
+                'name'  => 'none',
+                'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
+                'type'  => 'registeredIDChooser'
+            ]
         ];
     }
 
@@ -134,9 +135,9 @@ class Manufacturer extends CommonDropdown
 
 
     /**
-     * @param null|string $old_name  Old name (need to be addslashes)
+     * @param null|string $old_name  Old name
      *
-     * @return null|string new addslashes name
+     * @return null|string new name
      **/
     public static function processName($old_name)
     {
@@ -148,7 +149,7 @@ class Manufacturer extends CommonDropdown
         $rulecollection = new RuleDictionnaryManufacturerCollection();
         $output         = [];
         $output         = $rulecollection->processAllRules(
-            ["name" => stripslashes($old_name)],
+            ["name" => $old_name],
             $output,
             []
         );
@@ -224,5 +225,10 @@ class Manufacturer extends CommonDropdown
                 $father
             );
         }
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

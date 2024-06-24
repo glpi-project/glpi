@@ -93,7 +93,7 @@ class ProjectTaskTeam extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
-                    return self::createTabEntry(self::getTypeName(1), $nb);
+                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
             }
         }
         return '';
@@ -172,7 +172,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['itemtype'])) {
             Session::addMessageAfterRedirect(
-                __('An item type is mandatory'),
+                __s('An item type is mandatory'),
                 false,
                 ERROR
             );
@@ -181,7 +181,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['items_id'])) {
             Session::addMessageAfterRedirect(
-                __('An item ID is mandatory'),
+                __s('An item ID is mandatory'),
                 false,
                 ERROR
             );
@@ -190,7 +190,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['projecttasks_id'])) {
             Session::addMessageAfterRedirect(
-                __('A project task is mandatory'),
+                __s('A project task is mandatory'),
                 false,
                 ERROR
             );

@@ -1,0 +1,214 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set field_options = {
+        field_class: _request['in_modal'] ? 'col-12' : 'col-12 col-sm-6',
+        label_class: _request['in_modal'] ? 'col-2' : 'col-4',
+        input_class: _request['in_modal'] ? 'col-10' : 'col-8',
+    } %}
+    {% macro null_field() %}
+        {% if not _request['in_modal'] %}
+            {{ fields.nullField() }}
+        {% endif %}
+    {% endmacro %}
+
+    {% if params.canedit %}
+        {{ fields.dropdownField(
+            'PlanningExternalEventTemplate',
+            'planningexternaleventtemplates_id',
+            item.fields['planningexternaleventtemplates_id'],
+            'PlanningExternalEventTemplate'|itemtype_name(1),
+            {
+                entity: item.getEntityID(),
+                rand: rand,
+                onchange: 'template_update' ~ rand ~ '(this.value);'
+            }|merge(field_options)
+        ) }}
+        {{ _self.null_field() }}
+        <script>
+            function template_update{{ rand }}(value) {
+                $.ajax({
+                    url: "{{ path('ajax/planning.php')|e('js') }}",
+                    type: 'POST',
+                    data: {
+                        action: 'get_externalevent_template',
+                        planningexternaleventtemplates_id: value
+                    }
+                }).then((data) => {
+                    // Set common fields
+                    if (data.name.length > 0) {
+                        $('#textfield_name{{ rand }}').val(data.name);
+                    }
+                    $('#dropdown_state{{ rand }}').trigger('setValue', data.state);
+                    if (data.planningeventcategories_id > 0) {
+                        $("#dropdown_planningeventcategories_id{{ rand }}")
+                            .trigger("setValue", data.planningeventcategories_id);
+                    }
+                    $("#dropdown_background{{ rand }}").trigger("setValue", data.background);
+                    if (data.text.length > 0) {
+                        setRichTextEditorContent("text{$rand}", data.text);
+                    }
+
+                    // set planification fields
+                    if (data.duration > 0) {
+                        $("#dropdown_plan__duration_{{ rand_plan }}").trigger("setValue", data.duration);
+                    }
+                    $("#dropdown__planningrecall_before_time_{{ rand_plan }}")
+                        .trigger("setValue", data.before_time);
+
+                    // set rrule fields
+                    if (data.rrule != null
+                        && data.rrule.freq != null ) {
+                        $("#dropdown_rrule_freq_{{ rand_rrule }}").trigger("setValue", data.rrule.freq);
+                        $("#dropdown_rrule_interval_{{ rand_rrule }}").trigger("setValue", data.rrule.interval);
+                        $("#showdate{{ rand_rrule }}").val(data.rrule.until);
+                        $("#dropdown_rrule_byday_{{ rand_rrule }}").val(data.rrule.byday).trigger('change');
+                        $("#dropdown_rrule_bymonth_{{ rand_rrule }}").val(data.rrule.bymonth).trigger('change');
+                    }
+                });
+            }
+        </script>
+    {% endif %}
+
+    {% if params.start is defined %}
+        <input type="hidden" name="day" value="{{ params.start }}">
+    {% endif %}
+
+    {% if params.canedit %}
+        {{ fields.textField('name', item.fields['name'], __('Title'), {
+            id: 'textfield_name' ~ rand,
+        }|merge(field_options)) }}
+    {% else %}
+        {{ fields.htmlField('', item.fields['name']|e, __('Title'), field_options) }}
+    {% endif %}
+    {{ _self.null_field() }}
+
+    {% if params.from_planning_edit_ajax is defined and params.from_planning_edit_ajax %}
+        <input type="hidden" name="from_planning_edit_ajax" value="1">
+    {% endif %}
+
+    {{ fields.dropdownField('User', 'users_id', item.fields['users_id'], 'User'|itemtype_name(1), {
+        right: 'all'
+    }|merge(field_options)) }}
+    {{ _self.null_field() }}
+
+    {{ fields.dropdownField('User', 'users_id_guests[]', item.fields['users_id_guests'], __('Guests'), {
+        right: 'all',
+        multiple: true,
+        helper: __("Each guest will have a read-only copy of this event")
+    }|merge(field_options)) }}
+    {{ _self.null_field() }}
+
+    {% set status_field %}
+        {% if params.canedit %}
+            {% do call('Planning::dropdownState', ['state', item.fields['state'], true, {
+                rand: rand,
+            }]) %}
+        {% else %}
+            {{ call('Planning::getState', [item.fields['state']])|e }}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', status_field, __('Status'), field_options) }}
+    {{ _self.null_field() }}
+
+    {% set category_field %}
+        {% if params.canedit %}
+            {{ fields.dropdownField('PlanningEventCategory', 'planningeventcategories_id', item.fields['planningeventcategories_id'], null, {
+                no_label: true,
+                rand: rand
+            }) }}
+        {% else %}
+            {{ get_item_name('PlanningEventCategory', item.fields['planningeventcategories_id']) }}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', category_field, _n('Category', 'Categories', 1), field_options) }}
+    {{ _self.null_field() }}
+
+    {% set bg_event_field %}
+        {% if params.canedit %}
+            {{ fields.dropdownYesNo('background', item.fields['background'], null, {
+                no_label: true,
+                rand: rand
+            }) }}
+        {% else %}
+            {{ item.fields['background'] ? __('Yes')|e : __('No')|e }}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', bg_event_field, __('Background event'), field_options) }}
+    {{ _self.null_field() }}
+
+    {% set calendar_field %}
+        {% do call('Planning::showAddEventClassicForm', [{
+            items_id: item.getID(),
+            itemtype: get_class(item),
+            begin: item.fields['begin'],
+            end: item.fields['end'],
+            rand_user: item.fields['users_id'],
+            rand: rand_plan,
+        }]) %}
+    {% endset %}
+    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), {
+        label_class: 'col-4'
+    }|merge(field_options)) }}
+    {{ _self.null_field() }}
+
+    {{ fields.htmlField('', call('PlanningExternalEvent::showRepetitionForm', [item.fields['rrule']|default(''), {
+        rand: rand_rrule,
+    }]), __('Repeat'), {
+        full_width: true,
+        label_class: 'col-2'
+    }) }}
+    {{ _self.null_field() }}
+
+    {% if params.canedit %}
+        {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), {
+            full_width: true,
+            label_class: 'col-2',
+            input_class: 'col-10',
+            editor_id: 'text' ~ rand,
+            enable_richtext: true,
+            enable_fileupload: true,
+            rand: rand
+        }) }}
+    {% else %}
+        {{ fields.htmlField('', item.fields['text']|enhanced_html, __('Description'), {
+            full_width: true,
+            label_class: 'col-2',
+            input_class: 'col-10',
+        }) }}
+    {% endif %}
+{% endblock %}

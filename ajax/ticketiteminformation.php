@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var bool|null $AJAX_INCLUDE
+ */
+global $AJAX_INCLUDE;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
     $AJAX_INCLUDE = 1;
@@ -40,8 +45,6 @@ if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }
-
-Session::checkLoginUser();
 
 if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
     $splitter = explode("_", $_POST["my_items"]);
@@ -61,8 +64,9 @@ if (
     }
 
     $days   = 3;
+
     $ticket = new Ticket();
-    $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem(
+    $data   = $ticket->getActiveOrSolvedLastDaysForItem(
         $_POST['itemtype'],
         $_POST['items_id'],
         $days

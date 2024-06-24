@@ -42,15 +42,18 @@ if (!defined('GLPI_ROOT')) {
 }
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
-include_once(GLPI_ROOT . "/inc/db.function.php");
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**
  * @var \DBmysql $DB
  * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var \Update $update
+ * @var bool $HEADER_LOADED
  */
-global $DB, $GLPI, $GLPI_CACHE;
+global $DB, $GLPI, $GLPI_CACHE,
+    $update,
+    $HEADER_LOADED;
 
 $GLPI = new GLPI();
 $GLPI->initLogger();
@@ -59,6 +62,8 @@ $GLPI->initErrorHandler();
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 Config::detectRootDoc();
+
+Session::checkCookieSecureConfig();
 
 if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
     $DB = new DB();
@@ -75,37 +80,6 @@ if (isset($_POST['update_end'])) {
         Telemetry::enable();
     }
     header('Location: ../index.php');
-}
-
-/* ----------------------------------------------------------------- */
-
-/*---------------------------------------------------------------------*/
-/**
- * To be conserved to migrations before 0.80
- * since 0.80, migration is a new class
- **/
-function displayMigrationMessage($id, $msg = "")
-{
-    static $created = 0;
-    static $deb;
-
-    if ($created != $id) {
-        if (empty($msg)) {
-            $msg = __('Work in progress...');
-        }
-        echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
-        $created = $id;
-        $deb     = time();
-    } else {
-        if (empty($msg)) {
-            $msg = __('Task completed.');
-        }
-        $fin = time();
-        $tps = Html::timestampToString($fin - $deb);
-        echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML =
-             '<p class=\"center\" >$msg ($tps)</p>';</script>\n";
-    }
-    Html::glpi_flush();
 }
 
 

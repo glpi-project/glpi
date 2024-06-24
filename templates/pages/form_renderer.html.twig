@@ -1,0 +1,185 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Is this a single or multi sections forms ? #}
+{% set is_single_section_form = form.getSections()|length == 1 %}
+
+<form id="forms_form_answers" method="POST" action="{{ path("ajax/form/answer.php") }}">
+
+    <div class="container container-narrow form-renderer">
+
+        {# Form header: title and description #}
+        <div
+            class="card mb-3"
+            data-glpi-form-renderer-form-header
+        >
+            <div class="card-status-top bg-primary"></div>
+
+            <div class="card-body">
+                <h1 class="form-title"> {{ form.fields.name }} </h1>
+
+                <div class="text-muted form-description">
+                    {{ form.fields.header|safe_html }}
+                </div>
+            </div>
+        </div>
+
+        {% for section in form.getSections() %}
+            {# Is this the first section of a form ? #}
+            {% set is_first_section = loop.index0 == 0 %}
+            {% set section_index = loop.index0 %}
+
+            <div
+                class="{{ is_first_section and not is_single_section_form ? "" : "d-none" }}"
+                data-glpi-form-renderer-section="{{ section_index }}"
+            >
+                <div
+                    class="bg-primary px-2 py-1 rounded-top "
+                    style="width: fit-content;"
+                >
+                    {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                </div>
+                <div
+                    class="card mb-3"
+                >
+                    <div class="card-body">
+
+                        <h2>{{ section.fields.name }}</h2>
+
+                        <div class="text-muted section-description">
+                            {{ section.fields.description|safe_html }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for form_block in section.getBlocks() %}
+                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                    {% set question_type = form_block.getQuestionType() %}
+                {% endif %}
+
+                {# Skip unknown types (may be a disabled plugin) #}
+                {% if form_block is not instanceof('Glpi\\Form\\Question') or question_type is not null %}
+                    <div
+                        class="card mb-3 {{ is_first_section ? "" : "d-none" }}"
+                        data-glpi-form-renderer-parent-section="{{ section_index }}"
+                    >
+                        <div class="card-body">
+                            <h3>
+                                {{ form_block.fields.name }}
+                                {% if form_block.fields.is_mandatory %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </h3>
+
+                            {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                <div class="mb-2">
+                                    {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                </div>
+                            {% endif %}
+
+                            <div class="text-muted block-description">
+                                {{ form_block.fields.description|safe_html }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+
+        {# Form reference #}
+        <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
+
+        {# Actions #}
+        <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>
+            <button
+                type="button"
+                data-glpi-form-renderer-action="previous-section"
+                class="btn btn-ghost-secondary d-none me-2"
+            >
+                {{ __("Back") }}
+            </button>
+
+            <button
+                type="button"
+                data-glpi-form-renderer-action="next-section"
+                class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
+            >
+                {{ __("Continue") }}
+            </button>
+
+            <button
+                type="button"
+                data-glpi-form-renderer-action="submit"
+                class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+            >
+                {{ __("Send form") }}
+            </button>
+        </div>
+
+        {# Final "success" confirmation #}
+        <div
+            class="empty d-none mt-5"
+            data-glpi-form-renderer-success
+        >
+            <div class="empty-title d-flex align-items-center">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon text-green icon-lg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                    <path d="M9 12l2 2l4 -4"></path>
+                </svg>
+                <span class="ms-2"> {{ __("Form submitted") }} </span>
+            </div>
+            <p class="empty-subtitle text-secondary">
+                {{ __("Your form has been submitted successfully.") }}
+            </p>
+        </div>
+    </div>
+</form>
+
+<script>
+    new GlpiFormRendererController($('#forms_form_answers'));
+</script>
+

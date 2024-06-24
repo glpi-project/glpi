@@ -1,0 +1,103 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set session_get_plural = get_plural_number() %}
+
+<form name="form" action="{{ 'Config'|itemtype_form_path }}" method="post" data-track-changes="true">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="ti ti-adjustments me-1"></i>{{ __('Authentication setup') }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {{ fields.dropdownYesNo(
+                        'is_users_auto_add',
+                        config('is_users_auto_add'),
+                        __('Automatically add users from an external authentication source'),
+                    ) }}
+                    {{ fields.dropdownYesNo(
+                        'use_noright_users_add',
+                        config('use_noright_users_add'),
+                        __('Add a user without accreditation from a LDAP directory'),
+                    ) }}
+
+                    {{ fields.dropdownArrayField(
+                        'user_restored_ldap',
+                        config('user_restored_ldap'),
+                        user_restored_ldap_choices,
+                        __('Action when a user is restored in the LDAP directory'),
+                    ) }}
+                    {{ fields.dropdownArrayField(
+                        'time_offset',
+                        config('time_offset'),
+                        gmt_values,
+                        __('GLPI server time zone'),
+                    ) }}
+
+                    <div class="hr-text">
+                        <i class="ti ti-trash"></i>
+                        <span>{{ __('Actions when a user is deleted from the LDAP directory') }}</span>
+                    </div>
+
+                    {{ fields.dropdownArrayField(
+                        'user_deleted_ldap_user',
+                        config('user_deleted_ldap_user'),
+                        user_deleted_ldap_user_choices,
+                        'User'|itemtype_name,
+                    ) }}
+                    {{ fields.dropdownArrayField(
+                        'user_deleted_ldap_groups',
+                        config('user_deleted_ldap_groups'),
+                        user_deleted_ldap_groups_choices,
+                        'Group'|itemtype_name(session_get_plural),
+                    ) }}
+
+                    {{ fields.dropdownArrayField(
+                        'user_deleted_ldap_authorizations',
+                        config('user_deleted_ldap_authorizations'),
+                        user_deleted_ldap_authorizations_choices,
+                        _n('Authorization', 'Authorizations', session_get_plural),
+                    ) }}
+                </div>
+            </div>
+            <div class="card-footer d-flex">
+                <input type="submit" name="update_auth" class="btn btn-primary ms-auto" value="{{ _x('button', 'Save') }}">
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="_glpi_csrf_token" value="{{ token }}">
+</form>
+
+

@@ -1,0 +1,154 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% set params = params|merge({
+    addbuttons: {
+        get_mails: {
+            text: _x('button', 'Get email tickets now'),
+            add_attribs: {
+                'data-block-on-unsaved': 'true',
+            }
+        }
+    },
+    formoptions: 'data-track-changes="true"'
+}) %}
+
+{% block form_fields %}
+    {% if item.fields['errors'] %}
+        <div class="alert alert-danger">{{ __('%1$s: %2$s')|format(_n('Error', 'Errors', get_plural_number()), item.fields['errors']) }}</div>
+    {% endif %}
+   {{ fields.textField('name', item.fields['name'], __('Name'), {
+      helper: __('If the name is a valid email address, it will be automatically added to blacklisted senders.')
+   }) }}
+   {{ fields.nullField() }}
+   {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+   {{ fields.textField('login', item.fields['login'], __('Login')) }}
+   {{ fields.passwordField('passwd', '', __('Password'), {
+      clearable: not item.isNewItem,
+      'additional_attributes': {
+         'autocomplete': 'new-password',
+      }
+   }) }}
+
+   {% set connect_opts = call('Toolbox::parseMailServerConnectString', [item.fields['host']]) %}
+   {{ fields.nullField() }}
+   {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
+      'connect_opts': connect_opts,
+      'host': item.fields['host']
+   }) }}
+   {% if connect_opts['type'] != 'pop' %}
+      {% set get_imap_folder_btn %}
+         <div class="btn btn-outline-secondary get-imap-folder cursor-pointer">
+            <i class="fa fa-list"></i>
+         </div>
+      {% endset %}
+      {{ fields.textField('accepted_folder', item.fields['accepted'], __('Accepted mail archive folder (optional)'), {
+         add_field_html: get_imap_folder_btn,
+         input_class: 'col-xxl-7 d-flex'
+      }) }}
+      {{ fields.textField('refused_folder', item.fields['refused'], __('Refused mail archive folder (optional)'), {
+         add_field_html: get_imap_folder_btn,
+         input_class: 'col-xxl-7 d-flex'
+      }) }}
+   {% endif %}
+
+   {% set max_filesize_dropdown %}
+      {% do call('MailCollector::showMaxFilesize', ['filesize_max', item.fields['filesize_max']]) %}
+   {% endset %}
+   {{ fields.htmlField('', max_filesize_dropdown, __('Maximum size of each file imported by the mails receiver'), field_options) }}
+   {{ fields.dropdownYesNo('use_mail_date', item.fields['use_mail_date'], __('Use mail date, instead of collect one')) }}
+   {{ fields.dropdownArrayField('requester_field', item.fields['requester_field'], {
+      (constant('MailCollector::REQUESTER_FIELD_FROM')): __('No'),
+      (constant('MailCollector::REQUESTER_FIELD_REPLY_TO')): __('Yes'),
+   }, __('Use Reply-To as requester (when available)')) }}
+   {{ fields.dropdownYesNo('add_cc_to_observer', item.fields['add_cc_to_observer'], __('Add CC users as observer')) }}
+   {{ fields.dropdownYesNo('collect_only_unread', item.fields['collect_only_unread'], __('Collect only unread mail')) }}
+   {% set create_user_helper %}
+      {% if not config('is_users_auto_add') %}
+         {{ __('If you use this option, and this collector is likely to receive requests from users authenticating via LDAP, we advise you to activate the option "Automatically add users from an external authentication source", in the Authentication settings in order to avoid the generation of duplicate users.') }}
+      {% endif %}
+   {% endset %}
+   {{ fields.dropdownYesNo('create_user_from_email', item.fields['create_user_from_email'], __('Automatically create user from email'), {
+      helper: create_user_helper|trim|default(null)
+   }) }}
+   {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
+
+   {% if connect_opts['type'] != 'pop' %}
+      <script>
+          $(function() {
+              $(document).on('click', '.get-imap-folder', function() {
+                  const input = $(this).prev('input');
+
+                  let data = 'action=getFoldersList';
+                  data += '&input_id=' + input.attr('id');
+                  // Get form values without server_mailbox value to prevent filtering
+                  data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
+                  // Force empty value for server_mailbox
+                  data += '&server_mailbox=';
+
+                  glpi_ajax_dialog({
+                      title: __('Select a folder'),
+                      url: '{{ path('/ajax/mailcollector.php') }}',
+                      params: data,
+                      id: input.attr('id') + '_modal'
+                  });
+              });
+
+              $(document).on('click', '.select_folder li', function(event) {
+                  event.stopPropagation();
+
+                  const li       = $(this);
+                  const input_id = li.data('input-id');
+                  const folder   = li.children('.folder-name').html();
+
+                  let _label = '';
+                  const _parents = li.parents('li').children('.folder-name');
+                  for (i = _parents.length -1 ; i >= 0; i--) {
+                      _label += $(_parents[i]).html() + '/';
+                  }
+                  _label += folder;
+
+                  $('#'+input_id).val(_label);
+
+                  const modalEl = $('#'+input_id+'_modal')[0];
+                  const modal = bootstrap.Modal.getInstance(modalEl);
+                  modal.hide();
+              })
+          });
+      </script>
+   {% endif %}
+{% endblock %}

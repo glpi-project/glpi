@@ -44,8 +44,8 @@ if (empty($_GET["id"])) {
 Session::checkLoginUser();
 
 // as _actors virtual field stores json, bypass automatic escaping
-if (isset($_UPOST['_actors'])) {
-    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+if (isset($_POST['_actors'])) {
+    $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
@@ -126,7 +126,7 @@ if (isset($_POST["add"])) {
     }
 } else if (isset($_POST['addme_observer'])) {
     $problem->check($_POST['problems_id'], READ);
-    $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+    $input = array_merge($problem->fields, [
         'id' => $_POST['problems_id'],
         '_itil_observer' => [
             '_type' => "user",
@@ -173,14 +173,14 @@ if (isset($_POST["add"])) {
             'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
-            $document_item->delete(Toolbox::addslashes_deep($item), true);
+            $document_item->delete($item, true);
         }
     }
     Html::back();
 } else if (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $problem->check($id, READ);
-    $input = array_merge(Toolbox::addslashes_deep($problem->fields), [
+    $input = array_merge($problem->fields, [
         'id' => $id,
         '_itil_' . $_POST['actortype'] => [
             '_type' => "user",
@@ -199,6 +199,13 @@ if (isset($_POST["add"])) {
     );
     Html::redirect(Problem::getFormURLWithID($id));
 } else {
+    // Add a problem from item : format data
+    if (
+        isset($_REQUEST['_add_fromitem'], $_REQUEST['itemtype'], $_REQUEST['items_id'])
+    ) {
+        $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+    }
+
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
         $problem::showKanban(0);

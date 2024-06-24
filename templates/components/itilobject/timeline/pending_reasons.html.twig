@@ -34,9 +34,10 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
+   {% set default_pending = call('PendingReason::getDefault') %}
    {% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
    {% set pending_item_parent = call('PendingReason_Item::getForItem', [item, true]) %}
-   {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? 0 %}
+   {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? default_pending.fields['id'] ?? 0 %}
 
    <div class="row">
       <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
@@ -73,29 +74,44 @@
                'add_field_html': pending_reasons_id_script
             }
          ) }}
-         <script>
-            $('#dropdown_pendingreasons_id{{ rand }}').change(function() {
-               var pending_val = $(this).val();
+         <script type="module">
+            // Initialize a flag to check if the pending reasons dropdown has been initialized
+            let pendingReasonsInitalized{{ rand }} = false;
+
+            let handlePendingReasonsChange{{ rand }} = async () => {
+               let pending_val = $('#dropdown_pendingreasons_id{{ rand }}').val();
+
                if (pending_val > 0) {
                   $('#pending-reasons-more_options_{{ rand }}').addClass('show');
-                  $.ajax({
+                  let data = await $.ajax({
                      url: '{{ path("ajax/pendingreason.php") }}',
                      type: 'POST',
                      data: {
                         pendingreasons_id: pending_val
                      }
-                  }).done(function(data) {
-                     $('#dropdown_followup_frequency{{ rand }}')
-                        .val(data.followup_frequency)
-                        .trigger('change');
-                     $('#dropdown_followups_before_resolution{{ rand }}')
-                        .val(data.followups_before_resolution)
-                        .trigger('change');
                   });
+
+                  $('#dropdown_followup_frequency{{ rand }}')
+                     .val(data.followup_frequency)
+                     .trigger('change');
+                  $('#dropdown_followups_before_resolution{{ rand }}')
+                     .val(data.followups_before_resolution)
+                     .trigger('change');
                } else {
                   $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
                }
-            });
+            }
+
+            await handlePendingReasonsChange{{ rand }}();
+
+            // If this is the first time the dropdown is being initialized
+            // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
+            if (!pendingReasonsInitalized{{ rand }}) {
+               pendingReasonsInitalized{{ rand }} = true;
+               window.glpiUnsavedFormChanges = false;
+            }
+
+            $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
          </script>
       </div>
 
