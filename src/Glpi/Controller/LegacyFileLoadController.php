@@ -34,11 +34,11 @@
 
 namespace Glpi\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Glpi\DependencyInjection\PublicService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class LegacyFileLoadController extends AbstractController
+final class LegacyFileLoadController implements PublicService
 {
     public const REQUEST_FILE_KEY = '_glpi_file_to_load';
 
