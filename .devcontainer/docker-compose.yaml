@@ -46,7 +46,7 @@ services:
     environment:
       CONNECTIONS: con_glpi
 
-      LABEL_con_glpi: MySql
+      LABEL_con_glpi: GLPI Mysql Server
       SERVER_con_glpi: db
       USER_con_glpi: root
       PASSWORD_con_glpi: glpi
