@@ -324,6 +324,15 @@ var GLPIImpact = {
                 GLPIImpact.cy.trigger("change");
                 break;
 
+            // Revert edit
+            // Available data: id, label, oldLabel
+            case this.ACTION_EDIT_EDGE:
+                this.cy.filter("node" + this.makeIDSelector(data.id)).data({
+                    label: data.oldLabel,
+                });
+                GLPIImpact.cy.trigger("change");
+                break;
+
                 // Re-add node to the compound (and recreate it needed)
                 // Available data: nodeData, compoundData, children
             case this.ACTION_REMOVE_FROM_COMPOUND:
@@ -566,7 +575,14 @@ var GLPIImpact = {
                 });
                 GLPIImpact.cy.trigger("change");
                 break;
-
+               // Reapply edit
+               // Available data : id, label, previousLabel
+            case this.ACTION_EDIT_EDGE:
+                this.cy.filter("node" + this.makeIDSelector(data.id)).data({
+                    label: data.label,
+                });
+                GLPIImpact.cy.trigger("change");
+                break;
                 // Remove node from the compound (and delete if needed)
                 // Available data: nodeData, compoundData, children
             case this.ACTION_REMOVE_FROM_COMPOUND:
@@ -1526,7 +1542,7 @@ var GLPIImpact = {
                 GLPIImpact.eventData.newEdge.data.label = label;
 
                 GLPIImpact.addToUndo(
-                    GLPIImpact.ACTION_EDIT_EDGE,
+                    GLPIImpact.ACTION_ADD_EDGE,
                     _.cloneDeep(GLPIImpact.eventData.newEdge)
                 );
 
