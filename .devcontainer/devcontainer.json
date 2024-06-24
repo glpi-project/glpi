@@ -12,7 +12,7 @@
             "label": "GLPI"
         },
         "8090": {
-            "label": "Adminer"
+            "label": "DBGate"
         },
         "8025": {
             "label": "Mailpit"
