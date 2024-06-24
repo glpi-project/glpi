@@ -83,6 +83,7 @@ var GLPIImpact = {
     ACTION_EDIT_DEPENDS_COLOR           : 12,
     ACTION_EDIT_IMPACT_COLOR            : 13,
     ACTION_EDIT_IMPACT_AND_DEPENDS_COLOR: 14,
+
     // Constans for depth
     DEFAULT_DEPTH: 5,
     MAX_DEPTH: 10,
@@ -317,6 +318,7 @@ var GLPIImpact = {
                 });
                 GLPIImpact.cy.trigger("change");
                 break;
+
 
                 // Re-add node to the compound (and recreate it needed)
                 // Available data: nodeData, compoundData, children
@@ -1146,7 +1148,7 @@ var GLPIImpact = {
             var edge = GLPIImpact.initialState.edges[edgeID];
             if (Object.prototype.hasOwnProperty.call(currentEdges, edgeID)) {
             // If the edge is still here in the current state, nothing happened
-                // Remove it from the currentEdges data so we can skip it later
+            // Remove it from the currentEdges data so we can skip it later
                 delete currentEdges[edgeID];
             } else {
             // If the edge is missing in the current state, it has been deleted
@@ -1455,7 +1457,6 @@ var GLPIImpact = {
         });
     },
 
-
     /**
     * Show the edit compound dialog
     *
@@ -1479,7 +1480,6 @@ var GLPIImpact = {
         // Show modal
         $(GLPIImpact.selectors.editCompoundDialog).modal('show');
     },
-
 
     /**
     * Initialise variables
@@ -3591,8 +3591,7 @@ var GLPIImpact = {
             GLPIImpact.cy.remove(parent);
         }
     },
-
-
+    
     /**
     * Handler for "delete" menu action
     *
