@@ -1778,7 +1778,7 @@ var GLPIImpact = {
                 tpl: function (data) {
                     let info = '<p>';
                     if (data.label != null && data.label != '') {
-                        info +=   '<span class="cy-node-label">' + data.label + '</span>';
+                        info +=   '<span class="cy-node-label">' + _.escape(data.label) + '</span>';
                     }
                     if (data.comment != null && data.comment != '') {
                         info += '<br><span class="cy-node-comment">' + data.comment + '</span>';
