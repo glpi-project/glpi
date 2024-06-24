@@ -49,7 +49,7 @@ class PDU extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            Pdu_Plug::class,
+            Item_Plug::class,
             Item_Devices::class,
             NetworkPort::class
         ];
@@ -65,7 +65,7 @@ class PDU extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Pdu_Plug', $ong, $options)
+         ->addStandardTab('Item_Plug', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
@@ -225,7 +225,7 @@ class PDU extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Pdu_Plug::class,
+                Item_Plug::class,
                 PDU_Rack::class,
             ]
         );

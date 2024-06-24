@@ -8526,17 +8526,18 @@ CREATE TABLE `glpi_plugs` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_pdus_plugs`;
-CREATE TABLE `glpi_pdus_plugs` (
+DROP TABLE IF EXISTS `glpi_items_plugs`;
+CREATE TABLE `glpi_items_plugs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `plugs_id` int unsigned NOT NULL DEFAULT '0',
-  `pdus_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `number_plugs` int DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `plugs_id` (`plugs_id`),
-  KEY `pdus_id` (`pdus_id`),
+  KEY `item` (`itemtype`,`items_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

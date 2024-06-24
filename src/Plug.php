@@ -46,7 +46,7 @@ class Plug extends CommonDropdown
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Pdu_Plug::class,
+                Item_Plug::class,
             ]
         );
     }

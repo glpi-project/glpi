@@ -34,33 +34,41 @@
  */
 
 /**
- * @deprecated 11.0.0 Use Item_Plug
+ * @var \Migration $migration
+ * @var \DBmysql $DB
  */
-class Pdu_Plug extends Item_Plug
-{
 
-    public function prepareInputForAdd($input)
-    {
-        $input['itemtype'] = 'PDU';
-        $input['items_id'] = $input['pdus_id'];
-        return parent::prepareInputForAdd($input);
-    }
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-    public function prepareInputForUpdate($input)
-    {
-        $input['itemtype'] = 'PDU';
-        $input['items_id'] = $input['pdus_id'];
-        return parent::prepareInputForUpdate($input);
-    }
-
-    public function post_getFromDB()
-    {
-        $this->fields['pdus_id'] = $this->fields['items_id'];
-        parent::post_getFromDB();
-    }
-
-    public static function getTable($classname = null)
-    {
-        return Item_Plug::getTable();
-    }
+if ($DB->tableExists('glpi_pdus_plugs')) {
+    $migration->renameTable('glpi_pdus_plugs', 'glpi_items_plugs');
 }
+
+if (!$DB->fieldExists('glpi_items_plugs', 'itemtype')) {
+    $migration->addField(
+        'glpi_items_plugs',
+        'itemtype',
+        'string',
+        [
+            'after'  => 'plugs_id',
+            'update' => $DB::quoteValue('PDU'), // Defines value for all existing elements
+        ]
+    );
+    $migration->migrationOneTable('glpi_items_plugs');
+}
+
+if (!$DB->fieldExists('glpi_items_plugs', 'items_id')) {
+    $migration->dropKey('glpi_items_plugs', 'pdus_id');
+    $migration->changeField(
+        'glpi_items_plugs',
+        'pdus_id',
+        'items_id',
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
+        [
+            'after' => 'itemtype'
+        ]
+    );
+    $migration->migrationOneTable('glpi_items_plugs');
+}
+
+$migration->addKey('glpi_items_plugs', ['itemtype', 'items_id'], 'item');

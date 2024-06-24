@@ -63,7 +63,7 @@ class Document extends DbTestCase
                 'item'   => 'Config',
                 'can'    => false
             ], [
-                'item'   => 'Pdu_Plug',
+                'item'   => 'Item_Plug',
                 'can'    => false
             ]
         ];
