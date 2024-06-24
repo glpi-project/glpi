@@ -48,7 +48,7 @@ if (!$DB->fieldExists('glpi_items_plugs', 'itemtype')) {
     $migration->addField(
         'glpi_items_plugs',
         'itemtype',
-        'string',
+        'varchar(255) NOT NULL',
         [
             'after'  => 'plugs_id',
             'update' => $DB::quoteValue('PDU'), // Defines value for all existing elements

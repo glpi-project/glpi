@@ -106,7 +106,7 @@ class Item_Plug extends CommonDBRelation
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='" . static::$items_id_1 . "' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='".$item::class."'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . $item::class . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __('Add a new plug') . "</label></td><td>";
             Plug::dropdown([

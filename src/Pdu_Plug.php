@@ -38,7 +38,6 @@
  */
 class Pdu_Plug extends Item_Plug
 {
-
     public function prepareInputForAdd($input)
     {
         $input['itemtype'] = 'PDU';
