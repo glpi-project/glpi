@@ -37,8 +37,9 @@
  * @var \Migration $migration
  */
 
-$migration->addField('glpi_impactrelations', 'name', "varchar(255) DEFAULT ''", [
+$migration->addField('glpi_impactrelations', 'name', "string", [
     'after'  => 'id',
+    'value' => '',
 ]);
 
 $migration->addKey('glpi_impactrelations', 'name');

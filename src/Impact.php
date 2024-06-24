@@ -1397,7 +1397,7 @@ JS);
      *
      * @throws InvalidArgumentException
      */
-    private static function addEdge(array &$edges, string $key, CommonDBTM $itemA, CommonDBTM $itemB, int $direction): void
+    private static function addEdge(array &$edges, string $key, CommonDBTM $itemA, CommonDBTM $itemB, int $direction, string $label): void
     {
         // Just update the flag if the edge already exist
         if (isset($edges[$key])) {
