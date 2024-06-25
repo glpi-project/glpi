@@ -42,16 +42,9 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 
 /**
- * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $GLPI, $GLPI_CACHE;
-
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
-Config::detectRootDoc();
+global $GLPI_CACHE;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 

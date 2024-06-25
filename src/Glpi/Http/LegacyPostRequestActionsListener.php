@@ -48,6 +48,7 @@ class LegacyPostRequestActionsListener implements EventSubscriberInterface
 
     public function onFinishRequest(): void
     {
+        \Html::resetAjaxParam();
         \Session::resetAjaxParam();
     }
 }

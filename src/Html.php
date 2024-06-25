@@ -1978,9 +1978,6 @@ HTML;
         $HEADER_LOADED = true;
        // Print a nice HTML-head with no controls
 
-       // Detect root_doc in case of error
-        Config::detectRootDoc();
-
        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
 
@@ -6609,5 +6606,10 @@ CSS;
     public static function setAjax(): void
     {
         self::$is_ajax_request = true;
+    }
+
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

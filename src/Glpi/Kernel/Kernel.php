@@ -186,7 +186,7 @@ final class Kernel extends BaseKernel
         }
 
         /**
-         * @var mixed|null $skip_db_check
+         * @var mixed|null $dont_check_maintenance_mode
          */
         global $dont_check_maintenance_mode;
         if (isset($dont_check_maintenance_mode)) {

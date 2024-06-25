@@ -40,6 +40,7 @@ global $AJAX_INCLUDE;
 if (isset($AJAX_INCLUDE)) {
     \Toolbox::deprecated('The global `$AJAX_INCLUDE` variable usage is deprecated. Use "$this->setAjax()" from your controllers instead.');
     if ($this instanceof LegacyFileLoadController) {
+        /** @var $this \Glpi\Controller\LegacyFileLoadController */
         $this->setAjax();
     }
 }
@@ -86,7 +87,7 @@ if (isset($skip_db_check)) {
 }
 
 /**
- * @var mixed|null $skip_db_check
+ * @var mixed|null $dont_check_maintenance_mode
  */
 global $dont_check_maintenance_mode;
 if (isset($dont_check_maintenance_mode)) {

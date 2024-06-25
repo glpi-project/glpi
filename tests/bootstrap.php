@@ -36,10 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviders;
 use Glpi\Kernel\Kernel;
-use Glpi\OAuth\Server;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 

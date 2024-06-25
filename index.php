@@ -85,8 +85,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
     die();
 } else {
-    include(GLPI_ROOT . "/inc/includes.php");
-
     //Try to detect GLPI agent calls
     $rawdata = file_get_contents("php://input");
     if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {

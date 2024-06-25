@@ -15,7 +15,7 @@ parameters:
     ignoreErrors:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
-        - { message: '/Variable \$this might not be defined/', paths: [ 'ajax/*', 'front/*' ] }
+        - { message: '/Variable \$this might not be defined/', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
 
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
