@@ -34,10 +34,10 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -129,6 +129,9 @@ final class Kernel extends BaseKernel
             // The following deprecations/warnings are already triggered in `inc/includes.php`.
             return;
         }
+
+        // Do not output error messages, the response has already been sent
+        ErrorHandler::getInstance()->disableOutput();
 
         /**
          * @var mixed|null $AJAX_INCLUDE
