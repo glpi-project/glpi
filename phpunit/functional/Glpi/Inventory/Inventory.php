@@ -45,6 +45,10 @@ use OperatingSystemVersion;
 use RuleCriteria;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class Inventory extends InventoryTestCase
 {
     private function checkComputer1($computers_id)
