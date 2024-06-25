@@ -53,12 +53,10 @@ class Item_Plug extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
-        $field = $item::class === Plug::class ? 'plugs_id' : static::$items_id_1;
         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable(
-                self::getTable(),
-                [$field => $item->getID()]
-            );
+            $nb = $item::class === Plug::class
+                ? countElementsInTable(self::getTable(), ['plugs_id' => $item->getID()])
+                : countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->getID()]);
         }
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
