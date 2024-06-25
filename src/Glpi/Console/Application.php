@@ -252,18 +252,6 @@ class Application extends BaseApplication
         return $this->output;
     }
 
-    public function extractNamespace(string $name, ?int $limit = null): string
-    {
-        $parts = explode(':', $name);
-
-        if ($limit === 1 && count($parts) >= 2 && $parts[0] === 'plugins') {
-            // Force grouping plugin commands
-            $limit = 2;
-        }
-
-        return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
-    }
-
     protected function getCommandName(InputInterface $input): ?string
     {
         $name = parent::getCommandName($input);
@@ -582,5 +570,17 @@ class Application extends BaseApplication
         }
 
         return true;
+    }
+
+    public function extractNamespace(string $name, ?int $limit = null): string
+    {
+        $parts = explode(':', $name);
+
+        if ($limit === 1 && count($parts) >= 2 && $parts[0] === 'plugins') {
+            // Force grouping plugin commands
+            $limit = 2;
+        }
+
+        return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
     }
 }
