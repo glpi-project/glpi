@@ -37,6 +37,7 @@
 // Please try to keep them alphabetically ordered.
 
 // Directories constants
+define('GLPI_ROOT', null);
 define('GLPI_CACHE_DIR', null);
 define('GLPI_CRON_DIR', null);
 define('GLPI_DOC_DIR', null);
