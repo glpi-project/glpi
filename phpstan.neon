@@ -16,6 +16,7 @@ parameters:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
         - { message: '/Variable \$this might not be defined/', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
+        - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'inc/includes.php' ] }
 
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
