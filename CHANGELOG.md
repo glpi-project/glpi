@@ -157,6 +157,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Application\ErrorHandler` constructor visibility has been changed to private.
 - `GLPI::initErrorHandler()` does not return any value anymore.
 - The `inc/autoload.function.php`, `inc/db.function.php` and `inc/define.php` file has been removed and the corresponding global functions, constants and variables are now loaded and initialized automatically.
+- `Plugin::init()` and `Plugin::checkStates()` methods signature changed. It is not anymore possible to exclude specific plugins.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
@@ -223,6 +224,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `$CFG_GLPI_PLUGINS` global variable.
+- `$PLUGINS_EXCLUDED` global variable.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.

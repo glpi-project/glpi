@@ -43,7 +43,6 @@ use Glpi\Toolbox\URL;
  * @var bool|null $AJAX_INCLUDE
  * @var bool $FOOTER_LOADED
  * @var bool $HEADER_LOADED
- * @var bool|null $PLUGINS_EXCLUDED
  * @var bool|null $PLUGINS_INCLUDED
  * @var string|null $SECURITY_STRATEGY
  * @var string $CURRENTCSRFTOKEN
@@ -52,7 +51,7 @@ global $CFG_GLPI,
     $GLPI_CACHE,
     $AJAX_INCLUDE,
     $FOOTER_LOADED, $HEADER_LOADED,
-    $PLUGINS_EXCLUDED, $PLUGINS_INCLUDED,
+    $PLUGINS_INCLUDED,
     $SECURITY_STRATEGY,
     $CURRENTCSRFTOKEN
 ;
@@ -102,9 +101,8 @@ AssetDefinitionManager::getInstance()->registerAssetsAutoload();
 if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
     $PLUGINS_INCLUDED = 1;
-    $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
     $plugin = new Plugin();
-    $plugin->init(true, $PLUGINS_EXCLUDED);
+    $plugin->init(true);
 }
 
 // Assets classes bootstraping.
