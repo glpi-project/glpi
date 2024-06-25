@@ -205,10 +205,12 @@ final class Firewall
     private function computeForPaths(string $path): ?string
     {
         if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
+            // Allow anonymous access for embed dashboards.
             return 'no_check';
         }
 
         if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
+            // Token based access for ical/webcal access can be made anonymously.
             return 'no_check';
         }
 
@@ -216,20 +218,20 @@ final class Firewall
             '/ajax/knowbase.php' => self::STRATEGY_FAQ_ACCESS,
             '/front/helpdesk.faq.php' => self::STRATEGY_FAQ_ACCESS,
 
-            '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK,
-            '/ajax/dashboard.php' => self::STRATEGY_NO_CHECK,
-            '/ajax/telemetry.php' => self::STRATEGY_NO_CHECK,
-            '/front/cron.php' => self::STRATEGY_NO_CHECK,
-            '/front/css.php' => self::STRATEGY_NO_CHECK,
-            '/front/document.seed.php' => self::STRATEGY_NO_CHECK,
-            '/front/form/form_renderer.php' => self::STRATEGY_NO_CHECK,
-            '/front/helpdesk.php' => self::STRATEGY_NO_CHECK,
-            '/front/inventory.php' => self::STRATEGY_NO_CHECK,
-            '/front/locale.php' => self::STRATEGY_NO_CHECK,
+            '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to public FAQ tabs
+            '/ajax/dashboard.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to embed dashboards
+            '/ajax/telemetry.php' => self::STRATEGY_NO_CHECK, // Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
+            '/front/cron.php' => self::STRATEGY_NO_CHECK, // in GLPI mode, cronjob can also be triggered from public pages
+            '/front/css.php' => self::STRATEGY_NO_CHECK, // CSS must be accessible also on public pages
+            '/front/document.send.php' => self::STRATEGY_NO_CHECK, // may allow unauthenticated access, for public FAQ images
+            '/front/form/form_renderer.php' => self::STRATEGY_NO_CHECK, // Since forms may be available to unauthenticated users, we trust the `canAnswerForm` method to do the required session checks.
+            '/front/helpdesk.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
+            '/front/inventory.php' => self::STRATEGY_NO_CHECK, // allow anonymous requests from inventory agent
+            '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
             '/front/login.php' => self::STRATEGY_NO_CHECK,
             '/front/logout.php' => self::STRATEGY_NO_CHECK,
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
-            '/front/tracking.injector.php' => self::STRATEGY_NO_CHECK,
+            '/front/tracking.injector.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
         ];
 
