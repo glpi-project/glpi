@@ -815,7 +815,6 @@
       'add_field_attribs': {},
       'center': false,
       'label_align': 'end',
-      'insert_content_after_label': '',
    }|merge(options) %}
 
    {% if options.icon_label %}
@@ -864,11 +863,7 @@
 
    <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-      {# options.label_class contains the expected col size and must be applied to the wrapper div and not the label itself here #}
-      <div class="d-flex align-items-center {{ options.label_class }}">
-         {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.add_label_class) }}
-         {{ options.insert_content_after_label|raw }}
-      </div>
+      {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
       {% if options.center %}
          {% set flex_class = "d-flex align-items-center" %}
       {% endif %}
