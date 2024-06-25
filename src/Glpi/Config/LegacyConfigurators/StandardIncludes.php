@@ -62,13 +62,11 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
          * @var array $CFG_GLPI
          * @var \GLPI $GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var bool|null $USEDBREPLICATE
-         * @var bool|null $DBCONNECTION_REQUIRED
          */
         global $CFG_GLPI,
                $GLPI,
-               $GLPI_CACHE,
-               $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
+               $GLPI_CACHE
+        ;
 
         $no_checks_scripts = [
             realpath(GLPI_ROOT . '/front/css.php'),
