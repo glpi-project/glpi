@@ -77,7 +77,8 @@ class Plugin extends CommonDBTM
     const TOBECONFIGURED = 3;
 
     /**
-     * @var int Plugin is installed but not enabled
+     * @var int Plugin is installed but has not been activated yet, or has been deactivated either by the user or
+     *          by the GLPI update process.
      */
     const NOTACTIVATED   = 4;
 
@@ -97,7 +98,7 @@ class Plugin extends CommonDBTM
     const REPLACED       = 7;
 
     /**
-     * @var int Plugin is installed and enabled, but its execution is suspended.
+     * @var int Plugin is installed and enabled, but its execution has suspended by the plugin update process.
      */
     const SUSPENDED      = 8;
 
