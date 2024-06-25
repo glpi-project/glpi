@@ -56,6 +56,11 @@ final readonly class LegacyConfigProviderListener implements EventSubscriberInte
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            // Don't execute config providers in sub-requests: they already have been.
+            return;
+        }
+
         foreach ($this->legacyConfigProviders->getProviders() as $provider) {
             if ($provider instanceof ConfigProviderWithRequestInterface) {
                 $provider->setRequest($event->getRequest());
