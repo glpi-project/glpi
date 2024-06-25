@@ -62,13 +62,22 @@ class LegacyPostRequestActionsListener implements EventSubscriberInterface
         /** @var int|bool|null $AJAX_INCLUDE */
         global $AJAX_INCLUDE;
         if (isset($AJAX_INCLUDE)) {
-            \Toolbox::deprecated('Using the global "$AJAX_INCLUDE" variable has been removed. Use "$this->setAjax()" from your controllers instead.', version: "11.0");
+            \Toolbox::deprecated('The global `$AJAX_INCLUDE` variable usage is deprecated. Use "$this->setAjax()" from your controllers instead.');
         }
 
         /** @var string|null $SECURITY_STRATEGY */
         global $SECURITY_STRATEGY;
         if (isset($SECURITY_STRATEGY)) {
-            \Toolbox::deprecated('Using the global "$SECURITY_STRATEGY" variable has been removed. Use proper Route attributes in your controllers instead.', version: "11.0");
+            // TODO Add a Route attribute to define the Firewall strategy.
+            trigger_error('The global `$SECURITY_STRATEGY` variable has no effect anymore.', E_USER_WARNING);
+        }
+
+        global $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
+        if (isset($USEDBREPLICATE) || isset($DBCONNECTION_REQUIRED)) {
+            trigger_error(
+                'The global `$USEDBREPLICATE` and `$DBCONNECTION_REQUIRED` variables has no effect anymore. Use "DBConnection::getReadConnection()" to get the most apporpriate connection for read only operations.',
+                E_USER_WARNING
+            );
         }
     }
 }

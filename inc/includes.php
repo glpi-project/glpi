@@ -33,14 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Controller\LegacyFileLoadController;
+
 /** @var int|bool|null $AJAX_INCLUDE */
 global $AJAX_INCLUDE;
 if (isset($AJAX_INCLUDE)) {
-    throw new \RuntimeException('Using the global "$AJAX_INCLUDE" variable has been removed, and will have no effect if set in your controller files. Use "$this->setAjax()" from your controllers instead.');
+    \Toolbox::deprecated('The global `$AJAX_INCLUDE` variable usage is deprecated. Use "$this->setAjax()" from your controllers instead.');
+    if ($this instanceof LegacyFileLoadController) {
+        $this->setAjax();
+    }
 }
 
 /** @var string|null $SECURITY_STRATEGY */
 global $SECURITY_STRATEGY;
 if (isset($SECURITY_STRATEGY)) {
-    throw new \RuntimeException('Using the global "$SECURITY_STRATEGY" variable has been removed, and will have no effect if set in your controller files. Use the Route attribute in your controller class instead.');
+    throw new \RuntimeException('The global `$SECURITY_STRATEGY` variable has no effect anymore.');
 }

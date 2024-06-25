@@ -139,10 +139,7 @@ TWIG, $twig_params);
                 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
                 //Database connection
-                DBConnection::establishDBConnection(
-                    (isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                    (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0)
-                );
+                DBConnection::establishDBConnection(false, false);
 
                 //Options from DB, do not touch this part.
                 if (!Config::loadLegacyConfiguration()) {
