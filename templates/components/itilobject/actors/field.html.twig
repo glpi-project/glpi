@@ -31,8 +31,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set rand = random() %}
-
 {% set load_actors = params['load_actors'] ?? true %}
 {% set actors = load_actors ? item.getActorsForType(actortypeint, params) : [] %}
 

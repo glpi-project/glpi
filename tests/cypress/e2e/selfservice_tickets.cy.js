@@ -131,15 +131,9 @@ describe('Self-Service Tickets', () => {
         });
 
         cy.get('#heading-actor').closest('.accordion-item').within(() => {
-            cy.get('label').contains('Requester').next().within(() => {
-                cy.get('select').should('be.disabled');
-            });
-            cy.get('label').contains('Observer').next().within(() => {
-                cy.get('select').should('be.disabled');
-            });
-            cy.get('label').contains('Assigned to').next().within(() => {
-                cy.get('select').should('be.disabled');
-            });
+            cy.findByLabelText("Requester").should('be.disabled');
+            cy.findByLabelText("Observer").should('be.disabled');
+            cy.findByLabelText("Assigned to").should('be.disabled');
         });
 
         // Statistics
