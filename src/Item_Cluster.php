@@ -55,7 +55,7 @@ class Item_Cluster extends CommonDBRelation
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
         }
-        return self::createTabEntry(_n('Item', 'Items', $nb));
+        return self::createTabEntry(_n('Item', 'Items', $nb), $nb);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
