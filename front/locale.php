@@ -38,13 +38,8 @@ use Glpi\Application\ErrorHandler;
 /**
  * @var array $CFG_GLPI
  * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
- * @var bool|null $dont_check_maintenance_mode
  */
-global $CFG_GLPI, $TRANSLATE,
-    $dont_check_maintenance_mode;
-
-$_GET['donotcheckversion']   = true;
-$dont_check_maintenance_mode = true;
+global $CFG_GLPI, $TRANSLATE;
 
 include('../inc/includes.php');
 

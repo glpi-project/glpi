@@ -37,11 +37,16 @@ namespace Glpi\Config\LegacyConfigurators;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Plugin;
+use Update;
 
 final readonly class InitializePlugins implements LegacyConfigProviderInterface
 {
     public function execute(): void
     {
+        if (!Update::isDbUpToDate()) {
+            return;
+        }
+
         /**
          * @var bool|null $PLUGINS_EXCLUDED
          */

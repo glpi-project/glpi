@@ -62,16 +62,21 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
          * @var array $CFG_GLPI
          * @var \GLPI $GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var bool|null $skip_db_check
-         * @var bool|null $dont_check_maintenance_mode
          * @var bool|null $USEDBREPLICATE
          * @var bool|null $DBCONNECTION_REQUIRED
          */
         global $CFG_GLPI,
                $GLPI,
                $GLPI_CACHE,
-               $skip_db_check, $dont_check_maintenance_mode,
                $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
+
+        $no_checks_scripts = [
+            realpath(GLPI_ROOT . '/front/css.php'),
+            realpath(GLPI_ROOT . '/front/locale.php'),
+            realpath(GLPI_ROOT . '/install/install.php'),
+            realpath(GLPI_ROOT . '/install/update.php'),
+        ];
+        $skip_checks = in_array(realpath($_SERVER['SCRIPT_FILENAME']), $no_checks_scripts, true);
 
         $GLPI = new GLPI();
         $GLPI->initLogger();
@@ -83,72 +88,67 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
 
         Config::detectRootDoc();
 
-        if ($skip_db_check ?? false) {
-            $missing_db_config = false;
-        } elseif (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-            $missing_db_config = true;
-        } else {
-            include_once(GLPI_CONFIG_DIR . "/config_db.php");
-            $missing_db_config = !class_exists('DB', false);
-        }
+        if (!$skip_checks) {
+            // Check if the DB is configured properly
+            if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+                $missing_db_config = true;
+            } else {
+                include_once(GLPI_CONFIG_DIR . "/config_db.php");
+                $missing_db_config = !class_exists('DB', false);
+            }
 
-        if ($missing_db_config) {
-            Session::loadLanguage('', false);
+            if ($missing_db_config) {
+                Session::loadLanguage('', false);
 
-            if (!isCommandLine()) {
-                // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+                if (!isCommandLine()) {
+                    // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+                    $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
-                Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
-                $twig_params = [
-                    'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
-                    'install_exists' => file_exists($this->projectDir . '/install/install.php'),
-                ];
-                // language=Twig
-                echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="container-fluid mb-4">
-                <div class="row justify-content-center">
-                    <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
-                        <h2>GLPI seems to not be configured properly.</h2>
-                        <p class="mt-2 mb-n2 alert alert-warning">
-                            Database configuration file "{{ config_db }}" is missing or is corrupted.
-                            You have to either restart the install process, either restore this file.
-                            <br />
-                            <br />
-                            {% if install_exists %}
-                                <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
-                            {% endif %}
-                        </p>
+                    Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
+                    $twig_params = [
+                        'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
+                        'install_exists' => file_exists($this->projectDir . '/install/install.php'),
+                    ];
+                    // language=Twig
+                    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="container-fluid mb-4">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
+                            <h2>GLPI seems to not be configured properly.</h2>
+                            <p class="mt-2 mb-n2 alert alert-warning">
+                                Database configuration file "{{ config_db }}" is missing or is corrupted.
+                                You have to either restart the install process, either restore this file.
+                                <br />
+                                <br />
+                                {% if install_exists %}
+                                    <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 TWIG, $twig_params);
-                Html::nullFooter();
+                    Html::nullFooter();
+                } else {
+                    echo "GLPI seems to not be configured properly.\n";
+                    echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
+                    echo "You have to either restart the install process, either restore this file.\n";
+                }
+                die(1);
             } else {
-                echo "GLPI seems to not be configured properly.\n";
-                echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
-                echo "You have to either restart the install process, either restore this file.\n";
-            }
-            die(1);
-        }
+                include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
-        // *************************** Statics config options **********************
-        // ********************options d'installation statiques*********************
-        // *************************************************************************
+                //Database connection
+                DBConnection::establishDBConnection(
+                    (isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
+                    (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0)
+                );
 
-        if (!isset($skip_db_check)) {
-            include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
-            //Database connection
-            DBConnection::establishDBConnection(
-                (isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0)
-            );
-
-            //Options from DB, do not touch this part.
-            if (!Config::loadLegacyConfiguration()) {
-                echo "Error accessing config table";
-                exit();
+                //Options from DB, do not touch this part.
+                if (!Config::loadLegacyConfiguration()) {
+                    echo "Error accessing config table";
+                    exit();
+                }
             }
         }
 
@@ -190,9 +190,9 @@ TWIG, $twig_params);
 
         // Check maintenance mode
         if (
-            isset($CFG_GLPI["maintenance_mode"])
+            !$skip_checks
+            && isset($CFG_GLPI["maintenance_mode"])
             && $CFG_GLPI["maintenance_mode"]
-            && !isset($dont_check_maintenance_mode)
         ) {
             if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
                 $_SESSION["glpiskipMaintenance"] = 1;
@@ -212,8 +212,9 @@ TWIG, $twig_params);
                 exit();
             }
         }
+
         // Check version
-        if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
+        if (!$skip_checks && !Update::isDbUpToDate()) {
             Session::checkCookieSecureConfig();
 
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
@@ -264,6 +265,7 @@ TWIG, $twig_params);
                                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
                                     {% if not outdated %}
                                         <form method="post" action="{{ path('install/update.php') }}">
+                                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                             {% if not stable_release %}
                                                 {{ agree_unstable|raw }}
                                             {% endif %}

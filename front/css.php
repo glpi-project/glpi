@@ -33,21 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var bool|null $skip_db_check
- * @var bool|null $dont_check_maintenance_mode
- */
-global $skip_db_check, $dont_check_maintenance_mode;
-
 use Glpi\Application\ErrorHandler;
 use Glpi\UI\ThemeManager;
-
-$_GET["donotcheckversion"]   = true;
-$dont_check_maintenance_mode = true;
-$skip_db_check               = true;
-
-//std cache, with DB connection
-include_once GLPI_ROOT . '/inc/config.php';
 
 // Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).
 // Ensure to have enough memory to not reach memory limit.
