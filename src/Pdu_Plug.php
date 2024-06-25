@@ -33,145 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
-class Pdu_Plug extends CommonDBRelation
+/**
+ * @deprecated 11.0.0 Use Item_Plug
+ */
+class Pdu_Plug extends Item_Plug
 {
-    public static $itemtype_1 = 'PDU';
-    public static $items_id_1 = 'pdus_id';
-    public static $itemtype_2 = 'Plug';
-    public static $items_id_2 = 'plugs_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1      = false;
-    public static $mustBeAttached_2      = false;
-
-    public static function getTypeName($nb = 0)
+    public function prepareInputForAdd($input)
     {
-        return _n('PDU plug', 'PDU plugs', $nb);
+        $input['itemtype'] = 'PDU';
+        $input['items_id'] = $input['pdus_id'];
+        return parent::prepareInputForAdd($input);
     }
 
-
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function prepareInputForUpdate($input)
     {
-        $nb = 0;
-        switch ($item->getType()) {
-            default:
-                $field = $item->getType() == PDU::getType() ? 'pdus_id' : 'plugs_id';
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        [$field  => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-        }
-        return '';
+        $input['itemtype'] = 'PDU';
+        $input['items_id'] = $input['pdus_id'];
+        return parent::prepareInputForUpdate($input);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public function post_getFromDB()
     {
-        self::showItems($item);
-        return true;
+        $this->fields['pdus_id'] = $this->fields['items_id'];
+        parent::post_getFromDB();
     }
 
-    /**
-     * Print items
-     *
-     * @param  PDU $pdu PDU instance
-     *
-     * @return void
-     */
-    public static function showItems(PDU $pdu)
+    public static function getTable($classname = null)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $ID = $pdu->getID();
-        $rand = mt_rand();
-
-        if (
-            !$pdu->getFromDB($ID)
-            || !$pdu->can($ID, READ)
-        ) {
-            return false;
-        }
-        $canedit = $pdu->canEdit($ID);
-
-        $items = $DB->request([
-            'SELECT' => ['id', 'plugs_id', 'number_plugs'],
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                'pdus_id' => $pdu->getID()
-            ]
-        ]);
-
-        if ($canedit) {
-            $rand = mt_rand();
-            echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-               action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='pdus_id' value='$ID'>\n";
-           //echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
-            echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
-            echo "<label for='dropdown_plugs_id$rand'>" . __('Add a new plug') . "</label></td><td>";
-            Plug::dropdown([
-                'name'   => "plugs_id",
-                'rand'   => $rand
-            ]);
-            echo "</td><td>";
-            echo "<label for='number_plugs'>" . __('Number');
-            echo "</td><td>";
-            echo Html::input(
-                'number_plugs',
-                [
-                    'id'     => 'number_plugs',
-                    'type'   => 'number',
-                    'min'    => 1
-                ]
-            );
-            echo "</td><td>";
-            echo "<input type='submit' class='btn btn-primary' name='add' value='" . _sx('button', 'Add') . "'>";
-            echo "</td></tr></table>";
-            Html::closeForm();
-        }
-
-        $entries = [];
-        foreach ($items as $row) {
-            $item = new Plug();
-            $item->getFromDB($row['plugs_id']);
-            $entries[] = [
-                'itemtype' => self::class,
-                'id' => $row['id'],
-                'plugs_id' => $item->getLink(),
-                'number_plugs' => $row['number_plugs']
-            ];
-        }
-
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'is_tab' => true,
-            'nofilter' => true,
-            'columns' => [
-                'plugs_id' => __('Name'),
-                'number_plugs' => __('Number')
-            ],
-            'formatters' => [
-                'plugs_id' => 'raw_html'
-            ],
-            'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
-            'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
-            ],
-        ]);
-    }
-
-    public function getForbiddenStandardMassiveAction()
-    {
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'CommonDBConnexity:affect';
-        $forbidden[] = 'CommonDBConnexity:unaffect';
-        return $forbidden;
+        return Item_Plug::getTable();
     }
 }

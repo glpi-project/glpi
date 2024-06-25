@@ -601,3 +601,4 @@ $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
 
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];
 $CFG_GLPI['itemvirtualmachines_types'] = ['Computer'];
+$CFG_GLPI['plug_types'] = ['PDU'];

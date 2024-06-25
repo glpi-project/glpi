@@ -37,31 +37,33 @@ include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-$pdup = new \Pdu_Plug();
-$pdu = new PDU();
+$item_plug = new \Item_Plug();
 
-if (isset($_POST['update'])) {
-    $pdup->check($_POST['id'], UPDATE);
-   //update existing relation
-    if ($pdup->update($_POST)) {
-        $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+if (isset($_POST['update'], $_POST['itemtype'])) {
+    $item_plug->check($_POST['id'], UPDATE);
+    $item = new $_POST['itemtype']();
+    // update existing relation
+    if ($item_plug->update($_POST)) {
+        $url = $item::getFormURLWithID($_POST['items_id']);
     } else {
-        $url = $pdup->getFormURLWithID($_POST['id']);
+        $url = $item_plug::getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'])) {
-    $pdup->check(-1, CREATE, $_POST);
-    $pdup->add($_POST);
-    $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+} else if (isset($_POST['add'], $_POST['itemtype'])) {
+    $item_plug->check(-1, CREATE, $_POST);
+    $item_plug->add($_POST);
+    $item = new $_POST['itemtype']();
+    $url = $item::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
-} else if (isset($_POST['purge'])) {
-    $pdup->check($_POST['id'], PURGE);
-    $pdup->delete($_POST, 1);
-    $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+} else if (isset($_POST['purge'], $_POST['itemtype'])) {
+    $item_plug->check($_POST['id'], PURGE);
+    $item_plug->delete($_POST, 1);
+    $item = new $_POST['itemtype']();
+    $url = $item::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 }
 
-if (!isset($_GET['pdus_id']) && !isset($_GET['plugs_id']) && !isset($_GET['number_plug']) && !isset($_GET['id'])) {
+if (!isset($_GET['itemtype']) && !isset($_GET['items_id']) && !isset($_GET['plugs_id']) && !isset($_GET['number_plug']) && !isset($_GET['id'])) {
     Html::displayErrorAndDie('Lost');
 }
 
@@ -70,16 +72,16 @@ if (isset($_GET['id'])) {
     $params['id'] = $_GET['id'];
 } else {
     $params = [
-        'pdus_id'      => $_GET['pdus_id'],
+        'itemtype'     => $_GET['itemtype'],
+        'items_id'      => $_GET['items_id'],
         'plugs_id'     => $_GET['plugs_id'],
         'number_plug'  => $_GET['number_plug']
     ];
 }
-$ajax = isset($_REQUEST['ajax']) ? true : false;
 
-if ($ajax) {
-    $pdup->display($params);
+if (isset($_REQUEST['ajax'])) {
+    $item_plug->display($params);
 } else {
-    $menus = ["assets", "pdu"];
-    Pdu_Plug::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
+    $menus = ["assets"];
+    Item_Plug::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
 }

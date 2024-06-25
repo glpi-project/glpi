@@ -1143,7 +1143,6 @@ $RELATION = [
     ],
 
     'glpi_pdus' => [
-        '_glpi_pdus_plugs' => 'pdus_id',
         '_glpi_pdus_racks' => 'pdus_id',
     ],
 
@@ -1181,7 +1180,7 @@ $RELATION = [
     ],
 
     'glpi_plugs' => [
-        '_glpi_pdus_plugs' => 'plugs_id',
+        '_glpi_items_plugs' => 'plugs_id',
     ],
 
     'glpi_printermodels' => [
@@ -1789,6 +1788,7 @@ $polymorphic_types_mapping = [
     NetworkPort::class             => $CFG_GLPI['networkport_types'],
     ReservationItem::class         => $CFG_GLPI['reservation_types'],
     Socket::class                  => $CFG_GLPI['socket_types'],
+    Item_Plug::class               => $CFG_GLPI['plug_types'],
 ];
 foreach ($CFG_GLPI['itemdevices'] as $itemdevice_itemtype) {
     $source_itemtypes = $itemdevice_itemtype::itemAffinity();
