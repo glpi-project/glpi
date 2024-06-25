@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-include_once dirname(__DIR__) . '/vendor/autoload.php';
-
 if (PHP_SAPI === 'cli') {
+    require(dirname(__DIR__) . '/vendor/autoload.php');
+
     $kernel = new \Glpi\Kernel\Kernel();
-    $kernel->loadCliOnlyConfig();
+    $kernel->loadCommonGlobalConfig();
 }
 
 /**

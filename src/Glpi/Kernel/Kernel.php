@@ -91,7 +91,7 @@ final class Kernel extends BaseKernel
         }
     }
 
-    public function loadCliOnlyConfig(): void
+    public function loadCliConsoleOnlyConfig(): void
     {
         $this->boot();
 

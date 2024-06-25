@@ -37,7 +37,7 @@
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel('development');
-$kernel->loadCliOnlyConfig();
+$kernel->loadCliConsoleOnlyConfig();
 
 $command = new \Glpi\Tools\Command\CheckTwigTemplatesSyntaxCommand();
 

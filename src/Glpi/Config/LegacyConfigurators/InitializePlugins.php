@@ -47,18 +47,12 @@ final readonly class InitializePlugins implements LegacyConfigProviderInterface
             return;
         }
 
-        /**
-         * @var bool|null $PLUGINS_EXCLUDED
-         */
-        global $PLUGINS_EXCLUDED;
-
         // Assets classes autoload
         AssetDefinitionManager::getInstance()->registerAssetsAutoload();
 
         /* On startup, register all plugins configured for use. */
-        $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
         $plugin = new Plugin();
-        $plugin->init(true, $PLUGINS_EXCLUDED);
+        $plugin->init(true);
 
         // Assets classes bootstraping.
         // Must be done after plugins initialization, to allow plugin to register new capacities.

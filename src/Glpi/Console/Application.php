@@ -147,10 +147,6 @@ class Application extends BaseApplication
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
-        $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
-
-        $this->initConfigProviders();
-
         return new InputDefinition(
             [
                 new InputArgument(
@@ -586,12 +582,5 @@ class Application extends BaseApplication
         }
 
         return true;
-    }
-
-    private function initConfigProviders(): void
-    {
-        /** @var Kernel $kernel */
-        $kernel = $this->getKernel();
-        $kernel->loadCliOnlyConfig();
     }
 }

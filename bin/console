@@ -138,8 +138,7 @@ if (array_key_exists('env', $options)) {
 require_once(dirname(__DIR__) . '/vendor/autoload.php');
 
 $kernel = new \Glpi\Kernel\Kernel();
-
-$kernel->loadCliOnlyConfig();
+$kernel->loadCliConsoleOnlyConfig();
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     include_once GLPI_CONFIG_DIR . '/config_db.php';
