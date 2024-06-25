@@ -79,6 +79,7 @@ class Plugin extends CommonDBTM
     /**
      * @var int Plugin is installed but has not been activated yet, or has been deactivated either by the user or
      *          by the GLPI update process.
+     * @TODO Do not set plugins to this state during the GLPI update process.
      */
     const NOTACTIVATED   = 4;
 
