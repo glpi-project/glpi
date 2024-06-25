@@ -34,9 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(__DIR__, 2));
-
-require_once GLPI_ROOT . '/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel('development');
 $kernel->loadCliOnlyConfig();

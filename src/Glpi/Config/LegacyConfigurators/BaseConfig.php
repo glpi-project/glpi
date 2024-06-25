@@ -55,9 +55,7 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
         }
         self::$initialized = true;
 
-        if (!defined('GLPI_ROOT')) {
-            define('GLPI_ROOT', $this->projectDir);
-        }
+        define('GLPI_ROOT', $this->projectDir);
 
         // Notice problem  for date function :
         $tz = ini_get('date.timezone');

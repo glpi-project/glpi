@@ -48,7 +48,6 @@ define('GLPI_ENVIRONMENT_TYPE', 'testing');
 ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
-define('GLPI_ROOT', dirname(__DIR__));
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
