@@ -7000,7 +7000,7 @@ HTML
 
         // Find tickets already in the entity
         $request = \Ticket::getCommonCriteria();
-        $request['WHERE'] = \Ticket::getListForItemRestrict($item);
+        $request['WHERE'] = $this->callPrivateMethod(new \Ticket(), 'getListForItemRestrict', $item);
         $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria(\Ticket::getTable());
         $result = $DB->request($request);
         $existing_tickets = $result->count();
