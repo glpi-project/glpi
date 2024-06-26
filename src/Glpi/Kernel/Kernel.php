@@ -38,6 +38,8 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -78,9 +80,16 @@ final class Kernel extends BaseKernel
 
     public function registerBundles(): iterable
     {
-        return [
-            new FrameworkBundle(),
-        ];
+        $bundles = [];
+
+        $bundles[] = new FrameworkBundle();
+
+        if ($this->environment === 'development') {
+            $bundles[] = new WebProfilerBundle();
+            $bundles[] = new TwigBundle();
+        }
+
+        return $bundles;
     }
 
     public function loadCommonGlobalConfig(): void
@@ -120,7 +129,13 @@ final class Kernel extends BaseKernel
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
+        //  Global core controllers
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
+
+        // Env-specific route files.
+        if (\is_file($path = $this->getProjectDir() . '/routes/'.$this->environment.'.php')) {
+            (require $path)($routes->withPath($path), $this);
+        }
     }
 
     private function triggerGlobalsDeprecation(): void

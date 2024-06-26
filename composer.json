@@ -109,7 +109,9 @@
         "squizlabs/php_codesniffer": "^3.10",
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
-        "symfony/var-dumper": "^6.4"
+        "symfony/stopwatch": "^6.4",
+        "symfony/var-dumper": "^6.4",
+        "symfony/web-profiler-bundle": "^6.4"
     },
     "provide": {
         "ext-sodium": "*"

@@ -40,6 +40,13 @@ use Glpi\Http\Firewall;
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
 
+    $parameters = $container->parameters();
+
+    // Default secret, just in case
+    $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
+    $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
+    $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
+
     $services = $container->services();
 
     $services
@@ -54,4 +61,14 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
 
     $services->set(Firewall::class)->synthetic();
+
+    if ($container->env() === 'development') {
+        $container->extension('web_profiler', [
+            'toolbar' => true,
+            'intercept_redirects' => true,
+        ]);
+        $container->extension('framework', [
+            'profiler' => ['only_exceptions' => false],
+        ]);
+    }
 };
