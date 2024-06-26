@@ -53,6 +53,7 @@ class LegacyRouterListener extends \GLPITestCase
                 ],
                 'front' => [
                     'index.php' => '<?php echo("/front/index.php");',
+                    'whatever.php' => '<?php echo("/whatever.php");',
                 ],
                 'js' => [
                     'common.js' => 'console.log("ok");',
@@ -71,9 +72,6 @@ class LegacyRouterListener extends \GLPITestCase
                         ],
                     ],
                 ],
-                'apirest.php' => '<?php echo("/apirest.php");',
-                'caldav.php' => '<?php echo("/caldav.php");',
-                'index.php' => '<?php echo("/index.php");',
             ]
         );
 
@@ -115,32 +113,32 @@ class LegacyRouterListener extends \GLPITestCase
 
         // Path to an existing file, but containing an extra PathInfo
         yield [
-            'path'            => '/apirest.php/',
-            'target_path'     => '/apirest.php',
+            'path'            => '/front/whatever.php/',
+            'target_path'     => '/front/whatever.php',
             'target_pathinfo' => '/',
             'included'        => true,
         ];
         yield [
-            'path'            => '/apirest.php/initSession/',
-            'target_path'     => '/apirest.php',
-            'target_pathinfo' => '/initSession/',
+            'path'            => '/front/whatever.php/endpoint/',
+            'target_path'     => '/front/whatever.php',
+            'target_pathinfo' => '/endpoint/',
             'included'        => true,
         ];
         yield [
-            'path'            => '/apirest.php//initSession/', // double `/` in URL
-            'target_path'     => '/apirest.php',
-            'target_pathinfo' => '/initSession/',
+            'path'            => '/front/whatever.php//endpoint/', // double `/` in URL
+            'target_path'     => '/front/whatever.php',
+            'target_pathinfo' => '/endpoint/',
             'included'        => true,
         ];
         yield [
-            'path'            => '/apirest.php/GlpiPlugin%5CNamespace%5CUnexemple/',
-            'target_path'     => '/apirest.php',
+            'path'            => '/front/whatever.php/GlpiPlugin%5CNamespace%5CUnexemple/',
+            'target_path'     => '/front/whatever.php',
             'target_pathinfo' => '/GlpiPlugin\Namespace\Unexemple/',
             'included'        => true,
         ];
         yield [
-            'path'            => '/caldav.php/calendars/users/J.DUPONT/calendar/',
-            'target_path'     => '/caldav.php',
+            'path'            => '/front/whatever.php/calendars/users/J.DUPONT/calendar/',
+            'target_path'     => '/front/whatever.php',
             'target_pathinfo' => '/calendars/users/J.DUPONT/calendar/',
             'included'        => true,
         ];
@@ -226,8 +224,6 @@ class LegacyRouterListener extends \GLPITestCase
             '/front/page.php',
             '/install/install.php',
             '/install/update.php',
-            '/apirest.php',
-            '/caldav.php',
             '/index.php',
             '/status.php',
         ];

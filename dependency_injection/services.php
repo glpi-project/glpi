@@ -37,29 +37,30 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\Firewall;
 use Glpi\Http\FirewallInterface;
+use Glpi\Security\SecurityStrategyAttributeListener;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
-
     $parameters = $container->parameters();
+    $services = $container->services();
 
     // Default secret, just in case
     $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
 
-    $services = $container->services();
-
     $services
         ->defaults()
-        ->autowire()
-        ->autoconfigure()
+            ->autowire()
+            ->autoconfigure()
         ->instanceof(PublicService::class)->public()
     ;
 
     $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+
+    $services->set(SecurityStrategyAttributeListener::class);
 
     $services->set(Firewall::class)
         ->factory([Firewall::class, 'createDefault'])

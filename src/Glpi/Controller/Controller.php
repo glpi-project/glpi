@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.1
- */
+namespace Glpi\Controller;
 
-use Glpi\Application\ErrorHandler;
+use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-// Ensure errors will not break API output.
-ErrorHandler::getInstance()->disableOutput();
-
-$api = new Glpi\Api\APIRest();
-$api->call();
+interface Controller extends PublicService
+{
+    public function __invoke(Request $request): Response;
+}
