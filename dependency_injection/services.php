@@ -34,6 +34,9 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Glpi\DependencyInjection\PublicService;
+use Glpi\Http\Firewall;
+
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
 
@@ -43,8 +46,12 @@ return static function (ContainerConfigurator $container): void {
         ->defaults()
         ->autowire()
         ->autoconfigure()
+        ->instanceof(PublicService::class)->public()
     ;
 
+    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+
+    $services->set(Firewall::class)->synthetic();
 };

@@ -135,14 +135,14 @@ if (array_key_exists('env', $options)) {
     define('GLPI_ENVIRONMENT_TYPE', $options['env']);
 }
 
-// Init GLPI
-define('GLPI_ROOT', dirname(__DIR__));
+require_once(dirname(__DIR__) . '/vendor/autoload.php');
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
-@include_once(GLPI_CONFIG_DIR . '/config_db.php');
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCliConsoleOnlyConfig();
 
-// Run console application
-use Glpi\Console\Application;
+if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+    include_once GLPI_CONFIG_DIR . '/config_db.php';
+}
 
-$application = new Application();
+$application = new \Glpi\Console\Application($kernel);
 $application->run();

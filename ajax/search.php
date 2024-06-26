@@ -37,13 +37,9 @@ use Glpi\Search\Input\QueryBuilder;
 
 // Direct access to file
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+/** @var $this \Glpi\Controller\LegacyFileLoadController */
+$this->setAjax();
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 

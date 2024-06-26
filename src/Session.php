@@ -50,6 +50,8 @@ class Session
     const TRANSLATION_MODE  = 1; // no more used
     const DEBUG_MODE        = 2;
 
+    private static bool $is_ajax_request = false;
+
     /**
      * Max count of CSRF tokens to keep in session.
      * Prevents intensive use of forms from resulting in an excessively cumbersome session.
@@ -361,10 +363,7 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        /** @var int $AJAX_INCLUDE */
-        global $AJAX_INCLUDE;
-
-        if ($AJAX_INCLUDE && ($url === null)) {
+        if (self::$is_ajax_request === true && ($url === null)) {
             return;
         }
         if (empty($title)) {
@@ -2350,5 +2349,15 @@ class Session
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
         );
+    }
+
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
+    }
+
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

@@ -156,11 +156,13 @@ The present file will list all changes made to the project; according to the
 - The `helper` property of form fields will not support anymore the presence of HTML code.
 - `Glpi\Application\ErrorHandler` constructor visibility has been changed to private.
 - `GLPI::initErrorHandler()` does not return any value anymore.
-- The `inc/autoload.function.php`, `inc/db.function.php` and `inc/define.php` file has been removed and the corresponding global functions, constants and variables are now loaded and initialized automatically.
+- The `inc/autoload.function.php`, `inc/based_config.php`, `inc/config.php`, `inc/db.function.php` and `inc/define.php` files have been removed and the `inc/includes.php` file has been almost emptied.
+  The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding GLPI boostraping logic is now executed automatically.
 - `Plugin::init()` and `Plugin::checkStates()` methods signature changed. It is not anymore possible to exclude specific plugins.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
+- `$AJAX_INCLUDE` global variable usage. Use `$this->setAjax()` in legacy `/ajax/` and `/front` scripts or `Html::setAjax()` and `Session::setAjax()`.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `ajax/itemTicket.php` script usage.
@@ -224,8 +226,12 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `$CFG_GLPI_PLUGINS` global variable.
+- `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
+- `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
 - `$LANG` global variable.
-- `$PLUGINS_EXCLUDED` global variable.
+- `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
+- `$SECURITY_STRATEGY` global variable.
+>>>>>>> 965215eca6 (Inject legacy config into the Kernel and split it properly)
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
