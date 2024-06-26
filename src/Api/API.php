@@ -1278,9 +1278,9 @@ abstract class API
             }
         } else {
             $this->returnError(
-                'Error while querying database.' . $this->returnError($DB->error()),
+                'An error occurred during the items search.',
                 400,
-                "ERROR_DATABASE_QUERY",
+                "ERROR_UNKNOWN",
             );
         }
 
