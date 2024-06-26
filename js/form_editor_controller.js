@@ -857,16 +857,25 @@ class GlpiFormEditorController
 
         // Look for select2 to init
         copy.find("select").each(function() {
-            const id = $(this).attr("id");
+            let id = $(this).attr("id");
             const config = window.select2_configs[id];
 
-            // Check if a select2 isn't already initialized
-            // and if a configuration is available
-            if (
-                $(this).hasClass("select2-hidden-accessible") === false
-                && config !== undefined
-            ) {
-                select2_to_init.push(config);
+            if (id !== undefined && config !== undefined) {
+                // Rename id to ensure it is unique
+                const uid = getUUID();
+                const id_prefix = id.replace(/[0-9]+$/, "");
+                $(this).attr("id", `${id_prefix}${uid}`);
+                id = $(this).attr("id"); // Reload ID
+
+                // Check if a select2 isn't already initialized
+                // and if a configuration is available
+                if (
+                    $(this).hasClass("select2-hidden-accessible") === false
+                    && config !== undefined
+                ) {
+                    config.field_id = id;
+                    select2_to_init.push(config);
+                }
             }
         });
 
