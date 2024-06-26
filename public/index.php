@@ -36,6 +36,12 @@
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
+// Check the resources state before trying to instanciate the Kernel.
+// It must be done here as this check must be done even when the Kernel
+// cannot be instanciated due to missing dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel();

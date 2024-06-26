@@ -112,6 +112,12 @@ if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile'
    exit($exit_code);
 }
 
+// Check the resources state before trying to instanciate the Kernel.
+// It must be done here as this check must be done even when the Kernel
+// cannot be instanciated due to missing dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
    echo "\n" . 'Usage of the `--config-dir` option is deprecated. Please use the `--env` option instead.' . "\n\n";
