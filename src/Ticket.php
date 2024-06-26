@@ -7076,7 +7076,7 @@ JAVASCRIPT;
         return $restrict;
     }
 
-    public static function getListForItemSearchOptionsCriteria(CommonDBTM $item)
+    private static function getListForItemSearchOptionsCriteria(CommonDBTM $item): array
     {
         $options  = [
             'criteria' => [],
