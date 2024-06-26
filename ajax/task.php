@@ -110,6 +110,10 @@ if ($template->fields['taskcategories_id']) {
     }
 }
 
+if ($template->fields['groups_id_tech'] == 0) {
+    unset($template->fields['groups_id_tech']);
+}
+
 if ($template->fields['users_id_tech'] == 0) {
     unset($template->fields['users_id_tech']);
 }
