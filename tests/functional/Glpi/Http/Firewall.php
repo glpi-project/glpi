@@ -118,6 +118,72 @@ class Firewall extends \GLPITestCase
                 ];
             }
         }
+
+        // Hardcoded strategies
+        foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
+            // `/front/central.php` has a specific strategy only if some get parameters are defined
+            yield '/front/central.php without dashboard' => [
+                'root_doc'          => $root_doc,
+                'path'              => $root_doc . '/front/central.php',
+                'expected_strategy' => $default_for_core,
+            ];
+            $_GET['embed'] = '1';
+            $_GET['dashboard'] = 'central';
+            yield '/front/central.php with dashboard' => [
+                'root_doc'          => $root_doc,
+                'path'              => $root_doc . '/front/central.php',
+                'expected_strategy' => 'no_check',
+            ];
+            unset($_GET['embed'], $_GET['dashboard']);
+
+            // `/front/planning.php` has a specific strategy only if some get parameters are defined
+            yield '/front/planning.php without token' => [
+                'root_doc'          => $root_doc,
+                'path'              => $root_doc . '/front/planning.php',
+                'expected_strategy' => $default_for_core,
+            ];
+            $_GET['token'] = 'abc';
+            yield '/front/planning.php with token' => [
+                'root_doc'          => $root_doc,
+                'path'              => $root_doc . '/front/planning.php',
+                'expected_strategy' => 'no_check',
+            ];
+            unset($_GET['token']);
+
+            $legacy_faq_urls = ['/ajax/knowbase.php', '/front/helpdesk.faq.php'];
+            foreach ($legacy_faq_urls as $faq_url) {
+                yield $faq_url => [
+                    'root_doc'          => $root_doc,
+                    'path'              => $root_doc . $faq_url,
+                    'expected_strategy' => 'faq_access',
+                ];
+            }
+
+            $legacy_no_check_urls = [
+                '/ajax/common.tabs.php',
+                '/ajax/dashboard.php',
+                '/ajax/telemetry.php',
+                '/front/cron.php',
+                '/front/css.php',
+                '/front/document.send.php',
+                '/front/form/form_renderer.php',
+                '/front/helpdesk.php',
+                '/front/inventory.php',
+                '/front/locale.php',
+                '/front/login.php',
+                '/front/logout.php',
+                '/front/lostpassword.php',
+                '/front/tracking.injector.php',
+                '/front/updatepassword.php',
+            ];
+            foreach ($legacy_no_check_urls as $no_check_url) {
+                yield $no_check_url => [
+                    'root_doc'          => $root_doc,
+                    'path'              => $root_doc . $no_check_url,
+                    'expected_strategy' => 'no_check',
+                ];
+            }
+        }
     }
 
     /**

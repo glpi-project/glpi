@@ -40,7 +40,7 @@ use Session;
 /**
  * @since 10.0.10
  */
-final class Firewall
+final class Firewall implements FirewallInterface
 {
     /**
      * Nothing to check. Entrypoint accepts anonymous access.
@@ -98,9 +98,9 @@ final class Firewall
     private array $plugins_dirs;
 
     /**
-     * @param string $path_prefix   GLPI URLs path prefix
+     * @param string  $path_prefix   GLPI URLs path prefix
      * @param ?string $root_dir      GLPI root directory on filesystem
-     * @param ?array $plugins_dirs   GLPI plugins root directories on filesystem
+     * @param ?array  $plugins_dirs  GLPI plugins root directories on filesystem
      */
     public function __construct(string $path_prefix, ?string $root_dir = null, ?array $plugins_dirs = null)
     {
@@ -109,13 +109,16 @@ final class Firewall
         $this->plugins_dirs = $plugins_dirs ?? \PLUGINS_DIRECTORIES;
     }
 
-    /**
-     * Apply the firewall strategy for given path.
-     *
-     * @param string $path      URL path
-     * @param string $strategy  Strategy to apply, or null to fallback to default strategy
-     * @return void
-     */
+    public static function createDefault(): self
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return new Firewall($CFG_GLPI['root_doc']);
+    }
+
     public function applyStrategy(string $path, ?string $strategy): void
     {
         if ($strategy === null) {
@@ -204,12 +207,12 @@ final class Firewall
 
     private function computeForPaths(string $path): ?string
     {
-        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
+        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, $this->path_prefix . '/front/central.php')) {
             // Allow anonymous access for embed dashboards.
             return 'no_check';
         }
 
-        if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
+        if (isset($_GET["token"]) && str_starts_with($path, $this->path_prefix . '/front/planning.php')) {
             // Token based access for ical/webcal access can be made anonymously.
             return 'no_check';
         }
@@ -236,7 +239,7 @@ final class Firewall
         ];
 
         foreach ($paths as $checkPath => $strategy) {
-            if (\str_starts_with($path, $checkPath)) {
+            if (\str_starts_with($path, $this->path_prefix . $checkPath)) {
                 return $strategy;
             }
         }
