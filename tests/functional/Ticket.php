@@ -7033,7 +7033,7 @@ HTML
         $_SESSION['glpiactiveprofile'][\TicketValidation::$rightname] = \TicketValidation::VALIDATEINCIDENT + \TicketValidation::VALIDATEREQUEST;
 
         // Check the ticket is not found
-        $request['WHERE'] = \Ticket::getListForItemRestrict($item);
+        $request['WHERE'] = $this->callPrivateMethod(new \Ticket(), 'getListForItemRestrict', $item);
         $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria(\Ticket::getTable());
         $result = $DB->request($request);
         $this->integer($result->count())->isEqualTo($existing_tickets);
