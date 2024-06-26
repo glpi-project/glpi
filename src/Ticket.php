@@ -7092,12 +7092,6 @@ JAVASCRIPT;
                 break;
 
             case SLA::class:
-                $options['criteria'][0]['field']      = 30;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-                break;
-
             case OLA::class:
                 $options['criteria'][0]['field']      = 30;
                 $options['criteria'][0]['searchtype'] = 'equals';
