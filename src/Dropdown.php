@@ -2260,14 +2260,14 @@ JAVASCRIPT;
             }
 
             if ($param['aria_label'] !== '') {
-                $output .= " aria-label='" . $param['aria_label'] . "'";
+                $output .= " aria-label='" . htmlspecialchars($param['aria_label']) . "'";
             }
 
             if (!empty($param['add_select_attributes'])) {
                 if (is_array($param['add_select_attributes'])) {
                     $param['add_select_attributes'] = implode(' ', array_map(
                         function ($key, $value) {
-                            return $key . '="' . $value . '"';
+                            return htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
                         },
                         array_keys($param['add_select_attributes']),
                         $param['add_select_attributes']

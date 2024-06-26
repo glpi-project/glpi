@@ -178,11 +178,11 @@ final class QuestionTypesManager
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
-                    + '<i class="' + icons[item.id] + '"></i>'
-                    + item.text
+                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + _.escape(item.text)
                     + '</span>');
             }
-        JS;
+JS;
     }
 
     public function getTemplateResultForCategories(): string
@@ -203,11 +203,11 @@ final class QuestionTypesManager
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex align-items-center gap-2">'
-                    + '<i class="' + icons[item.id] + '"></i>'
-                    + item.text
+                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + _.escape(item.text)
                     + '</span>');
             }
-        JS;
+JS;
     }
 
     public function getTemplateSelectionForQuestionTypes(): string
@@ -228,11 +228,11 @@ final class QuestionTypesManager
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
-                    + '<i class="' + icons[item.id] + '"></i>'
-                    + item.text
+                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + _.escape(item.text)
                     + '</span>');
             }
-        JS;
+JS;
     }
 
     public function getTemplateResultForQuestionTypes(): string
@@ -253,10 +253,10 @@ final class QuestionTypesManager
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex align-items-center gap-1">'
-                    + '<i class="' + icons[item.id] + '"></i>'
-                    + item.text
+                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + _.escape(item.text)
                     + '</span>');
             }
-        JS;
+JS;
     }
 }
