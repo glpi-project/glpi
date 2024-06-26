@@ -44,6 +44,19 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
     }
 
 
+    public function addAdditionalTargets($event = '')
+    {
+        $this->addTarget(
+            Notification::ITEM_TECH_IN_CHARGE,
+            __('Technician in charge of the license')
+        );
+        $this->addTarget(
+            Notification::ITEM_TECH_GROUP_IN_CHARGE,
+            __('Group in charge of the license')
+        );
+    }
+
+
     public function addDataForTemplate($event, $options = [])
     {
 
