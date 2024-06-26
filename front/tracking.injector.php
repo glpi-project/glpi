@@ -35,14 +35,8 @@
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
-
-$SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
-
-include('../inc/includes.php');
+global $CFG_GLPI;
 
 if (
     empty($_POST["_type"])
