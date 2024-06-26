@@ -43,8 +43,6 @@ class CronTaskLog extends CommonDBChild
     public static $itemtype  = 'CronTask';
     public static $items_id  = 'crontasks_id';
 
-    public static $rightname        = 'config';
-
    // Class constant
     const STATE_START = 0;
     const STATE_RUN   = 1;
