@@ -1522,7 +1522,7 @@ HTML;
                     $menu['assets']['content']['allassets']['title']            = __('Global');
                     $menu['assets']['content']['allassets']['shortcut']         = '';
                     $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';
-                    $menu['assets']['content']['allassets']['icon']             = 'fas fa-list';
+                    $menu['assets']['content']['allassets']['icon']             = AllAssets::getIcon();
                     $menu['assets']['content']['allassets']['links']['search']  = '/front/allassets.php';
                     break;
                 }
