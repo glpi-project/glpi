@@ -1488,4 +1488,30 @@ class APIRest extends APIBaseClass
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
         $this->boolean((bool)$computer->getField('is_deleted'))->isTrue();
     }
+
+    public function testSearchTextResponseCode()
+    {
+        $data = $this->query(
+            'getItems',
+            ['itemtype' => Computer::class,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['searchText' => ['test' => 'test']]
+            ],
+            400,
+            'ERROR_UNKNOWN'
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        $data = $this->query(
+            'getItems',
+            ['itemtype' => Computer::class,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['searchText' => ['name' => 'test']]
+            ],
+            200,
+        );
+
+        $this->variable($data)->isNotFalse();
+    }
 }
