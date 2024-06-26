@@ -43,8 +43,9 @@ return static function (ContainerConfigurator $container): void {
     $parameters = $container->parameters();
 
     // Default secret, just in case
+    $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
-    $parameters->set('kernel.secret', env('file:APP_SECRET_FILE'));
+    $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
 
     $services = $container->services();
 
