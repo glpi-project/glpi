@@ -1220,7 +1220,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        "Field $filter_field is not valid for " . $item->getType() . " item.",
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType())
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
@@ -1284,9 +1284,9 @@ abstract class API
                 $found[] = $data;
             }
         } else {
-            $message = "An error occurred during the items search.";
+            $message = __('An error occurred during the items search.');
             if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
-                $message .= " For more information, check the GLPI logs.";
+                $message .= " " . __('For more information, check the GLPI logs.');
             }
             $this->returnError(
                 $message,
