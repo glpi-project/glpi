@@ -74,12 +74,13 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                         // Create a temporary element to convert HTML to text
                         const element = document.createElement('div');
                         element.innerHTML = value;
-                        input.val(element.firstChild.textContent);
-                    } else {
-                        input.val(value);
+
+                        if (element.firstChild) {
+                            value = element.firstChild.textContent;
+                        }
                     }
 
-                    return input.val();
+                    return input.val(value).val();
                 }
             }
         JS;
