@@ -318,14 +318,9 @@ if (!isCommandLine()) {
 
 define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
 
+// For plugins
 /**
  * @var array $PLUGIN_HOOKS
- * @var array $LANG
  */
-global $PLUGIN_HOOKS,
-    $LANG
-;
-
-// For plugins
+global $PLUGIN_HOOKS;
 $PLUGIN_HOOKS     = [];
-$LANG             = [];
