@@ -1498,7 +1498,7 @@ class APIRest extends APIBaseClass
                 'query'    => ['searchText' => ['test' => 'test']]
             ],
             400,
-            'ERROR_UNKNOWN'
+            'ERROR_FIELD_NOT_FOUND'
         );
 
         $this->variable($data)->isNotFalse();

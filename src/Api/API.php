@@ -1218,6 +1218,13 @@ abstract class API
 
             // make text search
             foreach ($search_values as $filter_field => $filter_value) {
+                if (!$DB->fieldExists($table, $filter_field)) {
+                    $this->returnError(
+                        "Field $filter_field is not valid for " . $item->getType() . " item.",
+                        400,
+                        "ERROR_FIELD_NOT_FOUND"
+                    );
+                }
                 if (!empty($filter_value)) {
                     $search_value = Search::makeTextSearch($DB->escape($filter_value));
                     $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
@@ -1277,9 +1284,13 @@ abstract class API
                 $found[] = $data;
             }
         } else {
+            $message = "An error occurred during the items search.";
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $message .= " For more information, check the GLPI logs.";
+            }
             $this->returnError(
-                'An error occurred during the items search.',
-                400,
+                $message,
+                500,
                 "ERROR_UNKNOWN",
             );
         }
