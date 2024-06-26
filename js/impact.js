@@ -1578,7 +1578,7 @@ var GLPIImpact = {
                         }
                         if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
                             tdTitle.innerText = propname;
-                            tdValue.innerText = _.unescape(targetValue);
+                            tdValue.innerText = $('<textarea />').html(targetValue).text();
                         }
                     }
 
