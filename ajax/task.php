@@ -111,7 +111,7 @@ if ($template->fields['taskcategories_id']) {
 }
 
 if ($template->fields['users_id_tech'] == 0) {
-    $template->fields['users_id_tech'] = Session::getLoginUserID();
+    unset($template->fields['users_id_tech']);
 }
 
 // Return json response with the template fields
