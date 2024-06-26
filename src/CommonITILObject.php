@@ -630,7 +630,7 @@ abstract class CommonITILObject extends CommonDBTM
         $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
         $this->initForm($this->fields['id'], $options);
 
-        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        $options['_canupdate'] = Session::haveRight(static::$rightname, UPDATE);
         $item_commonitilobject = null;
         if ($options['_canupdate']) {
             //compute related item object (Ticket havee his own showForm)
