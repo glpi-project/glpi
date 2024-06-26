@@ -7011,7 +7011,7 @@ HTML
             'name'      => __FUNCTION__,
             'content'   => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'users_id_recipient' => User::getIdByName('tech'),
+            'users_id_recipient' => getItemByTypeName(User::class, 'tech', true),
         ]);
         $this->boolean($ticket->isNewItem())->isFalse();
 
