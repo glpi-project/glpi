@@ -35,14 +35,9 @@
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
+global $CFG_GLPI;
 
-$SECURITY_STRATEGY = 'faq_access';
-
-include('../inc/includes.php');
 Html::header_nocache();
 
 Toolbox::deprecated();

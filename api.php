@@ -40,34 +40,12 @@
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
-use Glpi\Cache\CacheManager;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 
-/**
- * @var GLPI $GLPI
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
- */
-global $GLPI, $GLPI_CACHE;
-
-define('GLPI_ROOT', __DIR__);
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
-ini_set('session.use_cookies', 0);
-
-include_once(GLPI_ROOT . '/inc/based_config.php');
-
-// Init loggers
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
 // Ensure errors will not break API output.
 ErrorHandler::getInstance()->disableOutput();
-
-//init cache
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
 $method = $_SERVER['REQUEST_METHOD'];
 $relative_uri = $_SERVER['PATH_INFO'] ?? '';
@@ -81,7 +59,6 @@ if (preg_match('/^\/v1(\/|$)/', $relative_uri)) {
     $api->call();
     die();
 }
-include_once(GLPI_ROOT . '/inc/includes.php');
 
 $supported_versions = Router::getAPIVersions(true);
 if (preg_match('/^\/v\d+(\/|$)/', $relative_uri)) {

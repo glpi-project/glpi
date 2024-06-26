@@ -37,19 +37,10 @@ use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\Renderer\FormRenderer;
-use Glpi\Http\Firewall;
 use Glpi\Http\Response;
-
-/**
- * @var string|null $SECURITY_STRATEGY
- */
-global $SECURITY_STRATEGY;
 
 // Since forms may be available to unauthenticated users, we trust the
 // `canAnswerForm` method to do the required session checks.
-$SECURITY_STRATEGY = 'no_check';
-
-include('../../inc/includes.php');
 
 /**
  * Endpoint used to display or preview a form.
