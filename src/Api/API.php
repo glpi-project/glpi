@@ -1276,6 +1276,12 @@ abstract class API
 
                 $found[] = $data;
             }
+        } else {
+            $this->returnError(
+                'Error while querying database.' . $this->returnError($DB->error()),
+                400,
+                "ERROR_DATABASE_QUERY",
+            );
         }
 
        // get result full row counts
