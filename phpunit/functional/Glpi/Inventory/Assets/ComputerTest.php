@@ -1011,7 +1011,7 @@ class ComputerTest extends AbstractInventoryAsset
         //test entities_id
         $this->assertSame(0, $computer->fields['entities_id']);
 
-        //transer to another entity
+        //transfer to another entity
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);
@@ -1061,7 +1061,7 @@ class ComputerTest extends AbstractInventoryAsset
         //test entities_id
         $this->assertSame(0, $computer->fields['entities_id']);
 
-        //transer to another entity
+        //transfer to another entity
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);
