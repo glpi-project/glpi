@@ -56,8 +56,10 @@
 {# TODO check allow_email params #}
 
 {% if 'requester' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_requester') or not itiltemplate.isHiddenField('_groups_id_requester')) %}
+   {% set rand = random() %}
    {% set requester_field %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
@@ -77,7 +79,8 @@
          requester_field,
          _n('Requester', 'Requesters', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester')
+            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}
@@ -86,8 +89,10 @@
 {% endif %}
 
 {% if 'observer' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer')) %}
+   {% set rand = random() %}
    {% set observer_field %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
@@ -107,7 +112,8 @@
          observer_field,
          _n('Observer', 'Observers', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
+            required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}
@@ -117,7 +123,9 @@
 
 {% if 'assign' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_assign') or not itiltemplate.isHiddenField('_groups_id_assign') or not itiltemplate.isHiddenField('_supplier_id_assign')) %}
    {% set assign_field %}
+      {% set rand = random() %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
@@ -137,7 +145,8 @@
          assign_field,
          __('Assigned to'),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_assign') or itiltemplate.isMandatoryField('_groups_id_assign') or itiltemplate.isMandatoryField('_supplier_id_assign')
+            required: itiltemplate.isMandatoryField('_users_id_assign') or itiltemplate.isMandatoryField('_groups_id_assign') or itiltemplate.isMandatoryField('_supplier_id_assign'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}

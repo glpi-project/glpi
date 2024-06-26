@@ -882,6 +882,7 @@
       'field_class': 'col-12 col-sm-6',
       'add_field_class': '',
       'add_field_attribs': {},
+      'insert_content_after_label': '',
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -898,7 +899,10 @@
 
    <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-      {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
+      <div class="d-flex align-items-center">
+         {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
+         {{ options.insert_content_after_label|raw }}
+      </div>
       <div class="{{ options.input_class }} field-container">
          {{ field|raw }}
       </div>
