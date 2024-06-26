@@ -1232,11 +1232,12 @@ JS);
                 continue;
             }
             $related_node->getFromDB($related_item['items_id_' . $source]);
+            $label = $related_item['name'];
             self::addNode($nodes, $related_node);
 
            // Add or update the relation on the graph
             $edgeID = self::getEdgeID($node, $related_node, $direction);
-            self::addEdge($edges, $edgeID, $node, $related_node, $direction);
+            self::addEdge($edges, $edgeID, $node, $related_node, $direction, $label);
 
            // Keep exploring from this node unless we already went through it
             $related_node_id = self::getNodeID($related_node);
@@ -1396,7 +1397,7 @@ JS);
      *
      * @throws InvalidArgumentException
      */
-    private static function addEdge(array &$edges, string $key, CommonDBTM $itemA, CommonDBTM $itemB, int $direction): void
+    private static function addEdge(array &$edges, string $key, CommonDBTM $itemA, CommonDBTM $itemB, int $direction, string $label): void
     {
         // Just update the flag if the edge already exist
         if (isset($edges[$key])) {
@@ -1425,7 +1426,8 @@ JS);
             'id'     => $key,
             'source' => $from,
             'target' => $to,
-            'flag'   => $direction
+            'flag'   => $direction,
+            'label' => $label
         ];
     }
 
@@ -1495,6 +1497,7 @@ JS);
             $data[] = [
                 'group' => 'edges',
                 'data'  => $edge,
+                'classes'  => 'top-center',
             ];
         }
 
@@ -1523,6 +1526,15 @@ JS);
     }
 
     /**
+     * Load the "edit edge" dialog
+     */
+    private static function printEditEdgeDialog(): void
+    {
+        TemplateRenderer::getInstance()->display('impact/edit_edge_modal.html.twig');
+    }
+
+
+    /**
      * Prepare the impact network
      *
      * @since 9.5
@@ -1535,6 +1547,7 @@ JS);
         self::printImpactNetworkContainer();
         self::printShowOngoingDialog();
         self::printEditCompoundDialog();
+        self::printEditEdgeDialog();
         echo Html::script("js/impact.js");
 
         // Load backend values

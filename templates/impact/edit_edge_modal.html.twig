@@ -1,0 +1,63 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div id="edit_edge_dialog"  class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            {# Header #}
+            <div class="modal-header">
+                <h5 class="modal-title"> {{ __('Edit edge') }} </h5>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+            </div>
+
+            {# Body #}
+            <div class="modal-body">
+                <form>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="edge_name">
+                            {{ __('Name') }}
+                        </label>
+                        <input type="text" class="form-control" name="edge_name" />
+                    </div>
+                </form>
+            </div>
+
+            {# Actions #}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="edit_edge_save"> {{ __('Save') }} </button>
+            </div>
+
+        </div>
+    </div>
+</div>
