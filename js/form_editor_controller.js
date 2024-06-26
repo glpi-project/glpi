@@ -863,9 +863,7 @@ class GlpiFormEditorController
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
-                const id_prefix = id.replace(/[0-9]+$/, "");
-                $(this).attr("id", `${id_prefix}${uid}`);
-                id = $(this).attr("id"); // Reload ID
+                $(this).attr("id", uid);
 
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
@@ -873,7 +871,7 @@ class GlpiFormEditorController
                     $(this).hasClass("select2-hidden-accessible") === false
                     && config !== undefined
                 ) {
-                    config.field_id = id;
+                    config.field_id = uid;
                     select2_to_init.push(config);
                 }
             }
