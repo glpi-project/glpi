@@ -1527,10 +1527,8 @@ JS);
 
     /**
      * Load the "edit edge" dialog
-     *
-     * @since 9.5
      */
-    public static function printEditEdgeDialog()
+    private static function printEditEdgeDialog(): void
     {
         TemplateRenderer::getInstance()->display('impact/edit_edge_modal.html.twig');
     }
