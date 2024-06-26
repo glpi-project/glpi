@@ -57,14 +57,6 @@ final class BaseConfig implements LegacyConfigProviderInterface, ConfigProviderC
 
         define('GLPI_ROOT', $this->projectDir);
 
-        // Notice problem  for date function :
-        $tz = ini_get('date.timezone');
-        if (!empty($tz)) {
-            date_default_timezone_set($tz);
-        } else {
-            date_default_timezone_set(@date_default_timezone_get());
-        }
-
         $kernelEnvironment = $this->kernelEnvironment;
 
         (static function () use ($kernelEnvironment) {
