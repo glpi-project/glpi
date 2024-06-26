@@ -47,6 +47,6 @@ class AllAssets extends CommonGLPI
 
     public static function getIcon()
     {
-        return 'fas fa-cubes';
+        return 'ti ti-cube';
     }
 }
