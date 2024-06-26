@@ -133,7 +133,7 @@ final class Kernel extends BaseKernel
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
 
         // Env-specific route files.
-        if (\is_file($path = $this->getProjectDir() . '/routes/'.$this->environment.'.php')) {
+        if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
         }
     }

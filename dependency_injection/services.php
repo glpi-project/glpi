@@ -36,6 +36,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\Firewall;
+use Glpi\Http\FirewallInterface;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -60,7 +61,11 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
 
-    $services->set(Firewall::class)->synthetic();
+    $services->set(Firewall::class)
+        ->factory([Firewall::class, 'createDefault'])
+        ->tag('proxy', ['interface' => FirewallInterface::class])
+        ->lazy()
+    ;
 
     if ($container->env() === 'development') {
         $container->extension('web_profiler', [

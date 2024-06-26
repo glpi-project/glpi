@@ -38,7 +38,6 @@ use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Config\LegacyConfigurators\BaseConfig;
 use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
-use Glpi\Config\LegacyConfigurators\FirewallConfig;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
 use Glpi\Config\LegacyConfigurators\ProfilerStart;
 use Glpi\Config\LegacyConfigurators\SessionConfig;
@@ -70,7 +69,6 @@ return static function (ContainerConfigurator $container): void {
     $services->set(CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
     $services->set(SessionConfig::class)->tag($tagName, ['priority' => 130]);
     $services->set(InitializePlugins::class)->tag($tagName, ['priority' => 120]);
-    $services->set(FirewallConfig::class)->tag($tagName, ['priority' => 110]);
 
     // FIXME: This class MUST stay at the end until the entire config is revamped.
     $services->set(ConfigRest::class)->tag($tagName, ['priority' => 10]);

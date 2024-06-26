@@ -42,7 +42,7 @@ final readonly class FirewallListener implements EventSubscriberInterface
 {
     public const STRATEGY_KEY = '_glpi_security_strategy';
 
-    public function __construct(private Firewall $firewall)
+    public function __construct(private FirewallInterface $firewall)
     {
     }
 
