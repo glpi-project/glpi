@@ -73,7 +73,7 @@ class SourceCodeIntegrityChecker
         return [
             'ajax', 'css', 'front', 'inc', 'install', 'js', 'lib', 'locales', 'pics',
             'public', 'resources', 'sound', 'src', 'templates', 'vendor',
-            'api.php', 'apirest.md', 'apirest.php', 'caldav.php', 'index.php', 'status.php'
+            'index.php', 'status.php'
         ];
     }
 

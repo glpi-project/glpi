@@ -125,6 +125,7 @@ final class Kernel extends BaseKernel
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/legacyConfigProviders.php', 'php');
+        $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
@@ -158,7 +159,6 @@ final class Kernel extends BaseKernel
          */
         global $SECURITY_STRATEGY;
         if (isset($SECURITY_STRATEGY)) {
-            // TODO Add a Route attribute to define the Firewall strategy.
             trigger_error(
                 'The global `$SECURITY_STRATEGY` variable has no effect anymore.',
                 E_USER_WARNING

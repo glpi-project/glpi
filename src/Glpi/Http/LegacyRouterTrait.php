@@ -78,7 +78,7 @@ trait LegacyRouterTrait
                 // install/update scripts
                 'install\/(install|update)\.php$',
                 // endpoints located on root directory
-                '(api|apirest|caldav|index|status)\.php',
+                '(index|status)\.php',
             ];
 
             $plugins_path_patterns = [

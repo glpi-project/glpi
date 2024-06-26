@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,13 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.5.0
- */
+namespace Glpi\Controller;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
-$server = new Glpi\CalDAV\Server();
-$server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-$server->start();
+final readonly class CaldavController implements Controller
+{
+    #[Route(
+        "/caldav.php{request_parameters}",
+        name: "glpi_caldav",
+        requirements: [
+            'request_parameters' => '.*',
+        ]
+    )]
+    #[SecurityStrategy('no_check')]
+    public function __invoke(Request $request): Response
+    {
+        return new StreamedResponse(function () {
+            /** @var array $CFG_GLPI */
+            global $CFG_GLPI;
+
+            $server = new \Glpi\CalDAV\Server();
+            $server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
+            $server->start();
+        });
+    }
+}
