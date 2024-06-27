@@ -45,7 +45,7 @@ class PrintPreview
         $action_prefix = 'PrintPreview' . MassiveAction::CLASS_ACTION_SEPARATOR;
         $item = new $itemtype();
         if ($item instanceof CommonDBTM) {
-            $actions[$action_prefix . 'print_preview'] = '<i class="' . self::getIcon() . '"> </i>' . __('Print a preview');
+            $actions[$action_prefix . 'print_preview'] = '<i class="' . self::getIcon() . '"> </i>' . __('Display to a printable view');
         }
     }
 
@@ -73,7 +73,6 @@ class PrintPreview
         CommonDBTM $item,
         array $ids
     ) {
-
         switch ($ma->getAction()) {
             case 'print_preview':
                 TemplateRenderer::getInstance()->render('pages/tools/print_preview.html.twig', [
@@ -99,14 +98,36 @@ class PrintPreview
             'no_header' => false,
             'no_inventory_footer' => true,
             'no_form_buttons'   => true,
-            'canedit' => false,
+            'canedit'        => false,
         ]);
-
+        echo '
+            <div class="card mb-5 border-0 shadow-none">
+                <div class="card-header">
+                    <h4 class="card-title ps-4">
+                        <i class="' . $item->getIcon() . '"></i> &nbsp' . $item->getTypeName(1) . '
+                    </h4>
+                </div>
+            </div>
+        ';
         echo $html;
 
         foreach (array_diff($options, $unprintable) as $key => $value) {
-            if ((int) $value == 1) {
-                $key::displayTabContentForItem($item);
+            if (
+                (int) $value == 1
+                && class_exists($key)
+                && $key != $options['itemtype']
+            ) {
+                echo '
+                    <div class="break"></div>
+                    <div class="card my-5 border-0 shadow-none">
+                        <div class="card-header">
+                            <h4 class="card-title ps-4">
+                                <i class="' . $key::getIcon() . '"></i> &nbsp' . $key::getTypeName(1) . '
+                            </h4>
+                        </div>
+                    </div>
+                ';
+                $key::displayTabContentForItem($item, 0);
             }
         }
 

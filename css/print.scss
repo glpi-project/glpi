@@ -1,0 +1,110 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+@mixin hide-elements {
+    display: none !important;
+}
+
+html, body {
+    width: 210mm;
+    height: 297mm;
+}
+
+#header,
+#footer,
+.navbar, /*left navbar*/
+.nav-tabs, /*item tab*/
+#debug-toolbar, /* toolbar */
+.navigationheader > div:first-of-type, /* navigationheader */
+.navigationheader > div:last-of-type, /* navigationheader */
+#single-action, /* btn action from item header */
+#nav,
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+[class*="btn "],
+[class*="search-pager"],
+[class*="tab_cadre_pager"],
+[class*="alert-important"],
+[class*="selection__arrow"],
+form[action*="asset_peripheralasset"],
+form[action*="socket"],
+form[action*="document"],
+form[action*="item_line"],
+form[action*="networkport"] {
+    @include hide-elements;
+}
+
+.navigationheader > .main-header > h3 {
+    padding-left: 0rem !important;
+}
+
+.break {
+    break-before: page !important;
+}
+
+table, .table {
+    width: 100%;
+    max-width: 210mm;
+    box-sizing: border-box;
+    table-layout: fixed;
+    overflow-x: hidden;
+
+    th, td, a, span {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+}
+
+@media print {
+    @include hide-elements;
+
+    .navigationheader > .main-header > h3 {
+        padding-left: 0rem !important;
+    }
+
+    .break {
+        break-before: page !important;
+    }
+
+    table, .table {
+        th, td, a, span {
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+    }
+}

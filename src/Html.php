@@ -1220,6 +1220,10 @@ HTML;
             $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
         }
 
+        if ($option === 'print') {
+            $tpl_vars['css_files'][] = ['path' => 'css/print.scss'];
+        }
+
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_modules'][] = ['path' => 'public/build/vue/app.js'];
