@@ -167,6 +167,34 @@ class Cluster extends CommonDBTM
         );
     }
 
+    /**
+     * Get the cluster of an item
+     *
+     * @param CommonDBTM $item
+     *
+     * @return Cluster|null
+     */
+    public static function getClusterByItem($item)
+    {
+        $itemCluster = new Item_Cluster();
+        $itemtype = $item->getType();
+        if (
+            $itemCluster->getFromDBByCrit([
+                'itemtype' => $item->getType(),
+                'items_id' => $item->getID()
+            ])
+        ) {
+            if ($itemCluster->fields['clusters_id'] != 0) {
+                $cluster = new self();
+                $cluster->getFromDB($itemCluster->fields['clusters_id']);
+
+                return $cluster;
+            }
+        }
+
+        return null;
+    }
+
 
     public static function getIcon()
     {
