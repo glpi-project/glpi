@@ -793,11 +793,14 @@ class Html
             $url = parse_url($url_in);
 
             if (isset($url['query'])) {
+                $parameters = [];
                 parse_str($url['query'], $parameters);
                 unset($parameters['forcetab']);
                 unset($parameters['tab_params']);
                 $new_query = http_build_query($parameters);
-                return str_replace($url['query'], $new_query, $url_in);
+                $url_out = str_replace($url['query'], $new_query, $url_in);
+                $url_out = rtrim($url_out, '?'); // remove `?` when there is no parameters
+                return $url_out;
             }
 
             return $url_in;
