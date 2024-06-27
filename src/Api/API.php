@@ -1220,7 +1220,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType())
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
