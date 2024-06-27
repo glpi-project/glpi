@@ -885,7 +885,7 @@ class Html extends \GLPITestCase
                 "https://test/test/test.php?param1=1&param2=2&param3=3"
             ],
             ["&forcetab=test",
-                ""
+                "&forcetab=test"
             ],
         ];
     }
@@ -895,7 +895,7 @@ class Html extends \GLPITestCase
      */
     public function testGetBackUrl($url_in, $url_out)
     {
-        $this->string(\Html::getBackUrl($url_in), $url_out);
+        $this->string(\Html::getBackUrl($url_in))->isIdenticalTo($url_out);
     }
 
     public function testGetScssFileHash()
