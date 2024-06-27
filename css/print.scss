@@ -35,6 +35,10 @@
     display: none !important;
 }
 
+* {
+    box-shadow: none !important;
+}
+
 html, body {
     width: 210mm;
     height: 297mm;
@@ -67,27 +71,32 @@ form[action*="networkport"] {
     @include hide-elements;
 }
 
-.navigationheader > .main-header > h3 {
-    padding-left: 0rem !important;
+[class*="form-control"],
+[class*="form-select"],
+[class*="select2"],
+span {
+    border-color: transparent !important;
+    background-color: transparent !important;
+    color: black !important;
 }
 
 .break {
     break-before: page !important;
 }
 
-table, .table {
-    width: 100%;
-    max-width: 210mm;
-    box-sizing: border-box;
-    table-layout: fixed;
-    overflow-x: hidden;
+// table, .table {
+//     width: 100%;
+//     max-width: 210mm;
+//     box-sizing: border-box;
+//     table-layout: fixed;
+//     overflow-x: hidden;
 
-    th, td, a, span {
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-}
+//     th, td, a, span {
+//         white-space: normal;
+//         word-wrap: break-word;
+//         overflow-wrap: break-word;
+//     }
+// }
 
 @media print {
     @include hide-elements;
@@ -108,3 +117,50 @@ table, .table {
         }
     }
 }
+
+/* Force table to not be like tables anymore */
+table, 
+thead, 
+tbody, 
+th, 
+td, 
+tr { 
+    display: block; 
+}
+
+/* Hide table headers (but not display: none;, for accessibility) */
+thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+tr { border: 1px solid #ccc; }
+
+td { 
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+    white-space: normal;
+    text-align:left;
+}
+
+td:before { 
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+    text-align:left;
+    font-weight: bold;
+}
+
+/*
+Label the data
+*/
+td:before { content: attr(data-title); }

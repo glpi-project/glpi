@@ -98,7 +98,7 @@ class PrintPreview
             'no_header' => false,
             'no_inventory_footer' => true,
             'no_form_buttons'   => true,
-            'canedit'        => false,
+            'preview'        => true,
         ]);
         echo '
             <div class="card mb-5 border-0 shadow-none">
@@ -130,6 +130,23 @@ class PrintPreview
                 $key::displayTabContentForItem($item, 0);
             }
         }
+
+        $js = <<<JS
+            $(document).ready(() => {
+                document.querySelectorAll('input').forEach(input => {
+                    input.setAttribute('readonly', true);
+                });
+
+                document.querySelectorAll('select').forEach(select => {
+                    select.setAttribute('disabled', true);
+                });
+
+                document.querySelectorAll('textarea').forEach(select => {
+                    select.setAttribute('readonly', true);
+                });
+            });
+JS;
+        echo Html::scriptBlock($js);
 
         return true;
     }
