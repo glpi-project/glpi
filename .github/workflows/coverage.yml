@@ -3,8 +3,17 @@ name: "GLPI test code coverage"
 on:
   # Enable execution from the "Code coverage schedule" workflow
   workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
   # Enable manual run
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target branch"
+        required: true
+        type: string
 
 jobs:
   coverage:
@@ -28,6 +37,8 @@ jobs:
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
         uses: "actions/checkout@v4"
+        with:
+          ref: ${{ inputs.branch }}
       - name: "Restore dependencies cache"
         uses: actions/cache@v4
         with:
@@ -67,3 +78,4 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: ./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
+          override_branch: ${{ inputs.branch }}

@@ -8,3 +8,5 @@ jobs:
   run-coverage-workflow:
     name: "Run coverage workflow"
     uses: "glpi-project/glpi/.github/workflows/coverage.yml@main"
+    with:
+      branch: "main"
