@@ -37,10 +37,11 @@ namespace Glpi\Console\User;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class CreateCommand extends AbstractCommand
+class CreateCommand extends AbstractUserCommand
 {
     protected function configure(): void
     {
@@ -49,7 +50,7 @@ class CreateCommand extends AbstractCommand
         $this->setName('user:create');
         $this->setDescription(__('Create a new local GLPI user'));
 
-        $this->addArgument('username', InputArgument::REQUIRED, __('Login'));
+        $this->addOption('password', 'p', InputOption::VALUE_OPTIONAL, __('Password'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): ?int
@@ -62,18 +63,8 @@ class CreateCommand extends AbstractCommand
             return 1;
         }
 
-        // Ask for password and then confirm it
-        $helper = $this->getHelper('question');
-        $question = new Question(__('Enter password'));
-        $question->setHidden(true);
-        $question->setHiddenFallback(false);
-        $password = $helper->ask($input, $output, $question);
-        $question = new Question(__('Confirm password'));
-        $question->setHidden(true);
-        $question->setHiddenFallback(false);
-        $password2 = $helper->ask($input, $output, $question);
-        if ($password !== $password2) {
-            $output->writeln('<error>' . __('Passwords do not match') . '</error>');
+        $password = $this->askForPassword($input, $output);
+        if ($password === false) {
             return 1;
         }
         $user_input['password'] = $password;

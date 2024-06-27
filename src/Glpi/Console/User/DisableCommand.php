@@ -39,7 +39,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DisableCommand extends AbstractCommand
+class DisableCommand extends AbstractUserCommand
 {
     protected function configure(): void
     {
@@ -47,8 +47,6 @@ class DisableCommand extends AbstractCommand
 
         $this->setName('user:disable');
         $this->setDescription(__('Disable a GLPI user'));
-
-        $this->addArgument('username', InputArgument::REQUIRED, __('Login'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): ?int

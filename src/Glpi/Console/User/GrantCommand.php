@@ -42,7 +42,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class GrantCommand extends AbstractCommand
+class GrantCommand extends AbstractUserCommand
 {
     protected function configure(): void
     {
@@ -51,7 +51,6 @@ class GrantCommand extends AbstractCommand
         $this->setName('user:grant');
         $this->setDescription(__('Grant a profile assignment to a user'));
 
-        $this->addArgument('username', InputArgument::REQUIRED, __('Login'));
         $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED, \Profile::getTypeName(1));
         $this->addOption('entity', 'e', InputOption::VALUE_REQUIRED, \Entity::getTypeName(1), 0);
         $this->addOption('recursive', 'r', InputOption::VALUE_NONE, __('Recursive'));
