@@ -2750,7 +2750,7 @@ CREATE TABLE `glpi_entities` (
   `send_domains_alert_close_expiries_delay` int NOT NULL DEFAULT '-2',
   `send_domains_alert_expired_delay` int NOT NULL DEFAULT '-2',
   `autoclose_delay` int NOT NULL DEFAULT '-2',
-  `autopurge_delay` int NOT NULL DEFAULT '-10',
+  `autopurge_delay` int NOT NULL DEFAULT '-2',
   `notclosed_delay` int NOT NULL DEFAULT '-2',
   `calendars_strategy` tinyint NOT NULL DEFAULT '-2',
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
