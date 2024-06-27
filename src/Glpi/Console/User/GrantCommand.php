@@ -49,7 +49,7 @@ class GrantCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('user:grant');
-        $this->setDescription(__('Reset the password of a local GLPI user'));
+        $this->setDescription(__('Grant a profile assignment to a user'));
 
         $this->addArgument('username', InputArgument::REQUIRED, __('Login'));
         $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED, \Profile::getTypeName(1));
