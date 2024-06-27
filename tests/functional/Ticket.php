@@ -7692,14 +7692,15 @@ HTML
         $result = $DB->request($request);
         $this->integer($result->count())->isEqualTo($existing_tickets);
 
-        $ticket_valdiation = new TicketValidation();
-        $ticket_valdiation->add([
+        $ticket_validation = new TicketValidation();
+        $ticket_validation->add([
             'tickets_id'        => $ticket->getID(),
             'entities_id'       => $ticket->fields['entities_id'],
-            'users_id_validate' => Session::getLoginUserID(),
+            'itemtype_target'   => User::class,
+            'items_id_target'   => Session::getLoginUserID(),
             'timeline_position' => 1,
         ]);
-        $this->boolean($ticket_valdiation->isNewItem())->isFalse();
+        $this->boolean($ticket_validation->isNewItem())->isFalse();
 
         // Check the ticket under valdiation is found
         $result = $DB->request($request);

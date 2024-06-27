@@ -6391,6 +6391,7 @@ JAVASCRIPT;
                 ],
             ];
         }
+        return $options;
     }
 
     public static function getListForItemRestrict(CommonDBTM $item)
@@ -6456,7 +6457,8 @@ JAVASCRIPT;
                         $or[] = [
                             'AND' => [
                                 'glpi_ticketvalidations.tickets_id'        => new QueryExpression('glpi_tickets.id'),
-                                'glpi_ticketvalidations.users_id_validate' => Session::getLoginUserID(),
+                                'glpi_ticketvalidations.itemtype_target'   => User::class,
+                                'glpi_ticketvalidations.items_id_target' => Session::getLoginUserID(),
                             ]
                         ];
                     }
