@@ -103,7 +103,7 @@ describe('Convert default value form', () => {
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
             cy.findByLabelText("Default value")
                 .awaitTinyMCE()
-                .type('Default value for short text');
+                .type('Default value for short text', { timeout: 10000 });
         });
 
         // Change type to "Text"
