@@ -39,8 +39,14 @@ use Glpi\Config\LegacyConfigProviderListener;
 final class ListenersPriority
 {
     public const LEGACY_LISTENERS_PRIORITIES = [
+        // Static assets must be served without executing anything else.
+        // Keep them on top priority.
         LegacyAssetsListener::class         => 500,
+
         LegacyRouterListener::class         => 400,
+
+        // Config providers are still expecting the `$_SERVER['SCRIPT_FILENAME']` to matches the legacy script path.
+        // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
     ];
 

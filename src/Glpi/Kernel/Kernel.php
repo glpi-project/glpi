@@ -140,13 +140,10 @@ final class Kernel extends BaseKernel
 
     private function triggerGlobalsDeprecation(): void
     {
-        if (in_array(GLPI_ROOT . '/inc/includes.php', get_included_files(), true)) {
+        if (in_array($this->getProjectDir() . '/inc/includes.php', get_included_files(), true)) {
             // The following deprecations/warnings are already triggered in `inc/includes.php`.
             return;
         }
-
-        // Do not output error messages, the response has already been sent
-        ErrorHandler::getInstance()->disableOutput();
 
         /**
          * @var mixed|null $AJAX_INCLUDE
