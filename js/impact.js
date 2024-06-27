@@ -1577,7 +1577,7 @@ var GLPIImpact = {
                             propname = __("Comments");
                         }
                         if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
-                            tdTitle.innerText = propname;
+                            tdTitle.innerText = _.escape(propname);
                             tdValue.innerText = $('<textarea />').html(targetValue).text();
                         }
                     }
