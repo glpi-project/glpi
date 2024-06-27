@@ -54,6 +54,7 @@ use Ticket as GlobalTicket;
 use Ticket_User;
 use TicketValidation;
 use User;
+use Session;
 
 /* Test for inc/ticket.class.php */
 
@@ -7637,5 +7638,71 @@ HTML
         $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
         $this->array($values['results'])->size->isGreaterThan(1);
         $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isTrue();
+    }
+
+    public function testGetCommonCriteria()
+    {
+        global $DB;
+
+        $this->login('tech', 'tech');
+
+        $item = new \Project();
+        $item->add([
+            'name' => $this->getUniqueString(),
+        ]);
+        $this->boolean($item->isNewItem())->isFalse();
+
+        // Find tickets already in the entity
+        $request = \Ticket::getCommonCriteria();
+        $request['WHERE'] = $this->callPrivateMethod(new \Ticket(), 'getListForItemRestrict', $item);
+        $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria(\Ticket::getTable());
+        $result = $DB->request($request);
+        $existing_tickets = $result->count();
+
+        // Create a ticket with no actor and a valdiator
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'      => __FUNCTION__,
+            'content'   => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id_recipient' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+        $this->boolean($ticket->isNewItem())->isFalse();
+
+        $item_ticket = new \Item_Ticket();
+        $item_ticket->add([
+            'tickets_id' => $ticket->getID(),
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID(),
+        ]);
+        $this->boolean($item_ticket->isNewItem())->isFalse();
+
+        $user = new \Ticket_User();
+        $users = $user->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->integer(count($users))->IsEqualTo(0);
+
+        $this->login('post-only', 'postonly');
+        $_SESSION['glpiactiveprofile'][\TicketValidation::$rightname] = \TicketValidation::VALIDATEINCIDENT + \TicketValidation::VALIDATEREQUEST;
+
+        // Check the ticket is not found
+        $request['WHERE'] = $this->callPrivateMethod(new \Ticket(), 'getListForItemRestrict', $item);
+        $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria(\Ticket::getTable());
+        $result = $DB->request($request);
+        $this->integer($result->count())->isEqualTo($existing_tickets);
+
+        $ticket_valdiation = new TicketValidation();
+        $ticket_valdiation->add([
+            'tickets_id'        => $ticket->getID(),
+            'entities_id'       => $ticket->fields['entities_id'],
+            'users_id_validate' => Session::getLoginUserID(),
+            'timeline_position' => 1,
+        ]);
+        $this->boolean($ticket_valdiation->isNewItem())->isFalse();
+
+        // Check the ticket under valdiation is found
+        $result = $DB->request($request);
+        $this->integer($result->count())->isEqualTo($existing_tickets + 1);
     }
 }

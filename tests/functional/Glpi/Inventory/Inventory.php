@@ -4610,12 +4610,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $nbnetequps = countElementsInTable(\NetworkEquipment::getTable());
 
         $json_paths = [
-            self::INV_FIXTURES . 'computer_1.json',
-            self::INV_FIXTURES . 'networkequipment_1.json',
-            self::INV_FIXTURES . 'printer_1.json',
+            realpath(self::INV_FIXTURES . 'computer_1.json'),
+            realpath(self::INV_FIXTURES . 'networkequipment_1.json'),
+            realpath(self::INV_FIXTURES . 'printer_1.json'),
         ];
 
-        UnifiedArchive::archiveFiles($json_paths, self::INVENTORY_ARCHIVE_PATH);
+        UnifiedArchive::create($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
         $conf = new \Glpi\Inventory\Conf();
         $result = $conf->importFiles(['to_inventory.zip' => self::INVENTORY_ARCHIVE_PATH]);
