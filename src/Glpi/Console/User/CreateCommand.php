@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -59,7 +58,7 @@ class CreateCommand extends AbstractCommand
 
         $user = new \User();
         if ($user->getFromDBbyName($user_input['name'])) {
-            $output->writeln(__('User already exists'));
+            $output->writeln('<error>' . __('User already exists') . '</error>');
             return 1;
         }
 
@@ -74,17 +73,17 @@ class CreateCommand extends AbstractCommand
         $question->setHiddenFallback(false);
         $password2 = $helper->ask($input, $output, $question);
         if ($password !== $password2) {
-            $output->writeln(__('Passwords do not match'));
+            $output->writeln('<error>' . __('Passwords do not match') . '</error>');
             return 1;
         }
         $user_input['password'] = $password;
         $user_input['password2'] = $password;
 
         if ($user->add($user_input)) {
-            $output->writeln(__('User created'));
+            $output->writeln('<info>' . __('User created') . '</info>');
             return 0;
         } else {
-            $output->writeln(__('Failed to create user'));
+            $output->writeln('<error>' . __('Failed to create user') . '</error>');
             return 1;
         }
     }

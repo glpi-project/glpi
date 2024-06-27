@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -61,10 +60,10 @@ class EnableCommand extends AbstractCommand
                 'id' => $user->getID(),
                 'is_active' => 1
             ]);
-            $output->writeln(__('User enabled'));
+            $output->writeln('<info>' . __('User enabled') . '</info>');
             return 0;
         } else {
-            $output->writeln(__('User not found'));
+            $output->writeln('<error>' . __('User not found') . '</error>');
             return 1;
         }
     }

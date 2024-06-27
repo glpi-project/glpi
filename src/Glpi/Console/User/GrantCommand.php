@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 class GrantCommand extends AbstractCommand
@@ -64,33 +64,35 @@ class GrantCommand extends AbstractCommand
         $entity = $input->getOption('entity');
         $recursive = $input->getOption('recursive');
 
-        if (!is_numeric($profile)) {
-            $output->writeln(__('Profile ID must be numeric'));
+        $profile_obj = new \Profile();
+        $entity_obj = new \Entity();
+        if (!$profile_obj->getFromDB($profile)) {
+            $output->writeln('<error>' . __('Profile not found') . '</error>');
             return 1;
         }
-        if (!is_numeric($entity)) {
-            $output->writeln(__('Entity ID must be numeric'));
+        if (!$entity_obj->getFromDB($entity)) {
+            $output->writeln('<error>' . __('Entity not found') . '</error>');
             return 1;
         }
 
         $user = new \User();
         if (!$user->getFromDBbyName($username)) {
-            $output->writeln(__('User not found'));
+            $output->writeln('<error>' . __('User not found') . '</error>');
             return 1;
         }
 
         $profile_user = new \Profile_User();
         $profile_user_input = [
             'users_id' => $user->getID(),
-            'profiles_id' => $profile,
-            'entities_id' => $entity,
+            'profiles_id' => $profile_obj->getID(),
+            'entities_id' => $entity_obj->getID(),
             'is_recursive' => $recursive
         ];
         if ($profile_user->add($profile_user_input)) {
-            $output->writeln(__('Profile granted'));
+            $output->writeln('<info>' . __('Profile granted') . '</info>');
             return 0;
         } else {
-            $output->writeln(__('Failed to grant profile'));
+            $output->writeln('<error>' . __('Failed to grant profile') . '</error>');
             return 1;
         }
     }
@@ -118,8 +120,7 @@ class GrantCommand extends AbstractCommand
         }
 
         $helper = $this->getHelper('question');
-        $question = new Question(\Profile::getTypeName(1));
-        $question->setAutocompleterValues(array_keys($profiles));
+        $question = new ChoiceQuestion(\Profile::getTypeName(1), $profiles);
         return $helper->ask($input, $output, $question);
     }
 }

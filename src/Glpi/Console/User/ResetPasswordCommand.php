@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,13 +40,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class ResetCommand extends AbstractCommand
+class ResetPasswordCommand extends AbstractCommand
 {
     protected function configure(): void
     {
         parent::configure();
 
-        $this->setName('user:reset');
+        $this->setName('user:reset_password');
         $this->setDescription(__('Reset the password of a local GLPI user'));
 
         $this->addArgument('username', InputArgument::REQUIRED, __('Login'));
@@ -59,12 +58,12 @@ class ResetCommand extends AbstractCommand
 
         $user = new \User();
         if (!$user->getFromDBbyName($user_input['name'])) {
-            $output->writeln(__('User not found'));
+            $output->writeln('<error>' . __('User not found') . '</error>');
             return 1;
         }
 
         if ($user->fields['authtype'] !== \Auth::DB_GLPI) {
-            $output->writeln(__("The authentication method configuration doesn't allow you to change your password."));
+            $output->writeln('<error>' . __("The authentication method configuration doesn't allow you to change your password.") . '</error>');
             return 1;
         }
 
@@ -81,7 +80,7 @@ class ResetCommand extends AbstractCommand
         $question->setHiddenFallback(false);
         $password2 = $helper->ask($input, $output, $question);
         if ($password !== $password2) {
-            $output->writeln(__('Passwords do not match'));
+            $output->writeln('<error>' . __('Passwords do not match') . '</error>');
             return 1;
         }
         $user_input['password'] = $password;
@@ -89,10 +88,10 @@ class ResetCommand extends AbstractCommand
 
 
         if ($user->update($user_input)) {
-            $output->writeln(__('Reset password successful.'));
+            $output->writeln('<info>' . __('Reset password successful.') . '</info>');
             return 0;
         } else {
-            $output->writeln(__('Unable to reset password, please contact your administrator'));
+            $output->writeln('<error>' . __('Unable to reset password, please contact your administrator') . '</error>');
             return 1;
         }
     }
