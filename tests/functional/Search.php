@@ -2497,7 +2497,7 @@ class Search extends DbTestCase
         $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`")
          ->contains("`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`")
-         ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
+         ->contains("ORDER BY `id`");
     }
 
     public function testGroupParamAfterMeta()

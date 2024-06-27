@@ -670,7 +670,8 @@ final class QueryBuilder implements SearchInputInterface
             // that no ORDER BY clause will be set
             $default_values["disable_order_by_fallback"] = true;
         } else {
-            $default_values["sort"]    = 1;
+            // Search engine will automatically determine the best sorting column (ID or the first displayed column)
+            $default_values["sort"]    = 0;
         }
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
