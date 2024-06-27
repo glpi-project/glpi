@@ -80,43 +80,70 @@ describe ('Form editor', () => {
             ;
         });
     });
-    it('can create a question an fill its main details', () => {
-        cy.createFormWithAPI().visitFormTab('Form');
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
 
-        // Edit form details
-        cy.focused().type("My question"); // Question name is focused by default
-        cy.findByRole('region', {'name': 'Question details'}).within(() => {
-            cy.findByRole('checkbox', {'name': 'Mandatory'})
-                .should('not.be.checked')
-                .check()
+    it('can create and delete a question', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        describe('create question', () => {
+            cy.findByRole('button', {'name': 'Add a new question'}).click();
+
+            // Edit form details
+            cy.focused().type("My question"); // Question name is focused by default
+            cy.findByRole('region', {'name': 'Question details'}).within(() => {
+                cy.findByRole('checkbox', {'name': 'Mandatory'})
+                    .should('not.be.checked')
+                    .check()
+                ;
+                cy.findByLabelText("Question description")
+                    .awaitTinyMCE()
+                    .type("My question description")
+                ;
+            });
+
+            // Save form and reload page to force new data to be displayed.
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.findByRole('alert')
+                .should('contain.text', 'Item successfully updated')
             ;
-            cy.findByLabelText("Question description")
-                .awaitTinyMCE()
-                .type("My question description")
-            ;
+            cy.reload();
         });
 
-        // Save form and reload page to force new data to be displayed.
-        cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert')
-            .should('contain.text', 'Item successfully updated')
-        ;
-        cy.reload();
+        describe('validate question content', () => {
+            // Validate that the new values are displayed
+            cy.findByRole('region', {'name': 'Question details'}).within(() => {
+                cy.findByRole('textbox', {'name': 'Question name'})
+                    .should('have.value', 'My question')
+                    .click() // Click to make sure form focus is on the question
+                ;
+                cy.findByRole('checkbox', {'name': 'Mandatory'})
+                    .should('be.checked')
+                ;
+                cy.findByLabelText("Question description")
+                    .awaitTinyMCE()
+                    .should('have.text', 'My question description')
+                ;
+            });
+        });
 
-        // Validate that the new values are displayed
-        cy.findByRole('region', {'name': 'Question details'}).within(() => {
-            cy.findByRole('textbox', {'name': 'Question name'})
-                .should('have.value', 'My question')
-                .click() // Click to make sure form focus is on the question
+        describe('delete question', () => {
+            cy.findByRole('region', {'name': 'Question details'})
+                .as("question_details")
             ;
-            cy.findByRole('checkbox', {'name': 'Mandatory'})
-                .should('be.checked')
+
+            // Focus question to display hiden actions
+            cy.get("@question_details").click();
+            cy.get("@question_details").within(() => {
+                cy.findByRole('button', {'name': 'Delete'}).click();
+            });
+            cy.get("@question_details").should('not.exist');
+
+            // Save form and reload page to force latest state to be displayed.
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.findByRole('alert')
+                .should('contain.text', 'Item successfully updated')
             ;
-            cy.findByLabelText("Question description")
-                .awaitTinyMCE()
-                .should('have.text', 'My question description')
-            ;
+            cy.reload();
+            cy.get("@question_details").should('not.exist');
         });
     });
 });
