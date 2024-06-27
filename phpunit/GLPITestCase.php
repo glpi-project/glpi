@@ -78,7 +78,7 @@ class GLPITestCase extends TestCase
         }, E_ALL);
     }
 
-    public function tesarDown(): void
+    public function tearDown(): void
     {
         restore_error_handler();
 
