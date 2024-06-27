@@ -875,17 +875,25 @@ class Html extends \GLPITestCase
     public function providerGetBackUrl()
     {
         return [
-            ["http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
-                "http://localhost/glpi/front/change.form.php?id=1"
+            [
+                "http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
+                "http://localhost/glpi/front/change.form.php?id=1",
             ],
-            ["http://localhost/glpi/front/change.form.php?id=1",
-                "http://localhost/glpi/front/change.form.php?id=1"
+            [
+                "http://localhost/glpi/front/change.form.php?id=1",
+                "http://localhost/glpi/front/change.form.php?id=1",
             ],
-            ["https://test/test/test.php?param1=1&param2=2&param3=3",
-                "https://test/test/test.php?param1=1&param2=2&param3=3"
+            [
+                "https://test/test/test.php?param1=1&param2=2&param3=3",
+                "https://test/test/test.php?param1=1&param2=2&param3=3",
             ],
-            ["&forcetab=test",
-                ""
+            [
+                "/front/computer.php?id=15&forcetab=test&ok=1",
+                "/front/computer.php?id=15&ok=1",
+            ],
+            [
+                "/front/computer.php?forcetab=test",
+                "/front/computer.php",
             ],
         ];
     }
@@ -895,7 +903,7 @@ class Html extends \GLPITestCase
      */
     public function testGetBackUrl($url_in, $url_out)
     {
-        $this->string(\Html::getBackUrl($url_in), $url_out);
+        $this->string(\Html::getBackUrl($url_in))->isIdenticalTo($url_out);
     }
 
     public function testGetScssFileHash()
