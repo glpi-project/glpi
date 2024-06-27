@@ -149,8 +149,8 @@
                         'class'                : 'form-select form-select-sm',
                         'width'                : 'auto',
                         'aria_label'           : __('Question type'),
-                        'add_select_attributes': {
-                            'data-glpi-form-editor-on-change': 'change-question-type-category'
+                        'add_data_attributes'  : {
+                            'glpi-form-editor-on-change': 'change-question-type-category'
                         },
                         'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
                         'templateResult'       : question_types_manager.getTemplateResultForCategories(),
@@ -175,9 +175,9 @@
                         'class'                : 'form-select form-select-sm',
                         'width'                : 'auto',
                         'aria_label'           : __('Question sub type'),
-                        'add_select_attributes': {
-                            'data-glpi-form-editor-on-change': 'change-question-type',
-                            'data-glpi-form-editor-question-type-selector': ''
+                        'add_data_attributes'  : {
+                            'glpi-form-editor-on-change'             : 'change-question-type',
+                            'glpi-form-editor-question-type-selector': ''
                         },
                         'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
                         'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
