@@ -182,14 +182,66 @@ class Group_User extends CommonDBRelation
         }
 
         if ($canedit) {
-            $group_user = new self();
-            $group_user->fields['users_id'] = $ID;
-            TemplateRenderer::getInstance()->display('pages/admin/group_user.html.twig', [
-                'source_itemtype' => User::class,
-                'item' => $group_user,
-                'no_header' => true,
-                'used' => $used,
-            ]);
+
+            echo "<div class='firstbloc'>";
+            echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
+            echo " action='" . Toolbox::getItemTypeFormURL('User') . "'>";
+
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Associate to a group') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<input type='hidden' name='users_id' value='$ID'>";
+
+            $params = [
+                'condition' => [
+                    'is_usergroup' => 1,
+                ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
+            ];
+
+            if (count($used) > 0) {
+                $params['condition'][] = [
+                    'NOT' => [Group::getTable() . '.id' => $used]
+                ];
+            }
+
+            Group::dropdown($params);
+            echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";
+            Dropdown::showYesNo('is_manager');
+
+            echo "</td><td>" . __('Delegatee') . "</td><td>";
+            Dropdown::showYesNo('is_userdelegate');
+
+            echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='submit' name='addgroup' value=\"" . _sx('button', 'Add') . "\"
+                class='btn btn-primary'>";
+
+            echo "</td></tr>";
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
+
+        echo "<div class='spaced'>";
+        if ($canedit && count($used)) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            echo "<input type='hidden' name='users_id' value='" . $user->fields['id'] . "'>";
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
+                'container'     => 'mass' . __CLASS__ . $rand
+            ];
+            Html::showMassiveActions($massiveactionparams);
+        }
+        echo "<table class='tab_cadre_fixehov'>";
+        $header_begin  = "<tr>";
+        $header_top    = '';
+        $header_bottom = '';
+        $header_end    = '';
+
+        if ($canedit && count($used)) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_end    .= "</th>";
         }
 
         $group = new Group();
