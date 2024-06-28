@@ -101,7 +101,7 @@ class PrintPreview
             'preview'        => true,
         ]);
         echo '
-            <div class="card mb-5 border-0 shadow-none">
+            <div class="card my-0 border-0 shadow-none">
                 <div class="card-header">
                     <h4 class="card-title ps-4">
                         <i class="' . $item->getIcon() . '"></i> &nbsp' . $item->getTypeName(1) . '
@@ -119,7 +119,7 @@ class PrintPreview
             ) {
                 echo '
                     <div class="break"></div>
-                    <div class="card my-5 border-0 shadow-none">
+                    <div class="card my-0 border-0 shadow-none">
                         <div class="card-header">
                             <h4 class="card-title ps-4">
                                 <i class="' . $key::getIcon() . '"></i> &nbsp' . $key::getTypeName(1) . '
@@ -143,6 +143,29 @@ class PrintPreview
 
                 document.querySelectorAll('textarea').forEach(select => {
                     select.setAttribute('readonly', true);
+                });
+
+                document.querySelectorAll('aside').forEach(aside => {
+                    aside.remove();
+                });
+
+                var tables = document.querySelectorAll('table, .table');
+
+                tables.forEach(function(table) {
+                    var maxColumnCount = 0;
+
+                    table.querySelectorAll('tr').forEach(function(row) {
+                        var columnCount = row.children.length;
+                        maxColumnCount = Math.max(maxColumnCount, columnCount);
+                    });
+
+                    if(maxColumnCount > 3) {
+                        table.querySelectorAll('th').forEach(function(th) {
+                            if(!th.hasAttribute('colspan') || th.getAttribute('colspan') < 3) {
+                                th.classList.add('more-than-three-columns');
+                            }
+                        });
+                    }
                 });
             });
 JS;

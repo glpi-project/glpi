@@ -63,6 +63,7 @@ input[type="checkbox"],
 [class*="tab_cadre_pager"],
 [class*="alert-important"],
 [class*="selection__arrow"],
+form[action="contract_item"],
 form[action*="asset_peripheralasset"],
 form[action*="socket"],
 form[action*="document"],
@@ -84,19 +85,35 @@ span {
     break-before: page !important;
 }
 
-// table, .table {
-//     width: 100%;
-//     max-width: 210mm;
-//     box-sizing: border-box;
-//     table-layout: fixed;
-//     overflow-x: hidden;
+label {
+    font-weight: bold;
+}
 
-//     th, td, a, span {
-//         white-space: normal;
-//         word-wrap: break-word;
-//         overflow-wrap: break-word;
-//     }
-// }
+table, .table {
+    width: 100%;
+    max-width: 210mm;
+    box-sizing: border-box;
+    table-layout: fixed;
+    overflow-x: hidden;
+
+    td, a, span {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+}
+
+th.more-than-three-columns, .th.more-than-three-columns {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+.card-header {
+    background-color: lightgrey !important;
+    color: black !important;
+}
 
 @media print {
     @include hide-elements;
@@ -110,57 +127,23 @@ span {
     }
 
     table, .table {
-        th, td, a, span {
+        width: 100%;
+        max-width: 210mm;
+        box-sizing: border-box;
+        table-layout: fixed;
+        overflow-x: hidden;
+
+        td, a, span {
             white-space: normal;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
     }
+
+    th.more-than-three-columns, .th.more-than-three-columns {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        vertical-align: top;
+    }
 }
-
-/* Force table to not be like tables anymore */
-table, 
-thead, 
-tbody, 
-th, 
-td, 
-tr { 
-    display: block; 
-}
-
-/* Hide table headers (but not display: none;, for accessibility) */
-thead tr { 
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-}
-
-tr { border: 1px solid #ccc; }
-
-td { 
-    /* Behave  like a "row" */
-    border: none;
-    border-bottom: 1px solid #eee; 
-    position: relative;
-    padding-left: 50%; 
-    white-space: normal;
-    text-align:left;
-}
-
-td:before { 
-    /* Now like a table header */
-    position: absolute;
-    /* Top/left values mimic padding */
-    top: 6px;
-    left: 6px;
-    width: 45%; 
-    padding-right: 10px; 
-    white-space: nowrap;
-    text-align:left;
-    font-weight: bold;
-}
-
-/*
-Label the data
-*/
-td:before { content: attr(data-title); }
