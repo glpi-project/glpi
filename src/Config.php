@@ -315,6 +315,19 @@ class Config extends CommonDBTM
             }
         }
 
+        // Prevent some input values to be saved in DB
+        $values_to_filter = [
+            '_dbslave_status',
+            '_dbreplicate_dbhost',
+            '_dbreplicate_dbuser',
+            '_dbreplicate_dbpassword',
+            '_dbreplicate_dbdefault'
+        ];
+
+        $input = array_filter($input, function($key) use ($values_to_filter) {
+            return !in_array($key, $values_to_filter);
+        }, ARRAY_FILTER_USE_KEY);
+
         $this->setConfigurationValues('core', $input);
 
         return false;
