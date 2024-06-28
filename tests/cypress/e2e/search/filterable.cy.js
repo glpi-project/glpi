@@ -52,7 +52,7 @@ describe('Filterable', () => {
 
             cy.get('@webhook_id').then((webhook_id) => {
                 const url = `/front/webhook.form.php`;
-                const tab = "Glpi\\Search\\CriteriaFilter$1"
+                const tab = "Glpi\\Search\\CriteriaFilter$1";
                 cy.visit(`${url}?id=${webhook_id}&forcetab=${tab}`);
             });
         });
