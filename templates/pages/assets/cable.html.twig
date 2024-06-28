@@ -133,7 +133,7 @@
                               'itemtype': item.fields['itemtype_endpoint_' ~ side],
                               'items_id': item.fields['items_id_endpoint_' ~ side]
                            },
-                           'used': item.fields['items_id_endpoint_' ~ side] is not empty ? call('Glpi\\Socket::getSocketAlreadyLinked', [item.fields['itemtype_endpoint_' ~ side], item.fields['items_id_endpoint_' ~ side]]) : []
+                           'used': item.fields['items_id_endpoint_' ~ side] > 0 ? call('Glpi\\Socket::getSocketAlreadyLinked', [item.fields['itemtype_endpoint_' ~ side], item.fields['items_id_endpoint_' ~ side]]) : []
                         })
                   ) }}
 
