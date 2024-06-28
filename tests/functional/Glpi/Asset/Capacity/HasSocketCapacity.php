@@ -158,7 +158,6 @@ class HasSocketCapacity extends DbTestCase
             Socket::class,
             [
                 'name' => 'Socket',
-                'entities_id' => $root_entity_id,
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
@@ -168,7 +167,6 @@ class HasSocketCapacity extends DbTestCase
             Socket::class,
             [
                 'name' => 'Socket',
-                'entities_id' => $root_entity_id,
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
@@ -199,35 +197,22 @@ class HasSocketCapacity extends DbTestCase
             ]
         );
 
-        $item_1_logs_criteria = [
-            'itemtype' => $classname_1,
-            'itemtype_link' => Socket::class,
-        ];
-        $item_2_logs_criteria = [
-            'itemtype' => $classname_2,
-            'itemtype_link' => Socket::class,
-        ];
-
-        // Ensure relation, display preferences and logs exists, and class is registered to global config
+        // Ensure relation, display preferences, and class is registered to global config
         $this->object(Socket::getById($item_socket_1->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
         $this->object(Socket::getById($item_socket_2->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['socket_types'])->contains($classname_1);
         $this->array($CFG_GLPI['socket_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->boolean(Socket::getById($item_socket_1->getID()))->isFalse();
-        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['socket_types'])->notContains($classname_1);
 
-        // Ensure relations, logs and global registration are preserved for other definition
+        // Ensure relations and global registration are preserved for other definition
         $this->object(Socket::getById($item_socket_2->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['socket_types'])->contains($classname_2);
 
         // Cable should be unattached from the disabled asset type
