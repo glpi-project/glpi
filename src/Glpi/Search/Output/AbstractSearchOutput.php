@@ -166,4 +166,9 @@ abstract class AbstractSearchOutput
      * @return string HTML to display
      */
     abstract public static function showEndLine(bool $is_header_line): string;
+
+    public function canDisplayResultsContainerWithoutExecutingSearch(): bool
+    {
+        return false;
+    }
 }

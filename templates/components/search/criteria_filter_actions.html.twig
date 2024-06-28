@@ -110,8 +110,8 @@
                 $("#{{ delete_action_id }}").prop('disabled', false);
             });
 
-            // Trigger preview
-            form.find('button[name=search]').click();
+            // Hide preview since its content may not match the saved value
+            $("#criteria_filter_preview").addClass("d-none");
         });
 
         // Delete action

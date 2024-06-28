@@ -101,16 +101,21 @@
          </tr>
       </thead>
       <tbody>
+
          {% if count == 0 %}
-            <tr>
-               <td colspan="{{ data['data']['cols']|length }}">
-                  {% if search_error %}
-                      {{ alerts.alert_danger(__('An error occured during the search'), __('Consider changing the search criteria or adjusting the displayed columns.')) }}
-                  {% else %}
-                      {{ alerts.alert_info(__('No item found')) }}
-                  {% endif %}
-               </td>
-            </tr>
+            {% if not search_was_executed %}
+               {# Nothing to display #}
+            {% else %}
+               <tr>
+                  <td colspan="{{ data['data']['cols']|length }}">
+                     {% if search_error %}
+                        {{ alerts.alert_danger(__('An error occured during the search'), __('Consider changing the search criteria or adjusting the displayed columns.')) }}
+                     {% else %}
+                        {{ alerts.alert_info(__('No item found')) }}
+                     {% endif %}
+                  </td>
+               </tr>
+            {% endif %}
          {% else %}
             {% for rowkey, row in data['data']['rows'] %}
                <tr>
