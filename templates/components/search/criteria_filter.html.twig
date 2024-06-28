@@ -50,7 +50,7 @@
             {# Display search results, hidden until a search is executed #}
             <div id="criteria_filter_preview" class="d-none">
                 <h2>{{ __("Preview") }}</h2>
-                {% set params = params|merge({ 'execute_search': false }) %}
+                {% set params = params|merge({'execute_search': false}) %}
                 {% do call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
             </div>
         </div>
