@@ -324,7 +324,7 @@ class Config extends CommonDBTM
             '_dbreplicate_dbdefault'
         ];
 
-        $input = array_filter($input, function($key) use ($values_to_filter) {
+        $input = array_filter($input, function ($key) use ($values_to_filter) {
             return !in_array($key, $values_to_filter);
         }, ARRAY_FILTER_USE_KEY);
 
