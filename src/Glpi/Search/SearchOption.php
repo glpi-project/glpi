@@ -325,6 +325,7 @@ final class SearchOption implements \ArrayAccess
             }
 
             if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
+                $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
                 $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
             }
 
