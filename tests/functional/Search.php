@@ -38,7 +38,6 @@ namespace tests\units;
 use Change;
 use CommonDBTM;
 use CommonITILActor;
-use Computer;
 use DBConnection;
 use DbTestCase;
 use Document;
