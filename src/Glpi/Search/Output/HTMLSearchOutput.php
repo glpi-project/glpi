@@ -160,7 +160,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 }
 
                 // remove latitute and longitude if as map is enabled
-                if ($data['search']['as_map'] == 1) {
+                $as_map = $data['search']['as_map'] ?? 0;
+                if ($as_map == 1) {
                     unset($used_soptions_names[array_search(__('Latitude'), $used_soptions_names)]);
                     unset($used_soptions_names[array_search(__('Longitude'), $used_soptions_names)]);
                 }
