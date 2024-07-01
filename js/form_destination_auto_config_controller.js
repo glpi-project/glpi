@@ -58,16 +58,12 @@ class GlpiFormDestinationAutoConfigController
             input = $(input);
 
             // Prevent disabling the checkbox itself
-            const is_blacklisted = input.data('glpi-itildestination-toggle-do-not-disable') !== undefined;
-            if (is_blacklisted) {
+            const is_excluded = input.data('glpi-itildestination-toggle-do-not-disable') !== undefined;
+            if (is_excluded) {
                 return;
             }
 
-            if (is_auto_config_enabled) {
-                input.attr('disabled', 'disabled');
-            } else {
-                input.removeAttr('disabled');
-            }
+            input.prop('disabled', is_auto_config_enabled);
         });
     }
 

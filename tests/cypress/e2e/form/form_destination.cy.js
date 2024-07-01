@@ -96,7 +96,7 @@ describe('Form destination', () => {
 
             // Ensure auto config values have been loaded for the "content" field
             cy.get("@content_field")
-                .should('have.text', "") // Empty because the form doens't have any questions
+                .should('have.text', "") // Empty because the form doesn't have any questions
             ;
         });
 
