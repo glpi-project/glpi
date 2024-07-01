@@ -54,7 +54,7 @@ describe('Dropdown form question type', () => {
             cy.findByRole("option", { name: /New question|Test dropdown question/ }).should('exist').as('question');
 
             // Change question type
-            cy.findByRole("combobox", { name: "Question type" }).should('exist').select("Dropdown");
+            cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Dropdown");
 
             // Check presence of the dropdown and the empty option
             cy.findByRole("combobox", { name: "-----" }).should('exist');

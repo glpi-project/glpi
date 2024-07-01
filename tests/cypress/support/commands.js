@@ -191,6 +191,21 @@ Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
     });
 });
 
+Cypress.Commands.overwrite('select', (originalFn, subject, text, options) => {
+    // Check if the subject is a select2 dropdown
+    if (!subject.hasClass('select2-selection')) {
+        return originalFn(subject, text, options);
+    }
+
+    const select_id = subject.attr('aria-labelledby').replace('select2-', '').replace('-container', '');
+
+    // Add force option
+    options = options || {};
+    options.force = true;
+
+    cy.get('#' + select_id).select(text, options);
+});
+
 /**
  * @memberof Cypress.Chainable.prototype
  * @method selectDate

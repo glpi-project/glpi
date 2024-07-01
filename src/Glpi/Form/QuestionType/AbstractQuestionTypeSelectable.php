@@ -59,7 +59,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     abstract public function getInputType(?Question $question): string;
 
     /**
-     * Get javascript to be added in the footer
+     * Get inline javascript to be added during form rendering.
      * Some twig variables are available:
      * - question: the question object
      * - input_type: the input type
@@ -68,18 +68,18 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
      *
      * @return string
      */
-    protected function getFooterScript(): string
+    protected function getFormInlineScript(): string
     {
         $js = <<<TWIG
             $(document).ready(function() {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
+                    new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
+                            new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                         }
                     });
                 {% endif %}
@@ -262,7 +262,7 @@ TWIG;
 
 
         <script>
-            {$this->getFooterScript()}
+            {$this->getFormInlineScript()}
         </script>
 TWIG;
 

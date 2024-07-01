@@ -126,6 +126,7 @@ enum QuestionTypeCategory: string
             self::FILE => "ti ti-file",
             self::RADIO => "ti ti-circle-dot",
             self::CHECKBOX => "ti ti-select",
+            self::DROPDOWN => "ti ti-list",
         };
     }
 }

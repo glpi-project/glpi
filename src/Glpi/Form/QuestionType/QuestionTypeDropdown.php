@@ -89,18 +89,18 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
     }
 
     #[Override]
-    protected function getFooterScript(): string
+    protected function getFormInlineScript(): string
     {
         $js = <<<TWIG
             $(document).ready(function() {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeDropdown('{{ input_type }}', container);
+                    new GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeDropdown('{{ input_type }}', container);
+                            new GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
                         }
                     });
                 {% endif %}
