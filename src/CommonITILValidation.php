@@ -701,6 +701,23 @@ abstract class CommonITILValidation extends CommonDBChild
         return $style;
     }
 
+    /**
+     * Get Ticket validation approver link
+     *
+     * @param string    $itemtype
+     * @param integer   $items_id
+     **/
+    public static function getApprover($itemtype, $items_id)
+    {
+        if (empty($items_id)) {
+            return null;
+        }
+
+        $approver = $itemtype::getById($items_id);
+
+        return $approver->getLink();
+    }
+
 
     /**
      * Get item validation demands count for a user
@@ -1575,6 +1592,21 @@ abstract class CommonITILValidation extends CommonDBChild
                         ]
                     ]
                 ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '198',
+            'table'              => static::getTable(),
+            'field'              => 'status',
+            'datatype'           => 'specific',
+            'name'               => __('Approval status by users'),
+            'searchtype'         => 'equals',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'additionalfields'   => ['itemtype_target', 'items_id_target'],
+            'joinparams'         => [
+                'jointype'           => 'child'
             ]
         ];
 
