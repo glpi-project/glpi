@@ -37,14 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
-
-$SECURITY_STRATEGY = 'no_check';
-
-include('../inc/includes.php');
+global $CFG_GLPI;
 
 if (
     !$CFG_GLPI['notifications_mailing']

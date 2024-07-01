@@ -35,14 +35,8 @@
 
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
-
-$SECURITY_STRATEGY = 'no_check';
-
-include('../inc/includes.php');
+global $CFG_GLPI;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`

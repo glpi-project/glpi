@@ -37,11 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', realpath('..'));
-}
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**
@@ -51,17 +46,12 @@ include_once(GLPI_CONFIG_DIR . "/config_db.php");
  * @var \Update $update
  * @var bool $HEADER_LOADED
  */
-global $DB, $GLPI, $GLPI_CACHE,
+global $DB,
+    $GLPI_CACHE,
     $update,
     $HEADER_LOADED;
 
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
-
-Config::detectRootDoc();
 
 Session::checkCookieSecureConfig();
 

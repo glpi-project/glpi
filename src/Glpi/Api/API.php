@@ -149,8 +149,7 @@ abstract class API
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Load GLPI configuration
-        include_once(GLPI_ROOT . '/inc/includes.php');
+        // Load GLPI configuration
         $variables = get_defined_vars();
         foreach ($variables as $var => $value) {
             if ($var === strtoupper($var)) {
@@ -367,6 +366,10 @@ abstract class API
             }
             if ($session != $current && !empty($session)) {
                 session_id($session);
+
+                // Restart the session
+                Session::start();
+                Session::loadLanguage();
             }
         }
     }

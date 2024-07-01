@@ -34,9 +34,10 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(__DIR__, 2));
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
+$kernel = new \Glpi\Kernel\Kernel('development');
+$kernel->loadCliConsoleOnlyConfig();
 
 $command = new \Glpi\Tools\Command\CheckTwigTemplatesSyntaxCommand();
 
