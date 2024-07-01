@@ -176,19 +176,14 @@ class Cluster extends CommonDBTM
      */
     public static function getClusterByItem(CommonDBTM $item): ?Cluster
     {
-        $itemCluster = new Item_Cluster();
+        $cluster = new self();
+        $item_cluster = new Item_Cluster();
         if (
-            $itemCluster->getFromDBByCrit([
-                'itemtype' => $item->getType(),
-                'items_id' => $item->getID()
-            ])
+            $item_cluster->getFromDBByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            && $item_cluster->fields['clusters_id'] != 0
+            && $cluster->getFromDB($item_cluster->fields['clusters_id'])
         ) {
-            if ($itemCluster->fields['clusters_id'] != 0) {
-                $cluster = new self();
-                $cluster->getFromDB($itemCluster->fields['clusters_id']);
-
-                return $cluster;
-            }
+            return $cluster;
         }
 
         return null;
