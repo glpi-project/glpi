@@ -210,17 +210,24 @@ class Lockedfield extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $iterator = $DB->request([
+        $subquery1 = new \QuerySubQuery([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-                [
-                    'OR' => [
-                        'items_id'  => $items_id,
-                        'is_global' => 1
-                    ]
-                ]
+                'items_id'  => $items_id,
             ]
+        ]);
+
+        $subquery2 = new \QuerySubQuery([
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+                'is_global' => 1
+            ]
+        ]);
+
+        $union = new QueryUnion([$subquery1, $subquery2], false);
+        $iterator = $DB->request([
+            'FROM'   => $union
         ]);
 
         $locks = [];
