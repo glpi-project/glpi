@@ -101,9 +101,14 @@ describe('Convert default value form', () => {
 
         // Set defaut value
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            /**
+             * The force option should not be necessary,
+             * but it seems that when the test is executed on GitHub CI,
+             * the center of the element is hidden from view
+             */
             cy.findByLabelText("Default value")
                 .awaitTinyMCE()
-                .type('Default value for short text', { timeout: 10000 });
+                .type('Default value for short text', { force : true });
         });
 
         // Change type to "Text"
