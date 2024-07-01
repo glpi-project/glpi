@@ -2126,7 +2126,7 @@ JAVASCRIPT;
      *    - templateResult      : if not empty, call this as template results of select2
      *    - templateSelection   : if not empty, call this as template selection of select2
      *    - aria_label          : string / aria-label attribute for the select
-     *    - add_data_attributes : string or array / additional attributes to add to the select tag
+     *    - add_data_attributes : array / additional data attributes to add to the select tag
      *
      * Permit to use optgroup defining items in arrays
      * array('optgroupname'  => array('key1' => 'val1',
@@ -2267,7 +2267,7 @@ JAVASCRIPT;
                 if (is_array($param['add_data_attributes'])) {
                     $output .= implode(' ', array_map(
                         function ($key, $value) {
-                            return htmlspecialchars('data-' . htmlspecialchars($key)) . '="' . htmlspecialchars(htmlspecialchars($value)) . '"';
+                            return htmlspecialchars('data-' . $key) . '="' . htmlspecialchars($value) . '"';
                         },
                         array_keys($param['add_data_attributes']),
                         $param['add_data_attributes']
