@@ -177,7 +177,6 @@ class Cluster extends CommonDBTM
     public static function getClusterByItem($item)
     {
         $itemCluster = new Item_Cluster();
-        $itemtype = $item->getType();
         if (
             $itemCluster->getFromDBByCrit([
                 'itemtype' => $item->getType(),
