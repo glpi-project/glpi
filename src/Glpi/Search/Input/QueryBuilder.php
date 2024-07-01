@@ -358,7 +358,8 @@ final class QueryBuilder implements SearchInputInterface
             $pattern = $fieldpattern['pattern'];
             $message = $fieldpattern['validation_message'];
 
-            echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
+            $field_title = htmlspecialchars(__('Criteria value'));
+            echo "<input type='text' class='form-control' size='13'  aria-label='$field_title' name='$inputname' value=\"" .
                 htmlspecialchars($request['value']) . "\" pattern=\"" . htmlspecialchars($pattern) . "\">" .
                 "<span class='invalid-tooltip'>" . htmlspecialchars($message) . "</span>";
         }

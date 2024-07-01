@@ -52,7 +52,13 @@ Cypress.Commands.add('injectAndCheckA11y', {prevSubject: 'optional'}, (subject) 
             ['.select2-container'], // Select2 library is not under our control and has a lot of known issues
             ['div.fileupload'], // JQuery File upload library is not under our control and has some known issues
             ['.alert'], // Default Bootstrap/Tabler alert colors don't meet contrast requirements at any level of WCAG.
-            ['.nav-pills .nav-link.active']
+            ['.nav-pills .nav-link.active'],
+            ['.flatpickr input[type="text"]'], // Input labels broken when using altInput option
+            ['*[data-hasqtip]'], // Popper tooltips aren't created as labels for the elements they are attached to, but we use them instead of title attributes.
+            ['aside.navbar.sidebar a.dropdown-item'], // Duplicate accesskeys
+            ['.fancytree-container .fancytree-expander'], // Expand/collapse 'buttons' have no label
+            ['.fancytree-container thead > tr > th'], // Fancytree adds an empty header row to the table
+            ['.search-header .search-controls .show_export_menu'], // Wrapper element that triggers the tooltip is not valid
         ]
     };
     if (subject) {
@@ -60,4 +66,31 @@ Cypress.Commands.add('injectAndCheckA11y', {prevSubject: 'optional'}, (subject) 
         context.include = subject;
     }
     cy.checkA11y(context, null, terminalLog);
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method disableAnimations
+ * @description Disable animations on the page
+ * @returns Chainable
+ */
+Cypress.Commands.add('disableAnimations', () => {
+    cy.get('body').invoke('append', Cypress.$(`
+        <style id="__cypress-animation-disabler">
+            *, *:before, *:after {
+              transition: none !important;
+              animation: none !important;
+            }
+        </style>
+    `));
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method enableAnimations
+ * @description Enable animations on the page
+ * @returns Chainable
+ */
+Cypress.Commands.add('enableAnimations', () => {
+    Cypress.$('#__cypress-animation-disabler').remove();
 });

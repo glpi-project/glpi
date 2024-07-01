@@ -104,11 +104,11 @@ var glpi_html_dialog = function({
 
     const data_bs_focus = !bs_focus ? 'data-bs-focus="false"' : '';
 
-    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog" ${data_bs_focus}>
+    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog" ${data_bs_focus} aria-labelledby="${id}_title">
          <div class="modal-dialog ${dialogclass}">
             <div class="modal-content">
                <div class="modal-header">
-                  <h4 class="modal-title">${title}</h4>
+                  <h2 id="${id}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"
                            aria-label="${__("Close")}"></button>
                </div>
