@@ -36,10 +36,12 @@
 namespace Glpi\Search\Input;
 
 use AllAssets;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
+use Session;
 use Toolbox;
 
 final class QueryBuilder implements SearchInputInterface
@@ -652,6 +654,7 @@ final class QueryBuilder implements SearchInputInterface
 
         $default_values = [];
 
+        $default_values['itemtype'] = $itemtype;
         $default_values["start"]       = 0;
         $default_values["order"]       = "ASC";
         if (
@@ -848,9 +851,66 @@ final class QueryBuilder implements SearchInputInterface
             }
         }
 
+        self::validateCriteria($params);
+
         return $params;
     }
 
+    private static function validateCriteria(array &$params): void
+    {
+        if (!isset($params['criteria'])) {
+            return;
+        }
+        $valid_main_opts = SearchOption::getOptionsForItemtype($params['itemtype']);
+
+        // Validate criteria
+        $invalid_criteria = [];
+        foreach ($params['criteria'] as $k => $criterion) {
+            if (!array_key_exists('field', $criterion) || !is_numeric($criterion['field'])) {
+                continue;
+            }
+            if (isset($criterion['itemtype'])) {
+                // In the criteria array, the search options are from the metatype POV (Agent Name for example is ID 1 in criteria array, but 900 from the POV of Computer)
+                $valid_meta_opts = SearchOption::getOptionsForItemtype($criterion['itemtype']);
+                if (!isset($valid_meta_opts[(int) $criterion['field']])) {
+                    $invalid_criteria[] = $k;
+                    unset($params['criteria'][$k]);
+                }
+            } else if (!isset($valid_main_opts[(int) $criterion['field']])) {
+                $invalid_criteria[] = $k;
+                unset($params['criteria'][$k]);
+            }
+        }
+
+        // Validate sorts
+        if (isset($params['sort'])) {
+            if (!is_array($params['sort'])) {
+                $params['sort'] = [(int) $params['sort']];
+                $params['order'] = [$params['order'] ?? 'ASC'];
+            }
+            foreach ($params['sort'] as $k => $sorted_id) {
+                // Validate sort (IDs are always from the POV of the main itemtype)
+                if (!isset($valid_main_opts[$sorted_id])) {
+                    unset($params['sort'][$k], $params['order'][$k]);
+                }
+            }
+        }
+        if (empty($params['sort'])) {
+            $params['sort'] = [0];
+            $params['order'] = ['ASC'];
+        }
+
+        if (count($invalid_criteria) > 0) {
+            // There is probably no need to show more information about the invalid criteria
+            Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
+            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT) {
+                trigger_error(
+                    'Attempted to use invalid search options from itemtype: "' . $params['itemtype'] . '" with IDs ' . implode(', ', $invalid_criteria),
+                    E_USER_WARNING
+                );
+            }
+        }
+    }
 
     /**
      * Remove the active saved search in session

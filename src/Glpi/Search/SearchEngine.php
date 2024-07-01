@@ -284,6 +284,7 @@ final class SearchEngine
 
         // Default values of parameters
         $p = [
+            'itemtype'                  => $itemtype,
             'criteria'                  => [],
             'metacriteria'              => [],
             'sort'                      => [0],
