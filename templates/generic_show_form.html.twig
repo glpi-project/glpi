@@ -145,9 +145,9 @@
                      {% endset %}
                      {% if dc_breadcrumbs|trim|length > 0 %}
                         {{ fields.htmlField(
-                        '',
-                        dc_breadcrumbs,
-                        __('Data center position'),
+                           '',
+                           dc_breadcrumbs,
+                           __('Data center position'),
                         ) }}
                         {% set conditions_met = conditions_met + 1 %}
                     {% endif %}
