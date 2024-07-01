@@ -152,19 +152,14 @@
                         {% set conditions_met = conditions_met + 1 %}
                     {% endif %}
 
-                    {% set cluster = null %}
-                    {% if item_type == 'Computer' or item_type == 'NetworkEquipment' %}
-                        {% set cluster = call('Cluster::getClusterByItem', [item]) %}
-                        {% if cluster is not null %}
-                            {{ fields.htmlField(
-                                '',
-                                cluster.getLink(),
-                                _n('Cluster', 'Clusters', 1),
-                            ) }}
-                            {% set conditions_met = conditions_met + 1 %}
-                        {% endif %}
+                    {% if cluster is not null %}
+                        {{ fields.htmlField(
+                            '',
+                            cluster.getLink(),
+                            _n('Cluster', 'Clusters', 1),
+                        ) }}
+                        {% set conditions_met = conditions_met + 1 %}
                     {% endif %}
-
                     {% if conditions_met == 1 %}
                         {{ fields.nullField() }}
                     {% endif %}
