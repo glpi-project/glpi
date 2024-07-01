@@ -480,7 +480,8 @@ class CommonDBTM extends CommonGLPI
             'item'   => $this,
             'params' => $options,
             'no_header' => !$new_item && !$in_modal,
-        ] + ($additional_var ?? []));
+            'cluster' => $cluster,
+        ]);
         return true;
     }
 
