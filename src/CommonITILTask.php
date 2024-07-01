@@ -475,31 +475,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 if (!$this->input['_job']->getFromDB($this->fields[$this->input['_job']->getForeignKeyField()])) {
                     return false;
                 }
-                if (
-                    isset($this->input['_status'])
-                    && ($this->input['_status'] != $this->input['_job']->fields['status'])
-                ) {
-                    $update = [
-                        'status'        => $this->input['_status'],
-                        'id'            => $this->input['_job']->fields['id'],
-                        '_disablenotif' => true,
-                    ];
-                    $this->input['_job']->update($update);
-                }
-
-                if (
-                    !empty($this->fields['begin'])
-                    && $item->isStatusExists(CommonITILObject::PLANNED)
-                    && (($item->fields["status"] == CommonITILObject::INCOMING)
-                     || ($item->fields["status"] == CommonITILObject::ASSIGNED))
-                ) {
-                    $input2 = [
-                        'id'            => $item->getID(),
-                        'status'        => CommonITILObject::PLANNED,
-                        '_disablenotif' => true,
-                    ];
-                    $item->update($input2);
-                }
+                $this->updateParentStatus($this->input['_job'], $this->input);
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                     $options = ['task_id'    => $this->fields["id"],
