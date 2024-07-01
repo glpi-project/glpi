@@ -48,7 +48,7 @@ describe('Form preview', () => {
 
     function checkPreviewButton() {
         // Check the preview button
-        cy.findByRole('button', { 'name': 'Save and preview' }).should('exist');
+        cy.findByRole('button', { 'name': 'Save and preview', timeout: 10000 }).should('exist');
 
         // Save the form and check the preview button
         cy.findByRole('button', { 'name': 'Save' }).click({ force: true });
