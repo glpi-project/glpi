@@ -167,7 +167,6 @@ class Contract extends DbTestCase
      */
     public function testGetSpecificValueToDisplay($field, $values, $expected)
     {
-        $this->login();
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
         $this->string($contract->getSpecificValueToDisplay($field, $values))->isEqualTo($expected);
