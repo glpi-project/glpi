@@ -475,7 +475,7 @@ class CommonDBTM extends CommonGLPI
         $in_modal = (bool) ($_GET['_in_modal'] ?? false);
         $cluster = !$new_item && in_array(static::class, $CFG_GLPI['cluster_types'], true)
             ? Cluster::getClusterByItem($this)
-            : null
+            : null;
         TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
             'item'   => $this,
             'params' => $options,
