@@ -146,9 +146,19 @@ class Lockedfield extends CommonDBTM
      */
     public function isHandled(CommonGLPI $item)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!$item instanceof CommonDBTM) {
             return false;
         }
+
+        foreach ($CFG_GLPI['excluded_locks'] as $excluded_lock) {
+            if (preg_match($excluded_lock, $item->getType())) {
+                return false;
+            }
+        }
+
         $this->item = $item;
         return (bool)$item->isDynamic();
     }
