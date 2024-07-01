@@ -50,7 +50,7 @@
         "league/oauth2-google": "^4.0",
         "league/oauth2-server": "^9.0",
         "mexitek/phpcolors": "^1.0",
-        "monolog/monolog": "^3.6",
+        "monolog/monolog": "^3.7",
         "paragonie/sodium_compat": "^2.0",
         "phpoffice/phpspreadsheet": "^2.1",
         "psr/cache": "^3.0",
