@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,67 +34,112 @@
 
 namespace tests\units;
 
+use CommonDBTM;
+use Computer;
 use DbTestCase;
-
-/* Test for inc/change.class.php */
+use Item_Cluster;
+use NetworkEquipment;
 
 class Cluster extends DbTestCase
 {
-    public function getSpecificValueToGetClusterByItem()
+    protected function getClusterByItemProvider(): iterable
     {
-        $computer = new \Computer();
-        $computer->add([
-            'name' => 'getClusterByItem',
-            'entities_id' => '0',
-        ]);
+        $root_entity_id = $this->getTestRootEntity(true);
 
-        $cluster = new \Cluster();
-        $cluster_id = $cluster->add([
-            'name' => 'getClusterByItem',
-            'entities_id' => '0',
-        ]);
-
-        $network_equipment = new \NetworkEquipment();
-        $network_equipment->add([
-            'name' => 'getClusterByItem',
-            'entities_id' => '0',
-        ]);
-        return [
+        $computer = $this->createItem(
+            Computer::class,
             [
-                'values' => [
-                    'item' => $computer,
-                    'cluster' => $cluster,
-                ],
-                'expected' => $cluster_id,
-            ],
+                'name'        => __FUNCTION__,
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $network_equipment = $this->createItem(
+            NetworkEquipment::class,
             [
-                'values' => [
-                    'item' => $network_equipment,
-                    'cluster' => $cluster,
-                ],
-                'expected' => $cluster_id,
-            ],
+                'name'        => __FUNCTION__,
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $cluster_1 = $this->createItem(
+            \Cluster::class,
+            [
+                'name'        => __FUNCTION__,
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $cluster_2 = $this->createItem(
+            \Cluster::class,
+            [
+                'name'        => __FUNCTION__,
+                'entities_id' => $root_entity_id,
+            ]
+        );
 
+        // Computer not yet linked
+        yield [
+            'item'     => $computer,
+            'expected' => null,
+        ];
+
+        // Computer with a link to a cluster
+        $computer_cluster = $this->createItem(
+            Item_Cluster::class,
+            [
+                'items_id'    => $computer->getID(),
+                'itemtype'    => Computer::class,
+                'clusters_id' => $cluster_1->getID(),
+            ]
+        );
+        yield [
+            'item'     => $computer,
+            'expected' => $cluster_1->getId(),
+        ];
+
+        // Computer with updated link
+        $this->updateItem(
+            Item_Cluster::class,
+            $computer_cluster->getID(),
+            [
+                'clusters_id' => $cluster_2->getID(),
+            ]
+        );
+        yield [
+            'item'     => $computer,
+            'expected' => $cluster_2->getId(),
+        ];
+
+        // NetworkEquipement not yet linked
+        yield [
+            'item'     => $network_equipment,
+            'expected' => null,
+        ];
+
+        // NetworkEquipement with a link to a cluster
+        $this->createItem(
+            Item_Cluster::class,
+            [
+                'items_id'    => $network_equipment->getID(),
+                'itemtype'    => NetworkEquipment::class,
+                'clusters_id' => $cluster_1->getID(),
+            ]
+        );
+        yield [
+            'item'     => $network_equipment,
+            'expected' => $cluster_1->getId(),
         ];
     }
 
     /**
-     * @dataProvider getSpecificValueToGetClusterByItem
+     * @dataProvider getClusterByItemProvider
      */
-    public function testgetClusterByItem($values, $expected)
+    public function testgetClusterByItem(CommonDBTM $item, ?int $expected): void
     {
-
-        $item_cluster = new \Item_Cluster();
-        $item_cluster_id = $item_cluster->add([
-            'items_id' => $values['item']->getID(),
-            'itemtype' => $values['item']->getType(),
-            'clusters_id' => $values['cluster']->getID(),
-        ]);
-
-        $this->integer($item_cluster_id)->isGreaterThan(0);
-
-        $cluster = new \Cluster();
-        $result = $cluster->getClusterByItem($values['item']);
-        $this->integer($result->getID())->isEqualTo($expected);
+        $result = \Cluster::getClusterByItem($item);
+        if ($result === null) {
+            $this->variable($result)->isNull();
+        } else {
+            $this->object($result)->isInstanceOf(\Cluster::class);
+            $this->integer($result->getID())->isEqualTo($expected);
+        }
     }
 }
