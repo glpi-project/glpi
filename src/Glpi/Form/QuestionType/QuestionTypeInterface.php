@@ -138,6 +138,13 @@ interface QuestionTypeInterface
     public function getName(): string;
 
     /**
+     * Get the icon of this questions type.
+     *
+     * @return string
+     */
+    public function getIcon(): string;
+
+    /**
      * Get the category of this question type.
      *
      * @return QuestionTypeCategory

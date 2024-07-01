@@ -2125,6 +2125,8 @@ JAVASCRIPT;
      *    - noselect2           : if true, don't use select2 lib
      *    - templateResult      : if not empty, call this as template results of select2
      *    - templateSelection   : if not empty, call this as template selection of select2
+     *    - aria_label          : string / aria-label attribute for the select
+     *    - add_data_attributes : array / additional data attributes to add to the select tag
      *
      * Permit to use optgroup defining items in arrays
      * array('optgroupname'  => array('key1' => 'val1',
@@ -2162,6 +2164,8 @@ JAVASCRIPT;
         $param['templateSelection']   = "templateSelection";
         $param['track_changes']       = "true";
         $param['init']                = true;
+        $param['aria_label']          = '';
+        $param['add_data_attributes'] = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2253,6 +2257,22 @@ JAVASCRIPT;
 
             if (!$param['track_changes']) {
                 $output .= " data-track-changes=''";
+            }
+
+            if ($param['aria_label'] !== '') {
+                $output .= " aria-label='" . htmlspecialchars($param['aria_label']) . "'";
+            }
+
+            if (!empty($param['add_data_attributes'])) {
+                if (is_array($param['add_data_attributes'])) {
+                    $output .= implode(' ', array_map(
+                        function ($key, $value) {
+                            return htmlspecialchars('data-' . $key) . '="' . htmlspecialchars($value) . '"';
+                        },
+                        array_keys($param['add_data_attributes']),
+                        $param['add_data_attributes']
+                    ));
+                }
             }
 
             $output .= '>';

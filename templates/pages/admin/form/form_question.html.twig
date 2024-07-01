@@ -131,45 +131,58 @@
                 class="d-flex align-items-center mt-2"
                 data-glpi-form-editor-question-extra-details
             >
-                <select
-                    {# Note: _type_category is not saved by the backend as we can guess it from the type itself #}
-                    name="_type_category"
-                    class="form-select form-select-sm me-2"
-                    aria-label="{{ __('Question type') }}"
-                    style="width: auto;"
-                    data-glpi-form-editor-on-change="change-question-type-category"
-                >
+                {% set categories = {} %}
+                {% for category in question_types_manager.getCategories() %}
+                    {% set categories = categories|merge({(category.value): category.getLabel()}) %}
+                {% endfor %}
 
-                    {% for category in question_types_manager.getCategories() %}
-                        {# TODO: add icon, use select2 ? #}
-                        <option
-                            value="{{ category.value }}"
-                            {{ category.value == question_type.getCategory().value ? 'selected' : '' }}
-                        >
-                            {{ category.getLabel() }}
-                        </option>
-                    {% endfor %}
-                </select>
+                {{ fields.dropdownArrayField(
+                    '_type_category',
+                    question_type.getCategory().value,
+                    categories,
+                    '',
+                    {
+                        'init'                 : question is not null,
+                        'no_label'             : true,
+                        'mb'                   : '',
+                        'field_class'          : 'me-2',
+                        'class'                : 'form-select form-select-sm',
+                        'width'                : 'auto',
+                        'aria_label'           : __('Question type'),
+                        'add_data_attributes'  : {
+                            'glpi-form-editor-on-change': 'change-question-type-category'
+                        },
+                        'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
+                        'templateResult'       : question_types_manager.getTemplateResultForCategories(),
+                    }
+                ) }}
 
                 {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-                <select
-                    name="type"
-                    class="form-select form-select-sm {{ types|length == 1 ? 'd-none' : '' }}"
-                    aria-label="{{ __('Question sub type') }}"
-                    style="width: auto;"
-                    data-glpi-form-editor-on-change="change-question-type"
-                    data-glpi-form-editor-question-type-selector
-                >
-                    {% for possible_question_type in types %}
-                        {# TODO: add icon, use select2 ? #}
-                        <option
-                            value="{{ get_class(possible_question_type) }}"
-                            {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
-                        >
-                            {{ possible_question_type.getName() }}
-                        </option>
-                    {% endfor %}
-                </select>
+                {% for possible_question_type in types %}
+                    {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
+                {% endfor %}
+
+                {{ fields.dropdownArrayField(
+                    'type',
+                    get_class(question_type),
+                    types,
+                    question_type.getName(),
+                    {
+                        'init'                 : question is not null,
+                        'no_label'             : true,
+                        'mb'                   : '',
+                        'field_class'          : 'me-2' ~ (types|length == 1 ? ' d-none' : ''),
+                        'class'                : 'form-select form-select-sm',
+                        'width'                : 'auto',
+                        'aria_label'           : __('Question sub type'),
+                        'add_data_attributes'  : {
+                            'glpi-form-editor-on-change'             : 'change-question-type',
+                            'glpi-form-editor-question-type-selector': ''
+                        },
+                        'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
+                        'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
+                    }
+                ) }}
 
                 {# Render the specific question options #}
                 <div class="ms-2" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>

@@ -50,6 +50,12 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-user-check';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 30;

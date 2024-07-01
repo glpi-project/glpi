@@ -857,16 +857,23 @@ class GlpiFormEditorController
 
         // Look for select2 to init
         copy.find("select").each(function() {
-            const id = $(this).attr("id");
+            let id = $(this).attr("id");
             const config = window.select2_configs[id];
 
-            // Check if a select2 isn't already initialized
-            // and if a configuration is available
-            if (
-                $(this).hasClass("select2-hidden-accessible") === false
-                && config !== undefined
-            ) {
-                select2_to_init.push(config);
+            if (id !== undefined && config !== undefined) {
+                // Rename id to ensure it is unique
+                const uid = getUUID();
+                $(this).attr("id", uid);
+
+                // Check if a select2 isn't already initialized
+                // and if a configuration is available
+                if (
+                    $(this).hasClass("select2-hidden-accessible") === false
+                    && config !== undefined
+                ) {
+                    config.field_id = uid;
+                    select2_to_init.push(config);
+                }
             }
         });
 
@@ -1005,10 +1012,11 @@ class GlpiFormEditorController
         );
 
         // Hide type selector if only one type is available
+        const types_select_container = types_select.parent();
         if (new_options.length <= 1) {
-            types_select.addClass("d-none");
+            types_select_container.addClass("d-none");
         } else {
-            types_select.removeClass("d-none");
+            types_select_container.removeClass("d-none");
         }
 
         // Trigger type change

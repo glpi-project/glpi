@@ -49,6 +49,12 @@ final class QuestionTypeObserver extends AbstractQuestionTypeActors
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-user-search';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 20;

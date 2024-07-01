@@ -88,6 +88,12 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public function getIcon(): string
+    {
+        return 'ti ti-icons-off';
+    }
+
+    #[Override]
     public function getWeight(): int
     {
         return 10;
