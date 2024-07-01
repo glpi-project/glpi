@@ -55,7 +55,7 @@ $migration->addPostQuery(
             'id_search_option' => 1,
         ],
         [
-            'NOT' => ['itemtype' => 'NotificationMailingSetting'], // prevent migration to be done twice
+            'itemtype' => 'Config',
             'OR' => $or_criteria,
         ]
     )
