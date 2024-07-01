@@ -35,6 +35,7 @@
 
 /**
  * @since 9.5.0
+ * @todo Shouldn't this extend CommonDBChild?
  */
 class ImpactItem extends CommonDBTM
 {
