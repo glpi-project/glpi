@@ -174,7 +174,7 @@ class Cluster extends CommonDBTM
      *
      * @return Cluster|null
      */
-    public static function getClusterByItem($item)
+    public static function getClusterByItem(CommonDBTM $item): ?Cluster
     {
         $itemCluster = new Item_Cluster();
         if (
