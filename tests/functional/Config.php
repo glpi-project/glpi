@@ -277,7 +277,7 @@ class Config extends DbTestCase
             $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
         }
 
-        $expected = realpath(__DIR__ . '/../');
+        $expected = realpath(__DIR__ . '/../src/autoload');
         $this->string(\Config::getLibraryDir('getItemByTypeName'))->isIdenticalTo($expected);
     }
 
