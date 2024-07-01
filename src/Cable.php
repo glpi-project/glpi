@@ -40,7 +40,7 @@ use Glpi\SocketModel;
 /// Class Cable
 class Cable extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';
 
@@ -174,10 +174,12 @@ class Cable extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'items_id_endpoint_b',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint B')),
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false,
-            'datatype'           => 'specific',
-            'searchtype'         => 'equals',
-            'additionalfields'   => ['itemtype_endpoint_b']
+            'forcegroupby'       => true,
+            'additionalfields'   => ['itemtype_endpoint_b'],
+            'joinparams'         => ['jointype' => 'child'],
         ];
 
         $tab[] = [
@@ -196,10 +198,12 @@ class Cable extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'items_id_endpoint_a',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Endpoint A')),
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false,
-            'datatype'           => 'specific',
-            'searchtype'         => 'equals',
-            'additionalfields'   => ['itemtype_endpoint_a']
+            'forcegroupby'       => true,
+            'additionalfields'   => ['itemtype_endpoint_a'],
+            'joinparams'         => ['jointype' => 'child'],
         ];
 
         $tab[] = [
@@ -325,33 +329,6 @@ class Cable extends CommonDBTM
         ];
 
         return $tab;
-    }
-
-
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-        $options['display'] = false;
-        switch ($field) {
-            case 'items_id_endpoint_a':
-                if (isset($values['itemtype_endpoint_a']) && !empty($values['itemtype_endpoint_a'])) {
-                    $options['name']  = $name;
-                    $options['value'] = $values[$field];
-                    return Dropdown::show($values['itemtype_endpoint_a'], $options);
-                }
-                break;
-            case 'items_id_endpoint_b':
-                if (isset($values['itemtype_endpoint_b']) && !empty($values['itemtype_endpoint_b'])) {
-                    $options['name']  = $name;
-                    $options['value'] = $values[$field];
-                    return Dropdown::show($values['itemtype_endpoint_b'], $options);
-                }
-                break;
-        }
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
 
