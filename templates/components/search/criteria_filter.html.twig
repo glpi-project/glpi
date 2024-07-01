@@ -50,6 +50,7 @@
             {# Display search results, hidden until a search is executed #}
             <div id="criteria_filter_preview" class="d-none">
                 <h2>{{ __("Preview") }}</h2>
+                {% set params = params|merge({'execute_search': false}) %}
                 {% do call('Glpi\\Search\\SearchEngine::showOutput', [itemtype, params]) %}
             </div>
         </div>
@@ -60,7 +61,7 @@
               <p class="empty-title">{{ __("No filter found") }}</p>
               <p class="empty-subtitle text-muted">{{ __("There is no filter defined yet for this item.") }}</p>
               <div class="empty-action">
-                <a id="enable_filter_action" class="btn btn-primary"><i class="ti ti-plus me-2"></i>{{ __("Create a filter") }}</a>
+                <button id="enable_filter_action" type="button" class="btn btn-primary"><i class="ti ti-plus me-2"></i>{{ __("Create a filter") }}</button>
               </div>
             </div>
         </div>

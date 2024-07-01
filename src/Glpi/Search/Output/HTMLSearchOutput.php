@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
+use Override;
 use SavedSearch;
 use Ticket;
 
@@ -48,6 +49,12 @@ use Ticket;
  */
 abstract class HTMLSearchOutput extends AbstractSearchOutput
 {
+    #[Override]
+    public function canDisplayResultsContainerWithoutExecutingSearch(): bool
+    {
+        return true;
+    }
+
     public static function showPreSearchDisplay(string $itemtype): void
     {
         if (
@@ -65,8 +72,13 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $search_was_executed = $params['execute_search'] ?? true;
         $search_error = false;
-        if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
+
+        if (
+            $search_was_executed
+            && (!isset($data['data']) || !isset($data['data']['totalcount']))
+        ) {
             $search_error = true;
         }
 
@@ -148,7 +160,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 }
 
                 // remove latitute and longitude if as map is enabled
-                if ($data['search']['as_map'] == 1) {
+                $as_map = $data['search']['as_map'] ?? 0;
+                if ($as_map == 1) {
                     unset($used_soptions_names[array_search(__('Latitude'), $used_soptions_names)]);
                     unset($used_soptions_names[array_search(__('Longitude'), $used_soptions_names)]);
                 }
@@ -176,7 +189,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         $rand = mt_rand();
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
-            'search_error'         => $search_error,
+            'search_error'        => $search_error,
+            'search_was_executed' => $search_was_executed,
             'data'                => $data,
             'union_search_type'   => $CFG_GLPI["union_search_type"],
             'rand'                => $rand,

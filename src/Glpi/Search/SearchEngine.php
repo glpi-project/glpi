@@ -627,8 +627,23 @@ final class SearchEngine
     {
         $data = self::prepareDataForSearch($itemtype, $params, $forced_display);
         $search_provider_class = self::getSearchProviderClass($params);
-        $search_provider_class::constructSQL($data);
-        $search_provider_class::constructData($data);
+
+        $output = self::getOutputForLegacyKey(
+            $params['display_type'] ?? \Search::HTML_OUTPUT,
+            $params
+        );
+        if (!$output->canDisplayResultsContainerWithoutExecutingSearch()) {
+            // Force search execution
+            $execute_search = true;
+        } else {
+            // Search execution is optional
+            $execute_search = $params['execute_search'] ?? true;
+        }
+
+        if ($execute_search) {
+            $search_provider_class::constructSQL($data);
+            $search_provider_class::constructData($data);
+        }
 
         return $data;
     }
