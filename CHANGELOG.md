@@ -170,6 +170,7 @@ The present file will list all changes made to the project; according to the
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - Usage of `verbatim_value` Twig filter.
+- `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 - `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
@@ -211,15 +212,15 @@ The present file will list all changes made to the project; according to the
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
+- `Pdu_Plug` has been deprecated and replaced by `Item_Plug`
+- `Search::getOptions()` no longer returns a reference
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket::getLinkedTicketsTo()`
+- `Timer` class
 - `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
 - `Toolbox::stripslashes_deep()`
-- `Search::getOptions()` no longer returns a reference
-- `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
-- `Timer` class.
 
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
