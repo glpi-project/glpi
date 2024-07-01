@@ -94,7 +94,7 @@ if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
 
 if (!$DB->tableExists('glpi_webhookcategories')) {
     $query = "CREATE TABLE `glpi_webhookcategories` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `comment` text,
       `webhookcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
