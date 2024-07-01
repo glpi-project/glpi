@@ -778,32 +778,51 @@ class Config extends DbTestCase
                 'name'             => 'unexisting_config',
                 'is_secured'       => false,
                 'old_value_prefix' => 'unexisting_config ',
+                'itemtype'         => \Config::class,
             ],
             [
                 'context'          => 'plugin:tester',
                 'name'             => 'check',
                 'is_secured'       => false,
                 'old_value_prefix' => 'check (plugin:tester) ',
+                'itemtype'         => \Config::class,
             ],
             [
                 'context'          => 'plugin:tester',
                 'name'             => 'passwd',
                 'is_secured'       => true,
                 'old_value_prefix' => 'passwd (plugin:tester) ',
-            ]
+                'itemtype'         => \Config::class,
+            ],
+
+            // Specific cases for smtp settings
+            [
+                'context'          => 'core',
+                'name'             => 'smtp_host',
+                'is_secured'       => false,
+                'old_value_prefix' => 'smtp_host ',
+                'itemtype'         => \NotificationMailingSetting::class,
+            ],
+            [
+                'context'          => 'core',
+                'name'             => 'smtp_oauth_refresh_token',
+                'is_secured'       => true,
+                'old_value_prefix' => 'smtp_oauth_refresh_token ',
+                'itemtype'         => \NotificationMailingSetting::class,
+            ],
         ];
     }
 
     /**
      * @dataProvider logConfigChangeProvider
      */
-    public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix)
+    public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix, string $itemtype)
     {
-        $history_crit = ['itemtype' => \Config::getType(), 'old_value' => ['LIKE', $name . ' %']];
+        $history_crit = ['itemtype' => $itemtype, 'old_value' => ['LIKE', $name . ' %']];
 
         $expected_history = [];
         $history_entry_fields = [
-            'itemtype'         => \Config::getType(),
+            'itemtype'         => $itemtype,
             'items_id'         => 1,
             'itemtype_link'    => '',
             'linked_action'    => 0,
