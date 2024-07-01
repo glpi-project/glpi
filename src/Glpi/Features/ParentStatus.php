@@ -133,7 +133,7 @@ trait ParentStatus
                 if (
                     Session::isCron()
                     || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                    || $parentitem->isStatusExists(CommonITILObject::ASSIGNED)
                 ) {
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
@@ -148,7 +148,7 @@ trait ParentStatus
                 if (
                     Session::isCron()
                     || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                    || $parentitem->isStatusExists(CommonITILObject::INCOMING)
                 ) {
                     $needupdateparent = true;
                     $update['status'] = CommonITILObject::INCOMING;
@@ -192,7 +192,7 @@ trait ParentStatus
                 if ($iterator->numrows() > 0) {
                     $input['_status'] = CommonITILObject::PLANNED;
                 } elseif (
-                    $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                    $parentitem->isStatusExists(CommonITILObject::ASSIGNED)
                     && (
                         ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
                         || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
@@ -201,7 +201,7 @@ trait ParentStatus
                 ) {
                     $input['_status'] = CommonITILObject::ASSIGNED;
                 } elseif (
-                    $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                    $parentitem->isStatusExists(CommonITILObject::INCOMING)
                 ) {
                     $input['_status'] = CommonITILObject::INCOMING;
                 }
