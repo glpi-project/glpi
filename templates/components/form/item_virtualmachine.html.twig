@@ -1,0 +1,19 @@
+{% if has_host %}
+    <h3 class='text-start'>{{ __('List of hosts') }}</h3>
+{% else %}
+    <h3 class='text-start mt-5'>{{ __('List of virtualized environments') }}</h3>
+    {% if canedit %}
+        <div class='center firstbloc'>
+            <a class='btn btn-primary' href='{{ vmformurl }}'>
+                {{ __('Add a virtual machine') }}
+            </a>
+        </div>
+    {% endif %}
+
+    {% if not has_vm %}
+        <div class='alert alert-info'>
+            <p>{{ __('No virtualized environment associated with the item') }}</p>
+        </div>
+    {% endif %}
+{% endif %}
+
