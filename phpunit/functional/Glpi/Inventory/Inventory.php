@@ -8157,8 +8157,8 @@ JSON;
         $this->doInventory($json);
 
         $computer = new \Computer();
-        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
-        $this->string($computer->fields['contact'])->isIdenticalTo('guillaume');
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_user']));
+        $this->assertSame('guillaume', $computer->fields['contact']);
 
         //change user, and redo inventory
         $json = json_decode($json_str);
@@ -8167,8 +8167,8 @@ JSON;
         $json->content->users[0]->login = $newuser;
 
         $this->doInventory($json);
-        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
-        $this->string($computer->fields['contact'])->isIdenticalTo($newuser);
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_user']));
+        $this->assertSame($newuser, $computer->fields['contact']);
 
         //make partial, change user, and redo inventory
         $json = json_decode($json_str);
@@ -8178,7 +8178,7 @@ JSON;
         $json->partial = true;
 
         $this->doInventory($json);
-        $this->boolean($computer->getFromDBByCrit(['name' => 'pc_with_user']))->isTrue();
-        $this->string($computer->fields['contact'])->isIdenticalTo($newuser);
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_user']));
+        $this->assertSame($newuser, $computer->fields['contact']);
     }
 }
