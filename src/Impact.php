@@ -425,64 +425,68 @@ JS);
             return;
         }
 
-       // Hide / show handler
-        echo Html::scriptBlock('
-         // jQuery doesn\'t allow slide animation on table elements, we need
-         // to apply the animation to each cells content and then remove the
-         // padding to get the desired "slide" animation
+        $twig_params = [
+            'itemtype' => $item::class,
+            'items_id' => $item->getID()
+        ];
 
-         function impactListUp(target) {
-            target.removeClass("fa-caret-down");
-            target.addClass("fa-caret-up");
-            target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'0px\'}, {duration: 400});
-            target.closest("tbody").find(\'tr:gt(0) div\').slideUp("400");
-         }
+        // Hide / show handler
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {# jQuery doesn't allow slide animation on table elements, we need to apply the animation to each cells content and then remove the padding to get the desired "slide" animation #}
+            <script>
+                function impactListUp(target) {
+                    target.removeClass("fa-caret-down");
+                    target.addClass("fa-caret-up");
+                    target.closest("tbody").find('tr:gt(0) td').animate({padding: '0px'}, {duration: 400});
+                    target.closest("tbody").find('tr:gt(0) div').slideUp("400");
+                }
 
-         function impactListDown(target) {
-            target.addClass("fa-caret-down");
-            target.removeClass("fa-caret-up");
-            target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'8px 5px\'}, {duration: 400});
-            target.closest("tbody").find(\'tr:gt(0) div\').slideDown("400");
-         }
+                function impactListDown(target) {
+                    target.addClass("fa-caret-down");
+                    target.removeClass("fa-caret-up");
+                    target.closest("tbody").find('tr:gt(0) td').animate({padding: '8px 5px'}, {duration: 400});
+                    target.closest("tbody").find('tr:gt(0) div').slideDown("400");
+                }
 
-         $(document).on("click", ".impact-toggle-subitems", function(e) {
-            if ($(e.target).hasClass("fa-caret-up")) {
-               impactListDown($(e.target));
-            } else {
-               impactListUp($(e.target));
-            }
-         });
+                $(document).on("click", ".impact-toggle-subitems", (e) => {
+                    if ($(e.target).hasClass("fa-caret-up")) {
+                        impactListDown($(e.target));
+                    } else {
+                        impactListUp($(e.target));
+                    }
+                });
 
-         $(document).on("click", ".impact-toggle-subitems-master", function(e) {
-            $(e.target).closest("table").find(".impact-toggle-subitems").each(function(i, elem) {
-               if ($(e.target).hasClass("fa-caret-up")) {
-                  impactListDown($(elem));
-               } else {
-                  impactListUp($(elem));
-               }
-            });
+                $(document).on("click", ".impact-toggle-subitems-master", (e) => {
+                    $(e.target).closest("table").find(".impact-toggle-subitems").each((i, elem) => {
+                        if ($(e.target).hasClass("fa-caret-up")) {
+                            impactListDown($(elem));
+                        } else {
+                            impactListUp($(elem));
+                        }
+                    });
+                    $(e.target).toggleClass("fa-caret-up");
+                    $(e.target).toggleClass("fa-caret-down");
+                });
 
-            $(e.target).toggleClass("fa-caret-up");
-            $(e.target).toggleClass("fa-caret-down");
-         });
-
-         $(document).on("impactUpdated", function() {
-            $.ajax({
-               type: "GET",
-               url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
-               data: {
-                  itemtype: "' . htmlescape(get_class($item)) . '",
-                  items_id: ' . ((int) $item->fields['id']) . ',
-                  action  : "load",
-                  view    : "list",
-               },
-               success: function(data){
-                  $("#impact_list_view").replaceWith(data);
-                  showGraphView();
-               },
-            });
-         });
-      ');
+                $(document).on("impactUpdated", () => {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ path('ajax/impact.php') }}",
+                        data: {
+                            itemtype: "{{ itemtype|e('js') }}",
+                            items_id: {{ items_id }},
+                            action  : "load",
+                            view    : "list",
+                        },
+                        success: (data) => {
+                            $("#impact_list_view").replaceWith(data);
+                            showGraphView();
+                        },
+                    });
+                });
+            </script>
+TWIG, $twig_params);
 
         if ($can_update) {
            // Handle settings actions
@@ -922,7 +926,7 @@ JS);
                 'NOT' => [
                     "$table.id" => $used
                 ],
-            ],
+            ] + $itemtype::getSystemSQLCriteria()
         ];
 
        // Add friendly name search criteria
@@ -1585,27 +1589,28 @@ JS);
         echo Html::script("js/impact.js");
 
         // Load backend values
-        $default   = self::DEFAULT_COLOR;
-        $forward   = self::IMPACT_COLOR;
-        $backward  = self::DEPENDS_COLOR;
-        $both      = self::IMPACT_AND_DEPENDS_COLOR;
-        $start_node = self::getNodeID($item);
+        $twig_params = [
+            'default'   => self::DEFAULT_COLOR,
+            'forward'   => self::IMPACT_COLOR,
+            'backward'  => self::DEPENDS_COLOR,
+            'both'      => self::IMPACT_AND_DEPENDS_COLOR,
+            'start_node' => self::getNodeID($item),
+        ];
 
         // Bind the backend values to the client and start the network
-        echo  Html::scriptBlock(<<<JS
-            $(function() {
-                GLPIImpact.prepareNetwork(
-                    $("#network_container"),
-                    {
-                        default : '$default',
-                        forward : '$forward',
-                        backward: '$backward',
-                        both    : '$both'
-                    },
-                    '$start_node'
-                )
-            });
-JS);
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script defer>
+                {% autoescape 'js' %}
+                    GLPIImpact.prepareNetwork($("#network_container"), {
+                        'default' : '{{ default }}',
+                        'forward' : '{{ forward }}',
+                        'backward' : '{{ backward }}',
+                        'both' : '{{ both }}',
+                    }, '{{ start_node }}');
+                {% endautoescape %}
+            </script>
+TWIG, $twig_params);
     }
 
     /**
@@ -1766,20 +1771,18 @@ JS);
     public static function getEnabledItemtypes(): array
     {
         // Get configured values
-        $conf = Config::getConfigurationValues('core');
+        $enabled_itemtypes = json_decode(Config::getConfigurationValue('core', self::CONF_ENABLED), true) ?? [];
 
-        if (!isset($conf[self::CONF_ENABLED])) {
+        if (!count($enabled_itemtypes)) {
             return [];
         }
 
-        $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
-
         // Remove any forbidden values
-        return array_filter($enabled, static function ($itemtype) {
+        return array_filter($enabled_itemtypes, static function ($itemtype) {
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
-            return isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+            return array_key_exists($itemtype, $CFG_GLPI['impact_asset_types']);
         });
     }
 

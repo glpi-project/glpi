@@ -50,7 +50,7 @@ trait AssetImage
      */
     public function managePictures($input)
     {
-        foreach (['picture_front', 'picture_rear'] as $name) {
+        foreach (['picture_front', 'picture_rear', 'picture'] as $name) {
             if (
                 isset($input["_blank_$name"])
                 && $input["_blank_$name"]
