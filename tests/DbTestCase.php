@@ -86,9 +86,8 @@ class DbTestCase extends \GLPITestCase
      */
     protected function logOut()
     {
-        $ctime = $_SESSION['glpi_currenttime'];
         \Session::destroy();
-        $_SESSION['glpi_currenttime'] = $ctime;
+        \Session::start();
     }
 
     /**
