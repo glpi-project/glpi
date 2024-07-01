@@ -46,10 +46,12 @@
     'no_label'     : true,
 } %}
 
-<div
+<section
+    role="option"
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
     <section
         data-glpi-form-editor-on-click="set-active"
@@ -246,4 +248,4 @@
             'form': form,
         }, with_context = false) }}
     </div>
-</div>
+</section>

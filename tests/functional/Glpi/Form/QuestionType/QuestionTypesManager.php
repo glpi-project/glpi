@@ -87,6 +87,7 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::FILE,
             QuestionTypeCategory::RADIO,
             QuestionTypeCategory::CHECKBOX,
+            QuestionTypeCategory::DROPDOWN,
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -168,6 +169,13 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::CHECKBOX,
             [
                 new \Glpi\Form\QuestionType\QuestionTypeCheckbox(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::DROPDOWN,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeDropdown(),
             ]
         ];
     }

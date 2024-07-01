@@ -86,6 +86,11 @@ enum QuestionTypeCategory: string
     case CHECKBOX = "checkbox";
 
     /**
+     * Question that expect a single or muliple choice among a list of options with a dropdown
+     */
+    case DROPDOWN = "dropdown";
+
+    /**
      * Get category label
      * @return string
      */
@@ -101,6 +106,7 @@ enum QuestionTypeCategory: string
             self::FILE => __("File"),
             self::RADIO => __("Radio"),
             self::CHECKBOX => __("Checkbox"),
+            self::DROPDOWN => _n('Dropdown', 'Dropdowns', 1),
         };
     }
 
@@ -120,6 +126,7 @@ enum QuestionTypeCategory: string
             self::FILE => "ti ti-file",
             self::RADIO => "ti ti-circle-dot",
             self::CHECKBOX => "ti ti-select",
+            self::DROPDOWN => "ti ti-list",
         };
     }
 }

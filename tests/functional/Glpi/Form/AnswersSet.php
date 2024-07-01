@@ -47,6 +47,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
@@ -280,6 +281,11 @@ class AnswersSet extends DbTestCase
                     ]
                 ]))
                 ->addQuestion("File", QuestionTypeFile::class)
+                ->addQuestion("Dropdown", QuestionTypeDropdown::class, '123', json_encode([
+                    'options' => [
+                        123 => 'Dropdown 1'
+                    ]
+                ]))
         );
 
         // File question type requires an uploaded file
@@ -314,7 +320,8 @@ class AnswersSet extends DbTestCase
             $this->getQuestionId($form, "Request type") => 1,
             $this->getQuestionId($form, "File") => [$filename],
             $this->getQuestionId($form, "Radio") => 'Radio 1',
-            $this->getQuestionId($form, "Checkbox") => 'Checkbox 1'
+            $this->getQuestionId($form, "Checkbox") => 'Checkbox 1',
+            $this->getQuestionId($form, "Dropdown") => 'Dropdown 1',
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

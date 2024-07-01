@@ -40,14 +40,14 @@ class GlpiFormQuestionTypeSelectable {
      *
      * @type {string}
      */
-    #inputType;
+    _inputType;
 
     /**
      * The options container.
      *
      * @type {JQuery<HTMLElement>}
      */
-    #container;
+    _container;
 
     /**
      * Create a new GlpiFormQuestionTypeSelectable instance.
@@ -55,24 +55,24 @@ class GlpiFormQuestionTypeSelectable {
      * @param {JQuery<HTMLElement>} container
      */
     constructor(inputType = null, container = null) {
-        this.#inputType = inputType;
-        this.#container = $(container);
+        this._inputType = inputType;
+        this._container = $(container);
 
-        if (this.#container !== null) {
-            this.#container.children()
-                .each((index, option) => this.#registerOptionListeners($(option)));
+        if (this._container !== null) {
+            this._container.children()
+                .each((index, option) => this._registerOptionListeners($(option)));
 
             // Register listeners for the empty option
-            this.#container
+            this._container
                 .siblings('div[data-glpi-form-editor-question-extra-details]')
-                .each((index, option) => this.#registerOptionListeners($(option)));
+                .each((index, option) => this._registerOptionListeners($(option)));
 
             // Compute the state to update the input names
             window.glpi_form_editor_controller.computeState();
 
             // Restore the checked state
-            if (this.#inputType === 'radio') {
-                this.#container
+            if (this._inputType === 'radio') {
+                this._container
                     .find('input[type="radio"][checked]')
                     .prop('checked', true);
             }
@@ -82,18 +82,39 @@ class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Called when an option is added.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onAddOption(option) { } // eslint-disable-line no-unused-vars
+
+    /**
+     * Called when an option is edited.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onEditOption(option) { } // eslint-disable-line no-unused-vars
+
+    /**
+     * Called when an option is removed.
+     *
+     * @param {JQuery<HTMLElement>} option
+     */
+    onRemoveOption(option) { } // eslint-disable-line no-unused-vars
+
+    /**
      * Register listeners for the option elements.
      *
      * @param {JQuery<HTMLElement>} option
      */
-    #registerOptionListeners(option) {
+    _registerOptionListeners(option) {
         option
             .find('input[type="text"]')
             .on('input', (event) => this.#handleOptionChange(event))
             .on('keydown', (event) => this.#handleKeydown(event));
 
         option
-            .find('i[data-glpi-form-editor-question-option-remove]')
+            .find('button[data-glpi-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
     }
 
@@ -101,7 +122,7 @@ class GlpiFormQuestionTypeSelectable {
      * Enable sortable functionality for the options container.
      */
     #enableOptionsSortable() {
-        sortable(this.#container, {
+        sortable(this._container, {
             // Drag and drop handle selector
             handle: '[data-glpi-form-editor-question-option-handle]',
 
@@ -121,13 +142,13 @@ class GlpiFormQuestionTypeSelectable {
      * @param {boolean} grab_visibility - Whether to show the grab handle for the new option.
      */
     #addOption(input, focus = false, grab_visibility = false) {
-        const template = this.#container.parent().find('template').get(0);
+        const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
         const clone = template.content.cloneNode(true);
 
         $(input).parent().after(clone);
 
         // Register the new option listeners
-        this.#registerOptionListeners($(input).parent().next());
+        this._registerOptionListeners($(input).parent().next());
 
         if (focus) {
             $(input).parent().next().find('input[type="text"]').trigger('focus');
@@ -137,6 +158,21 @@ class GlpiFormQuestionTypeSelectable {
             $(input).parent().next().find('i').removeClass('d-none');
             $(input).parent().next().find('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
         }
+
+        // Update the uuid with a new random value (random number like mt_rand)
+        const uuid = getUUID();
+        $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
+        $(input).parent().next().find('input[type="text"]').attr('name', 'options[' + uuid + ']');
+
+        /**
+         * Compute the state to update the input names
+         * Required to link radio inputs between them in the same question
+         * and unlink them between questions
+         */
+        window.glpi_form_editor_controller.computeState();
+
+        // Call the onAddOption method
+        this.onAddOption($(input).parent().next());
     }
 
     /**
@@ -147,6 +183,9 @@ class GlpiFormQuestionTypeSelectable {
     #removeOption(event) {
         event.target.closest('div').remove();
         event.stopPropagation();
+
+        // Call the onRemoveOption method
+        this.onRemoveOption(event.target.closest('div'));
     }
 
     /**
@@ -195,7 +234,7 @@ class GlpiFormQuestionTypeSelectable {
         $(input).siblings('i[data-glpi-form-editor-question-option-handle]').css('visibility', 'visible');
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', false);
         $(input).parent().removeAttr('data-glpi-form-editor-question-extra-details');
-        $(input).siblings('i').removeClass('d-none');
+        $(input).siblings('button[data-glpi-form-editor-question-option-remove]').removeClass('d-none');
     }
 
     /**
@@ -205,16 +244,12 @@ class GlpiFormQuestionTypeSelectable {
      */
     #addNewOptionIfNeeded(input) {
         const isLast = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
-            .children().filter('div').last()
+            .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+            .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
         if (isLast) {
             this.#addOption(input);
-
-            // Update the uuid with a new random value (random number like mt_rand)
-            const uuid = getUUID();
-            $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
-            $(input).parent().next().find('input[type="text"]').attr('name', 'options[' + uuid + ']');
 
             // Move the current option in the drag and drop container
             $(input).parent().appendTo($(input).parent().siblings().filter('div[data-glpi-form-editor-selectable-question-options]').last());
@@ -249,7 +284,7 @@ class GlpiFormQuestionTypeSelectable {
      * @param {HTMLElement} input - The input element.
      */
     #removeLastOptionIfNeeded(input) {
-        const isLast = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+        const isLast = $(input).closest('div[data-glpi-form-editor-selectable-question-options]')
             .children('div').last()
             .find('input[type="text"]').get(0) === input;
 
@@ -257,12 +292,18 @@ class GlpiFormQuestionTypeSelectable {
         if (isLast) {
             // Remove all previous empty options
             while ($(input).parent().siblings('div').last().find('input[type="text"]').get(0).value === '') {
+                // Call the onRemoveOption method
+                this.onRemoveOption($(input).parent());
+
                 $(input).parent().siblings('div').last().remove();
             }
 
             // Focus the empty option
             $(input).closest('div[data-glpi-form-editor-question-type-specific]')
                 .find('input[type="text"]').last().trigger('focus');
+
+            // Call the onRemoveOption method
+            this.onRemoveOption($(input).parent());
 
             // Remove current option
             $(input).parent().remove();
@@ -285,6 +326,11 @@ class GlpiFormQuestionTypeSelectable {
         } else {
             this.#hideOption(input);
             this.#removeLastOptionIfNeeded(input);
+        }
+
+        // Call the onEditOption method
+        if ($(input).get(0) !== undefined) {
+            this.onEditOption($(input).parent());
         }
 
         // Reload sortable
@@ -326,7 +372,9 @@ class GlpiFormQuestionTypeSelectable {
                 this.#addOption(input, true, true);
             }
         } else if (event.key === 'Backspace') {
-            const is_last = $(input).closest('div[data-glpi-form-editor-question-type-specific]').children().filter('div').last().find('input[type="text"]').get(0) === input;
+            const is_last = $(input).closest('div[data-glpi-form-editor-question-type-specific]')
+                .find('div[data-glpi-form-editor-selectable-question-options]').parent()
+                .children('div').last().find('input[type="text"]').get(0) === input;
 
             // Remove the option
             if (input.value === '' && !is_last) {
