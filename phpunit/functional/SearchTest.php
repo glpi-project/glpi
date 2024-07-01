@@ -1141,9 +1141,10 @@ class SearchTest extends DbTestCase
         $this->assertEquals(
             [
                 'reset'        => 1,
+                'itemtype'     => 'Ticket',
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 19,
+                'order'        => ['DESC'],
+                'sort'         => [19],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -1189,8 +1190,8 @@ class SearchTest extends DbTestCase
             [
                 'reset'        => 1,
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 2,
+                'order'        => ['DESC'],
+                'sort'         => [2],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -1214,9 +1215,10 @@ class SearchTest extends DbTestCase
         $this->assertEquals(
             [
                 'reset'      => 1,
+                'itemtype'   => 'Computer',
                 'start'      => 0,
-                'order'      => 'ASC',
-                'sort'       => 0,
+                'order'      => ['ASC'],
+                'sort'       => [0],
                 'is_deleted' => 0,
                 'criteria'   => [
                     [
@@ -1264,8 +1266,8 @@ class SearchTest extends DbTestCase
             [
                 'reset'        => 1,
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 31,
+                'order'        => ['DESC'],
+                'sort'         => [31],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -4807,6 +4809,76 @@ class SearchTest extends DbTestCase
             ],
         ];
         $this->assertEquals($expected, $items);
+    }
+
+    public function testInvalidCriteria()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->integer($data['data']['totalcount'])->isGreaterThan(8);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ],
+                [
+                    'field' => 1, // name
+                    'searchtype' => 'contains',
+                    'value' => '_test_pc_with_encoded_comment'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        // Only the valid 'name' criterion should be taken into account
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+    }
+
+    public function testInvalidMetacriteria()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'itemtype' => 'Agent',
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->integer($data['data']['totalcount'])->isGreaterThan(8);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+    }
+
+    public function testInvalidSort()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'sort'         => [10000], // Not a valid search option
+            'order' => ['ASC']
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->array($data['search']['sort'])->isEqualTo([0]);
     }
 }
 

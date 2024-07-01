@@ -1956,14 +1956,14 @@ function setupAdaptDropdown(config)
     return select2_el;
 }
 
-function displaySessionMessages() {
+window.displaySessionMessages = () => {
     $.ajax({
         method: 'GET',
         url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
         data: {
             'get_raw': true
         }
-    }).done((messages) => {
+    }).then((messages) => {
         $.each(messages, (level, level_messages) => {
             $.each(level_messages, (index, message) => {
                 switch (parseInt(level)) {
@@ -1979,4 +1979,4 @@ function displaySessionMessages() {
             });
         });
     });
-}
+};
