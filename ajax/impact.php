@@ -82,9 +82,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         'items_id' => $item['id']
                     ]);
                     if ($plugin_icon && is_string($plugin_icon)) {
-                        $icon = $plugin_icon;
+                        $icon = ltrim($plugin_icon, '/');
                     }
-                    $item['icon'] = $CFG_GLPI['url_base'] . '/' . $icon;
+                    $item['image'] = $CFG_GLPI['root_doc'] . '/' . $icon;
                     $assets['items'][$index] = $item;
                 }
                 header('Content-Type: application/json');

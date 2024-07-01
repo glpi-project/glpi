@@ -1024,7 +1024,7 @@ JS);
                 'items_id' => 0
             ]);
             if ($plugin_icon && is_string($plugin_icon)) {
-                $icon = $plugin_icon;
+                $icon = ltrim($plugin_icon, '/');
             }
 
            // Skip if not enabled
@@ -1315,7 +1315,7 @@ JS);
             'items_id' => $item->getID()
         ]);
         if ($plugin_icon && is_string($plugin_icon)) {
-            $image_name = $plugin_icon;
+            $image_name = ltrim($plugin_icon, '/');
         }
 
         $image_name = self::checkIcon($image_name);
