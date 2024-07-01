@@ -134,6 +134,8 @@
                         ) }}
                      {% endif %}
 
+
+                     {% set conditions_met = 0 %}
                      {% set dc_breadcrumbs %}
                         {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
                            {{ call(item.getType() ~ '::renderDcBreadcrumb', [
@@ -147,8 +149,20 @@
                            dc_breadcrumbs,
                            __('Data center position'),
                         ) }}
-                        {{ fields.nullField() }} {# set an empty space in front of dc breadcrumb #}
-                     {% endif %}
+                        {% set conditions_met = conditions_met + 1 %}
+                    {% endif %}
+
+                    {% if cluster is not null %}
+                        {{ fields.htmlField(
+                            '',
+                            cluster.getLink(),
+                            _n('Cluster', 'Clusters', 1),
+                        ) }}
+                        {% set conditions_met = conditions_met + 1 %}
+                    {% endif %}
+                    {% if conditions_met == 1 %}
+                        {{ fields.nullField() }}
+                    {% endif %}
 
                      {% if item.isField('locations_id') %}
                         {{ fields.dropdownField(
