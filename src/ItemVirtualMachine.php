@@ -212,7 +212,7 @@ class ItemVirtualMachine extends CommonDBChild
                             'name' => __('Name'),
                             'serial' => __('Serial number'),
                             'comment' => __('Comments'),
-                            'entity' => __('Entity')
+                            'entity' => _n('Entity', 'Entities', 1)
                         ];
                         $entries[] = [
                             'name' => $computer->getLink($host['items_id']),
@@ -223,7 +223,7 @@ class ItemVirtualMachine extends CommonDBChild
                     } else {
                         $columns = [
                             'name' => __('Name'),
-                            'entity' => __('Entity')
+                            'entity' => _n('Entity', 'Entities', 1)
                         ];
                         $entries[] = [
                             'name' => $computer->fields['name'],
