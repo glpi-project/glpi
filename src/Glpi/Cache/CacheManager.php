@@ -574,7 +574,7 @@ PHP;
 
     private function clearSymfonyCache(): void
     {
-        /** Kernel|null */
+        /** @var Kernel|null $kernel */
         global $kernel;
 
         $localKernel = $kernel;
