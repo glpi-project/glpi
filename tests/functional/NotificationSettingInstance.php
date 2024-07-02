@@ -37,8 +37,6 @@ namespace tests\units;
 
 use DbTestCase;
 
-require_once __DIR__ . '/../NotificationSettingInstance.php';
-
 /* Test for inc/notificationmailingsetting.class.php */
 
 class NotificationSettingInstance extends DbTestCase

@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
+use Glpi\Tests\ContentTemplates\Parameters\AbstractParameters;
+
 class EntityParameters extends AbstractParameters
 {
     public function testGetValues(): void

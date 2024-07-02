@@ -35,11 +35,9 @@
 
 namespace tests\units;
 
-require_once 'CommonDropdown.php';
-
 /* Test for inc/operatingsystemarchitecture.class.php */
 
-class OperatingSystemArchitecture extends CommonDropdown
+class OperatingSystemArchitecture extends \CommonDropdownTestCase
 {
     public function getObjectClass()
     {

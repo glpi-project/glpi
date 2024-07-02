@@ -33,16 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
-
-use Calendar;
-use CalendarSegment;
-use DbTestCase;
-use Session;
-
-/* Test for inc/commonitilrecurrent.class.php */
-
-abstract class CommonITILRecurrent extends DbTestCase
+abstract class CommonITILRecurrentTestCase extends DbTestCase
 {
     abstract protected function getChildClass();
 

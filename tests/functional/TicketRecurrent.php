@@ -36,7 +36,7 @@
 namespace tests\units;
 
 /* Test for inc/ticketrecurrent.class.php */
-class TicketRecurrent extends CommonITILRecurrent
+class TicketRecurrent extends \CommonITILRecurrentTestCase
 {
     protected function getChildClass()
     {

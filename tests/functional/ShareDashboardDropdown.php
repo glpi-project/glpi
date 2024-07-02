@@ -35,6 +35,6 @@
 
 namespace tests\units;
 
-class ShareDashboardDropdown extends AbstractRightsDropdown
+class ShareDashboardDropdown extends \RightsDropdownTestCase
 {
 }
