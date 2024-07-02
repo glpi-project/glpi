@@ -190,8 +190,6 @@ class ItemVirtualMachine extends CommonDBChild
             return;
         }
 
-        echo "<div class='center'>";
-
         if (isset($asset->fields['uuid']) && ($asset->fields['uuid'] != '')) {
             $hosts = getAllDataFromTable(
                 self::getTable(),
@@ -301,16 +299,15 @@ class ItemVirtualMachine extends CommonDBChild
                 $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
 
                 $entries[] = [
-                    'name' => $vm->getLink() ?? '',
-                    'comment' => $virtualmachine['comment'] ?? '',
-                    'dynamic' => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
-                    'virtualmachinetypes_id' => $type ? $type->getLink() : '',
-                    'virtualmachinesystems_id' => $system ? $system->getLink() : '',
-                    'virtualmachinestates_id' => $state ? $state->getLink() : '',
-                    'uuid' => $virtualmachine['uuid'] ?? '',
-                    'vcpu' => $virtualmachine['vcpu'] ?? '',
-                    'ram' => $virtualmachine['ram'] ?? '',
-                    'asset' => '----'
+                    'name'                      => $vm->getLink() ?? NOT_AVAILABLE,
+                    'comment'                   => $virtualmachine['comment'] ?? NOT_AVAILABLE,
+                    'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
+                    'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
+                    'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
+                    'uuid'                      => $virtualmachine['uuid'] ?? NOT_AVAILABLE,
+                    'vcpu'                      => $virtualmachine['vcpu'] ?? NOT_AVAILABLE,
+                    'ram'                       => $virtualmachine['ram'] ?? NOT_AVAILABLE,
+                    'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE
                 ];
             }
 
@@ -323,19 +320,20 @@ class ItemVirtualMachine extends CommonDBChild
                     'name' => __('Name'),
                     'comment' => _n('Comment', 'Comments', 1),
                     'dynamic' => __('Automatic inventory'),
-                    'virtualmachinetypes_id' => VirtualMachineType::getTypeName(1),
                     'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
                     'virtualmachinestates_id' => _n('State', 'States', 1),
                     'uuid' => __('UUID'),
-                    'vcpu' => _x('quantity', 'Processors number'),
+                    'vcpu' => __('Processors number'),
                     'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
                     'asset' => __('Machine')
                 ],
                 'formatters' => [
                     'name' => 'raw_html',
-                    'virtualmachinetypes_id' => 'raw_html',
                     'virtualmachinesystems_id' => 'raw_html',
                     'virtualmachinestates_id' => 'raw_html',
+                    'vcpu' => 'integer',
+                    'ram' => 'integer',
+                    'asset' => 'raw_html'
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
