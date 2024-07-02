@@ -69,10 +69,7 @@ class InventoryTestCase extends \DbTestCase
 
         parent::tearDown();
 
-        //FIXME: no longer possible with phpunit
-        /*
-        if (str_starts_with($method, 'testImport')) {
-           //$this->dump('Checking for unexpected logs');
+        if (str_starts_with($this->getName(), 'testImport')) {
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
                 'FROM' => \Log::getTable(),
@@ -89,19 +86,22 @@ class InventoryTestCase extends \DbTestCase
                     ]
                 ]
             ]);
-            $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
+            $this->assertSame(
+                0,
+                count($logs),
+                print_r(iterator_to_array($logs), true)
+            );
         }
 
-        if (str_starts_with($method, 'testUpdate')) {
+        if (str_starts_with($this->getName(), 'testUpdate')) {
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
                 'FROM' => \Log::getTable(),
                 'LIMIT' => $nblogsnow,
                 'OFFSET' => $this->nblogs,
             ]);
-            $this->integer(count($logs))->isIdenticalTo(0);
+            $this->assertSame(0, count($logs));
         }
-        */
 
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
