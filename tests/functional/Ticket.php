@@ -2904,7 +2904,7 @@ class Ticket extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDALLTICKET,
+                        'followup' => \READ + \ITILFollowup::ADDALLITEM,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
