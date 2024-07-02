@@ -52,6 +52,41 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     abstract public function getInputType(): string;
 
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return input.val();
+                },
+                "convertDefaultValue": function (question, old_type, value) {
+                    // Only accept string values
+                    if (typeof value !== 'string') {
+                        return '';
+                    }
+
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+                    if (old_type === 'Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText') {
+                        // Create a temporary element to convert HTML to text
+                        const element = document.createElement('div');
+                        element.innerHTML = value;
+
+                        if (element.firstChild) {
+                            value = element.firstChild.textContent;
+                        }
+                    }
+
+                    return input.val(value).val();
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -61,6 +96,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
+                aria-label="Default value"
             />
 TWIG;
 
