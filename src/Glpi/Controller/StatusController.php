@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,20 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Controller;
+
+use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
-// Force in normal mode
-$_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-// Redirect handling to the High-Level API (we may eventually remove this script)
-$request = new Request('GET', '/Status/All', getallheaders() ?? []);
-try {
-    $response = Router::getInstance()->handleRequest($request);
-    $response->send();
-} catch (\Throwable $e) {
-    ErrorHandler::getInstance()->handleException($e);
-    $response = new Response(500);
-    $response->send();
+final readonly class StatusController implements Controller
+{
+    #[Route(
+        "/status.php",
+        name: "glpi_status"
+    )]
+    public function __invoke(SymfonyRequest $request): SymfonyResponse
+    {
+        return new StreamedResponse($this->call(...));
+    }
+
+    private function call(): void
+    {
+        // Force in normal mode
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        // Redirect handling to the High-Level API (we may eventually remove this script)
+        $request = new Request('GET', '/Status/All', getallheaders() ?? []);
+
+        try {
+            $response = Router::getInstance()->handleRequest($request);
+            $response->send();
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleException($e);
+            $response = new Response(500);
+            $response->send();
+        }
+    }
 }

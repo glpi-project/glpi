@@ -36,12 +36,16 @@
 namespace Glpi\Cache;
 
 use DirectoryIterator;
+use Glpi\Kernel\Kernel;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Toolbox;
 
 class CacheManager
@@ -325,6 +329,12 @@ class CacheManager
             $success = $this->getCacheInstance($context)->clear() && $success;
         }
 
+        // Clear Symfony cache
+        $symfony_cache_dir = $this->cache_dir . '/symfony';
+        if (\is_dir($symfony_cache_dir)) {
+            $this->clearSymfonyCache();
+        }
+
        // Clear compiled templates
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
@@ -560,5 +570,24 @@ PHP;
             self::SCHEME_REDIS      => __('Redis (TCP)'),
             self::SCHEME_REDISS     => __('Redis (TLS)'),
         ];
+    }
+
+    private function clearSymfonyCache(): void
+    {
+        /** @var Kernel|null $kernel */
+        global $kernel;
+
+        $localKernel = $kernel;
+
+        if (!$localKernel instanceof Kernel) {
+            // This must be usable in non-kernel contexts, env vars will get the proper Kernel env.
+            $localKernel = new Kernel();
+        }
+
+        $input = new ArrayInput(['command' => 'cache:clear']);
+
+        $app = new Application($localKernel);
+        $app->setAutoExit(false);
+        $app->run($input, new NullOutput());
     }
 }

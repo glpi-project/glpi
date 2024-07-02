@@ -36,6 +36,12 @@
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
+// Check PHP version not to have trouble
+// Need to be the very fist step before any include
+if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.3.999', '>')) {
+    exit('PHP version must be between 8.2 and 8.3.');
+}
+
 // Check the resources state before trying to instanciate the Kernel.
 // It must be done here as this check must be done even when the Kernel
 // cannot be instanciated due to missing dependencies.
