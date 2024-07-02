@@ -42,8 +42,8 @@ define(
     GLPI_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
 );
 
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of index.php
-define('GLPI_MAX_PHP', '8.3'); // Must also be changed in top of index.php
+define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
+define('GLPI_MAX_PHP', '8.3'); // Must also be changed in top of public/index.php
 define('GLPI_YEAR', '2024');
 
 //Define a global recipient address for email notifications
