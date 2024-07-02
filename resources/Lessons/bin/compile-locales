@@ -1,0 +1,57 @@
+#!/bin/bash -eu
+
+#
+# ---------------------------------------------------------------------
+#
+# GLPI - Gestionnaire Libre de Parc Informatique
+#
+# http://glpi-project.org
+#
+# @copyright 2015-2024 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
+# @link      https://github.com/glpi-project/tools
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ---------------------------------------------------------------------
+#
+
+# Generate translated markdown files
+# For each po file
+for po_file in $(find locales -type f -name "*.po"); do
+    # Get locale
+    locale=$(basename "$po_file" .po)
+
+    # For each markdown file
+    for md_file in $(find sources -type f -name "*.md"); do
+        # Get destination file
+        dest="translated/${locale}/${md_file/sources\/}"
+
+        # If destination directory does not exist
+        if [ ! -d "$(dirname "$dest")" ]; then
+            # Create destination directory
+            mkdir -p "$(dirname "$dest")"
+        fi
+
+        # Generate translated markdown file
+        LANG=C po2md "$md_file" --pofiles "$po_file" --quiet --wrapwidth inf --save "$dest"
+    done
+done

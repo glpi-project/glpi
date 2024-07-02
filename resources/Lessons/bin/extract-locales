@@ -1,0 +1,76 @@
+#!/bin/bash -eu
+
+#
+# ---------------------------------------------------------------------
+#
+# GLPI - Gestionnaire Libre de Parc Informatique
+#
+# http://glpi-project.org
+#
+# @copyright 2015-2024 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
+# @link      https://github.com/glpi-project/tools
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ---------------------------------------------------------------------
+#
+
+# Define translate function args
+F_ARGS_N="1,2"
+F_ARGS__S="1"
+F_ARGS__="1"
+F_ARGS_X="1c,2"
+F_ARGS_SX="1c,2"
+F_ARGS_NX="1c,2,3"
+F_ARGS_SN="1,2"
+
+POTFILE="locales/lessons.pot"
+
+# Create locales directory
+if [ ! -d "locales" ]; then
+    mkdir locales
+fi
+
+# Create pot file
+touch $POTFILE
+
+xgettext config.php \
+        -o $POTFILE \
+        -L PHP \
+        --add-comments=TRANS \
+        --from-code=UTF-8 \
+        --force-po \
+        --join-existing \
+        --sort-output \
+        --keyword=_n:$F_ARGS_N \
+        --keyword=__s:$F_ARGS__S \
+        --keyword=__:$F_ARGS__ \
+        --keyword=_x:$F_ARGS_X \
+        --keyword=_sx:$F_ARGS_SX \
+        --keyword=_nx:$F_ARGS_NX \
+        --keyword=_sn:$F_ARGS_SN
+
+# Extract locales from markdown files
+md2po --quiet --save --po-filepath $POTFILE $(find sources -type f -name "*.md")
+
+# Update main language
+LANG=C msginit --no-translator -i $POTFILE -l en_GB -o locales/en_GB.po
