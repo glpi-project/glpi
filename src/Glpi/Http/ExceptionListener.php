@@ -32,34 +32,26 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Glpi\Http;
+
 use Glpi\Application\ErrorHandler;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-// Check PHP version not to have trouble
-// Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.3.999', '>')) {
-    exit('PHP version must be between 8.2 and 8.3.');
-}
+final readonly class ExceptionListener implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::EXCEPTION => 'onKernelException',
+        ];
+    }
 
-// Check the resources state before trying to instanciate the Kernel.
-// It must be done here as this check must be done even when the Kernel
-// cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+    public function onKernelException(ExceptionEvent $event): void
+    {
+        $handler = ErrorHandler::getInstance();
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$kernel = new Kernel();
-
-$request = Request::createFromGlobals();
-
-$response = $kernel->handle($request);
-
-try {
-    $response->send();
-
-    $kernel->terminate($request, $response);
-} catch (\Throwable $e) {
-    ErrorHandler::getInstance()->handleException($e);
+        $handler->handleException($event->getThrowable());
+    }
 }
