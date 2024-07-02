@@ -101,9 +101,7 @@ class HasSocketCapacity extends AbstractCapacity
             history: false
         );
 
-        //TODO Clean cable data by unlinking the custom asset side
-
-        // Get all cables linked to this asset type (itemtype_endpoint_a or itemtype_endpoint_b)
+        // Clean cable data by unlinking the custom asset side
         $it = $DB->request(
             [
                 'SELECT' => ['id', 'itemtype_endpoint_a', 'itemtype_endpoint_b'],
@@ -119,21 +117,27 @@ class HasSocketCapacity extends AbstractCapacity
         $cable = new Cable();
         foreach ($it as $data) {
             if ($data['itemtype_endpoint_a'] === $classname) {
-                $cable->update([
-                    'id' => $data['id'],
-                    'itemtype_endpoint_a' => null,
-                    'items_id_endpoint_a' => 0,
-                    'socketmodels_id_endpoint_a' => 0,
-                    'sockets_id_endpoint_a' => 0,
-                ]);
+                $cable->update(
+                    [
+                        'id' => $data['id'],
+                        'itemtype_endpoint_a' => null,
+                        'items_id_endpoint_a' => 0,
+                        'socketmodels_id_endpoint_a' => 0,
+                        'sockets_id_endpoint_a' => 0,
+                    ],
+                    history: false
+                );
             } else {
-                $cable->update([
-                    'id' => $data['id'],
-                    'itemtype_endpoint_b' => null,
-                    'items_id_endpoint_b' => 0,
-                    'socketmodels_id_endpoint_b' => 0,
-                    'sockets_id_endpoint_b' => 0,
-                ]);
+                $cable->update(
+                    [
+                        'id' => $data['id'],
+                        'itemtype_endpoint_b' => null,
+                        'items_id_endpoint_b' => 0,
+                        'socketmodels_id_endpoint_b' => 0,
+                        'sockets_id_endpoint_b' => 0,
+                    ],
+                    history: false
+                );
             }
         }
 

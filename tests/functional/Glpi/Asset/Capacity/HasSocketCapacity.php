@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Cable;
+use Computer;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
@@ -125,7 +127,6 @@ class HasSocketCapacity extends DbTestCase
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasSocketCapacity::class,
             ]
         );
@@ -133,7 +134,6 @@ class HasSocketCapacity extends DbTestCase
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasSocketCapacity::class,
             ]
         );
@@ -154,31 +154,31 @@ class HasSocketCapacity extends DbTestCase
             ]
         );
 
-        $item_socket_1 = $this->createItem(
+        $socket_1 = $this->createItem(
             Socket::class,
             [
-                'name' => 'Socket',
+                'name'     => 'Socket 1',
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
         );
 
-        $item_socket_2 = $this->createItem(
+        $socket_2 = $this->createItem(
             Socket::class,
             [
-                'name' => 'Socket',
+                'name'     => 'Socket 2',
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
         );
 
         $cable_1 = $this->createItem(
-            \Cable::class,
+            Cable::class,
             [
                 'itemtype_endpoint_a' => $classname_1,
                 'items_id_endpoint_a' => $item_1->getID(),
-                'itemtype_endpoint_b' => 'Computer',
-                'items_id_endpoint_b' => getItemByTypeName('Computer', '_test_pc01', true),
+                'itemtype_endpoint_b' => Computer::class,
+                'items_id_endpoint_b' => getItemByTypeName(Computer::class, '_test_pc01', true),
             ]
         );
 
@@ -186,6 +186,7 @@ class HasSocketCapacity extends DbTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_1,
+                'num'      => 1310, // Socket name
                 'users_id' => 0,
             ]
         );
@@ -193,27 +194,52 @@ class HasSocketCapacity extends DbTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_2,
+                'num'      => 1310, // Socket name
                 'users_id' => 0,
             ]
         );
 
+        $item_1_logs_criteria = [
+            'OR' => [
+                'itemtype' => $classname_1,
+                [
+                    'itemtype' => Socket::class,
+                    'items_id' => $socket_1->getID(),
+                ]
+            ]
+
+        ];
+        $item_2_logs_criteria = [
+            'OR' => [
+                'itemtype' => $classname_2,
+                [
+                    'itemtype' => Socket::class,
+                    'items_id' => $socket_2->getID(),
+                ]
+            ]
+        ];
+
         // Ensure relation, display preferences, and class is registered to global config
-        $this->object(Socket::getById($item_socket_1->getID()))->isInstanceOf(Socket::class);
+        $this->object(Socket::getById($socket_1->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->object(Socket::getById($item_socket_2->getID()))->isInstanceOf(Socket::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add socket
+        $this->object(Socket::getById($socket_2->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add socket
         $this->array($CFG_GLPI['socket_types'])->contains($classname_1);
         $this->array($CFG_GLPI['socket_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(Socket::getById($item_socket_1->getID()))->isFalse();
+        $this->boolean(Socket::getById($socket_1->getID()))->isFalse();
         $this->array($CFG_GLPI['socket_types'])->notContains($classname_1);
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
 
         // Ensure relations and global registration are preserved for other definition
-        $this->object(Socket::getById($item_socket_2->getID()))->isInstanceOf(Socket::class);
+        $this->object(Socket::getById($socket_2->getID()))->isInstanceOf(Socket::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->array($CFG_GLPI['socket_types'])->contains($classname_2);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
 
         // Cable should be unattached from the disabled asset type
         $cable_1->getFromDB($cable_1->getID());
