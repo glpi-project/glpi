@@ -42,6 +42,15 @@ use Symfony\Component\HttpFoundation\Request;
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
 (new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
 
+// Check PHP version not to have trouble
+// Need to be the very fist step before any include
+if (
+    \version_compare(PHP_VERSION, '8.2.0', '<') ||
+    \version_compare(PHP_VERSION, '8.3.999', '>')
+) {
+    exit('PHP version must be between 8.2 and 8.3.');
+}
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel();
