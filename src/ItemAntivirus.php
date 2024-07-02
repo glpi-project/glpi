@@ -337,7 +337,7 @@ class ItemAntivirus extends CommonDBChild
                 'signature_version' => $data['signature_version'],
                 'is_active'     => Dropdown::getYesNo($data['is_active']),
                 'is_uptodate'   => Dropdown::getYesNo($data['is_uptodate']),
-                'date_expiration' => Html::convDate($data['date_expiration']),
+                'date_expiration' => $data['date_expiration'],
             ];
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -358,6 +358,7 @@ class ItemAntivirus extends CommonDBChild
             'formatters' => [
                 'name' => 'raw_html',
                 'manufacturers_id' => 'raw_html',
+                'date_expiration' => 'date',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
