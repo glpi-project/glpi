@@ -33,35 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-class SingletonRuleList
+namespace Glpi\Tests;
+
+class BootstrapUtils
 {
-   /// Items list
-    public $list = [];
-   /// Items loaded ?
-    public $load = 0;
-
-
     /**
-     * get a unique instance of a SingletonRuleList for a type of RuleCollection
+     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
      *
-     * @param string $type   type of the Rule listed
-     * @param string $entity entity where the rule Rule is processed
-     *
-     * @return SingletonRuleList unique instance of an object
-     **/
-    public static function &getInstance($type, $entity)
+     * @return void
+     */
+    public static function initVarDirectories(): void
     {
-        //FIXME: can be removed when using phpunit 10 and process-isolation
-        if (defined('TU_USER')) {
-            $o = new self();
-            return $o;
+        foreach (get_defined_constants() as $name => $value) {
+            if (
+                preg_match('/^GLPI_[\w]+_DIR$/', $name)
+                && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+                && !is_dir($value)
+            ) {
+                mkdir($value, 0755, true);
+            }
         }
-
-        static $instances = [];
-
-        if (!isset($instances[$type][$entity])) {
-            $instances[$type][$entity] = new self();
-        }
-        return $instances[$type][$entity];
     }
 }

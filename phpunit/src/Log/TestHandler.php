@@ -33,35 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-class SingletonRuleList
+namespace Glpi\Tests\Log;
+
+use Monolog\Handler\TestHandler as BaseTestHandler;
+use Monolog\Logger;
+
+class TestHandler extends BaseTestHandler
 {
-   /// Items list
-    public $list = [];
-   /// Items loaded ?
-    public $load = 0;
-
-
-    /**
-     * get a unique instance of a SingletonRuleList for a type of RuleCollection
-     *
-     * @param string $type   type of the Rule listed
-     * @param string $entity entity where the rule Rule is processed
-     *
-     * @return SingletonRuleList unique instance of an object
-     **/
-    public static function &getInstance($type, $entity)
+    public function dropFromRecords(string $message, int $level): void
     {
-        //FIXME: can be removed when using phpunit 10 and process-isolation
-        if (defined('TU_USER')) {
-            $o = new self();
-            return $o;
+        foreach ($this->records as $index => $record) {
+            if (Logger::toMonologLevel($record['level']) === $level && $record['message'] === $message) {
+                unset($this->records[$index]);
+                break;
+            }
         }
 
-        static $instances = [];
-
-        if (!isset($instances[$type][$entity])) {
-            $instances[$type][$entity] = new self();
+        foreach ($this->recordsByLevel[$level] as $index => $record) {
+            if ($record['message'] === $message) {
+                unset($this->recordsByLevel[$level][$index]);
+                break;
+            }
         }
-        return $instances[$type][$entity];
     }
 }
