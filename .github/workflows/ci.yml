@@ -82,18 +82,23 @@ jobs:
       - name: "PHP lint"
         run: |
           docker compose exec -T app .github/actions/lint_php-lint.sh
+        if: always()
       - name: "Twig lint"
         run: |
           docker compose exec -T app .github/actions/lint_twig-lint.sh
+        if: always()
       - name: "JS lint"
         run: |
           docker compose exec -T app .github/actions/lint_js-lint.sh
+        if: always()
       - name: "SCSS lint"
         run: |
           docker compose exec -T app .github/actions/lint_scss-lint.sh
+        if: always()
       - name: "Misc lint"
         run: |
           docker compose exec -T app .github/actions/lint_misc-lint.sh
+        if: always()
 
   tests:
     # Do not run scheduled tests on tier repositories
@@ -230,6 +235,7 @@ jobs:
       - name: "WEB tests"
         run: |
           docker compose exec -T app .github/actions/test_tests-web.sh
+        if: always()
       - name: "E2E tests"
         id: "e2e"
         run: |
