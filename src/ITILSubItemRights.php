@@ -45,6 +45,4 @@ trait ITILSubItemRights
     const SEEPRIVATE = 8192;
     const ADD_AS_OBSERVER = 16384;
     const ADD_AS_TECHNICIAN = 32768;
-
-    public $auto_message_on_action = false;
 }

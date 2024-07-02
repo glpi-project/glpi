@@ -44,6 +44,8 @@ class ITILFollowup extends CommonDBChild
     use Glpi\Features\ParentStatus;
     use ITILSubItemRights;
 
+   // From CommonDBTM
+    public $auto_message_on_action = false;
     public static $rightname              = 'followup';
     private $item                  = null;
 

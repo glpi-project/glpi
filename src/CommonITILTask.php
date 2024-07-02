@@ -50,6 +50,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use VobjectConverterTrait;
     use ITILSubItemRights;
 
+   // From CommonDBTM
+    public $auto_message_on_action = false;
+
     public static function getItilObjectItemType()
     {
         return str_replace('Task', '', static::class);
