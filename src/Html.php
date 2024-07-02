@@ -2148,6 +2148,7 @@ HTML;
      * @return void
      */
     public static function zeroSecurityIframedHeader(
+        string $title = "",
         string $sector = "none",
         string $item = "none",
         string $option = ""
@@ -2160,7 +2161,7 @@ HTML;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader('', $sector, $item, $option, true, true);
+        self::includeHeader($title, $sector, $item, $option, true, true);
         echo "<body class='iframed'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>";
