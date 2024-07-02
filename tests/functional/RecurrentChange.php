@@ -36,7 +36,7 @@
 namespace tests\units;
 
 /* Test for inc/recurrentchange.class.php */
-class RecurrentChange extends CommonITILRecurrent
+class RecurrentChange extends \CommonITILRecurrentTestCase
 {
     protected function getChildClass()
     {

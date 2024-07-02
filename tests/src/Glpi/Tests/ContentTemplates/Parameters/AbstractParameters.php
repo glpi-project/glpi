@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\ContentTemplates\Parameters;
+namespace Glpi\Tests\ContentTemplates\Parameters;
 
 use DbTestCase;
 use Glpi\ContentTemplates\TemplateManager;

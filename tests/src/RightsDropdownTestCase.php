@@ -33,16 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
-
-use Change;
-use Generator;
-use Group;
-use Profile;
-use Ticket;
-use User;
-
-abstract class AbstractRightsDropdown extends \GLPITestCase
+abstract class RightsDropdownTestCase extends \GLPITestCase
 {
     protected function testGetPostedIdsProvider(): Generator
     {

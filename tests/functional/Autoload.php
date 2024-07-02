@@ -37,8 +37,6 @@ namespace tests\units;
 
 use DbTestCase;
 
-require_once __DIR__ . '/../Autoload.php';
-
 /* Test for inc/autoload.function.php */
 
 class Autoload extends DbTestCase

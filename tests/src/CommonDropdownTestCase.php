@@ -33,13 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
-
-use DbTestCase;
-
-/* Test for inc/commondropdown.class.php */
-
-abstract class CommonDropdown extends DbTestCase
+abstract class CommonDropdownTestCase extends DbTestCase
 {
     /**
      * Get object class name
