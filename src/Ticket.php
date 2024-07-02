@@ -363,7 +363,7 @@ class Ticket extends CommonITILObject
         $canAddFollowup = Session::haveRightsOr(
             'followup',
             [
-                ITILFollowup::ADDALLTICKET,
+                ITILFollowup::ADDALLITEM,
                 ITILFollowup::ADDMYTICKET,
                 ITILFollowup::ADDGROUPTICKET,
             ]
@@ -2067,7 +2067,7 @@ class Ticket extends CommonITILObject
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
             && $this->isUser(CommonITILActor::OBSERVER, $user_id)
          )
-         || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLTICKET, $entity_id)
+         || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLITEM, $entity_id)
          || (
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDGROUPTICKET, $entity_id)
             && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)

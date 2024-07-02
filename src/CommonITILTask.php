@@ -48,22 +48,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use Glpi\Features\ParentStatus;
     use Glpi\Features\PlanningEvent;
     use VobjectConverterTrait;
-
-   // From CommonDBTM
-    public $auto_message_on_action = false;
-
-    const SEEPUBLIC       =    1;
-    const UPDATEMY        =    2;
-    const ADDMYTICKET     =    4;
-    const UPDATEALL       = 1024;
-   //   const NOTUSED      = 2048;
-    const ADDGROUPTICKET  = 2048;
-    const ADDALLITEM      = 4096;
-    const SEEPRIVATE      = 8192;
-    const ADD_AS_OBSERVER = 16384;
-    const ADD_AS_TECHNICIAN = 32768;
-
-
+    use ITILSubItemRights;
 
     public static function getItilObjectItemType()
     {

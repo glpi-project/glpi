@@ -990,7 +990,7 @@ abstract class CommonITILObject extends CommonDBTM
                 Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
                 && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
             )
-            || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
+            || Session::haveRight('followup', ITILFollowup::ADDALLITEM)
             || (
                 Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
                 && isset($_SESSION["glpigroups"])

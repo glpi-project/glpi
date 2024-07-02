@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,15 +34,17 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \Migration $migration
- */
+trait ITILSubItemRights
+{
+    const SEEPUBLIC = 1;
+    const UPDATEMY = 2;
+    const ADDMYTICKET = 4;
+    const UPDATEALL = 1024;
+    const ADDGROUPTICKET = 2048;
+    const ADDALLITEM = 4096;
+    const SEEPRIVATE = 8192;
+    const ADD_AS_OBSERVER = 16384;
+    const ADD_AS_TECHNICIAN = 32768;
 
-// new right values for task
-$migration->updateRight(
-    'task',
-    CommonITILTask::ADDMYTICKET | CommonITILTask::ADDGROUPTICKET | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
-    [
-        'ticket' => Ticket::OWN
-    ]
-);
+    public $auto_message_on_action = false;
+}
