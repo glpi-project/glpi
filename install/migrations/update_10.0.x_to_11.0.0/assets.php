@@ -68,8 +68,8 @@ SQL;
 } else {
     foreach (['profiles', 'translations'] as $field) {
         $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
-        $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
     }
+    $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [3, 4, 5, 6];
