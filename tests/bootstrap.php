@@ -40,15 +40,21 @@ use Glpi\Kernel\Kernel;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_ENVIRONMENT_TYPE', 'testing');
+function setEnv(string $name, mixed $value) {
+    $_ENV[$name] = $value;
+    $_SERVER[$name] = $value;
+    \putenv($name.'='.$value);
+}
+
+setenv('GLPI_ENVIRONMENT_TYPE', 'testing');
 
 ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
-define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
-define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
+setEnv('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
+setEnv('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
-define(
+setEnv(
     'GLPI_SERVERSIDE_URL_ALLOWLIST',
     [
         '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry

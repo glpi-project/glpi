@@ -35,7 +35,6 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Config\LegacyConfigurators\BaseConfig;
 use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
@@ -62,7 +61,6 @@ return static function (ContainerConfigurator $container): void {
      * ⚠ Here, ORDER of definition matters!
      */
 
-    $services->set(BaseConfig::class)->tag($tagName, ['priority' => 200]);
     $services->set(ProfilerStart::class)->tag($tagName, ['priority' => 180]);
     $services->set(SessionStart::class)->tag($tagName, ['priority' => 170]);
     $services->set(StandardIncludes::class)->tag($tagName, ['priority' => 160]);
