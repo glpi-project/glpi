@@ -47,11 +47,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final readonly class StatusController implements Controller
 {
     #[Route(
-        "/status.php{request_parameters}",
-        name: "glpi_status",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
+        "/status.php",
+        name: "glpi_status"
     )]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {

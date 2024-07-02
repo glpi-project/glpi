@@ -53,12 +53,9 @@ final readonly class IndexController implements Controller
     #[Route(
         [
             "base" => "/",
-            "legacy_index_file" => "/index.php{request_parameters}",
+            "legacy_index_file" => "/index.php",
         ],
-        name: "glpi_index",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
+        name: "glpi_index"
     )]
     public function __invoke(Request $request): Response
     {
