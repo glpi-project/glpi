@@ -1804,6 +1804,8 @@ HTML;
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 
+        self::displayMessageAfterRedirect();
+
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
             \Glpi\Debug\Profiler::getInstance()->stopAll();
             (new Glpi\Debug\Toolbar())->show();
@@ -2052,7 +2054,6 @@ HTML;
 
         self::includeHeader($title, $sector, $item, $option); // Body
         echo "<body class='" . ($in_modal ? "in_modal" : "") . "'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
     }
 
@@ -2085,7 +2086,6 @@ HTML;
 
         self::includeHeader('', $sector, $item, $option, true, true);
         echo "<body class='iframed'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>";
     }
 
@@ -2105,6 +2105,7 @@ HTML;
 
        // Print foot
         self::loadJavascript();
+        self::displayMessageAfterRedirect();
         echo "</body></html>";
     }
 
