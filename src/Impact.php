@@ -1257,29 +1257,31 @@ JS);
     /**
      * Check if the icon path is valid, if not return a fallback path
      *
-     * @param string $icon_path
+     * @param ?string $icon_path
      * @return string
      */
-    private static function checkIcon(string $icon_path): string
+    private static function checkIcon(?string $icon_path): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        // Special case for images returned dynamicly
-        if (str_contains($icon_path, ".php")) {
-            return $icon_path;
-        }
+        if ($icon_path !== null) {
+            // Special case for images returned dynamicly
+            if (str_contains($icon_path, ".php")) {
+                return $icon_path;
+            }
 
-        // Check if icon exist on the filesystem
-        if (str_starts_with($icon_path, 'pics/')) {
-            $file_path = GLPI_ROOT . "/$icon_path";
-            $icon_path = $CFG_GLPI['root_doc'] . "/$icon_path";
-        } else {
-            $file_path = GLPI_PICTURE_DIR . "/$icon_path";
-            $icon_path = Toolbox::getPictureUrl($icon_path, false);
-        }
-        if ($icon_path !== null && file_exists($file_path) && is_file($file_path)) {
-            return $icon_path;
+            // Check if icon exist on the filesystem
+            if (str_starts_with($icon_path, 'pics/')) {
+                $file_path = GLPI_ROOT . "/$icon_path";
+                $icon_path = $CFG_GLPI['root_doc'] . "/$icon_path";
+            } else {
+                $file_path = GLPI_PICTURE_DIR . "/$icon_path";
+                $icon_path = Toolbox::getPictureUrl($icon_path, false);
+            }
+            if ($icon_path !== null && file_exists($file_path) && is_file($file_path)) {
+                return $icon_path;
+            }
         }
 
         // Fallback "default" icon
