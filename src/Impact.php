@@ -1026,7 +1026,7 @@ JS);
             $icon = self::checkIcon($icon);
 
             echo '<div class="impact-side-filter-itemtypes-item">';
-            echo '<h4><img class="impact-side-icon" src="' . $CFG_GLPI['root_doc'] . '/' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
+            echo '<h4><img class="impact-side-icon" src="' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
             echo "<span>" . $itemtype::getTypeName() . "</span></h4>";
             echo '</div>'; // impact-side-filter-itemtypes-item
         }
@@ -1257,20 +1257,31 @@ JS);
     /**
      * Check if the icon path is valid, if not return a fallback path
      *
-     * @param string $icon_path
+     * @param ?string $icon_path
      * @return string
      */
-    private static function checkIcon(string $icon_path): string
+    private static function checkIcon(?string $icon_path): string
     {
-        // Special case for images returned dynamicly
-        if (str_contains($icon_path, ".php")) {
-            return $icon_path;
-        }
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        // Check if icon exist on the filesystem
-        $file_path = GLPI_ROOT . "/$icon_path";
-        if (file_exists($file_path) && is_file($file_path)) {
-            return $icon_path;
+        if ($icon_path !== null) {
+            // Special case for images returned dynamicly
+            if (str_contains($icon_path, ".php")) {
+                return $icon_path;
+            }
+
+            // Check if icon exist on the filesystem
+            if (str_starts_with($icon_path, 'pics/')) {
+                $file_path = GLPI_ROOT . "/$icon_path";
+                $icon_path = $CFG_GLPI['root_doc'] . "/$icon_path";
+            } else {
+                $file_path = GLPI_PICTURE_DIR . "/$icon_path";
+                $icon_path = Toolbox::getPictureUrl($icon_path, false);
+            }
+            if ($icon_path !== null && file_exists($file_path) && is_file($file_path)) {
+                return $icon_path;
+            }
         }
 
         // Fallback "default" icon
@@ -1306,7 +1317,7 @@ JS);
         $new_node = [
             'id'          => $key,
             'label'       => $item->getFriendlyName(),
-            'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
+            'image'       => $image_name,
             'ITILObjects' => $item->getITILTickets(true),
         ];
 
@@ -1732,20 +1743,18 @@ JS);
     public static function getEnabledItemtypes(): array
     {
         // Get configured values
-        $conf = Config::getConfigurationValues('core');
+        $enabled_itemtypes = json_decode(Config::getConfigurationValue('core', self::CONF_ENABLED), true) ?? [];
 
-        if (!isset($conf[self::CONF_ENABLED])) {
+        if (!count($enabled_itemtypes)) {
             return [];
         }
 
-        $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
-
         // Remove any forbidden values
-        return array_filter($enabled, static function ($itemtype) {
+        return array_filter($enabled_itemtypes, static function ($itemtype) {
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
-            return isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+            return array_key_exists($itemtype, $CFG_GLPI['impact_asset_types']);
         });
     }
 
