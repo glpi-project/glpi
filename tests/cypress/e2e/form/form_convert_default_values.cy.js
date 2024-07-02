@@ -51,13 +51,13 @@ describe('Convert default value form', () => {
 
     it('test convert default value between short text and email types', () => {
         // Check if current sub type is "Text"
-        cy.findByRole('combobox', { name: 'Question sub type' }).should('have.value', 'Glpi\\Form\\QuestionType\\QuestionTypeShortText');
+        cy.findByRole('combobox', { name: 'Text' }).should('exist');
 
         // Set defaut value
         cy.findByRole('textbox', { name: 'Default value' }).type('Default value for short text');
 
         // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Question sub type' }).select('Emails');
+        cy.findByRole('combobox', { name: 'Text' }).select('Emails');
 
         // Check if default value has been converted
         cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'Default value for short text');
@@ -65,13 +65,13 @@ describe('Convert default value form', () => {
 
     it('test convert default value between email and short text types', () => {
         // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Question sub type' }).select('Emails');
+        cy.findByRole('combobox', { name: 'Text' }).select('Emails');
 
         // Set defaut value
         cy.findByRole('textbox', { name: 'Default value' }).type('Default value for short text');
 
         // Change sub type to "Text"
-        cy.findByRole('combobox', { name: 'Question sub type' }).select('Text');
+        cy.findByRole('combobox', { name: 'Emails' }).select('Text');
 
         // Check if default value has been converted
         cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'Defaultvalueforshorttext');
@@ -79,13 +79,13 @@ describe('Convert default value form', () => {
 
     it('test convert default value between short text and long text types', () => {
         // Check if current sub type is "Text"
-        cy.findByRole('combobox', { name: 'Question sub type' }).should('have.value', 'Glpi\\Form\\QuestionType\\QuestionTypeShortText');
+        cy.findByRole('combobox', { name: 'Text' }).should('exist');
 
         // Set defaut value
         cy.findByRole('textbox', { name: 'Default value' }).type('Default value for short text');
 
         // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Question type' }).select('Long answer');
+        cy.findByRole('combobox', { name: 'Short answer' }).select('Long answer');
 
         // Check if default value has been converted
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
@@ -97,7 +97,7 @@ describe('Convert default value form', () => {
 
     it('test convert default value between long text and short text types', () => {
         // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Question type' }).select('Long answer');
+        cy.findByRole('combobox', { name: 'Short answer' }).select('Long answer');
 
         // Set defaut value
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
@@ -112,10 +112,10 @@ describe('Convert default value form', () => {
         });
 
         // Change type to "Text"
-        cy.findByRole('combobox', { name: 'Question type' }).select('Short answer');
+        cy.findByRole('combobox', { name: 'Long answer' }).select('Short answer');
 
         // Check if the current sub type is "Text"
-        cy.findByRole('combobox', { name: 'Question sub type' }).should('have.value', 'Glpi\\Form\\QuestionType\\QuestionTypeShortText');
+        cy.findByRole('combobox', { name: 'Text' }).should('exist');
 
         // Check if default value has been converted
         cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'Default value for short text');
