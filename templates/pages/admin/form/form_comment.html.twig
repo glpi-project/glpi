@@ -49,10 +49,11 @@
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
 >
-    <div
+    <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-comment-details
         class="card"
+        aria-label="{{ __("Comment details") }}"
     >
         <div
             class="card-status-start bg-primary"
@@ -104,6 +105,7 @@
                     __('Description'),
                     base_field_options|merge({
                         'placeholder': __('Add a description...'),
+                        'aria_label': __("Comment description"),
                         'enable_richtext': true,
                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
                         'editor_height': "0",
@@ -156,7 +158,7 @@
             name="rank"
             value="{{ comment is not null ? comment.fields.rank : 0 }}"
         />
-    </div>
+    </section>
     <div data-glpi-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,
