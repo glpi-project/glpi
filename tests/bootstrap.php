@@ -88,6 +88,13 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
+// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
+if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
+    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
+}
+
+loadDataset();
+
 // Errors/exceptions that are not explicitely validated by `$this->error()` or `$this->exception` asserter will already make test fails.
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
@@ -97,10 +104,3 @@ ErrorHandler::getInstance()->disableOutput();
 // validated by `$this->has*LogRecord*()` asserters, otherwise it will make make test fails.
 set_error_handler(null);
 set_exception_handler(null);
-
-// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
-}
-
-loadDataset();
