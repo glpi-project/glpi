@@ -98,7 +98,7 @@ jobs:
   tests:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
+    name: Test on PHP ${{ matrix.php-version }}/${{ matrix.db-image }} ${{ (matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || github.event_name != 'schedule' || !(github.event_name == 'workflow_dispatch' || endsWith(github.ref, '/bugfixes') || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags')))) && ' (skipped)' || ''}}
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
