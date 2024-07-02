@@ -42,9 +42,11 @@
             <div class="modal-status bg-danger"></div>
             <div
                 class="modal-body text-center py-4">
-                <i class="fa-2x ti ti-alert-triangle mb-2 text-danger"></i>
-                <h3>{{ _x('button', 'Are you sure?') }}</h3>
-                <div class="text-muted">{{ __('By uninstalling the "%s" plugin you will lose all the data of the plugin.')|format(plugin_name) }}</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
+                <h3>{{ title|default(_x('button', 'Are you sure?')) }}</h3>
+                <div class="text-muted">
+                    {{ content|raw }}
+                </div>
             </div>
             <div class="modal-footer">
                 <div class="w-100">
@@ -55,7 +57,7 @@
                             </a>
                         </div>
                         <div class="col">
-                            {{ uninstall_btn|raw }}
+                            {{ confirm_btn|raw }}
                         </div>
                     </div>
                 </div>

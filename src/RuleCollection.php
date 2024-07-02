@@ -575,7 +575,7 @@ TWIG, $twig_params);
                        const sort_detail = e.detail;
                        const new_index = sort_detail.destination.index;
                        const old_index = sort_detail.origin.index;
-        
+
                        $.post(CFG_GLPI['root_doc'] + '/ajax/rule.php', {
                           'action': 'move_rule',
                           'rule_id': sort_detail.item.dataset.id,
@@ -583,7 +583,7 @@ TWIG, $twig_params);
                           'sort_action': (old_index > new_index) ? 'before' : 'after',
                           'ref_id': sort_detail.destination.itemsBeforeUpdate[new_index].dataset.id,
                        });
-        
+
                        displayAjaxMessageAfterRedirect();
                     });
                 });
@@ -598,10 +598,11 @@ HTML;
 
         $twig_params = [
             'rule_class' => $rule::class,
-            'can_reset' => $rule instanceof Rule && $rule::hasDefaultRules(),
+            'can_reset' => $rule instanceof Rule && $rule::hasDefaultRules() && Config::canUpdate()
+                && Session::getActiveEntity() === 0 && Session::getIsActiveEntityRecursive(),
             'can_replay' => $this->can_replay_rules,
             'reset_label' => __('Reset rules'),
-            'reset_warning' => __('Rules will be erased and recreated from defaults. Are you sure?'),
+            'reset_warning' => __('Rules will be erased and recreated from defaults. All existing rules will be lost.'),
             'test_label' => __('Test rules engine'),
             'replay_label' => __('Replay the dictionary rules'),
             'test_url' => $url . "/front/rulesengine.test.php?sub_type=" . $rule::class . "&condition={$p['condition']}"
@@ -610,27 +611,34 @@ HTML;
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class="d-flex justify-content-center">
                 {% if can_reset %}
-                    <button type="button" class="btn btn-primary mx-1" name="reset_rules">{{ reset_label }}</button>
+                    {% set open_btn %}
+                        <button type="button" class="btn btn-ghost-danger mx-1" data-bs-toggle="modal" data-bs-target="#reset_rules">
+                            {{ reset_label }}
+                        </button>
+                    {% endset %}
+
+                    {% set reset_btn %}
+                        <a class="btn btn-danger w-100" role="button" href="{{ rule_class|itemtype_search_path }}?reinit=true&subtype={{ rule_class }}">
+                            {{ reset_label }}
+                        </a>
+                    {% endset %}
+
+                    {% set content %}
+                        <p>{{ reset_warning }}</p>
+                    {% endset %}
+
+                    {{ include('components/danger_modal.html.twig', {
+                        'open_btn': open_btn,
+                        'modal_id': 'reset_rules',
+                        'confirm_btn': reset_btn,
+                        'content': content
+                    }) }}
                 {% endif %}
                 <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest">{{ test_label }}</button>
                 {% do call('Ajax::createIframeModalWindow', ['allruletest', test_url, {title: test_label}]) %}
                 {% if can_replay %}
                     <a class="btn btn-primary mx-1" role="button" href="{{ rule_class|itemtype_search_path }}?replay_rule=replay_rule">{{ replay_label }}</a>
                 {% endif %}
-
-                <script>
-                    $(() => {
-                        $('button[name="reset_rules"]').on('click', () => {
-                            glpi_confirm({
-                                title: '{{ reset_label|e('js') }}',
-                                message: '{{ reset_warning|e('js') }}',
-                                confirm_callback: () => {
-                                    window.location.href = '{{ rule_class|itemtype_search_path|e('js') }}?reinit=true&subtype={{ rule_class|e('js') }}';
-                                }
-                            });
-                        });
-                    });
-                </script>
             </div>
 TWIG, $twig_params);
 
