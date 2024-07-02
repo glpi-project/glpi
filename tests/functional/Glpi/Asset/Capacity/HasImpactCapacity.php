@@ -180,7 +180,7 @@ class HasImpactCapacity extends DbTestCase
     {
         yield [
             'target_classname' => ImpactItem::class,
-            'expected' => '%d impact graphs attached to %d assets'
+            'expected' => '%d impact relations involving %d assets'
         ];
     }
 }

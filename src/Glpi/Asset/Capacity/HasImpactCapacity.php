@@ -39,6 +39,7 @@ use CommonGLPI;
 use Config;
 use Impact;
 use ImpactItem;
+use ImpactRelation;
 
 class HasImpactCapacity extends AbstractCapacity
 {
@@ -52,19 +53,29 @@ class HasImpactCapacity extends AbstractCapacity
         return Impact::getIcon();
     }
 
+    private function countImpactRelations(string $classname): int
+    {
+        return countElementsInTable(ImpactRelation::getTable(), [
+            'OR' => [
+                'itemtype_source' => $classname,
+                'itemtype_impacted' => $classname
+            ]
+        ]);
+    }
+
     public function isUsed(string $classname): bool
     {
         //NOTE: This doesn't consider cases where assets exist inside graphs on other asset types. Maybe there is no good solution since it involves scanning every graph.
         return parent::isUsed($classname)
-            && countElementsInTable(ImpactItem::getTable(), ['itemtype' => $classname]) > 0;
+            && $this->countImpactRelations($classname) > 0;
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
-        $impact_count = countElementsInTable(ImpactItem::getTable(), ['itemtype' => $classname]);
+        $impact_count = $this->countImpactRelations($classname);
         $asset_count = $this->countAssets($classname);
 
-        return sprintf(__('%1$s impact graphs attached to %2$s assets'), $impact_count, $asset_count);
+        return sprintf(__('%1$s impact relations involving %2$s assets'), $impact_count, $asset_count);
     }
 
     public function onClassBootstrap(string $classname): void
