@@ -305,19 +305,6 @@ class ItemAntivirus extends CommonDBChild
         }
         $canedit = $asset->canEdit($ID);
 
-        if (
-            $canedit
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-        ) {
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='" . ItemAntivirus::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID&amp;withtemplate=" .
-                  $withtemplate . "'>";
-            echo __('Add an antivirus');
-            echo "</a></div>\n";
-        }
-
-        echo "<div class='spaced center table-responsive'>";
-
         $result = $DB->request(
             [
                 'FROM'  => ItemAntivirus::getTable(),
@@ -329,64 +316,53 @@ class ItemAntivirus extends CommonDBChild
             ]
         );
 
-        echo "<table class='tab_cadre_fixehov'>";
-        $colspan = 8;
-        echo "<tr class='noHover'><th colspan='$colspan'>" . self::getTypeName($result->numrows()) .
-           "</th></tr>";
+        TemplateRenderer::getInstance()->display('components/form/item_antivirus_item.html.twig', [
+            'canedit'               => ($canedit && !(!empty($withtemplate) && ($withtemplate == 2))),
+            'has_antivirus'         => ($result->numrows() != 0),
+            'antivirus_form_url'    => ItemAntivirus::getFormURL() .
+                                        "?itemtype=$itemtype&items_id=$ID&withtemplate=" . $withtemplate,
+        ]);
 
-        if ($result->numrows() != 0) {
-            $header = "<tr><th>" . __('Name') . "</th>";
-            $header .= "<th>" . __('Automatic inventory') . "</th>";
-            $header .= "<th>" . Manufacturer::getTypeName(1) . "</th>";
-            $header .= "<th>" . __('Antivirus version') . "</th>";
-            $header .= "<th>" . __('Signature database version') . "</th>";
-            $header .= "<th>" . __('Active') . "</th>";
-            $header .= "<th>" . __('Up to date') . "</th>";
-            $header .= "<th>" . __('Expiration date') . "</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(
-                __CLASS__,
-                //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $asset->getTypeName(1),
-                                            $asset->getName()
-                                        )
-            );
-
-            $antivirus = new self();
-            foreach ($result as $data) {
-                 $antivirus->getFromDB($data['id']);
-                 echo "<tr class='tab_bg_2'>";
-                 echo "<td>" . $antivirus->getLink() . "</td>";
-                 echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
-                 echo "<td>";
-                if ($data['manufacturers_id']) {
-                    echo Dropdown::getDropdownName(
-                        'glpi_manufacturers',
-                        $data['manufacturers_id']
-                    ) . "</td>";
-                } else {
-                    echo "</td>";
-                }
-                echo "<td>" . $data['antivirus_version'] . "</td>";
-                echo "<td>" . $data['signature_version'] . "</td>";
-                echo "<td>" . Dropdown::getYesNo($data['is_active']) . "</td>";
-                echo "<td>" . Dropdown::getYesNo($data['is_uptodate']) . "</td>";
-                echo "<td>" . Html::convDate($data['date_expiration']) . "</td>";
-                echo "</tr>";
-                Session::addToNavigateListItems(__CLASS__, $data['id']);
-            }
-            echo $header;
-        } else {
-            echo "<tr class='tab_bg_2'><th colspan='$colspan'>" . __('No item found') . "</th></tr>";
+        $antivirus = new self();
+        $entries = [];
+        foreach ($result as $data) {
+            $antivirus->getFromDB($data['id']);
+            $manufacturer = new Manufacturer();
+            $manufacturer->getFromDB($data['manufacturers_id']);
+            $entries[] = [
+                'name'          => $antivirus->getLink(),
+                'is_dynamic'    => Dropdown::getYesNo($data['is_active']),
+                'manufacturers_id' => $manufacturer->getLink(),
+                'antivirus_version' => $data['antivirus_version'],
+                'signature_version' => $data['signature_version'],
+                'is_active'     => Dropdown::getYesNo($data['is_active']),
+                'is_uptodate'   => Dropdown::getYesNo($data['is_uptodate']),
+                'date_expiration' => Html::convDate($data['date_expiration']),
+            ];
         }
-
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'is_dynamic' => __('Automatic inventory'),
+                'manufacturers_id' => Manufacturer::getTypeName(1),
+                'antivirus_version' => __('Antivirus version'),
+                'signature_version' => __('Signature database version'),
+                'is_active' => __('Active'),
+                'is_uptodate' => __('Up to date'),
+                'date_expiration' => __('Expiration date'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'manufacturers_id' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+        ]);
     }
 
     public function prepareInputForAdd($input)
