@@ -80,18 +80,23 @@ jobs:
         run: |
           docker compose exec -T app .github/actions/init_build.sh
       - name: "PHP lint"
+        if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_php-lint.sh
       - name: "Twig lint"
+        if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_twig-lint.sh
       - name: "JS lint"
+        if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_js-lint.sh
       - name: "SCSS lint"
+        if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_scss-lint.sh
       - name: "Misc lint"
+        if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_misc-lint.sh
 
@@ -157,42 +162,42 @@ jobs:
         run: |
           docker compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_install.sh
       - name: "Update DB tests (from 0.80, not using utf8mb4)"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-0.80-db.sh
           docker compose exec -T app .github/actions/test_update-from-older-version.sh
       - name: "Update DB tests (from 9.5, using utf8mb4)"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
       - name: "Functional tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-functional.sh
       - name: "Cache tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-cache.sh
       - name: "LDAP tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-imap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "Javascript tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_javascript.sh
