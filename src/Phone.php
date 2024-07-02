@@ -485,8 +485,6 @@ class Phone extends CommonDBTM
 
         $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
-
         $tab = array_merge($tab, Item_RemoteManagement::rawSearchOptionsToAdd(self::class));
 
         return $tab;

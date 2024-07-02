@@ -391,11 +391,6 @@ class Socket extends CommonDBChild
         $tab = [];
 
         $tab[] = [
-            'id'                 => 'socket',
-            'name'               => Socket::getTypeName(0)
-        ];
-
-        $tab[] = [
             'id'                 => '1310',
             'table'              => Socket::getTable(),
             'field'              => 'name',

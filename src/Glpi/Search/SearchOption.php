@@ -37,6 +37,7 @@ namespace Glpi\Search;
 
 use Change;
 use CommonDBTM;
+use Glpi\Socket;
 use Problem;
 use Ticket;
 
@@ -321,6 +322,11 @@ final class SearchOption implements \ArrayAccess
             if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
                 $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
                 $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
+            }
+
+            if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
+                $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
+                $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
             }
 
             if ($withplugins) {
