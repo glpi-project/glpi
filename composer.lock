@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91076f2dd274def18df82338b02e2aba",
+    "content-hash": "c88ef9dff8428460c0d22993c5e20d78",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -7936,16 +7936,16 @@
         },
         {
             "name": "phpstan/extension-installer",
-            "version": "1.3.1",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/extension-installer.git",
-                "reference": "f45734bfb9984c6c56c4486b71230355f066a58a"
+                "reference": "f6b87faf9fc7978eab2f7919a8760bc9f58f9203"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/f45734bfb9984c6c56c4486b71230355f066a58a",
-                "reference": "f45734bfb9984c6c56c4486b71230355f066a58a",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/f6b87faf9fc7978eab2f7919a8760bc9f58f9203",
+                "reference": "f6b87faf9fc7978eab2f7919a8760bc9f58f9203",
                 "shasum": ""
             },
             "require": {
@@ -7974,22 +7974,22 @@
             "description": "Composer plugin for automatic installation of PHPStan extensions",
             "support": {
                 "issues": "https://github.com/phpstan/extension-installer/issues",
-                "source": "https://github.com/phpstan/extension-installer/tree/1.3.1"
+                "source": "https://github.com/phpstan/extension-installer/tree/1.4.1"
             },
-            "time": "2023-05-24T08:59:17+00:00"
+            "time": "2024-06-10T08:20:49+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.3",
+            "version": "1.11.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e64220a05c1209fc856d58e789c3b7a32c0bb9a5"
+                "reference": "490f0ae1c92b082f154681d7849aee776a7c1443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e64220a05c1209fc856d58e789c3b7a32c0bb9a5",
-                "reference": "e64220a05c1209fc856d58e789c3b7a32c0bb9a5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/490f0ae1c92b082f154681d7849aee776a7c1443",
+                "reference": "490f0ae1c92b082f154681d7849aee776a7c1443",
                 "shasum": ""
             },
             "require": {
@@ -8034,7 +8034,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-31T13:53:37+00:00"
+            "time": "2024-06-17T15:10:54+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

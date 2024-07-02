@@ -318,6 +318,19 @@ class Config extends CommonDBTM
             }
         }
 
+        // Prevent some input values to be saved in DB
+        $values_to_filter = [
+            '_dbslave_status',
+            '_dbreplicate_dbhost',
+            '_dbreplicate_dbuser',
+            '_dbreplicate_dbpassword',
+            '_dbreplicate_dbdefault'
+        ];
+
+        $input = array_filter($input, function ($key) use ($values_to_filter) {
+            return !in_array($key, $values_to_filter);
+        }, ARRAY_FILTER_USE_KEY);
+
         $this->setConfigurationValues('core', $input);
 
         return false;
@@ -2090,7 +2103,17 @@ class Config extends CommonDBTM
             $newvalue = $oldvalue = '********';
         }
         $oldvalue = $name . ($context !== 'core' ? ' (' . $context . ') ' : ' ') . $oldvalue;
-        Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
+
+        if (in_array($name, NotificationMailingSetting::getRelatedConfigKeys(), true)) {
+            // Specific case for email notification settings
+            Log::history(
+                1,
+                NotificationMailingSetting::class,
+                [1, $oldvalue, $newvalue]
+            );
+        } else {
+            Log::constructHistory($this, ['value' => $oldvalue], ['value' => $newvalue]);
+        }
     }
 
     /**

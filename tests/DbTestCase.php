@@ -87,9 +87,8 @@ class DbTestCase extends \GLPITestCase
      */
     protected function logOut()
     {
-        $ctime = $_SESSION['glpi_currenttime'];
         \Session::destroy();
-        $_SESSION['glpi_currenttime'] = $ctime;
+        \Session::start();
     }
 
     /**
@@ -120,7 +119,7 @@ class DbTestCase extends \GLPITestCase
     {
         $this->integer($id)->isGreaterThan($object instanceof Entity ? -1 : 0);
         $this->boolean($object->getFromDB($id))->isTrue();
-        $this->variable($object->getField('id'))->isEqualTo($id);
+        $this->variable($object->fields['id'])->isEqualTo($id);
 
         if (count($input)) {
             foreach ($input as $k => $v) {

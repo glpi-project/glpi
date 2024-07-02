@@ -661,10 +661,13 @@ class Html
             $url = parse_url($url_in);
 
             if (isset($url['query'])) {
+                $parameters = [];
                 parse_str($url['query'], $parameters);
                 unset($parameters['forcetab'], $parameters['tab_params']);
                 $new_query = http_build_query($parameters);
-                return str_replace($url['query'], $new_query, $url_in);
+                $url_out = str_replace($url['query'], $new_query, $url_in);
+                $url_out = rtrim($url_out, '?'); // remove `?` when there is no parameters
+                return $url_out;
             }
 
             return $url_in;
@@ -1215,6 +1218,19 @@ HTML;
         } else {
             $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
         }
+
+        // Add specific meta tags for plugins
+        $custom_header_tags = [];
+        if (isset($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG]) && count($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG])) {
+            foreach ($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG] as $plugin => $plugin_header_tags) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                array_push($custom_header_tags, ...$plugin_header_tags);
+            }
+        }
+        $tpl_vars['custom_header_tags'] = $custom_header_tags;
+
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
