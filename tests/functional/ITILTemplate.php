@@ -229,7 +229,6 @@ class ITILTemplate extends DbTestCase
                     180 => 'Internal time to resolve',
                     185 => 'Internal time to own',
                     193 => 'Contract',
-                    14 => 'Type',
                 ]
             ], [
                 'Change',

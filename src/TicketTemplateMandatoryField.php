@@ -46,6 +46,6 @@ class TicketTemplateMandatoryField extends ITILTemplateMandatoryField
     {
         return [
             14 => 14, // ticket type has no empty option
-        ];
+        ] + parent::getExcludedFields();
     }
 }
