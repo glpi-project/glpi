@@ -702,24 +702,6 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
     /**
-     * Get Ticket validation approver link
-     *
-     * @param string    $itemtype
-     * @param integer   $items_id
-     **/
-    public static function getApprover($itemtype, $items_id)
-    {
-        if (empty($items_id)) {
-            return null;
-        }
-
-        $approver = $itemtype::getById($items_id);
-
-        return $approver->getLink();
-    }
-
-
-    /**
      * Get item validation demands count for a user
      *
      * @param $users_id  integer  User ID

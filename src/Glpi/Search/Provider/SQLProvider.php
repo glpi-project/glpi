@@ -5671,10 +5671,10 @@ final class SQLProvider implements SearchProviderInterface
                             $bgcolor = \TicketValidation::getStatusColor($data[$ID][$k]['name']);
                             $content = "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
                             if (isset($data[$ID][$k]['itemtype_target']) && isset($data[$ID][$k]['items_id_target'])) {
-                                $user = \TicketValidation::getApprover(
-                                    $data[$ID][$k]['itemtype_target'],
-                                    (int) $data[$ID][$k]['items_id_target']
-                                );
+                                $user = '';
+                                if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
+                                    $user = $approver->getLink();
+                                }
                                 $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
                             }
                             $out    .= (empty($out) ? '' : \Search::LBBR) . $content;
@@ -5690,11 +5690,11 @@ final class SQLProvider implements SearchProviderInterface
                             $bgcolor = \ChangeValidation::getStatusColor($data[$ID][$k]['name']);
                             $content = "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
                             if (isset($data[$ID][$k]['itemtype_target']) && isset($data[$ID][$k]['items_id_target'])) {
-                                $user = \ChangeValidation::getApprover(
-                                    $data[$ID][$k]['itemtype_target'],
-                                    (int) $data[$ID][$k]['items_id_target']
-                                );
-                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
+                                $user = '';
+                                if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
+                                    $user = $approver->getLink();
+                                }
+                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user ?? null . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
                             }
                             $out    .= (empty($out) ? '' : \Search::LBBR) . $content;
                         }
