@@ -40,10 +40,15 @@ use Glpi\Kernel\Kernel;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-function setEnv(string $name, mixed $value) {
+function setEnv(string $name, mixed $value): void {
     $_ENV[$name] = $value;
     $_SERVER[$name] = $value;
-    \putenv($name . '=' . $value);
+    if (is_scalar($value)) {
+        \putenv($name . '=' . $value);
+    }
+    if (!defined($name)) {
+        define($name, $value);
+    }
 }
 
 setenv('GLPI_ENVIRONMENT_TYPE', 'testing');
