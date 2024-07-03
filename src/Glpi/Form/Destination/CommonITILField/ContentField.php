@@ -37,14 +37,14 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\ConfigFieldInterface;
+use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Override;
 
-class ContentField implements ConfigFieldInterface
+class ContentField extends AbstractConfigField
 {
     #[Override]
     public function getKey(): string
@@ -108,6 +108,12 @@ TWIG;
         );
 
         return $input;
+    }
+
+    #[Override]
+    public function supportAutoConfiguration(): bool
+    {
+        return true;
     }
 
     #[Override]
