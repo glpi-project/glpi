@@ -1744,6 +1744,16 @@ Run 'getMassiveActions' endpoint to see available keys.
 
 No ids supplied when trying to run a massive action.
 
+### ERROR_FIELD_NOT_FOUND
+
+The field specified as the key for the searchText parameter does not exist.
+This field must refer to a column in the table corresponding to the element in the query.
+
+### ERROR_UNKNOWN
+
+An unknown error has occurred.
+This may be due to an unexpected condition encountered by the server or an issue that does not fit into any of the predefined error categories.
+Check the server logs for more details or contact the support team.
 
 ## Servers configuration
 

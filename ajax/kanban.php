@@ -143,16 +143,34 @@ if (($_POST['action'] ?? null) === 'update') {
     ]);
 } else if (($_POST['action'] ?? null) === 'add_item') {
     $checkParams(['inputs']);
-    $item = new $itemtype();
 
-    $result = $item->add($_POST['inputs']);
+    $item = getItemForItemtype($itemtype);
+    if (!$item) {
+        http_response_code(400);
+        return;
+    }
+
+    $inputs = $_POST['inputs'];
+
+    if (!$item->can(-1, CREATE, $inputs)) {
+        http_response_code(403);
+        return;
+    }
+
+    $result = $item->add($inputs);
     if (!$result) {
         http_response_code(400);
         return;
     }
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
-    $item = new $itemtype();
+
+    $item = getItemForItemtype($itemtype);
+    if (!$item) {
+        http_response_code(400);
+        return;
+    }
+
     $inputs = $_POST['inputs'];
 
     $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
@@ -161,7 +179,10 @@ if (($_POST['action'] ?? null) === 'update') {
         foreach ($bulk_item_list as $item_entry) {
             $item_entry = trim($item_entry);
             if (!empty($item_entry)) {
-                $item->add($inputs + ['name' => $item_entry, 'content' => '']);
+                $item_input = $inputs + ['name' => $item_entry, 'content' => ''];
+                if ($item->can(-1, CREATE, $item_input)) {
+                    $item->add($item_input);
+                }
             }
         }
     }

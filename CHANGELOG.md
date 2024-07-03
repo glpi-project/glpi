@@ -433,7 +433,28 @@ The present file will list all changes made to the project; according to the
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
 
 
-## [10.0.16] unreleased
+## [10.0.17] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.16] 2024-07-03
 
 ### Added
 
