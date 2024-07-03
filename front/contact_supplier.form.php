@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 $contactsupplier = new Contact_Supplier();
 if (isset($_POST["add"])) {

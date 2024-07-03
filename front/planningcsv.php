@@ -36,8 +36,6 @@
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\PlanningCsv;
 
-include('../inc/includes.php');
-
 Session::checkRight("planning", READ);
 
 $users_id = null;

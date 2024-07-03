@@ -35,8 +35,6 @@
 
 use Glpi\Form\Form;
 
-include('../../inc/includes.php');
-
 // Read parameters
 $id = $_REQUEST['id'] ?? null;
 

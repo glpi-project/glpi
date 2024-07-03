@@ -65,8 +65,6 @@ if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
     }
 }
 
-include('../inc/includes.php');
-
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
     echo "\t" . sprintf(__('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);

@@ -33,7 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $item_device = new Item_DeviceSimcard();
 include(GLPI_ROOT . "/front/item_device.common.form.php");

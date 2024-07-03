@@ -41,8 +41,6 @@ use Glpi\Application\ErrorHandler;
  */
 global $CFG_GLPI, $TRANSLATE;
 
-include('../inc/includes.php');
-
 session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");

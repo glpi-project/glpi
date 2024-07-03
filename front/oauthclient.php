@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight(OAuthClient::$rightname, READ);
 
 Html::header(OAuthClient::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "oauthclient");

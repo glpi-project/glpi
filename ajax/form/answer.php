@@ -38,8 +38,6 @@ use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 /**
  * AJAX endpoint used to submit answers for a given form.
  */

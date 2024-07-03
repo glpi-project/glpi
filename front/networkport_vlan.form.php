@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 $npv = new NetworkPort_Vlan();
 if (isset($_POST["add"])) {

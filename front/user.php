@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("user", READ);
 
 Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $ios = new \Item_OperatingSystem();

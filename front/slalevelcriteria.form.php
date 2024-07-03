@@ -36,9 +36,6 @@
 /**
  * @since 0.85
  */
-include('../inc/includes.php');
-
-
 $criteria = new SlaLevelCriteria();
 
 if (isset($_POST["add"])) {

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
     Session::checkLoginUser();
 }

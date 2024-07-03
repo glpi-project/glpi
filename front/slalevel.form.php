@@ -35,9 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
-
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 if (isset($_POST['update'])) {
     $validator_substitute = new ValidatorSubstitute();
     $validator_substitute->check(-1, UPDATE, $_POST);

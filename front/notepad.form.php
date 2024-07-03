@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 $note = new Notepad();
 
 if (isset($_POST['add'])) {

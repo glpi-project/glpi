@@ -43,8 +43,6 @@ use Glpi\Stat\Data\Location\StatDataSolved;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

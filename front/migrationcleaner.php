@@ -44,8 +44,6 @@
  */
 global $CFG_GLPI, $DB;
 
-include('../inc/includes.php');
-
 Session::checkSeveralRightsOr([
     "networking" => UPDATE,
     "internet"   => UPDATE

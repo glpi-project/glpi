@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
 if (!isset($_REQUEST["action"])) {

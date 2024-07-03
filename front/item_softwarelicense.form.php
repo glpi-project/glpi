@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("software", UPDATE);
 $isl = new Item_SoftwareLicense();
 

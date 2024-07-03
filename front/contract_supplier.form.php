@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 $contractsupplier = new Contract_Supplier();
 if (isset($_POST["add"])) {

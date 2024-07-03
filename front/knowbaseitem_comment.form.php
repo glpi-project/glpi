@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 $comment = new KnowbaseItem_Comment();

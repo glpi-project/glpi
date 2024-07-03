@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 $item = new Itil_Project();

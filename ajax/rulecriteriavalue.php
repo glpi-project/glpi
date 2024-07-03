@@ -35,7 +35,6 @@
 
 // Direct access to file
 if (strstr($_SERVER['PHP_SELF'], "rulecriteriavalue.php")) {
-    include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 } else if (!defined('GLPI_ROOT')) {

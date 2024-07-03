@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $rulecollection = new RuleDictionnaryNetworkEquipmentModelCollection();
 
 include(GLPI_ROOT . "/front/rule.common.form.php");

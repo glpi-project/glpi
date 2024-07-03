@@ -35,8 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
-
 Session::checkSeveralRightsOr(['rule_dictionnary_dropdown' => READ,
     'rule_dictionnary_software' => READ
 ]);

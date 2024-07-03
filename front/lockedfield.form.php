@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("locked_field", CREATE);
 
 if (!isset($_GET["id"])) {

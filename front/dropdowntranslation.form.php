@@ -37,8 +37,6 @@
  * @since 0.85
  */
 
-include('../inc/includes.php');
-
 $translation = new DropdownTranslation();
 if (isset($_POST['add'])) {
     $translation->add($_POST);

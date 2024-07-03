@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("device", READ);
 
 Html::header(_n('Component', 'Components', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "commondevice");

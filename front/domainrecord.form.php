@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 if (empty($_GET["id"])) {

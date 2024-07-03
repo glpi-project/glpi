@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
     throw new \RuntimeException(
         'Missing or incorrect item device type called!'

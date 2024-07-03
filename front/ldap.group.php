@@ -35,8 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
-
 $group = new Group();
 $group->checkGlobal(UPDATE);
 Session::checkRight('user', User::UPDATEAUTHENT);

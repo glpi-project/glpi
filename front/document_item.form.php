@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $document_item   = new Document_Item();

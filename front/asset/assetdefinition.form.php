@@ -40,8 +40,6 @@
 use Glpi\Asset\AssetDefinition;
 use Glpi\Event;
 
-include('../../inc/includes.php');
-
 $asset_definition = new AssetDefinition();
 
 if (isset($_POST['add'])) {

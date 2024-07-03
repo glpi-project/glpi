@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRightsOr(Phone::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');

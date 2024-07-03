@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("unmanaged", READ);
 
 Html::header(Unmanaged::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "unmanaged");

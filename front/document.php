@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("document", READ);
 
 Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "document");

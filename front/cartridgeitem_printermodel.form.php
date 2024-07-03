@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 $cipm = new CartridgeItem_PrinterModel();
 if (isset($_POST["add"])) {
     $cipm->check(-1, CREATE, $_POST);

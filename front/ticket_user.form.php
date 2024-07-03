@@ -39,7 +39,6 @@ use Glpi\Event;
 global $CFG_GLPI;
 
 if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
 }
 
 $link = new Ticket_User();

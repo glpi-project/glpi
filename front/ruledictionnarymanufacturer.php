@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $rulecollection = new RuleDictionnaryManufacturerCollection();
 
 include(GLPI_ROOT . "/front/rule.common.php");

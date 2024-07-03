@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 if (isset($_POST['reinit_network'])) {
     if (
         Session::haveRight('internet', UPDATE)

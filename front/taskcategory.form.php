@@ -33,7 +33,5 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $dropdown = new TaskCategory();
 include(GLPI_ROOT . "/front/dropdown.common.form.php");

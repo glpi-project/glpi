@@ -34,7 +34,6 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
 }
 
 Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,

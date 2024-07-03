@@ -37,8 +37,6 @@
  * Form to edit Cron Task
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("config", READ);
 
 $crontask = new CronTask();

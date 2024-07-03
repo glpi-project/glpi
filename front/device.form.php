@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 if (
     (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype']))
     && (!isset($_POST['itemtype']) || !class_exists($_POST['itemtype']))

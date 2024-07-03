@@ -39,8 +39,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }

@@ -37,8 +37,6 @@ use Glpi\Form\Form;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 // The user must be able to respond to forms.
 Session::checkRight(Form::$rightname, UPDATE);
 

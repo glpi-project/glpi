@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 NotificationTarget::updateTargets($_POST);
