@@ -1,0 +1,12 @@
+<phpunit
+    bootstrap="phpunit/bootstrap.php"
+    backupStaticAttributes="true"
+    colors="true"
+>
+  <testsuites>
+    <testsuite name="Unit">
+       <directory suffix=".php">phpunit/functional/</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
+

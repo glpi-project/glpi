@@ -48,3 +48,6 @@ phpunit.xml
 /inc/downstream.php
 /docker-compose.override.yaml
 /.devcontainer/docker-compose.override.yaml
+/.phpunit.result.cache
+/phpunit/files/
+/phpunit/config
