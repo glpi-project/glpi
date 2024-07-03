@@ -37,77 +37,13 @@ if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__FILE__, 2));
 }
 
-// Check if dependencies are up to date
-$needrun  = false;
+// Check the resources state before trying to autoload GLPI init logic.
+// It must be done here as this check must be done even when the init logic
+// cannot be executed due to missing dependencies.
+require_once GLPI_ROOT . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(GLPI_ROOT))->checkResources();
 
-// composer dependencies
-$autoload = GLPI_ROOT . '/vendor/autoload.php';
-if (!file_exists($autoload)) {
-    $needrun = true;
-} else if (file_exists(GLPI_ROOT . '/composer.lock')) {
-    if (!file_exists(GLPI_ROOT . '/.composer.hash')) {
-       /* First time */
-        $needrun = true;
-    } else if (sha1_file(GLPI_ROOT . '/composer.lock') != file_get_contents(GLPI_ROOT . '/.composer.hash')) {
-       /* update */
-        $needrun = true;
-    }
-}
-
-// node dependencies
-if (!file_exists(GLPI_ROOT . '/public/lib')) {
-    $needrun = true;
-} else if (file_exists(GLPI_ROOT . '/package-lock.json')) {
-    if (!file_exists(GLPI_ROOT . '/.package.hash')) {
-       /* First time */
-        $needrun = true;
-    } else if (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
-       /* update */
-        $needrun = true;
-    }
-}
-
-if ($needrun) {
-    $deps_install_msg = 'Application dependencies are not up to date.' . PHP_EOL
-      . 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
-    if (isCommandLine()) {
-        echo $deps_install_msg;
-    } else {
-        echo nl2br($deps_install_msg);
-    }
-    die(1);
-}
-
-// Check if locales are compiled.
-$need_mo_compile = false;
-$locales_files = scandir(GLPI_ROOT . '/locales');
-$po_files = preg_grep('/\.po$/', $locales_files);
-$mo_files = preg_grep('/\.mo$/', $locales_files);
-if (count($mo_files) < count($po_files)) {
-    $need_mo_compile = true;
-} else if (file_exists(GLPI_ROOT . '/locales/glpi.pot')) {
-   // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
-    foreach ($po_files as $po_file) {
-        $po_file = GLPI_ROOT . '/locales/' . $po_file;
-        $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
-        if (!file_exists($mo_file) || filemtime($mo_file) < filemtime($po_file)) {
-            $need_mo_compile = true;
-            break; // No need to scan the whole dir
-        }
-    }
-}
-if ($need_mo_compile) {
-    $mo_compile_msg = 'Application locales have to be compiled.' . PHP_EOL
-      . 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
-    if (isCommandLine()) {
-        echo $mo_compile_msg;
-    } else {
-        echo nl2br($mo_compile_msg);
-    }
-    die(1);
-}
-
-require_once $autoload;
+require_once GLPI_ROOT . '/vendor/autoload.php';
 
 // Check if web root is configured correctly
 if (!isCommandLine()) {
