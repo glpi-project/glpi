@@ -66,7 +66,7 @@ final class Kernel extends BaseKernel
         $glpi->initLogger();
         $glpi->initErrorHandler();
 
-        $env = GLPI_ENVIRONMENT_TYPE;
+        $env = $env ?? GLPI_ENVIRONMENT_TYPE;
         parent::__construct($env, $env === 'development');
     }
 
