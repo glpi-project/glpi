@@ -11,7 +11,8 @@ vendor/bin/parallel-lint \
   --exclude ./vendor/ \
   .
 
-php -d memory_limit=1G vendor/bin/composer-require-checker check --config-file=.composer-require-checker.config.json
+curl https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar --output composer-require-checker.phar
+php -d memory_limit=1G composer-require-checker.phar check --config-file=.composer-require-checker.config.json
 
 touch ~/phpcs.cache
 vendor/bin/phpcs \
