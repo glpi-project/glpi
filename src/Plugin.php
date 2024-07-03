@@ -2570,8 +2570,8 @@ class Plugin extends CommonDBTM
                                 'class="btn btn-danger w-100"'
                             ),
                             'content' => sprintf(
-                                __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                                $plugin->getField('name')
+                                __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                                htmlspecialchars($plugin->getField('name'))
                             )
                         ]);
                     } else {

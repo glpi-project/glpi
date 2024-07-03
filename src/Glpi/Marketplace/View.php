@@ -896,9 +896,8 @@ HTML;
                                        data-bs-dismiss="modal">
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
-                'content' => sprintf(
-                    __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                    $plugin_inst->getField('name')
+                                __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                                htmlspecialchars($plugin_inst->getField('name'))
                 )
             ]);
 
