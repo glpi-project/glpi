@@ -48,7 +48,7 @@ describe('Form preview', () => {
 
     function checkPreviewButton() {
         // Check the preview button
-        cy.findByRole('button', { 'name': 'Save and preview', timeout: 10000 }).should('exist');
+        cy.findByRole('button', { 'name': 'Save and preview' }).should('exist');
 
         // Save the form and check the preview button
         cy.findByRole('button', { 'name': 'Save' }).click({ force: true });
@@ -86,6 +86,10 @@ describe('Form preview', () => {
     it('Test form preview unsaved changes handling in sections', () => {
         // Add a new question
         cy.findByRole('button', { 'name': 'Add a new question' }).click({ force: true });
+        checkPreviewButton();
+
+        // Focus question
+        cy.findByRole('textbox', { 'name': 'Question name' }).click();
 
         // Add a new section
         cy.findByRole('button', { 'name': 'Add a new section' }).click({ force: true });
@@ -160,11 +164,11 @@ describe('Form preview', () => {
         check();
 
         // Change the question type
-        cy.findByRole('combobox', { 'name': 'Question sub type' }).select('Emails');
+        cy.findByRole('combobox', { 'name': 'Text' }).select('Emails');
         check();
 
         // Change the category question type
-        cy.findByRole('combobox', { 'name': 'Question type' }).select('Long answer');
+        cy.findByRole('combobox', { 'name': 'Short answer' }).select('Long answer');
         check();
     });
 
