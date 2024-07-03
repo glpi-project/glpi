@@ -296,8 +296,8 @@ class ItemVirtualMachine extends CommonDBChild
                 $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
 
                 $entries[] = [
-                    'name'                      => $vm->getLink() ?? NOT_AVAILABLE,
-                    'comment'                   => $virtualmachine['comment'] ?? NOT_AVAILABLE,
+                    'name'                      => $vm->getLink(),
+                    'comment'                   => $virtualmachine['comment'],
                     'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
                     'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
                     'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
