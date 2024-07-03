@@ -205,15 +205,9 @@ class ItemVirtualMachine extends CommonDBChild
                     'has_host' => true,
                 ]);
                 $computer = new Computer();
-                $entries = $columns = [];
+                $entries = [];
                 foreach ($hosts as $host) {
                     if ($computer->can($host['items_id'], READ)) {
-                        $columns = [
-                            'name' => __('Name'),
-                            'serial' => __('Serial number'),
-                            'comment' => __('Comments'),
-                            'entity' => _n('Entity', 'Entities', 1)
-                        ];
                         $entries[] = [
                             'name' => $computer->getLink($host['items_id']),
                             'serial' => $computer->fields['serial'],
@@ -221,12 +215,10 @@ class ItemVirtualMachine extends CommonDBChild
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
                         ];
                     } else {
-                        $columns = [
-                            'name' => __('Name'),
-                            'entity' => _n('Entity', 'Entities', 1)
-                        ];
                         $entries[] = [
                             'name' => $computer->fields['name'],
+                            'serial' => NOT_AVAILABLE,
+                            'comment' => NOT_AVAILABLE,
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
                         ];
                     }
@@ -236,7 +228,12 @@ class ItemVirtualMachine extends CommonDBChild
                     'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
-                    'columns' => $columns,
+                    'columns' => [
+                        'name' => __('Name'),
+                        'serial' => __('Serial number'),
+                        'comment' => __('Comments'),
+                        'entity' => _n('Entity', 'Entities', 1)
+                    ],
                     'formatters' => [
                         'name' => 'raw_html'
                     ],
