@@ -2561,7 +2561,7 @@ class Plugin extends CommonDBTM
                                 title="{$uninstall_label}">
                                 <span class="sr-only">{$uninstall_label}</span>
                             </span></a>
-                        TWIG;
+TWIG;
 
                         $output .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                             'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
