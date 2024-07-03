@@ -40,7 +40,8 @@ use Glpi\Kernel\Kernel;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-function setEnv(string $name, mixed $value): void {
+function setEnv(string $name, mixed $value): void
+{
     $_ENV[$name] = $value;
     $_SERVER[$name] = $value;
     if (is_scalar($value)) {
