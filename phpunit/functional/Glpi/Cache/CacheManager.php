@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Cache;
 
+use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -141,7 +142,10 @@ class CacheManager extends \GLPITestCase
                 'dsn'                => 'whoot://invalid',
                 'options'            => [],
                 'expected_set_error' => 'Invalid DSN: "whoot://invalid".',
-                'expected_get_error' => sprintf('Invalid configuration for cache context "%s".', $context),
+                'expected_get_error' => [
+                    'level' => Logger::WARNING,
+                    'message' => sprintf('Invalid configuration for cache context "%s".', $context)
+                ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
 
@@ -151,7 +155,10 @@ class CacheManager extends \GLPITestCase
                 'dsn'                => ['redis://cache1.glpi-project.org', 'redis://cache2.glpi-project.org'],
                 'options'            => [],
                 'expected_set_error' => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
-                'expected_get_error' => sprintf('Invalid configuration for cache context "%s".', $context),
+                'expected_get_error' => [
+                    'level' => Logger::WARNING,
+                    'message' => sprintf('Invalid configuration for cache context "%s".', $context)
+                ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
 
@@ -206,7 +213,10 @@ class CacheManager extends \GLPITestCase
                 'dsn'                => 'whoot://invalid',
                 'options'            => [],
                 'expected_set_error' => sprintf('Invalid or non configurable context: "%s".', $context),
-                'expected_get_error' => sprintf('Invalid or non configurable context: "%s".', $context),
+                'expected_get_error' => [
+                    'level' => Logger::NOTICE,
+                    'message' => sprintf('Invalid or non configurable context: "%s".', $context)
+                ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
         }
@@ -220,7 +230,7 @@ class CacheManager extends \GLPITestCase
         $dsn,
         array $options,
         ?string $expected_set_error,
-        ?string $expected_get_error,
+        ?array $expected_get_error,
         ?string $expected_adapter
     ): void {
 
@@ -319,7 +329,7 @@ class CacheManager extends \GLPITestCase
         $dsn,
         array $options,
         ?string $expected_set_error,
-        ?string $expected_get_error,
+        ?array $expected_get_error,
         ?string $expected_adapter
     ): void {
 
@@ -349,8 +359,8 @@ class CacheManager extends \GLPITestCase
         );
 
         if ($expected_get_error !== null) {
-            $this->expectExceptionMessage($expected_get_error);
             $this->assertInstanceOf(\Glpi\Cache\SimpleCache::class, $instance->getCacheInstance($context));
+            $this->hasPhpLogRecordThatContains($expected_get_error['message'], $expected_get_error['level']);
             return;
         }
 

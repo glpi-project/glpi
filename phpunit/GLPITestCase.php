@@ -215,7 +215,7 @@ class GLPITestCase extends TestCase
 
         $records = array_map(
             function ($record) {
-                // Keep only usefull info to display a comprehensive dump
+                // Keep only useful info to display a comprehensive dump
                 return [
                     'level'   => $record['level'],
                     'message' => $record['message'],

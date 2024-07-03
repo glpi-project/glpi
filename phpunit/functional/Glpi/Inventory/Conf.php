@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Monolog\Logger;
+
 /**
  * Test class for src/Glpi/Inventory/conf.class.php
  */
@@ -106,8 +108,8 @@ class Conf extends \GLPITestCase
     public function testErrorGetter()
     {
         $conf = new \Glpi\Inventory\Conf();
-        $this->expectExceptionMessage('Property doesNotExists does not exists!');
         $this->assertNull($conf->doesNotExists);
+        $this->hasPhpLogRecordThatContains('Property doesNotExists does not exists!', Logger::WARNING);
         $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
     }
 }
