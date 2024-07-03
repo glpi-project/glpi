@@ -81,7 +81,7 @@ class OperatingSystem extends AbstractInventoryAsset
                     'install_date'                      => '2022-01-01',
                 ]
             ]
-        ] + self::fusionProvider();
+        ] + self::commonProvider();
     }
 
     /**
@@ -362,7 +362,7 @@ class OperatingSystem extends AbstractInventoryAsset
                     }'
             ];
         }
-        return $data  + self::fusionProvider();
+        return $data  + self::commonProvider();
     }
 
     /**
@@ -455,37 +455,9 @@ class OperatingSystem extends AbstractInventoryAsset
         return $xml;
     }
 
-    public static function fusionProvider(): array
+    public static function commonProvider(): array
     {
         $data = [
-       //          array(
-       //              array(
-       //                  'ARCH'           => '',
-       //                  'FULL_NAME'      => '',
-       //                  'KERNEL_NAME'    => '',
-       //                  'KERNEL_VERSION' => '',
-       //                  'NAME'           => '',
-       //                  'SERVICE_PACK'   => ''
-       //              ),
-       //              array(
-       //                  'arch'        => '',
-       //                  'kernname'    => '',
-       //                  'kernversion' => '',
-       //                  'os'          => '',
-       //                  'osversion'   => '',
-       //                  'servicepack' => '',
-       //                  'edition'     => ''
-       //              ),
-       //              array(
-       //                  'arch'        => '',
-       //                  'kernname'    => '',
-       //                  'kernversion' => '',
-       //                  'os'          => '',
-       //                  'osversion'   => '',
-       //                  'servicepack' => '',
-       //                  'edition'     => ''
-       //              )
-       //          ),
             [
                 [
                     'ARCH'           => '64-bit',
@@ -594,88 +566,6 @@ class OperatingSystem extends AbstractInventoryAsset
                     'edition'     => ''
                 ]
             ],
-          /*[
-              [
-                  'ARCH'           => '32-bit',
-                  'FULL_NAME'      => 'Microsoft Windows Embedded Standard',
-                  'KERNEL_NAME'    => 'MSWin32',
-                  'KERNEL_VERSION' => '6.1.7601',
-                  'NAME'           => 'Windows',
-                  'SERVICE_PACK'   => 'Service Pack 1'
-              ],
-              [
-                  'arch'        => '32-bit',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '6.1.7601',
-                  'os'          => 'Windows',
-                  'osversion'   => '',
-                  'servicepack' => 'Service Pack 1',
-                  'edition'     => 'Embedded Standard'
-              ],
-              [
-                  'arch'        => '32-bit',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '6.1.7601',
-                  'os'          => 'Microsoft Windows Embedded Standard',
-                  'osversion'   => '',
-                  'servicepack' => 'Service Pack 1',
-                  'edition'     => ''
-              ]
-          ]/*, //5
-          [
-              [
-                  'FULL_NAME'      => 'MicrosoftÂ® Windows ServerÂ® 2008 Standard',
-                  'KERNEL_NAME'    => 'MSWin32',
-                  'KERNEL_VERSION' => '6.0.6002',
-                  'NAME'           => 'Windows',
-                  'SERVICE_PACK'   => 'Service Pack 2'
-              ],
-              [
-                  'arch'        => '',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '6.0.6002',
-                  'os'          => 'Windows',
-                  'osversion'   => '2008',
-                  'servicepack' => 'Service Pack 2',
-                  'edition'     => 'ServerÂ® Standard'
-              ],
-              [
-                  'arch'        => '',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '6.0.6002',
-                  'os'          => 'MicrosoftÂ® Windows ServerÂ® 2008 Standard',
-                  'osversion'   => '',
-                  'servicepack' => 'Service Pack 2',
-                  'edition'     => ''
-              ]
-          ],
-          [
-              [
-                  'FULL_NAME'      => 'Microsoft(R) Windows(R) Server 2003, Standard Edition',
-                  'KERNEL_NAME'    => 'MSWin32',
-                  'KERNEL_VERSION' => '5.2.3790',
-                  'NAME'           => 'Windows',
-                  'SERVICE_PACK'   => 'Service Pack 2'
-              ],
-              [
-                  'arch'        => '',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '5.2.3790',
-                  'os'          => 'Windows',
-                  'osversion'   => '2003',
-                  'servicepack' => 'Service Pack 2',
-                  'edition'     => 'Server Standard Edition'
-              ],
-              [
-                  'arch'        => '',
-                  'kernname'    => 'MSWin32',
-                  'kernversion' => '5.2.3790',
-                  'os'          => 'Microsoft(R) Windows(R) Server 2003, Standard Edition',
-                  'osversion'   => '',
-                  'servicepack' => 'Service Pack 2',
-                  'edition'     => ''
-              ]
-          ],*/
             [
                 [
                     'FULL_NAME'      => 'Microsoft Windows Server 2012 R2 Datacenter',
