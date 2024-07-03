@@ -62,9 +62,21 @@ final class CriteriaFilter extends CommonDBChild
             return false;
         }
 
+        // Count number of filter criteria (with nested sub-criteria)
+        $nb = 0;
+        if (($filter = self::getForItem($item))) {
+            // important: array_walk_recursive iterates only over non-array values
+            // so we need to count only when we we found the 'field' key
+            array_walk_recursive($filter->fields['search_criteria'], function ($value, $key) use (&$nb) {
+                if ($key === 'field') {
+                    $nb++;
+                }
+            });
+        }
+
         return self::createTabEntry(
-            self::getTypeName(Session::getPluralNumber()),
-            self::getForItem($item) ? 1 : 0, // Help user spot that a filter exist for this item
+            self::getTypeName($nb),
+            $nb,
             $item::getType(),
             'ti ti-adjustments-horizontal'
         );
