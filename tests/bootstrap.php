@@ -43,7 +43,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 function setEnv(string $name, mixed $value) {
     $_ENV[$name] = $value;
     $_SERVER[$name] = $value;
-    \putenv($name.'='.$value);
+    \putenv($name . '=' . $value);
 }
 
 setenv('GLPI_ENVIRONMENT_TYPE', 'testing');
