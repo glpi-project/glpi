@@ -39,9 +39,6 @@
 
 use Glpi\Event;
 
-if (!defined('GLPI_ROOT')) {
-}
-
 $link = new Problem_Supplier();
 
 Session::checkLoginUser();

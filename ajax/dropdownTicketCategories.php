@@ -36,8 +36,6 @@
 if (strpos($_SERVER['PHP_SELF'], "dropdownTicketCategories.php")) {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
 }
 
 $opt = ['entity' => Session::getMatchingActiveEntities($_POST['entity_restrict'])];

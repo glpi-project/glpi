@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-}
-
 Session::checkCentralAccess();
 
 if (isset($_POST["sub_type"])) {

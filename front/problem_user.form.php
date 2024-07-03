@@ -42,9 +42,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-if (!defined('GLPI_ROOT')) {
-}
-
 $link = new Problem_User();
 $item = new Problem();
 

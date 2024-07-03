@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Socket;
 

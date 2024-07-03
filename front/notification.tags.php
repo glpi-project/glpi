@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-}
-
 Html::popHeader(__('List of available tags'), $_SERVER['PHP_SELF']);
 
 if (isset($_GET["sub_type"])) {

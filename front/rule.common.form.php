@@ -40,10 +40,6 @@
 
 use Glpi\Event;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 $rule = $rulecollection->getRuleClass();
 $rulecollection->checkGlobal(READ);
 

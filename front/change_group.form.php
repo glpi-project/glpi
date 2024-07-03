@@ -42,9 +42,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-if (!defined('GLPI_ROOT')) {
-}
-
 $link = new Change_Group();
 $item = new Change();
 

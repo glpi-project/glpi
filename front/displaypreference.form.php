@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-}
-
 Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
     DisplayPreference::GENERAL
 ]);

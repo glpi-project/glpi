@@ -38,9 +38,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-if (!defined('GLPI_ROOT')) {
-}
-
 $link = new Ticket_User();
 $item = new Ticket();
 
