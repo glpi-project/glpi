@@ -701,7 +701,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return $style;
     }
 
-
     /**
      * Get item validation demands count for a user
      *
@@ -1575,6 +1574,21 @@ abstract class CommonITILValidation extends CommonDBChild
                         ]
                     ]
                 ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '198',
+            'table'              => static::getTable(),
+            'field'              => 'status',
+            'datatype'           => 'specific',
+            'name'               => __('Approval status by users'),
+            'searchtype'         => 'equals',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'additionalfields'   => ['itemtype_target', 'items_id_target'],
+            'joinparams'         => [
+                'jointype'           => 'child'
             ]
         ];
 
