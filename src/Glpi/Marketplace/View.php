@@ -884,13 +884,16 @@ HTML;
                 }
             }
 
+            $uninstall_label = __s("Uninstall");
+            $buttons .= <<<HTML
+                <button data-bs-toggle="modal"
+                        data-bs-target="#uninstallModal{$plugin_inst->getField('directory')}"
+                        title="{$uninstall_label}">
+                    <i class="ti ti-folder-x"></i>
+                </button>
+            HTML;
             $buttons .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                 'modal_id' => 'uninstallModal' . $plugin_inst->getField('directory'),
-                'open_btn' => '<button data-bs-toggle="modal"
-                                       data-bs-target="#uninstallModal' . $plugin_inst->getField('directory') . '"
-                                       title="' . __s('Uninstall') . '">
-                                   <i class="ti ti-folder-x"></i>
-                               </button>',
                 'confirm_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                        data-action="uninstall_plugin"
                                        data-bs-dismiss="modal">

@@ -611,11 +611,9 @@ HTML;
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class="d-flex justify-content-center">
                 {% if can_reset %}
-                    {% set open_btn %}
-                        <button type="button" class="btn btn-ghost-danger mx-1" data-bs-toggle="modal" data-bs-target="#reset_rules">
-                            {{ reset_label }}
-                        </button>
-                    {% endset %}
+                    <button type="button" class="btn btn-ghost-danger mx-1" data-bs-toggle="modal" data-bs-target="#reset_rules">
+                        {{ reset_label }}
+                    </button>
 
                     {% set reset_btn %}
                         <a class="btn btn-danger w-100" role="button" href="{{ rule_class|itemtype_search_path }}?reinit=true&subtype={{ rule_class }}">
@@ -623,15 +621,11 @@ HTML;
                         </a>
                     {% endset %}
 
-                    {% set content %}
-                        <p>{{ reset_warning }}</p>
-                    {% endset %}
-
                     {{ include('components/danger_modal.html.twig', {
                         'open_btn': open_btn,
                         'modal_id': 'reset_rules',
                         'confirm_btn': reset_btn,
-                        'content': content
+                        'content': reset_warning
                     }) }}
                 {% endif %}
                 <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest">{{ test_label }}</button>
