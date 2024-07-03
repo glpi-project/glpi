@@ -201,9 +201,7 @@ class ItemVirtualMachine extends CommonDBChild
             );
 
             if (!empty($hosts)) {
-                TemplateRenderer::getInstance()->display('components/form/item_virtualmachine.html.twig', [
-                    'has_host' => true,
-                ]);
+                echo '<h3 class="text-start">' . __s('List of hosts') . '</h3>';
                 $computer = new Computer();
                 $entries = [];
                 foreach ($hosts as $host) {
@@ -216,7 +214,7 @@ class ItemVirtualMachine extends CommonDBChild
                         ];
                     } else {
                         $entries[] = [
-                            'name' => $computer->fields['name'],
+                            'name' => htmlspecialchars($computer->fields['name']),
                             'serial' => NOT_AVAILABLE,
                             'comment' => NOT_AVAILABLE,
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
@@ -303,9 +301,9 @@ class ItemVirtualMachine extends CommonDBChild
                     'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
                     'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
                     'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
-                    'uuid'                      => $virtualmachine['uuid'] ?? NOT_AVAILABLE,
-                    'vcpu'                      => $virtualmachine['vcpu'] ?? NOT_AVAILABLE,
-                    'ram'                       => $virtualmachine['ram'] ?? NOT_AVAILABLE,
+                    'uuid'                      => $virtualmachine['uuid'],
+                    'vcpu'                      => $virtualmachine['vcpu'],
+                    'ram'                       => $virtualmachine['ram'],
                     'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE
                 ];
             }
