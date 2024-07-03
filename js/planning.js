@@ -880,7 +880,7 @@ var GLPIPlanning  = {
             && recurringDef.typeData.origOptions.dtstart !== start
         ) {
             let startDate = new Date(start);
-            let dtstart = recurringDef.typeData._dtstart ?? recurringDef.typeData.origOptions.dtstart;
+            let dtstart = recurringDef.typeData._dtstart || recurringDef.typeData.origOptions.dtstart;
             let originDate = new Date(dtstart);
 
             let hours = startDate.getHours();
