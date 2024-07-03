@@ -69,14 +69,14 @@
             } %}
         {% endif %}
 
-        <div data-glpi-itildestination-field>
+        <section data-glpi-itildestination-field aria-label="{{ field.getLabel() ~ " configuration" }}">
             {{ field.renderConfigForm(
                 form,
                 field.getValue(form, config),
                 item.formatConfigInputName(field.getKey()),
                 {'is_horizontal': false}|merge(extra_options)
             )|raw }}
-        </div>
+        </section>
     {% endfor %}
 
 </div>
