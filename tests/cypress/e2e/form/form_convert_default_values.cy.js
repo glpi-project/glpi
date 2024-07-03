@@ -96,6 +96,8 @@ describe('Convert default value form', () => {
     });
 
     it('test convert default value between long text and short text types', () => {
+        const default_value = 'This is a much longer default value for short text. It contains multiple lines and line breaks.\nLine 1\nLine 2\nLine 3';
+
         // Change sub type to "Emails"
         cy.findByRole('combobox', { name: 'Short answer' }).select('Long answer');
 
@@ -108,7 +110,7 @@ describe('Convert default value form', () => {
              */
             cy.findByLabelText("Default value")
                 .awaitTinyMCE()
-                .type('Default value for short text', { force : true });
+                .type(default_value, { force: true });
         });
 
         // Change type to "Text"
@@ -118,6 +120,6 @@ describe('Convert default value form', () => {
         cy.findByRole('combobox', { name: 'Text' }).should('exist');
 
         // Check if default value has been converted
-        cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'Default value for short text');
+        cy.findByRole('textbox', { name: 'Default value' }).should('have.value', default_value.split('\n')[0]);
     });
 });
