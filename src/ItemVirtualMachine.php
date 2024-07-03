@@ -288,7 +288,7 @@ class ItemVirtualMachine extends CommonDBChild
             foreach ($virtualmachines as $virtualmachine) {
                 $vm = new self();
                 if (!$vm->getFromDB($virtualmachine['id'])) {
-                    continue:
+                    continue;
                 }
 
                 $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
