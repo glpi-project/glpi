@@ -68,13 +68,13 @@ describe('Convert default value form', () => {
         cy.findByRole('combobox', { name: 'Text' }).select('Emails');
 
         // Set defaut value
-        cy.findByRole('textbox', { name: 'Default value' }).type('Default value for short text');
+        cy.findByRole('textbox', { name: 'Default value' }).type('default_email@test.fr');
 
         // Change sub type to "Text"
         cy.findByRole('combobox', { name: 'Emails' }).select('Text');
 
         // Check if default value has been converted
-        cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'Defaultvalueforshorttext');
+        cy.findByRole('textbox', { name: 'Default value' }).should('have.value', 'default_email@test.fr');
     });
 
     it('test convert default value between short text and long text types', () => {

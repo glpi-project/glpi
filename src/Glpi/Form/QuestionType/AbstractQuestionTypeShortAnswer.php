@@ -62,25 +62,18 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
 
                     return input.val();
                 },
-                "convertDefaultValue": function (question, old_type, value) {
-                    // Only accept string values
-                    if (typeof value !== 'string') {
-                        return '';
-                    }
-
-                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
-                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
-                    if (old_type === 'Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText') {
-                        // Create a temporary element to convert HTML to text
-                        const element = document.createElement('div');
-                        element.innerHTML = value;
-
-                        if (element.firstChild) {
-                            value = element.firstChild.textContent;
+                "converters": {
+                    "functions": {
+                        "transferInputValue": function (question, value) {
+                            return question.find('[data-glpi-form-editor-question-type-specific]')
+                                .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]')
+                                .val(value).val();
                         }
-                    }
-
-                    return input.val(value).val();
+                    },
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeShortText": "transferInputValue",
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeEmail": "transferInputValue",
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeNumber": "transferInputValue",
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText": "transferInputValue"
                 }
             }
         JS;

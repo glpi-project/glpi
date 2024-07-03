@@ -60,17 +60,26 @@ final class QuestionTypeLongText extends AbstractQuestionType
 
                     return '';
                 },
-                "convertDefaultValue": function (question, old_type, value) {
-                    // Only accept string values
-                    if (typeof value !== 'string') {
-                        return '';
-                    }
+                "converters": {
+                    "functions": {
+                        "transferTextAreaContent": function (question, value) {
+                            const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                                .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
 
-                    const textarea = question.find('[data-glpi-form-editor-question-type-specific]')
-                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
-                    textarea.val(value);
+                            // Check a temporary element to convert HTML to text
+                            const element = document.createElement('div');
+                            element.innerHTML = value;
 
-                    return textarea.val();
+                            if (element.firstChild) {
+                                value = element.firstChild.textContent;
+                            }
+
+                            return input.val(value).val();
+                        }
+                    },
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeShortText": "transferTextAreaContent",
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeEmail": "transferTextAreaContent",
+                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeNumber": "transferTextAreaContent"
                 }
             }
         JS;
