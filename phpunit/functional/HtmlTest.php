@@ -484,7 +484,7 @@ class HtmlTest extends \GLPITestCase
             ['file.min.css', 'attribute="one" ' . $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, $expected, \Html::css($dir . '/file.css', ['attribute' => 'one']));
+        $this->assertSame($expected, \Html::css($dir . '/file.css', ['attribute' => 'one']));
 
        //remove test files
         foreach ($fake_files as $fake_file) {
@@ -536,7 +536,7 @@ class HtmlTest extends \GLPITestCase
             'file.js',
             $base_expected
         );
-        $this->assertSame($expected, $expected, \Html::script($dir . '/file.js'));
+        $this->assertSame($expected, \Html::script($dir . '/file.js'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
        //expect original file
