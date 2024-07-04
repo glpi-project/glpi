@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,6 +31,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 class Item_RemoteManagement extends CommonDBChild
 {
@@ -121,83 +122,29 @@ class Item_RemoteManagement extends CommonDBChild
             !$item->getFromDB($ID)
             || !$item->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $item->canEdit($ID);
 
-        if (
-            $canedit
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-        ) {
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='" . self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&amp;withtemplate=" .
-                  $withtemplate . "'>";
-            echo __('Add a remote management');
-            echo "</a></div>\n";
-        }
-
-        echo "<div class='center'>";
-        $iterator = self::getFromItem($item);
-
-        $rand = mt_rand();
-        if ($canedit && count($iterator)) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams
-            = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], count($iterator)),
-                'container'
-                        => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "<table class='tab_cadre_fixehov'>";
-        $colspan = 9;
-        echo "<tr class='noHover'><th colspan='$colspan'>" . self::getTypeName(count($iterator)) .
-            "</th></tr>";
-
-        if (count($iterator)) {
-            $header = '<tr>';
-            $header .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header .= "</th>";
-            $header .= "<th>" . __('Remote ID') . "</th>";
-            $header .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-            $header .= "<th>" . __('Automatic inventory') . "</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(
-                __CLASS__,
-                //TRANS : %1$s is the itemtype name,
-                //        %2$s is the name of the item (used for headings of a list)
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $item::getTypeName(1),
-                    $item->getName()
-                )
-            );
-
+        $entries = [];
+        foreach (self::getFromItem($item) as $data) {
             $mgmt = new self();
-            foreach ($iterator as $data) {
-                $mgmt->getFromResultSet($data);
-                echo "<tr class='tab_bg_2'>";
-
-                echo "<td width='10'>";
-                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                echo "</td>";
-                echo "<td>" . $mgmt->getRemoteLink() . "</td>";
-                echo "<td>" . $mgmt->fields['type'] . "</td>";
-                echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
-                echo "</tr>";
-                Session::addToNavigateListItems(__CLASS__, $data['id']);
-            }
-            echo $header;
-        } else {
-            echo "<tr class='tab_bg_2'><th colspan='$colspan'>" . __('No item found') . "</th></tr>";
+            $mgmt->getFromResultSet($data);
+            $entries[] = [
+                'id'        => $mgmt->getID(),
+                'items_id'  => $mgmt->fields['items_id'],
+                'itemtype'  => self::getType(),
+                'remoteid'  => $mgmt->getRemoteLink(),
+                'type'      => $mgmt->fields['type'],
+                'comment'   => Dropdown::getYesNo($data['is_dynamic']),
+            ];
         }
 
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/form/item_remotemanagement_list.html.twig', [
+            'canedit'  => $canedit && !(!empty($withtemplate) && $withtemplate == 2),
+            'form_url' => self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&withtemplate=$withtemplate",
+            'entries'  => $entries,
+        ]);
     }
 
 
@@ -333,31 +280,6 @@ class Item_RemoteManagement extends CommonDBChild
             $item->getFromDB($options['items_id']);
         }
 
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='items_id' value='" . $options['items_id'] . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $options['itemtype'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>" . $item->getLink() . "</td>";
-        echo "<td>" . __('Automatic inventory') . "</td>";
-        echo "<td>";
-        if ($ID && $this->fields['is_dynamic']) {
-            echo __('Yes');
-        } else {
-            echo __('No');
-        }
-        echo "</td>";
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Remote ID') . "</td>";
-        echo "<td>";
-        echo Html::input('remoteid', ['value' => $this->fields['remoteid']]);
-        echo "</td><td>" . _n('Type', 'Types', 1) . "</td>";
         $types = [
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
@@ -366,21 +288,14 @@ class Item_RemoteManagement extends CommonDBChild
             self::SUPREMO => 'SupRemo',
             self::RUSTDESK => 'RustDesk',
         ];
-        echo "<td>";
-        echo Dropdown::showFromArray(
-            'type',
-            $types,
-            [
-                'value'   => $this->fields['type'],
-                'display' => false
-            ]
-        );
-        echo "</td></tr>";
 
-        $itemtype = $this->fields['itemtype'];
         $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
-        $this->showFormButtons($options);
 
+        TemplateRenderer::getInstance()->display('components/form/item_remotemanagement_form.html.twig', [
+            'parent_item'   => $item,
+            'item'          => $this,
+            'types'         => $types,
+        ]);
         return true;
     }
 
