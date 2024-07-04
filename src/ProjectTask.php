@@ -143,6 +143,25 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return false;
     }
 
+    public static function getMyTasksURL(bool $full)
+    {
+        return self::getSearchURL($full) . '?' . Toolbox::append_params([
+            'criteria' => [
+                [
+                    'field' => 87,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ],
+                [
+                    'link' => 'OR',
+                    'field' => 88,
+                    'searchtype' => 'equals',
+                    'value' => 'mygroups'
+                ]
+            ]
+        ]);
+    }
+
     public function cleanDBonPurge()
     {
         $this->deleteChildrenAndRelationsFromDb(
