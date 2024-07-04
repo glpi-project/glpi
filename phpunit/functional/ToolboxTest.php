@@ -1106,22 +1106,31 @@ class ToolboxTest extends DbTestCase
 
     public function testDeprecated()
     {
-        $this->expectExceptionMessage('Calling this function is deprecated');
         \Toolbox::deprecated('Calling this function is deprecated');
+        $this->hasPhpLogRecordThatContains(
+            'Calling this function is deprecated',
+            LogLevel::NOTICE
+        );
     }
 
     public function testDeprecatedPast()
     {
         // Test planned deprecation in the past
-        $this->expectExceptionMessage('Calling this function is deprecated');
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
+        $this->hasPhpLogRecordThatContains(
+            'Calling this function is deprecated',
+            LogLevel::NOTICE
+        );
     }
 
     public function testDeprecatedCurrent()
     {
         // Test planned deprecation in current version
-        $this->expectExceptionMessage('Calling this function is deprecated');
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+        $this->hasPhpLogRecordThatContains(
+            'Calling this function is deprecated',
+            LogLevel::NOTICE
+        );
     }
 
     public function testFutureDeprecated()
@@ -1323,11 +1332,15 @@ class ToolboxTest extends DbTestCase
      */
     public function testIsFloat($value, bool $expected, ?string $warning = null): void
     {
-        if (!is_null($warning)) {
-            $this->expectExceptionMessage($warning);
-        }
         $result = \Toolbox::isFloat($value);
         $this->assertEquals($expected, $result);
+        if (!is_null($warning)) {
+            $this->hasPhpLogRecordThatContains(
+                $warning,
+                LogLevel::WARNING
+            );
+        }
+
     }
 
     /**
@@ -1404,11 +1417,15 @@ class ToolboxTest extends DbTestCase
      */
     public function testGetDecimalNumbers($value, int $decimals, ?string $warning = null): void
     {
-        if (!is_null($warning)) {
-            $this->expectExceptionMessage($warning);
-        }
         $result = \Toolbox::getDecimalNumbers($value);
         $this->assertEquals($decimals, $result);
+        if (!is_null($warning)) {
+            $this->hasPhpLogRecordThatContains(
+                $warning,
+                LogLevel::WARNING
+            );
+        }
+
     }
 
     /**
