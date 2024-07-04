@@ -939,6 +939,7 @@ class ConfigTest extends DbTestCase
     public function testDetectRooDoc(): void
     {
         global $CFG_GLPI;
+        $bkp_root_doc = $CFG_GLPI['root_doc'];
 
         $uri_to_scriptname = [
             '/'                        => '/index.php',
@@ -962,6 +963,9 @@ class ConfigTest extends DbTestCase
                 $this->assertEquals($prefix, $CFG_GLPI['root_doc']);
             }
         }
+
+        //reset root_doc
+        $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
     public function testConfigLogNotEmpty()
