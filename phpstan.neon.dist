@@ -17,3 +17,17 @@ parameters:
         - '/Instantiated class XHProfRuns_Default not found/'
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
+
+# Copy and uncomment this content into a "phpstan.neon" file to add your own config values
+#
+## Mandatory include:
+#
+#includes:
+#    - phpstan.neon.dist
+#
+## Custom config values
+## Example: using more process that the default configuration
+#
+#parameters:
+#   parallel:
+#       maximumNumberOfProcesses: 8
