@@ -645,4 +645,22 @@ PLAINTEXT;
         // Check if a group with a project, assigned to a group project team, returns an empty array when $search_in_team is false
         $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()], false));
     }
+
+    public function testMyTasksURL()
+    {
+        $this->login('post-only', 'postonly');
+        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
+        $this->string(\Project::getAdditionalMenuContent()['project']['page'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
+
+        $this->login();
+        $this->boolean(\Project::getAdditionalMenuContent())->isFalse();
+
+        $menu_options = \Project::getAdditionalMenuOptions();
+        $this->string($menu_options['task']['page'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
+        $this->string($menu_options['task']['links']['search'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
+
+        $menu_links = \Project::getAdditionalMenuLinks();
+        $has_my_tasks_link = in_array(\ProjectTask::getMyTasksURL(false), $menu_links, true);
+        $this->boolean($has_my_tasks_link)->isTrue();
+    }
 }

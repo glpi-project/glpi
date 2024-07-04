@@ -77,6 +77,7 @@ The present file will list all changes made to the project; according to the
 - Warranty expiration alerts no longer trigger for deleted items.
 - New UI for searching for Ticket/Change/Problem solutions from the Knowledgebase.
 - Validations are only allowed on Tickets and Changes that are not solved or closed.
+- Searching project tasks in the legacy API is no longer restricted to only tasks the user is assigned to.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
