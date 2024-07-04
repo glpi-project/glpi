@@ -1398,7 +1398,6 @@ class CommonDBTMTest extends DbTestCase
                 Logger::WARNING
             );
         }
-
     }
 
     public function testCheckUnicity()
