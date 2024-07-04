@@ -803,6 +803,5 @@ class VirtualMachine extends AbstractInventoryAsset
             'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
             'states_id' => $inv_states_id
         ]));
-
     }
 }
