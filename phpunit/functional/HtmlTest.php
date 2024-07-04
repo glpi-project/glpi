@@ -688,7 +688,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($url, \Html::cleanParametersURL($url));
 
         $purl = $url . '?with=some&args=none';
-        $this->assertSame($url, \Html::cleanParametersURL($url));
+        $this->assertSame($url, \Html::cleanParametersURL($purl));
     }
 
     public function testDisplayMessageAfterRedirect()
