@@ -9,6 +9,8 @@
         "npm": ">= 8.19"
     },
     "dependencies": {
+        "@floating-ui/core": "^1.6.4",
+        "@floating-ui/dom": "^1.6.7",
         "@fontsource/inter": "^4.5.15",
         "@fortawesome/fontawesome-free": "^6.5.2",
         "@fullcalendar/bootstrap": "^4.4.2",
@@ -31,6 +33,7 @@
         "cytoscape-context-menus": "^4.0.0",
         "cytoscape-dagre": "^2.2.1",
         "cytoscape-grid-guide": "^2.3.0",
+        "cytoscape-popper": "^4.0.0",
         "diff-match-patch": "^1.0.4",
         "echarts": "^5.5.1",
         "fittext.js": "^1.2.0",
