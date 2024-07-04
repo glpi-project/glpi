@@ -622,7 +622,6 @@ HTML;
                     {% endset %}
 
                     {{ include('components/danger_modal.html.twig', {
-                        'open_btn': open_btn,
                         'modal_id': 'reset_rules',
                         'confirm_btn': reset_btn,
                         'content': reset_warning
