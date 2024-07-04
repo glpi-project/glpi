@@ -80,4 +80,16 @@ class AutoloadTest extends DbTestCase
     {
         $this->assertTrue(class_exists('Glpi\\Event'));
     }
+
+    public function testPluginAutoloading()
+    {
+        // PSR4 autoloader (registered during plugins initialization)
+        $this->assertTrue(class_exists('GlpiPlugin\\Tester\\MyPsr4Class'));
+
+        // Pseudo-PSR4 class with no namespace
+        $this->assertTrue(class_exists('PluginTesterMyPseudoPsr4Class'));
+
+        // Legacy `inc/*.class.php` files
+        $this->assertTrue(class_exists('PluginTesterMyLegacyClass'));
+    }
 }
