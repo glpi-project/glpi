@@ -43,24 +43,15 @@ define('GLPI_ENVIRONMENT_TYPE', 'testing');
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
-define('GLPI_ROOT', __DIR__ . '/../');
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
-
-define(
-    'GLPI_SERVERSIDE_URL_ALLOWLIST',
-    [
-        '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
-        '/^file:\/\/.*\.ics$/', // calendar mockups
-    ]
-);
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
 global $CFG_GLPI, $GLPI_CACHE;
 
-include(GLPI_ROOT . "/inc/based_config.php");
+include(__DIR__ . "/../inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
