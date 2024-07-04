@@ -638,6 +638,7 @@ class ConfigTest extends DbTestCase
     public function testDevicesInMenu()
     {
         global $CFG_GLPI, $DB;
+        $bkp_devices_in_menu = $CFG_GLPI['devices_in_menu'];
 
         $conf = new \Config();
         $this->assertSame(
@@ -662,6 +663,8 @@ class ConfigTest extends DbTestCase
             ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])],
             $res
         );
+
+        $CFG_GLPI['devices_in_menu'] = $bkp_devices_in_menu;
     }
 
     /**
