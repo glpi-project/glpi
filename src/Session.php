@@ -1803,6 +1803,10 @@ class Session
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
+        // Cannot impersonate if we don't have config right
+        if (!self::haveRight(Config::$rightname, UPDATE)) {
+            return false;
+        }
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
@@ -1810,11 +1814,6 @@ class Session
         ) {
             $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
-        }
-
-        // Cannot impersonate if we don't have config right
-        if (!self::haveRight(Config::$rightname, UPDATE)) {
-            return false;
         }
 
         // Cannot impersonate inactive user
