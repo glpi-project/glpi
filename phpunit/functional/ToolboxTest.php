@@ -1340,7 +1340,6 @@ class ToolboxTest extends DbTestCase
                 LogLevel::WARNING
             );
         }
-
     }
 
     /**
@@ -1425,7 +1424,6 @@ class ToolboxTest extends DbTestCase
                 LogLevel::WARNING
             );
         }
-
     }
 
     /**
