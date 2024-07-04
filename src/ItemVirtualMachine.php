@@ -190,8 +190,6 @@ class ItemVirtualMachine extends CommonDBChild
             return;
         }
 
-        echo "<div class='center'>";
-
         if (isset($asset->fields['uuid']) && ($asset->fields['uuid'] != '')) {
             $hosts = getAllDataFromTable(
                 self::getTable(),
@@ -203,44 +201,45 @@ class ItemVirtualMachine extends CommonDBChild
             );
 
             if (!empty($hosts)) {
-                echo "<table class='tab_cadre_fixehov'>";
-                echo  "<tr class='noHover'><th colspan='2' >" . __('List of hosts') . "</th></tr>";
-
-                $header = "<tr><th>" . __('Name') . "</th>";
-                $header .= "<th>" . Entity::getTypeName(1) . "</th>";
-                $header .= "</tr>";
-                echo $header;
-
+                echo '<h3 class="text-start">' . __s('List of hosts') . '</h3>';
                 $computer = new Computer();
+                $entries = [];
                 foreach ($hosts as $host) {
-                    $class = $host['is_deleted'] ? "deleted" : "";
-                    echo "<tr class='tab_bg_2 $class' >";
-                    echo "<td>";
-                    if ($computer->can($host['computers_id'], READ)) {
-                        echo "<a href='" . Computer::getFormURLWithID($computer->fields['id']) . "'>";
-                        echo $computer->fields['name'] . "</a>";
-                        $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $computer->fields['name'] .
-                             '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $computer->fields['serial'] .
-                             '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $computer->fields['comment'] .
-                             '</td></tr></table>';
-                        echo "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
+                    if ($computer->can($host['items_id'], READ)) {
+                        $entries[] = [
+                            'name' => $computer->getLink($host['items_id']),
+                            'serial' => $computer->fields['serial'],
+                            'comment' => $computer->fields['comment'],
+                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
+                        ];
                     } else {
-                        echo $computer->fields['name'];
+                        $entries[] = [
+                            'name' => htmlspecialchars($computer->fields['name']),
+                            'serial' => NOT_AVAILABLE,
+                            'comment' => NOT_AVAILABLE,
+                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
+                        ];
                     }
-                    echo "</td>";
-                    echo "<td>";
-                    echo Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']);
-                    echo "</td></tr>";
                 }
-                echo $header;
-                echo "</table>";
+                TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+                    'is_tab' => true,
+                    'nopager' => true,
+                    'nofilter' => true,
+                    'nosort' => true,
+                    'columns' => [
+                        'name' => __('Name'),
+                        'serial' => __('Serial number'),
+                        'comment' => __('Comments'),
+                        'entity' => _n('Entity', 'Entities', 1)
+                    ],
+                    'formatters' => [
+                        'name' => 'raw_html'
+                    ],
+                    'entries' => $entries,
+                    'total_number' => count($entries),
+                    'filtered_number' => count($entries),
+                ]);
             }
-        }
-        echo "</div>";
-        if (!empty($hosts)) {
-            echo "<br>";
         }
     }
 
@@ -263,15 +262,6 @@ class ItemVirtualMachine extends CommonDBChild
         }
         $canedit = $asset->canEdit($ID);
 
-        if ($canedit) {
-            echo "<div class='center firstbloc'>" .
-                "<a class='btn btn-primary' href='" . ItemVirtualMachine::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID'>";
-            echo __('Add a virtual machine');
-            echo "</a></div>\n";
-        }
-
-        echo "<div class='center table-responsive'>";
-
         $virtualmachines = getAllDataFromTable(
             self::getTable(),
             [
@@ -282,98 +272,71 @@ class ItemVirtualMachine extends CommonDBChild
                 'ORDER'  => 'name'
             ]
         );
+        $has_vm = !empty($virtualmachines);
 
-        echo "<table class='tab_cadre_fixehov'>";
+        TemplateRenderer::getInstance()->display('components/form/item_virtualmachine.html.twig', [
+            'asset'                     => $asset,
+            'ID'                        => $ID,
+            'itemtype'                  => $itemtype,
+            'canedit'                   => $canedit,
+            'vmformurl'                 => ItemVirtualMachine::getFormURL() . "?itemtype=$itemtype&items_id=$ID",
+            'has_vm'                    => $has_vm
+        ]);
 
-        Session::initNavigateListItems(
-            'ItemVirtualMachine',
-            sprintf(
-                __('%1$s = %2$s'),
-                $asset::getTypeName(1),
-                (empty($asset->fields['name'])
-                ? "($ID)" : $asset->fields['name'])
-            )
-        );
-
-        if (empty($virtualmachines)) {
-            echo "<tr><th>" . __('No virtualized environment associated with the item') . "</th></tr>";
-        } else {
-            echo "<tr class='noHover'><th colspan='10'>" . __('List of virtualized environments') . "</th></tr>";
-
-            $header = "<tr><th>" . __('Name') . "</th>";
-            $header .= "<th>" . _n('Comment', 'Comments', 1) . "</th>";
-            $header .= "<th>" . __('Automatic inventory') . "</th>";
-            $header .= "<th>" . VirtualMachineType::getTypeName(1) . "</th>";
-            $header .= "<th>" . VirtualMachineSystem::getTypeName(1) . "</th>";
-            $header .= "<th>" . _n('State', 'States', 1) . "</th>";
-            $header .= "<th>" . __('UUID') . "</th>";
-            $header .= "<th>" . _x('quantity', 'Processors number') . "</th>";
-            $header .= "<th>" . sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')) . "</th>";
-            $header .= "<th>" . __('Machine') . "</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            $vm = new self();
+        if ($has_vm) {
+            $entries = [];
             foreach ($virtualmachines as $virtualmachine) {
-                $vm->getFromDB($virtualmachine['id']);
-                $class = $virtualmachine['is_deleted'] ? "deleted" : "";
-                echo "<tr class='tab_bg_2 $class'>";
-                echo "<td>" . $vm->getLink() . "</td>";
-                echo "<td>" . $virtualmachine['comment'] . "</td>";
-                echo "<td>" . Dropdown::getYesNo($vm->isDynamic()) . "</td>";
-                echo "<td>";
-                echo Dropdown::getDropdownName(
-                    'glpi_virtualmachinetypes',
-                    $virtualmachine['virtualmachinetypes_id']
-                );
-                echo "</td>";
-                echo "<td>";
-                echo Dropdown::getDropdownName(
-                    'glpi_virtualmachinesystems',
-                    $virtualmachine['virtualmachinesystems_id']
-                );
-                echo "</td>";
-                echo "<td>";
-                echo Dropdown::getDropdownName(
-                    'glpi_virtualmachinestates',
-                    $virtualmachine['virtualmachinestates_id']
-                );
-                echo "</td>";
-                echo "<td>" . $virtualmachine['uuid'] . "</td>";
-                echo "<td>" . $virtualmachine['vcpu'] . "</td>";
-                echo "<td>" . $virtualmachine['ram'] . "</td>";
-                echo "<td>";
-                if ($link_asset = self::findVirtualMachine($virtualmachine)) {
-                     $asset = new $itemtype();
-                    if ($asset->can($link_asset, READ)) {
-                        $url  = "<a href='" . $asset->getFormURLWithID($link_asset) . "'>";
-                        $url .= $asset->fields["name"] . "</a>";
-
-                        $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $asset->fields['name'] .
-                            '</td></tr>';
-                        if (isset($asset->fields['serial'])) {
-                            $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $asset->fields['serial'] .
-                                '</td></tr>';
-                        }
-                        if (isset($asset->fields['comment'])) {
-                            $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $asset->fields['comment'] .
-                                '</td></tr></table>';
-                        }
-
-                        $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
-                    } else {
-                        $url = $asset->fields['name'];
-                    }
-                    echo $url;
+                $vm = new self();
+                if (!$vm->getFromDB($virtualmachine['id'])) {
+                    continue;
                 }
-                echo "</td>";
-                echo "</tr>";
-                Session::addToNavigateListItems('ItemVirtualMachine', $virtualmachine['id']);
+
+                $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
+                $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
+                $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
+
+                $entries[] = [
+                    'name'                      => $vm->getLink(),
+                    'comment'                   => $virtualmachine['comment'],
+                    'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
+                    'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
+                    'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
+                    'uuid'                      => $virtualmachine['uuid'],
+                    'vcpu'                      => $virtualmachine['vcpu'],
+                    'ram'                       => $virtualmachine['ram'],
+                    'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE
+                ];
             }
-            echo $header;
+
+            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+                'is_tab' => true,
+                'nopager' => true,
+                'nofilter' => true,
+                'nosort' => true,
+                'columns' => [
+                    'name' => __('Name'),
+                    'comment' => _n('Comment', 'Comments', 1),
+                    'dynamic' => __('Automatic inventory'),
+                    'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
+                    'virtualmachinestates_id' => _n('State', 'States', 1),
+                    'uuid' => __('UUID'),
+                    'vcpu' => __('Processors number'),
+                    'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                    'asset' => __('Machine')
+                ],
+                'formatters' => [
+                    'name' => 'raw_html',
+                    'virtualmachinesystems_id' => 'raw_html',
+                    'virtualmachinestates_id' => 'raw_html',
+                    'vcpu' => 'integer',
+                    'ram' => 'integer',
+                    'asset' => 'raw_html'
+                ],
+                'entries' => $entries,
+                'total_number' => count($entries),
+                'filtered_number' => count($entries),
+            ]);
         }
-        echo "</table>";
-        echo "</div>";
     }
 
 
