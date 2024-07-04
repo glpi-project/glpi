@@ -63,4 +63,75 @@ describe('Form destination', () => {
         // Check if the form destination name is updated
         cy.findByRole("textbox", {name: "Form destination name"}).should('exist').and('have.value', 'Updated ticket destination name');
     });
+
+    it('can enable or disable auto configuration on supported fields', () => {
+        // Inputs aliases
+        cy.findByRole("textbox", {'name': "Title"}).as("title_field");
+        cy.findByLabelText("Content").awaitTinyMCE().as("content_field");
+
+        // Checkbox aliases
+        cy.findAllByRole('checkbox', {'name': "Auto config"}).eq(0)
+            .as("content_auto_config_checkbox")
+        ;
+
+        describe('Field that does not support auto config are not impacted', () => {
+            cy.get("@title_field").should('be.not.disabled');
+        });
+
+        describe('Auto config must be enabled by default on field that support it', () => {
+            // Auto configuration should be ON by default, with all fields disabled
+            cy.findAllByRole('checkbox', {'name': "Auto config"})
+                .should('be.checked')
+            ;
+            cy.get("@content_field").parents().find("#tinymce")
+                .should('have.attr', 'contenteditable', "false")
+            ;
+
+            // Ensure auto config values have been loaded for the "content" field
+            cy.get("@content_field")
+                .should('have.text', "") // Empty because the form doesn't have any questions
+            ;
+        });
+
+        describe('Disable auto config and enter manual values', () => {
+            // Disable auto config for the "content" field (tinymce)
+            cy.get("@content_auto_config_checkbox").uncheck();
+            cy.get("@content_field").parents().find("#tinymce")
+                .should('have.attr', 'contenteditable', "true")
+            ;
+            cy.get("@content_field").type('Manual content');
+
+            // Save changes (page reload)
+            cy.findByRole('button', {'name': "Update item"}).click();
+        });
+
+        describe('Validate manual values are kept after reload', () => {
+            cy.findByLabelText("Content").awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
+
+            // Ensure the manual values are still there
+            cy.get("@content_auto_config_checkbox").should('not.be.checked');
+            cy.get("@content_field").should('have.text', 'Manual content');
+        });
+
+        describe('Revert to auto configurated values', () => {
+            // Re-enable auto config for the "content" field
+            cy.get("@content_auto_config_checkbox").check();
+            cy.get("@content_field").parents().find("#tinymce")
+                .should('have.attr', 'contenteditable', "false")
+            ;
+
+            // Save changes (page reload)
+            cy.findByRole('button', {'name': "Update item"}).click();
+        });
+
+        describe('Validate manual values have been removed', () => {
+            cy.findByLabelText("Content").awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
+
+            // Ensure the manual value has been removed for the "content" field
+            cy.get("@content_auto_config_checkbox").should('be.checked');
+            cy.get("@content_field")
+                .should('have.text', "")
+            ;
+        });
+    });
 });

@@ -80,8 +80,15 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('not.exist');
 
-        // Use autocomplete
+        // Remove auto configuration to allow us to type into the content field
         cy.findByLabelText("Content").awaitTinyMCE().as("rich_text_editor");
+        cy.findByRole('region', {'name': "Content configuration"})
+            .findByRole('checkbox', {'name': "Auto config"})
+            .uncheck()
+        ;
+
+        // Use autocomplete
+        cy.get("@rich_text_editor").clear();
         cy.get("@rich_text_editor").type("#");
         cy.findByRole("menuitem", {name: "Question: First name"}).should('exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist');

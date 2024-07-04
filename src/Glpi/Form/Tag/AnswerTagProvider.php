@@ -38,6 +38,7 @@ namespace Glpi\Form\Tag;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Override;
 
 final class AnswerTagProvider implements TagProviderInterface
@@ -48,13 +49,8 @@ final class AnswerTagProvider implements TagProviderInterface
     public function getTags(Form $form): array
     {
         $tags = [];
-        foreach ($form->getQuestions() as $questions) {
-            $tags[] = new Tag(
-                label: sprintf(__('Answer: %s'), $questions->fields['name']),
-                value: $questions->getId(),
-                provider: self::class,
-                color: self::ACCENT_COLOR,
-            );
+        foreach ($form->getQuestions() as $question) {
+            $tags[] = $this->getTagForQuestion($question);
         }
 
         return $tags;
@@ -78,5 +74,15 @@ final class AnswerTagProvider implements TagProviderInterface
 
         $answer = array_pop($answers);
         return $answer->getRawAnswer();
+    }
+
+    public function getTagForQuestion(Question $question): Tag
+    {
+        return new Tag(
+            label: sprintf(__('Answer: %s'), $question->fields['name']),
+            value: $question->getId(),
+            provider: self::class,
+            color: self::ACCENT_COLOR,
+        );
     }
 }

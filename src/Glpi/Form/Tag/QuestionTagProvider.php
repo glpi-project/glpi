@@ -48,13 +48,8 @@ final class QuestionTagProvider implements TagProviderInterface
     public function getTags(Form $form): array
     {
         $tags = [];
-        foreach ($form->getQuestions() as $questions) {
-            $tags[] = new Tag(
-                label: sprintf(__('Question: %s'), $questions->fields['name']),
-                value: $questions->getId(),
-                provider: self::class,
-                color: self::ACCENT_COLOR,
-            );
+        foreach ($form->getQuestions() as $question) {
+            $tags[] = $this->getTagForQuestion($question);
         }
 
         return $tags;
@@ -72,5 +67,15 @@ final class QuestionTagProvider implements TagProviderInterface
             return '';
         }
         return $question->fields['name'];
+    }
+
+    public function getTagForQuestion(Question $question): Tag
+    {
+        return new Tag(
+            label: sprintf(__('Question: %s'), $question->fields['name']),
+            value: $question->getId(),
+            provider: self::class,
+            color: self::ACCENT_COLOR,
+        );
     }
 }

@@ -37,11 +37,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\ConfigFieldInterface;
+use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Override;
 
-class TitleField implements ConfigFieldInterface
+class TitleField extends AbstractConfigField
 {
     #[Override]
     public function getKey(): string
@@ -95,5 +95,13 @@ TWIG;
         $input['name'] = $configurated_value;
 
         return $input;
+    }
+
+    #[Override()]
+    public function getDefaultValue(Form $form): mixed
+    {
+        // TODO: use a "form name" tag here instead of an hardcoded string
+        // that may not be valid if the form name is updated later on.
+        return $form->fields['name'];
     }
 }
