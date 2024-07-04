@@ -45,6 +45,9 @@ require_once GLPI_ROOT . '/src/Glpi/Application/ResourcesChecker.php';
 
 require_once GLPI_ROOT . '/vendor/autoload.php';
 
+require_once GLPI_ROOT . '/src/Glpi/Application/ConfigurationConstants.php';
+(new \Glpi\Application\ConfigurationConstants(GLPI_ROOT))->computeConstants();
+
 // Check if web root is configured correctly
 if (!isCommandLine()) {
     $included_files = array_filter(
