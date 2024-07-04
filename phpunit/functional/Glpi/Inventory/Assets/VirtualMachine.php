@@ -786,18 +786,18 @@ class VirtualMachine extends AbstractInventoryAsset
         $esx_id = $inventory->getItem()->fields['id'];
         $this->assertGreaterThan(0, $esx_id);
 
-        //get two VM
+        //get one VM
         $vm = new \ComputerVirtualMachine();
         $this->assertCount(1, $vm->find());
 
-        //get first ComputervirtualMachine
+        //get related ComputervirtualMachine
         $firlst_vm = new \ComputerVirtualMachine();
         $this->assertTrue($firlst_vm->getFromDBByCrit([
             'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
             'computers_id' => $esx_id,
         ]));
 
-        //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 with same state as default configured
+        //get related computer with a1234567-89ab-cdef-0123-456789abcdef with same state as default configured
         $first_computer_linked = new \Computer();
         $this->assertTrue($first_computer_linked->getFromDBByCrit([
             'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
