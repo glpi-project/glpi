@@ -5333,7 +5333,7 @@ JAVASCRIPT;
 
         $criteria = self::getCommonCriteria();
         $criteria['WHERE'] = [
-            'status'       => self::INCOMING,
+            self::getTable() . '.status'       => self::INCOMING,
             'is_deleted'   => 0
         ] + getEntitiesRestrictCriteria(self::getTable());
         $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
