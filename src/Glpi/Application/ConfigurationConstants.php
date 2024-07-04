@@ -55,9 +55,9 @@ final class ConfigurationConstants
                 'GLPI_ENVIRONMENT_TYPE' => 'production',
 
                 // Constants related to system paths
-                'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
-                'GLPI_VAR_DIR'         => GLPI_ROOT . '/files',  // Path for all files
-                'GLPI_MARKETPLACE_DIR' => GLPI_ROOT . '/marketplace', // Path for marketplace plugins
+                'GLPI_CONFIG_DIR'      => $this->root_dir . '/config', // Path for configuration files (db, security key, ...)
+                'GLPI_VAR_DIR'         => $this->root_dir . '/files',  // Path for all files
+                'GLPI_MARKETPLACE_DIR' => $this->root_dir . '/marketplace', // Path for marketplace plugins
                 'GLPI_DOC_DIR'         => '{GLPI_VAR_DIR}', // Path for documents storage
                 'GLPI_CACHE_DIR'       => '{GLPI_VAR_DIR}/_cache', // Path for cache
                 'GLPI_CRON_DIR'        => '{GLPI_VAR_DIR}/_cron', // Path for cron storage
@@ -79,7 +79,7 @@ final class ConfigurationConstants
                 // Order in this array is important (priority to first found).
                 'PLUGINS_DIRECTORIES'  => [
                     '{GLPI_MARKETPLACE_DIR}',
-                    GLPI_ROOT . '/plugins',
+                    $this->root_dir . '/plugins',
                 ],
 
                 // Security constants
@@ -92,7 +92,7 @@ final class ConfigurationConstants
 
                 // Constants related to GLPI Project / GLPI Network external services
                 'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
-                'GLPI_INSTALL_MODE'                 => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
+                'GLPI_INSTALL_MODE'                 => is_dir($this->root_dir . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
                 'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
                 'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
                 'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
@@ -115,15 +115,15 @@ final class ConfigurationConstants
                 'GLPI_TEXT_MAXSIZE'           => '4000' // character threshold for displaying read more button
             ],
             'testing' => [
-                'GLPI_CONFIG_DIR'               => GLPI_ROOT . '/tests/config',
-                'GLPI_VAR_DIR'                  => GLPI_ROOT . '/tests/files',
+                'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
+                'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
                 'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
                     '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
                     '/^file:\/\/.*\.ics$/', // calendar mockups
                 ],
                 'PLUGINS_DIRECTORIES'           => [
-                    GLPI_ROOT . '/plugins',
-                    GLPI_ROOT . '/tests/fixtures/plugins',
+                    $this->root_dir . '/plugins',
+                    $this->root_dir . '/tests/fixtures/plugins',
                 ],
             ],
         ];
@@ -138,13 +138,13 @@ final class ConfigurationConstants
         }
 
         // Define constants values from local configuration file
-        if (file_exists(GLPI_ROOT . '/config/local_define.php') && !defined('TU_USER')) {
-            require_once GLPI_ROOT . '/config/local_define.php';
+        if (file_exists($this->root_dir . '/config/local_define.php') && !defined('TU_USER')) {
+            require_once $this->root_dir . '/config/local_define.php';
         }
 
         // Define constants values from downstream distribution file
-        if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-            include_once(GLPI_ROOT . '/inc/downstream.php');
+        if (file_exists($this->root_dir . '/inc/downstream.php')) {
+            include_once($this->root_dir . '/inc/downstream.php');
         }
 
         // Check custom values
