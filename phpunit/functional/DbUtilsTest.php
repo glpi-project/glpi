@@ -1628,8 +1628,7 @@ class DbUtilsTest extends DbTestCase
     /**
      * @dataProvider fixItemtypeCaseProvider
      */
-    /* FIXME: does not work: org\bovigo\vfs\vfsStreamException: A handler has already been registered for the vfs protocol. */
-    /*public function testGetItemtypeWithFixedCase($itemtype, $expected)
+    public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
         vfsStream::setup(
             'glpi',
@@ -1665,5 +1664,5 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'));
         $this->assertEquals($expected, $result);
-    }*/
+    }
 }

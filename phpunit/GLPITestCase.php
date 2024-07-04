@@ -35,6 +35,7 @@
 
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Logger;
+use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -72,10 +73,14 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
         $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
         $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+
+        vfsStreamWrapper::register();
     }
 
     public function tearDown(): void
     {
+        vfsStreamWrapper::unregister();
+
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
             unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
             $this->assertSame(
