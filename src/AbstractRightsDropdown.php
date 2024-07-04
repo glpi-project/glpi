@@ -284,7 +284,7 @@ abstract class AbstractRightsDropdown
      *    3 => 'groups_id-78',
      *    4 => 'profiles_id-1',
      * ]
-     * into an array containings the ids of the specified $class parameter:
+     * into an array containing the ids of the specified $class parameter:
      * $class = User -> [3, 14]
      * $class = Group -> [2, 78]
      * $class = Profile -> [1]
@@ -302,7 +302,7 @@ abstract class AbstractRightsDropdown
             // Split fkey and ids
             $parsed_values = explode("-", $value);
             $fkey  = $parsed_values[0];
-            $value = $parsed_values[1];
+            $value = (int)$parsed_values[1];
 
             if ($fkey == $class::getForeignKeyField()) {
                 $inflated_values[] = $value;

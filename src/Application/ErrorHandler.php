@@ -225,8 +225,10 @@ class ErrorHandler
     public function register(): void
     {
         set_error_handler([$this, 'handleError']);
-        set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleFatalError']);
+        if (!defined('TU_USER')) {
+            set_exception_handler([$this, 'handleException']);
+            register_shutdown_function([$this, 'handleFatalError']);
+        }
         $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
     }
 
