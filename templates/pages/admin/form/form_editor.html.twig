@@ -48,7 +48,7 @@
 {% endfor %}
 
 <form
-    id="form-form"
+    id="main-form"
     data-glpi-form-editor-container
     class="
         form-editor-container
@@ -190,7 +190,7 @@
                 class="btn btn-secondary"
                 type="button"
                 name="preview"
-                form="form-form"
+                form="main-form"
                 title="{{ __("Preview") }}"
                 data-glpi-form-editor-preview-action
             >
@@ -201,7 +201,7 @@
                 class="btn btn-secondary d-none"
                 type="submit"
                 name="update"
-                form="form-form"
+                form="main-form"
                 title="{{ __("Save and preview") }}"
                 data-glpi-form-editor-save-and-preview-action
                 data-glpi-form-editor-preview-url="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
@@ -224,7 +224,7 @@
                 "
                 type="submit"
                 name="delete"
-                form="form-form"
+                form="main-form"
             >
                 <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
             </button>
@@ -236,7 +236,7 @@
                 class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
                 type="submit"
                 name="purge"
-                form="form-form"
+                form="main-form"
             >
                 <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
             </button>
@@ -253,7 +253,7 @@
                 "
                 type="submit"
                 name="restore"
-                form="form-form"
+                form="main-form"
             >
                 <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
             </button>
@@ -265,7 +265,7 @@
                 class="btn btn-primary"
                 type="submit"
                 name="update"
-                form="form-form"
+                form="main-form"
                 title="{{ __("Add") }}"
             >
                 <i class="ti ti-plus me-1"></i>
@@ -277,7 +277,7 @@
                 class="btn btn-primary"
                 type="submit"
                 name="update"
-                form="form-form"
+                form="main-form"
                 title="{{ __("Save") }}"
             >
                 <i class="ti ti-device-floppy me-1"></i>
