@@ -40,7 +40,7 @@ function popperFactory(ref, content, opts) {
             FloatingUIDOM.flip(),
             FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
         ],
-        ...opts,
+        //...opts,
     }
     function update() {
         FloatingUIDOM.computePosition(ref, content, popperOptions).then(({x, y}) => {
