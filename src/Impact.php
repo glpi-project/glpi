@@ -1319,9 +1319,9 @@ JS);
         if ($infocom->getFromDBforDevice($item->getType(), $item->getID())) {
             $businesscriticities_id
                 = Dropdown::getDropdownName(
-                'glpi_businesscriticities',
-                $infocom->fields['businesscriticities_id']
-            );
+                    'glpi_businesscriticities',
+                    $infocom->fields['businesscriticities_id']
+                );
         }
 
         $new_node = [
