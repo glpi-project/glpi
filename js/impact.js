@@ -31,29 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-function popperFactory(ref, content, opts) {
-    // see https://floating-ui.com/docs/computePosition#options
-    const popperOptions = {
-        // matching the default behaviour from Popper@2
-        // https://floating-ui.com/docs/migration#configure-middleware
-        middleware: [
-            FloatingUIDOM.flip(),
-            FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
-        ],
-        ...opts,
-    };
-    function update() {
-        FloatingUIDOM.computePosition(ref, content, popperOptions).then(({x, y}) => {
-            Object.assign(content.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-            });
-        });
-    }
-    update();
-    return { update };
-}
-
 // Load cytoscape
 var cytoscape = window.cytoscape;
 
@@ -1652,6 +1629,30 @@ var GLPIImpact = {
         this.initToolbar();
     },
 
+    popperFactory: function(ref, content, opts) {
+
+        // see https://floating-ui.com/docs/computePosition#options
+        const popperOptions = {
+                // matching the default behaviour from Popper@2
+                // https://floating-ui.com/docs/migration#configure-middleware
+                middleware: [
+                    FloatingUIDOM.flip(),
+                    FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
+                ],
+                ...opts,
+            };
+        function update() {
+            FloatingUIDOM.computePosition(ref, content, popperOptions).then(({x, y}) => {
+                Object.assign(content.style, {
+                    left: `${x}px`,
+                    top: `${y}px`,
+                });
+            });
+        }
+        update();
+        return { update };
+    },
+
     /**
      *
      * @param target node or edge
@@ -1756,7 +1757,6 @@ var GLPIImpact = {
     */
     buildNetwork: function(data, params, readonly) {
         var layout;
-
         // Init workspace status
         GLPIImpact.showDefaultWorkspaceStatus();
 
@@ -1782,7 +1782,7 @@ var GLPIImpact = {
             // Procedural layout
             layout = this.getDagreLayout();
         }
-        cytoscape.use(cytoscapePopper(popperFactory));
+        cytoscape.use(cytoscapePopper(this.popperFactory));
         // Init cytoscape
         this.cy = cytoscape({
             container: this.impactContainer,
