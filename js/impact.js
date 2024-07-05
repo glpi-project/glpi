@@ -1633,14 +1633,14 @@ var GLPIImpact = {
 
         // see https://floating-ui.com/docs/computePosition#options
         const popperOptions = {
-                // matching the default behaviour from Popper@2
-                // https://floating-ui.com/docs/migration#configure-middleware
-                middleware: [
-                    FloatingUIDOM.flip(),
-                    FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
-                ],
-                ...opts,
-            };
+            // matching the default behaviour from Popper@2
+            // https://floating-ui.com/docs/migration#configure-middleware
+            middleware: [
+                FloatingUIDOM.flip(),
+                FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
+            ],
+            ...opts,
+        };
         function update() {
             FloatingUIDOM.computePosition(ref, content, popperOptions).then(({x, y}) => {
                 Object.assign(content.style, {
@@ -1756,6 +1756,7 @@ var GLPIImpact = {
     * @param {string} data (json)
     */
     buildNetwork: function(data, params, readonly) {
+
         var layout;
         // Init workspace status
         GLPIImpact.showDefaultWorkspaceStatus();
