@@ -31,6 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
 {# @var \Glpi\Form\AccessControl\ControlType\DirectAccessConfig config #}
 {# @var string                                                  url #}
 
@@ -57,13 +58,13 @@
 <label class="form-check form-switch">
     <input
         class="form-check-input"
-        name="_allow_unauthenticated"
+        name="{{ access_control.encodeInputName("_allow_unauthenticated") }}"
         type="hidden"
         value="0"
     >
     <input
         class="form-check-input"
-        name="_allow_unauthenticated"
+        name="{{ access_control.encodeInputName("_allow_unauthenticated") }}"
         type="checkbox"
         value="1"
         {{ config.allowUnauthenticated() ? 'checked' : '' }}
@@ -81,4 +82,8 @@
     </span>
 </label>
 
-<input type="hidden" name="_token" value="{{ config.getToken() }}">
+<input
+    type="hidden"
+    {{ access_control.encodeInputName("_token") }}
+    value="{{ config.getToken() }}"
+>

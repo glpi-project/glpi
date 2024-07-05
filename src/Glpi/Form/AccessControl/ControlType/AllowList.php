@@ -36,6 +36,7 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use Glpi\Form\AccessControl\AccessVote;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
@@ -66,14 +67,16 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(JsonConfigInterface $config): string
+    public function renderConfigForm(FormAccessControl $access_control): string
     {
+        $config = $access_control->getConfig();
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/allow_list.html.twig", [
+            'access_control' => $access_control,
             'config' => $config,
         ]);
     }
@@ -88,6 +91,7 @@ final class AllowList implements ControlTypeInterface
     public function createConfigFromUserInput(array $input): AllowListConfig
     {
         $values = $input['_allow_list_dropdown'] ?? [];
+        $values = $values ?: []; // No selected values is sent by the html form as an empty string
         return AllowListConfig::createFromRawArray([
             'user_ids'    => AllowListDropdown::getPostedIds($values, User::class),
             'group_ids'   => AllowListDropdown::getPostedIds($values, Group::class),

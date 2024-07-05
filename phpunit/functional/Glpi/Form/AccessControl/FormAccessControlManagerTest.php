@@ -272,6 +272,53 @@ final class FormAccessControlManagerTest extends DbTestCase
         );
     }
 
+    public function testGetWarningForInactiveFormWithoutAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getInactiveFormWithoutAccessControls(), [
+            'This form is not visible to anyone because it is not active.',
+            'This form will not be visible to any users as there are currently no active access policies.',
+        ]);
+    }
+
+    public function testGetWarningForActiveFormWithoutAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getActiveFormWithoutAccessControls(), [
+            'This form will not be visible to any users as there are currently no active access policies.',
+        ]);
+    }
+
+    public function testGetWarningForInactiveFormWithAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getInactiveFormWithActiveAccessControls(), [
+            'This form is not visible to anyone because it is not active.',
+        ]);
+    }
+
+    public function testGetWarningForActiveFormWithAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getActiveFormWithActiveAccessControls(), []);
+    }
+
+    public function testGetWarningForInactiveFormWithInactiveAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getInactiveFormWithInactiveAccessControls(), [
+            'This form is not visible to anyone because it is not active.',
+            'This form will not be visible to any users as there are currently no active access policies.',
+        ]);
+    }
+
+    public function testGetWarningForActiveFormWithInactiveAccessControlPolicies(): void
+    {
+        $this->checkGetWarnings($this->getActiveFormWithInactiveAccessControls(), [
+            'This form will not be visible to any users as there are currently no active access policies.',
+        ]);
+    }
+
+    private function checkGetWarnings(Form $form, array $expected): void
+    {
+        $this->assertEquals($expected, $this->getManager()->getWarnings($form));
+    }
+
     private function getManager(): FormAccessControlManager
     {
         return FormAccessControlManager::getInstance();
@@ -287,6 +334,72 @@ final class FormAccessControlManagerTest extends DbTestCase
                     ],
                 ))
         );
+    }
+
+    private function getActiveFormWithoutAccessControls(): Form
+    {
+        return $this->createForm((new FormBuilder())->setIsActive(true));
+    }
+
+    private function getInactiveFormWithoutAccessControls(): Form
+    {
+        return $this->createForm((new FormBuilder())->setIsActive(false));
+    }
+
+    private function getActiveFormWithActiveAccessControls(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(true)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+    }
+
+    private function getInactiveFormWithActiveAccessControls(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(false)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+    }
+
+    private function getActiveFormWithInactiveAccessControls(): Form
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(true)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+
+        $control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem($control::class, $control->getID(), ['is_active' => 0]);
+        $form->getFromDB($form->getID());
+
+        return $form;
+    }
+
+    private function getInactiveFormWithInactiveAccessControls(): Form
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(false)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+
+        $control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem($control::class, $control->getID(), ['is_active' => 0]);
+        $form->getFromDB($form->getID());
+
+        return $form;
     }
 
     private function createAndGetFormWithoutAccessControls(): Form
