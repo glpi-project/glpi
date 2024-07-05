@@ -203,7 +203,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return array
      */
-    protected function getTableProvider()
+    public static function getTableProvider()
     {
         return [
             [\DBConnection::class, ''], // "static protected $notable = true;" case
@@ -935,7 +935,6 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame('renamed', $computer->fields['name']);
     }
 
-
     public function testTimezones()
     {
         global $DB;
@@ -1001,7 +1000,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse(\Project::checkCircularRelation($project_id_4, $project_id_3));
     }
 
-    protected function relationConfigProvider()
+    public static function relationConfigProvider()
     {
         return [
             [

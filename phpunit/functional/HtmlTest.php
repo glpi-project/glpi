@@ -946,7 +946,7 @@ SCSS
     }
 
 
-    protected function testGetGenericDateTimeSearchItemsProvider(): array
+    public static function testGetGenericDateTimeSearchItemsProvider(): array
     {
         return [
             [
