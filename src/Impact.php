@@ -1574,7 +1574,6 @@ JS);
         self::printShowOngoingDialog();
         self::printEditCompoundDialog();
         self::printEditEdgeDialog();
-        echo Html::script("public/lib/cytoscape-popper.js");
         echo Html::script("js/impact.js");
 
         // Load backend values
