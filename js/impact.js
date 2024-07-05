@@ -38,6 +38,8 @@ var cytoscape = window.cytoscape;
 /* global _ */
 /* global hexToRgb */
 /* global contrast */
+/* global FloatingUIDOM */
+/* global cytoscapePopper */
 
 var GLPIImpact = {
 
