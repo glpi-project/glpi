@@ -727,4 +727,81 @@ class VirtualMachine extends AbstractInventoryAsset
         $vm = new \ComputerVirtualMachine();
         $this->assertCount(0, $vm->find());
     }
+
+
+    public function testDefaultStatusForRelatedComputer()
+    {
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <BIOS>
+              <ASSETTAG></ASSETTAG>
+              <BDATE>2018-02-08T00:00:00Z</BDATE>
+              <BVERSION>1.3.7</BVERSION>
+              <MSN>324DFG567</MSN>
+              <SMANUFACTURER>Dell Inc.</SMANUFACTURER>
+              <SMODEL>PowerEdge R640</SMODEL>
+              <SSN>324DFG567</SSN>
+            </BIOS>
+            <HARDWARE>
+              <DNS>10.100.230.2/10.100.230.4</DNS>
+              <MEMORY>130625</MEMORY>
+              <NAME>ESX-03-DMZ</NAME>
+              <UUID>8c8c8944-0074-5632-7452-b2c04f564712</UUID>
+              <VMSYSTEM>Physical</VMSYSTEM>
+              <WORKGROUP>teclib.fr</WORKGROUP>
+            </HARDWARE>
+            <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
+            <VIRTUALMACHINES>
+              <COMMENT>Computer VM</COMMENT>
+              <MAC>00:50:56:90:43:42</MAC>
+              <MEMORY>1024</MEMORY>
+              <NAME>SRV-DMZ-EZ</NAME>
+              <STATUS>running</STATUS>
+              <UUID>a1234567-89ab-cdef-0123-456789abcdef</UUID>
+              <VCPU>1</VCPU>
+              <VMTYPE>VMware</VMTYPE>
+            </VIRTUALMACHINES>
+          </CONTENT>
+          <DEVICEID>ESX-03-DMZ.insep.fr-2023-02-02-11-34-53</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>
+        ";
+
+        //change config to import vms as computers
+        $this->login();
+
+        $state = new \State();
+        $inv_states_id = $state->add([
+            'name' => 'Has been inventoried'
+        ]);
+
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf(['vm_as_computer' => 1, 'states_id_default' => $inv_states_id]));
+        $this->logout();
+
+        //computer inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $esx_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $esx_id);
+
+        //get one VM
+        $vm = new \ComputerVirtualMachine();
+        $this->assertCount(1, $vm->find());
+
+        //get related ComputervirtualMachine
+        $firlst_vm = new \ComputerVirtualMachine();
+        $this->assertTrue($firlst_vm->getFromDBByCrit([
+            'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
+            'computers_id' => $esx_id,
+        ]));
+
+        //get related computer with a1234567-89ab-cdef-0123-456789abcdef with same state as default configured
+        $first_computer_linked = new \Computer();
+        $this->assertTrue($first_computer_linked->getFromDBByCrit([
+            'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
+            'states_id' => $inv_states_id
+        ]));
+    }
 }
