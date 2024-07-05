@@ -31,25 +31,43 @@
  * ---------------------------------------------------------------------
  */
 
-Cypress.Commands.add('createFormWithAPI', (
-    fields = {
-        name: "My test form",
-    }
+Cypress.Commands.add('getSelect2DropdownByValue', {prevSubject: 'optional'}, (
+    subject,
+    value
 ) => {
-    return cy.createWithAPI('Glpi\\Form\\Form', fields).then((form_id) => {
-        return form_id;
-    });
+    if (subject) {
+        return cy.wrap(subject).findByRole('combobox', {name: value});
+    } else {
+        return cy.findByRole('combobox', {name: value});
+    }
 });
 
-Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
-    form_id,
-    tab_name
+Cypress.Commands.add('setSelect2Value', {prevSubject: true}, (
+    subject,
+    new_value
 ) => {
-    const fully_qualified_tabs = new Map([
-        ['Form', 'Glpi\\Form\\Form\\Form$main'],
-        ['Destinations', 'Glpi\\Form\\Destination\\FormDestination$1'],
-    ]);
-    const tab = fully_qualified_tabs.get(tab_name);
+    cy.wrap(subject).click();
+    cy.findByRole('option', {name: new_value}).click();
+});
 
-    return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
+Cypress.Commands.add('select2ValueShouldBeSelected', {prevSubject: 'optional'}, (
+    subject,
+    value
+) => {
+    if (subject) {
+        cy.wrap(subject).getSelect2DropdownByValue(value).should('exist');
+    } else {
+        cy.getSelect2DropdownByValue(value).should('exist');
+    }
+});
+
+Cypress.Commands.add('select2ValueShouldNotBeSelected', {prevSubject: 'optional'}, (
+    subject,
+    value
+) => {
+    if (subject) {
+        cy.wrap(subject).getSelect2DropdownByValue(value).should('not.exist');
+    } else {
+        cy.getSelect2DropdownByValue(value).should('not.exist');
+    }
 });

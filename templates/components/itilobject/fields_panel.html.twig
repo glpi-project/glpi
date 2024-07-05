@@ -56,7 +56,7 @@
             </span>
          </button>
       </h2>
-      <div id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
+      <section id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
          <div class="accordion-body row m-0 mt-n2">
 
             {{ call_plugin_hook('pre_item_form', {"item": item, 'options': params}) }}
@@ -251,7 +251,7 @@
 
             {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
          </div>
-      </div>
+      </section>
    </div>
 
    {% set actors_show = headers_states['actors'] is not defined or headers_states['actors'] == "true" ? true : false %}

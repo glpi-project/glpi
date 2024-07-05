@@ -79,6 +79,8 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         $input = [
             'name'    => '',
             'content' => '',
+            // Temporary as entity configuration is not yet available
+            'entities_id' => $form->fields['entities_id']
         ];
 
         // Compute input from fields configuration
