@@ -790,7 +790,7 @@ class ConfigTest extends DbTestCase
         );
     }
 
-    protected function logConfigChangeProvider()
+    public static function logConfigChangeProvider()
     {
         global $PLUGIN_HOOKS;
 

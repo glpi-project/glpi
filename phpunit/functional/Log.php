@@ -743,7 +743,7 @@ class Log extends DbTestCase
         $this->assertSame($expected_result, \Log::convertFiltersValuesToSqlCriteria($filters_values));
     }
 
-    protected function userNameFormattingProvider()
+    public static function userNameFormattingProvider()
     {
         return [
             [TU_USER, TU_PASS, TU_USER],

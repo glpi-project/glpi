@@ -543,7 +543,7 @@ class ToolboxTest extends DbTestCase
     /**
      * Data provider for self::testConvertTagToImage().
      */
-    protected function convertTagToImageProvider()
+    public static function convertTagToImageProvider()
     {
         $data = [];
 
@@ -636,7 +636,7 @@ class ToolboxTest extends DbTestCase
     /**
      * Data provider for self::testBaseUrlInConvertTagToImage().
      */
-    protected function convertTagToImageBaseUrlProvider()
+    public static function convertTagToImageBaseUrlProvider()
     {
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
@@ -894,7 +894,7 @@ class ToolboxTest extends DbTestCase
         );
     }
 
-    protected function shortenNumbers()
+    public static function shortenNumbers()
     {
         return [
             [
@@ -1141,7 +1141,7 @@ class ToolboxTest extends DbTestCase
     }
 
 
-    public function hasTraitProvider()
+    public static function hasTraitProvider()
     {
         return [
             [\Computer::class, Clonable::class, true],
@@ -1196,7 +1196,7 @@ class ToolboxTest extends DbTestCase
         $this->AssertCount(1, $output);
     }
 
-    public function appendParametersProvider()
+    public static function appendParametersProvider()
     {
         return [
             [
@@ -1258,7 +1258,7 @@ class ToolboxTest extends DbTestCase
      *
      * @return Generator
      */
-    protected function testIsFloatProvider(): Generator
+    public static function testIsFloatProvider(): Generator
     {
         yield [
             'value'    => null,
@@ -1347,7 +1347,7 @@ class ToolboxTest extends DbTestCase
      *
      * @return Generator
      */
-    protected function testgetDecimalNumbersProvider(): Generator
+    public static function testgetDecimalNumbersProvider(): Generator
     {
         yield [
             'value' => "1",
@@ -1431,7 +1431,7 @@ class ToolboxTest extends DbTestCase
      *
      * @return Generator
      */
-    protected function testGetMioSizeFromStringProvider(): Generator
+    public static function testGetMioSizeFromStringProvider(): Generator
     {
         yield [
             'size'     => "1024",
@@ -1505,7 +1505,7 @@ class ToolboxTest extends DbTestCase
         $this->assertEquals($expected, $result);
     }
 
-    protected function safeUrlProvider(): iterable
+    public static function safeUrlProvider(): iterable
     {
         // Invalid URLs are refused
         yield [
