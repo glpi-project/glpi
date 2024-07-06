@@ -1114,35 +1114,25 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
-            switch (get_class($item)) {
+            switch ($item::class) {
                 case Software::class:
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForSoftware($item->getID());
-                    }
                     return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForSoftware($item->getID()),
+                        form_itemtype: $item::class
                     );
 
                 case self::class:
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['softwarelicenses_id' => $item->getID()]
-                        );
-                    }
                     return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['softwarelicenses_id' => $item->getID()]),
+                        form_itemtype: $item::class
                     );
             }
         }

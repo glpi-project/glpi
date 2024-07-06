@@ -83,11 +83,11 @@ class ProjectCost extends CommonDBChild
     {
         // can exist for template
         if (($item::class === Project::class) && Project::canView()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

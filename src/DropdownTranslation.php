@@ -73,11 +73,11 @@ class DropdownTranslation extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::getNumberOfTranslationsForItem($item);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => self::getNumberOfTranslationsForItem($item),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

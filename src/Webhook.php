@@ -724,27 +724,26 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $headers_count = count($item->fields['custom_headers']);
-        if ($headers_count > 0) {
-            // If there are custom headers, we will include the static ones in the count.
-            // Otherwise, we won't show a count at all.
-            $headers_count += 2;
-        }
-
-        $queries_count = 0;
         $params = $item->getSentQueriesSearchParams();
         $params['export_all'] = true;
-        $data = Search::getDatas(QueuedWebhook::class, $params);
-        if (isset($data['data']['totalcount'])) {
-            $queries_count = $data['data']['totalcount'];
-        }
+        $params['only_count'] = true;
 
         return [
-            1 => self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock'),
-            2 => self::createTabEntry(__('Payload editor'), 0, $item::getType(), 'ti ti-code-dots'),
-            3 => self::createTabEntry(_n('Custom header', 'Custom headers', Session::getPluralNumber()), $headers_count, $item::getType(), 'ti ti-code-plus'),
-            4 => self::createTabEntry(_n('Query log', 'Queries log', Session::getPluralNumber()), $queries_count, $item::getType(), 'ti ti-mail-forward'),
-            5 => self::createTabEntry(__('Preview'), 0, $item::getType(), 'ti ti-eye-exclamation'),
+            1 => self::createTabEntry(__('Security'), null, $item::class, 'ti ti-shield-lock'),
+            2 => self::createTabEntry(__('Payload editor'), null, $item::class, 'ti ti-code-dots'),
+            3 => self::createTabEntry(
+                text: _n('Custom header', 'Custom headers', Session::getPluralNumber()),
+                nb: static fn () => count($item->fields['custom_headers']) + 2, // Add 2 for the static headers
+                form_itemtype: $item::class,
+                icon: 'ti ti-code-plus'
+            ),
+            4 => self::createTabEntry(
+                text: _n('Query log', 'Queries log', Session::getPluralNumber()),
+                nb: static fn () => (Search::getDatas(QueuedWebhook::class, $params)['data']['totalcount'] ?? 0),
+                form_itemtype: $item::class,
+                icon: 'ti ti-mail-forward'
+            ),
+            5 => self::createTabEntry(__('Preview'), null, $item::class, 'ti ti-eye-exclamation'),
         ];
     }
 

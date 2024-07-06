@@ -97,52 +97,25 @@ class Change_Item extends CommonItilObject_Item
 
         /** @var CommonDBTM $item */
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'Change':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForMainItem($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
-
+                    $nb = static fn () => self::countForMainItem($item);
+                    break;
                 case 'User':
                 case 'Group':
                 case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $from = 'glpi_changes_' . strtolower($item->getType() . 's');
-                        $result = $DB->request([
-                            'COUNT'  => 'cpt',
-                            'FROM'   => $from,
-                            'WHERE'  => [
-                                $item->getForeignKeyField()   => $item->fields['id']
-                            ]
-                        ])->current();
-                        $nb = $result['cpt'];
-                    }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-
+                    $nb = static fn () => countElementsInTable('glpi_changes_' . strtolower($item::class . 's'), [
+                        $item::getForeignKeyField() => $item->getID()
+                    ]);
+                    break;
                 default:
-                    if (Session::haveRight("change", Change::READALL)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    foreach ($tab as $ID) {
-                                        $typeitem = new $type();
-                                        if ($typeitem->getFromDB($ID)) {
-                                            $nb += self::countForItem($typeitem);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    if (!Session::haveRight("change", Change::READALL)) {
+                        return '';
                     }
+                    $nb = static fn () => self::countForItemAndLinks($item);
             }
+            $label = $item::class === Change::class ? _n('Item', 'Items', Session::getPluralNumber()) : Change::getTypeName(Session::getPluralNumber());
+            return self::createTabEntry($label, $nb, $item::class);
         }
         return '';
     }

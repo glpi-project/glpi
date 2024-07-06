@@ -76,21 +76,18 @@ class ItemVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && in_array($item::class, $CFG_GLPI['itemvirtualmachines_types'], true)
             && $item::canView()
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    self::getTable(),
-                    [
-                        'itemtype' => $item->getType(),
-                        'items_id' => $item->getID(),
-                        'is_deleted' => 0
-                    ]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
+            return self::createTabEntry(
+                text: self::getTypeName(),
+                nb: static fn () => countElementsInTable(self::getTable(), [
+                    'itemtype' => $item::class,
+                    'items_id' => $item->getID(),
+                    'is_deleted' => 0
+                ]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

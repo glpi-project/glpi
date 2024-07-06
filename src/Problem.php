@@ -179,7 +179,7 @@ class Problem extends CommonITILObject
                 case __CLASS__:
                     $ong = [];
                     if ($item->canUpdate()) {
-                        $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
+                        $ong[1] = static::createTabEntry(__('Statistics'), null, null, 'ti ti-chart-pie');
                     }
 
                     return $ong;

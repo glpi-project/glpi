@@ -50,12 +50,11 @@ abstract class AbstractFormDestinationType extends CommonGLPI implements FormDes
             return false;
         }
 
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countCreatedItemsForAnswersSet($item);
-        }
-
-        return self::createTabEntry(static::getTypeName(), $count, icon: static::getTargetItemtype()::getIcon());
+        return self::createTabEntry(
+            text: static::getTypeName(),
+            nb: static fn () => self::countCreatedItemsForAnswersSet($item),
+            icon: static::getTargetItemtype()::getIcon()
+        );
     }
 
     #[Override]
@@ -93,7 +92,7 @@ abstract class AbstractFormDestinationType extends CommonGLPI implements FormDes
      *
      * @return int
      */
-    final protected function countCreatedItemsForAnswersSet(AnswersSet $answers): int
+    final protected static function countCreatedItemsForAnswersSet(AnswersSet $answers): int
     {
         return countElementsInTable(AnswersSet_FormDestinationItem::getTable(), [
             'forms_answerssets_id' => $answers->getID(),

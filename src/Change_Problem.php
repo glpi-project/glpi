@@ -60,25 +60,19 @@ class Change_Problem extends CommonITILObject_CommonITILObject
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Change::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            'glpi_changes_problems',
-                            ['changes_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-
+                    return self::createTabEntry(
+                        text: Problem::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable('glpi_changes_problems', ['changes_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
                 case Problem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            'glpi_changes_problems',
-                            ['problems_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: Change::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable('glpi_changes_problems', ['problems_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

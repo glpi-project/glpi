@@ -64,22 +64,19 @@ class Domain_Item extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class && count(Domain::getTypes(false))) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForDomain($item);
-            }
-            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(
+                text: _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                nb: static fn () => self::countForDomain($item),
+                form_itemtype: $item::class,
+                icon: 'ti ti-package'
+            );
         }
 
         if (
             $item::class === DomainRelation::class || (in_array($item::class, Domain::getTypes(true), true)
                 && Session::haveRight('domain', READ))
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item);
-            }
-            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
         }
         return '';
     }

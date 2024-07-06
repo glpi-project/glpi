@@ -64,32 +64,26 @@ class Itil_Project extends CommonDBRelation
         $label = '';
 
         if (static::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Change::class:
                 case Problem::class:
                 case Ticket::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            self::getTable(),
-                            [
-                                'itemtype' => $item->getType(),
-                                'items_id' => $item->getID(),
-                            ]
-                        );
-                    }
-                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $label = self::createTabEntry(
+                        text: Project::getTypeName(Session::getPluralNumber()),
+                        nb: countElementsInTable(self::getTable(), [
+                            'itemtype' => $item::class,
+                            'items_id' => $item->getID(),
+                        ]),
+                        form_itemtype: $item::class
+                    );
                     break;
 
                 case Project::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(self::getTable(), ['projects_id' => $item->getID()]);
-                    }
                     $label = self::createTabEntry(
-                        _n('Itil item', 'Itil items', Session::getPluralNumber()),
-                        $nb,
-                        $item::getType(),
-                        Ticket::getIcon()
+                        text: _n('Itil item', 'Itil items', Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(self::getTable(), ['projects_id' => $item->getID()]),
+                        form_itemtype: $item::class,
+                        icon: Ticket::getIcon()
                     );
                     break;
             }

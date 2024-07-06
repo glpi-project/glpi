@@ -202,26 +202,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
-        if (
-            ($item->getType() == static::getItilObjectItemType())
-            && $this->canView()
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $restrict = [$item->getForeignKeyField() => $item->getID()];
+        if ($item::class === static::getItilObjectItemType() && static::canView()) {
+            $restrict = [$item::getForeignKeyField() => $item->getID()];
 
-                if (
-                    $this->maybePrivate()
-                    && !$this->canViewPrivates()
-                ) {
-                    $restrict['OR'] = [
-                        'is_private'   => 0,
-                        'users_id'     => Session::getLoginUserID()
-                    ];
-                }
-                $nb = countElementsInTable($this->getTable(), $restrict);
+            if ($this->maybePrivate() && !$this->canViewPrivates()) {
+                $restrict['OR'] = [
+                    'is_private'   => 0,
+                    'users_id'     => Session::getLoginUserID()
+                ];
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => countElementsInTable(static::getTable(), $restrict), $item::class);
         }
         return '';
     }

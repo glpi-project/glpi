@@ -1014,55 +1014,48 @@ TWIG, $avatar_params) . $username;
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Entity':
+            switch ($item::class) {
+                case Entity::class:
                     if (Session::haveRight('user', READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $count = $DB->request([
-                                'COUNT'     => 'cpt',
-                                'FROM'      => $this->getTable(),
+                        return self::createTabEntry(
+                            text: User::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => countElementsInTable(static::getTable(), [
                                 'LEFT JOIN' => [
                                     User::getTable() => [
                                         'FKEY' => [
-                                            $this->getTable() => 'users_id',
+                                            static::getTable() => 'users_id',
                                             User::getTable()  => 'id'
                                         ]
                                     ]
                                 ],
                                 'WHERE'     => [
                                     User::getTable() . '.is_deleted'    => 0,
-                                    $this->getTable() . '.entities_id'  => $item->getID()
+                                    static::getTable() . '.entities_id'  => $item->getID()
                                 ]
-                            ])->current();
-                            $nb        = $count['cpt'];
-                        }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
+                            ]),
+                            form_itemtype: $item::class,
+                            icon: User::getIcon()
+                        );
                     }
                     break;
 
-                case 'Profile':
+                case Profile::class:
                     if (Session::haveRight('user', READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
-                        }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(
+                            text: User::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForItem($item),
+                            form_itemtype: $item::class
+                        );
                     }
                     break;
 
-                case 'User':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForItem($item);
-                    }
-                    return self::createTabEntry(_n(
-                        'Authorization',
-                        'Authorizations',
-                        Session::getPluralNumber()
-                    ), $nb, $item::getType());
+                case User::class:
+                    return self::createTabEntry(
+                        text: _n('Authorization', 'Authorizations', Session::getPluralNumber()),
+                        nb: static fn () => self::countForItem($item),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

@@ -230,14 +230,14 @@ class Change extends CommonITILObject
                 case __CLASS__:
                     $ong = [];
                     if ($item->canUpdate()) {
-                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
+                         $ong[1] = static::createTabEntry(__('Statistics'), null, null, 'ti ti-chart-pie');
                     }
                     $satisfaction = new ChangeSatisfaction();
                     if (
                         $satisfaction->getFromDB($item->getID())
                         && in_array($item->fields['status'], self::getClosedStatusArray())
                     ) {
-                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), null, static::getType());
                     }
 
                     return $ong;

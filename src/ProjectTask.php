@@ -1438,27 +1438,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
-        switch ($item::class) {
-            case Project::class:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        static::getTable(),
-                        ['projects_id' => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-
-            case self::class:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        static::getTable(),
-                        ['projecttasks_id' => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-        }
-        return '';
+        return match ($item::class) {
+            Project::class => self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: countElementsInTable(static::getTable(), ['projects_id' => $item->getID()]),
+                form_itemtype: $item::class
+            ),
+            self::class => self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: countElementsInTable(static::getTable(), ['projecttasks_id' => $item->getID()]),
+                form_itemtype: $item::class
+            ),
+            default => '',
+        };
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

@@ -67,20 +67,16 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        // can exists for template
-        if (
-            (get_class($item) == static::$itemtype)
-            && static::canView()
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
+        // can exist for template
+        if ($item::class === static::$itemtype && static::canView()) {
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(
                     static::getTable(),
                     [$item::getForeignKeyField() => $item->getID()]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                ),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

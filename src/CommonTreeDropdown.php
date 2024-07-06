@@ -80,19 +80,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if (
-            !$withtemplate
-            && ($item instanceof static)
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    [$this->getForeignKeyField() => $item->getID()]
-                );
-            }
-            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        if (!$withtemplate && ($item instanceof static)) {
+            return self::createTabEntry(
+                text: static::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(static::getTable(), [static::getForeignKeyField() => $item->getID()]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

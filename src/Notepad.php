@@ -114,13 +114,8 @@ class Notepad extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (Session::haveRight($item::$rightname, READNOTE)) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
         }
         return '';
     }

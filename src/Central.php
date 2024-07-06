@@ -68,15 +68,15 @@ class Central extends CommonGLPI
 
         if ($item->getType() == __CLASS__) {
             $tabs = [
-                1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
-                2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),
-                3 => self::createTabEntry(__('Global View'), 0, null, 'ti ti-world'),
-                4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
+                1 => self::createTabEntry(__('Personal View'), null, null, User::getIcon()),
+                2 => self::createTabEntry(__('Group View'), null, null, Group::getIcon()),
+                3 => self::createTabEntry(__('Global View'), null, null, 'ti ti-world'),
+                4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), null, null, RSSFeed::getIcon()),
             ];
 
             $grid = new Glpi\Dashboard\Grid('central');
             if ($grid::canViewOneDashboard()) {
-                array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
+                array_unshift($tabs, self::createTabEntry(__('Dashboard'), null, null, Dashboard::getIcon()));
             }
 
             return $tabs;

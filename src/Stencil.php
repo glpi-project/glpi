@@ -279,9 +279,11 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             return '';
         }
 
-        $nb = count(json_decode($this->getStencilFromItem($item)->fields['zones'] ?? '{}', true));
-
-        return self::createTabEntry($this->getTypeName(), $nb, $item::getType());
+        return self::createTabEntry(
+            text: static::getTypeName(),
+            nb: fn () => count(json_decode($this->getStencilFromItem($item)->fields['zones'] ?? '{}', true)),
+            form_itemtype: $item::class
+        );
     }
 
     public function displayStencil(): void

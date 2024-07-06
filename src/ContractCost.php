@@ -89,17 +89,13 @@ class ContractCost extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         // can exist for template
-        if (
-            $item instanceof Contract
-            && Contract::canView()
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+        if ($item instanceof Contract && Contract::canView()) {
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

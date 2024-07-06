@@ -55,23 +55,24 @@ class Item_Process extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::canView()) {
-            $nb = countElementsInTable(
-                self::getTable(),
-                [
-                    'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
-                ]
-            );
-            if ($nb == 0) {
+            $criteria = [
+                'items_id' => $item->getID(),
+                'itemtype' => $item->getType(),
+            ];
+            // This tab only appears if there is at least one process
+            $has_env = countElementsInTable(self::getTable(), [
+                'WHERE' => $criteria,
+                'LIMIT' => 1 // Only need to know if there is at least one
+            ]);
+            if ($has_env === 0) {
                 return '';
             }
-
-            if (!$_SESSION['glpishow_count_on_tabs']) {
-                $nb = 0;
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(self::getTable(), $criteria),
+                form_itemtype: $item::class
+            );
         }
-
         return '';
     }
 

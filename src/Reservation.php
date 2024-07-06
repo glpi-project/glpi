@@ -59,7 +59,7 @@ class Reservation extends CommonDBChild
             !$withtemplate
             && Session::haveRight("reservation", READ)
         ) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), null, $item::getType());
         }
         return '';
     }

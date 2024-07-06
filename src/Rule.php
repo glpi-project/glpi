@@ -3146,76 +3146,74 @@ JS
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case Entity::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $types      = [];
-                        $collection = new RuleRightCollection();
-                        if ($collection->canList()) {
-                            $types[] = 'RuleRight';
-                        }
-                        $collection = new RuleImportEntityCollection();
-                        if ($collection->canList()) {
-                            $types[] = 'RuleImportEntity';
-                        }
-                        $collection = new RuleMailCollectorCollection();
-                        if ($collection->canList()) {
-                             $types[] = 'RuleMailCollector';
-                        }
-                        if (count($types)) {
-                             $nb = countElementsInTable(
-                                 ['glpi_rules', 'glpi_ruleactions'],
-                                 [
-                                     'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
-                                     'glpi_rules.sub_type'         => $types,
-                                     'glpi_ruleactions.field'      => 'entities_id',
-                                     'glpi_ruleactions.value'      => $item->getID()
-                                 ]
-                             );
-                        }
+                    $types      = [];
+                    $collection = new RuleRightCollection();
+                    if ($collection->canList()) {
+                        $types[] = 'RuleRight';
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    $collection = new RuleImportEntityCollection();
+                    if ($collection->canList()) {
+                        $types[] = 'RuleImportEntity';
+                    }
+                    $collection = new RuleMailCollectorCollection();
+                    if ($collection->canList()) {
+                         $types[] = 'RuleMailCollector';
+                    }
+                    $nb = 0;
+                    if (count($types)) {
+                         $nb = static fn () => countElementsInTable('glpi_rules', [
+                             'LEFT JOIN' => [
+                                 'glpi_ruleactions' => [
+                                     'ON' => [
+                                         'glpi_ruleactions' => 'rules_ids',
+                                         'glpi_rules' => 'id'
+                                     ]
+                                 ]
+                             ],
+                             'WHERE' => [
+                                 'glpi_rules.sub_type'         => $types,
+                                 'glpi_ruleactions.field'      => 'entities_id',
+                                 'glpi_ruleactions.value'      => $item->getID()
+                             ]
+                         ]);
+                    }
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: $nb,
+                        form_itemtype: $item::class
+                    );
 
                 case SLA::class:
                 case OLA::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            'glpi_ruleactions',
-                            ['field' => $item::getFieldNames($item->fields['type'])[1],
-                                'value' => $item->getID()
-                            ]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable('glpi_ruleactions', [
+                            'field' => $item::getFieldNames($item->fields['type'])[1],
+                            'value' => $item->getID()
+                        ]),
+                        form_itemtype: $item::class
+                    );
 
                 default:
                     if ($item instanceof self) {
                         $ong    = [];
-                        $nbcriteria = 0;
-                        $nbaction   = 0;
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nbcriteria = countElementsInTable(
-                                  getTableForItemType($item->getRuleCriteriaClass()),
-                                  [$item->getRuleIdField() => $item->getID()]
-                              );
-                              $nbaction   = countElementsInTable(
-                                  getTableForItemType($item->getRuleActionClass()),
-                                  [$item->getRuleIdField() => $item->getID()]
-                              );
-                        }
-
                         $ong[1] = self::createTabEntry(
-                            RuleCriteria::getTypeName(Session::getPluralNumber()),
-                            $nbcriteria,
-                            $item::getType(),
-                            RuleCriteria::getIcon()
+                            text: RuleCriteria::getTypeName(Session::getPluralNumber()),
+                            nb: countElementsInTable(getTableForItemType($item->getRuleCriteriaClass()), [
+                                $item->getRuleIdField() => $item->getID()
+                            ]),
+                            form_itemtype: $item::class,
+                            icon: RuleCriteria::getIcon()
                         );
                         $ong[2] = self::createTabEntry(
-                            RuleAction::getTypeName(Session::getPluralNumber()),
-                            $nbaction,
-                            $item::getType(),
-                            RuleAction::getIcon()
+                            text: RuleAction::getTypeName(Session::getPluralNumber()),
+                            nb: countElementsInTable(getTableForItemType($item->getRuleActionClass()), [
+                                $item->getRuleIdField() => $item->getID()
+                            ]),
+                            form_itemtype: $item::class,
+                            icon: RuleAction::getIcon()
                         );
                         return $ong;
                     }

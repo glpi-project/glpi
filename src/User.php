@@ -326,14 +326,14 @@ class User extends CommonDBTM
         switch ($item->getType()) {
             case __CLASS__:
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
+                $ong[1] = self::createTabEntry(__('Used items'), null, $item::getType(), 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), null, $item::getType(), 'ti ti-package');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
                     && Session::haveRight(self::$rightname, self::READAUTHENT)
                 ) {
-                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::getType(), AuthLDAP::getIcon());
+                    $ong[3] = self::createTabEntry(__('LDAP information'), null, $item::getType(), AuthLDAP::getIcon());
                 }
                 return $ong;
 
@@ -7065,15 +7065,20 @@ JAVASCRIPT;
      */
     final public function getSubstitutes(): array
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
         if ($this->isNewItem()) {
             return [];
         }
 
         $substitutes = [];
-        $rows = (new ValidatorSubstitute())->find([
-            'users_id' => $this->fields['id'],
+        $it = $DB->request([
+            'SELECT' => ['users_id_substitute'],
+            'FROM'   => ValidatorSubstitute::getTable(),
+            'WHERE'  => ['users_id' => $this->fields['id']]
         ]);
-        foreach ($rows as $row) {
+        foreach ($it as $row) {
             $substitutes[] = $row['users_id_substitute'];
         }
 

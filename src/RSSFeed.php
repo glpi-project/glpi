@@ -421,19 +421,15 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (self::canView()) {
-            $nb = 0;
             switch ($item::class) {
-                case RSSFeed::class:
+                case self::class:
                     $showtab = [1 => self::createTabEntry(__('Content'))];
                     if (Session::haveRight('rssfeed_public', UPDATE)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = $item->countVisibilities();
-                        }
-                        $showtab[2] = self::createTabEntry(_n(
-                            'Target',
-                            'Targets',
-                            Session::getPluralNumber()
-                        ), $nb, $item::getType());
+                        $showtab[2] = self::createTabEntry(
+                            text: _n('Target', 'Targets', Session::getPluralNumber()),
+                            nb: $item->countVisibilities(...),
+                            form_itemtype: $item::class
+                        );
                     }
                     return $showtab;
             }

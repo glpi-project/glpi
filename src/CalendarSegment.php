@@ -426,12 +426,12 @@ class CalendarSegment extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             if ($item instanceof Calendar) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]);
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(
+                    text: self::getTypeName(Session::getPluralNumber()),
+                    nb: static fn () => countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]),
+                    form_itemtype: $item::getType()
+                );
             }
         }
         return '';

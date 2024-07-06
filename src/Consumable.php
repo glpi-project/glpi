@@ -821,19 +821,12 @@ class Consumable extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
-            $nb = 0;
-            switch ($item::class) {
-                case ConsumableItem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  self::countForConsumableItem($item);
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                case User::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForUser($item);
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-            }
+            $nb = match ($item::class) {
+                ConsumableItem::class => static fn () => self::countForConsumableItem($item),
+                User::class => static fn () => self::countForUser($item),
+                default => null
+            };
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

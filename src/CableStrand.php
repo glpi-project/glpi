@@ -66,18 +66,14 @@ class CableStrand extends CommonDropdown
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case __CLASS__:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            Cable::getTable(),
-                            ['cablestrands_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            switch ($item::class) {
+                case self::class:
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(Cable::getTable(), ['cablestrands_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

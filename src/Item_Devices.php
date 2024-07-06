@@ -554,41 +554,35 @@ class Item_Devices extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if ($item->canView()) {
-            $nb = 0;
-            if (in_array($item->getType(), self::getConcernedItems())) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    foreach (self::getItemAffinities($item->getType()) as $link_type) {
-                        $nb   += countElementsInTable(
-                            $link_type::getTable(),
-                            ['items_id'   => $item->getID(),
-                                'itemtype'   => $item->getType(),
-                                'is_deleted' => 0
-                            ]
-                        );
-                    }
-                }
+        if ($item::canView()) {
+            if (in_array($item::class, self::getConcernedItems(), true)) {
                 return self::createTabEntry(
-                    _n('Component', 'Components', Session::getPluralNumber()),
-                    $nb,
-                    $item::getType()
+                    text: _n('Component', 'Components', Session::getPluralNumber()),
+                    nb: static fn () => array_reduce(
+                        array: self::getItemAffinities($item::class),
+                        callback: static fn ($acc, $link_type) => $acc + countElementsInTable($link_type::getTable(), [
+                            'items_id'   => $item->getID(),
+                            'itemtype'   => $item::class,
+                            'is_deleted' => 0
+                        ]),
+                        initial: 0
+                    ),
+                    form_itemtype: $item::class
                 );
             }
             if ($item instanceof CommonDevice) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $deviceClass     = $item->getType();
-                    $linkClass       = $deviceClass::getItem_DeviceType();
-                    $table           = $linkClass::getTable();
-                    $foreignkeyField = $deviceClass::getForeignKeyField();
-                    $nb = countElementsInTable(
-                        $table,
-                        [$foreignkeyField => $item->getID(),
-                            'is_deleted' => 0
-                        ]
-                    );
-                }
-                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                $linkClass       = $item::getItem_DeviceType();
+                $table           = $linkClass::getTable();
+                $foreignkeyField = $item::getForeignKeyField();
+
+                return self::createTabEntry(
+                    text: _n('Item', 'Items', Session::getPluralNumber()),
+                    nb: static fn () => countElementsInTable($table, [
+                        $foreignkeyField => $item->getID(),
+                        'is_deleted' => 0
+                    ]),
+                    form_itemtype: $item::class
+                );
             }
         }
         return '';

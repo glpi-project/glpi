@@ -244,6 +244,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::showDebugInfo()`
 - `CommonDropdown::displayHeader()`
+- `CommonGLPI::createTabEntry()` `nb` parameter no longer accepts integers. Pass a callable that returns a number instead or null. This will always respect the user's preferences for displaying the counter.
 - `CommonGLPI::getAvailableDisplayOptions()`
 - `CommonGLPI::getDisplayOptions()`
 - `CommonGLPI::getDisplayOptionsLink()`

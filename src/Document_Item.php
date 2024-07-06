@@ -263,41 +263,32 @@ class Document_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nbdoc = $nbitem = 0;
         switch ($item::class) {
             case Document::class:
                 $ong = [];
-                if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
-                    $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
-                    $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
-                }
-                $ong[1] = self::createTabEntry(_n(
-                    'Associated item',
-                    'Associated items',
-                    Session::getPluralNumber()
-                ), $nbdoc, $item::class, 'ti ti-package');
+                $ong[1] = self::createTabEntry(
+                    text: _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                    nb: !$item->isNewItem() ? (static fn () => self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']])) : null,
+                    form_itemtype: $item::class,
+                    icon: 'ti ti-package'
+                );
                 $ong[2] = self::createTabEntry(
-                    Document::getTypeName(Session::getPluralNumber()),
-                    $nbitem,
-                    $item::class
+                    text: Document::getTypeName(Session::getPluralNumber()),
+                    nb: !$item->isNewItem() ? (static fn () => self::countForMainItem($item, ['itemtype' => 'Document'])) : null,
+                    form_itemtype: $item::class
                 );
                 return $ong;
 
             default:
                 // Can exist for template
                 if (
-                    Document::canView()
-                    || ($item::class === Ticket::class)
-                    || ($item::class === Reminder::class)
-                    || ($item::class === KnowbaseItem::class)
+                    in_array($item::class, [Ticket::class, Reminder::class, KnowbaseItem::class], true)
+                    || Document::canView()
                 ) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nbitem = self::countForItem($item);
-                    }
                     return self::createTabEntry(
-                        Document::getTypeName(Session::getPluralNumber()),
-                        $nbitem,
-                        $item::class
+                        text: Document::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForItem($item),
+                        form_itemtype: $item::class
                     );
                 }
         }

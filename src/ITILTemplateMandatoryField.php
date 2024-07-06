@@ -47,28 +47,6 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
         return _n('Mandatory field', 'Mandatory fields', $nb);
     }
 
-
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-    {
-
-       // can exists for template
-        if (
-            $item instanceof ITILTemplate
-            && Session::haveRight("itiltemplate", READ)
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    [static::$items_id => $item->getID()]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-        }
-        return '';
-    }
-
-
     public function post_purgeItem()
     {
         /** @var \DBmysql $DB */

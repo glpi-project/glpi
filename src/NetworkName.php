@@ -882,11 +882,11 @@ TWIG, $twig_params);
             $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => self::countForItem($item),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

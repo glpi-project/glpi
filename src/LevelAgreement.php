@@ -485,16 +485,13 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'SLM':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            self::getTable(),
-                            ['slms_id' => $item->getField('id')]
-                        );
-                    }
-                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
+            switch ($item::class) {
+                case SLM::class:
+                    return self::createTabEntry(
+                        text: static::getTypeName(Session::getPluralNumber()),
+                        nb: countElementsInTable(self::getTable(), ['slms_id' => $item->getField('id')]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

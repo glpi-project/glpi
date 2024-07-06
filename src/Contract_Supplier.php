@@ -55,27 +55,23 @@ class Contract_Supplier extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case Supplier::class:
                     if (Contract::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb =  self::countForItem($item);
-                        }
                         return self::createTabEntry(
-                            Contract::getTypeName(Session::getPluralNumber()),
-                            $nb,
-                            $item::class
+                            text: Contract::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForItem($item),
+                            form_itemtype: $item::class
                         );
                     }
                     break;
-
                 case Contract::class:
                     if (Session::haveRight("contact_enterprise", READ)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
-                        }
-                        return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                        return self::createTabEntry(
+                            text: Supplier::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForItem($item),
+                            form_itemtype: $item::class
+                        );
                     }
                     break;
             }

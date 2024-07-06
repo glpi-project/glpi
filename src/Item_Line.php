@@ -47,17 +47,19 @@ class Item_Line extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
         if ($item instanceof Line) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForMainItem($item) + self::countSimcardItemsForLine($item);
-            }
-            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(
+                text: _n('Item', 'Items', Session::getPluralNumber()),
+                nb: static fn () => self::countForMainItem($item) + self::countSimcardItemsForLine($item),
+                form_itemtype: $item::class,
+                icon: 'ti ti-package'
+            );
         } else {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item) + self::countSimcardLinesForItem($item);
-            }
-            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(
+                text: Line::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => self::countForItem($item) + self::countSimcardLinesForItem($item),
+                form_itemtype: $item::class
+            );
         }
     }
 

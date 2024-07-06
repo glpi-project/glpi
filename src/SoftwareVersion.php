@@ -378,13 +378,13 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case Software::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(static::getTable(), ['softwares_id' => $item->getID()]);
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: countElementsInTable(static::getTable(), ['softwares_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

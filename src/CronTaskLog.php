@@ -84,22 +84,18 @@ class CronTaskLog extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (!$withtemplate) {
-            $nb = 0;
-            if ($item instanceof CronTask) {
-                $ong    = [];
-                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb =  countElementsInTable(
-                        $this->getTable(),
-                        ['crontasks_id' => $item->getID(),
-                            'state'        => self::STATE_STOP
-                        ]
-                    );
-                }
-                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
-                return $ong;
-            }
+        if (!$withtemplate && $item instanceof CronTask) {
+            $ong    = [];
+            $ong[1] = self::createTabEntry(__('Statistics'), null, $item::class, 'ti ti-report-analytics');
+            $ong[2] = self::createTabEntry(
+                text: _n('Log', 'Logs', Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(static::getTable(), [
+                    'crontasks_id' => $item->getID(),
+                    'state'        => self::STATE_STOP
+                ]),
+                form_itemtype: $item::class
+            );
+            return $ong;
         }
         return '';
     }

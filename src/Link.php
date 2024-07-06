@@ -73,27 +73,35 @@ class Link extends CommonDBTM
         }
     }
 
+    /**
+     * @param CommonGLPI $item
+     * @return int
+     */
+    public static function countForItem(CommonGLPI $item): int
+    {
+        return countElementsInTable(Link_Itemtype::getTable(), [
+            'LEFT JOIN' => [
+                'glpi_links' => [
+                    'ON' => [
+                        'glpi_links_itemtypes' => 'links_id',
+                        'glpi_links' => 'id',
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_links_itemtypes.itemtype' => $item::class,
+            ] + getEntitiesRestrictCriteria(self::getTable(), '', self::getEntityRestrictForItem($item), $item instanceof CommonDBTM ? $item->maybeRecursive() : false)
+        ]);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (self::canView()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $entity_criteria = getEntitiesRestrictCriteria(
-                    Link::getTable(),
-                    '',
-                    self::getEntityRestrictForItem($item),
-                    $item instanceof CommonDBTM ? $item->maybeRecursive() : false
-                );
-
-                $nb = countElementsInTable(
-                    ['glpi_links_itemtypes','glpi_links'],
-                    [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType()
-                    ] + $entity_criteria
-                );
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => static::countForItem($item),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

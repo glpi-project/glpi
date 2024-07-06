@@ -297,24 +297,19 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case NetworkPort::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ["networkports_id" => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: Vlan::getTypeName(),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['networkports_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
                 case Vlan::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ["vlans_id" => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(NetworkPort::getTypeName(), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: NetworkPort::getTypeName(),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['vlans_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

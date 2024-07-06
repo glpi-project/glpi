@@ -968,19 +968,16 @@ JAVASCRIPT;
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
         switch ($item::class) {
             case SoftwareLicense::class:
                 if (!$withtemplate) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForLicense($item->getID());
-                    }
-                    return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
+                    return [
+                        1 => self::createTabEntry(__('Summary'), null, $item::class),
                         2 => self::createTabEntry(
-                            _n('Item', 'Items', Session::getPluralNumber()),
-                            $nb,
-                            $item::class,
-                            'ti ti-package'
+                            text: _n('Item', 'Items', Session::getPluralNumber()),
+                            nb: static fn () => self::countForLicense($item->getID()),
+                            form_itemtype: $item::class,
+                            icon: 'ti ti-package'
                         )
                     ];
                 }

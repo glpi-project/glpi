@@ -54,15 +54,11 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countForItem($item);
-                }
-                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-        }
-        return '';
+        return self::createTabEntry(
+            text: OperatingSystem::getTypeName(Session::getPluralNumber()),
+            nb: static fn () => self::countForItem($item),
+            form_itemtype: $item::class
+        );
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

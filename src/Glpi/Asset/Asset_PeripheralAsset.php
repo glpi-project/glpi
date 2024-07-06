@@ -711,20 +711,20 @@ TWIG, $twig_params);
             if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
                 $canview = true;
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countLinkedAssets($item);
+                    $nb = static fn () => self::countLinkedAssets($item);
                 }
             } else {
                 $canview = self::canViewPeripherals($item);
                 if ($canview && $_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countPeripherals($item);
+                    $nb = static fn () => self::countPeripherals($item);
                 }
             }
 
             if ($canview) {
                 return self::createTabEntry(
-                    _n('Connection', 'Connections', Session::getPluralNumber()),
-                    $nb,
-                    $item::class
+                    text: _n('Connection', 'Connections', Session::getPluralNumber()),
+                    nb: $nb,
+                    form_itemtype: $item::class
                 );
             }
         }

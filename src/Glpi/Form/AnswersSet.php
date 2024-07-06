@@ -90,14 +90,9 @@ final class AnswersSet extends CommonDBChild
             return false;
         }
 
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countAnswers($item);
-        }
-
         return self::createTabEntry(
-            self::getTypeName(),
-            $count,
+            text: self::getTypeName(),
+            nb: static fn () => self::countAnswers($item),
         );
     }
 
@@ -259,7 +254,7 @@ final class AnswersSet extends CommonDBChild
      *
      * @return int
      */
-    protected function countAnswers(Form $form): int
+    protected static function countAnswers(Form $form): int
     {
         return countElementsInTable(self::getTable(), [
             Form::getForeignKeyField() => $form->getID()

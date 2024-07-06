@@ -116,23 +116,20 @@ class Group extends CommonTreeDropdown
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case self::class:
                     $ong = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            self::getTable(),
-                            ['groups_id' => $item->getID()]
-                        );
-                    }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::class);
+                    $ong[4] = self::createTabEntry(
+                        text: __('Child groups'),
+                        nb: static fn () => countElementsInTable(self::getTable(), ['groups_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
 
                     if ($item->getField('is_itemgroup')) {
-                        $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
+                        $ong[1] = self::createTabEntry(__('Used items'), null, $item::class, 'ti ti-package');
                     }
                     if ($item->getField('is_assign')) {
-                        $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
+                        $ong[2] = self::createTabEntry(__('Managed items'), null, $item::class, 'ti ti-package');
                     }
                     if (
                         $item->getField('is_usergroup')
@@ -140,9 +137,9 @@ class Group extends CommonTreeDropdown
                         && Session::haveRight("user", User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
-                        $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::class, 'ti ti-login');
+                        $ong[3] = self::createTabEntry(__('LDAP directory link'), null, $item::class, 'ti ti-login');
                     }
-                    $ong[5] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                    $ong[5] = self::createTabEntry(__('Security'), null, $item::class, 'ti ti-shield-lock');
                     return $ong;
             }
         }

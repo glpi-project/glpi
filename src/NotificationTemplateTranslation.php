@@ -383,21 +383,16 @@ TWIG, $twig_params);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case self::class:
-                    return self::createTabEntry(__('Preview'), 0, $item::class, 'ti ti-template');
-                    break;
+                    return self::createTabEntry(__('Preview'), null, $item::class, 'ti ti-template');
                 case 'NotificationTemplate':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['notificationtemplates_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: countElementsInTable(static::getTable(), ['notificationtemplates_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

@@ -139,22 +139,18 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView() && !$withtemplate) {
-            $nb = 0;
-            switch ($item::class) {
-                case __CLASS__:
-                    $ong    = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            [
-                                static::getForeignKeyField() => $item->getID(),
-                                'is_deleted'                => 0
-                            ]
-                        );
-                    }
-                    $ong[1] = self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                    $ong[3] = self::createTabEntry(__('Kanban'));
-                    return $ong;
+            if ($item::class === self::class) {
+                $ong = [];
+                $ong[1] = self::createTabEntry(
+                    text: static::getTypeName(Session::getPluralNumber()),
+                    nb: countElementsInTable(static::getTable(), [
+                        static::getForeignKeyField() => $item->getID(),
+                        'is_deleted' => 0
+                    ]),
+                    form_itemtype: $item::class
+                );
+                $ong[3] = self::createTabEntry(__('Kanban'));
+                return $ong;
             }
         }
 

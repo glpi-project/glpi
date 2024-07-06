@@ -75,20 +75,17 @@ class Item_Disk extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        // can exists for template
+        // can exist for template
         if ($item::canView()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    self::getTable(),
-                    [
-                        'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
-                        'is_deleted'   => 0
-                    ]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(self::getTable(), [
+                    'itemtype'     => $item::class,
+                    'items_id'     => $item->getID(),
+                    'is_deleted'   => 0
+                ]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

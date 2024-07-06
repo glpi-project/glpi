@@ -66,28 +66,20 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate && Notification::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Notification::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['notifications_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                break;
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['notifications_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
                 case NotificationTemplate::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['notificationtemplates_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                break;
+                    return self::createTabEntry(
+                        text: Notification::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['notificationtemplates_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

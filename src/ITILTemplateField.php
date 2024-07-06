@@ -92,6 +92,18 @@ abstract class ITILTemplateField extends CommonDBChild
         return '';
     }
 
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        // can exist for template
+        if ($item instanceof ITILTemplate && Session::haveRight("itiltemplate", READ)) {
+            return static::createTabEntry(
+                text: static::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(static::getTable(), [static::$items_id => $item->getID()]),
+                form_itemtype: $item::class
+            );
+        }
+        return '';
+    }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {

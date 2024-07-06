@@ -1561,27 +1561,25 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
         switch ($item::class) {
-            case 'Software':
+            case Software::class:
                 if (!$withtemplate) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForSoftware($item->getID());
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForSoftware($item->getID()),
+                        form_itemtype: $item::class
+                    );
                 }
                 break;
 
             case SoftwareVersion::class:
                 if (!$withtemplate) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForVersion($item->getID());
-                    }
-                    return [1 => __('Summary'),
+                    return [
+                        1 => __('Summary'),
                         2 => self::createTabEntry(
-                            self::getTypeName(Session::getPluralNumber()),
-                            $nb,
-                            $item::class
+                            text: self::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForVersion($item->getID()),
+                            form_itemtype: $item::class
                         )
                     ];
                 }
@@ -1590,10 +1588,11 @@ class Item_SoftwareVersion extends CommonDBRelation
             default:
                 // Installation allowed for template
                 if (Software::canView()) {
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForItem($item);
-                    }
-                    return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: Software::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForItem($item),
+                        form_itemtype: $item::class
+                    );
                 }
                 break;
         }

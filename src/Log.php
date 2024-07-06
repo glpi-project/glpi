@@ -98,16 +98,14 @@ class Log extends CommonDBTM
             return '';
         }
 
-        $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable(
-                'glpi_logs',
-                ['itemtype' => $item->getType(),
-                    'items_id' => $item->getID()
-                ]
-            );
-        }
-        return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
+        return self::createTabEntry(
+            text: self::getTypeName(1),
+            nb: static fn () => countElementsInTable(self::getTable(), [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID()
+            ]),
+            form_itemtype: $item::class
+        );
     }
 
 

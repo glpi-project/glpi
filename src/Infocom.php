@@ -141,28 +141,23 @@ class Infocom extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-       // Can exists on template
+        // Can exist on template
         if (Session::haveRight(self::$rightname, READ)) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForSupplier($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
-
-                default:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            'glpi_infocoms',
-                            ['itemtype' => $item->getType(),
-                                'items_id' => $item->getID()
-                            ]
-                        );
-                    }
-                    return self::createTabEntry(__('Management'), $nb, $item::getType());
-            }
+            return match ($item::class) {
+                Supplier::class => self::createTabEntry(
+                    text: _n('Item', 'Items', Session::getPluralNumber()),
+                    nb: static fn() => self::countForSupplier($item),
+                    form_itemtype: $item::class
+                ),
+                default => self::createTabEntry(
+                    text: __('Management'),
+                    nb: static fn() => countElementsInTable(self::getTable(), [
+                        'itemtype' => $item::class,
+                        'items_id' => $item->getID()
+                    ]),
+                    form_itemtype: $item::class
+                ),
+            };
         }
         return '';
     }

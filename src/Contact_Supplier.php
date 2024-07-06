@@ -62,19 +62,13 @@ class Contact_Supplier extends CommonDBRelation
     {
 
         if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  self::countForItem($item);
-                    }
-                    return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-
-                case 'Contact':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForItem($item);
-                    }
-                    return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            $label = match ($item::class) {
+                Supplier::class => Contact::getTypeName(Session::getPluralNumber()),
+                Contact::class  => Supplier::getTypeName(Session::getPluralNumber()),
+                default         => null,
+            };
+            if ($label !== null) {
+                return self::createTabEntry($label, static fn () => self::countForItem($item), $item::class);
             }
         }
         return '';

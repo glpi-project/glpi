@@ -330,27 +330,17 @@ class Rack extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case DCRoom::getType():
-                $nb = 0;
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        [
-                            'dcrooms_id'   => $item->getID(),
-                            'is_deleted'   => 0
-                        ]
-                    );
-                }
-                return self::createTabEntry(
-                    self::getTypeName(Session::getPluralNumber()),
-                    $nb,
-                    $item::getType()
-                );
-             break;
-        }
-        return '';
+        return match ($item::class) {
+            DCRoom::class => self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn() => countElementsInTable(self::getTable(), [
+                    'dcrooms_id' => $item->getID(),
+                    'is_deleted' => 0
+                ]),
+                form_itemtype: $item::class
+            ),
+            default => '',
+        };
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

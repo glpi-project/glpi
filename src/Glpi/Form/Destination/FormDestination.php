@@ -71,16 +71,10 @@ final class FormDestination extends CommonDBChild
             return false;
         }
 
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countForForm($item);
-        }
-
         return self::createTabEntry(
-            self::getTypeName(),
-            $count,
-            null,
-            self::getIcon() // Must be passed manually for some reason
+            text: self::getTypeName(),
+            nb: static fn () => self::countForForm($item),
+            icon: self::getIcon() // Must be passed manually for some reason
         );
     }
 
@@ -302,7 +296,7 @@ final class FormDestination extends CommonDBChild
      *
      * @return int
      */
-    protected function countForForm(Form $form): int
+    protected static function countForForm(Form $form): int
     {
         return countElementsInTable(
             self::getTable(),

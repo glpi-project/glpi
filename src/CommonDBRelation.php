@@ -2105,6 +2105,33 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
     /**
+     * Count for item and linked items
+     *
+     * @param CommonDBTM $item
+     * @return int
+     * @see CommonDBTM::getLinkedItems()
+     */
+    public static function countForItemAndLinks(CommonDBTM $item): int
+    {
+        // Direct one
+        $count = static::countForItem($item);
+        // Linked items
+        $linkeditems = $item->getLinkedItems();
+
+        if (count($linkeditems)) {
+            foreach ($linkeditems as $type => $tab) {
+                $typeitem = new $type();
+                foreach ($tab as $ID) {
+                    if ($typeitem->getFromDB($ID)) {
+                        $count += static::countForItem($typeitem);
+                    }
+                }
+            }
+        }
+        return $count;
+    }
+
+    /**
      * Count items for main itemtype
      *
      * @param CommonDBTM $item              Item instance

@@ -299,7 +299,7 @@ class Conf extends CommonGLPI
             case __CLASS__:
                 $tabs = [];
                 if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                    $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
+                    $tabs[1] = self::createTabEntry(__('Configuration'), null, $item::getType());
                 }
                 if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
                     $icon = "<i class='ti ti-upload me-2'></i>";
@@ -407,7 +407,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_volume'>";
-            echo \Item_Disk::createTabEntry(\Item_Disk::getTypeName(Session::getPluralNumber()), 0, \Item_Disk::getType());
+            echo \Item_Disk::createTabEntry(\Item_Disk::getTypeName(Session::getPluralNumber()), null, \Item_Disk::getType());
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -420,7 +420,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='import_software'>";
-            echo \Software::createTabEntry(\Software::getTypeName(Session::getPluralNumber()), 0, \Software::getType());
+            echo \Software::createTabEntry(\Software::getTypeName(Session::getPluralNumber()), null, \Software::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -435,7 +435,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_monitor'>";
-            echo \Monitor::createTabEntry(\Monitor::getTypeName(Session::getPluralNumber()), 0, \Monitor::getType());
+            echo \Monitor::createTabEntry(\Monitor::getTypeName(Session::getPluralNumber()), null, \Monitor::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -449,7 +449,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_printer'>";
-            echo \Printer::createTabEntry(\Printer::getTypeName(Session::getPluralNumber()), 0, \Printer::getType());
+            echo \Printer::createTabEntry(\Printer::getTypeName(Session::getPluralNumber()), null, \Printer::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -464,7 +464,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_peripheral'>";
-            echo \Peripheral::createTabEntry(\Peripheral::getTypeName(Session::getPluralNumber()), 0, \Peripheral::getType());
+            echo \Peripheral::createTabEntry(\Peripheral::getTypeName(Session::getPluralNumber()), null, \Peripheral::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -478,7 +478,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_antivirus'>";
-            echo \ItemAntivirus::createTabEntry(\ItemAntivirus::getTypeName(Session::getPluralNumber()), 0, \ItemAntivirus::getType());
+            echo \ItemAntivirus::createTabEntry(\ItemAntivirus::getTypeName(Session::getPluralNumber()), null, \ItemAntivirus::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -493,7 +493,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_process'>";
-            echo \Item_Process::createTabEntry(\Item_Process::getTypeName(Session::getPluralNumber()), 0, \Item_Process::getType());
+            echo \Item_Process::createTabEntry(\Item_Process::getTypeName(Session::getPluralNumber()), null, \Item_Process::getType());
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -505,7 +505,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_env'>";
-            echo \Item_Environment::createTabEntry(\Item_Environment::getTypeName(Session::getPluralNumber()), 0, \Item_Environment::getType());
+            echo \Item_Environment::createTabEntry(\Item_Environment::getTypeName(Session::getPluralNumber()), null, \Item_Environment::getType());
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -520,7 +520,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_unmanaged'>";
-            echo \Unmanaged::createTabEntry(\Unmanaged::getTypeName(Session::getPluralNumber()), 0, \Unmanaged::getType());
+            echo \Unmanaged::createTabEntry(\Unmanaged::getTypeName(Session::getPluralNumber()), null, \Unmanaged::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -539,7 +539,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='dropdown_states_id_default$rand'>";
-            echo \State::createTabEntry(__('Default status'), 0, \State::getType());
+            echo \State::createTabEntry(__('Default status'), null, \State::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -557,7 +557,7 @@ class Conf extends CommonGLPI
             echo "</td>";
 
             echo "<td><label for='dropdown_inventory_frequency$rand'>";
-            echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, self::getType());
+            echo self::createTabEntry(__('Inventory frequency (in hours)'), null, self::getType());
             echo "</label></td><td>";
             \Dropdown::showNumber(
                 "inventory_frequency",
@@ -576,7 +576,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='dropdown_entities_id_id_default$rand'>";
-            echo \Entity::createTabEntry(__('Default entity'), 0, \Entity::getType());
+            echo \Entity::createTabEntry(__('Default entity'), null, \Entity::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -594,7 +594,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='import_monitor_on_partial_sn'>";
-            echo \Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, \Monitor::getType());
+            echo \Monitor::createTabEntry(__('Import monitor on serial partial match'), null, \Monitor::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -648,7 +648,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_vm'>";
-            echo \ItemVirtualMachine::createTabEntry(__('Import virtual machines'), 0, \ItemVirtualMachine::getType());
+            echo \ItemVirtualMachine::createTabEntry(__('Import virtual machines'), null, \ItemVirtualMachine::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -660,7 +660,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='dropdown_vm_type$rand'>";
-            echo \ComputerType::createTabEntry(\ComputerType::getTypeName(1), 0, \ComputerType::getType());
+            echo \ComputerType::createTabEntry(\ComputerType::getTypeName(1), null, \ComputerType::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -679,7 +679,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='vm_as_computer'>";
-            echo \Computer::createTabEntry(__('Create computer for virtual machines'), 0, \Computer::getType());
+            echo \Computer::createTabEntry(__('Create computer for virtual machines'), null, \Computer::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -691,7 +691,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='vm_components'>";
-            echo \ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, \ItemVirtualMachine::getType());
+            echo \ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), null, \ItemVirtualMachine::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -718,7 +718,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_processor'>";
-            echo \DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, \DeviceProcessor::getType());
+            echo \DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), null, \DeviceProcessor::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -731,7 +731,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_harddrive'>";
-            echo \DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceHardDrive::getType());
+            echo \DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), null, \DeviceHardDrive::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -746,7 +746,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_memory'>";
-            echo \DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, \DeviceMemory::getType());
+            echo \DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), null, \DeviceMemory::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -759,7 +759,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_soundcard'>";
-            echo \DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, \DeviceSoundCard::getType());
+            echo \DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), null, \DeviceSoundCard::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -775,7 +775,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_networkcard'>";
-            echo \DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, \DeviceNetworkCard::getType());
+            echo \DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), null, \DeviceNetworkCard::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -788,7 +788,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_networkcardvirtual'>";
-            echo \DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, \DeviceNetworkCard::getType());
+            echo \DeviceNetworkCard::createTabEntry(__('Virtual network cards'), null, \DeviceNetworkCard::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -804,7 +804,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_graphiccard'>";
-            echo \DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, \DeviceGraphicCard::getType());
+            echo \DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), null, \DeviceGraphicCard::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -817,7 +817,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_simcard'>";
-            echo \DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, \DeviceSimcard::getType());
+            echo \DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), null, \DeviceSimcard::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -833,7 +833,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_drive'>";
-            echo \DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceDrive::getType());
+            echo \DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), null, \DeviceDrive::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -847,7 +847,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='component_networkdrive'>";
-            echo \DeviceDrive::createTabEntry(__('Network drives'), 0, \DeviceDrive::getType());
+            echo \DeviceDrive::createTabEntry(__('Network drives'), null, \DeviceDrive::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -862,7 +862,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_drive'>";
-            echo \DeviceDrive::createTabEntry(__('Removable drives'), 0, \DeviceDrive::getType());
+            echo \DeviceDrive::createTabEntry(__('Removable drives'), null, \DeviceDrive::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -874,7 +874,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='component_powersupply'>";
-            echo \DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, \DevicePowerSupply::getType());
+            echo \DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), null, \DevicePowerSupply::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -890,7 +890,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_control'>";
-            echo \DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, \DeviceControl::getType());
+            echo \DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), null, \DeviceControl::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -904,7 +904,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='component_battery'>";
-            echo \DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, \DeviceBattery::getType());
+            echo \DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), null, \DeviceBattery::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -919,7 +919,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
             echo "<tr class='tab_bg_1'><td>";
-            echo \Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, \Agent::getType());
+            echo \Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), null, \Agent::getType());
             echo "</td><td width='20%'>";
             Dropdown::showNumber(
                 'stale_agents_delay',
@@ -931,7 +931,7 @@ class Conf extends CommonGLPI
                 ]
             );
             echo "</td><td>";
-            echo \Agent::createTabEntry(_n('Action', 'Actions', 1), 0, \Agent::getType());
+            echo \Agent::createTabEntry(_n('Action', 'Actions', 1), null, \Agent::getType());
             echo "</><td width='20%'>";
             //action
             $action = self::getDefaults()['stale_agents_action'];
@@ -961,7 +961,7 @@ class Conf extends CommonGLPI
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
             echo "<td>";
-            echo \State::createTabEntry(__('If the asset status is'), 0, \State::getType());
+            echo \State::createTabEntry(__('If the asset status is'), null, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             $condition = [];
@@ -988,7 +988,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
             echo "<td>";
-            echo \State::createTabEntry(__('Status to apply'), 0, \State::getType());
+            echo \State::createTabEntry(__('Status to apply'), null, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             State::dropdown(

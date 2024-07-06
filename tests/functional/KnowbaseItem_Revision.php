@@ -180,7 +180,7 @@ class KnowbaseItem_Revision extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo("<span><i class='ti ti-history me-2'></i>Revision</span> <span class='badge glpi-badge'>1</span>");
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-history me-2'></i>Revisions</span> <span class='badge glpi-badge'>1</span>");
 
         $this->boolean(
             $kb1->update(

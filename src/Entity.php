@@ -492,10 +492,10 @@ class Entity extends CommonTreeDropdown
                 case self::class:
                     $ong    = [];
                     $ong[1] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()));
-                    $ong[2] = self::createTabEntry(__('Address'), 0, $item::class, Location::getIcon());
+                    $ong[2] = self::createTabEntry(__('Address'), null, $item::class, Location::getIcon());
                     $ong[3] = self::createTabEntry(__('Advanced information'));
                     if (Notification::canView()) {
-                        $ong[4] = self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), 0, $item::class, Notification::getIcon());
+                        $ong[4] = self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), null, $item::class, Notification::getIcon());
                     }
                     if (
                         Session::haveRightsOr(
@@ -503,13 +503,13 @@ class Entity extends CommonTreeDropdown
                             [self::READHELPDESK, self::UPDATEHELPDESK]
                         )
                     ) {
-                        $ong[5] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset');
+                        $ong[5] = self::createTabEntry(__('Assistance'), null, $item::class, 'ti ti-headset');
                     }
-                    $ong[6] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
+                    $ong[6] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), null, $item::class, 'ti ti-package');
                     if (Session::haveRight(Config::$rightname, UPDATE)) {
-                        $ong[7] = self::createTabEntry(__('UI customization'), 0, $item::class, 'ti ti-palette');
+                        $ong[7] = self::createTabEntry(__('UI customization'), null, $item::class, 'ti ti-palette');
                     }
-                    $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                    $ong[8] = self::createTabEntry(__('Security'), null, $item::class, 'ti ti-shield-lock');
 
                     return $ong;
             }

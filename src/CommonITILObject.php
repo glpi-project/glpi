@@ -8226,12 +8226,11 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function addDefaultFormTab(array &$ong)
     {
-
-        $timeline    = $this->getTimelineItems(['with_logs' => false]);
-        $nb_elements = count($timeline);
-        $label = static::getTypeName(1);
-
-        $ong[static::getType() . '$main'] = static::createTabEntry($label, $nb_elements, static::getType());
+        $ong[static::class . '$main'] = static::createTabEntry(
+            text: static::getTypeName(1),
+            nb: fn () => count($this->getTimelineItems(['with_logs' => true])),
+            form_itemtype: static::class
+        );
         return $this;
     }
 

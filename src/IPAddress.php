@@ -342,8 +342,8 @@ class IPAddress extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        switch ($item->getType()) {
-            case 'IPNetwork':
+        switch ($item::class) {
+            case IPNetwork::class:
                 $result = $DB->request([
                     'COUNT'  => 'cpt',
                     'FROM'   => 'glpi_ipaddresses_ipnetworks',
@@ -363,16 +363,11 @@ class IPAddress extends CommonDBChild
      **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (
             $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
         }
         return '';
     }

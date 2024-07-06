@@ -53,17 +53,18 @@ class Ticket_Contract extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (Contract::canView()) {
-            $nb = 0;
             if ($item::class === Ticket::class) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = count(self::getListForItem($item));
-                }
-                return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                return self::createTabEntry(
+                    text: Contract::getTypeName(Session::getPluralNumber()),
+                    nb: self::countForItem($item),
+                    form_itemtype: $item::class
+                );
             } else if ($item::class === Contract::class) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = count(self::getListForItem($item));
-                }
-                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                return self::createTabEntry(
+                    text: Ticket::getTypeName(Session::getPluralNumber()),
+                    nb: self::countForItem($item),
+                    form_itemtype: $item::class
+                );
             } else {
                 return '';
             }

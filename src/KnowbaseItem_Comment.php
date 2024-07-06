@@ -58,26 +58,23 @@ class KnowbaseItem_Comment extends CommonDBTM
             return '';
         }
 
-        $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            if ($item::class === KnowbaseItem::class) {
-                $where = [
-                    'knowbaseitems_id' => $item->getID(),
-                    'language'         => null
-                ];
-            } else {
-                $where = [
-                    'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
-                ];
-            }
-
-            $nb = countElementsInTable(
-                'glpi_knowbaseitems_comments',
-                $where
-            );
+        if ($item::class === KnowbaseItem::class) {
+            $where = [
+                'knowbaseitems_id' => $item->getID(),
+                'language'         => null
+            ];
+        } else {
+            $where = [
+                'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
+                'language'         => $item->fields['language']
+            ];
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
+
+        return self::createTabEntry(
+            text: self::getTypeName(Session::getPluralNumber()),
+            nb: static fn () => countElementsInTable(self::getTable(), $where),
+            form_itemtype: $item::class
+        );
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

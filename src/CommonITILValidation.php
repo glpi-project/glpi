@@ -237,16 +237,16 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         if (!$hidetab) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $restrict = [static::$items_id => $item->getID()];
-               // No rights for create only count asign ones
-                if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-                    $restrict[] = static::getTargetCriteriaForUser(Session::getLoginUserID());
-                }
-                $nb = countElementsInTable(static::getTable(), $restrict);
+            $restrict = [static::$items_id => $item->getID()];
+            // No rights for create only count assigned ones
+            if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
+                $restrict[] = static::getTargetCriteriaForUser(Session::getLoginUserID());
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(static::getTable(), $restrict),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

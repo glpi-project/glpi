@@ -350,16 +350,12 @@ class DatabaseInstance extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!self::canView()) {
-            return '';
-        }
-
-        $nb = 0;
-        if (in_array($item->getType(), self::getTypes(true))) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        if (self::canView() && in_array($item::class, self::getTypes(true), true)) {
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->fields['id']]),
+                form_itemtype: $item::getType()
+            );
         }
         return '';
     }

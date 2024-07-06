@@ -368,13 +368,13 @@ abstract class LevelAgreementLevel extends RuleTicket
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case static::$parentclass:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
-                    }
-                    return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(
+                        text: static::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

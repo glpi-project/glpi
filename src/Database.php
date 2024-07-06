@@ -334,20 +334,17 @@ class Database extends CommonDBChild
     {
         if (
             !$withtemplate
-            && ($item::class === DatabaseInstance::class)
-            && $item->canView()
+            && $item::class === DatabaseInstance::class
+            && $item::canView()
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    self::getTable(),
-                    [
-                        'databaseinstances_id' => $item->getID(),
-                        'is_deleted' => 0
-                    ]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(), $nb, $item::class);
+            return self::createTabEntry(
+                text: self::getTypeName(),
+                nb: static fn () => countElementsInTable(self::getTable(), [
+                    'databaseinstances_id' => $item->getID(),
+                    'is_deleted' => 0
+                ]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

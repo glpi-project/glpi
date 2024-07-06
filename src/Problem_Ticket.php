@@ -52,21 +52,19 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Ticket::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $problems = self::getTicketProblemsData($item->getID());
-                        $nb = count($problems);
-                    }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-
+                    return self::createTabEntry(
+                        text: Problem::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForItem($item),
+                        form_itemtype: $item::class
+                    );
                 case Problem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $tickets = self::getProblemTicketsData($item->getID());
-                        $nb = count($tickets);
-                    }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: Ticket::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => self::countForItem($item),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

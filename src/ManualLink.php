@@ -58,29 +58,21 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
+    public static function countForItem(CommonDBTM $item)
+    {
+        return countElementsInTable('glpi_manuallinks', [
+            'itemtype'  => $item::class,
+            'items_id'  => $item->fields[$item->getIndexName()],
+        ]);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
-            $count += countElementsInTable(
-                'glpi_manuallinks',
-                [
-                    'itemtype'  => $item->getType(),
-                    'items_id'  => $item->fields[$item->getIndexName()],
-                ]
-            );
-            if (Link::canView()) {
-                 $count += countElementsInTable(
-                     ['glpi_links_itemtypes', 'glpi_links'],
-                     [
-                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                         'glpi_links_itemtypes.itemtype'  => $item->getType()
-                     ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
-                 );
-            }
-        }
-        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
+        return self::createTabEntry(
+            text: _n('Link', 'Links', Session::getPluralNumber()),
+            nb: static fn () => static::countForItem($item) + Link::countForItem($item),
+            form_itemtype: $item::class
+        );
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

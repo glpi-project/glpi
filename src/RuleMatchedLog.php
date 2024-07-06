@@ -90,18 +90,17 @@ class RuleMatchedLog extends CommonDBTM
         $array_ret = [];
 
         if ($item::class === Agent::class) {
-            $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
+            $array_ret[0] = self::createTabEntry(__('Import information'), null, $item::class);
         } else {
             $continue = true;
 
             switch ($item::class) {
                 case Agent::class:
-                    $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
+                    $array_ret[0] = self::createTabEntry(__('Import information'), null, $item::class);
                     break;
 
                 case Unmanaged::class:
-                    $cnt = self::countForItem($item);
-                    $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
+                    $array_ret[1] = self::createTabEntry(__('Import information'), static fn () => self::countForItem($item), $item::class);
                     break;
 
                 case Computer::class:
@@ -118,8 +117,7 @@ class RuleMatchedLog extends CommonDBTM
             if (!$continue) {
                 return [];
             } else if (empty($array_ret)) {
-                $cnt = self::countForItem($item);
-                $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
+                $array_ret[1] = self::createTabEntry(__('Import information'), static fn () => self::countForItem($item), $item::class);
             }
         }
         return $array_ret;

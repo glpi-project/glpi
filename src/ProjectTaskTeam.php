@@ -85,16 +85,8 @@ class ProjectTaskTeam extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if (!$withtemplate && static::canView()) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'ProjectTask':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = $item->getTeamCount();
-                    }
-                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
-            }
+        if (!$withtemplate && $item::class === ProjectTask::class && static::canView()) {
+            return self::createTabEntry(self::getTypeName(1), $item->getTeamCount(...), $item::class);
         }
         return '';
     }

@@ -236,7 +236,7 @@ class Item_SoftwareLicense extends DbTestCase
             1 => "<span><i class='ti ti-key me-2'></i>Summary</span>",
             2 => \Item_SoftwareLicense::createTabEntry(
                 _n('Item', 'Items', \Session::getPluralNumber()),
-                2,
+                static fn () => 2,
                 $license::getType(),
                 'ti ti-package'
             )

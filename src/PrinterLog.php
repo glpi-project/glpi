@@ -72,12 +72,14 @@ class PrinterLog extends CommonDBChild
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $array_ret = [];
 
-        if ($item->getType() == 'Printer') {
-            $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
+        if ($item::class === Printer::class) {
+            $array_ret[] = self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]),
+                form_itemtype: $item::class
+            );
         }
         return $array_ret;
     }

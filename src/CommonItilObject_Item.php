@@ -515,23 +515,23 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case static::$itemtype_1:
                     if (
                         ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
                         && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)
                     ) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = countElementsInTable(
+                        return static::createTabEntry(
+                            text: _n('Item', 'Items', Session::getPluralNumber()),
+                            nb: static fn () => countElementsInTable(
                                 static::getTable(),
                                 [
                                     static::$items_id_1 => $item->getID(),
                                     'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
                                 ]
-                            );
-                        }
-                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                            ),
+                            form_itemtype: $item::class
+                        );
                     }
             }
         }
@@ -1623,8 +1623,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return countElementsInTable(
             static::getTable(),
             [
-                'itemtype' => $asset::getType(),
-                'items_id' => $asset->getId(),
+                'WHERE' => [
+                    'itemtype' => $asset::class,
+                    'items_id' => $asset->getId(),
+                ],
+                'LIMIT' => 1
             ]
         ) > 0;
     }

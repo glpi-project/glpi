@@ -77,28 +77,19 @@ class Certificate_Item extends CommonDBRelation
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            if (
-                $item->getType() == 'Certificate'
-                && count(Certificate::getTypes(false))
-            ) {
-                $nb = 0;
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countForMainItem($item);
-                }
-                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            if ($item::class === Certificate::class && count(Certificate::getTypes(false))) {
+                return self::createTabEntry(
+                    text: _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                    nb: static fn () => self::countForMainItem($item),
+                    form_itemtype: $item::getType(),
+                    icon: 'ti ti-package'
+                );
             } else if (
-                in_array($item->getType(), Certificate::getTypes(true))
+                in_array($item::class, Certificate::getTypes(true), true)
                 && Certificate::canView()
             ) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(
-                        Certificate::getTypeName(2),
-                        self::countForItem($item)
-                    );
-                }
-                return Certificate::getTypeName(2);
+                return self::createTabEntry(Certificate::getTypeName(2), static fn () => self::countForItem($item));
             }
         }
         return '';

@@ -54,8 +54,11 @@ class NetworkPortMetrics extends CommonDBChild
         $array_ret = [];
 
         if ($item::class === NetworkPort::class) {
-            $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
+            $array_ret[] = self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]),
+                form_itemtype: $item::class
+            );
         }
         return $array_ret;
     }

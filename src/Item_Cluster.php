@@ -53,11 +53,12 @@ class Item_Cluster extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = self::countForMainItem($item);
-        }
-        return self::createTabEntry(_n('Item', 'Items', $nb), $nb, $item::getType(), 'ti ti-package');
+        return self::createTabEntry(
+            text: _n('Item', 'Items', Session::getPluralNumber()),
+            nb: static fn () => self::countForMainItem($item),
+            form_itemtype: $item::class,
+            icon: 'ti ti-package'
+        );
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

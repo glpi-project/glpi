@@ -1665,35 +1665,44 @@ class NetworkPort extends CommonDBChild
         global $CFG_GLPI;
 
         // Can exist on template
-        $nb = 0;
-        if (NetworkEquipment::canView()) {
-            if (in_array($item::class, $CFG_GLPI["networkport_types"], true)) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countForItem($item);
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-            }
+        if (NetworkEquipment::canView() && in_array($item::class, $CFG_GLPI["networkport_types"], true)) {
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
         }
 
         if ($item::class === self::class) {
-            $nbAlias = countElementsInTable(
+            $has_alias = countElementsInTable(
                 'glpi_networkportaliases',
-                ['networkports_id_alias' => $item->getField('id')]
-            );
-            if ($nbAlias > 0) {
-                $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias, $item::class);
+                [
+                    'WHERE' => ['networkports_id_alias' => $item->getField('id')],
+                    'LIMIT' => 1
+                ]
+            ) > 0;
+            if ($has_alias) {
+                $aliases = self::createTabEntry(
+                    text: NetworkPortAlias::getTypeName(Session::getPluralNumber()),
+                    nb: static fn () => countElementsInTable('glpi_networkportaliases', [
+                        'networkports_id_alias' => $item->getField('id')
+                    ]),
+                    form_itemtype: $item::class
+                );
             } else {
                 $aliases = '';
             }
-            $nbAggregates = countElementsInTable(
+
+            $has_aggregate = countElementsInTable(
                 'glpi_networkportaggregates',
-                ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']]
-            );
-            if ($nbAggregates > 0) {
+                [
+                    'WHERE' => ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']],
+                    'LIMIT' => 1
+                ]
+            ) > 0;
+            if ($has_aggregate) {
                 $aggregates = self::createTabEntry(
-                    NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
-                    $nbAggregates,
-                    $item::class
+                    text: NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
+                    nb: static fn () => countElementsInTable('glpi_networkportaggregates', [
+                        'networkports_id_list' => ['LIKE', '%"' . $item->getField('id') . '"%']
+                    ]),
+                    form_itemtype: $item::class
                 );
             } else {
                 $aggregates = '';

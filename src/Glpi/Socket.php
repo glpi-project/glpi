@@ -588,28 +588,24 @@ class Socket extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (!$withtemplate) {
-            $nb = 0;
-            switch (get_class($item)) {
+            switch ($item::class) {
                 case Location::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  countElementsInTable(
-                            $this->getTable(),
-                            ['locations_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(
+                        text: self::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable(static::getTable(), ['locations_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
                 default:
                     /** @var CommonDBTM $item */
                     if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb =  countElementsInTable(
-                                  $this->getTable(),
-                                  ['itemtype' => $item->getType(),
-                                      'items_id' => $item->getID()
-                                  ]
-                              );
-                        }
-                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(
+                            text: self::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => countElementsInTable(static::getTable(), [
+                                'itemtype' => $item::class,
+                                'items_id' => $item->getID()
+                            ]),
+                            form_itemtype: $item::class
+                        );
                     }
             }
         }

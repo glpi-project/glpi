@@ -710,14 +710,25 @@ class CommonGLPI implements CommonGLPIInterface
      * icon to be displayed, unless you manually specify the icon.
      *
      * @param string  $text text to display
-     * @param integer $nb   number of items (default 0)
+     * @param callable|null $nb   Callable that returns the number of items. The callable will be evaluated only if the user preference is set to display the counter.
+     *                            Passing null disables the counter.
      * @param class-string<CommonGLPI>|null $form_itemtype
      * @param string $icon
      *
      *  @return string The tab text (including icon and counter if applicable)
      **/
-    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
+    public static function createTabEntry($text, ?callable $nb = null, ?string $form_itemtype = null, string $icon = ''): string
     {
+        $counter = 0;
+        if (is_callable($nb)) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $counter = $nb();
+            }
+        }
+        if (!is_numeric($counter)) {
+            $counter = 0;
+        }
+
         if (empty($icon)) {
             $icon = static::getTabIconClass($form_itemtype);
         }
@@ -728,9 +739,9 @@ class CommonGLPI implements CommonGLPIInterface
         if (!empty($icon)) {
             $text = '<span>' . $icon . $text . '</span>';
         }
-        if ($nb) {
-           //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$nb</span>");
+        if ($counter > 0) {
+            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
+            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$counter</span>");
         }
         return $text;
     }
@@ -938,7 +949,7 @@ class CommonGLPI implements CommonGLPIInterface
                 && empty($withtemplate)
                 && (count($tabs) > 1)
             ) {
-                $tabs[-1] = ['title'  => static::createTabEntry(__('All'), 0, null, 'ti ti-layout-list'),
+                $tabs[-1] = ['title'  => static::createTabEntry(__('All'), null, null, 'ti ti-layout-list'),
                     'url'    => $tab_path,
                     'params' => Toolbox::append_params(['_glpi_tab' => '-1'] + $tab_params, '&amp;'),
                 ];

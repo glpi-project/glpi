@@ -67,19 +67,10 @@ class Appliance_Item extends CommonDBRelation
             return '';
         }
 
-        $nb = 0;
-        if ($item->getType() == Appliance::class) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                if (!$item->isNewItem()) {
-                    $nb = self::countForMainItem($item);
-                }
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-        } else if (in_array($item->getType(), Appliance::getTypes(true))) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForItem($item);
-            }
-            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        if ($item::class === Appliance::class) {
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::countForMainItem($item), $item::getType(), 'ti ti-package');
+        } else if (in_array($item->getType(), Appliance::getTypes(true), true)) {
+            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::getType());
         }
 
         return '';

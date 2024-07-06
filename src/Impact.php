@@ -102,27 +102,21 @@ class Impact extends CommonGLPI
             );
         }
 
-        if (
-            !$_SESSION['glpishow_count_on_tabs']
-            || !isset($item->fields['id'])
-            || $is_itil_object
-        ) {
-            // Count is disabled in config OR no item loaded OR ITIL object -> no count
-            $total = 0;
-        } else if ($is_enabled_asset) {
+        $total = null;
+        if ($is_enabled_asset && !$is_itil_object && isset($item->fields['id'])) {
             // If on an asset, get the number of its direct dependencies
-            $total = count($DB->request([
+            $total = static fn () => count($DB->request([
                 'FROM'  => ImpactRelation::getTable(),
                 'WHERE' => [
                     'OR' => [
                         [
                             // Source item is our item
-                            'itemtype_source' => get_class($item),
+                            'itemtype_source' => $item::class,
                             'items_id_source' => $item->fields['id'],
                         ],
                         [
                             // Impacted item is our item AND source item is enabled
-                            'itemtype_impacted' => get_class($item),
+                            'itemtype_impacted' => $item::class,
                             'items_id_impacted' => $item->fields['id'],
                             'itemtype_source'   => self::getEnabledItemtypes()
                         ]
@@ -131,7 +125,7 @@ class Impact extends CommonGLPI
             ]));
         }
 
-        return self::createTabEntry(__("Impact analysis"), $total, $item::getType());
+        return self::createTabEntry(__("Impact analysis"), $total, $item::class);
     }
 
     public static function displayTabContentForItem(

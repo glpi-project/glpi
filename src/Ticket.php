@@ -702,7 +702,7 @@ class Ticket extends CommonITILObject
             if ($_SESSION['glpishow_count_on_tabs']) {
                 switch (get_class($item)) {
                     case User::class:
-                        $nb = countElementsInTable(
+                        $nb = static fn () => countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
                                 'glpi_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
@@ -711,11 +711,11 @@ class Ticket extends CommonITILObject
                                 'glpi_tickets.is_deleted'        => 0
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
-                         $title = __('Created tickets');
+                        $title = __('Created tickets');
                         break;
 
                     case Supplier::class:
-                        $nb = countElementsInTable(
+                        $nb = static fn () => countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
                                 'glpi_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
@@ -726,7 +726,7 @@ class Ticket extends CommonITILObject
                         break;
 
                     case SLA::class:
-                        $nb = countElementsInTable(
+                        $nb = static fn () => countElementsInTable(
                             'glpi_tickets',
                             [
                                 'OR'  => [
@@ -739,7 +739,7 @@ class Ticket extends CommonITILObject
                         break;
 
                     case OLA::class:
-                        $nb = countElementsInTable(
+                        $nb = static fn () => countElementsInTable(
                             'glpi_tickets',
                             [
                                 'OR'  => [
@@ -752,16 +752,16 @@ class Ticket extends CommonITILObject
                         break;
 
                     case Group::class:
-                          $nb = countElementsInTable(
-                              ['glpi_tickets', 'glpi_groups_tickets'],
-                              [
-                                  'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                  'glpi_groups_tickets.groups_id'  => $item->getID(),
-                                  'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
-                                  'glpi_tickets.is_deleted'        => 0
-                              ] + getEntitiesRestrictCriteria(self::getTable())
-                          );
-                         $title = __('Created tickets');
+                        $nb = static fn () => countElementsInTable(
+                            ['glpi_tickets', 'glpi_groups_tickets'],
+                            [
+                                'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_groups_tickets.groups_id'  => $item->getID(),
+                                'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
+                                'glpi_tickets.is_deleted'        => 0
+                            ] + getEntitiesRestrictCriteria(self::getTable())
+                        );
+                        $title = __('Created tickets');
                         break;
 
                     default:
@@ -773,9 +773,9 @@ class Ticket extends CommonITILObject
                         break;
                 }
             }
-           // Not for Ticket class
-            if ($item->getType() != __CLASS__) {
-                return self::createTabEntry($title, $nb, $item::getType());
+            // Not for Ticket class
+            if ($item::class !== self::class) {
+                return self::createTabEntry($title, $nb, $item::class);
             }
         }
 
@@ -789,10 +789,10 @@ class Ticket extends CommonITILObject
                 $satisfaction->getFromDB($item->getID())
                 && $item->fields['status'] == self::CLOSED
             ) {
-                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), null, static::getType());
             }
             if ($item->canView()) {
-                $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
+                $ong[4] = static::createTabEntry(__('Statistics'), null, null, 'ti ti-chart-pie');
             }
             return $ong;
         }

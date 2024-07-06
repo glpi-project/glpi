@@ -161,15 +161,11 @@ class Calendar_Holiday extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             if ($item instanceof Calendar) {
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(self::getTable(), ['calendars_id' => $item->getID()]);
-                }
                 return self::createTabEntry(
-                    _n('Close time', 'Close times', Session::getPluralNumber()),
-                    $nb,
-                    $item::getType()
+                    text: _n('Close time', 'Close times', Session::getPluralNumber()),
+                    nb: static fn () => countElementsInTable(self::getTable(), ['calendars_id' => $item->getID()]),
+                    form_itemtype: $item::getType()
                 );
             }
         }

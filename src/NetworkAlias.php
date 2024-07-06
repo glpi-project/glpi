@@ -477,24 +477,14 @@ class NetworkAlias extends FQDNLabel
             $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item::class) {
-                    case NetworkName::class:
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['networknames_id' => $item->getID()]
-                        );
-                        break;
-
-                    case FQDN::class:
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['fqdns_id' => $item->getID()]
-                        );
-                }
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+            $show_count = $item::class === NetworkName::class || $item::class === FQDN::class;
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: $show_count ? (static fn () => countElementsInTable(static::getTable(), [
+                    $item::getForeignKeyField() => $item->getID()
+                ])) : 0,
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

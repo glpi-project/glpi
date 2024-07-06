@@ -1261,19 +1261,11 @@ TWIG, ['printer_id' => $printer->getID()]);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Printer::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForPrinter($item);
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
-
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::showForPrinter($item));
                 case CartridgeItem::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForCartridgeItem($item);
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), static fn () => self::showForCartridgeItem($item));
             }
         }
         return '';

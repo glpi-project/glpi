@@ -80,61 +80,39 @@ class Item_Problem extends CommonItilObject_Item
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $CFG_GLPI
-         **/
-        global $DB, $CFG_GLPI;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
+        if (in_array($item::getType(), $CFG_GLPI['asset_types'], true) && !$this->shouldDisplayTabForAsset($item)) {
             return '';
         }
 
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Problem':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForMainItem($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+            switch ($item::class) {
+                case Problem::class:
+                    return self::createTabEntry(
+                        text: _n('Item', 'Items', Session::getPluralNumber()),
+                        nb: static fn () => self::countForMainItem($item),
+                        form_itemtype: $item::class
+                    );
 
-                case 'User':
-                case 'Group':
-                case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $from = $item->getType() == 'Group' ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item->getType() . 's');
-                        $result = $DB->request([
-                            'COUNT'  => 'cpt',
-                            'FROM'   => $from,
-                            'WHERE'  => [
-                                $item->getForeignKeyField()   => $item->fields['id']
-                            ]
-                        ])->current();
-                        $nb = $result['cpt'];
-                    }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                case User::class:
+                case Group::class:
+                case Supplier::class:
+                    $from = $item::class === Group::class ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item::class . 's');
+                    return self::createTabEntry(
+                        text: Problem::getTypeName(Session::getPluralNumber()),
+                        nb: static fn () => countElementsInTable($from, [$item::getForeignKeyField() => $item->fields['id']]),
+                        form_itemtype: $item::class
+                    );
 
                 default:
                     if (Session::haveRight("problem", Problem::READALL)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
-                                    foreach ($tab as $ID) {
-                                        if ($typeitem->getFromDB($ID)) {
-                                            $nb += self::countForItem($typeitem);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(
+                            text: Problem::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForItemAndLinks($item),
+                            form_itemtype: $item::class
+                        );
                     }
             }
         }

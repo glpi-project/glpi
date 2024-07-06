@@ -151,20 +151,20 @@ class Profile extends CommonDBTM
             switch ($item::class) {
                 case self::class:
                     if ($item->fields['interface'] === 'helpdesk') {
-                        $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset'); // Helpdesk
+                        $ong[3] = self::createTabEntry(__('Assistance'), null, $item::class, 'ti ti-headset'); // Helpdesk
                         $ong[4] = self::createTabEntry(__('Life cycles'));
-                        $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
-                        $ong[8] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-cog');
-                        $ong[9] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[6] = self::createTabEntry(__('Tools'), null, $item::class, 'ti ti-briefcase');
+                        $ong[8] = self::createTabEntry(__('Setup'), null, $item::class, 'ti ti-cog');
+                        $ong[9] = self::createTabEntry(__('Security'), null, $item::class, 'ti ti-shield-lock');
                     } else {
-                        $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
-                        $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset');
+                        $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), null, $item::class, 'ti ti-package');
+                        $ong[3] = self::createTabEntry(__('Assistance'), null, $item::class, 'ti ti-headset');
                         $ong[4] = self::createTabEntry(__('Life cycles'));
-                        $ong[5] = self::createTabEntry(__('Management'), 0, $item::class, 'ti ti-wallet');
-                        $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
-                        $ong[7] = self::createTabEntry(__('Administration'), 0, $item::class, 'ti ti-shield-check');
-                        $ong[8] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
-                        $ong[9] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[5] = self::createTabEntry(__('Management'), null, $item::class, 'ti ti-wallet');
+                        $ong[6] = self::createTabEntry(__('Tools'), null, $item::class, 'ti ti-briefcase');
+                        $ong[7] = self::createTabEntry(__('Administration'), null, $item::class, 'ti ti-shield-check');
+                        $ong[8] = self::createTabEntry(__('Setup'), null, $item::class, 'ti ti-settings');
+                        $ong[9] = self::createTabEntry(__('Security'), null, $item::class, 'ti ti-shield-lock');
                     }
                     return $ong;
             }

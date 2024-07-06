@@ -87,7 +87,7 @@ class Budget extends CommonDropdown
             switch ($item->getType()) {
                 case __CLASS__:
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package')
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), null, $item::getType(), 'ti ti-package')
                     ];
             }
         }

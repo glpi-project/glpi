@@ -53,22 +53,14 @@ class Item_Rack extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                    $nb += countElementsInTable(
-                        PDU_Rack::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-        }
-        return '';
+        return self::createTabEntry(
+            text: self::getTypeName(Session::getPluralNumber()),
+            nb: static function () use ($item) {
+                return countElementsInTable(self::getTable(), ['racks_id'  => $item->getID()])
+                    + countElementsInTable(PDU_Rack::getTable(), ['racks_id'  => $item->getID()]);
+            },
+            form_itemtype: $item::class
+        );
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

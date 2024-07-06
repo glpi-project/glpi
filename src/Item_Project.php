@@ -219,40 +219,25 @@ class Item_Project extends CommonDBRelation
         echo "</div>";
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Project':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForMainItem($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-
+            switch ($item::class) {
+                case Project::class:
+                    return self::createTabEntry(
+                        text: _n('Item', 'Items', Session::getPluralNumber()),
+                        nb: static fn () => self::countForMainItem($item),
+                        form_itemtype: $item::class,
+                        icon: 'ti ti-package'
+                    );
                 default:
-                   // Not used now
+                    // Not used now
                     if (Session::haveRight("project", Project::READALL)) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
-                                    foreach ($tab as $ID) {
-                                        $typeitem->getFromDB($ID);
-                                        $nb += self::countForItem($typeitem);
-                                    }
-                                }
-                            }
-                        }
-                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(
+                            text: Project::getTypeName(Session::getPluralNumber()),
+                            nb: static fn () => self::countForItemAndLinks($item),
+                            form_itemtype: $item::class
+                        );
                     }
             }
         }

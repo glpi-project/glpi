@@ -205,24 +205,22 @@ class Contract_Item extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Can exists on template
+        // Can exist on template
         if (Contract::canView()) {
-            $nb = 0;
             switch ($item::class) {
                 case Contract::class:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForMainItem($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
-
+                    return self::createTabEntry(
+                        text: _n('Item', 'Items', Session::getPluralNumber()),
+                        nb: static fn () => self::countForMainItem($item),
+                        form_itemtype: $item::class,
+                        icon: 'ti ti-package'
+                    );
                 default:
-                    if (
-                        $_SESSION['glpishow_count_on_tabs']
-                        && in_array($item::class, $CFG_GLPI["contract_types"], true)
-                    ) {
-                        $nb = self::countForItem($item);
-                    }
-                    return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                    return self::createTabEntry(
+                        text: Contract::getTypeName(Session::getPluralNumber()),
+                        nb: in_array($item::class, $CFG_GLPI["contract_types"], true) ? (static fn () => self::countForItem($item)) : 0,
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

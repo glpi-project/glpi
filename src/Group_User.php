@@ -643,23 +643,16 @@ class Group_User extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case User::class:
                     if (Group::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = self::countForItem($item);
-                        }
-                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
                     }
                     break;
 
                 case Group::class:
                     if (User::canView()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
-                        }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), static fn () => self::countForItem($item), $item::class);
                     }
                     break;
             }

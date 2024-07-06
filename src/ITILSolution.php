@@ -60,16 +60,12 @@ class ITILSolution extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->isNewItem()) {
-            return '';
-        }
-        if ($item->maySolve()) {
-            $nb    = 0;
-            $title = self::getTypeName(Session::getPluralNumber());
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countFor($item->getType(), $item->getID());
-            }
-            return self::createTabEntry($title, $nb, $item::getType());
+        if (!$item->isNewItem() && $item->maySolve()) {
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => self::countFor($item::class, $item->getID()),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }

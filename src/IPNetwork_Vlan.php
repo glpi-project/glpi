@@ -232,18 +232,14 @@ class IPNetwork_Vlan extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'IPNetwork':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  countElementsInTable(
-                            $this->getTable(),
-                            ['ipnetworks_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::getType());
+            switch ($item::class) {
+                case IPNetwork:: class:
+                    return self::createTabEntry(
+                        text: Vlan::getTypeName(),
+                        nb: static fn () => countElementsInTable(self::getTable(), ['ipnetworks_id' => $item->getID()]),
+                        form_itemtype: $item::class
+                    );
             }
         }
         return '';

@@ -624,7 +624,7 @@ class DisplayPreference extends CommonDBTM
                 return $ong;
 
             case Config::class:
-                return self::createTabEntry(self::getTypeName(1), 0, __CLASS__, 'ti ti-columns-3');
+                return self::createTabEntry(self::getTypeName(1), null, __CLASS__, 'ti ti-columns-3');
         }
         return '';
     }

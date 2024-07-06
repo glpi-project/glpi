@@ -75,7 +75,7 @@ class ValidatorSubstitute extends DbTestCase
 
         yield [
             'item' => new Preference(),
-            'expected' => "Authorized substitute <span class='badge glpi-badge'>1</span>",
+            'expected' => "Authorized substitutes <span class='badge glpi-badge'>1</span>",
         ];
 
         $_SESSION['glpishow_count_on_tabs'] = 0;

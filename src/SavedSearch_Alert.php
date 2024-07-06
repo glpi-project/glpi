@@ -70,18 +70,12 @@ class SavedSearch_Alert extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         // can exists for template
-        if (
-            ($item instanceof SavedSearch)
-            && SavedSearch::canView()
-        ) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    ['savedsearches_id' => $item->getID()]
-                );
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        if ($item instanceof SavedSearch && SavedSearch::canView()) {
+            return self::createTabEntry(
+                text: self::getTypeName(Session::getPluralNumber()),
+                nb: static fn () => countElementsInTable(static::getTable(), ['savedsearches_id' => $item->getID()]),
+                form_itemtype: $item::class
+            );
         }
         return '';
     }
