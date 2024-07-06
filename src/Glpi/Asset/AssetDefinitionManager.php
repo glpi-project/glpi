@@ -38,12 +38,15 @@ namespace Glpi\Asset;
 use Change_Item;
 use CommonGLPI;
 use DirectoryIterator;
+use Dropdown;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
 use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
+use Session;
 
 /**
  * @extends AbstractDefinitionManager<AssetDefinition>
@@ -60,6 +63,18 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
      * @var CapacityInterface[]
      */
     private array $capacities = [];
+
+    /**
+     * Dropdown itemtypes allowed for custom field definitions.
+     * @var array<string, array<class-string<CommonDBTM>, string>>
+     * @see self::getAllowedDropdownItemtypes()
+     */
+    private ?array $allowed_dropdown_itemtypes = null;
+
+    /**
+     * @var class-string<TypeInterface>[]|null Custom field types
+     */
+    private ?array $custom_field_types = null;
 
     /**
      * Singleton constructor
@@ -81,6 +96,29 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
                 && (new ReflectionClass($classname))->isAbstract() === false
             ) {
                 $this->capacities[$classname] = new $classname();
+            }
+        }
+
+        $directory_iterator = new DirectoryIterator(__DIR__ . '/CustomFieldType');
+
+        if ($this->custom_field_types === null) {
+            $this->custom_field_types = [];
+            /** @var \SplFileObject $file */
+            foreach ($directory_iterator as $file) {
+                // Compute class name with the expected namespace
+                $classname = $file->getExtension() === 'php'
+                    ? 'Glpi\\Asset\\CustomFieldType\\' . $file->getBasename('.php')
+                    : null;
+
+                // Validate that the class is a valid question type
+                if (
+                    $classname !== null
+                    && class_exists($classname)
+                    && is_subclass_of($classname, TypeInterface::class)
+                    && (new ReflectionClass($classname))->isAbstract() === false
+                ) {
+                    $this->custom_field_types[] = $classname;
+                }
             }
         }
     }
@@ -274,6 +312,46 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     public function getAvailableCapacities(): array
     {
         return $this->capacities;
+    }
+
+    /**
+     * Returns the dropdown itemtypes allowed for custom field definitions.
+     * @param bool $flatten If true, returns a flat array of itemtypes rather than separated by category.
+     * @return array<string, array<class-string<CommonDBTM>, string>>
+     */
+    public function getAllowedDropdownItemtypes($flatten = false): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if ($this->allowed_dropdown_itemtypes === null) {
+            $this->allowed_dropdown_itemtypes = [
+                _n('Asset', "Assets", Session::getPluralNumber()) => array_combine(
+                    $CFG_GLPI['asset_types'],
+                    array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['asset_types'])
+                ),
+            ];
+            $this->allowed_dropdown_itemtypes = array_merge_recursive($this->allowed_dropdown_itemtypes, Dropdown::getStandardDropdownItemTypes());
+        }
+
+        if ($flatten) {
+            $itemtypes = [];
+            foreach ($this->allowed_dropdown_itemtypes as $category) {
+                $itemtypes = array_merge($itemtypes, $category);
+            }
+            return $itemtypes;
+        }
+
+        return $this->allowed_dropdown_itemtypes;
+    }
+
+    /**
+     * Get the list of field types available
+     * @return class-string<TypeInterface>[]
+     */
+    public function getCustomFieldTypes(): array
+    {
+        return $this->custom_field_types;
     }
 
     /**

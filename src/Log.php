@@ -153,8 +153,8 @@ class Log extends CommonDBTM
 
            // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
-                if (!isset($val2['table'])) {
-                   // skip sub-title
+                if (!isset($val2['table']) || ($val2['no_history'] ?? false) === true) {
+                    // skip sub-title and no_history fields
                     continue;
                 }
                // specific for profile
@@ -234,8 +234,8 @@ class Log extends CommonDBTM
 
         // create a query to insert history
         $id_search_option = $changes[0];
-        $old_value        = $changes[1];
-        $new_value        = $changes[2];
+        $old_value        = $changes[1] ?? '';
+        $new_value        = $changes[2] ?? '';
 
         if ($uid = Session::getLoginUserID(false)) {
             if (is_numeric($uid)) {

@@ -93,6 +93,7 @@
         "csso-cli": "^4.0.2",
         "cypress": "^13.8.1",
         "cypress-axe": "^1.5.0",
+        "cypress-network-idle": "^1.14.2",
         "eslint": "^8.57.0",
         "eslint-plugin-cypress": "^2.15.1",
         "eslint-plugin-mocha": "^10.5.0",

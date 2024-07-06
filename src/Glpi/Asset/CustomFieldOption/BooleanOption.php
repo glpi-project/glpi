@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -6,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,9 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-import './commands.js';
-import './commands/select2.js';
-import './commands/form.js';
-import '@testing-library/cypress/add-commands';
-import './cypress-axe.js';
-import 'cypress-network-idle';
+namespace Glpi\Asset\CustomFieldOption;
+
+use Glpi\Application\View\TemplateRenderer;
+
+class BooleanOption extends AbstractOption
+{
+    public function getFormInput(): string
+    {
+        $twig_params = [
+            'item' => $this->custom_field,
+            'key' => $this->getKey(),
+            'label' => $this->getName(),
+            'value' => $this->getValue(),
+        ];
+        // language=Twig
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.sliderField('field_options[' ~ key ~ ']', value, label) }}
+        TWIG, $twig_params);
+    }
+
+    public function getValue(): bool
+    {
+        return (bool) parent::getValue();
+    }
+}

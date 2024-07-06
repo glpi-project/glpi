@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -6,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,9 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-import './commands.js';
-import './commands/select2.js';
-import './commands/form.js';
-import '@testing-library/cypress/add-commands';
-import './cypress-axe.js';
-import 'cypress-network-idle';
+namespace Glpi\Asset\CustomFieldOption;
+
+use Glpi\Asset\CustomFieldDefinition;
+
+abstract class AbstractOption implements OptionInterface
+{
+    public function __construct(
+        protected CustomFieldDefinition $custom_field,
+        protected string $key,
+        protected string $name,
+        protected bool $apply_to_default = true,
+        protected mixed $default_value = null
+    ) {
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    public function setValue(mixed $value): void
+    {
+        $this->custom_field->fields['field_options'][$this->key] = $this->normalizeValue($value);
+    }
+
+    public function getValue(): mixed
+    {
+        return $this->custom_field->fields['field_options'][$this->key] ?? $this->default_value;
+    }
+
+    public function normalizeValue(mixed $value): mixed
+    {
+        return $value;
+    }
+
+    public function getApplyToDefault(): bool
+    {
+        return $this->apply_to_default;
+    }
+}

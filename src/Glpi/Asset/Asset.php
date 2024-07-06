@@ -36,12 +36,14 @@
 namespace Glpi\Asset;
 
 use CommonDBTM;
+use Dropdown;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CustomObject\CustomObjectTrait;
-use Group_Item;
-use Entity;
 use Group;
+use Group_Item;
 use Location;
+use Log;
 use Manufacturer;
 use State;
 use User;
@@ -50,7 +52,11 @@ abstract class Asset extends CommonDBTM
 {
     use CustomObjectTrait;
 
-    use \Glpi\Features\AssignableItem;
+    use \Glpi\Features\AssignableItem {
+        getEmpty as getEmptyFromAssignableItem;
+        post_getFromDB as post_getFromDBFromAssignableItem;
+        post_updateItem as post_updateItemFromAssignableItem;
+    }
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
     use \Glpi\Features\Inventoriable;
@@ -290,6 +296,15 @@ abstract class Asset extends CommonDBTM
 
         $search_options = $this->amendSearchOptions($search_options);
 
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
+        foreach ($custom_fields as $custom_field) {
+            $opt = $custom_field->getFieldType()->getSearchOption();
+            if ($opt !== null) {
+                $opt['itemtype'] ??= static::class;
+                $search_options[] = $opt;
+            }
+        }
+
         return $search_options;
     }
 
@@ -308,6 +323,7 @@ abstract class Asset extends CommonDBTM
             [
                 'item'   => $this,
                 'params' => $options,
+                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
             ]
         );
         return true;
@@ -317,6 +333,8 @@ abstract class Asset extends CommonDBTM
     {
         $input = $this->prepareGroupFields($input);
 
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
@@ -324,9 +342,108 @@ abstract class Asset extends CommonDBTM
     {
         $input = $this->prepareGroupFields($input);
 
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
+    protected function handleCustomFieldsUpdate(array $input): array
+    {
+        $custom_fields = $this->getDecodedCustomFields();
+
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            if (!isset($input[$custom_field_name])) {
+                continue;
+            }
+            $value = $input[$custom_field_name];
+
+            try {
+                $custom_fields[$custom_field->getID()] = $custom_field->getFieldType()->formatValueForDB($value);
+            } catch (\InvalidArgumentException) {
+                continue;
+            }
+        }
+        $input['custom_fields'] = json_encode($custom_fields);
+
+        return $input;
+    }
+
+    private function getDecodedCustomFields(): array
+    {
+        return json_decode($this->fields['custom_fields'] ?? '[]', true) ?? [];
+    }
+
+    public function getEmpty()
+    {
+        if (!$this->getEmptyFromAssignableItem()) {
+            return false;
+        }
+
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $f_name = 'custom_' . $custom_field->fields['name'];
+            $this->fields[$f_name] = $custom_field->fields['default_value'];
+            if (($custom_field->fields['field_options']['multiple'] ?? false) && is_string($this->fields[$f_name])) {
+                $this->fields[$f_name] = empty($custom_field->fields['default_value']) ? [] : [$custom_field->fields['default_value']];
+            }
+        }
+        return true;
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        $this->post_getFromDBFromAssignableItem();
+
+        $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
+        $custom_field_values = $this->getDecodedCustomFields();
+
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $value = $custom_field_values[$custom_field->getID()] ?? $custom_field->fields['default_value'];
+
+            $this->fields[$custom_field_name] = $custom_field->getFieldType()->formatValueFromDB($value);
+        }
+    }
+
+    public function pre_updateInDB()
+    {
+        parent::pre_updateInDB();
+        // Fill old values for custom fields
+        $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $this->oldvalues[$custom_field_name] = $this->fields[$custom_field_name];
+        }
+    }
+
+    public function post_updateItem($history = true)
+    {
+        $this->post_updateItemFromAssignableItem($history);
+        if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {
+            foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+                $custom_field_name = 'custom_' . $custom_field->fields['name'];
+                $field_type = $custom_field->getFieldType();
+                $old_value = $field_type->formatValueFromDB($this->oldvalues[$custom_field_name] ?? $field_type->getDefaultValue());
+                $current_value = $field_type->formatValueFromDB($this->fields[$custom_field_name] ?? null);
+                $opt = $custom_field->getFieldType()->getSearchOption();
+
+                if ($old_value !== $current_value) {
+                    $dropdown = $opt['table'] !== static::getTable();
+                    if ($dropdown) {
+                        $old_value = $old_value !== null ? Dropdown::getDropdownName($opt['table'], $old_value) : $old_value;
+                        $current_value = $current_value !== null ? Dropdown::getDropdownName($opt['table'], $current_value) : $current_value;
+                    }
+                    Log::history($this->getID(), static::class, [
+                        $custom_field->getSearchOptionID(),
+                        $old_value,
+                        $current_value,
+                    ]);
+                }
+            }
+        }
+    }
 
     public function getCloneRelations(): array
     {

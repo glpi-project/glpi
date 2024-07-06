@@ -4474,6 +4474,8 @@ JAVASCRIPT
         $templateresult    = $params["templateResult"] ?? "templateResult";
         $templateselection = $params["templateSelection"] ?? "templateSelection";
 
+        $enable_tags = $params["tags"] ? 'true' : 'false';
+
         $js = <<<JS
             select2_configs['{$id}'] = {
                 type: 'adapt',
@@ -4482,7 +4484,8 @@ JAVASCRIPT
                 placeholder: {$placeholder},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 templateresult: {$templateresult},
-                templateselection: {$templateselection}
+                templateselection: {$templateselection},
+                tags: {$enable_tags},
             };
 JS;
 

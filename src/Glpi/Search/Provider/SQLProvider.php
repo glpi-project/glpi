@@ -1238,7 +1238,7 @@ final class SQLProvider implements SearchProviderInterface
 
         /**
          * @param array &$criteria
-         * @param string|QueryFunction $value
+         * @param string|QueryExpression $value
          * @return void
          */
         $append_criterion_with_search = static function (array &$criteria, $value) use ($SEARCH, $RAW_SEARCH, $DB): void {
@@ -1631,9 +1631,13 @@ final class SQLProvider implements SearchProviderInterface
         $tocompute      = "`$table`.`$field`";
         $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
         if (isset($opt["computation"])) {
+            $is_query_exp = is_a($opt["computation"], QueryExpression::class);
             $tocompute = $opt["computation"];
             $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
             $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
+            if ($is_query_exp) {
+                $tocompute = new QueryExpression($tocompute);
+            }
         }
 
         // Preformat items
@@ -1684,7 +1688,8 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                        // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = \DBConnection::getDefaultCharset();
                         $date_computation = QueryFunction::convert($date_computation, $default_charset);
@@ -2743,6 +2748,32 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                         $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
+                        break;
+
+                    case "custom_condition_only":
+                        $nocondition_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $rt => 'id',
+                                        new QueryExpression("$rt.id"),
+                                    ],
+                                ]
+                            ]
+                        ];
+
+                        $append_join_criteria($nocondition_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $nocondition_join);
+                        $transitemtype = getItemTypeForTable($new_table);
+                        if (Session::haveTranslations($transitemtype, $field)) {
+                            $transAS            = $nt . '_trans_' . $field;
+                            $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
+                                $transAS,
+                                $nt,
+                                $transitemtype,
+                                $field
+                            ));
+                        }
                         break;
 
                     default:
