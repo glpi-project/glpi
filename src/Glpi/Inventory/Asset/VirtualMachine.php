@@ -322,6 +322,7 @@ class VirtualMachine extends InventoryAsset
                     $rule->getCollectionPart();
                     $input = (array)$vm;
                     $input['itemtype'] = \Computer::class;
+                    $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $datarules = $rule->processAllRules($input);
 
@@ -338,6 +339,9 @@ class VirtualMachine extends InventoryAsset
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
+                    if ($this->conf->states_id_default != '-1') {
+                        $input['states_id'] = $this->conf->states_id_default;
+                    }
                     $computervm->update($input);
                 }
 
