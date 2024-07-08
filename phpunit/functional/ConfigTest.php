@@ -737,10 +737,6 @@ class ConfigTest extends DbTestCase
 
     public static function logConfigChangeProvider()
     {
-        global $PLUGIN_HOOKS;
-
-        $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
-
         return [
             [
                 'context'          => 'core',
@@ -785,6 +781,10 @@ class ConfigTest extends DbTestCase
     #[dataProvider('logConfigChangeProvider')]
     public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix, string $itemtype)
     {
+        global $PLUGIN_HOOKS;
+
+        $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
+
         $history_crit = ['itemtype' => $itemtype, 'old_value' => ['LIKE', $name . ' %']];
 
         $expected_history = [];
