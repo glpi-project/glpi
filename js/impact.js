@@ -39,6 +39,7 @@ var cytoscape = window.cytoscape;
 /* global hexToRgb */
 /* global contrast */
 /* global cytoscapePopper */
+/* global Popper */
 
 var GLPIImpact = {
 
@@ -1760,6 +1761,8 @@ var GLPIImpact = {
             // Procedural layout
             layout = this.getDagreLayout();
         }
+
+        cytoscape.use(cytoscapePopper(Popper.createPopper));
 
         // Init cytoscape
         this.cy = cytoscape({
