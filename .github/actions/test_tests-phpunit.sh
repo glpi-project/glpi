@@ -11,7 +11,9 @@ else
 fi
 
 #temporary hack to prevent dual configuration
-ln -s ../tests/config/ phpunit/
+if [[ ! -L "phpunit/config" ]]; then
+  ln -s ../tests/config phpunit/config
+fi
 
 vendor/bin/phpunit $PHPUNIT_ADDITIONNAL_OPTIONS
 

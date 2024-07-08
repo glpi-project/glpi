@@ -92,5 +92,5 @@ Running the test suite on containerized env
 -------------------------------------------
 
 If you want to execute tests in an environment similar to what is done by CI, you can use the `tests/run_tests.sh`.
-This scripts requires both "docker" and "docker-compose" utilities to be installed.
+This scripts requires the "docker" utility to be installed.
 Run `tests/run_tests.sh --help` for more information about its usage.
