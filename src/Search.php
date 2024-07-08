@@ -4377,7 +4377,10 @@ JAVASCRIPT;
             case 'Ticket':
                // Same structure in addDefaultJoin
                 $condition = '';
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (
+                    !Session::haveRight("ticket", Ticket::READALL)
+                    && Session::getCurrentInterface() != 'helpdesk'
+                ) {
                     $searchopt
                     = self::getOptions($itemtype);
                     $requester_table
