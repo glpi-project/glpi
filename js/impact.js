@@ -38,7 +38,6 @@ var cytoscape = window.cytoscape;
 /* global _ */
 /* global hexToRgb */
 /* global contrast */
-/* global cytoscapePopper */
 /* global Popper */
 
 var GLPIImpact = {
@@ -1710,11 +1709,11 @@ var GLPIImpact = {
         });
 
         target.on('position', () => {
-            popper.scheduleUpdate();
+            popper.update();
         });
 
         target.cy().on('pan zoom resize', () => {
-            popper.scheduleUpdate();
+            popper.update();
         });
 
         target.on('mouseover', () => {
@@ -1761,8 +1760,6 @@ var GLPIImpact = {
             // Procedural layout
             layout = this.getDagreLayout();
         }
-
-        cytoscape.use(cytoscapePopper(Popper.createPopper));
 
         // Init cytoscape
         this.cy = cytoscape({
