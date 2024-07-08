@@ -38,7 +38,6 @@ var cytoscape = window.cytoscape;
 /* global _ */
 /* global hexToRgb */
 /* global contrast */
-/* global FloatingUIDOM */
 /* global cytoscapePopper */
 
 var GLPIImpact = {
@@ -1631,29 +1630,6 @@ var GLPIImpact = {
         this.initToolbar();
     },
 
-    popperFactory: function(ref, content, opts) {
-
-        // see https://floating-ui.com/docs/computePosition#options
-        const popperOptions = {
-            // matching the default behaviour from Popper@2
-            // https://floating-ui.com/docs/migration#configure-middleware
-            middleware: [
-                FloatingUIDOM.flip(),
-                FloatingUIDOM.shift({limiter: FloatingUIDOM.limitShift()})
-            ],
-            ...opts,
-        };
-        function update() {
-            FloatingUIDOM.computePosition(ref, content, popperOptions).then(({x, y}) => {
-                Object.assign(content.style, {
-                    left: `${x}px`,
-                    top: `${y}px`,
-                });
-            });
-        }
-        update();
-        return { update };
-    },
 
     /**
      *
@@ -1667,7 +1643,7 @@ var GLPIImpact = {
             existingTarget.remove();
         }
 
-        let poppert = target.popper({
+        let popper = target.popper({
 
             content: () => {
                 // create div container
@@ -1732,13 +1708,12 @@ var GLPIImpact = {
             }
         });
 
-
         target.on('position', () => {
-            poppert.update();
+            popper.scheduleUpdate();
         });
 
         target.cy().on('pan zoom resize', () => {
-            poppert.update();
+            popper.scheduleUpdate();
         });
 
         target.on('mouseover', () => {
@@ -1785,7 +1760,7 @@ var GLPIImpact = {
             // Procedural layout
             layout = this.getDagreLayout();
         }
-        cytoscape.use(cytoscapePopper(this.popperFactory));
+
         // Init cytoscape
         this.cy = cytoscape({
             container: this.impactContainer,

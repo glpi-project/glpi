@@ -804,7 +804,6 @@ JS);
     {
         echo Html::css('public/lib/cytoscape.css');
         echo Html::script("public/lib/cytoscape.js");
-        echo Html::script("public/lib/floating-ui.js");
     }
 
     /**

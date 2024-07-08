@@ -42,7 +42,6 @@ let config = {
                 include: [
                     path.resolve(__dirname, 'node_modules/@fullcalendar'),
                     path.resolve(__dirname, 'node_modules/cystoscape'),
-                    path.resolve(__dirname, 'node_modules/@floating-ui'),
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
                     path.resolve(__dirname, 'node_modules/rrule'),

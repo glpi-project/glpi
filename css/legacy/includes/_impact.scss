@@ -611,17 +611,11 @@ i.fa-impact-manipulation {
 
 .target-popper {
    display: none;
-   border: 1px solid #ccc;
-   background: #fff;
-   z-index: 2;
-   padding: 0.25em;
-   pointer-events: none;
-   width: max-content;
-   position: absolute;
-   top: 0;
-   left: 0;
+   padding: 1rem;
    text-align: left;
    border-radius: 0;
+   border: 1px solid #ccc;
+   background: #fff;
    z-index: 2;
    padding: 20px;
    &.active {
