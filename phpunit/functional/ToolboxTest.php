@@ -995,7 +995,7 @@ class ToolboxTest extends DbTestCase
         \Toolbox::deprecated('Calling this function is deprecated');
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
-            LogLevel::NOTICE
+            LogLevel::INFO
         );
     }
 
@@ -1005,7 +1005,7 @@ class ToolboxTest extends DbTestCase
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
-            LogLevel::NOTICE
+            LogLevel::INFO
         );
     }
 
@@ -1015,7 +1015,7 @@ class ToolboxTest extends DbTestCase
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
-            LogLevel::NOTICE
+            LogLevel::INFO
         );
     }
 
