@@ -148,22 +148,22 @@ class Knowbase extends DbTestCase
         $tree = $itemtype::getTreeCategoryList($itemtype, []);
         $expected = [
             [
-                'key' => 1,
+                'key' => $cat_1_id,
                 'title' => 'cat 1',
                 'parent' => 0,
-                'a_attr' => ['data-id' => 1],
+                'a_attr' => ['data-id' => $cat_1_id],
                 'children' => [
                     [
-                        'key' => 2,
+                        'key' => $cat_1_1_id,
                         'title' => 'cat 1.1',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 2],
+                        'parent' => $cat_1_id,
+                        'a_attr' => ['data-id' => $cat_1_1_id],
                         'children' => [
                             [
-                                'key' => 4,
+                                'key' => $cat_1_1_2_id,
                                 'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
-                                'parent' => 2,
-                                'a_attr' => ['data-id' => 4],
+                                'parent' => $cat_1_1_id,
+                                'a_attr' => ['data-id' => $cat_1_1_2_id],
                             ]
                         ]
                     ]
@@ -200,30 +200,30 @@ class Knowbase extends DbTestCase
         $tree = $itemtype::getTreeCategoryList($itemtype, []);
         $expected = [
             [
-                'key' => 1,
+                'key' => $cat_1_id,
                 'title' => 'cat 1',
                 'parent' => 0,
-                'a_attr' => ['data-id' => 1],
+                'a_attr' => ['data-id' => $cat_1_id],
                 'children' => [
                     [
-                        'key' => 2,
+                        'key' => $cat_1_1_id,
                         'title' => 'cat 1.1',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 2],
+                        'parent' => $cat_1_id,
+                        'a_attr' => ['data-id' => $cat_1_1_id],
                         'children' => [
                             [
-                                'key' => 4,
+                                'key' => $cat_1_1_2_id,
                                 'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
-                                'parent' => 2,
-                                'a_attr' => ['data-id' => 4],
+                                'parent' => $cat_1_1_id,
+                                'a_attr' => ['data-id' => $cat_1_1_2_id],
                             ]
                         ]
                     ],
                     [
-                        'key' => 7,
+                        'key' => $cat_1_3_id,
                         'title' => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 7],
+                        'parent' => $cat_1_id,
+                        'a_attr' => ['data-id' => $cat_1_3_id],
                     ]
                 ]
             ],
@@ -292,22 +292,22 @@ class Knowbase extends DbTestCase
 
         $expected = [
             [
-                'key' => 1,
+                'key' => $cat_1_id,
                 'title' => 'cat 1',
                 'parent' => 0,
-                'a_attr' => ['data-id' => 1],
+                'a_attr' => ['data-id' => $cat_1_id],
                 'children' => [
                     [
-                        'key' => 5,
+                        'key' => $cat_1_2_id,
                         'title' => 'cat 1.2',
-                        'parent' => 1,
-                        'a_attr' => ['data-id' => 5],
+                        'parent' => $cat_1_id,
+                        'a_attr' => ['data-id' => $cat_1_2_id],
                         'children' => [
                             [
-                                'key' => 6,
+                                'key' => $cat_1_2_1_id,
                                 'title' => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
-                                'parent' => 5,
-                                'a_attr' => ['data-id' => 6],
+                                'parent' => $cat_1_2_id,
+                                'a_attr' => ['data-id' => $cat_1_2_1_id],
                             ]
                         ]
                     ],
