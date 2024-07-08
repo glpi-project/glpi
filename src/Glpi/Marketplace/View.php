@@ -890,19 +890,25 @@ HTML;
                 }
             }
 
-            $buttons .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
-                'plugin_name' => $plugin_inst->getField('name'),
+            $uninstall_label = __s("Uninstall");
+            $buttons .= <<<HTML
+                <button data-bs-toggle="modal"
+                        data-bs-target="#uninstallModal{$plugin_inst->getField('directory')}"
+                        title="{$uninstall_label}">
+                    <i class="ti ti-folder-x"></i>
+                </button>
+HTML;
+            $buttons .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                 'modal_id' => 'uninstallModal' . $plugin_inst->getField('directory'),
-                'open_btn' => '<button data-bs-toggle="modal"
-                                       data-bs-target="#uninstallModal' . $plugin_inst->getField('directory') . '"
-                                       title="' . __s('Uninstall') . '">
-                                   <i class="ti ti-folder-x"></i>
-                               </button>',
-                'uninstall_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
+                'confirm_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                        data-action="uninstall_plugin"
                                        data-bs-dismiss="modal">
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
+                'content' => sprintf(
+                    __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                    htmlspecialchars($plugin_inst->getField('name'))
+                )
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {

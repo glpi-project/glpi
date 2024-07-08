@@ -2591,16 +2591,19 @@ class Plugin extends CommonDBTM
                 if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
                    // Uninstall button for installed plugins
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
-                        $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
-                            'plugin_name' => $plugin->getField('name'),
+                        $uninstall_label = __s("Uninstall");
+                        $output .= <<<TWIG
+                            <a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
+                                data-bs-toggle="modal"
+                                data-bs-target="#uninstallModal{$plugin->getField('directory')}"
+                                title="{$uninstall_label}">
+                                <span class="sr-only">{$uninstall_label}</span>
+                            </span></a>
+TWIG;
+
+                        $output .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                             'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
-                            'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#uninstallModal' . $plugin->getField('directory') . '"
-                                                  title="' . __s("Uninstall") . '">
-                                                  <span class="sr-only">' . __s("Uninstall") . '</span>
-                                              </span></a>',
-                            'uninstall_btn' => Html::getSimpleForm(
+                            'confirm_btn' => Html::getSimpleForm(
                                 static::getFormURL(),
                                 ['action' => 'uninstall'],
                                 _x('button', 'Uninstall'),
@@ -2608,6 +2611,10 @@ class Plugin extends CommonDBTM
                                 '',
                                 'class="btn btn-danger w-100"'
                             ),
+                            'content' => sprintf(
+                                __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                                htmlspecialchars($plugin->getField('name'))
+                            )
                         ]);
                     } else {
                        //TRANS: %s is the list of missing functions
