@@ -142,7 +142,7 @@ class DbTestCase extends \GLPITestCase
      *
      * @return array
      */
-    protected function getClasses($function = false, array $excludes = [])
+    protected static function getClasses($function = false, array $excludes = [])
     {
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),

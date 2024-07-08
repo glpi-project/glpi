@@ -409,11 +409,14 @@ final class DbUtils
         }
 
         if (
-            (
-                $mapping[$context] !== null
+            !defined('TU_USER')
+            && (
+                (
+                    $mapping[$context] !== null
                 && !in_array(GLPI_ENVIRONMENT_TYPE, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING])
+                )
+                || in_array($context, $already_scanned)
             )
-            || in_array($context, $already_scanned)
         ) {
             // Do not scan class files if mapping was already cached, unless current env is development/testing.
             //

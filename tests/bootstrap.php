@@ -73,11 +73,10 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
 ErrorHandler::getInstance()->disableOutput();
-// To ensure that errors/exceptions will be caught by `atoum`, unregister GLPI error/exception handlers.
+// To prevent errors caught by `error` asserter to also generate logs, unregister GLPI error handler.
 // Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitly
 // validated by `$this->has*LogRecord*()` asserters, otherwise it will make test fails.
 set_error_handler(null);
-set_exception_handler(null);
 
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
@@ -93,7 +92,6 @@ include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
     die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
-
 loadDataset();
 
 $tu_oauth_client = new OAuthClient();
