@@ -54,7 +54,9 @@ final class LegacyFileLoadController implements PublicService
             throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
         }
 
-        $callback = fn () => require $target_file;
+        $callback = function () use ($target_file, $request) {
+            require $target_file;
+        };
 
         return new StreamedResponse($callback->bindTo($this, self::class));
     }

@@ -48,6 +48,9 @@ final class ListenersPriority
         // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
+
+        // Dropdowns are sometimes checked from the database, therefore config must be already set.
+        LegacyDropdownListener::class => 300,
     ];
 
     private function __construct()

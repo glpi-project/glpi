@@ -34,6 +34,12 @@
 
 namespace GlpiPlugin\Tester;
 
-final class MyPsr4Class
+use CommonDropdown;
+
+final class MyPsr4Class extends CommonDropdown
 {
+    public static function getTypeName($nb = 0): string
+    {
+        return 'Tester plugin PSR4 dropdown';
+    }
 }
