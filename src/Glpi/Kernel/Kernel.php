@@ -59,7 +59,7 @@ final class Kernel extends BaseKernel
         // Initialize configuration constants.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
-        (new ConfigurationConstants(dirname(__DIR__, 3)))->computeConstants();
+        (new ConfigurationConstants($this->getProjectDir()))->computeConstants();
 
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct($env, $env === 'development');
