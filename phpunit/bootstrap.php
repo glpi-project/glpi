@@ -54,11 +54,6 @@ global $CFG_GLPI, $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-// Initialize configuration constants.
-// It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
-require_once dirname(__DIR__) . '/src/Glpi/Application/ConfigurationConstants.php';
-(new \Glpi\Application\ConfigurationConstants(dirname(__DIR__)))->computeConstants();
-
 $kernel = new Kernel('testing');
 $kernel->loadCommonGlobalConfig();
 
