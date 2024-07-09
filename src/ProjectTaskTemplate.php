@@ -99,6 +99,10 @@ class ProjectTaskTemplate extends CommonDropdown
                 'label' => __('Effective duration'),
                 'type'  => 'actiontime'
             ],
+            ['name'  => 'comments',
+                'label' => __('Comments'),
+                'type'  => 'textarea'
+            ],
             ['name'  => 'description',
                 'label' => __('Description'),
                 'type'  => 'tinymce',
@@ -106,10 +110,7 @@ class ProjectTaskTemplate extends CommonDropdown
                 // When an element will be created from a template, tinymce will catch the base64 image and trigger the
                 // document upload process.
                 'convert_images_to_documents' => false,
-            ],
-            ['name'  => 'comments',
-                'label' => __('Comments'),
-                'type'  => 'textarea'
+
             ],
         ];
     }
