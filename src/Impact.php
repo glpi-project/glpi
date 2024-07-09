@@ -1316,7 +1316,7 @@ JS);
         }
         $infocom = new Infocom();
         $businesscriticities_id = "";
-        if ($infocom->getFromDBforDevice($item->getType(), $item->getID())) {
+        if ($infocom->getFromDBforDevice($item::class, $item->getID())) {
             $businesscriticities_id
                 = Dropdown::getDropdownName(
                     'glpi_businesscriticities',
