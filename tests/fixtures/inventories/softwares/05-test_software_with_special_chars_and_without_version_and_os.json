@@ -7,28 +7,10 @@
             "dns": "127.0.0.53",
             "lastloggeduser": "stanisla",
             "memory": 32042,
-            "name": "pc_test_6",
+            "name": "pc_test",
             "swap": 2047,
             "uuid": "3a82e620-d7da-11dd-ad0f-bcee7b8c72b2",
             "vmsystem": "Physical"
-        },
-        "operatingsystem": {
-            "arch": "x86_64&",
-            "boot_time": "2023-01-26 14:15:33",
-            "dns_domain": ".",
-            "fqdn": "stanislas-asus-desktop..",
-            "full_name": "\"Ubuntu\" & 22.04.1 LTS",
-            "hostid": "007f0101",
-            "install_date": "2022-09-14 10:35:07",
-            "kernel_name": "linux",
-            "kernel_version": "5.15.0-52-generic",
-            "name": "\"Ubuntu\" &",
-            "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv/aqNaZ6Xk6m",
-            "timezone": {
-              "name": "Europe/Paris",
-              "offset": "+0100"
-            },
-            "version": "22.04.1 LTS (Jammy Jellyfish)"
         },
         "softwares": [
             {

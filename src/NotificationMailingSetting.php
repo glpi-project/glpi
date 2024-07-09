@@ -57,6 +57,67 @@ class NotificationMailingSetting extends NotificationSetting
         return Notification_NotificationTemplate::MODE_MAIL;
     }
 
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('Log', $ong, $options);
+
+        return $ong;
+    }
+
+    /**
+     * Returns the keys of the config entries related to mail notifications.
+     * @return string[]
+     */
+    public static function getRelatedConfigKeys(): array
+    {
+        return [
+            'admin_email',
+            'admin_email_name',
+            'from_email',
+            'from_email_name',
+            'replyto_email',
+            'replyto_email_name',
+            'noreply_email',
+            'noreply_email_name',
+            'attach_ticket_documents_to_mail',
+            'mailing_signature',
+            'smtp_mode',
+            'smtp_max_retries',
+            'smtp_retry_time',
+            'smtp_oauth_provider',
+            'smtp_oauth_client_id',
+            'smtp_oauth_client_secret',
+            'smtp_oauth_options',
+            'smtp_oauth_refresh_token',
+            'smtp_check_certificate',
+            'smtp_host',
+            'smtp_port',
+            'smtp_username',
+            'smtp_passwd',
+            'smtp_sender',
+        ];
+    }
+
+    public function rawSearchOptions()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'   => 'common',
+            'name' => __('Characteristics')
+        ];
+
+        $tab[] = [
+            'id'            => 1,
+            'table'         => $this->getTable(),
+            'field'         => 'value',
+            'name'          => __('Value'),
+            'massiveaction' => false
+        ];
+
+        return $tab;
+    }
 
     public function showFormConfig($options = [])
     {

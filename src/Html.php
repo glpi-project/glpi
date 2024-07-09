@@ -793,11 +793,14 @@ class Html
             $url = parse_url($url_in);
 
             if (isset($url['query'])) {
+                $parameters = [];
                 parse_str($url['query'], $parameters);
                 unset($parameters['forcetab']);
                 unset($parameters['tab_params']);
                 $new_query = http_build_query($parameters);
-                return str_replace($url['query'], $new_query, $url_in);
+                $url_out = str_replace($url['query'], $new_query, $url_in);
+                $url_out = rtrim($url_out, '?'); // remove `?` when there is no parameters
+                return $url_out;
             }
 
             return $url_in;
@@ -1301,6 +1304,19 @@ HTML;
         }
         $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
 
+        // Add specific meta tags for plugins
+        $custom_header_tags = [];
+        if (isset($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG]) && count($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG])) {
+            foreach ($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG] as $plugin => $plugin_header_tags) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                array_push($custom_header_tags, ...$plugin_header_tags);
+            }
+        }
+        $tpl_vars['custom_header_tags'] = $custom_header_tags;
+
+
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
@@ -1522,7 +1538,7 @@ HTML;
                     $menu['assets']['content']['allassets']['title']            = __('Global');
                     $menu['assets']['content']['allassets']['shortcut']         = '';
                     $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';
-                    $menu['assets']['content']['allassets']['icon']             = 'fas fa-list';
+                    $menu['assets']['content']['allassets']['icon']             = AllAssets::getIcon();
                     $menu['assets']['content']['allassets']['links']['search']  = '/front/allassets.php';
                     break;
                 }
@@ -2132,6 +2148,7 @@ HTML;
      * @return void
      */
     public static function zeroSecurityIframedHeader(
+        string $title = "",
         string $sector = "none",
         string $item = "none",
         string $option = ""
@@ -2144,7 +2161,7 @@ HTML;
         }
         $HEADER_LOADED = true;
 
-        self::includeHeader('', $sector, $item, $option, true, true);
+        self::includeHeader($title, $sector, $item, $option, true, true);
         echo "<body class='iframed'>";
         self::displayMessageAfterRedirect();
         echo "<div id='page'>";

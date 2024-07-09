@@ -1,0 +1,12 @@
+name: "Code coverage schedule"
+
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  run-coverage-workflow:
+    name: "Run coverage workflow"
+    uses: "glpi-project/glpi/.github/workflows/coverage.yml@main"
+    with:
+      branch: "main"

@@ -387,12 +387,14 @@ final class DbUtils
         }
 
         if (
-            (
-                $mapping[$context] !== null
-                && ($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE
-                && !defined('TU_USER')
+            !defined('TU_USER')
+            && (
+                (
+                    $mapping[$context] !== null
+                    && ($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE
+                )
+                || in_array($context, $already_scanned)
             )
-            || in_array($context, $already_scanned)
         ) {
             // Do not scan class files if mapping was already cached, unless debug mode is used.
             //
@@ -1680,7 +1682,7 @@ final class DbUtils
      *                      (default =0)
      * @param $disable_anon   bool  disable anonymization of username.
      *
-     * @return string username string (realname if not empty and name if realname is empty).
+     * @return string[]|string username string (realname if not empty and name if realname is empty).
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {

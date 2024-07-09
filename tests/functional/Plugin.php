@@ -1008,4 +1008,94 @@ PHP
         $plugin = new \Plugin();
         $this->array($plugin->getPluginOptions('thisplugindoesnotexists'))->isEqualTo([]);
     }
+
+    protected function pluginDirectoryProvider(): iterable
+    {
+        yield [
+            'directory' => 'MyAwesomePlugin',
+            'is_valid'  => true,
+        ];
+
+        yield [
+            'directory' => 'My4wes0mePlugin',
+            'is_valid'  => true,
+        ];
+
+        yield [
+            'directory' => '',
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => 'My-Plugin', // - is not valid
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => 'мійплагін', // only latin chars are accepted
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => '../../anotherapp',
+            'is_valid'  => false,
+        ];
+    }
+
+    protected function inputProvider(): iterable
+    {
+        foreach ($this->pluginDirectoryProvider() as $specs) {
+            $case = [
+                'input'     => [
+                    'directory' => $specs['directory']
+                ],
+            ];
+            if ($specs['is_valid']) {
+                $case['result'] = $case['input'];
+            } else {
+                $case['result'] = false;
+                $case['messages'] = ['Invalid plugin directory'];
+            }
+
+            yield $case;
+        }
+    }
+
+    protected function addInputProvider(): iterable
+    {
+        yield from $this->inputProvider();
+
+        yield [
+            'input'     => [
+            ],
+            'result'    => false,
+            'messages'  => [
+                'Invalid plugin directory',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider addInputProvider
+     */
+    public function testPrepareInputForAdd(array $input, /* array|false */ $result, array $messages = []): void
+    {
+        $this->variable($this->newTestedInstance()->prepareInputForAdd($input))->isEqualTo($result);
+
+        if (count($messages) > 0) {
+            $this->hasSessionMessages(ERROR, $messages);
+        }
+    }
+
+    /**
+     * @dataProvider inputProvider
+     */
+    public function testPrepareInputForUpdate(array $input, /* array|false */ $result, array $messages = []): void
+    {
+        $this->variable($this->newTestedInstance()->prepareInputForAdd($input))->isEqualTo($result);
+
+        if (count($messages) > 0) {
+            $this->hasSessionMessages(ERROR, $messages);
+        }
+    }
 }

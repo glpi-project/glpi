@@ -41,7 +41,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-        return _x('Cartridge inventoried information', 'Cartridge inventoried information', $nb);
+        return _n('Cartridge inventoried information', 'Cartridge inventoried information', $nb);
     }
 
     public function getInfoForPrinter(Printer $printer)

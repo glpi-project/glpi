@@ -90,6 +90,6 @@ class NotificationTargetSavedSearch_Alert extends DbTestCase
         global $CFG_GLPI;
         $expected_redirect = '%2Ffront%2Fsavedsearch.php%3Faction%3Dload%26id%3D' . $saved_searches_id;
         $this->string($target->data['##savedsearch.url##'])
-            ->isEqualTo($CFG_GLPI['url_base'] . '/index.php?redirect=' . $expected_redirect . '&noAUTO=1');
+            ->isEqualTo($CFG_GLPI['url_base'] . '/index.php?redirect=' . $expected_redirect);
     }
 }

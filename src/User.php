@@ -5120,7 +5120,10 @@ HTML;
                     $itemtable = getTableForItemType($itemtype);
                     $iterator_params = [
                         'FROM'   => $itemtable,
-                        'WHERE'  => ['OR' => $group_where]
+                        'WHERE'  => [
+                            'entities_id' => $this->getEntities(),
+                            'OR'          => $group_where
+                        ]
                     ];
 
                     if ($item->maybeTemplate()) {

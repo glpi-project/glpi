@@ -972,20 +972,20 @@ class Contract extends CommonDBTM
 
         $options = [
             'reset' => 'reset',
-            'sort'  => 12,
+            'sort'  => 20,
             'order' => 'DESC',
             'start' => 0,
             'criteria' => [
                 [
-                    'field'      => 12,
-                    'value'      => '<0',
-                    'searchtype' => 'contains',
+                    'field'      => 20,
+                    'value'      => 'NOW',
+                    'searchtype' => 'lessthan',
                 ],
                 [
-                    'field'      => 12,
+                    'field'      => 20,
                     'link'       => 'AND',
-                    'value'      => '>-30',
-                    'searchtype' => 'contains',
+                    'searchtype' => 'morethan',
+                    'value'      => '-1MONTH',
                 ]
             ]
         ];
@@ -996,16 +996,20 @@ class Contract extends CommonDBTM
             'count'  => $contract0
         ];
 
-        $options['criteria'][0]['value'] = '>0';
-        $options['criteria'][1]['value'] = '<7';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value']      = 'NOW';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '7DAY';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
             'count'  => $contract7
         ];
 
-        $options['criteria'][0]['value'] = '>6';
-        $options['criteria'][1]['value'] = '<30';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value']      = '6DAY';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '1MONTH';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 30 days'),

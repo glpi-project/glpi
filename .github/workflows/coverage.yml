@@ -1,27 +1,29 @@
 name: "GLPI test code coverage"
 
 on:
-  # Runs coverage suite when a pull request updates workflow file
-  pull_request:
-    paths:
-      - ".github/workflows/coverage.yml"
-  # Runs coverage suite every night
-  schedule:
-    - cron:  '0 0 * * *'
+  # Enable execution from the "Code coverage schedule" workflow
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
   # Enable manual run
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target branch"
+        required: true
+        type: string
 
 jobs:
   coverage:
-    # Do not run scheduled coverage on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Code coverage"
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {branch: "main", php-version: "8.2", db-image: "mariadb:11.0"}
+          - {php-version: "8.2", db-image: "mariadb:11.0"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -36,7 +38,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:
-          ref: ${{ matrix.branch }}
+          ref: ${{ inputs.branch }}
       - name: "Restore dependencies cache"
         uses: actions/cache@v4
         with:
@@ -59,9 +61,9 @@ jobs:
       - name: "Install database"
         run: |
           docker compose exec -T app .github/actions/test_install.sh
-      - name: "Unit tests"
+      - name: "PHPUnit tests"
         run: |
-          docker compose exec -T app .github/actions/test_tests-units.sh
+          docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
         run: |
           docker compose exec -T app .github/actions/test_tests-functional.sh
@@ -75,6 +77,8 @@ jobs:
           docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
         uses: "codecov/codecov-action@v4"
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          files: ./tests/coverage-unit/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
-          override_branch: ${{ matrix.branch }}
+          files: ./phpunit/coverage-functional/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
+          override_branch: ${{ inputs.branch }}

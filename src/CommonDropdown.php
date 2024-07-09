@@ -77,7 +77,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @since 0.85
      *
-     * @return true if translation is available, false otherwise
+     * @return boolean true if translation is available, false otherwise
      **/
     public function maybeTranslated()
     {

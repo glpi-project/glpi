@@ -1218,6 +1218,13 @@ abstract class API
 
             // make text search
             foreach ($search_values as $filter_field => $filter_value) {
+                if (!$DB->fieldExists($table, $filter_field)) {
+                    $this->returnError(
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
+                        400,
+                        "ERROR_FIELD_NOT_FOUND"
+                    );
+                }
                 if (!empty($filter_value)) {
                     $search_value = Search::makeTextSearch($DB->escape($filter_value));
                     $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
@@ -1276,6 +1283,16 @@ abstract class API
 
                 $found[] = $data;
             }
+        } else {
+            $message = __('An error occurred during the items search.');
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $message .= " " . __('For more information, check the GLPI logs.');
+            }
+            $this->returnError(
+                $message,
+                500,
+                "ERROR_UNKNOWN",
+            );
         }
 
        // get result full row counts
@@ -2518,14 +2535,14 @@ abstract class API
                 }
 
                 if (
-                    !empty($value)
-                    || $key == 'entities_id' && !is_array($value) && $value >= 0
+                    is_integer($value)
+                    && ($value > 0 || ($key === 'entities_id' && $value >= 0))
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
                     $itemtype = getItemTypeForTable($tablename);
 
                    // get hateoas
-                    if ($params['get_hateoas'] && is_integer($value)) {
+                    if ($params['get_hateoas']) {
                         $fields['links'][] = ['rel'  => $itemtype,
                             'href' => self::$api_url . "/$itemtype/" . $value
                         ];

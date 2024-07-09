@@ -36,11 +36,63 @@
 namespace tests\units;
 
 use DbTestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /* Test for inc/crontask.class.php */
 
 class CronTask extends DbTestCase
 {
+    public function testCronTemp()
+    {
+        //create some files
+        $filenames = [
+            'recent_file.txt',
+            'file1.txt',
+            'file2.txt',
+            'file3.txt',
+            'file4.txt',
+        ];
+        foreach ($filenames as $filename) {
+            $this->variable(file_put_contents(GLPI_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))))->isNotFalse();
+        }
+
+        //create auto_orient directory
+        if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
+            $this->boolean(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true))->isTrue();
+        }
+
+        $tmp_dir_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(GLPI_TMP_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($tmp_dir_iterator as $path) {
+            if (basename($path) !== 'recent_file.txt') {
+                // change the modification date of the file to make it considered as "not recent"
+                $this->boolean(touch($path, time() - (HOUR_TIMESTAMP * 2)))->isTrue();
+            }
+        }
+
+        // launch Cron for cleaning _tmp directory
+        $mode = - \CronTask::MODE_EXTERNAL; // force
+        \CronTask::launch($mode, 5, 'temp');
+
+        $nb_file = $this->getFileCountRecursively(GLPI_TMP_DIR);
+        $this->variable($nb_file)->isEqualTo(1); // only recent_file.txt should be preserved
+    }
+
+
+    public function getFileCountRecursively($path)
+    {
+
+        $dir = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator(
+            $dir,
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        return iterator_count($files);
+    }
+
     protected function registerProvider()
     {
         return [

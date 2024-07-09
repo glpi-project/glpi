@@ -39,6 +39,41 @@ namespace tests\units;
 
 class Session extends \DbTestCase
 {
+    protected function testUniqueSessionNameProvider(): iterable
+    {
+        // Same host, different path
+        yield [
+            \Session::buildSessionName("/var/www/localhost/glpi1", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi2", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi3", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi4", 'localhost', '80'),
+        ];
+
+        // Same path, different full domains
+        yield [
+            \Session::buildSessionName("/var/www/glpi", 'test.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'preprod.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'prod.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
+        ];
+
+        // Same host and path but different ports
+        yield [
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '8000'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '8008'),
+        ];
+    }
+
+    /**
+     * @dataProvider testUniqueSessionNameProvider
+     */
+    public function testUniqueSessionName(
+        ...$cookie_names
+    ): void {
+        // Each cookie name must be unique
+        $this->array($cookie_names)->isEqualTo(array_unique($cookie_names));
+    }
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';

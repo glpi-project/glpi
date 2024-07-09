@@ -107,7 +107,7 @@ class SavedSearch_Alert extends CommonDBChild
      *     - target for the Form
      *     - computers_id ID of the computer for add process
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return boolean true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {

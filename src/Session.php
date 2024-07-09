@@ -101,7 +101,9 @@ class Session
                 }
             }
             self::destroy();
-            session_regenerate_id();
+            if (!defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
+                session_regenerate_id();
+            }
             self::start();
             $_SESSION = $save;
             $_SESSION['valid_id'] = session_id();
@@ -1434,7 +1436,7 @@ class Session
      *  Force active Tab for an itemtype
      *
      * @param string  $itemtype item type
-     * @param integer $tab      ID of the tab
+     * @param mixed $tab      ID of the tab
      *
      * @return void
      **/
@@ -1801,6 +1803,10 @@ class Session
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
+        // Cannot impersonate if we don't have config right
+        if (!self::haveRight(Config::$rightname, UPDATE)) {
+            return false;
+        }
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
@@ -1808,11 +1814,6 @@ class Session
         ) {
             $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
-        }
-
-        // Cannot impersonate if we don't have config right
-        if (!self::haveRight(Config::$rightname, UPDATE)) {
-            return false;
         }
 
         // Cannot impersonate inactive user

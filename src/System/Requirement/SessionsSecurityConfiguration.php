@@ -55,8 +55,8 @@ class SessionsSecurityConfiguration extends AbstractRequirement
     {
         $is_cli = isCommandLine();
 
-        $cookie_secure   = (bool)ini_get('session.cookie_secure');
-        $cookie_httponly = (bool)ini_get('session.cookie_httponly');
+        $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
+        $cookie_httponly = filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
 
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;

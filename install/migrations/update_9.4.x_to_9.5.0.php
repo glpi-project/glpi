@@ -577,7 +577,7 @@ function update94xto950()
     if (!$DB->fieldExists('glpi_entities', 'autopurge_delay')) {
         $migration->addField("glpi_entities", "autopurge_delay", "integer", [
             'after'  => "autoclose_delay",
-            'value'  => Entity::CONFIG_NEVER
+            'value'  => -2, // Inherit as default value
         ]);
     }
 
