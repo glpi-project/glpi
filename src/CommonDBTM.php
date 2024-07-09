@@ -1026,14 +1026,6 @@ class CommonDBTM extends CommonGLPI
             );
         }
 
-        if (in_array(static::class, $CFG_GLPI['networkport_types'], true)) {
-            // Manage networkportmigration if exists
-            if ($DB->tableExists('glpi_networkportmigrations')) {
-                $networkPortMigObject = new NetworkPortMigration();
-                $networkPortMigObject->cleanDBonItemDelete(static::class, $this->getID());
-            }
-        }
-
        // If this type have NOTEPAD, clean one associated to purged item
         if ($this->usenotepad) {
             $note = new Notepad();

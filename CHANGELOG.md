@@ -316,6 +316,8 @@ The present file will list all changes made to the project; according to the
 - `Html::showTimeField()`
 - `Impact::buildNetwork()`
 - `Infocom::showDebug()`
+- `IPNetwork::recreateTree()`
+- `IPNetwork::title()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`
 - `KnowbaseItem::addToFaq()`
@@ -333,6 +335,7 @@ The present file will list all changes made to the project; according to the
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
 - `ManualLink::showForItem()`
+- `MigrationCleaner` class
 - `Netpoint` class
 - `NetworkAlias::getInternetNameFromID()`
 - `NetworkName::getInternetNameFromID()`
@@ -346,6 +349,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkPortInstantiation::getInstantiationNetworkPortDisplayOptions()`
 - `NetworkPortInstantiation::getInstantiationNetworkPortHTMLTable()`
 - `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrides.
+- `NetworkPortMigration` class
 - `NotificationEvent::debugEvent()`
 - `NotificationTemplateTranslation::showDebug()`
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.

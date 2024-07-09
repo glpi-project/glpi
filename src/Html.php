@@ -1320,7 +1320,7 @@ HTML;
                 'title' => __('Tools'),
                 'types' => [
                     'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                    'ReservationItem', 'Report', 'MigrationCleaner',
+                    'ReservationItem', 'Report',
                     'SavedSearch', 'Impact'
                 ],
                 'icon' => 'ti ti-briefcase'
