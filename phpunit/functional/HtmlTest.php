@@ -309,7 +309,6 @@ class HtmlTest extends \GLPITestCase
             'KnowbaseItem',
             'ReservationItem',
             'Report',
-            'MigrationCleaner',
             'SavedSearch',
             'Impact'
         ];

@@ -1032,50 +1032,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * \brief Recreate network tree
-     * Among others, the migration create plan tree network. This method allows to recreate the tree.
-     * You can also use it if you suspect the network tree to be corrupted.
-     *
-     * First, reset the tree, then, update each network by its own field, letting
-     * CommonImplicitTreeDropdown working such as it would in case of standard update
-     *
-     * @return void
-     **/
-    public static function recreateTree()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       // Reset the tree
-        $DB->update(
-            'glpi_ipnetworks',
-            [
-                'ipnetworks_id'   => 0,
-                'level'           => 1,
-                'completename'    => new QueryExpression($DB->quoteName('name'))
-            ],
-            [true]
-        );
-
-       // Foreach IPNetwork ...
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => self::getTable()
-        ]);
-
-        $network = new self();
-
-        foreach ($iterator as $network_entry) {
-            if ($network->getFromDB($network_entry['id'])) {
-                $input = $network->fields;
-                // ... update it by its own entries
-                $network->update($input);
-            }
-        }
-    }
-
-
-    /**
      * @since 0.84
      *
      * @param $itemtype
@@ -1212,35 +1168,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
                 $params
             );
-        }
-    }
-
-
-    /**
-     * Override title function to display the link to reinitialisation of the network tree
-     *
-     * @FIXME Deprecate this method in GLPI 11.0. It is not used anymore.
-     **/
-    public function title()
-    {
-        if (
-            Session::haveRight('internet', UPDATE)
-            && Session::canViewAllEntities()
-        ) {
-            echo "<div class='spaced' id='tabsbody'>";
-            echo "<table class='tab_cadre_fixe'>";
-
-            echo "<tr><td class='center'>";
-            Html::showSimpleForm(
-                IPNetwork::getFormURL(),
-                'reinit_network',
-                __('Reinit the network topology')
-            );
-
-            echo "</td></tr>";
-
-            echo "</table>";
-            echo "</div>";
         }
     }
 }

@@ -580,7 +580,6 @@ class Search extends DbTestCase
                 \CommonITILRecurrentCron::class, // not searchable
                 \CommonITILValidationCron::class, // not searchable
                 \Item_Devices::class, // should be abstract
-                \NetworkPortMigration::class, // has no table by default
                 \NetworkPortInstantiation::class, // should be abstract
                 \NotificationSettingConfig::class, // not searchable
                 \PendingReasonCron::class, // not searchable
@@ -2572,7 +2571,6 @@ class Search extends DbTestCase
             [
                 '/^Common.*/', // Should be abstract
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
-                'NetworkPortMigration', // Tables only exists in specific cases
                 'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
                 'PendingReasonCron',
                 '/^[A-z]+Stencil/'

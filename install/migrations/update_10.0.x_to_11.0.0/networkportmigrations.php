@@ -33,25 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \DBMysql $DB */
-global $DB;
-
-include('../inc/includes.php');
-
-Session::checkRight("networking", UPDATE);
-
-if (!$DB->tableExists('glpi_networkportmigrations')) {
-    Html::displayNotFoundError();
-}
-
-Html::header(
-    NetworkPortMigration::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    "tools",
-    "migration",
-    "networkportmigration"
-);
-
-Search::show('NetworkPortMigration');
-
-Html::footer();
+/**
+ * @var \Migration $migration
+ */
+$migration->dropTable('glpi_networkportmigrations');
