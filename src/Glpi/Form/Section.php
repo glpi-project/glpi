@@ -138,6 +138,9 @@ final class Section extends CommonDBChild
      */
     public function getComments(): array
     {
+        // TODO: getComments is already a method part of the CommonDBTM interface.
+        // We need another name for this.
+
         // Lazy loading
         if ($this->comments === null) {
             $this->comments = [];

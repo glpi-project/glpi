@@ -49,6 +49,8 @@ define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
+define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
+
 global $CFG_GLPI, $GLPI_CACHE;
 
 include(__DIR__ . "/../inc/based_config.php");

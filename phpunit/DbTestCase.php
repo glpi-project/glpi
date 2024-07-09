@@ -109,7 +109,7 @@ class DbTestCase extends \GLPITestCase
     /**
      * Generic method to test if an added object is corretly inserted
      *
-     * @param  Object $object The object to test
+     * @param  CommonDBTM $object The object to test
      * @param  int    $id     The id of added object
      * @param  array  $input  the input used for add object (optionnal)
      *
@@ -350,15 +350,15 @@ class DbTestCase extends \GLPITestCase
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
-        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
+        $manager = AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
 
         // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
+        $rc = new ReflectionClass(AssetDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(AssetDefinitionManager::getInstance(), null);
 
         return $definition;
     }
