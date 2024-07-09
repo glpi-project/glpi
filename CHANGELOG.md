@@ -243,6 +243,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::showDebugInfo()`
+- `CommonDevice::title()`
 - `CommonDropdown::displayHeader()`
 - `CommonGLPI::getAvailableDisplayOptions()`
 - `CommonGLPI::getDisplayOptions()`
@@ -278,6 +279,7 @@ The present file will list all changes made to the project; according to the
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
+- `Entity::title()`
 - `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`

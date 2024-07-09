@@ -322,15 +322,6 @@ abstract class CommonDevice extends CommonDropdown
         return $tab;
     }
 
-    public function title()
-    {
-        Dropdown::showItemTypeMenu(
-            _n('Component', 'Components', Session::getPluralNumber()),
-            Dropdown::getDeviceItemTypes(),
-            self::getSearchURL()
-        );
-    }
-
     public static function getNameField()
     {
         return 'designation';

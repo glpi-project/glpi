@@ -560,16 +560,6 @@ class Entity extends CommonTreeDropdown
     }
 
     /**
-     * Print a good title for entity pages
-     *
-     *@return void
-     **/
-    public function title()
-    {
-       // Empty title for entities
-    }
-
-    /**
      * Get the ID of entity assigned to the object
      *
      * simply return ID
