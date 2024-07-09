@@ -114,6 +114,10 @@ final class ConfigurationConstants
                 'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
                 'GLPI_TEXT_MAXSIZE'           => '4000' // character threshold for displaying read more button
             ],
+            'production' => [
+            ],
+            'staging' => [
+            ],
             'testing' => [
                 'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
                 'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
@@ -125,6 +129,8 @@ final class ConfigurationConstants
                     $this->root_dir . '/plugins',
                     $this->root_dir . '/tests/fixtures/plugins',
                 ],
+            ],
+            'development' => [
             ],
         ];
 

@@ -39,8 +39,6 @@ use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_ENVIRONMENT_TYPE', 'testing');
-
 ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
@@ -53,11 +51,6 @@ define('TU_PASS', 'PhpUnit_4');
 global $CFG_GLPI, $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-// Initialize configuration constants.
-// It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
-require_once dirname(__DIR__) . '/src/Glpi/Application/ConfigurationConstants.php';
-(new \Glpi\Application\ConfigurationConstants(dirname(__DIR__)))->computeConstants();
 
 $kernel = new Kernel('testing');
 $kernel->loadCommonGlobalConfig();

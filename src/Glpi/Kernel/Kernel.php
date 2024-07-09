@@ -34,7 +34,7 @@
 
 namespace Glpi\Kernel;
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ConfigurationConstants;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
@@ -52,6 +52,15 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
+        if ($env !== null) {
+            define('GLPI_ENVIRONMENT_TYPE', $env);
+        }
+
+        // Initialize configuration constants.
+        // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
+        // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
+        (new ConfigurationConstants($this->getProjectDir()))->computeConstants();
+
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct($env, $env === 'development');
     }
