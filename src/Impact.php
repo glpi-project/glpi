@@ -1304,8 +1304,8 @@ JS);
 
         // Define basic data of the new node
         $type = "";
-        if (class_exists($item->getType() . "Type")) {
-            $tabletype = getTableForItemType($item->getType() . "Type");
+        if (class_exists($item::class . "Type")) {
+            $tabletype = getTableForItemType($item::class . "Type");
             $typefield = getForeignKeyFieldForTable($tabletype);
             $types_id = $item->fields[$typefield];
             $type = Dropdown::getDropdownName($tabletype, $types_id);
