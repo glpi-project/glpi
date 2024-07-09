@@ -1327,7 +1327,7 @@ JS);
         $new_node = [
             'id'             => $key,
             'label'          => $item->getFriendlyName(),
-            'itemtype'       => $item->getTypeName(),
+            'itemtype'       => $item::getTypeName(),
             'type'           => $type,
             'comment'        => $item->fields['comment'],
             'status'         => $states_id,
