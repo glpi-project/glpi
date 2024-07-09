@@ -615,7 +615,7 @@ i.fa-impact-manipulation {
    text-align: left;
    border-radius: 0;
    border: 1px solid var(--tblr-border-color);
-   background: #fff;
+   background: #var(--tblr-bg-surface);
    z-index: 2;
    padding: 20px;
    &.active {
