@@ -41,6 +41,10 @@ final readonly class ProfilerStart implements LegacyConfigProviderInterface
 {
     public function execute(): void
     {
-        Profiler::getInstance()->start('php_request');
+        if (isCommandLine()) {
+            Profiler::getInstance()->disable();
+        } else {
+            Profiler::getInstance()->start('php_request');
+        }
     }
 }
