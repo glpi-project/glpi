@@ -70,7 +70,7 @@ class Itil_Project extends CommonDBRelation
                 case Ticket::class:
                     $label = self::createTabEntry(
                         text: Project::getTypeName(Session::getPluralNumber()),
-                        nb: countElementsInTable(self::getTable(), [
+                        nb: static fn () => countElementsInTable(self::getTable(), [
                             'itemtype' => $item::class,
                             'items_id' => $item->getID(),
                         ]),
