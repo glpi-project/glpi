@@ -39,7 +39,6 @@ use DirectoryIterator;
 use Glpi\Kernel\Kernel;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -323,19 +322,16 @@ class CacheManager
 
         $success = true;
 
-       // Clear all cache contexts
+        // Clear all cache contexts
         $known_contexts = $this->getKnownContexts();
         foreach ($known_contexts as $context) {
             $success = $this->getCacheInstance($context)->clear() && $success;
         }
 
         // Clear Symfony cache
-        $symfony_cache_dir = $this->cache_dir . '/symfony';
-        if (\is_dir($symfony_cache_dir)) {
-            $this->clearSymfonyCache();
-        }
+        $this->clearSymfonyCache();
 
-       // Clear compiled templates
+        // Clear compiled templates
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
@@ -572,6 +568,9 @@ PHP;
         ];
     }
 
+    /**
+     * Clears the Symfony cache.
+     */
     private function clearSymfonyCache(): void
     {
         /** @var Kernel|null $kernel */
@@ -584,10 +583,10 @@ PHP;
             $localKernel = new Kernel();
         }
 
-        $input = new ArrayInput(['command' => 'cache:clear']);
-
-        $app = new Application($localKernel);
+        // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
+        // This command will clear the Symfony cache gracefully.
+        $app = new \Symfony\Bundle\FrameworkBundle\Console\Application($localKernel);
         $app->setAutoExit(false);
-        $app->run($input, new NullOutput());
+        $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
     }
 }
