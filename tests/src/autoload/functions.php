@@ -678,6 +678,12 @@ function loadDataset()
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
             ]
+        ],
+        'Appliance' => [
+            [
+                'name'        => '_test_appliance01',
+                'entities_id' => '_test_root_entity',
+            ]
         ]
     ];
 

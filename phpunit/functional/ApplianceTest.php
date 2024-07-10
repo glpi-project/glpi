@@ -47,7 +47,7 @@ class ApplianceTest extends DbTestCase
             'ManualLink$1'       => "<span><i class='fas fa-link me-2'></i>Links</span>",
         ];
 
-        $appliance = new \Appliance();
+        $appliance = getItemByTypeName('Appliance', '_test_appliance01');
         $this->assertSame($expected, $appliance->defineTabs());
     }
 
