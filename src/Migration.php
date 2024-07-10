@@ -1729,9 +1729,9 @@ class Migration
                             continue;
                         }
                         $DB->updateOrDie($table, [
-                            'field' => $new_search_opt
+                            'num' => $new_search_opt
                         ], [
-                            'field' => $old_search_opt
+                            'num' => $old_search_opt
                         ]);
                     }
                 }
