@@ -56,13 +56,13 @@ class Ticket_Contract extends CommonDBRelation
             if ($item::class === Ticket::class) {
                 return self::createTabEntry(
                     text: Contract::getTypeName(Session::getPluralNumber()),
-                    nb: self::countForItem($item),
+                    nb: static fn () => self::countForItem($item),
                     form_itemtype: $item::class
                 );
             } else if ($item::class === Contract::class) {
                 return self::createTabEntry(
                     text: Ticket::getTypeName(Session::getPluralNumber()),
-                    nb: self::countForItem($item),
+                    nb: static fn () => self::countForItem($item),
                     form_itemtype: $item::class
                 );
             } else {
