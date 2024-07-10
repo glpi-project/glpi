@@ -234,17 +234,18 @@ class View extends CommonGLPI
             }
 
             $clean_plugin = [
-                'key'          => $key,
-                'name'         => $plugin['name'],
-                'logo_url'     => $apidata['logo_url'] ?? "",
-                'description'  => $apidata['descriptions'][0]['short_description'] ?? "",
-                'authors'      => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
-                'license'      => $apidata['license'] ?? $plugin['license'] ?? "",
-                'note'         => $apidata['note'] ?? -1,
-                'homepage_url' => $apidata['homepage_url'] ?? "",
-                'issues_url'   => $apidata['issues_url'] ?? "",
-                'readme_url'   => $apidata['readme_url'] ?? "",
-                'version'      => $plugin['version'] ?? "",
+                'key'           => $key,
+                'name'          => $plugin['name'],
+                'logo_url'      => $apidata['logo_url'] ?? "",
+                'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
+                'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
+                'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
+                'note'          => $apidata['note'] ?? -1,
+                'homepage_url'  => $apidata['homepage_url'] ?? "",
+                'issues_url'    => $apidata['issues_url'] ?? "",
+                'readme_url'    => $apidata['readme_url'] ?? "",
+                'version'       => $plugin['version'] ?? "",
+                'changelog_url' => $apidata['changelog_url'] ?? "",
             ];
 
             $plugins[] = $clean_plugin;
