@@ -150,5 +150,5 @@ if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     include_once GLPI_CONFIG_DIR . '/config_db.php';
 }
 
-$application = new \Glpi\Console\Application($kernel);
+$application = new \Glpi\Console\Application();
 $application->run();
