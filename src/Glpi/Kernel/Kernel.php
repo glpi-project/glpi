@@ -77,14 +77,12 @@ final class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        // TODO Use GLPI_CACHE_DIR
-        return $this->getProjectDir() . '/files/_cache/symfony/' . $this->environment . '/';
+        return GLPI_CACHE_DIR . '/app/' . $this->environment;
     }
 
     public function getLogDir(): string
     {
-        // TODO Use GLPI_LOG_DIR
-        return $this->getProjectDir() . '/files/_log/symfony/' . $this->environment . '/';
+        return GLPI_LOG_DIR;
     }
 
     public function registerBundles(): iterable
