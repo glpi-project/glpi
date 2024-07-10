@@ -37,7 +37,5 @@
  * @since 9.1
  */
 
-include('../inc/includes.php');
-
 $dropdown = new TaskTemplate();
 include(GLPI_ROOT . "/front/dropdown.common.php");

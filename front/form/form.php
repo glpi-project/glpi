@@ -35,8 +35,6 @@
 
 use Glpi\Form\Form;
 
-include('../../inc/includes.php');
-
 Session::checkRight(Form::$rightname, READ);
 
 Html::header(Form::getTypeName(1), $_SERVER['PHP_SELF'], "admin", Form::getType());

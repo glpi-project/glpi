@@ -35,8 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include('../inc/includes.php');
-
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Http\Response;
 
-include('../inc/includes.php');
-
 Session::checkValidSessionId();
 
 $link = new ManualLink();

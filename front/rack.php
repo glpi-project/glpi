@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("datacenter", READ);
 
 Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");

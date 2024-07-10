@@ -37,8 +37,6 @@
  * @since 9.2
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("slm", READ);
 
 Html::header(SLM::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm");

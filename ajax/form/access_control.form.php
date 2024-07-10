@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../../inc/includes.php');
-
 use Glpi\Form\AccessControl\FormAccessControl;
 
 /**

@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 Session::checkRightsOr('reservation', [CREATE, UPDATE, DELETE, PURGE]);
 

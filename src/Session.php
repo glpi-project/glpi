@@ -51,6 +51,12 @@ class Session
     const DEBUG_MODE        = 2;
 
     /**
+     * Indicates whether the request is made in an AJAX context.
+     * @FIXME This flag is actually not set to true by all AJAX requests.
+     */
+    private static bool $is_ajax_request = false;
+
+    /**
      * Max count of CSRF tokens to keep in session.
      * Prevents intensive use of forms from resulting in an excessively cumbersome session.
      */
@@ -363,10 +369,7 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        /** @var int $AJAX_INCLUDE */
-        global $AJAX_INCLUDE;
-
-        if ($AJAX_INCLUDE && ($url === null)) {
+        if (self::$is_ajax_request === true && ($url === null)) {
             return;
         }
         if (empty($title)) {
@@ -2352,5 +2355,21 @@ class Session
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
         );
+    }
+
+    /**
+     * Indicates that the request is made in an AJAX context.
+     */
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
+    }
+
+    /**
+     * Unset the flag that indicates that the request is made in an AJAX context.
+     */
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("agent", READ);
 
 Html::header(Agent::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "agent");

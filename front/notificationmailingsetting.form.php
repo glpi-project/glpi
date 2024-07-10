@@ -37,8 +37,6 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;
 
-include('../inc/includes.php');
-
 Session::checkRight("config", UPDATE);
 
 if (isset($_POST["update"])) {

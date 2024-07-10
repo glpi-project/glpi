@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,35 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.1
- */
+namespace Glpi\Http;
 
-use Glpi\Cache\CacheManager;
-use Glpi\Application\ErrorHandler;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * @var GLPI $GLPI
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
- */
-global $GLPI, $GLPI_CACHE;
+class LegacyPostRequestActionsListener implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::FINISH_REQUEST => ['onFinishRequest'],
+        ];
+    }
 
-define('GLPI_ROOT', __DIR__);
-ini_set('session.use_cookies', 0);
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
-
-// Init loggers
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
-// Ensure errors will not break API output.
-ErrorHandler::getInstance()->disableOutput();
-
-//init cache
-$cache_manager = new CacheManager();
-$GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-
-$api = new Glpi\Api\APIRest();
-$api->call();
+    public function onFinishRequest(): void
+    {
+        \Html::resetAjaxParam();
+        \Session::resetAjaxParam();
+    }
+}

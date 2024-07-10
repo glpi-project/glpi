@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $item_plug = new \Item_Plug();

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("line", READ);
 
 Html::header(Line::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "line");

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $ira = new \Item_Rack();

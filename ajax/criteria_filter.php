@@ -36,8 +36,6 @@
 use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 // Read endpoint

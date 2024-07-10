@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("slm", READ);
 
 Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "sla");

@@ -38,8 +38,6 @@ use Glpi\Socket;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

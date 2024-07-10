@@ -38,6 +38,7 @@
 
 // Directories constants
 define('GLPI_CACHE_DIR', null);
+define('GLPI_CONFIG_DIR', null);
 define('GLPI_CRON_DIR', null);
 define('GLPI_DOC_DIR', null);
 define('GLPI_DUMP_DIR', null);

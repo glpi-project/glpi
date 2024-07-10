@@ -37,7 +37,5 @@
  * @since 0.85
  */
 
-include('../inc/includes.php');
-
 $item_device = new Item_DeviceCase();
 include(GLPI_ROOT . "/front/item_device.common.form.php");

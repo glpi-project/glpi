@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

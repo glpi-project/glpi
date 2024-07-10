@@ -38,8 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 // Change profile system
 if (isset($_REQUEST['newprofile'])) {
     if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {

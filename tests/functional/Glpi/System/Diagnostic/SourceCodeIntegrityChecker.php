@@ -74,10 +74,6 @@ EOL,
             'version' => [
                 $version => ''
             ],
-            'api.php' => 'api',
-            'apirest.md' => 'apirest',
-            'apirest.php' => 'apirest',
-            'caldav.php' => 'caldav',
             'index.php' => 'index',
             'status.php' => 'status',
         ]);
@@ -99,10 +95,6 @@ EOL,
         $this->array($manifest)->isEqualTo([
             'algorithm' => 'CRC32c',
             'files' => [
-                'api.php' => '4529d6e0',
-                'apirest.md' => '04202f8b',
-                'apirest.php' => '04202f8b',
-                'caldav.php' => '71938259',
                 'index.php' => '4475f8b1',
                 'src/test.php' => '53fe1f55',
                 'src/test2.php' => '2803299a',

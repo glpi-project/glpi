@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Security\TOTPManager;
 
-include('../inc/includes.php');
-
 $user = new User();
 
 Session::checkLoginUser();

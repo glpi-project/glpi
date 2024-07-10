@@ -38,6 +38,11 @@ if (PHP_SAPI != 'cli') {
     exit();
 }
 
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCommonGlobalConfig();
+
 if (isset($_SERVER['argc'])) {
     for ($i = 1; $i < $_SERVER['argc']; $i++) {
         $it           = explode("=", $_SERVER['argv'][$i], 2);
@@ -46,8 +51,6 @@ if (isset($_SERVER['argc'])) {
     }
 }
 $NEEDED_ITEMS = ["mailgate", "mailing"];
-
-include('../inc/includes.php');
 
 if (isset($_GET['from'])) {
     $from = $_GET['from'];

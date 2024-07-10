@@ -53,6 +53,12 @@ use ScssPhp\ScssPhp\Compiler;
 class Html
 {
     /**
+     * Indicates whether the request is made in an AJAX context.
+     * @FIXME This flag is actually not set to true by all AJAX requests.
+     */
+    private static bool $is_ajax_request = false;
+
+    /**
      * Recursivly execute html_entity_decode on an array
      *
      * @param string|array $value
@@ -450,14 +456,13 @@ class Html
     public static function redirectToLogin($params = '')
     {
         /**
-         * @var int $AJAX_INCLUDE
          * @var array $CFG_GLPI
          */
-        global $AJAX_INCLUDE, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        $dest     = $CFG_GLPI["root_doc"] . "/index.php";
+        $dest = $CFG_GLPI["root_doc"] . "/index.php";
 
-        if (!$AJAX_INCLUDE) {
+        if (!self::$is_ajax_request) {
             $url_dest = preg_replace(
                 '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
                 '',
@@ -1992,9 +1997,6 @@ HTML;
         }
         $HEADER_LOADED = true;
        // Print a nice HTML-head with no controls
-
-       // Detect root_doc in case of error
-        Config::detectRootDoc();
 
        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
@@ -6620,5 +6622,21 @@ CSS;
         }
 
         return "";
+    }
+
+    /**
+     * Indicates that the request is made in an AJAX context.
+     */
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
+    }
+
+    /**
+     * Unset the flag that indicates that the request is made in an AJAX context.
+     */
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight('database', READ);
 
 Html::header(Database::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "database");

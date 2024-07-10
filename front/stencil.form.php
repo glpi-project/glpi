@@ -35,8 +35,6 @@
 
 use Glpi\Http\Response;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 if (isset($_POST['id'])) {

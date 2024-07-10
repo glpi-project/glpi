@@ -38,11 +38,10 @@ if (PHP_SAPI != 'cli') {
     exit();
 }
 
-/**
- * @since 0.85
- */
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-include('../inc/includes.php');
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCommonGlobalConfig();
 
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();

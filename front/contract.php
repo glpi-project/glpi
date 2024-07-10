@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("contract", READ);
 
 Html::header(Contract::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contract");

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,55 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * GLPI web router.
- *
- * This router is used to be able to expose only the `/public` directory on the webserver.
- */
+use Glpi\Kernel\Kernel;
+use Symfony\Component\HttpFoundation\Request;
 
-$glpi_root  = realpath(dirname(__FILE__, 2));
-
-if (preg_match('/^\/public/', $_SERVER['REQUEST_URI']) !== 1 && $_SERVER['SCRIPT_NAME'] === '/public/index.php') {
-    // When requested URI does not start with '/public' but `$_SERVER['SCRIPT_NAME']` is '/public/index.php',
-    // it means that document root is the GLPI root directory, but a rewrite rule redirects the request to the PHP router.
-    // This case happen when redirection to PHP router is made by an `.htaccess` file placed in the GLPI root directory,
-    // and has to be handled to support shared hosting where it is not possible to change the web server root directory.
-    $uri_prefix = '';
-} else {
-    // `$_SERVER['SCRIPT_NAME']` corresponds to the script path relative to server document root.
-    // -> if server document root is `/public`, then `$_SERVER['SCRIPT_NAME']` will be equal to `/index.php`
-    // -> if script is located into a `/glpi-alias` alias directory, then `$_SERVER['SCRIPT_NAME']` will be equal to `/glpi-alias/index.php`
-    $uri_prefix = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+// Check PHP version not to have trouble
+// Need to be the very fist step before any include
+if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.3.999', '>')) {
+    exit('PHP version must be between 8.2 and 8.3.');
 }
 
-// Get URI path relative to GLPI (i.e. without alias directory prefix).
-$path       = preg_replace(
-    '/^' . preg_quote($uri_prefix, '/') . '/',
-    '',
-    parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH)
-);
+// Check the resources state before trying to instanciate the Kernel.
+// It must be done here as this check must be done even when the Kernel
+// cannot be instanciated due to missing dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-require $glpi_root . '/src/Glpi/Http/ProxyRouter.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$proxy = new \Glpi\Http\ProxyRouter($glpi_root, $path);
-$proxy->handleRedirects($uri_prefix);
+$kernel = new Kernel();
 
-if ($proxy->isTargetAPhpScript() && $proxy->isPathAllowed() && ($target_file = $proxy->getTargetFile()) !== null) {
-    // Ensure `getcwd()` and inclusion path is based on requested file FS location.
-    chdir(dirname($target_file));
+$request = Request::createFromGlobals();
 
-    // Redefine some $_SERVER variables to have same values whenever scripts are called directly
-    // or through current router.
-    $target_path     = $uri_prefix . $proxy->getTargetPath();
-    $target_pathinfo = $proxy->getTargetPathInfo();
-    $_SERVER['PATH_INFO']       = $target_pathinfo;
-    $_SERVER['PHP_SELF']        = $target_path;
-    $_SERVER['SCRIPT_FILENAME'] = $target_file;
-    $_SERVER['SCRIPT_NAME']     = $target_path;
+$response = $kernel->handle($request);
 
-    // Execute target script.
-    require($target_file);
-    exit();
-}
+$response->send();
 
-$proxy->proxify();
+$kernel->terminate($request, $response);

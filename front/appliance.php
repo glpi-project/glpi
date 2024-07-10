@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight('appliance', READ);
 
 Html::header(Appliance::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "appliance");
