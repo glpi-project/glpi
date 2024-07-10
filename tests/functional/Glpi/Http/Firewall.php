@@ -189,7 +189,7 @@ class Firewall extends \GLPITestCase
     /**
      * @dataProvider pathProvider
      */
-    public function testComputeDefaultStrategy(
+    public function testComputeFallbackStrategy(
         string $root_doc,
         string $path,
         string $expected_strategy
@@ -199,6 +199,6 @@ class Firewall extends \GLPITestCase
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/mycustomplugindir'), vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
-        $this->string($this->callPrivateMethod($this->testedInstance, 'computeDefaultStrategy', $path, null))->isEqualTo($expected_strategy);
+        $this->string($this->callPrivateMethod($this->testedInstance, 'computeFallbackStrategy', $path, null))->isEqualTo($expected_strategy);
     }
 }

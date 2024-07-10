@@ -122,7 +122,8 @@ final class Firewall implements FirewallInterface
     public function applyStrategy(string $path, ?string $strategy): void
     {
         if ($strategy === null) {
-            $strategy = $this->computeDefaultStrategy($path);
+            // If no strategy is defined for the route, use the fallback value.
+            $strategy = $this->computeFallbackStrategy($path);
         }
 
         switch ($strategy) {
@@ -148,18 +149,18 @@ final class Firewall implements FirewallInterface
     }
 
     /**
-     * Compute the default strategy for given path.
+     * Compute the fallback strategy for given path.
      *
      * @param string $path  URL path
      * @return string
      */
-    private function computeDefaultStrategy(string $path): string
+    private function computeFallbackStrategy(string $path): string
     {
-        if ($strategy = $this->computeForPaths($path)) {
+        if ($strategy = $this->computeSpecificStrategyForLegacyPaths($path)) {
             return $strategy;
         }
 
-        // Check if entrypoint is a GLPI core ajax/front script.
+        // Check if entrypoint is a legacy GLPI core ajax/front script.
         if (
             str_starts_with($path, $this->path_prefix . '/ajax/')
             || str_starts_with($path, $this->path_prefix . '/front/')
@@ -167,7 +168,7 @@ final class Firewall implements FirewallInterface
             return self::STRATEGY_DEFAULT_FOR_CORE;
         }
 
-        // Check if entrypoint is a plugin ajax/front script.
+        // Check if entrypoint is a legacy plugin ajax/front script.
         foreach ($this->plugins_dirs as $plugins_dir) {
             $relative_path = preg_replace(
                 '/^' . preg_quote($this->normalizePath($this->root_dir), '/') . '/',
@@ -205,7 +206,10 @@ final class Firewall implements FirewallInterface
         return $path;
     }
 
-    private function computeForPaths(string $path): ?string
+    /**
+     * Compute the specific strategy for legacy `/ajax` and `/front` paths.
+     */
+    private function computeSpecificStrategyForLegacyPaths(string $path): ?string
     {
         if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, $this->path_prefix . '/front/central.php')) {
             // Allow anonymous access for embed dashboards.

@@ -40,7 +40,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel('development');
+$kernel = new \Glpi\Kernel\Kernel();
 $kernel->loadCommonGlobalConfig();
 
 $DB->query("SET FOREIGN_KEY_CHECKS = '0';");

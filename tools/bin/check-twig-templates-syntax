@@ -34,11 +34,9 @@
  * ---------------------------------------------------------------------
  */
 
-$root = dirname(__DIR__, 2);
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-require_once $root . '/vendor/autoload.php';
-
-$kernel = new \Glpi\Kernel\Kernel('development');
+$kernel = new \Glpi\Kernel\Kernel('testing');
 $kernel->loadCliConsoleOnlyConfig();
 
 $command = new \Glpi\Tools\Command\CheckTwigTemplatesSyntaxCommand();

@@ -40,7 +40,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel('development');
+$kernel = new \Glpi\Kernel\Kernel();
 $kernel->loadCommonGlobalConfig();
 
 define('PER_LEVEL', 8);

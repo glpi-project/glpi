@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,6 @@ namespace tests\units\Glpi\Http;
 
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Glpi\Controller\LegacyFileLoadController;
 
 class LegacyRouterListener extends \GLPITestCase

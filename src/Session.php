@@ -50,6 +50,10 @@ class Session
     const TRANSLATION_MODE  = 1; // no more used
     const DEBUG_MODE        = 2;
 
+    /**
+     * Indicates whether the request is made in an AJAX context.
+     * @FIXME This flag is actually not set to true by all AJAX requests.
+     */
     private static bool $is_ajax_request = false;
 
     /**
@@ -2353,11 +2357,17 @@ class Session
         );
     }
 
+    /**
+     * Indicates that the request is made in an AJAX context.
+     */
     public static function setAjax(): void
     {
         self::$is_ajax_request = true;
     }
 
+    /**
+     * Unset the flag that indicates that the request is made in an AJAX context.
+     */
     public static function resetAjaxParam(): void
     {
         self::$is_ajax_request = false;
