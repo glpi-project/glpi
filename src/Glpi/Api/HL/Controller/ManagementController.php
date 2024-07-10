@@ -456,6 +456,35 @@ final class ManagementController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
+    #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Doc\Route(
+        description: 'Download a document by ID',
+        parameters: [
+            [
+                'name' => 'HTTP_IF_NONE_MATCH',
+                'location' => Doc\Parameter::LOCATION_HEADER,
+            ],
+            [
+                'name' => 'HTTP_IF_MODIFIED_SINCE',
+                'location' => Doc\Parameter::LOCATION_HEADER,
+            ]
+        ],
+        responses: [
+            ['schema' => 'Document', 'media_type' => 'application/octet-stream']
+        ]
+    )]
+    public function downloadDocument(Request $request): Response
+    {
+        $document = new Document();
+        if ($document->getFromDB($request->getAttribute('id'))) {
+            if ($document->canViewFile()) {
+                return $document->send(true);
+            }
+            return self::getAccessDeniedErrorResponse();
+        }
+        return self::getNotFoundErrorResponse();
+    }
+
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes']
     ])]
