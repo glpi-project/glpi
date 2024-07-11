@@ -1392,16 +1392,16 @@ class Search extends DbTestCase
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
         $this->string($user_order_1)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC ");
+                                ) ASC ");
 
         $user_order_2 = null;
         $this->when(
@@ -1413,16 +1413,16 @@ class Search extends DbTestCase
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
         $this->string($user_order_2)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC ");
+                                ) DESC ");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = null;
@@ -1435,16 +1435,16 @@ class Search extends DbTestCase
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
         $this->string($user_order_3)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC ");
+                                ) ASC ");
 
         $user_order_4 = null;
         $this->when(
@@ -1456,16 +1456,16 @@ class Search extends DbTestCase
          ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
             ->exists();
         $this->string($user_order_4)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC ");
+                                ) DESC ");
     }
 
     /**
@@ -1488,16 +1488,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_1)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC ");
+                                ) ASC ");
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1505,16 +1505,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_2)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC ");
+                                ) DESC ");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
@@ -1524,16 +1524,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_3)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC ");
+                                ) ASC ");
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1541,16 +1541,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_4)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC ");
+                                ) DESC ");
     }
 
     /**
@@ -1625,12 +1625,17 @@ class Search extends DbTestCase
         ]);
 
         yield [
+            'itemtype' => 'Change',
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
-                'criteria[0][field]' => 1,
-                'criteria[0][searchtype]' => 'contains',
-                'criteria[0][value]' => 'testAddOrderByUser',
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
                 'sort' => 4,
                 'order' => 'ASC',
             ],
@@ -1641,16 +1646,22 @@ class Search extends DbTestCase
                 'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, glpi
                 'testAddOrderByUser user 2 (R)',               //  glpi
                 'testAddOrderByUser anonymous user (R)',       //  myemail@email.com
-            ]
+            ],
+            'row_name' => 'ITEM_Change_1'
         ];
 
         yield [
+            'itemtype' => 'Change',
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
-                'criteria[0][field]' => 1,
-                'criteria[0][searchtype]' => 'contains',
-                'criteria[0][value]' => 'testAddOrderByUser',
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
                 'sort' => 4,
                 'order' => 'DESC',
             ],
@@ -1661,7 +1672,182 @@ class Search extends DbTestCase
                 'testAddOrderByUser user 1 (R)',               //  _test_user
                 'testAddOrderByUser user 1 (R) + group 1 (R)', //  _test_user
                 'testAddOrderByUser group 1 (R)',              //  no requester
-            ]
+            ],
+            'row_name' => 'ITEM_Change_1'
+        ];
+
+        // Creates Peripheral with different users
+        $this->createItems('Peripheral', [
+            // Test set on user
+            [
+                'name' => 'testAddOrderByUser user 1 (U)',
+                'entities_id' => 0,
+                'users_id' => $user_1,
+            ],
+            [
+                'name' => 'testAddOrderByUser user 2 (U)',
+                'entities_id' => 0,
+                'users_id' => $user_2,
+            ],
+            [
+                'name' => 'testAddOrderByUser no user',
+                'entities_id' => 0,
+            ],
+        ]);
+
+        yield [
+            'itemtype' => 'Peripheral',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 70,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser no user',
+                'testAddOrderByUser user 1 (U)', // _test_user
+                'testAddOrderByUser user 2 (U)', // glpi
+            ],
+            'row_name' => 'ITEM_Peripheral_1'
+        ];
+
+        yield [
+            'itemtype' => 'Peripheral',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 70,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser user 2 (U)', // glpi
+                'testAddOrderByUser user 1 (U)', // _test_user
+                'testAddOrderByUser no user',
+            ],
+            'row_name' => 'ITEM_Peripheral_1'
+        ];
+
+        // Creates Problems with different writers
+        // Create by glpi user
+        $this->createItems('Problem', [
+            [
+                'name' => 'testAddOrderByUser by glpi',
+                'content' => '',
+            ],
+        ]);
+
+        // Create by tech user
+        $this->login('tech', 'tech');
+        $this->createItems('Problem', [
+            [
+                'name' => 'testAddOrderByUser by tech',
+                'content' => '',
+            ],
+        ]);
+
+        $this->login('glpi', 'glpi');
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 22,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by tech',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 22,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by tech',
+                'testAddOrderByUser by glpi',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        // Last edit by
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 64,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by tech',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 64,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by tech',
+                'testAddOrderByUser by glpi',
+            ],
+            'row_name' => 'ITEM_Problem_1'
         ];
     }
 
@@ -1669,15 +1855,17 @@ class Search extends DbTestCase
      * @dataProvider testAddOrderByUserProvider
      */
     public function testAddOrderByUser(
+        string $itemtype,
         array $search_params,
-        array $expected_order
+        array $expected_order,
+        string $row_name
     ) {
-        $data = $this->doSearch('Change', $search_params);
+        $data = $this->doSearch($itemtype, $search_params);
 
         // Extract items names
         $items = [];
         foreach ($data['data']['rows'] as $row) {
-            $items[] = $row['raw']['ITEM_Change_1'];
+            $items[] = $row['raw'][$row_name];
         }
 
         // Validate order
@@ -1956,8 +2144,8 @@ class Search extends DbTestCase
             ['quot\\\'ed', '%quot\\\'ed%'], // already escaped value should not produce double escaping
             ['^&#60;PROD-15&#62;', '<PROD-15>%'],
             ['<PROD-15>$', '%<PROD-15>'],
-            ['A&#38;B', '%A&B%'],
-            ['A&B', '%A&B%'],
+            ['A&#38;B', '%A&#38;B%'],
+            ['A&B', '%A&#38;B%'],
             ["backslashes \\ \\\\ are twice escaped when not used in ', \n, \r, ... ", "%backslashes \\\\\\\\ \\\\\\\\\\\\\\\\ are twice escaped when not used in \', \\n, \\r, ...%"],
         ];
     }
@@ -2191,15 +2379,11 @@ class Search extends DbTestCase
          ->contains("`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'")
 
          // Check that ORDER applies on corresponding table alias
-         ->contains("GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`name`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`name`, '')) ASC
-                            ) ASC");
+         ->contains("CONCAT(
+                                    IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
+                                    IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
+                                    IFNULL(`glpi_users_users_id_recipient`.`name`, '')
+                                ) ASC");
     }
 
     public function testSearchAllAssets()
@@ -4712,6 +4896,238 @@ class Search extends DbTestCase
             //check if search option separator 'datacenter' exist
             $this->variable(array_search('datacenter', array_column($so, 'id')))->isNotEqualTo(false, $item->getTypeName() . ' should use \'$tab = array_merge($tab, DataCenter::rawSearchOptionsToAdd());');
         }
+    }
+
+    protected function testRichTextProvider(): iterable
+    {
+        $this->login('glpi', 'glpi');
+
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket 1',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+            [
+                'name' => 'Ticket 2',
+                'content' => '<p>This is a test ticket with &amp; in description</p>'
+            ],
+            [
+                'name' => 'Ticket 3',
+                'content' => '<p>This is a test ticket with matching followup</p>'
+            ],
+            [
+                'name' => 'Ticket 4',
+                'content' => '<p>This is a test ticket with task</p>'
+            ],
+            [
+                'name' => 'Ticket & 5',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+            [
+                'name' => 'Ticket > 6',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+        ]);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a followup</p>'
+        ]);
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 3')->getID(),
+            'content' => '<p>This is a followup with &amp; in description</p>'
+        ]);
+
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a task</p>'
+        ]);
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 4')->getID(),
+            'content' => '<p>This is a task with &amp; in description</p>'
+        ]);
+
+        // When user searches for a `&`, the criteria is sanitized and its value is therefore `&#38;`
+        $sanitized_ampersand_criteria = '&#38;';
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 1, // title
+                        'searchtype' => 'contains',
+                        'value'      => $sanitized_ampersand_criteria
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket &#38; 5'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value'      => $sanitized_ampersand_criteria
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 2'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value'      => $sanitized_ampersand_criteria
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 3'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 26, // task content
+                        'searchtype' => 'contains',
+                        'value'      => $sanitized_ampersand_criteria
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 4'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    0 => [
+                        'link' => 'AND',
+                        'field' => 'view', // items seen
+                        'searchtype' => 'contains',
+                        'value' => $sanitized_ampersand_criteria
+                    ],
+                    1 => [
+                        'link' => 'AND',
+                        'field' => 1, //title
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    2 => [
+                        'link' => 'AND',
+                        'field' => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    3 => [
+                        'link' => 'AND',
+                        'field' => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    4 => [
+                        'link' => 'AND',
+                        'field' => 26, // task content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                ],
+            ],
+            'expected' => [
+                'Ticket 2',
+                'Ticket 3',
+                'Ticket 4',
+                'Ticket &#38; 5'
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testRichTextProvider
+     */
+    public function testRichText(
+        array $search_params,
+        array $expected
+    ): void {
+        $data = $this->doSearch(\Ticket::class, $search_params);
+
+        // Extract items names
+        $items = [];
+        foreach ($data['data']['rows'] as $row) {
+            $items[] = $row['raw']['ITEM_Ticket_1'];
+        }
+
+        $this->array($items)->isEqualTo($expected);
+    }
+
+    public function testTicketValidationStatus()
+    {
+        $search_params = [
+            'reset'        => 'reset',
+            'is_deleted'   => 0,
+            'start'        => 0,
+            'search'       => 'Search',
+            'criteria'     => [
+                0 => [
+                    'field' => 'view', // items seen
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $displaypref = new \DisplayPreference();
+        $input = [
+            'itemtype'  => 'Ticket',
+            'users_id'  => \Session::getLoginUserID(),
+            'num'       => 55, //Ticket glpi_ticketvalidations.status
+        ];
+        $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
+
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        $this->string($data['sql']['search'])->notContains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 1;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 'all';
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->notContains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 'can';
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
     }
 }
 

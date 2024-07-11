@@ -834,7 +834,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @param IPAddress|integer[] $networkNetmask  (see \ref parameterType) the netmask of the network
      * @param integer             $version         of IP : only usefull for binary array as input (default 0)
      *
-     * @return true if the network owns the IP address
+     * @return boolean true if the network owns the IP address
      **/
     public static function checkIPFromNetwork($address, $networkAddress, $networkNetmask, $version = 0)
     {

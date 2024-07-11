@@ -40,22 +40,16 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (!is_string($_POST['itemtype']) || getItemForItemtype($_POST['itemtype']) === false) {
-    echo json_encode(['success' => false]);
-    exit();
-}
-
-$all_pinned = importArrayFromDB($_SESSION['glpisavedsearches_pinned']);
-$already_pinned = $all_pinned[$_POST['itemtype']] ?? 0;
-$all_pinned[$_POST['itemtype']] = $already_pinned ? 0 : 1;
-$_SESSION['glpisavedsearches_pinned'] = exportArrayToDB($all_pinned);
+$success = false;
 
 $user = new User();
-$success = $user->update(
-    [
-        'id'                   => Session::getLoginUserID(),
-        'savedsearches_pinned' => $_SESSION['glpisavedsearches_pinned'],
-    ]
-);
+if (
+    array_key_exists('itemtype', $_POST)
+    && is_string($_POST['itemtype'])
+    && $user->getFromDB(Session::getLoginUserID())
+    && $user->toggleSavedSearchPin($_POST['itemtype'])
+) {
+    $success = true;
+}
 
 echo json_encode(['success' => $success]);

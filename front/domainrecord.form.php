@@ -75,8 +75,11 @@ if (isset($_POST["add"])) {
     Html::popFooter();
 } else {
     $menus = ["management", "domain", "domainrecord"];
-    DomainRecord::displayFullPageForItem($_GET["id"], $menus, [
-        'domains_id'   => $_GET['domains_id'] ?? null,
+    $options = [
         'withtemplate' => $_GET["withtemplate"]
-    ]);
+    ];
+    if (isset($_GET['domains_id'])) {
+        $options['domains_id'] = $_GET['domains_id'];
+    }
+    DomainRecord::displayFullPageForItem($_GET["id"], $menus, $options);
 }

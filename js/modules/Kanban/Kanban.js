@@ -1040,7 +1040,17 @@ class GLPIKanbanRights {
             const modal = $('#kanban-modal');
             modal.removeData();
             modal.data(data);
+            // Extract script elements from content to be manually inserted later with createElement to ensure they are executed
+            // Issue is noticed when content is injected multiple times. Scripts execute the first time only.
+            const scripts = $(content).find('script');
+            scripts.detach();
             modal.find('.modal-body').html(content);
+            scripts.each(function() {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.text = this.innerHTML;
+                modal.find('.modal-body').append(script);
+            });
             modal.modal('show');
         };
 
@@ -2595,28 +2605,23 @@ class GLPIKanbanRights {
         this.showTeamModal = (card_el) => {
             const [card_itemtype, card_items_id] = card_el.prop('id').split('-', 2);
             let content = '';
-
-            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
-            content += `
-            ${teammember_types_dropdown}
-            <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
-         `;
             const modal = $('#kanban-modal');
             // Remove old click handlers
             modal.off('click', 'button[name="add"]');
             modal.off('click', 'button[name="delete"]');
 
             modal.on('click', 'button[name="add"]', () => {
-                const itemtype = modal.find('select[name="itemtype"]').val();
-                const items_id = modal.find('select[name="items_id"]').val();
-                const role = modal.find('select[name="role"]').val();
-
-                if (itemtype && items_id) {
-                    addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).done(() => {
-                        self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
-                    });
-                    hideModal();
-                }
+                $('.actor_entry').each(function() {
+                    let itemtype = $(this).data('itemtype');
+                    let items_id = $(this).data('items-id');
+                    let role = $(this).data('actortype');
+                    if (itemtype && items_id) {
+                        addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).done(() => {
+                            self.showCardPanel($(`#${card_itemtype}-${card_items_id}`));
+                        });
+                    }
+                });
+                hideModal();
             });
             modal.on('click', 'button[name="delete"]', (e) => {
                 const list_item = $(e.target).closest('li');
@@ -2631,8 +2636,24 @@ class GLPIKanbanRights {
                     list_item.remove();
                 }
             });
-            showModal(content, {
-                card_el: card_el
+            $.ajax({
+                method: 'GET',
+                url: (self.ajax_root + "kanban.php"),
+                data: {
+                    itemtype: card_itemtype,
+                    items_id: card_items_id,
+                    action: 'load_teammember_form'
+                }
+            }).done((result) => {
+                const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
+                content += `
+                    ${teammember_types_dropdown}
+                    ${result}
+                    <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
+                `;
+                showModal(content, {
+                    card_el: card_el
+                });
             });
         };
 

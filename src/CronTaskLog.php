@@ -44,6 +44,8 @@ class CronTaskLog extends CommonDBTM
     const STATE_STOP  = 2;
     const STATE_ERROR = 3;
 
+    public static $rightname        = 'config';
+
 
     /**
      * Clean old event for a task

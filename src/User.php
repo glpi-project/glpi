@@ -54,6 +54,8 @@ class User extends CommonDBTM
         'publicbookmarkorder', 'privatebookmarkorder'
     ];
 
+    private $must_process_ruleright = false;
+
    // NAME FIRSTNAME ORDER TYPE
     const REALNAME_BEFORE   = 0;
     const FIRSTNAME_BEFORE  = 1;
@@ -561,13 +563,15 @@ class User extends CommonDBTM
      */
     public function getFromDBbyDn($user_dn)
     {
+        $raw_user_dn = Sanitizer::unsanitize($user_dn);
+
         /**
          * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
          * The 'user_dn_hash' field is a hashed version of the 'user_dn' field
          * and is indexed in the database, making it faster to search.
          */
         return $this->getFromDBByCrit([
-            'user_dn_hash' => md5($user_dn)
+            'user_dn_hash' => md5($raw_user_dn)
         ]);
     }
 
@@ -847,7 +851,7 @@ class User extends CommonDBTM
     {
         // Hash user_dn if set
         if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
-            $this->input['user_dn_hash'] = md5($this->input['user_dn']);
+            $this->input['user_dn_hash'] = md5(Sanitizer::unsanitize($this->input['user_dn']));
         }
     }
 
@@ -1216,8 +1220,7 @@ class User extends CommonDBTM
         $return = false;
 
         if (
-            isset($this->fields['_ruleright_process'])
-            || isset($this->input['_ruleright_process'])
+            $this->must_process_ruleright === true
         ) {
             $dynamic_profiles = Profile_User::getForUser($this->fields["id"], true);
 
@@ -1360,6 +1363,7 @@ class User extends CommonDBTM
                     $right->delete($db_profile);
                 }
             }
+            $this->must_process_ruleright = false;
         }
         return $return;
     }
@@ -1909,7 +1913,10 @@ class User extends CommonDBTM
             return false;
         }
 
-        if (is_resource($ldap_connection) || $ldap_connection instanceof \Ldap\Connection) {
+        if (
+            is_resource($ldap_connection)
+            || (class_exists(\Ldap\Connection::class) && $ldap_connection instanceof \Ldap\Connection)
+        ) {
            //Set all the search fields
             $this->fields['password'] = "";
 
@@ -2057,7 +2064,7 @@ class User extends CommonDBTM
                     'mail_email'  => $this->fields['_emails']
                 ]);
 
-                $this->fields['_ruleright_process'] = true;
+                $this->willProcessRuleRight();
 
                //If rule  action is ignore import
                 if (
@@ -2274,7 +2281,7 @@ class User extends CommonDBTM
                 'login'       => $name,
                 'email'       => $email
             ]);
-            $this->fields['_ruleright_process'] = true;
+            $this->willProcessRuleRight();
         }
         return true;
     }
@@ -2309,7 +2316,7 @@ class User extends CommonDBTM
         if (count($a_field) == 0) {
             return true;
         }
-        $this->fields['_ruleright_process'] = true;
+        $this->willProcessRuleRight();
         foreach ($a_field as $field => $key) {
             $value = $_SERVER[$key] ?? null;
             if (empty($value)) {
@@ -2380,7 +2387,7 @@ class User extends CommonDBTM
 
             $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
                 'type'   => Auth::EXTERNAL,
-                'email'  => $this->fields["_emails"],
+                'email'  => $this->fields["_emails"] ?? [],
                 'login'  => $this->fields["name"]
             ]);
 
@@ -3503,7 +3510,9 @@ HTML;
         // Hash user_dn if is updated
         if (in_array('user_dn', $this->updates)) {
             $this->updates[] = 'user_dn_hash';
-            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0 ? md5($this->input['user_dn']) : null;
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0
+                ? md5(Sanitizer::unsanitize($this->input['user_dn']))
+                : null;
         }
     }
 
@@ -4617,6 +4626,7 @@ HTML;
         }
 
         $output = '';
+
         if (!($p['entity'] < 0) && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 $output .= "entity_sons options is not available with array of entity";
@@ -4624,6 +4634,7 @@ HTML;
                 $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
             }
         }
+        $p['entity'] = Session::getMatchingActiveEntities($p['entity']);
 
         // Make a select box with all glpi users
         $view_users = self::canView();
@@ -5109,7 +5120,10 @@ HTML;
                     $itemtable = getTableForItemType($itemtype);
                     $iterator_params = [
                         'FROM'   => $itemtable,
-                        'WHERE'  => ['OR' => $group_where]
+                        'WHERE'  => [
+                            'entities_id' => $this->getEntities(),
+                            'OR'          => $group_where
+                        ]
                     ];
 
                     if ($item->maybeTemplate()) {
@@ -6859,5 +6873,34 @@ HTML;
             count($users_ids) == 1 // Only one super admin auth
             && $users_ids[0] == $this->fields['id'] // Id match our user
         ;
+    }
+
+    public function willProcessRuleRight(): void
+    {
+        $this->must_process_ruleright = true;
+    }
+
+    /**
+     * Toggle pin of given itemtype saved search.
+     *
+     * @param string $itemtype
+     *
+     * @return bool
+     */
+    public function toggleSavedSearchPin(string $itemtype): bool
+    {
+        if (getItemForItemtype($itemtype) === false) {
+            return false;
+        }
+
+        $all_pinned     = importArrayFromDB($this->fields['savedsearches_pinned']);
+        $already_pinned = $all_pinned[$itemtype] ?? 0;
+
+        $all_pinned[$itemtype] = $already_pinned ? 0 : 1;
+
+        return $this->update(Sanitizer::sanitize([
+            'id'                   => $this->fields['id'],
+            'savedsearches_pinned' => exportArrayToDB($all_pinned),
+        ]));
     }
 }

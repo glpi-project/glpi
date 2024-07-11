@@ -124,7 +124,7 @@
                <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                   <div class="row">
                      {% if candedit %}
-                        {% if can_read_kb %}
+                        {% if can_read_kb and not nokb %}
                            {% set search_solution_button %}
                               <a href="{{ path('/front/knowbaseitem.php?item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID() ~ '&forcetab=Knowbase$1') }}"
                                  class="btn btn-secondary overflow-hidden text-nowrap" type="submit"

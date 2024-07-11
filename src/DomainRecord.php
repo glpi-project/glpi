@@ -541,25 +541,16 @@ JAVASCRIPT;
               __('Link a record') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
-            $used_iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => self::getTable(),
-                'WHERE'  => [
-                    'domains_id'   => ['>', 0],
-                    'NOT'          => ['domains_id' => null]
-                ]
-            ]);
-
-            $used = [];
-            foreach ($used_iterator as $row) {
-                 $used[$row['id']] = $row['id'];
-            }
-
             Dropdown::show(
                 'DomainRecord',
                 [
                     'name'   => "domainrecords_id",
-                    'used'   => $used
+                    'condition' => [
+                        'NOT' => [
+                            'domains_id'   => ['>', 0],
+                            'NOT'          => ['domains_id' => null]
+                        ]
+                    ]
                 ]
             );
 

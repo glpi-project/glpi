@@ -81,9 +81,9 @@ class DropdownTranslation extends CommonDBChild
 
 
     /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
+     * @param CommonGLPI $item            CommonGLPI object
+     * @param integer $tabnum          (default 1)
+     * @param integer $withtemplate    (default 0)
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
@@ -201,10 +201,10 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Return the number of translations for a field in a language
      *
-     * @param itemtype
-     * @param items_id
-     * @param field
-     * @param language
+     * @param string $itemtype
+     * @param int $items_id
+     * @param string $field
+     * @param string $language
      *
      * @return integer the number of translations for this field
      **/
@@ -225,7 +225,7 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Return the number of translations for an item
      *
-     * @param item
+     * @param CommonDBTM item
      *
      * @return integer the number of translations for this item
      **/
@@ -247,10 +247,10 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Check if a field's translation can be added or updated
      *
-     * @param $input          translation's fields
-     * @param $add    boolean true if a transaltion must be added, false if updated (true by default)
+     * @param bool $input          translation's fields
+     * @param bool $add    boolean true if a transaltion must be added, false if updated (true by default)
      *
-     * @return true if translation can be added/update, false otherwise
+     * @return boolean true if translation can be added/update, false otherwise
      **/
     public function checkBeforeAddorUpdate($input, $add = true)
     {
@@ -270,8 +270,8 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Generate completename associated with a tree dropdown
      *
-     * @param $input array    of user values
-     * @param $add   boolean  true if translation is added, false if update (tgrue by default)
+     * @param array $input     array of user values
+     * @param bool $add   boolean  true if translation is added, false if update (tgrue by default)
      *
      * @return void
      **/
@@ -783,7 +783,7 @@ JAVASCRIPT
     /**
      * Is dropdown item translation functionality active
      *
-     * @return true if active, false if not
+     * @return boolean true if active, false if not
      **/
     public static function isDropdownTranslationActive()
     {

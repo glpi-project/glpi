@@ -105,17 +105,11 @@ class APIRest extends APIBaseClass
            // Guzzle lib will automatically push the correct Content-type
             unset($params['headers']['Content-Type']);
         }
-        $verb = strtolower($verb);
-        if (in_array($verb, ['get', 'post', 'delete', 'put', 'options', 'patch'])) {
-            try {
-                return $this->http_client->{$verb}(
-                    $this->base_uri . $relative_uri,
-                    $params
-                );
-            } catch (\Throwable $e) {
-                throw $e;
-            }
-        }
+        return $this->http_client->request(
+            $verb,
+            $this->base_uri . $relative_uri,
+            $params
+        );
     }
 
     protected function query(
@@ -1493,5 +1487,31 @@ class APIRest extends APIBaseClass
         $computer = new \Computer();
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
         $this->boolean((bool)$computer->getField('is_deleted'))->isTrue();
+    }
+
+    public function testSearchTextResponseCode()
+    {
+        $data = $this->query(
+            'getItems',
+            ['itemtype' => Computer::class,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['searchText' => ['test' => 'test']]
+            ],
+            400,
+            'ERROR_FIELD_NOT_FOUND'
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        $data = $this->query(
+            'getItems',
+            ['itemtype' => Computer::class,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['searchText' => ['name' => 'test']]
+            ],
+            200,
+        );
+
+        $this->variable($data)->isNotFalse();
     }
 }

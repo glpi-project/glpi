@@ -51,7 +51,7 @@ class RuleAction extends CommonDBChild
         $forbidden[] = 'update';
 
         if (isset($_POST['rule_class_name']) && is_subclass_of(\Rule::class, $_POST['rule_class_name'])) {
-            $rule = new $_POST['rule_class_name']();
+            $rule = getItemForItemtype($_POST['rule_class_name']);
             if ($rule->maxActionsCount() == 1) {
                 $forbidden[] = 'clone';
             }

@@ -187,10 +187,7 @@ class Reservation extends CommonDBChild
         if (empty($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
         }
-        if (
-            !Session::haveRight("reservation", UPDATE)
-            && Session::getLoginUserID() !== $input['users_id']
-        ) {
+        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
             return;
         }
 
@@ -568,6 +565,7 @@ class Reservation extends CommonDBChild
             Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
+        $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
       $(function() {
          var reservation = new Reservations();
@@ -577,6 +575,7 @@ class Reservation extends CommonDBChild
             rand: $rand,
             license_key: '$scheduler_key',
             can_reserve: $can_reserve,
+            now: '$now',
          });
          reservation.displayPlanning();
       });
@@ -1147,6 +1146,7 @@ JAVASCRIPT;
         if (isset($_REQUEST['defaultDate'])) {
             $defaultDate = $_REQUEST['defaultDate'];
         }
+        $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
       $(function() {
          var reservation = new Reservations();
@@ -1158,6 +1158,7 @@ JAVASCRIPT;
             currentv: 'listFull',
             defaultDate: '$defaultDate',
             license_key: '$scheduler_key',
+            now: '$now',
          });
          reservation.displayPlanning();
       });

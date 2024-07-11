@@ -43,7 +43,7 @@
                <div class="card-header search-header pe-0">
                   {% if count > 0 %}
                      {% set limitdropdown = include('components/dropdown/limit.html.twig', {
-                        'href': target ~ '?',
+                        'href': target,
                         'additional_params': 'sort=' ~ sort ~ '&order=' ~ order
                      }) %}
                      <div class="ms-auto d-inline-flex align-items-center d-none d-md-block search-limit">

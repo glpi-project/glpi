@@ -575,7 +575,7 @@ class RuleCollection extends CommonDBTM
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
             $can_sort = $this->RuleList->list[0]->can_sort && $canedit && $nb;
-            Session::initNavigateListItems($ruletype);
+            Session::initNavigateListItems($ruletype, '', '');
         }
 
         if ($can_sort) {
@@ -1004,7 +1004,7 @@ JAVASCRIPT;
     /**
      * Export rules in a xml format
      *
-     * @param items array the input data to transform to xml
+     * @param array $items array the input data to transform to xml
      *
      * @since 0.85
      *
@@ -1159,7 +1159,7 @@ JAVASCRIPT;
      * @param integer $condition          the rulecriteria condition
      * @param stirng  $criterion          the criterion
      *
-     * @return true if a criterion is a dropdown, false otherwise
+     * @return boolean true if a criterion is a dropdown, false otherwise
      **/
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {

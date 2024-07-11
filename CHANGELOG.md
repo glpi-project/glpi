@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.13] unreleased
+## [10.0.17] unreleased
 
 ### Added
 
@@ -18,6 +18,91 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.16] 2024-07-03
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.15] 2024-04-24
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.14] 2024-03-14
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.13] 2024-03-13
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- `condition` and `displaywith` parameters must now be added in IDOR token creation data when they are not empty.
 
 #### Deprecated
 

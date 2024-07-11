@@ -2206,7 +2206,11 @@ $empty_data_builder = new class
                 'use_infocoms_alert' => 0,
                 'send_infocoms_alert_before_delay' => 0,
                 'use_reservations_alert' => 0,
+                'use_domains_alert' => 0,
+                'send_domains_alert_close_expiries_delay' => 30,
+                'send_domains_alert_expired_delay' => 1,
                 'autoclose_delay' => -10,
+                'autopurge_delay' => -10,
                 'notclosed_delay' => 0,
                 'calendars_strategy' => 0,
                 'auto_assign_mode' => -10,
@@ -7977,6 +7981,12 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'unmanaged',
                 'rights' => self::RIGHT_NONE,
+
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'system_logs',
+                'rights' => READ,
 
             ],
         ];

@@ -91,6 +91,7 @@ var GLPIPlanning  = {
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
+            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
@@ -438,7 +439,9 @@ var GLPIPlanning  = {
                 }).done(function() {
                     // indicate to central page we're done rendering
                     if (!options.full_view) {
-                        $(document).trigger('masonry_grid:layout');
+                        setTimeout(function () {
+                            $(document).trigger('masonry_grid:layout');
+                        }, 100);
                     }
                 });
 
@@ -846,6 +849,7 @@ var GLPIPlanning  = {
         var event      = info.event;
         var revertFunc = info.revert;
         var extProps   = event.extendedProps;
+        var recurringDef = event._def.recurringDef;
 
         var old_itemtype = null;
         var old_items_id = null;
@@ -868,6 +872,28 @@ var GLPIPlanning  = {
 
         var start = event.start;
         var end   = event.end;
+
+        if (
+            !move_instance
+            && recurringDef
+            && recurringDef.typeData
+            && recurringDef.typeData.origOptions.dtstart !== start
+        ) {
+            let startDate = new Date(start);
+            let dtstart = recurringDef.typeData._dtstart || recurringDef.typeData.origOptions.dtstart;
+            let originDate = new Date(dtstart);
+
+            let hours = startDate.getHours();
+            let minutes = startDate.getMinutes();
+
+            originDate.setHours(hours, minutes);
+
+            start = originDate;
+
+            let duration = end - event.start;
+            end = new Date(start.getTime() + duration);
+        }
+
         if (typeof end === 'undefined' || end === null) {
             end = new Date(start.getTime());
             if (event.allDay) {

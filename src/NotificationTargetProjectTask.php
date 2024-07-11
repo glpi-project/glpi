@@ -60,8 +60,8 @@ class NotificationTargetProjectTask extends NotificationTarget
     public function addAdditionalTargets($event = '')
     {
 
-        $this->addTarget(Notification::TEAM_USER, __('Project team user'));
-        $this->addTarget(Notification::TEAM_GROUP, __('Project team group'));
+        $this->addTarget(Notification::TEAM_USER, __('Project task team user'));
+        $this->addTarget(Notification::TEAM_GROUP, __('Project task team group'));
         $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR, __('Manager of group of project team'));
         $this->addTarget(
             Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,

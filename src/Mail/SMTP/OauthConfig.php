@@ -119,7 +119,6 @@ final class OauthConfig
                     $config['proxy_name'],
                     $config['proxy_port']
                 );
-            $provider_options['verify'] = false;
         }
 
         $provider = new $provider_class(

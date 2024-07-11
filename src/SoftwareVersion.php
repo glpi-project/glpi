@@ -101,7 +101,7 @@ class SoftwareVersion extends CommonDBChild
      *     - target form target
      *     - softwares_id ID of the software for add process
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return boolean true if displayed  false if item not found or not right to display
      *
      **/
     public function showForm($ID, array $options = [])

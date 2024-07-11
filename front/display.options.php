@@ -53,7 +53,12 @@ if (!isset($_GET["sub_itemtype"])) {
 
 if ($item = getItemForItemtype($itemtype)) {
     if (isset($_GET['update']) || isset($_GET['reset'])) {
-        $item->updateDisplayOptions($_GET, $_GET["sub_itemtype"]);
+        $sub_itemtype = $_GET["sub_itemtype"];
+        if (!is_a($sub_itemtype, CommonDBTM::class, true)) {
+            $sub_itemtype = '';
+            unset($_GET['sub_itemtype']);
+        }
+        $item->updateDisplayOptions($_GET, $sub_itemtype);
     }
     $item->checkGlobal(READ);
     $item->showDislayOptions($_GET["sub_itemtype"]);

@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
+Session::checkCentralAccess();
 
 if (
     isset($_POST['type']) && !empty($_POST['type'])

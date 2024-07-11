@@ -43,7 +43,7 @@ include('../inc/includes.php');
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-Session::checkLoginUser();
+Session::checkCentralAccess();
 
 $action = $_POST['action'] ?? $_GET["action"];
 

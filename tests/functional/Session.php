@@ -39,6 +39,41 @@ namespace tests\units;
 
 class Session extends \DbTestCase
 {
+    protected function testUniqueSessionNameProvider(): iterable
+    {
+        // Same host, different path
+        yield [
+            \Session::buildSessionName("/var/www/localhost/glpi1", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi2", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi3", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/localhost/glpi4", 'localhost', '80'),
+        ];
+
+        // Same path, different full domains
+        yield [
+            \Session::buildSessionName("/var/www/glpi", 'test.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'preprod.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'prod.localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
+        ];
+
+        // Same host and path but different ports
+        yield [
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '8000'),
+            \Session::buildSessionName("/var/www/glpi", 'localhost', '8008'),
+        ];
+    }
+
+    /**
+     * @dataProvider testUniqueSessionNameProvider
+     */
+    public function testUniqueSessionName(
+        ...$cookie_names
+    ): void {
+        // Each cookie name must be unique
+        $this->array($cookie_names)->isEqualTo(array_unique($cookie_names));
+    }
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';
@@ -380,44 +415,201 @@ class Session extends \DbTestCase
         $this->string($result)->isEqualTo($expected);
     }
 
-
-    protected function idorProvider()
+    protected function newIdorParamsProvider()
     {
-        return [
-            ['itemtype' => 'Computer'],
-            ['itemtype' => 'Ticket'],
-            ['itemtype' => 'Glpi\\Dashboard\\Item'],
-            ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
-            ['itemtype' => 'User', 'add_params' => ['entity_restrict' => 0]],
+        // No extra params
+        foreach (['Computer', 'Ticket', 'Glpi\\Dashboard\\Item'] as $itemtype) {
+            yield [
+                'itemtype' => $itemtype,
+            ];
+        }
+
+        // No itemtype
+        yield [
+            'itemtype'   => '',
+            'add_params' => ['entity_restrict' => [0, 1, 2, 3, 5, 9, 1578]]
+        ];
+
+        // With itemtype and extra params
+        yield [
+            'itemtype'   => 'User',
+            'add_params' => ['right' => 'all'],
+        ];
+        yield [
+            'itemtype'   => 'User',
+            'add_params' => ['entity_restrict' => 0],
         ];
     }
 
     /**
-     * @dataProvider idorProvider
+     * @dataProvider newIdorParamsProvider
      */
-    public function testIDORToken(string $itemtype = "", array $add_params = [])
+    public function testGetNewIDORToken(string $itemtype = "", array $add_params = [])
     {
-       // generate token
+        $initial_time = time();
+
+        // generate token
         $token = \Session::getNewIDORToken($itemtype, $add_params);
         $this->string($token)->hasLength(64);
 
-       // token exists in session and is valid
-        $this->array($_SESSION['glpiidortokens'][$token])
-         ->string['itemtype']->isEqualTo($itemtype)
-         ->string['expires'];
-
-        if (count($add_params) > 0) {
-            $this->array($_SESSION['glpiidortokens'][$token])->size->isEqualTo(2 + count($add_params));
+        // token exists in session and is valid
+        $this->array($token_data = $_SESSION['glpiidortokens'][$token]);
+        if ($itemtype !== '') {
+            $this->array($token_data)->size->isEqualTo(2 + count($add_params));
+            $this->array($token_data)->string['itemtype']->isEqualTo($itemtype);
+        } else {
+            $this->array($token_data)->size->isEqualTo(1 + count($add_params));
         }
+        $this->array($token_data)->integer['expires']->isGreaterThanOrEqualTo($initial_time + GLPI_IDOR_EXPIRES);
 
-       // validate token with dedicated method
-        $result = \Session::validateIDOR([
+        // validate token
+        $data = [
             '_idor_token' => $token,
             'itemtype'    => $itemtype,
-        ] + $add_params);
-        $this->boolean($result)->isTrue();
+        ] + $add_params;
+        $this->boolean(\Session::validateIDOR($data))->isTrue();
     }
 
+    protected function idorDataProvider()
+    {
+        yield [
+            'data'     => [],
+            'is_valid' => false, // no token provided
+        ];
+
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'test'    => 1,
+                'complex' => ['foo', 'bar', [1, 2]],
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => ['foo', 'bar', [1, 2]],
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => ['foo', 'bar', [1, 2]],
+                'displaywith' => [], // empty displaywith is OK
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'complex'     => ['foo', 'bar', [1, 2]],
+            ],
+            'is_valid' => false, // missing `test`
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+            ],
+            'is_valid' => false, // missing `complex`
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => 'foo,bar,1,2',
+            ],
+            'is_valid' => false, // invalid `complex`
+        ];
+
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'displaywith' => ['id', 'phone'],
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'displaywith' => ['id', 'phone'],
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'displaywith' => ['phone'],
+            ],
+            'is_valid' => false, // id missing in displaywith
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+            ],
+            'is_valid' => false, // missing displaywith
+        ];
+
+        $condition_sha = \Dropdown::addNewCondition(['a' => 5, 'b' => true]);
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'condition' => $condition_sha,
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'condition'   => $condition_sha,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'condition'   => \Dropdown::addNewCondition(['a' => 1, 'b' => true]),
+            ],
+            'is_valid' => false, // not the same condition
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+            ],
+            'is_valid' => false, // missing condition
+        ];
+    }
+
+    /**
+     * @dataProvider idorDataProvider
+     */
+    public function testValidateIDOR(array $data, bool $is_valid)
+    {
+        $this->boolean(\Session::validateIDOR($data))->isEqualTo($is_valid);
+    }
+
+    public function testGetNewIDORTokenWithEmptyParams()
+    {
+        $this->when(
+            function () {
+                \Session::getNewIDORToken();
+            }
+        )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('IDOR token cannot be generated with empty criteria.')
+         ->exists();
+    }
 
     public function testDORInvalid()
     {
@@ -473,5 +665,136 @@ class Session extends \DbTestCase
         // Set language to French to ensure we always get names back as en_GB regardless of the user's language
         \Session::loadLanguage('fr_FR');
         $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
+    }
+
+    protected function entitiesRestrictProvider(): iterable
+    {
+        // Special case for -1
+        foreach ([-1, "-1", [-1], ["-1"]] as $value) {
+            yield [
+                'entity_restrict' => $value,
+                'active_entities' => [0, 1, 2, 3],
+                'result'          => $value,
+            ];
+        }
+
+        // Integer input, matching
+        yield [
+            'entity_restrict' => 2,
+            'active_entities' => [0, 1, '2', 3],
+            'result'          => 2,
+        ];
+
+        // String input, matching
+        yield [
+            'entity_restrict' => '2',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => 2,
+        ];
+
+        // Integer input, NOT matching
+        yield [
+            'entity_restrict' => 7,
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // String input, matching
+        yield [
+            'entity_restrict' => '7',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // Array input, ALL matching
+        yield [
+            'entity_restrict' => [0, '2', 3],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, 2, 3],
+        ];
+
+        // Array input, PARTIAL matching
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, 2, 3],
+        ];
+
+        // Array input, NONE matching
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => [1, 4],
+            'result'          => [],
+        ];
+
+        // Empty active entities
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => null,
+            'result'          => [],
+        ];
+
+        // Unexpected unique value
+        yield [
+            'entity_restrict' => 'not a valid value',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // Unexpected value in an array
+        yield [
+            'entity_restrict' => [0, 'not a valid value', 3],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, 3],
+        ];
+
+        // Active entity may contain a string value
+        // do not know why, but is is the case when only one entity is selected
+        foreach ([2, '2', [2], ['2']] as $entity_restrict) {
+            yield [
+                'entity_restrict' => $entity_restrict,
+                'active_entities' => [0, 1, '2', 3],
+                'result'          => is_array($entity_restrict) ? [2] : 2,
+            ];
+        }
+
+        // Invalid null values in input
+        yield [
+            'entity_restrict' => null,
+            'active_entities' => [0, 1, '2', 3],
+            'result'          => [],
+        ];
+        yield [
+            'entity_restrict' => [1, null, 3],
+            'active_entities' => [0, 1, '2', 3],
+            'result'          => [1, 3],
+        ];
+    }
+
+    /**
+     * @dataProvider entitiesRestrictProvider
+     */
+    public function testGetMatchingActiveEntities(/*mixed*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
+    {
+        $_SESSION['glpiactiveentities'] = $active_entities;
+        $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
+    }
+
+    public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
+    {
+        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', null, 3];
+
+        $this->when(
+            function () {
+                $this->variable(\Session::getMatchingActiveEntities([2, 3]))->isIdenticalTo([2, 3]);
+            }
+        )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.')
+         ->exists()
+         ->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.')
+         ->exists();
     }
 }

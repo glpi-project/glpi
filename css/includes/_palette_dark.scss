@@ -180,4 +180,8 @@ body .modal-header {
     background-color: lighten($dark, 5%);
 }
 
+.avatar {
+    color: $dark;
+}
+
 @import "includes";

@@ -537,6 +537,8 @@ class Search
             $p['start'] = 0;
         }
 
+        $p = self::cleanParams($p);
+
         $data             = [];
         $data['search']   = $p;
         $data['itemtype'] = $itemtype;
@@ -1348,7 +1350,7 @@ class Search
     }
 
     /**
-     * Construct aditionnal SQL (select, joins, etc) for meta-criteria
+     * Construct additional SQL (select, joins, etc) for meta-criteria
      *
      * @since 9.4
      *
@@ -3755,15 +3757,23 @@ JAVASCRIPT;
                                 $addaltemail = ",
                                 IFNULL(`$ticket_user_table`.`alternative_email`, '')";
                             }
-                            $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table$addtable`.`$name1`, ''),
-                                IFNULL(`$table$addtable`.`$name2`, ''),
-                                IFNULL(`$table$addtable`.`name`, '')$addaltemail
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table$addtable`.`$name1`, ''),
-                                IFNULL(`$table$addtable`.`$name2`, ''),
-                                IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
-                            ) $order";
+                            if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                                $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
+                                ) $order";
+                            } else {
+                                $criterion = "CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
+                                ) $order";
+                            }
                         } else {
                             $criterion = "`" . $table . $addtable . "`.`name` $order";
                         }
@@ -4563,8 +4573,24 @@ JAVASCRIPT;
                     break;
                 }
 
+                // Build base condition using entity restrictions
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                $entity_restrictions = [];
+                foreach ($itil_types as $itil_itemtype) {
+                    $entity_restrictions[] = getEntitiesRestrictRequest(
+                        '',
+                        $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]),
+                        'entities_id',
+                        ''
+                    );
+                }
+                $condition = "(" . implode(" OR ", $entity_restrictions) . ")";
+
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $condition = "(`glpi_itilfollowups`.`is_private` $in ";
+                $condition .= " AND (`glpi_itilfollowups`.`is_private` $in ";
 
                // Now filter on parent item visiblity
                 $condition .= "AND (";
@@ -4748,6 +4774,13 @@ JAVASCRIPT;
                     }
                 }
 
+                // To search for '&' in rich text
+                if (
+                    (($searchopt[$ID]['datatype'] ?? null) === 'text')
+                    && (($searchopt[$ID]['htmltext'] ?? null) === true)
+                ) {
+                    $val = str_replace('&#38;', '38;amp;', $val);
+                }
                 if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_text_search = true;
@@ -5150,29 +5183,20 @@ JAVASCRIPT;
             case "glpi_ticketvalidations.status":
             case "glpi_changes.global_validation":
             case "glpi_changevalidations.status":
-                if ($val == 'all') {
+                if ($val != 'can' && !is_numeric($val)) {
                     return "";
                 }
                 $tocheck = [];
-                switch ($val) {
-                    case 'can':
-                        $tocheck = CommonITILValidation::getCanValidationStatusArray();
-                        break;
-
-                    case 'all':
-                        $tocheck = CommonITILValidation::getAllValidationStatusArray();
-                        break;
+                if ($val === 'can') {
+                    $tocheck = CommonITILValidation::getCanValidationStatusArray();
                 }
                 if (count($tocheck) == 0) {
                     $tocheck = [$val];
                 }
-                if (count($tocheck)) {
-                    if ($nott) {
-                        return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
-                    }
-                    return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
+                if ($nott) {
+                    return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
                 }
-                break;
+                return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
 
             case "glpi_notifications.event":
                 if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, self::SHORTSEP)) {
@@ -5827,6 +5851,25 @@ JAVASCRIPT;
                               );
                         }
                     }
+                }
+                break;
+
+            case ITILFollowup::class:
+                // TODO 11.0: use $CFG_GLPI['itil_types']
+                $itil_types = [Ticket::class, Change::class, Problem::class];
+                foreach ($itil_types as $itil_itemtype) {
+                    $out .= self::addLeftJoin(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        $itil_itemtype::getTable(),
+                        'items_id',
+                        false,
+                        '',
+                        [
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                        ]
+                    );
                 }
                 break;
 
@@ -8018,6 +8061,27 @@ HTML;
             }
         }
 
+        return self::cleanParams($params);
+    }
+
+    public static function cleanParams(array $params): array
+    {
+        $int_params = [
+            'sort'
+        ];
+
+        foreach ($params as $key => &$val) {
+            if (in_array($key, $int_params)) {
+                if (is_array($val)) {
+                    foreach ($val as &$subval) {
+                        $subval = (int)$subval;
+                    }
+                } else {
+                    $val = (int)$val;
+                }
+            }
+        }
+
         return $params;
     }
 
@@ -9308,6 +9372,9 @@ HTML;
 
        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
+
+        // special case for & char
+        $val = str_replace('&', '&#38;', $val);
 
         if ($val === 'NULL' || $val === 'null') {
             return null;

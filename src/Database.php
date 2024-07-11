@@ -518,7 +518,7 @@ class Database extends CommonDBChild
                     'icon'  => DatabaseInstance::getIcon(),
                     'links' => [
                         'add'    => '/front/databaseinstance.form.php',
-                        'search' => '/front/dabataseinstance.php',
+                        'search' => '/front/databaseinstance.php',
                     ]
                 ]
             ];

@@ -1,0 +1,58 @@
+services:
+  app:
+    container_name: "glpi-app"
+    build:
+      context: "../.docker/app"
+    restart: "unless-stopped"
+    volumes:
+      - "..:/var/www/glpi:rw"
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    container_name: "glpi-db"
+    image: "mariadb:11.4"
+    restart: "unless-stopped"
+    volumes:
+      - "db:/var/lib/mysql"
+      - "./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
+    environment:
+      MARIADB_ROOT_PASSWORD: "glpi"
+      MARIADB_DATABASE: "glpi"
+      MARIADB_USER: "glpi"
+      MARIADB_PASSWORD: "glpi"
+    expose:
+      - "3306"
+
+  mailpit:
+    container_name: "glpi-mailpit"
+    image: "axllent/mailpit"
+    restart: "unless-stopped"
+    expose:
+      - "1025"
+    ports:
+      - "8025:8025"
+
+  dbgate:
+    container_name: "glpi-dbgate"
+    image: "dbgate/dbgate:latest"
+    restart: "unless-stopped"
+    ports:
+      - "8090:3000"
+    environment:
+      CONNECTIONS: con_glpi
+
+      LABEL_con_glpi: GLPI Mysql Server
+      SERVER_con_glpi: db
+      USER_con_glpi: root
+      PASSWORD_con_glpi: glpi
+      PORT_con_glpi: 3306
+      ENGINE_con_glpi: mysql@dbgate-plugin-mysql
+
+
+volumes:
+  db:

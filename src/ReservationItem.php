@@ -124,7 +124,7 @@ class ReservationItem extends CommonDBChild
      * @param $itemtype   type of the item
      * @param $ID         ID of the item
      *
-     * @return true if succeed else false
+     * @return boolean true if succeed else false
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {
@@ -1112,7 +1112,7 @@ class ReservationItem extends CommonDBChild
         ];
 
         if ($item->isEntityAssign()) {
-            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', true);
+            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', $item->maybeRecursive());
         }
 
         if ($item->maybeTemplate()) {

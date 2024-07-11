@@ -312,6 +312,8 @@ class Profile extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         if (isset($input["_helpdesk_item_types"])) {
             if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
@@ -424,6 +426,21 @@ class Profile extends CommonDBTM
         if (isset($input['interface']) && $input['interface'] == 'helpdesk' && $this->isLastSuperAdminProfile()) {
             Session::addMessageAfterRedirect(
                 __("Can't change the interface on this profile as it is the only remaining profile with rights to modify profiles with this interface."),
+                false,
+                ERROR
+            );
+            unset($input['interface']);
+        }
+
+        // If the profile is used as the "Profile to be used when locking items",
+        // it can't be set to the "helpdesk" interface.
+        if (
+            isset($input['interface'])
+            && $input['interface'] === "helpdesk"
+            && $this->fields['id'] === (int) $CFG_GLPI['lock_lockprofile_id']
+        ) {
+            Session::addMessageAfterRedirect(
+                __("This profile can't be moved to the simplified interface as it is used for locking items."),
                 false,
                 ERROR
             );

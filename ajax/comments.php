@@ -120,7 +120,7 @@ if (
                 }
 
                 if (isset($_POST['with_dc_position'])) {
-                    $item = new $_POST['itemtype']();
+                    $item = getItemForItemtype($_POST['itemtype']);
                     echo "<script type='text/javascript' >\n";
 
                    //if item have a DC position (reload url to it's rack)

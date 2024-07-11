@@ -43,6 +43,7 @@ class Hooks
    // File hooks
     const ADD_CSS        = 'add_css';
     const ADD_JAVASCRIPT = 'add_javascript';
+    const ADD_HEADER_TAG = 'add_header_tag';
 
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
@@ -52,6 +53,7 @@ class Hooks
     const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
     const INIT_SESSION                = 'init_session';
     const POST_INIT                   = 'post_init';
+    const CONFIG_PAGE                 = 'config_page';
 
    // Specific function hooks with parameters
     const RULE_MATCHED          = 'rule_matched';
@@ -168,6 +170,7 @@ class Hooks
         return [
             self::CHANGE_ENTITY,
             self::CHANGE_PROFILE,
+            self::CONFIG_PAGE,
             self::DISPLAY_LOCKED_FIELDS,
             self::DISPLAY_LOGIN,
             self::DISPLAY_CENTRAL,
@@ -183,6 +186,7 @@ class Hooks
             self::UNDISCLOSED_CONFIG_VALUE,
             self::UNLOCK_FIELDS,
             self::VCARD_DATA,
+            self::ADD_HEADER_TAG
         ];
     }
 

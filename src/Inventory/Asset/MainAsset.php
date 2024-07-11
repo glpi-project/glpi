@@ -246,11 +246,6 @@ abstract class MainAsset extends InventoryAsset
         /** @var \DBmysql $DB */
         global $DB;
 
-        if ($this->isPartial()) {
-            unset($val->users_id);
-            return;
-        }
-
         if (property_exists($val, 'users_id')) {
             if ($val->users_id == '') {
                 unset($val->users_id);

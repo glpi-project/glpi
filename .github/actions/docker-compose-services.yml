@@ -1,5 +1,3 @@
-version: "3.5"
-
 services:
   db:
     container_name: "db"

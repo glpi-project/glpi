@@ -76,14 +76,14 @@ if ($isValidItemtype) {
     $field_id = Html::cleanId("dropdown_" . $_POST['myname'] . $rand);
     $p = [
         'itemtype'            => $itemtype,
-        'entity_restrict'     => $_POST['entity_restrict'],
+        'entity_restrict'     => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         'table'               => $table,
         'multiple'            => (int) ($_POST["multiple"] ?? 0) !== 0,
         'myname'              => $_POST["myname"],
         'rand'                => $_POST["rand"],
         'width'               => 'calc(100% - 25px)',
         '_idor_token'         => Session::getNewIDORToken($itemtype, [
-            'entity_restrict' => $_POST['entity_restrict'],
+            'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         ]),
     ];
 

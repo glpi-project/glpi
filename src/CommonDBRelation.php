@@ -1478,7 +1478,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     } else {
                         $options['name'] = 'peer_' . $peers_id;
                         if (isset($_POST['entity_restrict'])) {
-                            $options['entity'] = $_POST['entity_restrict'];
+                            $options['entity'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
                         }
                         if ($normalized_action == 'remove') {
                             $options['nochecklimit'] = true;

@@ -464,6 +464,15 @@ class Contract extends CommonDBTM
 
             case 'renewal':
                 return self::getContractRenewalName($values[$field]);
+
+            case '_virtual_expiration':
+                return Infocom::getWarrantyExpir(
+                    $values['begin_date'],
+                    $values['duration'],
+                    0,
+                    true,
+                    ($values['renewal'] == self::RENEWAL_TACIT)
+                );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -654,16 +663,16 @@ class Contract extends CommonDBTM
         $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
-            'field'              => 'expire',
-            'name'               => __('Expiration'),
-            'datatype'           => 'date_delay',
-            'datafields'         => [
-                '1'                  => 'begin_date',
-                '2'                  => 'duration'
+            'field'              => '_virtual_expiration', // virtual field
+            'additionalfields'   => [
+                'begin_date',
+                'duration',
+                'renewal'
             ],
-            'searchunit'         => 'DAY',
-            'delayunit'          => 'MONTH',
-            'maybefuture'        => true,
+            'name'               => __('Expiration'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false
         ];
 
@@ -963,20 +972,20 @@ class Contract extends CommonDBTM
 
         $options = [
             'reset' => 'reset',
-            'sort'  => 12,
+            'sort'  => 20,
             'order' => 'DESC',
             'start' => 0,
             'criteria' => [
                 [
-                    'field'      => 12,
-                    'value'      => '<0',
-                    'searchtype' => 'contains',
+                    'field'      => 20,
+                    'value'      => 'NOW',
+                    'searchtype' => 'lessthan',
                 ],
                 [
-                    'field'      => 12,
+                    'field'      => 20,
                     'link'       => 'AND',
-                    'value'      => '>-30',
-                    'searchtype' => 'contains',
+                    'searchtype' => 'morethan',
+                    'value'      => '-1MONTH',
                 ]
             ]
         ];
@@ -987,16 +996,20 @@ class Contract extends CommonDBTM
             'count'  => $contract0
         ];
 
-        $options['criteria'][0]['value'] = '>0';
-        $options['criteria'][1]['value'] = '<7';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value']      = 'NOW';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '7DAY';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
             'count'  => $contract7
         ];
 
-        $options['criteria'][0]['value'] = '>6';
-        $options['criteria'][1]['value'] = '<30';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value']      = '6DAY';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value']      = '1MONTH';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 30 days'),

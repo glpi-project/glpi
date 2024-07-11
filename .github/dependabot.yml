@@ -97,3 +97,6 @@ updates:
       twig:
         patterns:
           - "twig/*"
+    ignore:
+      - dependency-name: "symfony/*"
+        versions: [">= 7"]

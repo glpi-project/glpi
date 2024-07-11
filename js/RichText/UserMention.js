@@ -66,7 +66,7 @@ GLPI.RichText.UserMention = class {
         this.editor.ui.registry.addAutocompleter(
             'user_mention',
             {
-                ch: '@',
+                trigger: '@',
                 minChars: 0,
                 fetch: function (pattern) {
                     return that.fetchItems(pattern);

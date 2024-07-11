@@ -72,24 +72,33 @@ jobs:
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
+      - name: "Force used PHP version"
+        run: |
+          docker compose exec -T app composer config --unset platform.php
+          docker compose exec -T app composer require "php:>=${{ matrix.php-version }}" --ignore-platform-req=php+ --no-install --no-scripts
       - name: "Build dependencies / translations"
         run: |
-          docker-compose exec -T app .github/actions/init_build.sh
+          docker compose exec -T app .github/actions/init_build.sh
       - name: "PHP lint"
+        if: "${{ success() || failure() }}"
         run: |
-          docker-compose exec -T app .github/actions/lint_php-lint.sh
+          docker compose exec -T app .github/actions/lint_php-lint.sh
       - name: "Twig lint"
+        if: "${{ success() || failure() }}"
         run: |
-          docker-compose exec -T app .github/actions/lint_twig-lint.sh
+          docker compose exec -T app .github/actions/lint_twig-lint.sh
       - name: "JS lint"
+        if: "${{ success() || failure() }}"
         run: |
-          docker-compose exec -T app .github/actions/lint_js-lint.sh
+          docker compose exec -T app .github/actions/lint_js-lint.sh
       - name: "SCSS lint"
+        if: "${{ success() || failure() }}"
         run: |
-          docker-compose exec -T app .github/actions/lint_scss-lint.sh
+          docker compose exec -T app .github/actions/lint_scss-lint.sh
       - name: "Misc lint"
+        if: "${{ success() || failure() }}"
         run: |
-          docker-compose exec -T app .github/actions/lint_misc-lint.sh
+          docker compose exec -T app .github/actions/lint_misc-lint.sh
 
   tests:
     # Do not run scheduled tests on tier repositories
@@ -101,13 +110,13 @@ jobs:
       matrix:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.3", db-image: "mariadb:10.11", always: true}
-          - {php-version: "8.3", db-image: "mysql:8.0", always: true}
+          - {php-version: "8.3", db-image: "mariadb:11.4", always: true}
+          - {php-version: "8.3", db-image: "mysql:8.4", always: true}
           # test other PHP versions
-          - {php-version: "8.2", db-image: "mariadb:10.11", always: false}
-          - {php-version: "8.1", db-image: "mariadb:10.11", always: false}
-          - {php-version: "8.0", db-image: "mariadb:10.11", always: false}
-          - {php-version: "7.4", db-image: "mariadb:10.11", always: false}
+          - {php-version: "8.2", db-image: "mariadb:11.4", always: false}
+          - {php-version: "8.1", db-image: "mariadb:11.4", always: false}
+          - {php-version: "8.0", db-image: "mariadb:11.4", always: false}
+          - {php-version: "7.4", db-image: "mariadb:11.4", always: false}
           # test other DB servers/versions
           - {php-version: "8.3", db-image: "mariadb:10.2", always: false}
           - {php-version: "8.3", db-image: "mysql:5.7", always: false}
@@ -151,48 +160,48 @@ jobs:
       - name: "Build dependencies / translations"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/init_build.sh
+          docker compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
-          docker-compose exec -T app .github/actions/test_install.sh
+          docker compose exec -T app .github/actions/test_install.sh
       - name: "Update DB tests (from 0.80, not using utf8mb4)"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-0.80-db.sh
-          docker-compose exec -T app .github/actions/test_update-from-older-version.sh
+          docker compose exec -T app .github/actions/test_update-from-older-version.sh
       - name: "Update DB tests (from 9.5, using utf8mb4)"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-9.5-db.sh
-          docker-compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "Unit tests"
+          docker compose exec -T app .github/actions/test_update-from-9.5.sh
+      - name: "PHPUnit tests"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/test_tests-units.sh
+          docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
-          docker-compose exec -T app .github/actions/test_tests-functional.sh
+          docker compose exec -T app .github/actions/test_tests-functional.sh
       - name: "Cache tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
-          docker-compose exec -T app .github/actions/test_tests-cache.sh
+          docker compose exec -T app .github/actions/test_tests-cache.sh
       - name: "LDAP tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
-          docker-compose exec -T app .github/actions/test_tests-ldap.sh
+          docker compose exec -T app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
           .github/actions/init_initialize-imap-fixtures.sh
-          docker-compose exec -T app .github/actions/test_tests-imap.sh
+          docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
-          docker-compose exec -T app .github/actions/test_tests-web.sh
+          docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "Javascript tests"
-        if: env.skip != 'true'
+        if: "${{ env.skip != 'true' && (success() || failure()) }}"
         run: |
-          docker-compose exec -T app .github/actions/test_javascript.sh
+          docker compose exec -T app .github/actions/test_javascript.sh

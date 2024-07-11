@@ -65,7 +65,7 @@ if (
                 }
 
                 $options = ['name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
-                    'entity'      => $_POST['entity_restrict'],
+                    'entity'      => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'right'       => $right,
                     'rand'        => $rand,
                     'ldap_import' => true
@@ -147,7 +147,7 @@ if (
 
                 $param = [
                     'name'      => '_itil_' . $_POST["actortype"] . '[groups_id]',
-                    'entity'    => $_POST['entity_restrict'],
+                    'entity'    => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'condition' => $cond,
                     'rand'      => $rand
                 ];
@@ -179,7 +179,7 @@ if (
 
             case "supplier":
                 $options = ['name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
-                    'entity'    => $_POST['entity_restrict'],
+                    'entity'    => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'rand'      => $rand
                 ];
                 if ($CFG_GLPI["notifications_mailing"]) {

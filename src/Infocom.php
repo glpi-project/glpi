@@ -287,8 +287,8 @@ class Infocom extends CommonDBChild
     /**
      * Fill, if necessary, automatically some dates when status changes
      *
-     * @param item          CommonDBTM object: the item whose status have changed
-     * @param action_add    true if object is added, false if updated (true by default)
+     * @param CommonDBTM $item          CommonDBTM object: the item whose status have changed
+     * @param boolean $action_add    true if object is added, false if updated (true by default)
      *
      * @return void
      **/
@@ -335,10 +335,10 @@ class Infocom extends CommonDBChild
     /**
      * Automatically manage copying one date to another is necessary
      *
-     * @param infocoms   array of item's infocom to modify
-     * @param field            the date to modify (default '')
-     * @param action           the action to peform (copy from another date) (default 0)
-     * @param params     array of additional parameters needed to perform the task
+     * @param array $infocoms   array of item's infocom to modify
+     * @param string $field            the date to modify (default '')
+     * @param integer $action           the action to peform (copy from another date) (default 0)
+     * @param array $params     array of additional parameters needed to perform the task
      *
      * @return void
      **/
@@ -1779,14 +1779,14 @@ class Infocom extends CommonDBChild
         $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
 
         if ($auto_renew && $addwarranty > 0) {
-            while ($timestamp < time()) {
+            while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
                 $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$addwarranty month");
             }
         }
 
-        if ($color && ($timestamp < time())) {
+        if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
             return "<span class='red'>" . Html::convDate(date("Y-m-d", $timestamp)) . "</span>";
         }
         return Html::convDate(date("Y-m-d", $timestamp));
