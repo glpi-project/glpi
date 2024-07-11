@@ -1123,7 +1123,6 @@ TWIG, $twig_params);
             ];
             // check entities
             if ($tmprule->isEntityAssign()) {
-                $rule['entities_id'] = $DB->escape(Html::entity_decode_deep($rule['entities_id']));
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (empty($entities_found)) {
                     $refused_rule['reasons'][] = ['entity' => $rule['entities_id']];

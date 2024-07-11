@@ -2191,8 +2191,6 @@ JAVASCRIPT;
             }
         }
 
-        $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
-
         if ($param["display_emptychoice"] && !$param["multiple"]) {
             $elements = [ 0 => $param['emptylabel'] ] + $elements;
         }
@@ -2228,11 +2226,11 @@ JAVASCRIPT;
             }
 
             if ($param['tooltip']) {
-                $output .= ' title="' . Html::entities_deep($param['tooltip']) . '"';
+                $output .= ' title="' . htmlspecialchars($param['tooltip']) . '"';
             }
 
             if ($param['class']) {
-                $output .= ' class="' . Html::entities_deep($param['class']) . '"';
+                $output .= ' class="' . htmlspecialchars($param['class']) . '"';
             }
 
             if (!empty($param["on_change"])) {
@@ -2280,7 +2278,7 @@ JAVASCRIPT;
             foreach ($elements as $key => $val) {
                // optgroup management
                 if (is_array($val)) {
-                    $opt_goup = Html::entities_deep($key);
+                    $opt_goup = htmlspecialchars($key);
                     if ($max_option_size < strlen($opt_goup)) {
                         $max_option_size = strlen($opt_goup);
                     }
@@ -2290,11 +2288,11 @@ JAVASCRIPT;
                     if (isset($param['option_tooltips'][$key])) {
                         if (is_array($param['option_tooltips'][$key])) {
                             if (isset($param['option_tooltips'][$key]['__optgroup_label'])) {
-                                $output .= ' title="' . $param['option_tooltips'][$key]['__optgroup_label'] . '"';
+                                $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]['__optgroup_label']) . '"';
                             }
                             $optgroup_tooltips = $param['option_tooltips'][$key];
                         } else {
-                            $output .= ' title="' . $param['option_tooltips'][$key] . '"';
+                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
                         }
                     }
                     $output .= ">";
@@ -2310,9 +2308,9 @@ JAVASCRIPT;
                                 }
                             }
                             if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
-                                $output .= ' title="' . $optgroup_tooltips[$key2] . '"';
+                                $output .= ' title="' . htmlspecialchars($optgroup_tooltips[$key2]) . '"';
                             }
-                            $output .= ">" .  Html::entities_deep($val2) . "</option>";
+                            $output .= ">" .  htmlspecialchars($val2) . "</option>";
                             if ($max_option_size < strlen($val2)) {
                                 $max_option_size = strlen($val2);
                             }
@@ -2321,7 +2319,7 @@ JAVASCRIPT;
                     $output .= "</optgroup>";
                 } else {
                     if (!isset($param['used'][$key])) {
-                        $output .= "<option value='" . Html::entities_deep($key) . "'";
+                        $output .= "<option value='" . htmlspecialchars($key) . "'";
                        // Do not use in_array : trouble with 0 and empty value
                         foreach ($param['values'] as $value) {
                             if (strcmp($key, $value) === 0) {
@@ -2330,9 +2328,9 @@ JAVASCRIPT;
                             }
                         }
                         if (isset($param['option_tooltips'][$key])) {
-                            $output .= ' title="' . $param['option_tooltips'][$key] . '"';
+                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
                         }
-                        $output .= ">" . Html::entities_deep($val) . "</option>";
+                        $output .= ">" . htmlspecialchars($val) . "</option>";
                         if (!is_null($val) && ($max_option_size < strlen($val))) {
                             $max_option_size = strlen($val);
                         }

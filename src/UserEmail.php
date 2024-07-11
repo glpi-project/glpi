@@ -173,7 +173,7 @@ class UserEmail extends CommonDBChild
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = Html::entities_deep($this->fields['email']);
+            $value = htmlspecialchars($this->fields['email'] ?? '');
         }
         $result = "";
         $field_name = $field_name . "[$id]";

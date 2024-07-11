@@ -209,7 +209,7 @@ class Item_RemoteManagement extends CommonDBChild
     public function getRemoteLink(): string
     {
         $link = '<a href="%s" target="_blank">%s</a>';
-        $id = Html::entities_deep($this->fields['remoteid']);
+        $id = htmlspecialchars($this->fields['remoteid'] ?? '');
         $href = null;
         switch ($this->fields['type']) {
             case self::TEAMVIEWER:

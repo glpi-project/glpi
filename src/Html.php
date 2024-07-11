@@ -64,9 +64,13 @@ class Html
      * @param string|array $value
      *
      * @return string|array
+     *
+     * @deprecated 11.0.0
      **/
     public static function entity_decode_deep($value)
     {
+        Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map([__CLASS__, 'entity_decode_deep'], $value);
         }
@@ -83,9 +87,13 @@ class Html
      * @param string|array $value
      *
      * @return string|array
+     *
+     * @deprecated 11.0.0
      **/
     public static function entities_deep($value)
     {
+        Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map([__CLASS__, 'entities_deep'], $value);
         }

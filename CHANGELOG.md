@@ -209,6 +209,8 @@ The present file will list all changes made to the project; according to the
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
+- `Html::entities_deep()`
+- `Html::entity_decode_deep()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`

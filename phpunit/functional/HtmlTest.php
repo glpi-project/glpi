@@ -656,10 +656,10 @@ class HtmlTest extends \GLPITestCase
     {
         $value = 'Should be \' "escaped" éè!';
         $expected = 'Should be &#039; &quot;escaped&quot; &eacute;&egrave;!';
-        $result = \Html::entities_deep($value);
+        $result = @\Html::entities_deep($value);
         $this->assertSame($expected, $result);
 
-        $result = \Html::entities_deep([$value, $value, $value]);
+        $result = @\Html::entities_deep([$value, $value, $value]);
         $this->assertSame([$expected, $expected, $expected], $result);
     }
 

@@ -6052,7 +6052,7 @@ final class SQLProvider implements SearchProviderInterface
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
                             $out .= (empty($out) ? '' : \Search::LBBR);
-                            $out .= "<a href='mailto:" . \Html::entities_deep($data[$ID][$k]['name']) . "'>" . $data[$ID][$k]['name'];
+                            $out .= "<a href='mailto:" . htmlspecialchars($data[$ID][$k]['name']) . "'>" . $data[$ID][$k]['name'];
                             $out .= "</a>";
                         }
                     }

@@ -531,7 +531,7 @@ JS;
         $description = Toolbox::stripTags($plugin['description']);
 
         $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
-        $authors_title = Html::entities_deep($authors);
+        $authors_title = htmlspecialchars($authors);
         $authors = strlen($authors)
             ? "<i class='fa-fw ti ti-users'></i>{$authors}"
             : "";
@@ -550,28 +550,28 @@ JS;
             ? self::getStarsHtml($plugin['note'])
             : "";
 
-        $home_url = Html::entities_deep($plugin['homepage_url'] ?? "");
+        $home_url = htmlspecialchars($plugin['homepage_url'] ?? "");
         $home_url = strlen($home_url)
             ? "<a href='{$home_url}' target='_blank' >
                <i class='ti ti-home-2 add_tooltip' title='" . __s("Homepage") . "'></i>
                </a>"
             : "";
 
-        $issues_url = Html::entities_deep($plugin['issues_url'] ?? "");
+        $issues_url = htmlspecialchars($plugin['issues_url'] ?? "");
         $issues_url = strlen($issues_url)
             ? "<a href='{$issues_url}' target='_blank' >
                <i class='ti ti-bug add_tooltip' title='" . __s("Get help") . "'></i>
                </a>"
             : "";
 
-        $readme_url = Html::entities_deep($plugin['readme_url'] ?? "");
+        $readme_url = htmlspecialchars($plugin['readme_url'] ?? "");
         $readme_url = strlen($readme_url)
             ? "<a href='{$readme_url}' target='_blank' >
                <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
                </a>"
             : "";
 
-        $changelog_url = Html::entities_deep($plugin['changelog_url'] ?? "");
+        $changelog_url = htmlspecialchars($plugin['changelog_url'] ?? "");
         $changelog_url = strlen($changelog_url)
             ? "<a href='{$changelog_url}' target='_blank' >
                <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
@@ -939,7 +939,7 @@ HTML;
     {
         $icon = "";
 
-        $logo_url = Html::entities_deep($plugin['logo_url'] ?? "");
+        $logo_url = htmlspecialchars($plugin['logo_url'] ?? "");
         if (strlen($logo_url)) {
             $icon = "<img src='{$logo_url}'>";
         } else {
