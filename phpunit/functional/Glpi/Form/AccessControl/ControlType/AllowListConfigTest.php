@@ -46,9 +46,9 @@ final class AllowListConfigTest extends \GLPITestCase
             'group_ids'   => [4, 5, 6],
             'profile_ids' => [7, 8, 9],
         ]);
-        $this->assertEquals($config->getUserIds(), [1, 2, 3]);
-        $this->assertEquals($config->getGroupIds(), [4, 5, 6]);
-        $this->assertEquals($config->getProfileIds(), [7, 8, 9]);
+        $this->assertEquals([1, 2, 3], $config->getUserIds());
+        $this->assertEquals([4, 5, 6], $config->getGroupIds());
+        $this->assertEquals([7, 8, 9], $config->getProfileIds());
     }
 
     public function testGetUserIds(): void
@@ -56,7 +56,7 @@ final class AllowListConfigTest extends \GLPITestCase
         $allow_list_config = new AllowListConfig(
             user_ids: [1, 2, 3],
         );
-        $this->assertEquals($allow_list_config->getUserIds(), [1, 2, 3]);
+        $this->assertEquals([1, 2, 3], $allow_list_config->getUserIds());
     }
 
     public function testGetGroupIds(): void
@@ -64,7 +64,7 @@ final class AllowListConfigTest extends \GLPITestCase
         $allow_list_config = new AllowListConfig(
             group_ids: [4, 5, 6],
         );
-        $this->assertEquals($allow_list_config->getGroupIds(), [4, 5, 6]);
+        $this->assertEquals([4, 5, 6], $allow_list_config->getGroupIds());
     }
 
     public function testGetProfileIds(): void
@@ -72,6 +72,6 @@ final class AllowListConfigTest extends \GLPITestCase
         $allow_list_config = new AllowListConfig(
             profile_ids: [7, 8, 9],
         );
-        $this->assertEquals($allow_list_config->getProfileIds(), [7, 8, 9]);
+        $this->assertEquals([7, 8, 9], $allow_list_config->getProfileIds());
     }
 }

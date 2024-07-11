@@ -272,7 +272,7 @@ class FormAccessControlTest extends DbTestCase
         $return = $form_access_control->displayTabContentForItem($form);
         ob_end_clean();
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
     }
 
     public static function prepareInputForAddProvider(): iterable

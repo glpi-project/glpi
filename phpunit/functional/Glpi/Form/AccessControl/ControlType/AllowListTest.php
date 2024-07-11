@@ -107,9 +107,9 @@ class AllowListTest extends \GLPITestCase
         // Test default fallback values
         $config = $allow_list->createConfigFromUserInput([]);
         $this->assertInstanceOf(AllowListConfig::class, $config);
-        $this->assertEquals($config->getUserIds(), []);
-        $this->assertEquals($config->getGroupIds(), []);
-        $this->assertEquals($config->getProfileIds(), []);
+        $this->assertEquals([], $config->getUserIds());
+        $this->assertEquals([], $config->getGroupIds());
+        $this->assertEquals([], $config->getProfileIds());
 
         // Test user supplied values
         $config = $allow_list->createConfigFromUserInput([
@@ -126,9 +126,9 @@ class AllowListTest extends \GLPITestCase
             ]
         ]);
         $this->assertInstanceOf(AllowListConfig::class, $config);
-        $this->assertEquals($config->getUserIds(), [1, 2, 3]);
-        $this->assertEquals($config->getGroupIds(), [4, 5, 6]);
-        $this->assertEquals($config->getProfileIds(), [7, 8, 9]);
+        $this->assertEquals([1, 2, 3], $config->getUserIds());
+        $this->assertEquals([4, 5, 6], $config->getGroupIds());
+        $this->assertEquals([7, 8, 9], $config->getProfileIds());
     }
 
     public static function canAnswerProvider(): iterable

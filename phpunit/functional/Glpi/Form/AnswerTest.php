@@ -127,10 +127,10 @@ final class AnswerTest extends GLPITestCase
         );
 
         // Copy and original should have the same values
-        $this->assertEquals($answer_copy->getQuestionId(), $answer->getQuestionId());
-        $this->assertEquals($answer_copy->getQuestionLabel(), $answer->getQuestionLabel());
-        $this->assertEquals($answer_copy->getRawAnswer(), $answer->getRawAnswer());
-        $this->assertEquals($answer_copy->getRawType(), $answer->getRawType());
+        $this->assertEquals($answer->getQuestionId(), $answer_copy->getQuestionId());
+        $this->assertEquals($answer->getQuestionLabel(), $answer_copy->getQuestionLabel());
+        $this->assertEquals($answer->getRawAnswer(), $answer_copy->getRawAnswer());
+        $this->assertEquals($answer->getRawType(), $answer_copy->getRawType());
     }
 
     private function getFakeQuestion(): Question
