@@ -10,11 +10,6 @@ else
   PHPUNIT_ADDITIONNAL_OPTIONS="--no-coverage";
 fi
 
-#temporary hack to prevent dual configuration
-if [[ ! -L "phpunit/config" ]]; then
-  ln -s ../tests/config phpunit/config
-fi
-
 vendor/bin/phpunit $PHPUNIT_ADDITIONNAL_OPTIONS
 
 unset COVERAGE_DIR
