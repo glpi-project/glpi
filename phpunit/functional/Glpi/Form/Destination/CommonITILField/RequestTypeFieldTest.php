@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
@@ -44,110 +45,133 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Ticket;
 
-final class RequestTypeField extends DbTestCase
+final class RequestTypeFieldTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    public function requestTypeFieldConfigurationProvider(): iterable
+    public function testRequestTypeFromTemplate(): void
     {
-        $field = new \Glpi\Form\Destination\CommonITILField\RequestTypeField();
+        $this->checkRequestTypeFieldConfiguration(
+            form: $this->createAndGetFormWithMultipleRequestTypeQuestions(),
+            config: ['value' => RequestTypeField::CONFIG_FROM_TEMPLATE],
+            answers: [],
+            expected_request_type: Ticket::INCIDENT_TYPE
+        );
+    }
 
-        yield 'Using template/default value' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => ['value' => $field::CONFIG_FROM_TEMPLATE],
-            'answers' => [],
-            'expected_request_type' => Ticket::INCIDENT_TYPE,
-        ];
+    public function testSpecificRequestType(): void
+    {
+        $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
 
-        yield 'Using specific value (DEMAND)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_SPECIFIC_VALUE,
-                $field::EXTRA_CONFIG_REQUEST_TYPE => Ticket::DEMAND_TYPE,
+        // Specific value: DEMAND
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_SPECIFIC_VALUE,
+                RequestTypeField::EXTRA_CONFIG_REQUEST_TYPE => Ticket::DEMAND_TYPE,
             ],
-            'answers' => [],
-            'expected_request_type' => Ticket::DEMAND_TYPE,
-        ];
-        yield 'Using specific value (INCIDENT)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_SPECIFIC_VALUE,
-                $field::EXTRA_CONFIG_REQUEST_TYPE => Ticket::INCIDENT_TYPE,
-            ],
-            'answers' => [],
-            'expected_request_type' => Ticket::INCIDENT_TYPE,
-        ];
+            answers: [],
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
 
-        yield 'Using specific answer (DEMAND)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_SPECIFIC_ANSWER,
-                $field::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 1"),
+        // Specific value: INCIDENT
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_SPECIFIC_VALUE,
+                RequestTypeField::EXTRA_CONFIG_REQUEST_TYPE => Ticket::INCIDENT_TYPE,
             ],
-            'answers' => [
+            answers: [],
+            expected_request_type: Ticket::INCIDENT_TYPE
+        );
+    }
+
+    public function testRequestTypeFromSpecificQuestion(): void
+    {
+        $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
+
+        // Using answer from first question
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_SPECIFIC_ANSWER,
+                RequestTypeField::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 1"),
+            ],
+            answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
                 "Request type 2" => Ticket::INCIDENT_TYPE,
             ],
-            'expected_request_type' => Ticket::DEMAND_TYPE,
-        ];
-        yield 'Using specific answer (INCIDENT)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_SPECIFIC_ANSWER,
-                $field::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 2"),
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
+
+        // Using answer from second question
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_SPECIFIC_ANSWER,
+                RequestTypeField::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 2"),
             ],
-            'answers' => [
+            answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
                 "Request type 2" => Ticket::INCIDENT_TYPE,
             ],
-            'expected_request_type' => Ticket::INCIDENT_TYPE,
-        ];
+            expected_request_type: Ticket::INCIDENT_TYPE
+        );
+    }
 
-        yield 'Using last valid answer (multiple answers submitted)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_LAST_VALID_ANSWER,
+    public function testRequestTypeFromLastValidQuestion(): void
+    {
+        $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
+
+        // With multiple answers submitted
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
             ],
-            'answers' => [
+            answers: [
                 "Request type 1" => Ticket::INCIDENT_TYPE,
                 "Request type 2" => Ticket::DEMAND_TYPE,
             ],
-            'expected_request_type' => Ticket::DEMAND_TYPE,
-        ];
-        yield 'Using last valid answer (only first answer was submitted)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_LAST_VALID_ANSWER,
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
+
+        // Only first answer was submitted
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
             ],
-            'answers' => [
+            answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
             ],
-            'expected_request_type' => Ticket::DEMAND_TYPE,
-        ];
-        yield 'Using last valid answer (Only second answer was submitted)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_LAST_VALID_ANSWER,
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
+
+        // Only second answer was submitted
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
             ],
-            'answers' => [
+            answers: [
                 "Request type 2" => Ticket::DEMAND_TYPE,
             ],
-            'expected_request_type' => Ticket::DEMAND_TYPE,
-        ];
-        yield 'Using last valid answer (no answers)' => [
-            'form'    => $form = $this->getFormWithMultipleRequestTypeQuestions(),
-            'config'  => [
-                'value' => $field::CONFIG_LAST_VALID_ANSWER,
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
+
+        // No answers, fallback to default value
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
             ],
-            'answers' => [],
-            'expected_request_type' => Ticket::INCIDENT_TYPE, // Default value fallback
-        ];
+            answers: [],
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
     }
 
-    /**
-     * @dataProvider requestTypeFieldConfigurationProvider
-     */
-    public function testRequestTypeFieldConfiguration(
+    private function checkRequestTypeFieldConfiguration(
         Form $form,
         array $config,
         array $answers,
@@ -155,7 +179,7 @@ final class RequestTypeField extends DbTestCase
     ): void {
         // Insert config
         $destinations = $form->getDestinations();
-        $this->array($destinations)->hasSize(1);
+        $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
             $destination::getType(),
@@ -183,16 +207,14 @@ final class RequestTypeField extends DbTestCase
 
         // Get created ticket
         $created_items = $answers->getCreatedItems();
-        $this->array($created_items)->hasSize(1);
+        $this->assertCount(1, $created_items);
         $ticket = current($created_items);
 
         // Check request type
-        $this->integer($ticket->fields['type'])
-            ->isEqualTo($expected_request_type)
-        ;
+        $this->assertEquals($expected_request_type, $ticket->fields['type']);
     }
 
-    private function getFormWithMultipleRequestTypeQuestions(): Form
+    private function createAndGetFormWithMultipleRequestTypeQuestions(): Form
     {
         $builder = new FormBuilder();
         $builder->addQuestion("Request type 1", QuestionTypeRequestType::class);
