@@ -2278,7 +2278,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $vcalendar = $this->getVCalendarForItem($this, $target_component);
 
-        $fields = Html::entity_decode_deep($this->fields);
+        $fields = $this->fields;
         $utc_tz = new \DateTimeZone('UTC');
 
         $vcomp = $vcalendar->getBaseComponent();

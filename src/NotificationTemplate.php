@@ -273,7 +273,7 @@ class NotificationTemplate extends CommonDBTM
                      "<html>
                         <head>
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
-                         <title>" . Html::entities_deep($lang['subject']) . "</title>
+                         <title>" . htmlspecialchars($lang['subject']) . "</title>
                          <style type='text/css'>
                            {$css}
                          </style>
@@ -446,10 +446,10 @@ class NotificationTemplate extends CommonDBTM
                 } else { // check exact match
                     if (isset($data['##' . $if_field . '##'])) {
                       // Data value: the value for the field in the database
-                        $data_value = Html::entity_decode_deep($data['##' . $if_field . '##']);
+                        $data_value = $data['##' . $if_field . '##'];
 
                       // Condition value: the expected value needed to validate the condition
-                        $condition_value = Html::entity_decode_deep($out[2][$key]);
+                        $condition_value = $out[2][$key];
 
                       // Special case for data returned by Dropdown::getYesNo, we
                       // need to use the localized value in the comparison
@@ -495,8 +495,8 @@ class NotificationTemplate extends CommonDBTM
                 continue;
             }
             $data[$tag] = RichText::isRichTextHtmlContent($value)
-            ? RichText::getSafeHtml($value) // Value is rich text, make it safe
-            : nl2br(Html::entities_deep($value)); // Value is plain text, encode its entities
+                ? RichText::getSafeHtml($value) // Value is rich text, make it safe
+                : nl2br(htmlspecialchars($value)); // Value is plain text, encode its entities
         }
 
         return $data;

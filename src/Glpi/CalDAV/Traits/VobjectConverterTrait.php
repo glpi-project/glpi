@@ -283,9 +283,9 @@ trait VobjectConverterTrait
 
         $content = $vcomponent->DESCRIPTION->getValue();
 
-       // Content is handled as plain text in CalDAV client and will be handled as rich text on GLPI side,
-       // so special chars have to be encoded in html entities.
-        $content = \Html::entities_deep($content);
+        // Content is handled as plain text in CalDAV client and will be handled as rich text on GLPI side,
+        // so special chars have to be encoded in html entities.
+        $content = htmlspecialchars($content);
 
         return $content;
     }

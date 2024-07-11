@@ -1453,7 +1453,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\"" .
-             Html::entities_deep($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
+             htmlspecialchars($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
         $html .= $parent->getStatusIcon($val['status']);
         $html .= "&nbsp;<a id='content_tracking_" . $val["id"] . $rand . "'
                    href='" . $parenttype::getFormURLWithID($val[$parenttype_fk]) . "'
@@ -1918,7 +1918,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $vcalendar = $this->getVCalendarForItem($this, $target_component);
 
-        $parent_fields = Html::entity_decode_deep($parent_item->fields);
+        $parent_fields = $parent_item->fields;
         $utc_tz = new \DateTimeZone('UTC');
 
         $vcomp = $vcalendar->getBaseComponent();
