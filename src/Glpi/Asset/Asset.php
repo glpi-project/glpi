@@ -101,8 +101,14 @@ abstract class Asset extends CommonDBTM
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return sprintf(
+            '%s/Asset/%s',
+            $full ? $CFG_GLPI['root_doc'] : '',
+            static::getDefinition()->getAssetClassName(false)
+        );
     }
 
     public static function getFormURL($full = true)
