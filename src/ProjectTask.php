@@ -72,6 +72,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     const UPDATEMY    = 1024;
 
 
+    public function getCloneRelations(): array
+    {
+        return [
+            ProjectTaskTeam::class,
+        ];
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Project task', 'Project tasks', $nb);
