@@ -38,8 +38,6 @@ namespace tests\units;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/* Test for inc/commondropdown.class.php */
-
 abstract class CommonDropdown extends DbTestCase
 {
     /**
