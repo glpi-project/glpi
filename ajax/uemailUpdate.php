@@ -125,7 +125,7 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlentities($default_email, ENT_QUOTES, 'utf-8') . "'>";
+                        value='" . htmlspecialchars($default_email) . "'>";
     }
 
     echo "$email_string";

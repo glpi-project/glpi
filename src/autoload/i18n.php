@@ -75,7 +75,7 @@ function __($str, $domain = 'glpi')
 
 
 /**
- * Translate a string and escape HTML entities
+ * Translate a string and escape HTML special chars.
  *
  * @since 0.84
  *
@@ -86,12 +86,12 @@ function __($str, $domain = 'glpi')
  */
 function __s($str, $domain = 'glpi')
 {
-    return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(__($str, $domain));
 }
 
 
 /**
- * Translate a contextualized string and escape HTML entities
+ * Translate a contextualized string and escape HTML special chars.
  *
  * @since 0.84
  *
@@ -99,11 +99,11 @@ function __s($str, $domain = 'glpi')
  * @param string $str    to translate
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @return string protected string (with htmlentities)
+ * @return string
  */
 function _sx($ctx, $str, $domain = 'glpi')
 {
-    return htmlentities(_x($ctx, $str, $domain), ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(_x($ctx, $str, $domain));
 }
 
 
@@ -140,7 +140,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
 
 
 /**
- * Pluralized translation with HTML entities escaped
+ * Pluralized translation with HTML special chars escaped
  *
  * @since 0.84
  *
@@ -149,11 +149,11 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
  * @param integer $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
- * @return string protected string (with htmlentities)
+ * @return string
  */
 function _sn($sing, $plural, $nb, $domain = 'glpi')
 {
-    return htmlentities(_n($sing, $plural, $nb, $domain), ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(_n($sing, $plural, $nb, $domain));
 }
 
 
