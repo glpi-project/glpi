@@ -49,41 +49,6 @@ final class FormDestinationTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    /**
-     * Data provider for the "testGetTabNameForItem" method
-     *
-     * @return iterable
-     */
-    final protected function testGetTabNameForItemProvider(): iterable
-    {
-        $this->login();
-
-        // Invalid types
-        yield [new Monitor(), false];
-        yield [new CommonGLPI(), false];
-
-        // Answers set with no destinations
-        $form = $this->createForm(
-            (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortText::class)
-        );
-        yield [$form, "Items to create"];
-
-        // Answers set with 4 destinations
-        $form = $this->createForm(
-            (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, 'destination 1')
-                ->addDestination(FormDestinationTicket::class, 'destination 2')
-                ->addDestination(FormDestinationTicket::class, 'destination 3')
-                ->addDestination(FormDestinationTicket::class, 'destination 4')
-        );
-        yield [$form, "Items to create 4"];
-
-        // Disable tab count
-        yield [$form, "Items to create"];
-    }
-
     public function testGetTabNameForFormWithoutDestinations()
     {
         $this->login();

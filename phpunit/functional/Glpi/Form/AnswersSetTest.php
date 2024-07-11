@@ -105,10 +105,8 @@ class AnswersSetTest extends DbTestCase
     private function checkGetTabNameForItem(
         CommonGLPI $item,
         string|false $expected_tab_name,
-        // bool $glpishow_count_on_tabs = true,
     ): void {
         $answers_set = new AnswersSet();
-        // $_SESSION['glpishow_count_on_tabs'] = $glpishow_count_on_tabs;
 
         $tab_name = $answers_set->getTabNameForItem($item);
 
