@@ -8362,27 +8362,7 @@ HTML;
                                                               )
                 ];
 
-                self::$search[$itemtype][141]['table']         = 'glpi_changes';
-                self::$search[$itemtype][141]['field']         = 'id';
-                self::$search[$itemtype][141]['datatype']      = 'count';
-                self::$search[$itemtype][141]['name']          = _x('quantity', 'Number of changes');
-                self::$search[$itemtype][141]['forcegroupby']  = true;
-                self::$search[$itemtype][141]['usehaving']     = true;
-                self::$search[$itemtype][141]['massiveaction'] = false;
-                self::$search[$itemtype][141]['joinparams']    = ['beforejoin'
-                => ['table'
-                    => 'glpi_changes_items',
-                        'joinparams'
-                        => ['jointype'
-                        => 'itemtype_item'
-                        ]
-                    ],
-                    'condition'
-                    => getEntitiesRestrictRequest(
-                        'AND',
-                        'NEWTABLE'
-                    )
-                ];
+
             }
 
             $fn_append_options = static function ($new_options) use ($itemtype) {
