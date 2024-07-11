@@ -37,11 +37,18 @@ namespace Glpi\Http;
 interface FirewallInterface
 {
     /**
-     * Apply the firewall strategy for given path.
+     * Apply the firewall strategy.
      *
-     * @param string $path URL path
-     * @param string $strategy Strategy to apply, or null to fallback to default strategy
+     * @param string $strategy
      * @return void
      */
-    public function applyStrategy(string $path, ?string $strategy): void;
+    public function applyStrategy(string $strategy): void;
+
+    /**
+     * Compute the fallback strategy for given path.
+     *
+     * @param string $path
+     * @return string
+     */
+    public function computeFallbackStrategy(string $path): string;
 }
