@@ -189,11 +189,12 @@ class DbTestCase extends \GLPITestCase
     /**
      * Create an item of the given class
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
      *
-     * @return CommonDBTM
+     * @return T
      */
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
