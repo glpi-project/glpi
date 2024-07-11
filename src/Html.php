@@ -2584,7 +2584,7 @@ HTML;
             } else {
                 $out .= "onclick='modal_massiveaction_window$identifier.show();'";
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlentities($p['title'], ENT_QUOTES, 'UTF-8') . "\">";
+            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlspecialchars($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
@@ -4014,7 +4014,7 @@ JAVASCRIPT
                                 echo "(object) " . get_class($val);
                             }
                         } else {
-                            echo htmlentities($val ?? "");
+                            echo htmlspecialchars($val ?? "");
                         }
                     }
                 }

@@ -1410,7 +1410,7 @@ class CommonDBTM extends CommonGLPI
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
             if ($thename != NOT_AVAILABLE) {
-                $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
+                $title = ' title="' . htmlspecialchars($thename) . '"';
             }
         }
 

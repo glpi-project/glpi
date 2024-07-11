@@ -72,7 +72,7 @@ class RichText extends \GLPITestCase
   <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url>
 </root>
 XML;
-        $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
+        $content = '<h1>XML example</h1>' . "\n" . htmlspecialchars($xml_sample);
         $result  = '<h1>XML example</h1>' . "\n" . str_replace(['&', '<', '>', '"', '='], ['&amp;', '&lt;', '&gt;', '&#34;', '&#61;'], $xml_sample);
         yield [
             'content'                => $content,
@@ -454,7 +454,7 @@ HTML,
   <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url>
 </root>
 XML;
-        $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
+        $content = '<h1>XML example</h1>' . "\n" . htmlspecialchars($xml_sample);
         $result  = <<<PLAINTEXT
 XML example <?xml version="1.0" encoding="UTF-8"?> <root> <desc><![CDATA[Some CDATA content]]></desc> <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url> </root>
 PLAINTEXT;
