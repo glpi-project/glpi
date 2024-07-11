@@ -167,7 +167,7 @@ final class RequestTypeFieldTest extends DbTestCase
                 'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
             ],
             answers: [],
-            expected_request_type: Ticket::DEMAND_TYPE
+            expected_request_type: Ticket::INCIDENT_TYPE
         );
     }
 
