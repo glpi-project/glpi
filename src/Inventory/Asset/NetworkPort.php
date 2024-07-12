@@ -170,7 +170,8 @@ class NetworkPort extends InventoryAsset
             'ifnumber'  => 'logical_number',
             'model'     => 'networkportmodels_id',
             'sysmac'    => 'mac',
-            'sysname'   => 'name'
+            'sysname'   => 'name',
+            'ip'        => 'ipaddress'
         ];
 
         foreach ($connections as $connection) {
