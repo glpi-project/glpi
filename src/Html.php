@@ -5084,7 +5084,7 @@ HTML;
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if (!$force_compiled_file && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
