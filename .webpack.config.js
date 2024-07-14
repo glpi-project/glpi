@@ -25,6 +25,12 @@ let config = {
             entries[path.basename(file, '.js')] = file;
         }
 
+        // Handle SCSS files
+        const scssFiles = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).scss');
+        for (const file of scssFiles) {
+            entries[path.basename(file, '.scss')] = file;
+        }
+
         return entries;
     },
     output: {
@@ -82,6 +88,11 @@ let config = {
                         return sanitizedPath;
                     },
                 },
+            },
+            {
+                // Build SCSS files
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
         ],
     },
@@ -163,23 +174,8 @@ var filesToCopy = [
     },
     // SCSS files
     {
-        package: '@fontsource/inter',
-        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff,files/*[0-9]00*.woff2}',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/core',
-        from: 'src/scss/**/*.scss',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/icons-webfont',
-        from: 'dist/{fonts/*,tabler-icons.scss}',
-        to: scssOutputPath,
-    },
-    {
         package: 'bootstrap',
-        from: 'scss/**/*.scss',
+        from: 'scss/vendor/_rfs.scss',
         to: scssOutputPath,
     },
     {
