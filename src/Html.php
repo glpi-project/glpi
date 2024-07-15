@@ -3549,7 +3549,7 @@ JS;
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
-            'css/tabler.scss',
+            'public/lib/tabler.css',
             'css/glpi.scss',
             'css/core_palettes.scss',
         ];
