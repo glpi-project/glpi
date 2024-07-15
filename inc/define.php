@@ -209,7 +209,7 @@ $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEqui
     'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
     'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
     'DeviceBattery', 'DeviceFirmware', 'DeviceCamera',
-    'Certificate'
+    'Certificate', 'Appliance'
 ];
 
 
