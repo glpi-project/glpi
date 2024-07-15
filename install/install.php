@@ -83,7 +83,7 @@ function header_html($etape)
     echo Html::script("js/glpi_dialog.js");
 
     // CSS
-    echo Html::scss("css/tabler", [], true);
+    echo Html::css('public/lib/tabler.css');
     echo Html::css('public/lib/base.css');
     echo Html::scss("css/install", [], true);
     echo "</head>";
