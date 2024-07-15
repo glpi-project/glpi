@@ -791,7 +791,14 @@ class Search
        //// 3 - WHERE
 
        // default string
-        $COMMONWHERE = (Session::getCurrentInterface() != 'helpdesk') ? self::addDefaultWhere($data['itemtype']) : '';
+        if (
+            Session::getCurrentInterface() != 'helpdesk'
+            && $data['itemtype'] == Ticket::class
+        ) {
+            $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
+        } else {
+            $COMMONWHERE = "";
+        }
         $first = empty($COMMONWHERE);
 
        // Add deleted if item have it
