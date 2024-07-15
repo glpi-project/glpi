@@ -6,7 +6,7 @@ mkdir -p $(dirname "$LOG_FILE")
 
 bin/console database:configure \
   --no-interaction --ansi \
-  --reconfigure --db-name=glpitest-9.5 --db-host=db --db-user=root \
+  --reconfigure --db-name=glpitest-9.5 --db-host=db --db-user=root --db-password="" \
   --strict-configuration
 
 # Execute update
@@ -94,7 +94,7 @@ bin/console database:check_schema_integrity \
 # Check updated data
 bin/console database:configure \
   --no-interaction --ansi \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration
 mkdir -p ./tests/files/_cache
 tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5 --ansi --no-interaction
