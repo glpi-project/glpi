@@ -48,11 +48,6 @@ final class FormSerializer extends AbstractFormSerializer
         return 1;
     }
 
-    public function getFormDataClass(): string
-    {
-        return FormContentSpecification::class;
-    }
-
     /** @property Form[] $forms */
     public function exportFormsToJson(array $forms): string
     {
