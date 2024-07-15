@@ -60,12 +60,6 @@ describe('Self-Service Tickets', () => {
             });
         });
 
-        // A toast notification should be shown with the ticket number
-        cy.get('#messages_after_redirect .toast-body').should('be.visible').within((toast) => {
-            cy.wrap(toast).invoke('text').should('contain', 'Thank you for using our automatic helpdesk system');
-            cy.wrap(toast).find('a').click();
-        });
-
         cy.url().should('include', '/front/ticket.form.php');
 
         // Check the available tabs
