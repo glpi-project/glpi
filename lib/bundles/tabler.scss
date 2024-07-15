@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,10 @@
 $enable-negative-margins: true;
 $link-hover-decoration: none;
 
-@import "~@tabler/core/src/scss/core";
-@import "~@fontsource/inter/scss/mixins";
+@import "@tabler/core/src/scss/core";
+@import "@fontsource/inter/scss/mixins";
 
-$fontDir: "../css/lib/fontsource/inter/files";
+$fontDir: "@fontsource/inter/files";
 
 @include fontFace($weight: 100);
 @include fontFace($weight: 200);
@@ -53,6 +52,6 @@ $fontDir: "../css/lib/fontsource/inter/files";
     --tblr-font-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif;
 }
 
-$ti-font-path: "../css/lib/tabler/icons-webfont/dist/fonts";
+$ti-font-path: "@tabler/icons-webfont/dist/fonts";
 
-@import "~@tabler/icons-webfont/dist/tabler-icons";
+@import "@tabler/icons-webfont/dist/tabler-icons";

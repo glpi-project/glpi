@@ -182,6 +182,7 @@ echo "<title>Setup GLPI</title>";
 echo Html::script("public/lib/base.js");
 echo Html::script("js/glpi_dialog.js");
 // CSS
+echo Html::css('public/lib/tabler.css');
 echo Html::css('public/lib/base.css');
 echo Html::scss("css/install", [], true);
 echo "</head>";

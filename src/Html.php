@@ -1216,7 +1216,7 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
-        $tpl_vars['css_files'][] = ['path' => 'css/tabler.scss'];
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         if ($theme->isCustomTheme()) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];
@@ -3551,7 +3551,7 @@ JS;
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
-            'css/tabler.scss',
+            'public/lib/tabler.css',
             'css/glpi.scss',
             'css/core_palettes.scss',
         ];

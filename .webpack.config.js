@@ -16,13 +16,19 @@ const scssOutputPath = 'css/lib';
  */
 let config = {
     entry: function () {
-        // Create an entry per *.js file in lib/bundle directory.
+        // Create an entry per file in lib/bundle directory.
         // Entry name will be name of the file (without ext).
         let entries = {};
 
-        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-        for (const file of files) {
-            entries[path.basename(file, '.js')] = file;
+        for (const ext of ['.js', '.scss']) {
+            const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
+            for (const file of files) {
+                const entry_name = path.basename(file, ext);
+                if (entry_name in entries) {
+                    throw new Error(`Duplicate bundle entry: '${entry_name}'.`);
+                }
+                entries[entry_name] = file;
+            }
         }
 
         return entries;
@@ -82,6 +88,11 @@ let config = {
                         return sanitizedPath;
                     },
                 },
+            },
+            {
+                // Build SCSS files
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
         ],
     },
@@ -163,23 +174,8 @@ var filesToCopy = [
     },
     // SCSS files
     {
-        package: '@fontsource/inter',
-        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff,files/*[0-9]00*.woff2}',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/core',
-        from: 'src/scss/**/*.scss',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/icons-webfont',
-        from: 'dist/{fonts/*,tabler-icons.scss}',
-        to: scssOutputPath,
-    },
-    {
         package: 'bootstrap',
-        from: 'scss/**/*.scss',
+        from: 'scss/vendor/_rfs.scss',
         to: scssOutputPath,
     },
     {
