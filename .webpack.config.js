@@ -16,19 +16,19 @@ const scssOutputPath = 'css/lib';
  */
 let config = {
     entry: function () {
-        // Create an entry per *.js file in lib/bundle directory.
+        // Create an entry per file in lib/bundle directory.
         // Entry name will be name of the file (without ext).
         let entries = {};
 
-        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-        for (const file of files) {
-            entries[path.basename(file, '.js')] = file;
-        }
-
-        // Handle SCSS files
-        const scssFiles = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).scss');
-        for (const file of scssFiles) {
-            entries[path.basename(file, '.scss')] = file;
+        for (const ext of ['.js', '.scss']) {
+            const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
+            for (const file of files) {
+                const entry_name = path.basename(file, ext);
+                if (entry_name in entries) {
+                    throw new Error(`Duplicate bundle entry: '${entry_name}'.`);
+                }
+                entries[entry_name] = file;
+            }
         }
 
         return entries;
