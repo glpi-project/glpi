@@ -8372,11 +8372,11 @@ HTML;
                 self::$search[$itemtype][141]['joinparams']    = ['beforejoin'
                 => ['table'
                     => 'glpi_changes_items',
-                        'joinparams'
+                    'joinparams'
                         => ['jointype'
                         => 'itemtype_item'
                         ]
-                    ],
+                ],
                     'condition'
                     => getEntitiesRestrictRequest(
                         'AND',
