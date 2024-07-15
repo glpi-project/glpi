@@ -6425,7 +6425,7 @@ HTML;
                 $GLPI_CACHE->set($ckey, $css);
                 $GLPI_CACHE->set($fckey, $file_hash);
             }
-            Toolbox::logDebug(sprintf("Compile $file took %s seconds", round(microtime(true) - $start, 2)));
+            Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
             if (isset($args['debug'])) {
