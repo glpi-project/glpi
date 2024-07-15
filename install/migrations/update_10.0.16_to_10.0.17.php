@@ -38,7 +38,7 @@
  *
  * @return bool for success (will die for most error)
  **/
-function update10015to10016()
+function update10016to10017()
 {
     /**
      * @var \DBmysql $DB
