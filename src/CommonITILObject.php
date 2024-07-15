@@ -4727,6 +4727,32 @@ abstract class CommonITILObject extends CommonDBTM
         $tab[] = $newtab;
 
         $newtab = [
+            'id'                 => '500',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Requester category', 'Requester categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = $newtab;
+
+        $newtab = [
             'id'                 => '71',  // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
             'table'              => 'glpi_groups',
             'field'              => 'completename',
@@ -4800,6 +4826,32 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $newtab = [
+            'id'                 => '501',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Observer category', 'Observer categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = $newtab;
+
         $tab[] = [
             'id'                 => '65', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
             'table'              => 'glpi_groups',
@@ -4863,6 +4915,32 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ]
         ];
+
+        $newtab = [
+            'id'                 => '502',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Technician category', 'Technician categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = $newtab;
 
         $tab[] = [
             'id'                 => '8', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
