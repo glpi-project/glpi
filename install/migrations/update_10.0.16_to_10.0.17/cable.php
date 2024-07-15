@@ -37,4 +37,4 @@
  * @var array $DELFROMDISPLAYPREF
  */
 
-$DELFROMDISPLAYPREF['Cable'] = [8, 10];
+$DELFROMDISPLAYPREF[Cable::class] = [8, 10];
