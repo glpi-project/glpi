@@ -38,7 +38,7 @@ use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");

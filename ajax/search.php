@@ -37,7 +37,7 @@ use Glpi\Search\Input\QueryBuilder;
 
 // Direct access to file
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");

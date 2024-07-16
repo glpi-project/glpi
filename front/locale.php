@@ -35,11 +35,13 @@
 
 use Glpi\Application\ErrorHandler;
 
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
+
 /**
- * @var array $CFG_GLPI
  * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
  */
-global $CFG_GLPI, $TRANSLATE;
+global $TRANSLATE;
 
 session_write_close(); // Unlocks session to permit concurrent calls
 

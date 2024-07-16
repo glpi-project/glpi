@@ -35,14 +35,11 @@
 
 use Glpi\Event;
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Controller\LegacyFileLoadController $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // avoid reloading js libs
 if (isset($_GET['ajax']) && $_GET['ajax']) {
-    /** @var $this \Glpi\Controller\LegacyFileLoadController */
     $this->setAjax();
 }
 

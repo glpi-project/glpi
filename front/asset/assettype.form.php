@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetType;
 use Glpi\Http\Response;

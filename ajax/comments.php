@@ -33,12 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Controller\LegacyFileLoadController $this */
+$CFG_GLPI = $this->getAppConfig();
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
 $this->setAjax();
 
 // Send UTF8 Headers

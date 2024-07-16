@@ -44,8 +44,8 @@
 
 use Glpi\Event;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 /** @var Item_Devices|null $item_device */
 if (!($item_device instanceof Item_Devices)) {

@@ -37,12 +37,9 @@
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Controller\LegacyFileLoadController $this */
+$CFG_GLPI = $this->getAppConfig();
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
 $this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");

@@ -33,13 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var Glpi\Controller\LegacyFileLoadController $this */
+
+$CFG_GLPI = $this->getAppConfig();
+
 /**
- * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $CFG_GLPI, $GLPI_CACHE;
+global $GLPI_CACHE;
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
 $this->setAjax();
 
 header("Content-Type: application/json; charset=UTF-8");
@@ -48,4 +50,3 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 echo json_encode(Entity::getEntitySelectorTree());
-return;
