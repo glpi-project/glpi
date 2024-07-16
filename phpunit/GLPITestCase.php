@@ -61,7 +61,7 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-        $this->copyGlobals();
+        $this->storeGlobals();
 
         // By default, no session, not connected
         $this->resetSession();
@@ -409,7 +409,7 @@ class GLPITestCase extends TestCase
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
     }
 
-    protected function copyGlobals(): void
+    private function storeGlobals(): void
     {
         global $CFG_GLPI;
 
@@ -418,7 +418,7 @@ class GLPITestCase extends TestCase
         }
     }
 
-    protected function resetGlobalsAndStaticValues(): void
+    private function resetGlobalsAndStaticValues(): void
     {
         // Globals
         global $CFG_GLPI;
