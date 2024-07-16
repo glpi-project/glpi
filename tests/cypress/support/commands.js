@@ -48,7 +48,11 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
         username,
         () => {
             cy.blockGLPIDashboards();
-            cy.visit('/');
+            cy.visit('/', {
+                headers: {
+                    'Accept-Language': 'en-GB,en;q=0.9',
+                }
+            });
             cy.title().should('eq', 'Authentication - GLPI');
             cy.findByRole('textbox', {'name': "Login"}).type(username);
             cy.findByLabelText("Password", {exact: false}).type(password);
