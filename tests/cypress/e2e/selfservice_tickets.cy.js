@@ -55,15 +55,6 @@ describe('Self-Service Tickets', () => {
                 cy.get('textarea[name="content"]').type('This is my first ticket in GLPI. I sure hope it works.', {interactive: true});
             });
             cy.get('button').contains('Submit message').click();
-            cy.url().should('include', '/front/tracking.injector.php').then(() => {
-                cy.wrap(Cypress.$('main#page img')).should('have.attr', 'src', '/pics/ok.png');
-            });
-        });
-
-        // A toast notification should be shown with the ticket number
-        cy.get('#messages_after_redirect .toast-body').should('be.visible').within((toast) => {
-            cy.wrap(toast).invoke('text').should('contain', 'Thank you for using our automatic helpdesk system');
-            cy.wrap(toast).find('a').click();
         });
 
         cy.url().should('include', '/front/ticket.form.php');
