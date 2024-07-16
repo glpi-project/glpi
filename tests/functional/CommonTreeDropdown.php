@@ -42,26 +42,40 @@ class CommonTreeDropdown extends DbTestCase
     protected function completenameProvider(): iterable
     {
         yield [
-            'completename' => 'Root > Child 1 > Child 2', // "Root" > "Child 1" > "Child 2"
-            'expected'     => 'Root &#62; Child 1 &#62; Child 2',
+            'raw'       => 'Root > Child 1 > Child 2', // "Root" > "Child 1" > "Child 2"
+            'sanitized' => 'Root &#62; Child 1 &#62; Child 2',
         ];
 
         yield [
-            'completename' => 'Root > &#60;ext&#62; Child 1 > Child 2', // "Root" > "<ext> Child 1" > "Child 2"
-            'expected'     => 'Root &#62; &#60;ext&#62; Child 1 &#62; Child 2',
+            // "Root">"Child 1">"Child 2" (imported from external application that does not surround the separator by spaces)
+            'raw'       => 'Root>Child 1 > Child 2',
+            'sanitized' => 'Root&#62;Child 1 &#62; Child 2',
         ];
 
         yield [
-            'completename' => null,
-            'expected'     => null,
+            'raw'       => 'Root > R&#38;D > Team 1', // "Root" > "R&D" > "Team 1"
+            'sanitized' => 'Root &#62; R&#38;D &#62; Team 1',
+        ];
+
+        yield [
+            'raw'       => null,
+            'sanitized' => null,
         ];
     }
 
     /**
      * @dataProvider completenameProvider
      */
-    public function testSanitizeSeparatorInCompletename(?string $completename, ?string $expected)
+    public function testSanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
-        $this->variable(\CommonTreeDropdown::sanitizeSeparatorInCompletename($completename))->isIdenticalTo($expected);
+        $this->variable(\CommonTreeDropdown::sanitizeSeparatorInCompletename($raw))->isIdenticalTo($sanitized);
+    }
+
+    /**
+     * @dataProvider completenameProvider
+     */
+    public function testUnsanitizeSeparatorInCompletename(?string $sanitized, ?string $raw)
+    {
+        $this->variable(\CommonTreeDropdown::unsanitizeSeparatorInCompletename($sanitized))->isIdenticalTo($raw);
     }
 }

@@ -253,6 +253,31 @@ class LocationTest extends DbTestCase
         }
     }
 
+    public function testImportSeparator(): void
+    {
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            Sanitizer::sanitize(
+                [
+                    'entities_id'   => 0,
+                    'name'          => '_location01 > _sublocation01',
+                ]
+            )
+        );
+        $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation01', true), $imported_id);
+
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            Sanitizer::sanitize(
+                [
+                    'entities_id'   => 0,
+                    'name'          => '_location02>_sublocation02', // no spaces around separator
+                ]
+            )
+        );
+        $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation02', true), $imported_id);
+    }
+
     public function testImportParentVisibleEntity(): void
     {
         $instance = new \Location();

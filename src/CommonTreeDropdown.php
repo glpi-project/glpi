@@ -1007,7 +1007,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if (empty($completename)) {
             return $completename;
         }
-        $separator = ' > ';
+        $separator = '>';
         return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
     }
 
@@ -1026,7 +1026,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if (empty($completename)) {
             return $completename;
         }
-        $separator = ' > ';
+        $separator = '>';
         return implode($separator, explode(Sanitizer::sanitize($separator), $completename));
     }
 }
