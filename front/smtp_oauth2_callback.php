@@ -35,8 +35,8 @@
 
 use Glpi\Mail\SMTP\OauthConfig;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 if (!array_key_exists('cookie_refresh', $_GET)) {
     // Session cookie will not be accessible when user will be redirected from provider website

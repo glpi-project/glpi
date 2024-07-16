@@ -37,8 +37,8 @@ use Glpi\Http\Response;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 Session::checkRight("logs", READ);
 

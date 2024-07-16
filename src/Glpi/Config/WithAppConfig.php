@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var Glpi\Config\HasAppConfig $this */
-$CFG_GLPI = $this->getAppConfig();
+namespace Glpi\Config;
 
-if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+use Symfony\Contracts\Service\Attribute\Required;
+
+trait WithAppConfig
+{
+    protected AppConfig $config;
+
+    #[Required]
+    public function setConfig(AppConfig $config): void
+    {
+        $this->config = $config;
+    }
+
+    public function getAppConfig(): AppConfig
+    {
+        if (!isset($this->config)) {
+            throw new \RuntimeException(\sprintf(
+                'Property "%s" is not set in the "%s" class. Did you forget to plug your service to Dependency Injection?.',
+                'config',
+                static::class,
+            ));
+        }
+
+        return $this->config;
+    }
 }
-
-Glpi\Application\View\TemplateRenderer::getInstance()->display('anonymous_helpdesk.html.twig', [
-    'card_md_width' => true,
-    'title'         => "Helpdesk",
-]);

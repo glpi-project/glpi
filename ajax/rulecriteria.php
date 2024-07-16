@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {

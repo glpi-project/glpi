@@ -33,10 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`

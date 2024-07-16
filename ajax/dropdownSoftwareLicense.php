@@ -39,7 +39,7 @@
 global $DB;
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownSoftwareLicense.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    /** @var Glpi\Controller\LegacyFileLoadController $this */
     $this->setAjax();
 
     header("Content-Type: text/html; charset=UTF-8");

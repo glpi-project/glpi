@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
     throw new \RuntimeException(

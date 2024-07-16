@@ -35,8 +35,8 @@
 
 use Glpi\Http\Response;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

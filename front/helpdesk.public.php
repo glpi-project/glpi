@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // Change profile system
 if (isset($_REQUEST['newprofile'])) {

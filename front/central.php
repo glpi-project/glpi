@@ -33,10 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // embed (anonymous) dashboard
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {

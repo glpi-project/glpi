@@ -37,7 +37,7 @@
  * @since 0.85
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 header('Content-type: application/json');

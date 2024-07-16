@@ -39,7 +39,7 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "getDropdownUsers.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    /** @var Glpi\Controller\LegacyFileLoadController $this */
     $this->setAjax();
 
     header("Content-Type: application/json; charset=UTF-8");

@@ -37,10 +37,8 @@
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 if (
     $CFG_GLPI["ssovariables_id"] > 0

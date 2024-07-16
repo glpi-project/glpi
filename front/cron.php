@@ -46,10 +46,8 @@ if (PHP_SAPI === 'cli') {
     $kernel->loadCommonGlobalConfig();
 }
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
