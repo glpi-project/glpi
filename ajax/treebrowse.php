@@ -71,7 +71,7 @@ switch ($_REQUEST['action']) {
             'value'  => ($_REQUEST['cat_id'] > 0) ? $_REQUEST['cat_id'] : 0,
         ];
         Search::showList($itemtype, $params);
-        break;
+        return;
 }
 http_response_code(400);
 return;
