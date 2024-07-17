@@ -137,7 +137,7 @@ class GlpiFormEditorController
             .on(
                 'click',
                 () => {
-                    this.#setActiveItem(null);
+                    this.#setFormDetailsAsActive();
                     $('.simulate-focus').removeClass('simulate-focus');
                 }
             );
@@ -789,13 +789,11 @@ class GlpiFormEditorController
     #deleteQuestion(question) {
         if (
             $(this.#target).find("[data-glpi-form-editor-question]").length == 1
-            && $(this.#getSectionCount()) == 1
+            && this.#getSectionCount() == 1
         ) {
             // If the last questions is going to be deleted and there is only one section
             // set the form itself as active to show its toolbar
-            this.#setActiveItem(
-                $(this.#target).find("[data-glpi-form-editor-form-details]")
-            );
+            this.#setFormDetailsAsActive();
         } else {
             // Set active the previous question/section
             if (question.prev().length > 0) {
@@ -1172,8 +1170,12 @@ class GlpiFormEditorController
      */
     #deleteSection(section) {
         if (section.prev().length == 0) {
-            // If this is the first section of the form, set the next section as active
-            this.#setActiveItem(section.next());
+            // If this is the first section of the form, set the next section as active if it exists
+            if (section.next().length > 0 && this.#getSectionCount() > 2) {
+                this.#setActiveItem(section.next());
+            } else {
+                this.#setFormDetailsAsActive();
+            }
         } else {
             // Else, set the previous section last question (if it exist) as active
             const prev_questions = section.prev().find("[data-glpi-form-editor-question]");
@@ -1183,9 +1185,7 @@ class GlpiFormEditorController
                 if (this.#getSectionCount() == 2) {
                     // If there is only one section left after this one is deleted,
                     // set the form itself as active as the remaining section will not be displayed
-                    this.#setActiveItem(
-                        $(this.#target).find("[data-glpi-form-editor-form-details]")
-                    );
+                    this.#setFormDetailsAsActive();
                 } else {
                     this.#setActiveItem(section.prev());
                 }
@@ -1225,13 +1225,11 @@ class GlpiFormEditorController
     #deleteComment(comment) {
         if (
             $(this.#target).find("[data-glpi-form-editor-comment]").length == 1
-            && $(this.#getSectionCount()) == 1
+            && this.#getSectionCount() == 1
         ) {
             // If the last comments is going to be deleted and there is only one section
             // set the form itself as active to show its toolbar
-            this.#setActiveItem(
-                $(this.#target).find("[data-glpi-form-editor-form-details]")
-            );
+            this.#setFormDetailsAsActive();
         } else {
             // Set active the previous comment/section
             if (comment.prev().length > 0) {
@@ -1659,5 +1657,10 @@ class GlpiFormEditorController
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
                 .find('[data-glpi-form-editor-save-and-preview-action]').addClass('d-none');
         }
+    }
+
+    #setFormDetailsAsActive() {
+        const form_details = $(this.#target).find("[data-glpi-form-editor-form-details]");
+        this.#setActiveItem(form_details);
     }
 }
