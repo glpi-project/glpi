@@ -40,6 +40,7 @@ use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\Toolbox\Sanitizer;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -256,22 +257,31 @@ class Config extends CommonDBTM
 
         if (isset($input['_update_devices_in_menu'])) {
             $input['devices_in_menu'] = exportArrayToDB(
-                (isset($input['devices_in_menu']) ? $input['devices_in_menu'] : [])
+                isset($input['devices_in_menu'])
+                    ? ArrayNormalizer::normalizeValues($input['devices_in_menu'], 'strval')
+                    : []
             );
         }
 
        // lock mechanism update
         if (isset($input['lock_use_lock_item'])) {
-            $input['lock_item_list'] = exportArrayToDB((isset($input['lock_item_list'])
-                                                      ? $input['lock_item_list'] : []));
+            $input['lock_item_list'] = exportArrayToDB(
+                isset($input['lock_item_list'])
+                    ? ArrayNormalizer::normalizeValues($input['lock_item_list'], 'strval')
+                    : []
+            );
         }
 
         if (isset($input[Impact::CONF_ENABLED])) {
-            $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
+            $input[Impact::CONF_ENABLED] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input[Impact::CONF_ENABLED], 'strval')
+            );
         }
 
         if (isset($input['planning_work_days'])) {
-            $input['planning_work_days'] = exportArrayToDB($input['planning_work_days']);
+            $input['planning_work_days'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['planning_work_days'], 'intval')
+            );
         }
 
        // Beware : with new management system, we must update each value

@@ -118,7 +118,7 @@ trait AssetImage
                 $prefix = $input["_prefix_pictures"][$input_key] ?? '';
 
                 if ($dest = Toolbox::savePicture($src, $prefix)) {
-                    $new_pictures[$input_key] = $dest;
+                    $new_pictures[] = $dest;
                 } else {
                     Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
                 }

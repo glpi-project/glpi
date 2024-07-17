@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Clonable;
+use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -959,8 +960,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $user               = new User();
             $personalorderfield = $this->getPersonalOrderField();
 
-            $user->update(['id'                 => Session::getLoginUserID(),
-                $personalorderfield  => exportArrayToDB($items)
+            $user->update([
+                'id'                 => Session::getLoginUserID(),
+                $personalorderfield  => exportArrayToDB(
+                    ArrayNormalizer::normalizeValues($items, 'intval')
+                )
             ]);
             return true;
         }

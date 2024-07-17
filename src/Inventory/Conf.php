@@ -56,6 +56,7 @@ use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\ArrayNormalizer;
 use Html;
 use Item_Disk;
 use Monitor;
@@ -1046,8 +1047,10 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action') {
-                $to_process[$prop] = exportArrayToDB($to_process[$prop]);
+            if ($prop == 'stale_agents_action' && is_array($to_process[$prop])) {
+                $to_process[$prop] = exportArrayToDB(
+                    ArrayNormalizer::normalizeValues($to_process[$prop], 'intval')
+                );
             }
         }
         $to_process = array_merge($to_process, $ext_configs);

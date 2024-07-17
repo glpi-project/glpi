@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\ArrayNormalizer;
+
 /// NetworkPortAggregate class : aggregate instantiation of NetworkPort. Aggregate can represent a
 /// trunk on switch, specific port under that regroup several ethernet ports to manage Ethernet
 /// Bridging.
@@ -49,7 +51,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation
     {
 
         if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
-            $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
+            $input['networkports_id_list'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['networkports_id_list'], 'intval')
+            );
         } else {
             $input['networkports_id_list'] = exportArrayToDB([]);
         }
@@ -61,7 +65,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation
     {
 
         if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
-            $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
+            $input['networkports_id_list'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['networkports_id_list'], 'intval')
+            );
         } else {
             $input['networkports_id_list'] = exportArrayToDB([]);
         }
