@@ -15,6 +15,7 @@ parameters:
         - '/Instantiated class XHProfRuns_Default not found/'
         - { message: '/Variable \$this might not be defined/', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
         - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'inc/includes.php' ] }
+        - { message: '/Access to protected property/', paths: [ 'front/dropdown.common.php', 'front/dropdown.common.form.php' ] }
 
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
