@@ -277,6 +277,20 @@ class DeviceProcessor extends CommonDevice
         ];
 
         $tab[] = [
+            'id'                 => '35', 
+            'table'              => 'glpi_items_deviceprocessors',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Processors number'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+            'computation'        => 'COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
+        ];
+
+        $tab[] = [
             'id'                 => '36',
             'table'              => 'glpi_items_deviceprocessors',
             'field'              => 'frequency',
