@@ -703,11 +703,7 @@ function loadDataset()
     $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
 
     $conf = Config::getConfigurationValues('phpunit');
-    if (isset($conf['dataset']) && $conf['dataset'] == $data['_version']) {
-        printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
-    } else {
-        printf("\nLoading GLPI dataset version %s\n", $data['_version']);
-
+    if (!(isset($conf['dataset']) && $conf['dataset'] == $data['_version'])) {
         $ids = [];
         foreach ($data as $type => $inputs) {
             if ($type[0] == '_') {
@@ -740,12 +736,10 @@ function loadDataset()
                 if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
                     $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
                     $item->update($input);
-                    echo ".";
                 } else {
                     // Not found, create it
                     $item = getItemForItemtype($type);
                     $id = $item->add($input);
-                    echo "+";
                     if (isset($input['name'])) {
                         $ids[$type][$input['name']] = $id;
                     }
@@ -753,7 +747,6 @@ function loadDataset()
             }
         }
         Search::$search = [];
-        echo "\nDone\n\n";
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
     $DB->commit();

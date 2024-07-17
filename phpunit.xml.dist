@@ -3,7 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="phpunit/bootstrap.php"
-    processIsolation="true"
     colors="true"
 >
   <testsuites>
@@ -15,4 +14,3 @@
     <ini name="memory_limit" value="256M" />
   </php>
 </phpunit>
-
