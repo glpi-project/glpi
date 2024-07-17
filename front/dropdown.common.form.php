@@ -37,21 +37,16 @@
  * Following variables have to be defined before inclusion of this file:
  * @var CommonDropdown $dropdown
  * @var LegacyFileLoadController $this
- * @var Request $request
  */
 
 use Glpi\Controller\DropdownController;
 use Glpi\Controller\LegacyFileLoadController;
-use Symfony\Component\HttpFoundation\Request;
 
 if (!($dropdown instanceof CommonDropdown)) {
     Html::displayErrorAndDie('');
 }
 if (!($this instanceof LegacyFileLoadController)) {
     die('Dropdown was not executed in the right context. Are you running GLPI 11.0 or above?');
-}
-if (!($request instanceof Request)) {
-    die('Request variable is not available, did you run the dropdown in the right context?');
 }
 
 \Toolbox::deprecated(message: \sprintf(
@@ -61,4 +56,4 @@ if (!($request instanceof Request)) {
     'glpi_dropdown_form',
 ), version: '11.0');
 
-DropdownController::loadDropdownForm($request, $dropdown, $options ?? []);
+DropdownController::loadDropdownForm($this->request, $dropdown, $options ?? []);

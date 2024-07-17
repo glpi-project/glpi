@@ -77,7 +77,7 @@ final readonly class DropdownController implements Controller
             if ($is_form) {
                 $this->loadDropdownForm($request, $dropdown, $options);
             } else {
-                $this->loadDropdown($request, $dropdown, $options);
+                $this->loadDropdown($request, $dropdown);
             }
         });
     }
@@ -207,7 +207,7 @@ final readonly class DropdownController implements Controller
             $dropdown->showForm($_GET["id"]);
             Html::popFooter();
         } else {
-            if (!isset($options)) {
+            if (!$options) {
                 $options = [];
             }
             $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
