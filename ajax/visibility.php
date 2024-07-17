@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $CFG_GLPI = $this->getAppConfig();
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
-    /** @var Glpi\Controller\LegacyFileLoadController $this */
     $this->setAjax();
 
     header("Content-Type: text/html; charset=UTF-8");
