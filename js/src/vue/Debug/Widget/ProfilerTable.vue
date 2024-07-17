@@ -1,6 +1,6 @@
 <script setup>
+    /* global tinycolor */
     import {computed} from "vue";
-    import tinycolor from 'tinycolor2';
 
     const props = defineProps({
         parent_id: {
