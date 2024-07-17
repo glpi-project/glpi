@@ -40,7 +40,7 @@
  *
  * @return void|boolean
  */
-function glpi_autoload(string $classname, bool $require_file = true): void
+function glpi_autoload(string $classname): void
 {
     $plug = isPluginItemType($classname);
     if (!$plug) {

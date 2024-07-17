@@ -33,12 +33,6 @@
  */
 
 return [
-    // '/front/asset/assetmodel.php' => \CommonDBTM::class,
-    // '/front/asset/assettype.php' => \CommonDBTM::class,
-    // '/front/asset/assetmodel.form.php' => \CommonDBTM::class,
-    // '/front/asset/assettype.form.php' => \CommonDBTM::class,
-
-    // Base cases:
     '/front/applianceenvironment.form.php' => \ApplianceEnvironment::class,
     '/front/applianceenvironment.php' => \ApplianceEnvironment::class,
     '/front/appliancetype.form.php' => \ApplianceType::class,

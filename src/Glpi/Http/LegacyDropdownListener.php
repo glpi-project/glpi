@@ -38,6 +38,7 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
 use Glpi\Controller\DropdownController;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +76,10 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
             return $this->normalizeClass($model_class);
         }
 
+        if ($edge_case_class = $this->findEdgeCaseClass($request)) {
+            return $this->normalizeClass($edge_case_class);
+        }
+
         if ($model_class = $this->findGenericClass($path_info)) {
             return $this->normalizeClass($model_class);
         }
@@ -85,10 +90,6 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
 
         if ($asset_class = $this->findAssetclass($request)) {
             return $this->normalizeClass($asset_class);
-        }
-
-        if ($edge_case_class = $this->findEdgeCaseClass($request)) {
-            return $this->normalizeClass($edge_case_class);
         }
 
         return null;
@@ -231,7 +232,7 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
 
     private function findEdgeCaseClass(Request $request): ?string
     {
-        if ($request->getPathInfo() === 'entity.form.php') {
+        if ($request->getPathInfo() === '/front/entity.form.php') {
             // Root entity : no delete
             if ($request->query->getString('id') === '0') {
                 $request->attributes->set(DropdownController::OPTIONS_KEY, [
@@ -266,6 +267,10 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
         }
 
         $class = (new \DbUtils())->fixItemtypeCase($basename);
+
+        if (\class_exists($basename)) {
+            return $class;
+        }
 
         $raw_namespaced_class = \sprintf(
             'Glpi%s\%s\%s',
