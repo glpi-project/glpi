@@ -162,7 +162,7 @@ final class FormAccessControlManager
         Form $form,
         array $warnings
     ): array {
-        if ($form->fields['is_active'] == 0) {
+        if ($form->isActive()) {
             $warnings[] = __('This form is not visible to anyone because it is not active.');
         }
 
