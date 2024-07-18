@@ -96,10 +96,6 @@ function doUpdateDb()
      */
     global $migration, $update;
 
-    // Init debug variable
-    // Only show errors
-    Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-
     $currents            = $update->getCurrents();
     $current_version     = $currents['version'];
     $current_db_version  = $currents['dbversion'];
@@ -184,7 +180,7 @@ echo Html::script("js/glpi_dialog.js");
 // CSS
 echo Html::css('public/lib/tabler.css');
 echo Html::css('public/lib/base.css');
-echo Html::scss("css/install", [], true);
+echo Html::scss("css/install");
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";

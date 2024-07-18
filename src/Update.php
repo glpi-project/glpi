@@ -89,6 +89,9 @@ class Update
         }
         Session::start();
 
+        // Ensure that the debug mode is not used, and ensure that logs are written into tog files
+        Toolbox::setDebugMode(mode: Session::NORMAL_MODE, log_in_files: 1);
+
         if (isCommandLine()) {
            // Init debug variable
             $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];

@@ -74,7 +74,7 @@ function header_html($etape)
     // CSS
     echo Html::css('public/lib/tabler.css');
     echo Html::css('public/lib/base.css');
-    echo Html::scss("css/install", [], true);
+    echo Html::scss("css/install");
     echo "</head>";
     echo "<body>";
     echo "<div id='principal'>";
@@ -502,14 +502,15 @@ function update1($dbname)
 
 //------------Start of install script---------------------------
 
-
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)) {
     Session::setPath();
 }
 
 Session::start();
-error_reporting(0); // we want to check system before affraid the user.
+
+// Ensure that the debug mode is not used, and ensure that logs are written into tog files
+Toolbox::setDebugMode(mode: Session::NORMAL_MODE, log_in_files: 1);
 
 if (isset($_POST["language"])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
@@ -582,8 +583,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
         case "Etape_1": // check ok, go import mysql settings.
             checkConfigFile();
-           // check system ok, we can use specific parameters for debug
-            Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
             header_html(sprintf(__('Step %d'), 1));
             step2($_POST["update"]);

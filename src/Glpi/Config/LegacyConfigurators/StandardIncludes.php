@@ -164,7 +164,6 @@ TWIG, $twig_params);
                 $_SERVER['argc']--;
             }
         }
-        Toolbox::setDebugMode();
 
         if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"] != $_SESSION["glpiroot"]) {
             // When `$_SESSION["glpiroot"]` differs from `$CFG_GLPI["root_doc"]`, it means that
