@@ -35,11 +35,11 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
-use Glpi\Session\SessionInfo;
 
 final class DirectAccess implements ControlTypeInterface
 {
@@ -105,16 +105,20 @@ final class DirectAccess implements ControlTypeInterface
     public function canAnswer(
         JsonConfigInterface $config,
         FormAccessParameters $parameters
-    ): bool {
+    ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         if (!$this->validateSession($config, $parameters)) {
-            return false;
+            return AccessVote::Abstain;
         }
 
-        return $this->validateToken($config, $parameters);
+        if (!$this->validateToken($config, $parameters)) {
+            return AccessVote::Abstain;
+        };
+
+        return AccessVote::Grant;
     }
 
     private function validateSession(

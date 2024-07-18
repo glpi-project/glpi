@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form\AccessControl;
 
 use DbTestCase;
+use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -204,21 +205,21 @@ final class FormAccessControlManagerTest extends DbTestCase
         );
     }
 
-    public function testInvalidTokenAndValidUserMustFail(): void
+    public function testInvalidTokenAndValidUserMustSucceed(): void
     {
         $this->checkCanAnswerForm(
             form: $this->createAndGetFormAccessibleOnlyToTechUserWithMandatoryToken(),
             parameters: self::getTechUserParameters(),
-            expected: false,
+            expected: true,
         );
     }
 
-    public function testValidTokenAndInvalidUserMustFail(): void
+    public function testValidTokenAndInvalidUserMustSucceed(): void
     {
         $this->checkCanAnswerForm(
             form: $this->createAndGetFormAccessibleOnlyToTechUserWithMandatoryToken(),
             parameters: self::getValidTokenParameters(),
-            expected: false,
+            expected: true,
         );
     }
 
@@ -239,6 +240,35 @@ final class FormAccessControlManagerTest extends DbTestCase
         $this->assertEquals(
             $expected,
             $this->getManager()->canAnswerForm($form, $parameters)
+        );
+    }
+
+    public static function computeVotesProvider(): iterable
+    {
+        yield "Vote must fail if there is one 'Deny' vote" => [
+            'votes' => [AccessVote::Grant, AccessVote::Abstain, AccessVote::Deny],
+            'expected' => false,
+        ];
+        yield "Vote must succeed if there is at least on 'grant' and no 'deny' vote" => [
+            'votes' => [AccessVote::Grant, AccessVote::Abstain, AccessVote::Abstain],
+            'expected' => true,
+        ];
+        yield "Vote must fail if there there are no 'grant' votes" => [
+            'votes' => [AccessVote::Abstain, AccessVote::Abstain, AccessVote::Abstain],
+            'expected' => false,
+        ];
+    }
+
+    #[DataProvider('computeVotesProvider')]
+    public function testComputeVote(array $votes, bool $expected): void
+    {
+        $manager = $this->getManager();
+        $this->assertEquals(
+            $expected,
+            // Easier to call directly the private method to validate this behavior.
+            // Indeed, we offer no stategy with the Deny vote in GLPI core so
+            // we can't test it with the public API without heavy mocking.
+            $this->callPrivateMethod($manager, 'computeVote', $votes)
         );
     }
 

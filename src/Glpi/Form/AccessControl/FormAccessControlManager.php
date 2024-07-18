@@ -146,23 +146,34 @@ final class FormAccessControlManager
         array $policies,
         FormAccessParameters $parameters
     ): bool {
-        // TODO: for now, we use an unanimous decision system.
-        // Future PR will allow to pick between unanimous and affirmative
-        // strategies.
+        /** @var AccessVote[] $votes */
+        $votes = [];
 
         /** @var FormAccessControl[] $policies */
         foreach ($policies as $policiy) {
-            $can_answer = $policiy->getStrategy()->canAnswer(
+            $votes[] = $policiy->getStrategy()->canAnswer(
                 $policiy->getConfig(),
                 $parameters
             );
-
-            if (!$can_answer) {
-                return false;
-            }
         }
 
-        return true;
+        $can_answer = $this->computeVote($votes);
+        return $can_answer;
+    }
+
+    /** @param AccessVote[] $votes */
+    private function computeVote(array $votes): bool
+    {
+        $has_at_least_one_deny_vote = in_array(AccessVote::Deny, $votes);
+        $has_at_least_one_grant_vote = in_array(AccessVote::Grant, $votes);
+
+        if ($has_at_least_one_deny_vote) {
+            return false;
+        } elseif ($has_at_least_one_grant_vote) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
@@ -133,45 +134,45 @@ class AllowListTest extends \GLPITestCase
 
     public static function canAnswerProvider(): iterable
     {
-        yield 'Refuse all when allow list is empty' => [
+        yield 'Abstain if allow list is empty' => [
             'config'     => self::getEmptyAllowList(),
             'parameters' => self::getAuthenticatedUserParameters(),
-            'expected'   => false,
+            'expected'   => AccessVote::Abstain,
         ];
-        yield 'Refuse unauthenticated users' => [
+        yield 'Abstain if user is unauthenticated' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getUnauthenticatedUserParameters(),
-            'expected'   => false,
+            'expected'   => AccessVote::Abstain,
         ];
-        yield 'Allow directly allowed user' => [
+        yield 'Grant access to specifically allowed user' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getDirectlyAllowedUserParameters(),
-            'expected'   => true,
+            'expected'   => AccessVote::Grant,
         ];
-        yield 'Deny not directly allowed user' => [
+        yield 'Abstain if user is not specifically allowed' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getNotDirectlyAllowedUserParameters(),
-            'expected'   => false,
+            'expected'   => AccessVote::Abstain,
         ];
-        yield 'Allow user by group' => [
+        yield 'Grant access to specifically allowed group' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getAllowedUserByGroupParameters(),
-            'expected'   => true,
+            'expected'   => AccessVote::Grant,
         ];
-        yield 'Deny user by group' => [
+        yield 'Abstain if group is not specifically allowed' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getNotAllowedUserByGroupParameters(),
-            'expected'   => false,
+            'expected'   => AccessVote::Abstain,
         ];
-        yield 'Allow user by profile' => [
+        yield 'Grant access to specifically allowed profile' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getAllowedUserByProfileParameters(),
-            'expected'   => true,
+            'expected'   => AccessVote::Grant,
         ];
-        yield 'Deny user by profile' => [
+        yield 'Abstain if profile is not specifically allowed' => [
             'config'     => self::getFullyConfiguredAllowListConfig(),
             'parameters' => self::getNotAllowedUserByProfileParameters(),
-            'expected'   => false,
+            'expected'   => AccessVote::Abstain,
         ];
     }
 
@@ -179,7 +180,7 @@ class AllowListTest extends \GLPITestCase
     public function testCanAnswer(
         AllowListConfig $config,
         FormAccessParameters $parameters,
-        bool $expected
+        AccessVote $expected
     ): void {
         $allow_list = new AllowList();
         $this->assertEquals(
