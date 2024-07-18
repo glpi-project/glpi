@@ -1704,7 +1704,7 @@ TWIG, $twig_params);
     /**
      * Search users
      *
-     * @param resource $ds            An LDAP link identifier
+     * @param \LDAP\Connection $ds            An LDAP link identifier
      * @param array    $values        values to search
      * @param string   $filter        search filter
      * @param array    $attrs         An array of the required attributes
@@ -2341,7 +2341,7 @@ TWIG, $twig_params);
     /**
      * Get the group's cn by giving his DN
      *
-     * @param resource $ldap_connection ldap connection to use
+     * @param \LDAP\Connection $ldap_connection ldap connection to use
      * @param string   $group_dn        the group's dn
      *
      * @return false|string the group cn
@@ -2377,7 +2377,7 @@ TWIG, $twig_params);
      *
      * @since 0.84 new parameter $limitexceeded
      *
-     * @param resource $ldap_connection  LDAP connection
+     * @param \LDAP\Connection $ldap_connection  LDAP connection
      * @param object   $config_ldap      LDAP configuration
      * @param string   $filter           Filters
      * @param boolean  $limitexceeded    Is limit exceeded
@@ -3168,9 +3168,21 @@ TWIG, $twig_params);
         $auth->auth_succeded = false;
         $auth->extauth       = 1;
 
-        $infos  = $auth->connection_ldap($ldap_method, $login, $password, $error);
+        $infos = $auth->connection_ldap($ldap_method, $login, $password, $error);
 
         if ($infos === false) {
+            return $auth;
+        }
+
+        // Get another fresh connection using the root credentials.
+        // This connection may permit to retrieve more information (especially groups info)
+        // than a connection explicitely bound to the user DN.
+        // See https://github.com/glpi-project/glpi/issues/17492.
+        //
+        // Use an empty login to only try a connection with configured root credentials.
+        $root_ldap_connection = self::tryToConnectToServer($ldap_method, '', '');
+
+        if ($root_ldap_connection === false) {
             return $auth;
         }
 
@@ -3198,7 +3210,7 @@ TWIG, $twig_params);
                 $auth->user_present = false;
             }
             $auth->user->getFromLDAP(
-                $auth->ldap_connection,
+                $root_ldap_connection,
                 $ldap_method,
                 $user_dn,
                 $login,
@@ -3302,7 +3314,7 @@ TWIG, $twig_params);
     /**
      * Get dn for a user
      *
-     * @param resource $ds      LDAP link
+     * @param \LDAP\Connection $ds      LDAP link
      * @param array    $options array of possible options:
      *          - basedn : base dn used to search
      *          - login_field : attribute to store login
@@ -3411,7 +3423,7 @@ TWIG, $twig_params);
     /**
      * Get an object from LDAP by giving his DN
      *
-     * @param resource  $ds         the active connection to the directory
+     * @param \LDAP\Connection  $ds         the active connection to the directory
      * @param string    $condition  the LDAP filter to use for the search
      * @param string    $dn         DN of the object
      * @param array     $attrs      Array of the attributes to retrieve
@@ -3458,7 +3470,7 @@ TWIG, $twig_params);
     /**
      * Get user by domain name
      *
-     * @param resource  $ds         the active connection to the directory
+     * @param \LDAP\Connection  $ds         the active connection to the directory
      * @param string    $user_dn    domain name
      * @param array     $attrs      attributes
      * @param boolean   $clean      (true by default)
@@ -3478,7 +3490,7 @@ TWIG, $twig_params);
     /**
      * Get infos for groups
      *
-     * @param resource $ds       LDAP link
+     * @param \LDAP\Connection $ds       LDAP link
      * @param string   $group_dn dn of the group
      *
      * @return array|boolean group infos if found, else false
@@ -3969,7 +3981,7 @@ TWIG, $twig_params);
     /**
      * Get ldap query results and clean them at the same time
      *
-     * @param resource  $link   link to the directory connection
+     * @param \LDAP\Connection  $link   link to the directory connection
      * @param array     $result the query results
      * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
