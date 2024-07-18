@@ -128,4 +128,4 @@ if (count(array_diff($header_keys, array_keys($headers))) > 0) {
 // Output messages and headers
 $messages[''] = $headers;
 $messages->ksort();
-echo(json_encode($messages, JSON_PRETTY_PRINT));
+echo(json_encode($messages));
