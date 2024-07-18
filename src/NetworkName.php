@@ -841,11 +841,8 @@ class NetworkName extends FQDNLabel
         self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
         if ($table->getNumberOfRows() > 0) {
-            $number = $table->getNumberOfRows();
-            if ($item->getType() == 'FQDN') {
-                $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
@@ -876,9 +873,7 @@ class NetworkName extends FQDNLabel
                  Html::closeForm();
             }
 
-            if ($item->getType() == 'FQDN') {
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
         } else {
             echo "<table class='tab_cadre_fixe'><tr><th>" . __('No network name found') . "</th></tr>";
             echo "</table>";
