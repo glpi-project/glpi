@@ -262,10 +262,22 @@ class Application extends BaseApplication
 
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
-
         $begin_time = microtime(true);
 
-        if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
+        $is_db_available = $this->db instanceof DBmysql && $this->db->connected;
+
+        if ($is_db_available && defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+            $output->writeln(
+                '<bg=yellow;fg=black;options=bold> '
+                . __("You are bypassing a needed update")
+                . ' </>'
+            );
+        } elseif (
+            $is_db_available
+            && $command instanceof GlpiCommandInterface
+            && $command->requiresUpToDateDb()
+            && !Update::isDbUpToDate()
+        ) {
             $output->writeln(
                 '<error>'
                 . __('The GLPI codebase has been updated. The update of the GLPI database is necessary.')
