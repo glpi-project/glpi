@@ -405,27 +405,9 @@ class FormAccessControlTest extends DbTestCase
         $form_access_control->fields = ['id' => 1];
 
         $this->assertEquals(
-            "_access_control_1_test",
+            "_access_control[1][test]",
             $form_access_control->getNormalizedInputName("test")
         );
-    }
-
-    public function testSplitEncodedInputs(): void
-    {
-        $form_access_control = new FormAccessControl();
-        $inputs = $form_access_control->splitEncodedInputs([
-            'id'                                => 1,
-            'is_active'                         => false,
-            '_access_control_2_is_active'       => true,
-            '_access_control_2_users_id'        => 4,
-            '_access_control_33_is_active'       => true,
-            '_access_control_33_allow_anonymous' => true,
-        ]);
-
-        $this->assertEquals([
-            ['id' => 2, 'is_active' => true, 'users_id'  => 4],
-            ['id' => 33, 'is_active' => true, 'allow_anonymous'  => true],
-        ], $inputs);
     }
 
     private function createAndGetAccessControl(): FormAccessControl

@@ -44,15 +44,15 @@ use Glpi\Form\AccessControl\FormAccessControl;
 
 try {
     $access_control = new FormAccessControl();
-
     if (isset($_POST["update"])) {
         // Update access control policies
-        foreach ($access_control->splitEncodedInputs($_POST) as $input) {
-            $id = $input['id'] ?? 0;
+        foreach ($_POST['_access_control'] as $id => $input) {
+            $input['id'] = $id;
 
             $access_control->check($id, UPDATE, $input);
             $access_control->getFromDB($id);
             $input['_config'] = $access_control->createConfigFromUserInput($input);
+
             if (!$access_control->update($input, true)) {
                 throw new RuntimeException(
                     "Failed to update access control item"

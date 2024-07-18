@@ -269,42 +269,12 @@ final class FormAccessControl extends CommonDBChild
      * Encode the input name to make sure it is unique and multiple items
      * can be updated using a single form.
      *
-     * Content must be decoded using `splitEncodedInputs`.
-     *
      * @param string $name
      * @return string
      */
     public function getNormalizedInputName(string $name): string
     {
-        return "_access_control_{$this->getID()}_$name";
-    }
-
-    /**
-     * Split an input containing multiple encoded forms into individual inputs.
-     *
-     * @param array $input
-     * @return array
-     */
-    public function splitEncodedInputs(array $input): array
-    {
-        $inputs = [];
-
-        foreach ($input as $key => $value) {
-            $regex = "/_access_control_(\d+)_(.*)/";
-            if (!preg_match($regex, $key, $matches)) {
-                continue;
-            }
-
-            $id = $matches[1];
-            $name = $matches[2];
-
-            if (!isset($inputs[$id])) {
-                $inputs[$id] = ['id' => $id];
-            }
-            $inputs[$id][$name] = $value;
-        }
-
-        return array_values($inputs);
+        return "_access_control[{$this->getID()}][$name]";
     }
 
     #[Override]
