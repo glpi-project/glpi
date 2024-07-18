@@ -7893,10 +7893,10 @@ abstract class CommonITILObject extends CommonDBTM
 
     /**
      * Returns criteria that can be used to get documents related to current instance.
-     * 
+     *
      * @param integer $email
      * @param bool $bypass_rights
-     * 
+     *
      * @return array
      */
     public function getAssociatedDocumentsCriteria($bypass_rights = false, $email = false): array
@@ -7950,7 +7950,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ];
             }
         }
-  
+
        // documents associated to solutions
         if ($bypass_rights || ITILSolution::canView()) {
             // Run the subquery separately. It's better for huge databases
