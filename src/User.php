@@ -1935,7 +1935,7 @@ class User extends CommonDBTM
      * Function that tries to load the user membership from LDAP
      * by searching in the attributes of the User.
      *
-     * @param resource $ldap_connection LDAP connection
+     * @param \LDAP\Connection $ldap_connection LDAP connection
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User login
@@ -2051,7 +2051,7 @@ class User extends CommonDBTM
      * Function that tries to load the user membership from LDAP
      * by searching in the attributes of the Groups.
      *
-     * @param resource $ldap_connection    LDAP connection
+     * @param \LDAP\Connection $ldap_connection    LDAP connection
      * @param array    $ldap_method        LDAP method
      * @param string   $userdn             Basedn of the user
      * @param string   $login              User login
@@ -2108,7 +2108,7 @@ class User extends CommonDBTM
     /**
      * Function that tries to load the user information from LDAP.
      *
-     * @param resource $ldap_connection LDAP connection
+     * @param \LDAP\Connection $ldap_connection LDAP connection
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
@@ -2379,7 +2379,7 @@ class User extends CommonDBTM
     /**
      * Get all groups a user belongs to.
      *
-     * @param resource $ds                 ldap connection
+     * @param \LDAP\Connection $ds                 ldap connection
      * @param string   $ldap_base_dn       Basedn used
      * @param string   $user_dn            Basedn of the user
      * @param string   $group_condition    group search condition
