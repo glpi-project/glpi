@@ -79,14 +79,14 @@
                             <input
                                 type="hidden"
                                 value="0"
-                                name="{{ access_control.encodeInputName("is_active") }}"
+                                name="{{ access_control.getNormalizedInputName("is_active") }}"
                             >
                             <input
                                 aria-label="{{ __("Active") }}"
                                 data-glpi-toggle-control
                                 class="form-check-input"
                                 type="checkbox"
-                                name="{{ access_control.encodeInputName("is_active") }}"
+                                name="{{ access_control.getNormalizedInputName("is_active") }}"
                                 value="1"
                                 {{ access_control.fields.is_active == true ? "checked" : "" }}
                             >

@@ -274,7 +274,7 @@ final class FormAccessControl extends CommonDBChild
      * @param string $name
      * @return string
      */
-    public function encodeInputName(string $name): string
+    public function getNormalizedInputName(string $name): string
     {
         return "_access_control_{$this->getID()}_$name";
     }

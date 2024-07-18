@@ -58,13 +58,13 @@
 <label class="form-check form-switch">
     <input
         class="form-check-input"
-        name="{{ access_control.encodeInputName("_allow_unauthenticated") }}"
+        name="{{ access_control.getNormalizedInputName("_allow_unauthenticated") }}"
         type="hidden"
         value="0"
     >
     <input
         class="form-check-input"
-        name="{{ access_control.encodeInputName("_allow_unauthenticated") }}"
+        name="{{ access_control.getNormalizedInputName("_allow_unauthenticated") }}"
         type="checkbox"
         value="1"
         {{ config.allowUnauthenticated() ? 'checked' : '' }}
@@ -84,6 +84,6 @@
 
 <input
     type="hidden"
-    {{ access_control.encodeInputName("_token") }}
+    {{ access_control.getNormalizedInputName("_token") }}
     value="{{ config.getToken() }}"
 >
