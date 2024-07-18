@@ -34,24 +34,19 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
+use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
-use Plugin;
-use Update;
 
-final readonly class InitializePlugins implements LegacyConfigProviderInterface
+final readonly class AssetsBootstrap implements LegacyConfigProviderInterface
 {
     public function execute(): void
     {
-        /*
-         * On startup, register all plugins configured for use,
-         * except during the database update process.
-         */
-        if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (!DBConnection::isDbAvailable()) {
+            // Requires the database to be available.
             return;
         }
 
-        $plugin = new Plugin();
-        $plugin->init(true);
+        AssetDefinitionManager::getInstance()->boostrapAssets();
     }
 }

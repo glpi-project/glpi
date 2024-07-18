@@ -957,4 +957,15 @@ class DBConnection extends CommonDBTM
             }
         };
     }
+
+    /**
+     * Indicates whether the database service is available.
+     * @return bool
+     */
+    public static function isDbAvailable(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        return $DB instanceof DBmysql && $DB->connected;
+    }
 }
