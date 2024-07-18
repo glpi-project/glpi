@@ -266,7 +266,12 @@ class Application extends BaseApplication
 
         $is_db_available = $this->db instanceof DBmysql && $this->db->connected;
 
-        if ($is_db_available && defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (
+            $is_db_available
+            && defined('SKIP_UPDATES')
+            && (!($command instanceof GlpiCommandInterface) || $command->requiresUpToDateDb())
+            && !Update::isDbUpToDate()
+        ) {
             $output->writeln(
                 '<bg=yellow;fg=black;options=bold> '
                 . __("You are bypassing a needed update")
