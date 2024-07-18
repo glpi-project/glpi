@@ -138,7 +138,7 @@ class TicketParameters extends CommonITILObjectParameters
         $kbis = KnowbaseItem_Item::getItems($ticket);
         $values['knowbaseitems'] = [];
         foreach ($kbis as $data) {
-            if ($kbi = KnowbaseItem::getById($data['id'])) {
+            if ($kbi = KnowbaseItem::getById($data[KnowbaseItem::getForeignKeyField()])) {
                 $kbi_parameters = new KnowbaseItemParameters();
                 $values['knowbaseitems'][] = $kbi_parameters->getValues($kbi);
             }
