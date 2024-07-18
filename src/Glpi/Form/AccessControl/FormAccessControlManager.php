@@ -162,7 +162,7 @@ final class FormAccessControlManager
         Form $form,
         array $warnings
     ): array {
-        if ($form->isActive()) {
+        if (!$form->isActive()) {
             $warnings[] = __('This form is not visible to anyone because it is not active.');
         }
 
@@ -173,7 +173,7 @@ final class FormAccessControlManager
         Form $form,
         array $warnings
     ): array {
-        if (count($this->getActiveAccessControlsForForm($form)) == 0) {
+        if (count($this->getActiveAccessControlsForForm($form)) === 0) {
             $warnings[] = __('This form will not be visible to any users as there are currently no active access policies.');
         }
 
