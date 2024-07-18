@@ -5065,26 +5065,26 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string  $url                   File to include (relative to GLPI_ROOT)
-     * @param array   $options               Array of HTML attributes
-     * @param bool    $force_compiled_file   Force usage of compiled file, even in debug mode (usefull for install/update process)
+     * @param string  $url      File to include (relative to GLPI_ROOT)
+     * @param array   $options  Array of HTML attributes
+     * @param bool    $no_debug Ignore the debug mode of GLPI (usefull for install/update process)
      *
      * @return string CSS link tag
      **/
-    public static function scss($url, $options = [], bool $force_compiled_file = false)
+    public static function scss($url, $options = [], bool $no_debug = false)
     {
         $prod_file = self::getScssCompilePath($url);
 
         if (
             file_exists($prod_file)
-            && ($force_compiled_file || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+            && ($no_debug || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
         ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if (!$force_compiled_file && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if (!$no_debug && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
