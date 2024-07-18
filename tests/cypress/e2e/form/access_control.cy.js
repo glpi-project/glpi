@@ -46,7 +46,8 @@ describe('Access Control', () => {
     it('warnings are displayed', () => {
         // Quick tests to ensure that warnings are rendered correcly by twig.
         // We don't check their exact content as it is already validated by unit tests.
-        cy.findAllByRole('alert').should('have.length', 2);
+        cy.findAllByRole('alert').eq(0).should('contain.text', "This form is not visible to anyone because it is not active.");
+        cy.findAllByRole('alert').eq(1).should('contain.text', "This form will not be visible to any users as there are currently no active access policies.");
     });
     it('can configure the allow list policy', () => {
         cy.findByRole('region', {
