@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 
@@ -93,10 +94,10 @@ interface ControlTypeInterface
      * @param JsonConfigInterface $config
      * @param FormAccessParameters $parameters
      *
-     * @return bool
+     * @return AccessVote
      */
     public function canAnswer(
         JsonConfigInterface $config,
         FormAccessParameters $parameters
-    ): bool;
+    ): AccessVote;
 }

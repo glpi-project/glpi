@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
@@ -134,47 +135,47 @@ class DirectAccessTest extends \GLPITestCase
                 session_info: self::getAuthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            true
+            AccessVote::Grant
         ];
-        yield 'Authenticated form: deny authenticated user with wrong token' => [
+        yield 'Authenticated form: abstain for authenticated user with wrong token' => [
             $config_authenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
-        yield 'Authenticated form: deny authenticated user with missing token' => [
+        yield 'Authenticated form: abstain for authenticated user with missing token' => [
             $config_authenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
-        yield 'Authenticated form: deny unauthenticated user with correct token' => [
+        yield 'Authenticated form: abstain for unauthenticated user with correct token' => [
             $config_authenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
-        yield 'Authenticated form: deny unauthenticated user with wrong token' => [
+        yield 'Authenticated form: abstain for unauthenticated user with wrong token' => [
             $config_authenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
-        yield 'Authenticated form: deny unauthenticated user with missing token' => [
+        yield 'Authenticated form: abstain for unauthenticated user with missing token' => [
             $config_authenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
 
         // Unauthenticated form
@@ -185,23 +186,23 @@ class DirectAccessTest extends \GLPITestCase
                 session_info: self::getAuthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            true
+            AccessVote::Grant
         ];
-        yield 'Unauthenticated form: deny authenticated user with wrong token' => [
+        yield 'Unauthenticated form: abstain for authenticated user with wrong token' => [
             $config_unauthenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
-        yield 'Unauthenticated form: deny authenticated user with missing token' => [
+        yield 'Unauthenticated form: abstain for authenticated user with missing token' => [
             $config_unauthenticated,
             new FormAccessParameters(
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
         yield 'Unauthenticated form: allow unauthenticated user with correct token' => [
             $config_unauthenticated,
@@ -209,7 +210,7 @@ class DirectAccessTest extends \GLPITestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            true
+            AccessVote::Grant
         ];
         yield 'Unauthenticated form: deny unauthenticated user with wrong token' => [
             $config_unauthenticated,
@@ -217,7 +218,7 @@ class DirectAccessTest extends \GLPITestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
         yield 'Unauthenticated form: deny unauthenticated user with missing token' => [
             $config_unauthenticated,
@@ -225,7 +226,7 @@ class DirectAccessTest extends \GLPITestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            false
+            AccessVote::Abstain
         ];
     }
 
@@ -233,7 +234,7 @@ class DirectAccessTest extends \GLPITestCase
     public function testCanAnswer(
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
-        bool $expected
+        AccessVote $expected
     ): void {
         $direct_access = new DirectAccess();
         $this->assertEquals(
