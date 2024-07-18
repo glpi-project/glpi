@@ -151,7 +151,10 @@
         id: name ~ '_' ~ options.rand
     }|merge(options) %}
 
-    {{ _self.input(name, value, options|merge({'type': 'text'})) }}
+    {{ _self.input(name, value, options|merge({
+        'type': 'text',
+        'input_addclass': 'rounded-0',
+    })) }}
     <script>
         $(function () {
             $("#{{ options.id }}").spectrum({
