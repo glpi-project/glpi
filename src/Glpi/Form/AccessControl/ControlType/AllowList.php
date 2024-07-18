@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -78,6 +79,7 @@ final class AllowList implements ControlTypeInterface
         return $twig->render("pages/admin/form/access_control/allow_list.html.twig", [
             'access_control' => $access_control,
             'config' => $config,
+            'label' => $this->getLabel(),
         ]);
     }
 
@@ -140,6 +142,15 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
+        $all_users_are_allowed = in_array(
+            AbstractRightsDropdown::ALL_USERS,
+            $config->getUserIds()
+        );
+
+        if ($all_users_are_allowed) {
+            return true;
+        }
+
         return in_array($session_info->getUserId(), $config->getUserIds());
     }
 

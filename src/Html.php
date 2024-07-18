@@ -4511,6 +4511,7 @@ JS;
             'parent_id_field'     => null,
             'templateResult'      => 'templateResult',
             'templateSelection'   => 'templateSelection',
+            'aria_label'          => '',
         ];
         $params = array_merge($default_options, $params);
 
@@ -4522,6 +4523,7 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
+        $aria_label = $params['aria_label'];
         unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
@@ -4550,6 +4552,11 @@ JS;
         $parent_id_field = $params['parent_id_field'];
 
         unset($params['placeholder'], $params['value'], $params['valuename'], $params['parent_id_field']);
+
+        if (!empty($aria_label)) {
+            $params['specific_tags']['aria-label'] = $aria_label;
+        }
+        unset($params['aria_label']);
 
         foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {

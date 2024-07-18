@@ -44,6 +44,12 @@ use User;
 
 final class AllowListDropdown extends AbstractRightsDropdown
 {
+    #[Override]
+    protected static function addAllUsersOption(): true
+    {
+        return true;
+    }
+
     /**
      * Count users for the given criteria.
      *
@@ -58,31 +64,35 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $profiles,
     ): array {
         $criteria = [];
-        foreach ($users as $user_id) {
-            $criteria[] = [
-                'link'       => 'OR',
-                'searchtype' => 'is',
-                'field'      => 2, // ID
-                'value'      => $user_id,
-            ];
-        }
+        $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
 
-        foreach ($groups as $group_id) {
-            $criteria[] = [
-                'link'       => 'OR',
-                'searchtype' => 'equals',
-                'field'      => 13, // Linked group,
-                'value'      => $group_id,
-            ];
-        }
+        if (!$all_users_are_allowed) {
+            foreach ($users as $user_id) {
+                $criteria[] = [
+                    'link'       => 'OR',
+                    'searchtype' => 'is',
+                    'field'      => 2, // ID
+                    'value'      => $user_id,
+                ];
+            }
 
-        foreach ($profiles as $profile_id) {
-            $criteria[] = [
-                'link'       => 'OR',
-                'searchtype' => 'equals',
-                'field'      => 20, // Profile
-                'value'      => $profile_id,
-            ];
+            foreach ($groups as $group_id) {
+                $criteria[] = [
+                    'link'       => 'OR',
+                    'searchtype' => 'equals',
+                    'field'      => 13, // Linked group,
+                    'value'      => $group_id,
+                ];
+            }
+
+            foreach ($profiles as $profile_id) {
+                $criteria[] = [
+                    'link'       => 'OR',
+                    'searchtype' => 'equals',
+                    'field'      => 20, // Profile
+                    'value'      => $profile_id,
+                ];
+            }
         }
 
         if (empty($criteria)) {
