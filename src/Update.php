@@ -234,7 +234,7 @@ class Update
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }
 
-       // To prevent problem of execution time
+        // To prevent problem of execution time
         ini_set("max_execution_time", "0");
 
        // Update process desactivate all plugins
