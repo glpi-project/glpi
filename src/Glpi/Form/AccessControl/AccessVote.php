@@ -51,7 +51,21 @@ namespace Glpi\Form\AccessControl;
  */
 enum AccessVote
 {
+    /**
+      * Grant access.
+      * The access grant can still be denied if any other policy vote is `Deny`.
+      */
     case Grant;
+
+    /**
+      * Does not allow access, but does not deny it either.
+      * Access grant will depend on other policies vote.
+      */
     case Abstain;
+
+    /**
+      * Deny access.
+      * The access grant will be refused, whatever the other policies vote is.
+      */
     case Deny;
 }
