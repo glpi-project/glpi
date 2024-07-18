@@ -75,21 +75,20 @@
       <div class="container mt-4">
          <form action='install.php' method='post'>
             <div class="mb-3">
-               <h3>
-                  {{ update == "no" ? __('Please select a database:') : __('Please select a database to update:') }}
-               </h3>
-
-                <div class="hr-text text-white mt-6">
-                    {{ __('Create a new database:') }}
-                </div>
-
                 {% if update == "no" %}
-                    <input type="text" name="newdatabasename" id="new_db" class="form-control" autofocus>
-                {% endif %}
+                    <h3>{{ __('Please select a database:') }}</h3>
 
-                <div class="hr-text text-white mt-6">
-                    {{ __('Or use an existing one:') }}
-                </div>
+                    <div class="hr-text text-white mt-6">
+                        {{ __('Create a new database:') }}
+                    </div>
+                    <input type="text" name="newdatabasename" id="new_db" class="form-control" autofocus>
+
+                    <div class="hr-text text-white mt-6">
+                        {{ __('Or use an existing one:') }}
+                    </div>
+                {% else %}
+                    <h3>{{ __('Please select a database to update:') }}</h3>
+                {% endif %}
 
                 {% for database in databases %}
                     <div class="form-check">
