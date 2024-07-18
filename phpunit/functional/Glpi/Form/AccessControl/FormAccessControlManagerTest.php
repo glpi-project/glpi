@@ -274,7 +274,8 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testGetWarningForInactiveFormWithoutAccessControlPolicies(): void
     {
-        $this->checkGetWarnings($this->getInactiveFormWithoutAccessControls(), [
+        $form = $this->createForm((new FormBuilder())->setIsActive(false));
+        $this->checkGetWarnings($form, [
             'This form is not visible to anyone because it is not active.',
             'This form will not be visible to any users as there are currently no active access policies.',
         ]);
@@ -282,7 +283,8 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testGetWarningForActiveFormWithoutAccessControlPolicies(): void
     {
-        $this->checkGetWarnings($this->getActiveFormWithoutAccessControls(), [
+        $form = $this->createForm((new FormBuilder())->setIsActive(true));
+        $this->checkGetWarnings($form, [
             'This form will not be visible to any users as there are currently no active access policies.',
         ]);
     }
@@ -334,16 +336,6 @@ final class FormAccessControlManagerTest extends DbTestCase
                     ],
                 ))
         );
-    }
-
-    private function getActiveFormWithoutAccessControls(): Form
-    {
-        return $this->createForm((new FormBuilder())->setIsActive(true));
-    }
-
-    private function getInactiveFormWithoutAccessControls(): Form
-    {
-        return $this->createForm((new FormBuilder())->setIsActive(false));
     }
 
     private function getActiveFormWithActiveAccessControls(): Form
