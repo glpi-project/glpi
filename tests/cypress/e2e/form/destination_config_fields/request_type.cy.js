@@ -50,7 +50,7 @@ describe('Request type configuration', () => {
         cy.findByRole('alert').should('contain.text', 'Item successfully added');
     });
 
-    it.only('can use all possibles configuration options', () => {
+    it('can use all possibles configuration options', () => {
         cy.findByRole('region', {'name': "Request type configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Request type').as("request_type_dropdown");
 
