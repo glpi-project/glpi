@@ -140,6 +140,7 @@ class RequestTypeField extends AbstractConfigField
                         no_label: true,
                         display_emptychoice: true,
                         emptylabel: specific_value_extra_field.empty_label,
+                        aria_label: specific_value_extra_field.empty_label,
                     })
                 ) }}
             </div>
@@ -160,6 +161,7 @@ class RequestTypeField extends AbstractConfigField
                         no_label: true,
                         display_emptychoice: true,
                         emptylabel: specific_answer_extra_field.empty_label,
+                        aria_label: specific_answer_extra_field.empty_label,
                     })
                 ) }}
             </div>

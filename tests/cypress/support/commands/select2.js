@@ -31,43 +31,44 @@
  * ---------------------------------------------------------------------
  */
 
-Cypress.Commands.add('getSelect2DropdownByValue', {prevSubject: 'optional'}, (
-    subject,
-    value
+Cypress.Commands.addQuery('getDropdownByLabelText', (
+    label_text
 ) => {
-    if (subject) {
-        return cy.wrap(subject).findByRole('combobox', {name: value});
-    } else {
-        return cy.findByRole('combobox', {name: value});
-    }
+    return (previous_subject) => {
+        // Target might be the whole DOM or a specific exisint DOM node
+        const getNode = (selector) => {
+            return previous_subject ? previous_subject.find(selector) : Cypress.$(selector);
+        };
+
+        // Look for a label with the given text
+        const $label = getNode(`label:contains("${label_text}")`);
+
+        let $select = null;
+        if ($label.length > 0) {
+            // Look for the select using the "for" attribute of the label
+            const label_for = $label.attr("for");
+            $select = getNode(`#${label_for}`);
+        } else {
+            // Fallback; try to use "aria-label" attribute
+            $select = getNode(`select[aria-label="${label_text}"][data-select2-id]`);
+        }
+
+        // No select found, return empty jquery item
+        if ($select.length === 0) {
+            return cy.$$(null);
+        }
+
+        // Select container is the next node
+        const $select2_container = $select.next();
+        return $select2_container.find('[role=combobox]:visible');
+    };
 });
 
-Cypress.Commands.add('setSelect2Value', {prevSubject: true}, (
+Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
     subject,
     new_value
 ) => {
     cy.wrap(subject).click();
+    // cy.get(".select2-container--open").
     cy.findByRole('option', {name: new_value}).click();
-});
-
-Cypress.Commands.add('select2ValueShouldBeSelected', {prevSubject: 'optional'}, (
-    subject,
-    value
-) => {
-    if (subject) {
-        cy.wrap(subject).getSelect2DropdownByValue(value).should('exist');
-    } else {
-        cy.getSelect2DropdownByValue(value).should('exist');
-    }
-});
-
-Cypress.Commands.add('select2ValueShouldNotBeSelected', {prevSubject: 'optional'}, (
-    subject,
-    value
-) => {
-    if (subject) {
-        cy.wrap(subject).getSelect2DropdownByValue(value).should('not.exist');
-    } else {
-        cy.getSelect2DropdownByValue(value).should('not.exist');
-    }
 });

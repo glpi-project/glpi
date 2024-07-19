@@ -33,9 +33,7 @@
 
 declare namespace Cypress {
     interface Chainable<Subject> {
-        getSelect2DropdownByValue(value: string): Chainable<any>
-        setSelect2Value(new_value: string): Chainable<any>
-        select2ValueShouldBeSelected(value: string): Chainable<any>
-        select2ValueShouldNotBeSelected(value: string): Chainable<any>
+        getDropdownByLabelText(value: string): Chainable<any>
+        selectDropdownValue(new_value: string): Chainable<any>
     }
 }
