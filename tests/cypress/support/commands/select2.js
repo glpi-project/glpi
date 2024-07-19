@@ -35,7 +35,7 @@ Cypress.Commands.addQuery('getDropdownByLabelText', (
     label_text
 ) => {
     return (previous_subject) => {
-        // Target might be the whole DOM or a specific exisint DOM node
+        // Target might be the whole DOM or a specific existing DOM node
         const getNode = (selector) => {
             return previous_subject ? previous_subject.find(selector) : Cypress.$(selector);
         };
