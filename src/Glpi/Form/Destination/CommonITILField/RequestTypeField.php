@@ -128,8 +128,8 @@ class RequestTypeField extends AbstractConfigField
                 {% if main_config_field.value != CONFIG_SPECIFIC_VALUE %}
                     class="d-none"
                 {% endif %}
-                data-glpi-destination-parent="{{ main_config_field.input_name }}"
-                data-glpi-destination-parent-value="{{ CONFIG_SPECIFIC_VALUE }}"
+                data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+                data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_VALUE }}"
             >
                 {{ fields.dropdownArrayField(
                     specific_value_extra_field.input_name,
@@ -148,8 +148,8 @@ class RequestTypeField extends AbstractConfigField
                 {% if main_config_field.value != CONFIG_SPECIFIC_ANSWER %}
                     class="d-none"
                 {% endif %}
-                data-glpi-destination-parent="{{ main_config_field.input_name }}"
-                data-glpi-destination-parent-value="{{ CONFIG_SPECIFIC_ANSWER }}"
+                data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+                data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
             >
                 {{ fields.dropdownArrayField(
                     specific_answer_extra_field.input_name,

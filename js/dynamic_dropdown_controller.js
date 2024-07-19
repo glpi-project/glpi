@@ -37,8 +37,8 @@
  * values of the main dropdown).
  *
  * The children dropdown must define two data attributes:
- * - data-glpi-destination-parent: the name of the parent dropdown
- * - data-glpi-destination-parent-value: the value that the parent dropdown
+ * - data-glpi-parent-dropdown: the name of the parent dropdown
+ * - data-glpi-parent-dropdown-condition: the value that the parent dropdown
  *  must have for this dropdown to be displayed
  */
 class DynamicDropdownController
@@ -57,12 +57,12 @@ class DynamicDropdownController
 
     #updateChildrenDropdownsVisiblity(select) {
         const name = $.escapeSelector(select.prop("name"));
-        const child_dropdowns = $(`[data-glpi-destination-parent='${name}']`);
+        const child_dropdowns = $(`[data-glpi-parent-dropdown='${name}']`);
         const value = select.val();
 
         child_dropdowns.each((i, dropdown) => {
             const expected_value = $(dropdown).data(
-                'glpi-destination-parent-value'
+                'glpi-parent-dropdown-condition'
             );
             $(dropdown).toggleClass('d-none', expected_value !== value);
         });
