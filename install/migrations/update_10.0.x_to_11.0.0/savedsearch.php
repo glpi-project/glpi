@@ -33,27 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ * @var array $DELFROMDISPLAYPREF
+ */
+
+$table = SavedSearch::getTable();
+$field = 'is_private';
+if ($DB->fieldExists($table, $field)) {
+    $query = 'INSERT INTO glpi_entities_savedsearches (savedsearches_id, entities_id, is_recursive)
+SELECT id, entities_id, is_recursive
+FROM glpi_savedsearches WHERE is_private = 0;';
+    $DB->doQuery($query);
+
+    $migration->dropField($table, $field);
+
+    $DELFROMDISPLAYPREF['SavedSearch'] = 4;
 }
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['ID']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new \Glpi\Exception\Http\AccessDeniedHttpException($info);
-    }
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();

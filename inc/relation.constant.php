@@ -589,6 +589,7 @@ $RELATION = [
         '_glpi_entities_knowbaseitems'     => 'entities_id',
         '_glpi_entities_reminders'         => 'entities_id',
         '_glpi_entities_rssfeeds'          => 'entities_id',
+        '_glpi_entities_savedsearches'     => 'entities_id',
         'glpi_fieldblacklists'             => 'entities_id',
         'glpi_fieldunicities'              => 'entities_id',
         'glpi_forms_forms'                 => 'entities_id',
@@ -598,6 +599,7 @@ $RELATION = [
         'glpi_groups_knowbaseitems'        => 'entities_id',
         'glpi_groups_reminders'            => 'entities_id',
         'glpi_groups_rssfeeds'             => 'entities_id',
+        'glpi_groups_savedsearches'        => 'entities_id',
         'glpi_holidays'                    => 'entities_id',
         'glpi_imageformats'                => 'entities_id',
         'glpi_imageresolutions'            => 'entities_id',
@@ -739,6 +741,7 @@ $RELATION = [
         '_glpi_groups_problems'      => 'groups_id',
         '_glpi_groups_reminders'     => 'groups_id',
         '_glpi_groups_rssfeeds'      => 'groups_id',
+        '_glpi_groups_savedsearches' => 'groups_id',
         '_glpi_groups_tickets'       => 'groups_id',
         '_glpi_groups_users'         => 'groups_id',
         'glpi_itilcategories'        => 'groups_id',
@@ -1263,8 +1266,11 @@ $RELATION = [
     ],
 
     'glpi_savedsearches' => [
-        '_glpi_savedsearches_alerts' => 'savedsearches_id',
-        '_glpi_savedsearches_users'  => 'savedsearches_id',
+        '_glpi_entities_savedsearches'    => 'savedsearches_id',
+        '_glpi_groups_savedsearches'      => 'savedsearches_id',
+        '_glpi_savedsearches_alerts'      => 'savedsearches_id',
+        '_glpi_savedsearches_users'       => 'savedsearches_id',
+        '_glpi_savedsearches_usertargets' => 'savedsearches_id',
     ],
 
     'glpi_slalevels' => [
@@ -1625,6 +1631,7 @@ $RELATION = [
         '_glpi_rssfeeds_users'          => 'users_id',
         '_glpi_savedsearches'           => 'users_id',
         '_glpi_savedsearches_users'     => 'users_id',
+        '_glpi_savedsearches_usertargets' => 'users_id',
         'glpi_softwarelicenses'         => [
             'users_id_tech',
             'users_id',

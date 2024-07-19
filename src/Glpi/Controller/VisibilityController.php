@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,38 +33,40 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+namespace Glpi\Controller;
 
-use Glpi\Controller\VisibilityController;
-use Glpi\Http\RedirectResponse;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Html;
-use SavedSearch;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SavedSearchFormController extends VisibilityController
+class VisibilityController extends GenericFormController
 {
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
     public function __invoke(Request $request): Response
     {
-        $request->attributes->set('class', SavedSearch::class);
-
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
+        if ($request->request->has('addvisibility')) {
+            return $this->addVisibility($request);
         }
 
         return parent::__invoke($request);
     }
 
-    public function createNotif(): RedirectResponse
+    public function addVisibility(Request $request): RedirectResponse
     {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
-        return new RedirectResponse(Html::getBackUrl());
+        $class = $request->attributes->get('class');
+        $item = getItemForItemtype($class);
+        $fk_field = getForeignKeyFieldForItemType($class);
+        if ($item instanceof \CommonDBVisible) {
+            if ($item->canEdit($request->request->get($fk_field))) {
+                $item->addVisibility($request->request->all());
+                return new RedirectResponse(Html::getBackUrl());
+            } else {
+                throw new AccessDeniedHttpException();
+            }
+        } else {
+            throw new BadRequestHttpException("Invalid class");
+        }
     }
 }

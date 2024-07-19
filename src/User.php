@@ -481,25 +481,76 @@ class User extends CommonDBTM
         $reminder_translation = new ReminderTranslation();
         $reminder_translation->deleteByCriteria(['users_id' => $this->fields['id']]);
 
-       // Delete private bookmark
         $ss = new SavedSearch();
-        $ss->deleteByCriteria(
-            [
-                'users_id'   => $this->fields['id'],
-                'is_private' => 1,
-            ]
-        );
+        $search_table = SavedSearch::getTable();
+        $user_table = SavedSearch_UserTarget::getTable();
+        $group_table = Group_SavedSearch::getTable();
+        $entity_table = Entity_SavedSearch::getTable();
+        // Retrieve all bookmarks created by the user which have at least 1 target
+        $publics = $ss->find([
+            'id' => new QuerySubQuery([
+                'SELECT' => $search_table . '.id',
+                'FROM' => $ss->getTable(),
+                'LEFT JOIN' => [
+                    $user_table => [
+                        'ON' => [
+                            $user_table   => 'savedsearches_id',
+                            $search_table => 'id'
+                        ]
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table  => 'savedsearches_id',
+                            $search_table => 'id'
+                        ]
+                    ],
+                    $entity_table => [
+                        'ON' => [
+                            $entity_table => 'savedsearches_id',
+                            $search_table => 'id'
+                        ]
+                    ],
+                ],
+                'WHERE' => [
+                    $search_table . '.users_id' => $this->fields['id'],
+                    'OR' => [
+                        ['NOT' => [$user_table . '.savedsearches_id'   => null]],
+                        ['NOT' => [$group_table . '.savedsearches_id'  => null]],
+                        ['NOT' => [$entity_table . '.savedsearches_id' => null]],
+                    ]
+                ]
+            ])
+        ]);
+        if (count($publics)) {
+            $publics = array_map(fn($e) => $e['id'], $publics);
+            // Delete private bookmark
+            $ss->deleteByCriteria(
+                [
+                    'users_id' => $this->fields['id'],
+                    'NOT' => [
+                        'id' => $publics
+                    ]
+                ]
+            );
 
-       // Set no user to public bookmark
-        $DB->update(
-            SavedSearch::getTable(),
-            [
-                'users_id' => 0
-            ],
-            [
-                'users_id' => $this->fields['id']
-            ]
-        );
+            // Set no user to public bookmark
+            $DB->update(
+                SavedSearch::getTable(),
+                [
+                    'users_id' => 0
+                ],
+                [
+                    'id' => $publics
+                ]
+            );
+        } else {
+            $ss->deleteByCriteria(
+                [
+                    'users_id' => $this->fields['id']
+                ]
+            );
+        }
+
 
        // Set no user to consumables
         $DB->update(
@@ -528,6 +579,7 @@ class User extends CommonDBTM
                 Reminder_User::class,
                 RSSFeed_User::class,
                 SavedSearch_User::class,
+                SavedSearch_UserTarget::class,
                 Ticket_User::class,
                 UserEmail::class,
             ]

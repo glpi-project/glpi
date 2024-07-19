@@ -33,27 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+if (!$DB->tableExists('glpi_groups_savedsearches')) {
+    $query = "CREATE TABLE `glpi_groups_savedsearches` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `savedsearches_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        `groups_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        `entities_id` int {$default_key_sign} DEFAULT NULL,
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `savedsearches_id` (`savedsearches_id`),
+        KEY `groups_id` (`groups_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
 }
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['ID']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new \Glpi\Exception\Http\AccessDeniedHttpException($info);
-    }
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();

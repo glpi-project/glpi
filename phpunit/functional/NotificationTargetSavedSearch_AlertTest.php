@@ -51,6 +51,7 @@ class NotificationTargetSavedSearch_AlertTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'users_id' => \Session::getLoginUserID(),
             'itemtype' => 'Computer',
+            'is_private' => 1,
             'url' => 'http://glpi.localhost/front/computer.php?is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=view&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=test&itemtype=Computer&start=0&_glpi_csrf_token=735e344f1f47545e5bea56aa4e75c15ca45d3628307937c3bf185e0a3bca39db&sort%5B%5D=1&order%5B%5D=ASC'
         ]);
         $this->assertGreaterThan(0, $saved_searches_id);
