@@ -197,12 +197,11 @@ final class RequestTypeFieldTest extends DbTestCase
         }
 
         // Submit form
-        $this->login();
         $answers_handler = AnswersHandler::getInstance();
         $answers = $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
-            \Session::getLoginUserID()
+            getItemByTypeName(\User::class, TU_USER, true)
         );
 
         // Get created ticket
