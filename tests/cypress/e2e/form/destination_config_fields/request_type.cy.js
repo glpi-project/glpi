@@ -54,7 +54,7 @@ describe('Request type configuration', () => {
         cy.findByRole('region', {'name': "Request type configuration"}).as('config');
 
         // Default value
-        cy.get("@config").select2ValueShouldBeSelected("Last valid answer");
+        cy.get("@config").select2ValueShouldBeSelected('Answer to last "Request type" question');
 
         // Make sure hidden dropdowns are not displayed
         cy.get("@config").select2ValueShouldNotBeSelected('Select a question...');
@@ -62,28 +62,28 @@ describe('Request type configuration', () => {
 
         // Switch to "From template"
         cy.get("@config")
-            .getSelect2DropdownByValue('Last valid answer')
+            .getSelect2DropdownByValue('Answer to last "Request type" question')
             .setSelect2Value('From template')
         ;
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.get("@config").select2ValueShouldBeSelected("From template");
 
-        // Switch to "Specific value"
+        // Switch to "Specific request type"
         cy.get("@config")
             .getSelect2DropdownByValue('From template')
-            .setSelect2Value('Specific value')
+            .setSelect2Value('Specific request type')
         ;
         cy.get("@config")
             .getSelect2DropdownByValue('Select a request type...')
             .setSelect2Value('Request')
         ;
         cy.findByRole('button', {'name': 'Update item'}).click();
-        cy.get("@config").select2ValueShouldBeSelected("Specific value");
+        cy.get("@config").select2ValueShouldBeSelected("Specific request type");
         cy.get("@config").select2ValueShouldBeSelected("Request");
 
         // Switch to "Answer from a specific question"
         cy.get("@config")
-            .getSelect2DropdownByValue("Specific value")
+            .getSelect2DropdownByValue("Specific request type")
             .setSelect2Value("Answer from a specific question")
         ;
         cy.get("@config")

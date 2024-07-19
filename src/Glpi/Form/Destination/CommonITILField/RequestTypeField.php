@@ -265,9 +265,9 @@ TWIG;
     {
         return [
             self::CONFIG_FROM_TEMPLATE     => __("From template"),
-            self::CONFIG_SPECIFIC_VALUE    => __("Specific value"),
+            self::CONFIG_SPECIFIC_VALUE    => __("Specific request type"),
             self::CONFIG_SPECIFIC_ANSWER   => __("Answer from a specific question"),
-            self::CONFIG_LAST_VALID_ANSWER => __("Last valid answer"),
+            self::CONFIG_LAST_VALID_ANSWER => __('Answer to last "Request type" question'),
         ];
     }
 
