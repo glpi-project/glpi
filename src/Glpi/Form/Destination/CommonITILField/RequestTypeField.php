@@ -54,7 +54,7 @@ class RequestTypeField extends AbstractConfigField
     // Secondary config value that is used when the main value is CONFIG_SPECIFIC_VALUE
     public const EXTRA_CONFIG_REQUEST_TYPE = 'specific_request_type';
 
-    // Secondary config value that is used when the main value is CONFIG_LAST_VALID_ANSWER
+    // Secondary config value that is used when the main value is CONFIG_SPECIFIC_ANSWER
     public const EXTRA_CONFIG_QUESTION_ID = 'specific_question_id';
 
     #[Override]
