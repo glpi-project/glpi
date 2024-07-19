@@ -69,6 +69,5 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
     new_value
 ) => {
     cy.wrap(subject).click();
-    // cy.get(".select2-container--open").
     cy.findByRole('option', {name: new_value}).click();
 });
