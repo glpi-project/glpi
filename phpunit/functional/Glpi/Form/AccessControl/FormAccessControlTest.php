@@ -248,7 +248,9 @@ class FormAccessControlTest extends DbTestCase
     public function testGetTabNameWithActivePolicies(): void
     {
         $form = $this->createAndGetComplexForm();
+
         $this->checkGetTabNameForItem($form, "Access control 2");
+        $this->checkGetTabNameForItem($form, "Access control", count: false);
     }
 
     public function testGetTabNameWithInactiveAndActivePolicies(): void
@@ -258,7 +260,9 @@ class FormAccessControlTest extends DbTestCase
         $this->updateItem(FormAccessControl::class, $allow_list_control->getId(), [
             'is_active' => false,
         ]);
+
         $this->checkGetTabNameForItem($form, "Access control 1");
+        $this->checkGetTabNameForItem($form, "Access control", count: false);
     }
 
     public function testGetTabNameWithInactivePolicies(): void
@@ -277,9 +281,11 @@ class FormAccessControlTest extends DbTestCase
 
     private function checkGetTabNameForItem(
         Form $form,
-        string $expected
+        string $expected,
+        bool $count = true
     ): void {
         $this->login();
+        $_SESSION['glpishow_count_on_tabs'] = $count;
 
         $form_access_control = new FormAccessControl();
         $tab_name = $form_access_control->getTabNameForItem($form);
