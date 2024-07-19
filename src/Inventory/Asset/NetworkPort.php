@@ -360,7 +360,7 @@ class NetworkPort extends InventoryAsset
         }
         if (count($found_macs) > 1) { // MultipleMac
            //do not manage MAC addresses if we found one NetworkEquipment
-            if (isset($this->connections['NetworkEquipment'])) {
+            if (isset($this->connection_ports['NetworkEquipment'])) {
                 return;
             }
 
