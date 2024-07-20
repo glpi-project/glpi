@@ -277,7 +277,7 @@ class DeviceProcessor extends CommonDevice
         ];
 
         $tab[] = [
-            'id'                 => '35', 
+            'id'                 => '35',
             'table'              => 'glpi_items_deviceprocessors',
             'field'              => 'id',
             'name'               => _x('quantity', 'Processors number'),
