@@ -33,7 +33,7 @@
 
 /* global sortable, getUUID */
 
-class GlpiFormQuestionTypeSelectable {
+export class GlpiFormQuestionTypeSelectable {
 
     /**
      * The selectable input type.
@@ -68,7 +68,7 @@ class GlpiFormQuestionTypeSelectable {
                 .each((index, option) => this._registerOptionListeners($(option)));
 
             // Compute the state to update the input names
-            window.glpi_form_editor_controller.computeState();
+            this.#getFormController().computeState();
 
             // Restore the checked state
             if (this._inputType === 'radio') {
@@ -79,6 +79,10 @@ class GlpiFormQuestionTypeSelectable {
 
             this.#enableOptionsSortable();
         }
+    }
+
+    #getFormController() {
+        return this._container.closest('form[data-glpi-form-editor-container]').data('controller');
     }
 
     /**
@@ -169,7 +173,7 @@ class GlpiFormQuestionTypeSelectable {
          * Required to link radio inputs between them in the same question
          * and unlink them between questions
          */
-        window.glpi_form_editor_controller.computeState();
+        this.#getFormController().computeState();
 
         // Call the onAddOption method
         this.onAddOption($(input).parent().next());
@@ -262,7 +266,7 @@ class GlpiFormQuestionTypeSelectable {
              * Required to link radio inputs between them in the same question
              * and unlink them between questions
              */
-            window.glpi_form_editor_controller.computeState();
+            this.#getFormController().computeState();
         }
     }
 

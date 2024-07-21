@@ -33,7 +33,7 @@
 
 /* global tinymce */
 
-class GlpiFormDestinationAutoConfigController
+export class GlpiFormDestinationAutoConfigController
 {
     constructor() {
         this.#watchForAutoConfigToggle();

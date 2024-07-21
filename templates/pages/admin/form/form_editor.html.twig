@@ -45,7 +45,7 @@
 } %}
 
 {% for js_file in js_files %}
-    <script src="{{ js_path(js_file) }}"></script>
+    <script defer src="{{ js_path(js_file) }}"></script>
 {% endfor %}
 
 <form
@@ -367,20 +367,15 @@
     </div>
 {% endif %}
 
-<script>
-    window.glpi_form_editor_controller = new GlpiFormEditorController(
-        "[data-glpi-form-editor-container]",
-        {{ item.fields.is_draft ? "true" : "false" }},
-        "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
-    );
-
-    {% for question_type in question_types_manager.getQuestionTypes() %}
-        window.glpi_form_editor_controller.registerQuestionTypeOptions(
-            '{{ get_class(question_type)|e('js') }}',
-            {{ question_type.getFormEditorJsOptions()|raw }}
-        );
-    {% endfor %}
+<script defer type="module">
+    import("{{ js_path('js/modules/Forms/EditorController.js') }}").then((m) => {
+        $('#form-form').data('controller', new m.GlpiFormEditorController(
+            "[data-glpi-form-editor-container]",
+            {{ item.fields.is_draft ? "true" : "false" }},
+            "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
+            "[data-glpi-form-editor-templates]"
+        ));
+    });
 </script>
 
 <style>

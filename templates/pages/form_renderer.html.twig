@@ -192,6 +192,8 @@
 </form>
 
 <script>
-    new GlpiFormRendererController($('#forms_form_answers'));
+    import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {
+        new m.GlpiFormRendererController($('#forms_form_answers'));
+    });
 </script>
 

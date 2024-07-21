@@ -107,7 +107,6 @@ final class Form extends CommonDBTM
 
         $types_manager = QuestionTypesManager::getInstance();
         $js_files = [
-            'js/form_editor_controller.js',
             'js/form_editor_converted_extracted_default_value.js',
         ];
         foreach ($types_manager->getQuestionTypes() as $type) {
