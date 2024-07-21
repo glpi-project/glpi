@@ -129,6 +129,14 @@
             }
         },
         {
+            id: 'inventory',
+            title: 'Inventory',
+            icon: 'ti ti-cloud-download',
+            main_widget: true, // This widget shows directly in the toolbar
+            component_registered_name: 'widget-inventory',
+            refreshButton: (button) => {}
+        },
+        {
             id: 'globals',
             main_widget: false,
             component_registered_name: 'widget-globals',
@@ -142,7 +150,7 @@
             id: 'request_summary',
             main_widget: false,
             component_registered_name: 'widget-request-summary',
-        }
+        },
     ];
 
     $.each(props.initial_request.sql.queries, (i, query) => {

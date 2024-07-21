@@ -37,6 +37,7 @@ namespace Glpi\Inventory;
 
 use Agent;
 use CommonDBTM;
+use Glpi\Debug\Profiler;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\MainAsset;
 use Lockedfield;
@@ -342,8 +343,10 @@ class Inventory
                 ->setExtraData($this->data);
 
             $item_start = microtime(true);
+            Profiler::getInstance()->start($main::class . '::prepare', Profiler::CATEGORY_INVENTORY);
             $main->prepare();
             $this->addBench($this->item->getType(), 'prepare', $item_start);
+            Profiler::getInstance()->stop($main::class . '::prepare');
 
             $this->mainasset = $main;
             if (isset($this->data['hardware'])) {
@@ -558,7 +561,7 @@ class Inventory
     /**
      * Retrieve main inventoried object class
      *
-     * @return string
+     * @return class-string<MainAsset>
      */
     public function getMainClass()
     {
@@ -725,10 +728,12 @@ class Inventory
         $this->mainasset->setExtraData($this->data);
         $this->mainasset->setAssets($this->assets);
         $this->mainasset->checkConf($this->conf);
+        Profiler::getInstance()->start($this->mainasset::class . '::handle', Profiler::CATEGORY_INVENTORY);
         $item_start = microtime(true);
         $this->mainasset->handle();
         $this->item = $this->mainasset->getItem();
         $this->addBench($this->item->getType(), 'handle', $item_start);
+        Profiler::getInstance()->stop($this->mainasset::class . '::handle');
         return;
     }
 

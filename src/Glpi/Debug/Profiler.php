@@ -51,6 +51,7 @@ final class Profiler
     public const CATEGORY_DB = 'db';
     public const CATEGORY_TWIG = 'twig';
     public const CATEGORY_SEARCH = 'search';
+    public const CATEGORY_INVENTORY = 'inventory';
 
     private static $instance;
 
