@@ -59,6 +59,12 @@ final class Profile
     {
         $this->id = $id;
         $this->parent_id = $parent_id;
+        // Register a shutdown function to save the profile
+        register_shutdown_function(function () {
+            // Stop all profiler timers (should just be the main php_request one unless something died)
+            Profiler::getInstance()->stopAll();
+            $this->save();
+        });
     }
 
     public static function getCurrent(): self
@@ -67,13 +73,6 @@ final class Profile
             $id = $_SERVER['HTTP_X_GLPI_AJAX_ID'] ?? bin2hex(random_bytes(8));
             $parent_id = $_SERVER['HTTP_X_GLPI_AJAX_PARENT_ID'] ?? null;
             self::$current = new self($id, $parent_id);
-
-            // Register a shutdown function to save the profile
-            register_shutdown_function(static function () {
-                // Stop all profiler timers (should just be the main php_request one unless something died)
-                Profiler::getInstance()->stopAll();
-                self::getCurrent()->save();
-            });
         }
         return self::$current;
     }
