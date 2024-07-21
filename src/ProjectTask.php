@@ -295,7 +295,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $CFG_GLPI;
 
         // Add team members
-        if (isset($this->input['teammember_list'])) {
+        if (!empty($this->input['teammember_list'])) {
             $taskteam = new ProjectTaskTeam();
             $members_types = self::getTeamMembersItemtypes();
             foreach ($members_types as $type) {
