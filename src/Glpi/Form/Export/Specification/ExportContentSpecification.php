@@ -39,19 +39,11 @@ final class ExportContentSpecification
 {
     public int $version;
 
-    /** @var DataRequirementSpecification[] $data_requirements */
-    public array $data_requirements = [];
-
     /** @var FormContentSpecification[] */
     public array $forms = [];
 
     public function addForm(FormContentSpecification $spec): void
     {
         $this->forms[] = $spec;
-    }
-
-    public function addDataRequirements(array $data_requirements): void
-    {
-        array_push($this->data_requirements, ...$data_requirements);
     }
 }

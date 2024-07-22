@@ -55,12 +55,9 @@ final class FormSerializer extends AbstractFormSerializer
         $export_specification->version = $this->getVersion();
 
         foreach ($forms as $form) {
+            // Add forms to the main export spec
             $form_spec = $this->exportFormToSpec($form);
-            $form_requirements = $form_spec->getDataRequirements();
-
-            // Add forms and its requirements to the main export spec
             $export_specification->addForm($form_spec);
-            $export_specification->addDataRequirements($form_requirements);
         }
 
         return $this->serialize($export_specification);
@@ -78,16 +75,16 @@ final class FormSerializer extends AbstractFormSerializer
             throw new \InvalidArgumentException("Unsupported version");
         }
 
-        // Validate database context
-        $requirements = $export_specification->data_requirements;
-        $context->loadExistingContextForRequirements($requirements);
-        if (!$context->validateRequirements($requirements)) {
-            throw new \InvalidArgumentException("Missing required data");
-        }
-
         // Import each forms
         $forms = [];
         foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $context->loadExistingContextForRequirements($requirements);
+
+            if (!$context->validateRequirements($requirements)) {
+                throw new \InvalidArgumentException("Missing required data");
+            }
+
             $forms[] = $this->importFormFromSpec($form_spec, $context);
         }
 

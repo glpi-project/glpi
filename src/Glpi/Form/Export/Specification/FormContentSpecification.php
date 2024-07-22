@@ -43,7 +43,7 @@ final class FormContentSpecification
     public bool $is_recursive;
 
     /** @var DataRequirementSpecification[] $data_requirements */
-    private array $data_requirements = [];
+    public array $data_requirements = [];
 
     /** @return DataRequirementSpecification[] */
     public function getDataRequirements(): array
