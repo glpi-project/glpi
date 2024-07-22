@@ -656,7 +656,7 @@ class Config extends CommonDBTM
         ];
         $grid = new Glpi\Dashboard\Grid('central');
         if ($grid::canViewOneDashboard()) {
-            array_unshift($central_tabs,__('Dashboard'));
+            array_unshift($central_tabs, __('Dashboard'));
         }
 
         $palettes = $this->getPalettes(true);
