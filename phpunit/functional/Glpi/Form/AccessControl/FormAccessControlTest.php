@@ -399,6 +399,17 @@ class FormAccessControlTest extends DbTestCase
         ]), json_encode($access_control_2->getConfig()));
     }
 
+    public function testGetNormalizedInputName(): void
+    {
+        $form_access_control = new FormAccessControl();
+        $form_access_control->fields = ['id' => 1];
+
+        $this->assertEquals(
+            "_access_control[1][test]",
+            $form_access_control->getNormalizedInputName("test")
+        );
+    }
+
     private function createAndGetAccessControl(): FormAccessControl
     {
         $form = $this->createForm(

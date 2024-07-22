@@ -38,13 +38,17 @@ namespace tests\units\Glpi\Form\AccessControl\ControlType;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DirectAccessTest extends \GLPITestCase
+class DirectAccessTest extends \DBTestCase
 {
+    use FormTesterTrait;
+
     public function testGetLabel(): void
     {
         $direct_access = new DirectAccess();
@@ -88,13 +92,19 @@ class DirectAccessTest extends \GLPITestCase
 
         // We only validate that the function run without errors.
         // The rendered content should be validated by an E2E test.
-        $this->assertNotEmpty($direct_access->renderConfigForm(new DirectAccessConfig()));
-        $this->assertNotEmpty($direct_access->renderConfigForm(new DirectAccessConfig(
-            token: 'my token',
-            allow_unauthenticated: true,
-        )));
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(
+                    DirectAccess::class,
+                    new DirectAccessConfig(
+                        token: 'my token',
+                        allow_unauthenticated: true,
+                    )
+                )
+        );
+        $access_control = $this->getAccessControl($form, DirectAccess::class);
+        $this->assertNotEmpty($direct_access->renderConfigForm($access_control));
     }
-
 
     public function testGetWeight(): void
     {

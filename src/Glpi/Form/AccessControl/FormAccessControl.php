@@ -92,6 +92,7 @@ final class FormAccessControl extends CommonDBChild
         $twig = TemplateRenderer::getInstance();
         echo $twig->render('pages/admin/form/access_control.html.twig', [
             'form'            => $item,
+            'warnings'        => $manager->getWarnings($item),
             'access_controls' => $sorted_access_controls,
         ]);
 
@@ -228,7 +229,7 @@ final class FormAccessControl extends CommonDBChild
     {
         $control_type = $this->fields['strategy'];
         if (!$this->isValidStrategy($control_type)) {
-            throw new \RuntimeException();
+            throw new \RuntimeException("Unknown strategy");
         }
 
         return new $control_type();
@@ -262,6 +263,18 @@ final class FormAccessControl extends CommonDBChild
         }
         $strategy = new $strategy_class();
         return $strategy->createConfigFromUserInput($input);
+    }
+
+    /**
+     * Encode the input name to make sure it is unique and multiple items
+     * can be updated using a single form.
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getNormalizedInputName(string $name): string
+    {
+        return "_access_control[{$this->getID()}][$name]";
     }
 
     #[Override]

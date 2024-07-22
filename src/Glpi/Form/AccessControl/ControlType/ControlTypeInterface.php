@@ -36,6 +36,7 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use Glpi\Form\AccessControl\AccessVote;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 
@@ -65,11 +66,11 @@ interface ControlTypeInterface
     /**
      * Render the configuration form of this control type.
      *
-     * @param JsonConfigInterface $config
+     * @param FormAccessControl $access_control
      *
      * @return string Rendered content
      */
-    public function renderConfigForm(JsonConfigInterface $config): string;
+    public function renderConfigForm(FormAccessControl $access_control): string;
 
     /**
      * Get weight of this control type (used to sort controls types).

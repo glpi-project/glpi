@@ -38,13 +38,17 @@ namespace tests\units\Glpi\Form\AccessControl\ControlType;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class AllowListTest extends \GLPITestCase
+class AllowListTest extends \DbTestCase
 {
+    use FormTesterTrait;
+
     public function testGetLabel(): void
     {
         $allow_list = new AllowList();
@@ -83,14 +87,19 @@ class AllowListTest extends \GLPITestCase
 
         // We only validate that the function run without errors.
         // The rendered content should be validated by an E2E test.
-        $this->assertNotEmpty($allow_list->renderConfigForm(new AllowListConfig()));
-        $this->assertNotEmpty($allow_list->renderConfigForm(new AllowListConfig(
-            user_ids   : [1, 2, 3],
-            group_ids  : [4, 5, 6],
-            profile_ids: [7, 8, 9],
-        )));
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(
+                    \Glpi\Form\AccessControl\ControlType\AllowList::class,
+                    $this->getFullyConfiguredAllowListConfig()
+                )
+        );
+        $access_control = $this->getAccessControl(
+            $form,
+            \Glpi\Form\AccessControl\ControlType\AllowList::class
+        );
+        $this->assertNotEmpty($allow_list->renderConfigForm($access_control));
     }
-
 
     public function testGetWeight(): void
     {
@@ -99,7 +108,6 @@ class AllowListTest extends \GLPITestCase
         // Not much to test here, just ensure the method run without errors
         $this->assertGreaterThan(0, $allow_list->getWeight());
     }
-
 
     public function testCreateConfigFromUserInput(): void
     {

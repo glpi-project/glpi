@@ -142,6 +142,44 @@ final class FormAccessControlManager
         return $controls;
     }
 
+    /**
+     * Get an array access controls warnings messages (string) for a given
+     * form.
+     *
+     * @param Form $form
+     * @return string[]
+     */
+    public function getWarnings(Form $form): array
+    {
+        $warnings = [];
+        $warnings = $this->addWarningIfFormIsNotActive($form, $warnings);
+        $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
+
+        return $warnings;
+    }
+
+    private function addWarningIfFormIsNotActive(
+        Form $form,
+        array $warnings
+    ): array {
+        if (!$form->isActive()) {
+            $warnings[] = __('This form is not visible to anyone because it is not active.');
+        }
+
+        return $warnings;
+    }
+
+    private function addWarningIfFormHasNoActivePolicies(
+        Form $form,
+        array $warnings
+    ): array {
+        if (count($this->getActiveAccessControlsForForm($form)) === 0) {
+            $warnings[] = __('This form will not be visible to any users as there are currently no active access policies.');
+        }
+
+        return $warnings;
+    }
+
     private function validateAccessControlsPolicies(
         array $policies,
         FormAccessParameters $parameters
