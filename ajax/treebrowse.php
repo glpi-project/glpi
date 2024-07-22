@@ -46,8 +46,8 @@ switch ($_REQUEST['action']) {
             'as_map'             => 0,
             'showmassiveactions' => true,
             'criteria'           => $_REQUEST['criteria'],
-            'sort'               => $_REQUEST['sort'],
-            'order'              => $_REQUEST['order'],
+            'sort'               => $_REQUEST['sort'] ?? [],
+            'order'              => $_REQUEST['order'] ?? [],
         ];
 
         $itemtype = $_REQUEST['itemtype'];
