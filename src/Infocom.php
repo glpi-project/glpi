@@ -1916,7 +1916,7 @@ class Infocom extends CommonDBChild
      */
     public static function getExcludedTypes()
     {
-        return ['ConsumableItem', 'CartridgeItem', 'Software'];
+        return ['ConsumableItem', 'CartridgeItem'];
     }
 
 
