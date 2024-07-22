@@ -156,7 +156,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         return "config[$field_key]";
     }
 
-    final private function applyPredefinedTemplateFields(array $input): array
+    private function applyPredefinedTemplateFields(array $input): array
     {
         $itemtype = static::getTargetItemtype();
 
