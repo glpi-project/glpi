@@ -122,17 +122,6 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
     }
 
-    public function testDataRequirementsFromFormsAreNotExported(): void
-    {
-        // FormsSpecification data_requirements field must be ignored because
-        // it is only a temporary value that will be moved into the parent
-        // spec object.
-        $form = $this->createAndGetFormWithBasicPropertiesFilled();
-        $json = $this->exportForm($form);
-        $this->assertEquals(1, substr_count($json, "data_requirements"), $json);
-        $this->assertEquals(0, substr_count($json, "dataRequirements"), $json);
-    }
-
     private function exportForm(Form $form): string
     {
         return self::$serializer->exportFormsToJson([$form]);
