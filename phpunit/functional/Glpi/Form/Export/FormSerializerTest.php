@@ -116,7 +116,7 @@ final class FormSerializerTest extends \DbTestCase
         // Import into another entity
         $another_entity_id = getItemByTypeName(Entity::class, "_test_child_1", true);
         $context = new DatabaseMapper();
-        $context->addContext(Entity::class, 'My entity', $another_entity_id);
+        $context->addMappedItem(Entity::class, 'My entity', $another_entity_id);
 
         $form_copy = $this->importForm($json, $context);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);

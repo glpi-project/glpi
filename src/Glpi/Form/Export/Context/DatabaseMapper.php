@@ -43,7 +43,7 @@ final class DatabaseMapper
     // Store itemtype => [name => id] relations.
     private array $values = [];
 
-    public function addContext(string $itemtype, string $name, int $id): void
+    public function addMappedItem(string $itemtype, string $name, int $id): void
     {
         if (!$this->isValidItemtype($itemtype)) {
             return;
@@ -109,7 +109,7 @@ final class DatabaseMapper
             }
 
             $item = current($items);
-            $this->addContext($itemtype, $name, $item['id']);
+            $this->addMappedItem($itemtype, $name, $item['id']);
         }
 
         return true;
