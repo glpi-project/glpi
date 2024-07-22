@@ -97,17 +97,13 @@ describe('Request type configuration', () => {
         ;
 
         // Fill form
-        cy.findByRole("region", {"name": "My request type question"})
-            .getSelect2DropdownByValue('-----')
-            .setSelect2Value('Request')
-        ;
+        cy.getDropdownByLabelText("My request type question").should('have.text', 'Incident');
+        cy.getDropdownByLabelText("My request type question").selectDropdownValue('Request');
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values
-        cy.findByRole('region', {'name': 'Ticket'})
-            .select2ValueShouldBeSelected('Request')
-        ;
+        cy.getDropdownByLabelText('Type').should('have.text', 'Request');
 
         // Others possibles configurations are tested directly by the backend.
     });
