@@ -38,9 +38,7 @@
 {% block more_fields %}
     {{ fields.textField('url', item.fields['url'], __('URL')) }}
     {{ fields.dropdownYesNo('open_window', item.fields['open_window'], __('Open in a new window')) }}
-    {{ fields.dropdownWebIcons('icon', item.fields['icon'], __('Icon'), {
-        icon_sets: ['fa']
-    }) }}
+    {{ fields.dropdownWebIcons('icon', item.fields['icon'], __('Icon')) }}
 
     {% if item.isNewItem() %}
         {{ inputs.hidden('itemtype', parent_item.itemtype) }}
