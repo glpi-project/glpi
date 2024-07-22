@@ -35,8 +35,6 @@
 
 namespace tests\units\Glpi\Form\AccessControl;
 
-use CommonGLPI;
-use Computer;
 use DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -48,10 +46,8 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
-use Impact;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
-use Ticket;
 use User;
 
 class FormAccessControlTest extends DbTestCase
@@ -243,17 +239,60 @@ class FormAccessControlTest extends DbTestCase
         );
     }
 
-    public function testGetTabNameForItem(): void
+    public function testGetTabNameForEmptyForm(): void
     {
-        $this->login();
-
         $form = $this->createAndGetSimpleForm();
+        $this->checkGetTabNameForItem($form, "Access control");
+    }
+
+    public function testGetTabNameWithActivePolicies(): void
+    {
+        $form = $this->createAndGetComplexForm();
+
+        $this->checkGetTabNameForItem($form, "Access control 2");
+        $this->checkGetTabNameForItem($form, "Access control", count: false);
+    }
+
+    public function testGetTabNameWithInactiveAndActivePolicies(): void
+    {
+        $form = $this->createAndGetComplexForm();
+        $allow_list_control = $this->getAccessControl($form, AllowList::class);
+        $this->updateItem(FormAccessControl::class, $allow_list_control->getId(), [
+            'is_active' => false,
+        ]);
+
+        $this->checkGetTabNameForItem($form, "Access control 1");
+        $this->checkGetTabNameForItem($form, "Access control", count: false);
+    }
+
+    public function testGetTabNameWithInactivePolicies(): void
+    {
+        $form = $this->createAndGetComplexForm();
+        $allow_list_control = $this->getAccessControl($form, AllowList::class);
+        $this->updateItem(FormAccessControl::class, $allow_list_control->getId(), [
+            'is_active' => false,
+        ]);
+        $direct_access_control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem(FormAccessControl::class, $direct_access_control->getId(), [
+            'is_active' => false,
+        ]);
+        $this->checkGetTabNameForItem($form, "Access control");
+    }
+
+    private function checkGetTabNameForItem(
+        Form $form,
+        string $expected,
+        bool $count = true
+    ): void {
+        $this->login();
+        $_SESSION['glpishow_count_on_tabs'] = $count;
+
         $form_access_control = new FormAccessControl();
         $tab_name = $form_access_control->getTabNameForItem($form);
 
         // Strip tags to keep only the relevant data
         $tab_name = strip_tags($tab_name);
-        $this->assertEquals("Access control", $tab_name);
+        $this->assertEquals($expected, $tab_name);
     }
 
     public function testDisplayTabContentForItem(): void

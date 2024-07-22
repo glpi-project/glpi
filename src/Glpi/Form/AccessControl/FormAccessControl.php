@@ -70,7 +70,14 @@ final class FormAccessControl extends CommonDBChild
             return false;
         }
 
-        return self::createTabEntry(self::getTypeName());
+        $form_access_mananger = FormAccessControlManager::getInstance();
+
+        $count = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $count = count($form_access_mananger->getActiveAccessControlsForForm($item));
+        }
+
+        return self::createTabEntry(self::getTypeName(), $count);
     }
 
     #[Override]
