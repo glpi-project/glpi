@@ -791,14 +791,7 @@ class Search
        //// 3 - WHERE
 
        // default string
-        if (
-            Session::getCurrentInterface() != 'helpdesk'
-            && $data['itemtype'] == Ticket::class
-        ) {
-            $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
-        } else {
-            $COMMONWHERE = "";
-        }
+        $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
         $first = empty($COMMONWHERE);
 
        // Add deleted if item have it
@@ -4386,6 +4379,7 @@ JAVASCRIPT;
                 $condition = '';
                 if (
                     !Session::haveRight("ticket", Ticket::READALL)
+                    && Session::getCurrentInterface() != 'helpdesk'
                 ) {
                     $searchopt
                     = self::getOptions($itemtype);
