@@ -118,10 +118,10 @@ final class FormSerializerTest extends \DbTestCase
 
         // Import into another entity
         $another_entity_id = getItemByTypeName(Entity::class, "_test_child_1", true);
-        $context = new DatabaseMapper();
-        $context->addMappedItem(Entity::class, 'My entity', $another_entity_id);
+        $mapper = new DatabaseMapper();
+        $mapper->addMappedItem(Entity::class, 'My entity', $another_entity_id);
 
-        $form_copy = $this->importForm($json, $context);
+        $form_copy = $this->importForm($json, $mapper);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
     }
 
@@ -139,9 +139,9 @@ final class FormSerializerTest extends \DbTestCase
 
     private function importForm(
         string $json,
-        DatabaseMapper $context = new DatabaseMapper(),
+        DatabaseMapper $mapper = new DatabaseMapper(),
     ): Form {
-        $import_result = self::$serializer->importFormsFromJson($json, $context);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
         $imported_forms = $import_result->getImportedForms();
         $this->assertCount(1, $imported_forms);
         $form_copy = current($imported_forms);

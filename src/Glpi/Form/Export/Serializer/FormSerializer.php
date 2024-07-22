@@ -108,10 +108,29 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importFormFromSpec(
         FormContentSpecification $form_spec,
-        DatabaseMapper $context = new DatabaseMapper(),
+        DatabaseMapper $mapper = new DatabaseMapper(),
+    ): Form {
+        global $DB;
+
+        $use_transaction = !$DB->inTransaction();
+
+        if ($use_transaction) {
+            $DB->beginTransaction();
+            $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
+            $DB->commit();
+        } else {
+            $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
+        }
+
+        return $forms;
+    }
+
+    private function doImportFormFormSpecs(
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper = new DatabaseMapper(),
     ): Form {
         // TODO: questions, sections, ...
-        $form = $this->importBasicFormProperties($form_spec, $context);
+        $form = $this->importBasicFormProperties($form_spec, $mapper);
 
         return $form;
     }
@@ -133,14 +152,14 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importBasicFormProperties(
         FormContentSpecification $spec,
-        DatabaseMapper $context = new DatabaseMapper(),
+        DatabaseMapper $mapper = new DatabaseMapper(),
     ): Form {
         if (!($spec instanceof FormContentSpecification)) {
             throw new \InvalidArgumentException("Unsupported version");
         }
 
-        // Get ids from context
-        $entities_id = $context->getItemId(Entity::class, $spec->entity_name);
+        // Get ids from mapper
+        $entities_id = $mapper->getItemId(Entity::class, $spec->entity_name);
 
         $form = new Form();
         $id = $form->add([
