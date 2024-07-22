@@ -44,6 +44,8 @@ use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Ticket;
+use TicketTemplate;
+use TicketTemplatePredefinedField;
 
 final class RequestTypeFieldTest extends DbTestCase
 {
@@ -51,11 +53,25 @@ final class RequestTypeFieldTest extends DbTestCase
 
     public function testRequestTypeFromTemplate(): void
     {
+        // The default GLPI's template use "INCIDENT"
         $this->checkRequestTypeFieldConfiguration(
             form: $this->createAndGetFormWithMultipleRequestTypeQuestions(),
             config: ['value' => RequestTypeField::CONFIG_FROM_TEMPLATE],
             answers: [],
             expected_request_type: Ticket::INCIDENT_TYPE
+        );
+
+        // Set the default type as "Request" using predefined fields
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 14, // Request type
+            'value' => Ticket::DEMAND_TYPE,
+        ]);
+        $this->checkRequestTypeFieldConfiguration(
+            form: $this->createAndGetFormWithMultipleRequestTypeQuestions(),
+            config: ['value' => RequestTypeField::CONFIG_FROM_TEMPLATE],
+            answers: [],
+            expected_request_type: Ticket::DEMAND_TYPE
         );
     }
 
@@ -168,6 +184,21 @@ final class RequestTypeFieldTest extends DbTestCase
             ],
             answers: [],
             expected_request_type: Ticket::INCIDENT_TYPE
+        );
+
+        // Try again with a different template value
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 14, // Request type
+            'value' => Ticket::DEMAND_TYPE,
+        ]);
+        $this->checkRequestTypeFieldConfiguration(
+            form: $form,
+            config: [
+                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
+            ],
+            answers: [],
+            expected_request_type: Ticket::DEMAND_TYPE
         );
     }
 

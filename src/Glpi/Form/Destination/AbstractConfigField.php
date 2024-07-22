@@ -36,6 +36,7 @@
 namespace Glpi\Form\Destination;
 
 use Glpi\Form\Form;
+use ITILTemplate;
 use Override;
 
 abstract class AbstractConfigField implements ConfigFieldInterface
