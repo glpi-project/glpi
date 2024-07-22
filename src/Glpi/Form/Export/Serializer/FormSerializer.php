@@ -110,6 +110,7 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper = new DatabaseMapper(),
     ): Form {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $use_transaction = !$DB->inTransaction();
