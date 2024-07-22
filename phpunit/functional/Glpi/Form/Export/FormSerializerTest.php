@@ -122,6 +122,13 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
     }
 
+    // TODO: add a test later to make sure that requirements for each forms do
+    // not contains a singular item multiple times.
+    // For example, if a specific group is referenced multiple time by a form
+    // it should only be included once in this form data requirement.
+    // Can't be done now as we have only one requirement (form entity) so it
+    // we it is impossible to have duplicates.
+
     private function exportForm(Form $form): string
     {
         return self::$serializer->exportFormsToJson([$form]);
