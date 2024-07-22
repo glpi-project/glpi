@@ -596,7 +596,6 @@
 {% macro dropdownWebIcons(name, value, label = '', options = {}) %}
     {% set options = {
         rand: random(),
-        icon_sets: ['ti'],
     }|merge(options|merge({
         noselect2: true,
     })) %}
@@ -607,7 +606,7 @@
     <script type="module">
         import('{{ js_path('js/modules/Form/WebIconSelector.js') }}').then((m) => {
             const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
-            const selector = new m.default(document.getElementById(dropdown_id), {{ options.icon_sets|json_encode|raw }});
+            const selector = new m.default(document.getElementById(dropdown_id));
             selector.init();
         });
     </script>
