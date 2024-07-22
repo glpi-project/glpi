@@ -2818,7 +2818,7 @@ msgstr "Verknüpfung zu einem Element hinzufügen:"
 
 #: src/KnowbaseItem_Item.php:128
 msgid "Add a linked item"
-msgstr "Verknüpftes Elemt hinzufügen"
+msgstr "Verknüpftes Element hinzufügen"
 
 #: src/Group.php:358
 msgctxt "button"
