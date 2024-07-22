@@ -635,7 +635,7 @@ class GlpiFormEditorController
      */
     #removeDraftStatus() {
         // Turn the "Add" button into "Save"
-        const add_button = $('#form-form button[name=update]');
+        const add_button = $('#main-form button[name=update]');
         add_button
             .find('.ti-plus')
             .removeClass('ti-plus')
@@ -644,7 +644,7 @@ class GlpiFormEditorController
         add_button.prop("title", __('Save'));
 
         // Show the delete button
-        const del_button = $('#form-form button[name=delete]');
+        const del_button = $('#main-form button[name=delete]');
         del_button.removeClass('d-none');
 
         // Mark as no longer a draft to avoid running this code again

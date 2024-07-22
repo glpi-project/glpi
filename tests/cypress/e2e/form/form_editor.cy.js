@@ -81,6 +81,17 @@ describe ('Form editor', () => {
         });
     });
 
+    it('can enable child entities', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+        cy.findByRole('checkbox', {"name": "Child entities"})
+            .should('be.not.checked')
+            .check()
+        ;
+        cy.findByRole('button', {"name": "Save"}).click();
+        cy.reload();
+        cy.findByRole('checkbox', {"name": "Child entities"}).should('be.checked');
+    }),
+
     it('can create and delete a question', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
