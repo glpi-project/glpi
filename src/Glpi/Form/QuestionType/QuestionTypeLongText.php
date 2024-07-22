@@ -55,31 +55,34 @@ final class QuestionTypeLongText extends AbstractQuestionType
                     const inst = tinyMCE.get(textarea.attr('id'));
 
                     if (inst) {
-                        return inst.getContent();
+                        let content = inst.getContent();
+                        let tmp = document.createElement("DIV");
+                        tmp.innerHTML = content;
+                        content = tmp.textContent || tmp.innerText || "";
+
+                        return new GlpiFormEditorConvertedExtractedDefaultValue(
+                            GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                            content
+                        );
                     }
 
                     return '';
                 },
-                "converters": {
-                    "functions": {
-                        "transferTextAreaContent": function (question, value) {
-                            const input = question.find('[data-glpi-form-editor-question-type-specific]')
-                                .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
 
-                            // Check a temporary element to convert HTML to text
-                            const element = document.createElement('div');
-                            element.innerHTML = value;
+                    // Only accept string values
+                    if (value.getDatatype() !== GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING) {
+                        return '';
+                    }
 
-                            if (element.firstChild) {
-                                value = element.firstChild.textContent;
-                            }
+                    const textarea = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+                    textarea.val(value.getDefaultValue());
 
-                            return input.val(value).val();
-                        }
-                    },
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeShortText": "transferTextAreaContent",
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeEmail": "transferTextAreaContent",
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeNumber": "transferTextAreaContent"
+                    return textarea.val();
                 }
             }
         JS;

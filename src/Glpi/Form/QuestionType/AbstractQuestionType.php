@@ -81,8 +81,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
         return <<<JS
             {
                 "extractDefaultValue": function (question) { return null; },
-                "convertDefaultValue": function (question, old_type, value) {
-                    // No need to convert the default value
+                "convertDefaultValue": function (question, value) {
                     return value;
                 }
             }

@@ -60,20 +60,25 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                     const input = question.find('[data-glpi-form-editor-question-type-specific]')
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
 
-                    return input.val();
+                    return new GlpiFormEditorConvertedExtractedDefaultValue(
+                        GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                        input.val()
+                    );
                 },
-                "converters": {
-                    "functions": {
-                        "transferInputValue": function (question, value) {
-                            return question.find('[data-glpi-form-editor-question-type-specific]')
-                                .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]')
-                                .val(value).val();
-                        }
-                    },
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeShortText": "transferInputValue",
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeEmail": "transferInputValue",
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeNumber": "transferInputValue",
-                    "Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText": "transferInputValue"
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
+
+                    // Only accept string values
+                    if (value.getDatatype() !== GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING) {
+                        return '';
+                    }
+
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return input.val(value.getDefaultValue()).val();
                 }
             }
         JS;

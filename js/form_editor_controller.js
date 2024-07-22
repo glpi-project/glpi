@@ -69,12 +69,6 @@ class GlpiFormEditorController
     #options;
 
     /**
-     * Converters for question types
-     * @type {Object}
-     */
-    #converters;
-
-    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -89,7 +83,6 @@ class GlpiFormEditorController
         this.#defaultQuestionType = defaultQuestionType;
         this.#templates           = templates;
         this.#options             = {};
-        this.#converters          = {};
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -231,40 +224,7 @@ class GlpiFormEditorController
      * @param {Object} options Options for the question type
      */
     registerQuestionTypeOptions(type, options) {
-        if (options["converters"] !== undefined) {
-            for (let [to, func] of Object.entries(options["converters"])) {
-                if (to === "functions") {
-                    continue;
-                }
-
-                if (
-                    func instanceof Function === false
-                    && options["converters"]["functions"] !== undefined
-                    && options["converters"]["functions"][func] !== undefined
-                ) {
-                    func = options["converters"]["functions"][func];
-                }
-
-                this.registerQuestionTypeConverter(type, to, func);
-            }
-        }
-
         this.#options[type] = options;
-    }
-
-    /**
-     * Register a new converter from a given question type to another.
-     *
-     * param {string}   from    Source question type
-     * param {string}   to      Destination question type
-     * param {function} func  Conversion function
-     */
-    registerQuestionTypeConverter(from, to, func) {
-        if (this.#converters[from] === undefined) {
-            this.#converters[from] = {};
-        }
-
-        this.#converters[from][to] = func;
     }
 
     /**
@@ -1147,10 +1107,10 @@ class GlpiFormEditorController
         this.#setItemInput(question, "type", type);
 
         // Convert the default value to match the new type
-        if (
-            this.#converters[old_type] !== undefined && this.#converters[old_type][type] !== undefined) {
-            this.#converters[old_type][type](question, extracted_default_value);
-        }
+        this.#options[type].convertDefaultValue(
+            question,
+            extracted_default_value
+        );
 
         $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);
     }
