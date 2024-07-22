@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form;
 
 use Entity;
 use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
@@ -92,9 +93,11 @@ final class FormSerializerTest extends \DbTestCase
         $this->deleteItem(Entity::class, $entity->getID());
 
         // Import should fail as the entity can't be found
-        // TODO: Maybe we could create a custom exception type ?
-        $this->expectException(\InvalidArgumentException::class);
-        $this->importForm($json);
+        $import_result = self::$serializer->importFormsFromJson($json);
+        $this->assertCount(0, $import_result->getImportedForms());
+        $this->assertEquals([
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+        ], $import_result->getFailedFormImports());
     }
 
     public function testExportAndImportInAnotherEntity(): void
@@ -138,7 +141,8 @@ final class FormSerializerTest extends \DbTestCase
         string $json,
         DatabaseMapper $context = new DatabaseMapper(),
     ): Form {
-        $imported_forms = self::$serializer->importFormsFromJson($json, $context);
+        $import_result = self::$serializer->importFormsFromJson($json, $context);
+        $imported_forms = $import_result->getImportedForms();
         $this->assertCount(1, $imported_forms);
         $form_copy = current($imported_forms);
         return $form_copy;

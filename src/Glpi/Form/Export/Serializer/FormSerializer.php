@@ -37,6 +37,8 @@ namespace Glpi\Form\Export\Serializer;
 
 use Entity;
 use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Result\ImportError;
+use Glpi\Form\Export\Result\ImportResult;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Form;
@@ -67,7 +69,7 @@ final class FormSerializer extends AbstractFormSerializer
     public function importFormsFromJson(
         string $json,
         DatabaseMapper $context = new DatabaseMapper(),
-    ): array {
+    ): ImportResult {
         $export_specification = $this->deserialize($json);
 
         // Validate version
@@ -76,19 +78,24 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         // Import each forms
-        $forms = [];
+        $result = new ImportResult();
         foreach ($export_specification->forms as $form_spec) {
             $requirements = $form_spec->data_requirements;
             $context->loadExistingContextForRequirements($requirements);
 
             if (!$context->validateRequirements($requirements)) {
-                throw new \InvalidArgumentException("Missing required data");
+                $result->addFailedFormImport(
+                    $form_spec->name,
+                    ImportError::MISSING_DATA_REQUIREMENT
+                );
+                continue;
             }
 
-            $forms[] = $this->importFormFromSpec($form_spec, $context);
+            $form = $this->importFormFromSpec($form_spec, $context);
+            $result->addImportedForm($form);
         }
 
-        return $forms;
+        return $result;
     }
 
     private function exportFormToSpec(Form $form): FormContentSpecification
