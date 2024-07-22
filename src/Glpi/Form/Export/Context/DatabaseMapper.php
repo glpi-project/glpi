@@ -38,7 +38,7 @@ namespace Glpi\Form\Export\Context;
 use CommonDBTM;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 
-final class DatabaseContext
+final class DatabaseMapper
 {
     // Store itemtype => [name => id] relations.
     private array $values = [];

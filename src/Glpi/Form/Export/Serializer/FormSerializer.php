@@ -36,7 +36,7 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
-use Glpi\Form\Export\Context\DatabaseContext;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Form;
@@ -69,7 +69,7 @@ final class FormSerializer extends AbstractFormSerializer
     /** @return Form[] */
     public function importFormsFromJson(
         string $json,
-        DatabaseContext $context = new DatabaseContext(),
+        DatabaseMapper $context = new DatabaseMapper(),
     ): array {
         $export_specification = $this->deserialize($json);
 
@@ -104,7 +104,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importFormFromSpec(
         FormContentSpecification $form_spec,
-        DatabaseContext $context = new DatabaseContext(),
+        DatabaseMapper $context = new DatabaseMapper(),
     ): Form {
         // TODO: questions, sections, ...
         $form = $this->importBasicFormProperties($form_spec, $context);
@@ -129,7 +129,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importBasicFormProperties(
         FormContentSpecification $spec,
-        DatabaseContext $context = new DatabaseContext(),
+        DatabaseMapper $context = new DatabaseMapper(),
     ): Form {
         if (!($spec instanceof FormContentSpecification)) {
             throw new \InvalidArgumentException("Unsupported version");

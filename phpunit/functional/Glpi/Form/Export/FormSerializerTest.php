@@ -36,7 +36,7 @@
 namespace tests\units\Glpi\Form;
 
 use Entity;
-use Glpi\Form\Export\Context\DatabaseContext;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
@@ -115,7 +115,7 @@ final class FormSerializerTest extends \DbTestCase
 
         // Import into another entity
         $another_entity_id = getItemByTypeName(Entity::class, "_test_child_1", true);
-        $context = new DatabaseContext();
+        $context = new DatabaseMapper();
         $context->addContext(Entity::class, 'My entity', $another_entity_id);
 
         $form_copy = $this->importForm($json, $context);
@@ -140,7 +140,7 @@ final class FormSerializerTest extends \DbTestCase
 
     private function importForm(
         string $json,
-        DatabaseContext $context = new DatabaseContext(),
+        DatabaseMapper $context = new DatabaseMapper(),
     ): Form {
         $imported_forms = self::$serializer->importFormsFromJson($json, $context);
         $this->assertCount(1, $imported_forms);
