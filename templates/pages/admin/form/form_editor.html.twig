@@ -369,7 +369,7 @@
 
 <script defer type="module">
     import("{{ js_path('js/modules/Forms/EditorController.js') }}").then((m) => {
-        $('#form-form').data('controller', new m.GlpiFormEditorController(
+        $('[data-glpi-form-editor-container]').data('controller', new m.GlpiFormEditorController(
             "[data-glpi-form-editor-container]",
             {{ item.fields.is_draft ? "true" : "false" }},
             "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
