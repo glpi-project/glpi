@@ -41,6 +41,7 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\Tag\Tag;
@@ -55,6 +56,12 @@ final class FormTagsManagerTest extends DbTestCase
 
         // All possible tags that may be returned for all cases.
         $tags = [
+            new Tag(
+                label: 'Section: Personal information',
+                value: $this->getSectionId($form, 'Personal information'),
+                provider: SectionTagProvider::class,
+                color: SectionTagProvider::ACCENT_COLOR,
+            ),
             new Tag(
                 label: 'Question: First name',
                 value: $this->getQuestionId($form, 'First name'),
@@ -83,6 +90,7 @@ final class FormTagsManagerTest extends DbTestCase
 
         // Without filter
         $this->checkGetTags($form, "", [
+            $this->getTagByName($tags, 'Section: Personal information'),
             $this->getTagByName($tags, 'Question: First name'),
             $this->getTagByName($tags, 'Question: Last name'),
             $this->getTagByName($tags, 'Answer: First name'),
@@ -126,6 +134,11 @@ final class FormTagsManagerTest extends DbTestCase
             $this->getTagByName($tags, 'Question: Last name'),
             $this->getTagByName($tags, 'Answer: Last name'),
         ]);
+
+        // With "Section" filter
+        $this->checkGetTags($form, "Section", [
+            $this->getTagByName($tags, 'Section: Personal information'),
+        ]);
     }
 
     private function checkGetTags(
@@ -150,6 +163,10 @@ final class FormTagsManagerTest extends DbTestCase
         ], 0 /* Invalid user id but we dont care for this here */);
 
         $tags = $tag_manager->getTags($form);
+        $section_tag = $this->getTagByName(
+            $tags,
+            'Section: Personal information'
+        );
         $first_name_question_tag = $this->getTagByName(
             $tags,
             'Question: First name'
@@ -168,7 +185,8 @@ final class FormTagsManagerTest extends DbTestCase
         );
 
         $content_with_tag =
-            "$first_name_question_tag->html: $first_name_answer_tag->html, "
+            "$section_tag->html, "
+            . "$first_name_question_tag->html: $first_name_answer_tag->html, "
             . "$last_name_question_tag->html: $last_name_answer_tag->html"
         ;
         $computed_content = $tag_manager->insertTagsContent(
@@ -176,7 +194,7 @@ final class FormTagsManagerTest extends DbTestCase
             $answers
         );
 
-        $this->assertEquals('First name: John, Last name: Smith', $computed_content);
+        $this->assertEquals('Personal information, First name: John, Last name: Smith', $computed_content);
     }
 
     public function testGetTagProviders(): void
@@ -189,6 +207,7 @@ final class FormTagsManagerTest extends DbTestCase
     private function createAndGetFormWithFirstAndLastNameQuestions(): Form
     {
         $builder = new FormBuilder();
+        $builder->addSection("Personal information");
         $builder->addQuestion("First name", QuestionTypeShortText::class);
         $builder->addQuestion("Last name", QuestionTypeShortText::class);
         return $this->createForm($builder);

@@ -75,6 +75,7 @@ describe('Form tags', () => {
 
     it('tags autocompletion is loaded and values are preserved on reload', () => {
         // Auto completion is not yet opened
+        cy.findByRole("menuitem", {name: "Section: Section 1"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Question: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('not.exist');
@@ -90,6 +91,7 @@ describe('Form tags', () => {
         // Use autocomplete
         cy.get("@rich_text_editor").clear();
         cy.get("@rich_text_editor").type("#");
+        cy.findByRole("menuitem", {name: "Section: Section 1"}).should('exist');
         cy.findByRole("menuitem", {name: "Question: First name"}).should('exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('exist');
@@ -98,12 +100,14 @@ describe('Form tags', () => {
         // Filter results
         cy.get("@rich_text_editor").type("Last");
         cy.findByRole("menuitem", {name: "Question: First name"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Question: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('exist');
 
         // Auto completion UI is terminated after clicking on the item.
         cy.findByRole("menuitem", {name: "Question: Last name"}).click();
+        cy.findByRole("menuitem", {name: "Section: Section 1"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('not.exist');
 
