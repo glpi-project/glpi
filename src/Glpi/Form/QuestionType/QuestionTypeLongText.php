@@ -45,6 +45,50 @@ use Override;
 final class QuestionTypeLongText extends AbstractQuestionType
 {
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const textarea = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+                    const inst = tinyMCE.get(textarea.attr('id'));
+
+                    if (inst) {
+                        let content = inst.getContent();
+                        let tmp = document.createElement("DIV");
+                        tmp.innerHTML = content;
+                        content = tmp.textContent || tmp.innerText || "";
+
+                        return new GlpiFormEditorConvertedExtractedDefaultValue(
+                            GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                            content
+                        );
+                    }
+
+                    return '';
+                },
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
+
+                    // Only accept string values
+                    if (value.getDatatype() !== GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING) {
+                        return '';
+                    }
+
+                    const textarea = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+                    textarea.val(value.getDefaultValue());
+
+                    return textarea.val();
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -63,6 +107,7 @@ final class QuestionTypeLongText extends AbstractQuestionType
                     'is_horizontal': false,
                     'full_width'   : true,
                     'no_label'     : true,
+                    'aria_label': aria_label,
                 }
             ) }}
 TWIG;
@@ -71,6 +116,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'    => $question,
             'placeholder' => __('Long text'),
+            'aria_label'  => __('Default value')
         ]);
     }
 

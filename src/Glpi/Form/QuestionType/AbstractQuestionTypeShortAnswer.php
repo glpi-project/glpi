@@ -52,6 +52,39 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     abstract public function getInputType(): string;
 
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return new GlpiFormEditorConvertedExtractedDefaultValue(
+                        GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                        input.val()
+                    );
+                },
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
+
+                    // Only accept string values
+                    if (value.getDatatype() !== GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING) {
+                        return '';
+                    }
+
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return input.val(value.getDefaultValue()).val();
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -61,6 +94,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
+                aria-label="{{ __('Default value') }}"
             />
 TWIG;
 

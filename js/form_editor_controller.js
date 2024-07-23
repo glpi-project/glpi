@@ -63,6 +63,12 @@ class GlpiFormEditorController
     #templates;
 
     /**
+     * Options for each question type
+     * @type {Object}
+     */
+    #options;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -76,6 +82,7 @@ class GlpiFormEditorController
         this.#is_draft            = is_draft;
         this.#defaultQuestionType = defaultQuestionType;
         this.#templates           = templates;
+        this.#options             = {};
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -208,6 +215,16 @@ class GlpiFormEditorController
                     }
                 });
         });
+    }
+
+    /**
+     * Register new options for the given question type.
+     *
+     * @param {string} type    Question type
+     * @param {Object} options Options for the question type
+     */
+    registerQuestionTypeOptions(type, options) {
+        this.#options[type] = options;
     }
 
     /**
@@ -1048,6 +1065,10 @@ class GlpiFormEditorController
      * @param {string} type     New type
      */
     #changeQuestionType(question, type) {
+        // Get the current question type and extracted default value
+        const old_type = this.#getItemInput(question, "type");
+        const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
+
         // Clear the specific form of the question
         const specific = question
             .find("[data-glpi-form-editor-question-type-specific]");
@@ -1080,6 +1101,15 @@ class GlpiFormEditorController
         this.#copy_template(
             new_extra_data,
             extra_data,
+        );
+
+        // Update the question type
+        this.#setItemInput(question, "type", type);
+
+        // Convert the default value to match the new type
+        this.#options[type].convertDefaultValue(
+            question,
+            extracted_default_value
         );
 
         $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);

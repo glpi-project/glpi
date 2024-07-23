@@ -241,6 +241,11 @@
             name="rank"
             value="{{ question is not null ? question.fields.rank : 0 }}"
         />
+        <input
+            type="hidden"
+            name="type"
+            value="{{ constant('class', question_type) }}"
+        />
     </section>
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
