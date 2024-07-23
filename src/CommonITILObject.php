@@ -1036,7 +1036,6 @@ abstract class CommonITILObject extends CommonDBTM
                  isset($_SESSION["glpigroups"])
                  && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
              )
-             || $this->isUserValidationRequested(Session::getLoginUserID(), true)
         );
     }
 
