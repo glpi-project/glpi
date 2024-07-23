@@ -1009,7 +1009,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         return (
              (
-                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDMY)
+                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDMY)
                  && (
                      $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                      || (
@@ -1019,17 +1019,17 @@ abstract class CommonITILObject extends CommonDBTM
                  )
              )
              || (
-                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
+                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
                  && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
              )
-             || Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDALLITEM)
+             || Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDALLITEM)
              || (
-                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_GROUP)
+                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_GROUP)
                  && isset($_SESSION["glpigroups"])
                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
              )
              || (
-                 Session::haveRight(TicketTask::$rightname, CommonITILTask::ADD_AS_TECHNICIAN)
+                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_TECHNICIAN)
                  && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
              )
              || (

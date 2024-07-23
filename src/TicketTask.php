@@ -35,9 +35,6 @@
 
 class TicketTask extends CommonITILTask
 {
-    public static $rightname = 'task';
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Ticket task', 'Ticket tasks', $nb);
