@@ -92,6 +92,22 @@ final class FormAccessControlManager
         return array_values($controls);
     }
 
+    public function isAnonymousForm(Form $form): bool
+    {
+        $access_controls = $this->getActiveAccessControlsForForm($form);
+        return array_reduce(
+            $access_controls,
+            function ($acc, $control) {
+                if ($control->getStrategy() instanceof DirectAccess) {
+                    return $acc || $control->getConfig()->allowUnauthenticated();
+                }
+
+                return $acc;
+            },
+            false
+        );
+    }
+
     /**
      * Check if the current user can answer the given form.
      *

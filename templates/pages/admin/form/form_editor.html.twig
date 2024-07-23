@@ -34,6 +34,7 @@
 {# @var item   Glpi\Form\Form #}
 {# @var params array #}
 {# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
+{# @var is_anonymous_form bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -323,6 +324,7 @@
                     'question'               : null,
                     'section'                : null,
                     'can_update'             : true,
+                    'is_anonymous_form'      : is_anonymous_form,
                 }, with_context = false) }}
             </div>
         {% endfor %}
@@ -369,6 +371,7 @@
     window.glpi_form_editor_controller = new GlpiFormEditorController(
         "[data-glpi-form-editor-container]",
         {{ item.fields.is_draft ? "true" : "false" }},
+        {{ is_anonymous_form ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]"
     );

@@ -36,6 +36,7 @@
 namespace Glpi\Form\Renderer;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Form;
 use Html;
 
@@ -85,7 +86,8 @@ final class FormRenderer
         // Load template
         $twig = TemplateRenderer::getInstance();
         $html .= $twig->render('pages/form_renderer.html.twig', [
-            'form' => $form,
+            'form'              => $form,
+            'is_anonymous_form' => FormAccessControlManager::getInstance()->isAnonymousForm($form),
         ]);
 
         return $html;

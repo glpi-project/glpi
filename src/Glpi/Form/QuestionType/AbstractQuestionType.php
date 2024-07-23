@@ -78,8 +78,11 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function getFormEditorJsOptions(): string
     {
+        $is_allowed_for_anonymous_form = $this->isAllowedForAnonymousForm() ? 'true' : 'false';
+
         return <<<JS
             {
+                "allowAnonymous": $is_allowed_for_anonymous_form,
                 "extractDefaultValue": function (question) { return null; },
                 "convertDefaultValue": function (question, value) {
                     return value;
@@ -110,5 +113,11 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return false;
     }
 }

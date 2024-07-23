@@ -348,4 +348,10 @@ TWIG;
             'answer' => $this->formatAnswer($answer),
         ]);
     }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return true;
+    }
 }

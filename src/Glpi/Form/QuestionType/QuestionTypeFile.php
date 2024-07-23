@@ -137,4 +137,10 @@ TWIG;
     {
         return QuestionTypeCategory::FILE;
     }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return true;
+    }
 }

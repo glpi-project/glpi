@@ -51,6 +51,12 @@ class GlpiFormEditorController
     #is_draft;
 
     /**
+     * Is this form anonymous?
+     * @type {boolean}
+     */
+    #is_anonymous;
+
+    /**
      * Default question type to use when creating a new question
      * @type {string}
      */
@@ -74,12 +80,14 @@ class GlpiFormEditorController
      *
      * @param {string}  target
      * @param {boolean} is_draft
+     * @param {boolean} is_anonymous
      * @param {string} defaultQuestionType
      * @param {string} templates
      */
-    constructor(target, is_draft, defaultQuestionType, templates) {
+    constructor(target, is_draft, is_anonymous, defaultQuestionType, templates) {
         this.#target              = target;
         this.#is_draft            = is_draft;
+        this.#is_anonymous        = is_anonymous;
         this.#defaultQuestionType = defaultQuestionType;
         this.#templates           = templates;
         this.#options             = {};
@@ -1105,6 +1113,14 @@ class GlpiFormEditorController
 
         // Update the question type
         this.#setItemInput(question, "type", type);
+
+        // Check if the form is an anonymous form and if the question type allows it
+        const blacklisted_warning = question.find('[data-glpi-form-editor-blacklisted-question-type-warning]');
+        if (this.#is_anonymous && !this.#options[type].allowAnonymous) {
+            blacklisted_warning.removeClass('d-none');
+        } else {
+            blacklisted_warning.addClass('d-none');
+        }
 
         // Convert the default value to match the new type
         this.#options[type].convertDefaultValue(

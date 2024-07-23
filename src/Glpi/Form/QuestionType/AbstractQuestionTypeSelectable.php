@@ -325,4 +325,10 @@ TWIG;
             'answers' => $answers,
         ]);
     }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return true;
+    }
 }

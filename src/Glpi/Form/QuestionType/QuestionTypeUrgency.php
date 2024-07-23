@@ -141,4 +141,10 @@ TWIG;
     {
         return QuestionTypeCategory::URGENCY;
     }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return true;
+    }
 }

@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
@@ -89,6 +90,7 @@ final class Question extends CommonDBChild implements BlockInterface
             'question_types_manager' => QuestionTypesManager::getInstance(),
             'section'                => $this->getItem(),
             'can_update'             => $this->getForm()->canUpdate(),
+            'is_anonymous_form'      => FormAccessControlManager::getInstance()->isAnonymousForm($this->getForm()),
         ]);
     }
 

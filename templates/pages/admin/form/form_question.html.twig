@@ -37,6 +37,7 @@
 {# @var question               Glpi\Form\Question|null #}
 {# @var section                Glpi\Form\Section|null #}
 {# @var can_update             bool #}
+{# @var is_anonymous_form      bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -73,6 +74,14 @@
             </div>
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
+                <i
+                    class="ti ti-alert-triangle text-warning me-2 {{ is_anonymous_form and not question_type.isAllowedForAnonymousForm() ? '' : 'd-none' }}"
+                    data-glpi-form-editor-blacklisted-question-type-warning
+                    data-bs-toggle="popover"
+                    data-bs-placement="top"
+                    data-bs-html="true"
+                    data-bs-content="{{ __("This question type cannot be used in a public form. User must be authenticated to view this question type. Check your access policy.") }}"
+                ></i>
                 <input
                     title="{{ __("Question name") }}"
                     class="form-control content-editable-h2 mb-0"

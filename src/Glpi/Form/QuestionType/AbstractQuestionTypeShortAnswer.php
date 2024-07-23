@@ -56,6 +56,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     {
         return <<<JS
             {
+                "allowAnonymous": true,
                 "extractDefaultValue": function (question) {
                     const input = question.find('[data-glpi-form-editor-question-type-specific]')
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
@@ -146,5 +147,11 @@ TWIG;
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::SHORT_ANSWER;
+    }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return true;
     }
 }

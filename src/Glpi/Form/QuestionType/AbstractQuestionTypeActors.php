@@ -297,4 +297,10 @@ TWIG;
     {
         return QuestionTypeCategory::ACTORS;
     }
+
+    #[Override]
+    public function isAllowedForAnonymousForm(): bool
+    {
+        return false;
+    }
 }
