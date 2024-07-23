@@ -1331,12 +1331,13 @@ class Migration
      */
     public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
-        Toolbox::deprecated('Migration::updateRight() is deprecated. Use Migration::replaceRight() instead.', true);
+        Toolbox::deprecated('Migration::updateRight() is deprecated. Use Migration::replaceRight() instead.');
+        $this->replaceRight($name, $rights, $requiredrights);
     }
 
     /**
-     * Replace right to profiles that match rights requirements
-     *    Default is to update rights of profiles with READ and UPDATE rights on config
+     * Replace right to profiles that match rights requirements.
+     * Default is to update rights of profiles with READ and UPDATE rights on config.
      *
      * @param string  $name   Right name
      * @param integer $rights Right to set
@@ -1352,8 +1353,7 @@ class Migration
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get all profiles with required rights
-
+        // Get all profiles with required rights
         $join = [];
         $i = 1;
         foreach ($requiredrights as $reqright => $reqvalue) {
