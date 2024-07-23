@@ -63,11 +63,3 @@ Cypress.Commands.addQuery('getDropdownByLabelText', (
         return $select2_container.find('[role=combobox]:visible');
     };
 });
-
-Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
-    subject,
-    new_value
-) => {
-    cy.wrap(subject).click();
-    cy.findByRole('option', {name: new_value}).click();
-});

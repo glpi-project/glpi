@@ -40,7 +40,7 @@ describe('Request type configuration', () => {
         cy.createFormWithAPI().visitFormTab('Form');
         cy.findByRole('button', {'name': "Add a new question"}).click();
         cy.focused().type("My request type question");
-        cy.getDropdownByLabelText('Question type').selectDropdownValue('Request type');
+        cy.getDropdownByLabelText('Question type').select('Request type');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
@@ -65,23 +65,23 @@ describe('Request type configuration', () => {
         cy.get('@config').getDropdownByLabelText('Select a question...').should('not.exist');
 
         // Switch to "From template"
-        cy.get('@request_type_dropdown').selectDropdownValue('From template');
+        cy.get('@request_type_dropdown').select('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.get('@request_type_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific request type"
-        cy.get('@request_type_dropdown').selectDropdownValue('Specific request type');
+        cy.get('@request_type_dropdown').select('Specific request type');
         cy.get('@config').getDropdownByLabelText('Select a request type...').as('specific_request_type_dropdown');
-        cy.get('@specific_request_type_dropdown').selectDropdownValue('Request');
+        cy.get('@specific_request_type_dropdown').select('Request');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.get('@request_type_dropdown').should('have.text', 'Specific request type');
         cy.get('@specific_request_type_dropdown').should('have.text', 'Request');
 
         // Switch to "Answer from a specific question"
-        cy.get('@request_type_dropdown').selectDropdownValue('Answer from a specific question');
+        cy.get('@request_type_dropdown').select('Answer from a specific question');
         cy.get('@config').getDropdownByLabelText('Select a question...').as('specific_answer_type_dropdown');
-        cy.get('@specific_answer_type_dropdown').selectDropdownValue('My request type question');
+        cy.get('@specific_answer_type_dropdown').select('My request type question');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.get('@request_type_dropdown').should('have.text', 'Answer from a specific question');
@@ -98,7 +98,7 @@ describe('Request type configuration', () => {
 
         // Fill form
         cy.getDropdownByLabelText("My request type question").should('have.text', 'Incident');
-        cy.getDropdownByLabelText("My request type question").selectDropdownValue('Request');
+        cy.getDropdownByLabelText("My request type question").select('Request');
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
