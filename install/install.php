@@ -509,7 +509,7 @@ if (is_writable(GLPI_SESSION_DIR)) {
 
 Session::start();
 
-// Ensure that the debug mode is not used, and ensure that logs are written into tog files
+// Ensure that the debug mode is not used, and ensure that logs are written into log files
 Toolbox::setDebugMode(mode: Session::NORMAL_MODE, log_in_files: 1);
 
 if (isset($_POST["language"])) {
