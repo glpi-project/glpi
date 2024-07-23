@@ -51,10 +51,12 @@ describe('Title configuration', () => {
     });
 
     it('can configure the title field', () => {
-        cy.findByRole('textbox', {'name': "Title"}).clear();
-        cy.findByRole('textbox', {'name': "Title"}).type("My specific form name");
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.get("@title_field").clear();
+        cy.get("@title_field").type("My specific form name");
         cy.findByRole('button', {'name': 'Update item'}).click();
-        cy.findByRole('textbox', {'name': "Title"}).should('have.value', "My specific form name");
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.get("@title_field").contains("My specific form name");
     });
 
     it('can create ticket using default configuration', () => {
