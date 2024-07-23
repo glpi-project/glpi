@@ -54,10 +54,17 @@ class ITILFollowup extends CommonDBChild
     public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
     /**
-     * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
-     * @var integer
+     * @deprecated 11.0 Use ITILFollowup::ADDMY
      */
-    const ADD_AS_OBSERVER = 16384;
+    const ADDMYTICKET     = self::ADDMY;
+    /**
+     * @deprecated 11.0 Use ITILFollowup::ADD_AS_GROUP
+     */
+    const ADDGROUPTICKET  = self::ADD_AS_GROUP;
+    /**
+     * @deprecated 11.0 Use ITILFollowup::ADDALLITEM
+     */
+    const ADDALLTICKET    = self::ADDALLITEM;
 
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
@@ -896,23 +903,25 @@ class ITILFollowup extends CommonDBChild
         unset($values[UPDATE], $values[CREATE], $values[READ]);
 
         if ($interface == 'central') {
-            $values[self::UPDATEALL]      = __('Update all');
-            $values[self::ADDALLITEM]   = __('Add to all tickets');
-            $values[self::SEEPRIVATE]     = __('See private ones');
+            $values[self::UPDATEALL] = __('Update all');
+            $values[self::ADDALLITEM] = __('Add to all tickets');
+            $values[self::SEEPRIVATE] = __('See private ones');
         }
 
-        $values[self::ADD_AS_GROUP]
-                                     = ['short' => __('Add (associated groups)'),
-                                         'long'  => __('Add to tickets of associated groups')
-                                     ];
-        $values[self::UPDATEMY]    = __('Update (author)');
-        $values[self::ADDMY] = ['short' => __('Add (requester)'),
-            'long'  => __('Add to tickets (requester)')
+        $values[self::ADD_AS_GROUP] = [
+            'short' => __('Add (associated groups)'),
+            'long'  => __('Add to tickets of associated groups'),
         ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add (observer)'),
-            'long'  => __('Add to tickets (observer)')
+        $values[self::UPDATEMY] = __('Update (author)');
+        $values[self::ADDMY] = [
+            'short' => __('Add (requester)'),
+            'long'  => __('Add to tickets (requester)'),
         ];
-        $values[self::SEEPUBLIC]   = __('See public ones');
+        $values[self::ADD_AS_OBSERVER] = [
+            'short' => __('Add (observer)'),
+            'long'  => __('Add to tickets (observer)'),
+        ];
+        $values[self::SEEPUBLIC] = __('See public ones');
 
         if ($interface == 'helpdesk') {
             unset($values[PURGE]);
