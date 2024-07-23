@@ -237,6 +237,13 @@ final class FormDestination extends CommonDBChild
 
         // Validate extra config
         if (isset($input['config'])) {
+            $destination_item = $this->getConcreteDestinationItem();
+            if ($destination_item instanceof AbstractCommonITILFormDestination) {
+                foreach ($destination_item->getConfigurableFields() as $field) {
+                    $input['config'] = $field->prepareInput($input['config']);
+                }
+            }
+
             $input['config'] = json_encode($input['config']);
         }
 
@@ -250,7 +257,7 @@ final class FormDestination extends CommonDBChild
      */
     public function getConcreteDestinationItem(): ?FormDestinationInterface
     {
-        $class = $this->fields['itemtype'];
+        $class = $this->fields['itemtype'] ?? $this->input['itemtype'] ?? null;
 
         if (!is_a($class, FormDestinationInterface::class, true)) {
             return null;

@@ -86,4 +86,10 @@ abstract class AbstractConfigField implements ConfigFieldInterface
     {
         return $this->getKey() . '_auto';
     }
+
+    #[Override]
+    public function prepareInput(array $input): array
+    {
+        return $input;
+    }
 }

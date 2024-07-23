@@ -3518,9 +3518,11 @@ JS;
      * @param boolean $enable_images    enable image pasting in rich text
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
+     * @param bool    $toolbar          tinymce toolbar (default: true)
      * @param string  $toolbar_location tinymce toolbar location (default: top)
      * @param bool    $init             init the editor (default: true)
      * @param string  $placeholder      textarea placeholder
+     * @param bool    $statusbar        tinymce statusbar (default: true)
      *
      * @return void|string
      *    integer if param display=true
@@ -3536,7 +3538,9 @@ JS;
         array $add_body_classes = [],
         string $toolbar_location = 'top',
         bool $init = true,
-        string $placeholder = ''
+        string $placeholder = '',
+        bool $toolbar = true,
+        bool $statusbar = true
     ) {
         /**
          * @var array $CFG_GLPI
@@ -3627,118 +3631,127 @@ JS;
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
 
+        // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
+        $toolbar = $toolbar ? 'true' : 'false';
+
+        // Compute statusbar option as "string boolean" so it can be inserted directly into the js output
+        $statusbar = $statusbar ? 'true' : 'false';
+
         $js = <<<JS
-         $(function() {
-            const html_el = $('html');
-            var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
+            $(function() {
+                const html_el = $('html');
+                var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
-            // Store config in global var so the editor can be reinitialized from the client side if needed
-            tinymce_editor_configs['{$id}'] = Object.assign({
-               license_key: 'gpl',
+                // Store config in global var so the editor can be reinitialized from the client side if needed
+                tinymce_editor_configs['{$id}'] = Object.assign({
+                    license_key: 'gpl',
 
-               link_default_target: '_blank',
-               branding: false,
-               selector: '#' + $.escapeSelector('{$id}'),
-               text_patterns: false,
-               paste_webkit_styles: 'all',
+                    link_default_target: '_blank',
+                    branding: false,
+                    selector: '#' + $.escapeSelector('{$id}'),
+                    text_patterns: false,
+                    paste_webkit_styles: 'all',
 
-               plugins: {$pluginsjs},
+                    plugins: {$pluginsjs},
 
-               // Appearance
-               skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
-               body_class: '{$body_class}',
-               content_css: '{$content_css}',
-               highlight_on_focus: false,
-               autoresize_bottom_margin: 0, // Avoid excessive bottom padding
-               autoresize_overflow_padding: 0,
+                    // Appearance
+                    skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
+                    body_class: '{$body_class}',
+                    content_css: '{$content_css}',
+                    highlight_on_focus: false,
+                    autoresize_bottom_margin: 0, // Avoid excessive bottom padding
+                    autoresize_overflow_padding: 0,
 
-               min_height: $editor_height,
-               height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
-               resize: true,
+                    min_height: $editor_height,
+                    height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
+                    resize: true,
 
-               // disable path indicator in bottom bar
-               elementpath: false,
+                    // disable path indicator in bottom bar
+                    elementpath: false,
 
-               placeholder: "{$placeholder}",
+                    placeholder: "{$placeholder}",
 
-               // inline toolbar configuration
-               menubar: false,
-               toolbar_location: '{$toolbar_location}',
-               toolbar: richtext_layout == 'classic'
-                  ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
-                  : false,
-               quickbars_insert_toolbar: richtext_layout == 'inline'
-                  ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
-                  : false,
-               quickbars_selection_toolbar: richtext_layout == 'inline'
-                  ? 'bold italic | styles | forecolor backcolor '
-                  : false,
-               contextmenu: richtext_layout == 'classic'
-                  ? false
-                  : 'copy paste | emoticons table image link | undo redo | code fullscreen',
+                    // inline toolbar configuration
+                    menubar: false,
+                    toolbar_location: '{$toolbar_location}',
+                    toolbar: {$toolbar} && richtext_layout == 'classic'
+                        ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
+                        : false,
+                    quickbars_insert_toolbar: richtext_layout == 'inline'
+                        ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
+                        : false,
+                    quickbars_selection_toolbar: richtext_layout == 'inline'
+                        ? 'bold italic | styles | forecolor backcolor '
+                        : false,
+                    contextmenu: richtext_layout == 'classic'
+                        ? false
+                        : 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
-               // Content settings
-               entity_encoding: 'raw',
-               invalid_elements: '{$invalid_elements}',
-               readonly: {$readonlyjs},
-               relative_urls: false,
-               remove_script_host: false,
+                    // Status bar configuration
+                    statusbar: {$statusbar},
 
-               // Misc options
-               browser_spellcheck: true,
-               cache_suffix: '{$cache_suffix}',
+                    // Content settings
+                    entity_encoding: 'raw',
+                    invalid_elements: '{$invalid_elements}',
+                    readonly: {$readonlyjs},
+                    relative_urls: false,
+                    remove_script_host: false,
 
-               // Security options
-               // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
-               sandbox_iframes: false,
+                    // Misc options
+                    browser_spellcheck: true,
+                    cache_suffix: '{$cache_suffix}',
 
-               init_instance_callback: (editor) => {
-                   const page_root_el = $(document.documentElement);
-                   const root_el = $(editor.dom.doc.documentElement);
-                   // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
-                   const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
-                   for (const attr of to_copy) {
-                       if (page_root_el.attr(attr) !== undefined) {
-                           root_el.attr(attr, page_root_el.attr(attr));
-                       }
-                   }
-               },
-               setup: function(editor) {
-                  // "required" state handling
-                  if ($('#$id').attr('required') == 'required') {
-                     $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+                    // Security options
+                    // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
+                    sandbox_iframes: false,
 
-                     editor.on('submit', function (e) {
-                        if ($('#$id').val() == '') {
-                           const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                           alert({$mandatory_field_msg}.replace('%s', field));
-                           e.preventDefault();
-
-                           // Prevent other events to run
-                           // Needed to not break single submit forms
-                           e.stopPropagation();
+                    init_instance_callback: (editor) => {
+                        const page_root_el = $(document.documentElement);
+                        const root_el = $(editor.dom.doc.documentElement);
+                        // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
+                        const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                        for (const attr of to_copy) {
+                            if (page_root_el.attr(attr) !== undefined) {
+                                root_el.attr(attr, page_root_el.attr(attr));
+                            }
                         }
-                     });
-                     editor.on('keyup', function (e) {
-                        editor.save();
-                        if ($('#$id').val() == '') {
-                           $(editor.container).addClass('required');
-                        } else {
-                           $(editor.container).removeClass('required');
+                    },
+                    setup: function(editor) {
+                        // "required" state handling
+                        if ($('#$id').attr('required') == 'required') {
+                            $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+
+                            editor.on('submit', function (e) {
+                                if ($('#$id').val() == '') {
+                                    const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
+                                    alert({$mandatory_field_msg}.replace('%s', field));
+                                    e.preventDefault();
+
+                                    // Prevent other events to run
+                                    // Needed to not break single submit forms
+                                    e.stopPropagation();
+                                }
+                            });
+                            editor.on('keyup', function (e) {
+                                editor.save();
+                                if ($('#$id').val() == '') {
+                                    $(editor.container).addClass('required');
+                                } else {
+                                    $(editor.container).removeClass('required');
+                                }
+                            });
+                            editor.on('init', function (e) {
+                                if (strip_tags($('#$id').val()) == '') {
+                                    $(editor.container).addClass('required');
+                                }
+                            });
+                            editor.on('paste', function (e) {
+                                // Remove required on paste event
+                                // This is only needed when pasting with right click (context menu)
+                                // Pasting with Ctrl+V is already handled by keyup event above
+                                $(editor.container).removeClass('required');
+                            });
                         }
-                     });
-                     editor.on('init', function (e) {
-                        if (strip_tags($('#$id').val()) == '') {
-                           $(editor.container).addClass('required');
-                        }
-                     });
-                     editor.on('paste', function (e) {
-                        // Remove required on paste event
-                        // This is only needed when pasting with right click (context menu)
-                        // Pasting with Ctrl+V is already handled by keyup event above
-                        $(editor.container).removeClass('required');
-                     });
-                   }
                         // Propagate click event to allow other components to
                         // listen to it
                         editor.on('click', function (e) {

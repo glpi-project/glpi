@@ -119,4 +119,12 @@ interface ConfigFieldInterface
 
     /** @return class-string<JsonFieldInterface>  */
     public function getConfigClass(): string;
+
+    /**
+     * Prepare input data before saving it to the database.
+     *
+     * @param array $input
+     * @return array
+     */
+    public function prepareInput(array $input): array;
 }

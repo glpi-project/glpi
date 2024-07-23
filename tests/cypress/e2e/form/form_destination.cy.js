@@ -66,7 +66,7 @@ describe('Form destination', () => {
 
     it('can enable or disable auto configuration on supported fields', () => {
         // Inputs aliases
-        cy.findByRole("textbox", {'name': "Title"}).as("title_field");
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
         cy.findByLabelText("Content").awaitTinyMCE().as("content_field");
 
         // Checkbox aliases
@@ -133,5 +133,10 @@ describe('Form destination', () => {
                 .should('have.text', "")
             ;
         });
+    });
+
+    it('check form destination title default value', () => {
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.get('@title_field').contains('Form name: Test form for the destination form suite');
     });
 });

@@ -308,12 +308,14 @@
         'disabled': false,
         'required': false,
         'add_body_classes': [],
+        'toolbar': true,
         'toolbar_location': 'top',
         'init': true,
         'placeholder': "",
         'enable_form_tags': false,
         'form_tags_form_id': null,
         'aria_label': "",
+        'statusbar': true,
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -346,6 +348,8 @@
             options.toolbar_location,
             options.init,
             options.placeholder,
+            options.toolbar,
+            options.statusbar
         ]) %}
    {% endif %}
 
