@@ -91,6 +91,7 @@ final class FormTagsManager
     public function getTagProviders(): array
     {
         return $this->removeInvalidProviders([
+            new FormTagProvider(),
             new SectionTagProvider(),
             new QuestionTagProvider(),
             new AnswerTagProvider(),
