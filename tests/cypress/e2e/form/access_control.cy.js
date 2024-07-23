@@ -50,6 +50,7 @@ describe('Access Control', () => {
         cy.findAllByRole('alert').eq(1).should('contain.text', "This form will not be visible to any users as there are currently no active access policies.");
     });
     it('can configure the allow list policy', () => {
+        // Change values
         cy.findByRole('region', {
             name: 'Allow specifics users, groups or profiles'
         }).within(() => {
@@ -58,18 +59,20 @@ describe('Access Control', () => {
                 .click()
             ;
         });
-
-        // TODO: modify the user/group/profile dropdown (unsure how to tests
-        // select2 ajax dropdown for now)
+        cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
 
         // Save changes
         cy.findByRole('button', {name: 'Save changes'}).click();
 
+        // Check values are kept after update
         cy.findByRole('region', {
             name: 'Allow specifics users, groups or profiles'
         }).within(() => {
-            // Check values are kept after update
             cy.findByRole('checkbox', {name: 'Active'}).should('be.checked');
+            cy.getDropdownByLabelText('Allow specifics users, groups or profiles').should(
+                'contain.text',
+                'All users'
+            );
         });
     });
     it('can configure the direct access policy', () => {

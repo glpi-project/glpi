@@ -33,15 +33,20 @@
 
 {# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
 {# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
+{# @var string label #}
 
 {# Multi dropdown (User, Group and Profile) #}
 {{ call(
     "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
-    [access_control.getNormalizedInputName("_allow_list_dropdown"), {
-        'users_id'   : config.getUserIds(),
-        'groups_id'  : config.getGroupIds(),
-        'profiles_id': config.getProfileIds(),
-    }]
+    [
+        access_control.getNormalizedInputName("_allow_list_dropdown"),
+        {
+            'users_id'   : config.getUserIds(),
+            'groups_id'  : config.getGroupIds(),
+            'profiles_id': config.getProfileIds(),
+        },
+        {'aria_label': label}
+    ]
 )|raw }}
 
 {# Helper link that will be populated using a JS script #}

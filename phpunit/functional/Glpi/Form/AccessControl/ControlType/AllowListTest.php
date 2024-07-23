@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -182,6 +183,11 @@ class AllowListTest extends \DbTestCase
             'parameters' => self::getNotAllowedUserByProfileParameters(),
             'expected'   => AccessVote::Abstain,
         ];
+        yield 'Grant access if all users are allowed' => [
+            'config'     => self::getAllUsersAllowedConfig(),
+            'parameters' => self::getAuthenticatedUserParameters(),
+            'expected'   => AccessVote::Grant,
+        ];
     }
 
     #[DataProvider('canAnswerProvider')]
@@ -209,6 +215,15 @@ class AllowListTest extends \DbTestCase
             user_ids   : [1, 2, 3],
             group_ids  : [4, 5, 6],
             profile_ids: [7, 8, 9],
+        );
+    }
+
+    private static function getAllUsersAllowedConfig(): AllowListConfig
+    {
+        return new AllowListConfig(
+            user_ids   : [AbstractRightsDropdown::ALL_USERS],
+            group_ids  : [],
+            profile_ids: [],
         );
     }
 

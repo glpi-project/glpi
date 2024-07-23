@@ -40,6 +40,8 @@ abstract class AbstractRightsDropdown
      */
     public const LIMIT = 50;
 
+    public const ALL_USERS = "all";
+
     /**
      * To be redefined by subclasses, URL to front file
      *
@@ -53,6 +55,11 @@ abstract class AbstractRightsDropdown
      * @return array
      */
     abstract protected static function getTypes(): array;
+
+    protected static function addAllUsersOption(): bool
+    {
+        return false;
+    }
 
     /**
      * Check if a given type is enabled
@@ -188,6 +195,10 @@ abstract class AbstractRightsDropdown
             $items_id = $data[1];
             $item = new $itemtype();
 
+            if ($items_id == self::ALL_USERS) {
+                return $itemtype::getTypeName(1) . " - " . __("All users");
+            }
+
             return $itemtype::getTypeName(1) . " - " . Dropdown::getDropdownName(
                 $item->getTable(),
                 $items_id
@@ -254,6 +265,12 @@ abstract class AbstractRightsDropdown
     {
         $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
         $users_items = [];
+
+        if (static::addAllUsersOption()) {
+            $new_key = 'users_id-' . self::ALL_USERS;
+            $users_items[$new_key] = __("All users");
+        }
+
         foreach ($users as $user) {
             $new_key = 'users_id-' . $user['id'];
             $users_items[$new_key] = $user['name'];
@@ -369,7 +386,11 @@ abstract class AbstractRightsDropdown
             // Split fkey and ids
             $parsed_values = explode("-", $value);
             $fkey  = $parsed_values[0];
-            $value = (int)$parsed_values[1];
+
+            $value = $parsed_values[1];
+            if (is_numeric($value)) {
+                $value = (int) $value;
+            }
 
             if ($fkey == $class::getForeignKeyField()) {
                 $inflated_values[] = $value;
