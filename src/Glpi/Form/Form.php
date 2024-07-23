@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
@@ -387,6 +388,40 @@ final class Form extends CommonDBTM
         }
 
         return $controls;
+    }
+
+    /**
+     * Get questions of this form that match the given types.
+     *
+     * @param string[] $types
+     * @return Question[]
+     */
+    public function getQuestionsByTypes(array $types): array
+    {
+        foreach ($types as $type) {
+            if (!$this->isValidQuestionType($type)) {
+                throw new \InvalidArgumentException("Invalid question type: $type");
+            }
+        }
+
+        return array_filter(
+            $this->getQuestions(),
+            function (Question $question) use ($types) {
+                $type = get_class($question->getQuestionType());
+                return in_array($type, $types);
+            }
+        );
+    }
+
+    /**
+     * Get questions of this form that match the given type.
+     *
+     * @param string $type
+     * @return Question[]
+     */
+    public function getQuestionsByType(string $type): array
+    {
+        return $this->getQuestionsByTypes([$type]);
     }
 
     /**
@@ -774,6 +809,14 @@ final class Form extends CommonDBTM
     {
         return
             is_a($class, ControlTypeInterface::class, true)
+            && !(new ReflectionClass($class))->isAbstract()
+        ;
+    }
+
+    protected function isValidQuestionType(string $class): bool
+    {
+        return
+            is_a($class, QuestionTypeInterface::class, true)
             && !(new ReflectionClass($class))->isAbstract()
         ;
     }

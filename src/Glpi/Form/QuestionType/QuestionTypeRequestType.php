@@ -87,7 +87,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'request_types'     => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes()
         ]);
     }
 
@@ -104,7 +104,8 @@ TWIG;
             '',
             {
                 'no_label'           : true,
-                'display_emptychoice': true
+                'display_emptychoice': false,
+                'aria_label'         : label
             }
         ) }}
 TWIG;
@@ -113,7 +114,8 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'value'              => $this->getDefaultValue($question),
             'question'           => $question,
-            'request_types'      => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes(),
+            'label'              => $question->fields['name'],
         ]);
     }
 

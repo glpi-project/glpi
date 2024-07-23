@@ -145,6 +145,31 @@ final class AnswersSet extends CommonDBChild
         return $answers;
     }
 
+    public function getAnswerByQuestionId(int $id): ?Answer
+    {
+        $answers = $this->getAnswers();
+        $filtered_answers = array_filter(
+            $answers,
+            fn (Answer $answer) => $answer->getQuestionId() == $id
+        );
+
+        if (count($filtered_answers) == 1) {
+            return current($filtered_answers);
+        } else {
+            return null;
+        }
+    }
+
+    /** @return Answer[] */
+    public function getAnswersByType(string $type): array
+    {
+        $answers = $this->getAnswers();
+        return array_filter(
+            $answers,
+            fn (Answer $answer) => $answer->getRawType() == $type
+        );
+    }
+
     #[Override]
     public function rawSearchOptions()
     {

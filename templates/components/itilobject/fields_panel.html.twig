@@ -37,6 +37,7 @@
    'fields_template': itiltemplate,
    'disabled': (not canupdate),
    'add_field_class': (is_expanded ? 'col-sm-6' : ''),
+   'rand': rand,
 } %}
 
 {% set itil_layout    = user_pref('itil_layout', true) %}
@@ -56,7 +57,7 @@
             </span>
          </button>
       </h2>
-      <div id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
+      <section id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
          <div class="accordion-body row m-0 mt-n2">
 
             {{ call_plugin_hook('pre_item_form', {"item": item, 'options': params}) }}
@@ -136,18 +137,22 @@
                {% set type_params = {
                   'value': item.fields['type'],
                   'width': '100%',
-                  'display': false
+                  'display': false,
+                  'rand': rand,
                }|merge(field_options) %}
                {% if item.isNewItem() %}
                   {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
                {% else %}
                   {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
                {% endif %}
+               {# Without passing a specific ID, the "dropdown" prefix is missing from the label's "for" property here (not sure why). TODO: investigate #}
                {{ fields.field(
                   'type',
                   item.dropdownType('type', type_params),
                   _n('Type', 'Types', 1),
-                  field_options
+                  field_options|merge({
+                     id: 'dropdown_type' ~ rand,
+                  })
                ) }}
             {% endif %}
 
@@ -251,7 +256,7 @@
 
             {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
          </div>
-      </div>
+      </section>
    </div>
 
    {% set actors_show = headers_states['actors'] is not defined or headers_states['actors'] == "true" ? true : false %}

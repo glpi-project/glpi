@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination;
 
+use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Override;
 use Ticket;
 
@@ -44,5 +45,13 @@ final class FormDestinationTicket extends AbstractCommonITILFormDestination
     public static function getTargetItemtype(): string
     {
         return Ticket::class;
+    }
+
+    #[Override]
+    public function getConfigurableFields(): array
+    {
+        return array_merge(parent::getConfigurableFields(), [
+            new RequestTypeField(),
+        ]);
     }
 }

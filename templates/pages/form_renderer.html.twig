@@ -90,7 +90,8 @@
 
                 {# Skip unknown types (may be a disabled plugin) #}
                 {% if form_block is not instanceof('Glpi\\Form\\Question') or question_type is not null %}
-                    <div
+                    <section
+                        aria-label="{{ form_block.fields.name }}"
                         class="card mb-3 {{ is_first_section ? "" : "d-none" }}"
                         data-glpi-form-renderer-parent-section="{{ section_index }}"
                     >
@@ -112,7 +113,7 @@
                                 {{ form_block.fields.description|safe_html }}
                             </div>
                         </div>
-                    </div>
+                    </section>
                 {% endif %}
             {% endfor %}
 

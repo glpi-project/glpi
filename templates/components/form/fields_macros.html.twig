@@ -467,7 +467,12 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {# TODO: dropdown id did not match its label because the Dropdown class
+   does some additional processing on the ID (replacing "[" and "]" by underscore) #}
+   {# As a quick fix, this same replacement was manually done here but we should look
+   for a stronger solution (and apply for all dropdowns inputs) #}
+   {% set id = ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']' : '_'}) %}
+   {{ _self.field(name, field, label, options|merge({'id': id})) }}
 {% endmacro %}
 
 {% macro dropdownTimestampField(name, value, label = '', options = {}) %}

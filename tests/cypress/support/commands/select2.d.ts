@@ -31,25 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-Cypress.Commands.add('createFormWithAPI', (
-    fields = {
-        name: "My test form",
+declare namespace Cypress {
+    interface Chainable<Subject> {
+        getDropdownByLabelText(value: string): Chainable<any>
+        selectDropdownValue(new_value: string): Chainable<any>
     }
-) => {
-    return cy.createWithAPI('Glpi\\Form\\Form', fields).then((form_id) => {
-        return form_id;
-    });
-});
-
-Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
-    form_id,
-    tab_name
-) => {
-    const fully_qualified_tabs = new Map([
-        ['Form', 'Glpi\\Form\\Form\\Form$main'],
-        ['Destinations', 'Glpi\\Form\\Destination\\FormDestination$1'],
-    ]);
-    const tab = fully_qualified_tabs.get(tab_name);
-
-    return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
-});
+}
