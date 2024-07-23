@@ -1749,6 +1749,7 @@ function setupAjaxDropdown(config) {
     const field_id = $.escapeSelector(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
+        containerCssClass: config.container_css_class,
         width: config.width,
         multiple: config.multiple,
         placeholder: config.placeholder,
