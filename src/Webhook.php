@@ -304,6 +304,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'get'       => 'GET',
             'update'    => 'UPDATE',
             'patch'     => 'PATCH',
+            'put'       => 'PUT',
         ];
     }
 
