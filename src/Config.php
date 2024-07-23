@@ -1185,7 +1185,19 @@ class Config extends CommonDBTM
             [
                 'name' => 'webonyx/graphql-php',
                 'check' => 'GraphQL\\GraphQL'
-            ]
+            ],
+            [
+                'name' => 'phpdocumentor/reflection-docblock',
+                'check' => 'phpDocumentor\Reflection\DocBlock'
+            ],
+            [
+                'name' => 'symfony/property-access',
+                'check' => 'Symfony\Component\PropertyAccess\PropertyAccess'
+            ],
+            [
+                'name' => 'symfony/serializer',
+                'check' => 'Symfony\Component\Serializer\Serializer'
+            ],
         ];
         return $deps;
     }
