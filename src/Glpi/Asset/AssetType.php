@@ -70,7 +70,7 @@ abstract class AssetType extends CommonType
 
     public static function getIcon()
     {
-        return static::getDefinition()->getAssetsIcon();
+        return static::getDefinition()->getCustomObjectIcon();
     }
 
     public static function getTable($classname = null)
@@ -83,12 +83,12 @@ abstract class AssetType extends CommonType
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
     }
 
     public static function getById(?int $id)

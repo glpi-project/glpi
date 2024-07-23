@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
 use Glpi\Plugin\Hooks;
@@ -1116,13 +1117,14 @@ JAVASCRIPT;
     /**
      * Get the dropdown list name the user is allowed to edit
      *
+     * @var boolean $force Force to rebuild the list of dropdowns
      * @return array (group of dropdown) of array (itemtype => localized name)
      **/
-    public static function getStandardDropdownItemTypes()
+    public static function getStandardDropdownItemTypes(bool $force = false)
     {
         static $optgroup = null;
 
-        if (is_null($optgroup)) {
+        if ($force || is_null($optgroup)) {
             $optgroup = [
                 __('Common') => [
                     'Location' => null,
@@ -1310,6 +1312,14 @@ JAVASCRIPT;
 
             ]; //end $opt
 
+            $custom_dropdowns = DropdownDefinitionManager::getInstance()->getCustomObjectClassNames();
+            if (count($custom_dropdowns)) {
+                $optgroup[__('Custom dropdowns')] = [];
+                foreach ($custom_dropdowns as $dropdown) {
+                    $optgroup[__('Custom dropdowns')][$dropdown] = null;
+                }
+            }
+
             $plugdrop = Plugin::getDropdowns();
 
             if (count($plugdrop)) {
@@ -1319,7 +1329,7 @@ JAVASCRIPT;
             foreach ($optgroup as $label => &$dp) {
                 foreach ($dp as $key => &$val) {
                     if ($tmp = getItemForItemtype($key)) {
-                        if (!$tmp->canView()) {
+                        if (!$tmp::canView()) {
                             unset($optgroup[$label][$key]);
                         } else if ($val === null) {
                             $val = $key::getTypeName(Session::getPluralNumber());
@@ -1329,7 +1339,7 @@ JAVASCRIPT;
                     }
                 }
 
-                if (count($optgroup[$label]) == 0) {
+                if (count($optgroup[$label]) === 0) {
                     unset($optgroup[$label]);
                 }
             }

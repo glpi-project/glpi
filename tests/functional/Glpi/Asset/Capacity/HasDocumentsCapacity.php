@@ -66,20 +66,20 @@ class HasDocumentsCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getAssetClassName();
+        $classname_1  = $definition_1->getCustomObjectClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getAssetClassName();
+        $classname_2  = $definition_2->getCustomObjectClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_3  = $definition_3->getAssetClassName();
+        $classname_3  = $definition_3->getCustomObjectClassName();
 
         $has_documents_mapping = [
             $classname_1 => true,
@@ -133,14 +133,14 @@ class HasDocumentsCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getAssetClassName();
+        $classname_1  = $definition_1->getCustomObjectClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getAssetClassName();
+        $classname_2  = $definition_2->getCustomObjectClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
@@ -232,7 +232,7 @@ class HasDocumentsCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
             ]
         );
-        $classname  = $definition->getAssetClassName();
+        $classname  = $definition->getCustomObjectClassName();
 
         $item     = $this->createItem(
             $classname,
@@ -264,7 +264,7 @@ class HasDocumentsCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [\Glpi\Asset\Capacity\HasDocumentsCapacity::class]
         );
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
         $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */

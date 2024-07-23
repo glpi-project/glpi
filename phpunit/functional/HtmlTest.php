@@ -343,6 +343,7 @@ class HtmlTest extends \GLPITestCase
 
         $expected = [
             'Glpi\Asset\AssetDefinition',
+            'Glpi\Dropdown\DropdownDefinition',
             'CommonDropdown',
             'CommonDevice',
             'Notification',

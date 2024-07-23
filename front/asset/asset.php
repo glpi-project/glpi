@@ -39,7 +39,7 @@ use Glpi\Search\SearchEngine;
 
 $definition = new AssetDefinition();
 $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getAssetClassName()
+    ? $definition->getCustomObjectClassName()
     : null;
 
 if ($classname === null || !class_exists($classname)) {

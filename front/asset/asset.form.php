@@ -50,7 +50,7 @@ if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
 } else {
     $definition = new AssetDefinition();
     $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-        ? $definition->getAssetClassName()
+        ? $definition->getCustomObjectClassName()
         : null;
     $asset      = $classname !== null && class_exists($classname)
         ? new $classname()

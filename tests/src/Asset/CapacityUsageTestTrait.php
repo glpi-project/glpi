@@ -72,19 +72,19 @@ trait CapacityUsageTestTrait
         );
 
         // Create our test subject
-        $subject = $this->createItem($definition->getAssetClassName(), [
+        $subject = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
 
         // Check that the capacity can be disabled
         $capacity = new ($this->getTargetCapacity());
-        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isFalse();
 
         // Create item
         $table = $target_classname::getTable();
         if ($DB->fieldExists($table, 'itemtype')) {
-            $target_fields['itemtype'] = $definition->getAssetClassName();
+            $target_fields['itemtype'] = $definition->getCustomObjectClassName();
         }
         if ($DB->fieldExists($table, 'items_id')) {
             $target_fields['items_id'] = $subject->getID();
@@ -101,7 +101,7 @@ trait CapacityUsageTestTrait
         // Create relation
         if ($relation_classname !== null) {
             // Check that the capacity can be disabled
-            $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+            $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isFalse();
 
             $table = $relation_classname::getTable();
             if ($DB->fieldExists($table, 'itemtype')) {
@@ -118,7 +118,7 @@ trait CapacityUsageTestTrait
         }
 
         // Check that the capacity can't be safely disabled
-        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
+        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isTrue();
     }
 
     /**
@@ -148,7 +148,7 @@ trait CapacityUsageTestTrait
         );
 
         // Create our test subject
-        $subject = $this->createItem($definition->getAssetClassName(), [
+        $subject = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
@@ -156,7 +156,7 @@ trait CapacityUsageTestTrait
         // Create item
         $table = $target_classname::getTable();
         if ($DB->fieldExists($table, 'itemtype') && $DB->fieldExists($table, 'items_id')) {
-            $target_fields['itemtype'] = $definition->getAssetClassName();
+            $target_fields['itemtype'] = $definition->getCustomObjectClassName();
             $target_fields['items_id'] = $subject->getID();
         }
         if ($DB->fieldExists($table, 'entities_id')) {
@@ -186,10 +186,10 @@ trait CapacityUsageTestTrait
 
         // Check that the capacity usage description is correct
         $expectedValue = sprintf($expected, 1, 1);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))->isEqualTo($expectedValue);
 
         // Create a second subject
-        $subject2 = $this->createItem($definition->getAssetClassName(), [
+        $subject2 = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset 2',
             'entities_id' => $entity_id,
         ]);
@@ -197,7 +197,7 @@ trait CapacityUsageTestTrait
         // Create a second item
         $table = $target_classname::getTable();
         if ($DB->fieldExists($table, 'itemtype')) {
-            $target_fields['itemtype'] = $definition->getAssetClassName();
+            $target_fields['itemtype'] = $definition->getCustomObjectClassName();
         }
         if ($DB->fieldExists($table, 'items_id')) {
             $target_fields['items_id'] = $subject2->getID();
@@ -229,6 +229,6 @@ trait CapacityUsageTestTrait
 
         // Check that the capacity usage description is correct
         $expectedValue = sprintf($expected, 2, 2);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))->isEqualTo($expectedValue);
     }
 }

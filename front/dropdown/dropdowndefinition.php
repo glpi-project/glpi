@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,21 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+use Glpi\Dropdown\DropdownDefinition;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
+Session::checkRight(DropdownDefinition::$rightname, READ);
 
-final readonly class AssetsAutoloader implements LegacyConfigProviderInterface
-{
-    public function execute(): void
-    {
-        if (!DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
-            return;
-        }
+Html::header(
+    DropdownDefinition::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    'config',
+    DropdownDefinition::class
+);
 
-        AssetDefinitionManager::getInstance()->registerAssetsAutoload();
-    }
-}
+Search::show(DropdownDefinition::class);
+
+Html::footer();

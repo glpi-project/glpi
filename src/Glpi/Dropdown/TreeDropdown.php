@@ -32,21 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Dropdown;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
+use CommonTreeDropdown;
 
-final readonly class AssetsBootstrap implements LegacyConfigProviderInterface
+abstract class TreeDropdown extends CommonTreeDropdown
 {
-    public function execute(): void
+    use DropdownTrait;
+
+    protected static DropdownDefinition $definition;
+
+    /**
+     * Get the dropdown definition related to concrete class.
+     *
+     * @return DropdownDefinition
+     */
+    public static function getDefinition(): DropdownDefinition
     {
-        if (!DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
-            return;
+        if (!(static::$definition instanceof DropdownDefinition)) {
+            throw new \RuntimeException('Dropdown definition is expected to be defined in concrete class.');
         }
 
-        AssetDefinitionManager::getInstance()->boostrapAssets();
+        return static::$definition;
     }
 }

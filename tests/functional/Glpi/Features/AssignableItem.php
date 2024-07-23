@@ -225,7 +225,7 @@ class AssignableItem extends \DbTestCase
 
     public function testGenericAsset(): void
     {
-        $class = $this->initAssetDefinition()->getAssetClassName();
+        $class = $this->initAssetDefinition()->getCustomObjectClassName();
 
         $this->testAddAndUpdateMultipleGroups($class);
         $this->testLoadGroupsFromDb($class);

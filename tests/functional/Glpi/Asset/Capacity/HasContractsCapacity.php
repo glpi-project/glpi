@@ -66,7 +66,7 @@ class HasContractsCapacity extends DbTestCase
 
         // Create custom asset definition
         $definition = $this->initAssetDefinition();
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
 
         // The capacity is not yet enabled, the itemtype should not be
         // registered in $CFG_GLPI["contract_types"]
@@ -101,7 +101,7 @@ class HasContractsCapacity extends DbTestCase
 
         // Create custom asset definition
         $definition = $this->initAssetDefinition();
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
 
         // Create our test subject
         $subject = $this->createItem($class, [
@@ -134,7 +134,7 @@ class HasContractsCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
         $entity = $this->getTestRootEntity(true);
 
         // Create our test subject
@@ -200,7 +200,7 @@ class HasContractsCapacity extends DbTestCase
                 HasHistoryCapacity::class
             ]
         );
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
         $entity = $this->getTestRootEntity(true);
 
         // Create our test subject
@@ -279,7 +279,7 @@ class HasContractsCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
 
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
@@ -331,7 +331,7 @@ class HasContractsCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [\Glpi\Asset\Capacity\HasContractsCapacity::class]
         );
-        $class = $definition->getAssetClassName();
+        $class = $definition->getCustomObjectClassName();
         $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */

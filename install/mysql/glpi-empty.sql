@@ -9944,4 +9944,51 @@ CREATE TABLE `glpi_groups_items` (
   KEY `type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_dropdowns_dropdowndefinitions`;
+CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `system_name` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `profiles` JSON NOT NULL,
+  `translations` JSON NOT NULL,
+  `is_tree` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `system_name` (`system_name`),
+  KEY `is_active` (`is_active`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_dropdowns_dropdowns`;
+CREATE TABLE `glpi_dropdowns_dropdowns` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `dropdowns_dropdowndefinitions_id` int unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `dropdowns_dropdowns_id` int unsigned NOT NULL DEFAULT '0',
+  `completename` text,
+  `level` int NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext,
+  `sons_cache` longtext,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `dropdowns_dropdowndefinitions_id` (`dropdowns_dropdowndefinitions_id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `dropdowns_dropdowns_id` (`dropdowns_dropdowns_id`),
+  KEY `level` (`level`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

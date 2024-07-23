@@ -238,7 +238,7 @@ class Profile extends CommonDBTM
             // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
             foreach ($definitions as $definition) {
-                $asset_rightname = $definition->getAssetRightname();
+                $asset_rightname = $definition->getCustomObjectRightname();
                 if (array_key_exists($asset_rightname, $this->profileRight)) {
                     $definition->setProfileRights($this->getID(), $this->profileRight[$asset_rightname]);
                     unset($this->profileRight[$asset_rightname]);
@@ -1174,7 +1174,7 @@ class Profile extends CommonDBTM
             // Add rights for custom assets
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);
             foreach ($definitions as $definition) {
-                $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getAssetClassName(), 'central');
+                $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getCustomObjectClassName(), 'central');
             }
         }
 

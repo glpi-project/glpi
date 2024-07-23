@@ -506,6 +506,14 @@ $RELATION = [
         'glpi_domainrecords'  => 'domainrecordtypes_id'
     ],
 
+    'glpi_dropdowns_dropdowndefinitions' => [
+        '_glpi_dropdowns_dropdowns' => 'dropdowns_dropdowndefinitions_id',
+    ],
+
+    'glpi_dropdowns_dropdowns' => [
+        'glpi_dropdowns_dropdowns' => 'dropdowns_dropdowns_id',
+    ],
+
     'glpi_enclosuremodels' => [
         'glpi_enclosures' => 'enclosuremodels_id',
     ],
@@ -536,6 +544,7 @@ $RELATION = [
         'glpi_clusters'                    => 'entities_id',
         'glpi_clustertypes'                => 'entities_id',
         'glpi_computers'                   => 'entities_id',
+        'glpi_dropdowns_dropdowns'         => 'entities_id',
         '_glpi_items_softwareversions'     => 'entities_id',
         '_glpi_itemvirtualmachines'        => 'entities_id',
         'glpi_consumableitems'             => 'entities_id',

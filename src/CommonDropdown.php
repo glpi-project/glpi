@@ -104,7 +104,7 @@ abstract class CommonDropdown extends CommonDBTM
     {
 
         $menu = [];
-        if (get_called_class() == 'CommonDropdown') {
+        if (static::class === 'CommonDropdown') {
             $menu['title']             = static::getTypeName(Session::getPluralNumber());
             $menu['shortcut']          = 'n';
             $menu['page']              = '/front/dropdown.php';
@@ -116,16 +116,17 @@ abstract class CommonDropdown extends CommonDBTM
 
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
-                    if ($tmp = getItemForItemtype($key)) {
+                    /** @var class-string<CommonDropdown> $key */
+                    if (class_exists($key)) {
                         $menu['options'][$key]['title']           = $val;
-                        $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                        $menu['options'][$key]['icon']            = $tmp->getIcon();
-                        $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                        $menu['options'][$key]['page']            = $key::getSearchURL(false);
+                        $menu['options'][$key]['icon']            = $key::getIcon();
+                        $menu['options'][$key]['links']['search'] = $key::getSearchURL(false);
                         //saved search list
                         $menu['options'][$key]['links']['lists']  = "";
-                        $menu['options'][$key]['lists_itemtype']  = $tmp::getType();
-                        if ($tmp->canCreate()) {
-                            $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                        $menu['options'][$key]['lists_itemtype']  = $key::getType();
+                        if ($key::canCreate()) {
+                            $menu['options'][$key]['links']['add'] = $key::getFormURL(false);
                         }
                     }
                 }

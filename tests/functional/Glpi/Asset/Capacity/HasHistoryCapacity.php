@@ -51,20 +51,20 @@ class HasHistoryCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getAssetClassName();
+        $classname_1  = $definition_1->getCustomObjectClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getAssetClassName();
+        $classname_2  = $definition_2->getCustomObjectClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_3  = $definition_3->getAssetClassName();
+        $classname_3  = $definition_3->getCustomObjectClassName();
 
         $has_history_mapping = [
             $classname_1 => true,
@@ -94,13 +94,13 @@ class HasHistoryCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getAssetClassName();
+        $classname_1  = $definition_1->getCustomObjectClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getAssetClassName();
+        $classname_2  = $definition_2->getCustomObjectClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
@@ -148,7 +148,7 @@ class HasHistoryCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname  = $definition->getAssetClassName();
+        $classname  = $definition->getCustomObjectClassName();
 
         $item = $this->createItem(
             $classname,
@@ -178,26 +178,26 @@ class HasHistoryCapacity extends DbTestCase
             capacities: [\Glpi\Asset\Capacity\HasHistoryCapacity::class]
         );
 
-        $asset_1 = $this->createItem($definition->getAssetClassName(), [
+        $asset_1 = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
             ->isEqualTo('1 logs attached to 1 assets'); // creation log for 1 asset
 
-        $this->updateItem($definition->getAssetClassName(), $asset_1->getID(), ['name' => '1 updated']);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+        $this->updateItem($definition->getCustomObjectClassName(), $asset_1->getID(), ['name' => '1 updated']);
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
             ->isEqualTo('2 logs attached to 1 assets'); // creation log for 1 asset + update log for 1 asset
 
-        $asset_2 = $this->createItem($definition->getAssetClassName(), [
+        $asset_2 = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset 2',
             'entities_id' => $entity_id,
         ]);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
             ->isEqualTo('3 logs attached to 2 assets'); // creation log for 2 assets + update log for 1 asset
 
-        $this->updateItem($definition->getAssetClassName(), $asset_2->getID(), ['name' => '2 updated']);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+        $this->updateItem($definition->getCustomObjectClassName(), $asset_2->getID(), ['name' => '2 updated']);
+        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
             ->isEqualTo('4 logs attached to 2 assets'); // creation log for 2 assets + update log for 2 asset
     }
 
@@ -210,26 +210,26 @@ class HasHistoryCapacity extends DbTestCase
 
         // Check that the capacity can be disabled
         $capacity = new \Glpi\Asset\Capacity\HasHistoryCapacity();
-        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isFalse();
 
         // Create our test subject
-        $asset = $this->createItem($definition->getAssetClassName(), [
+        $asset = $this->createItem($definition->getCustomObjectClassName(), [
             'name' => 'Test asset',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Check that the capacity can't be safely disabled
-        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
+        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isTrue();
 
         $this->createItem(
             Log::class,
             [
-                'itemtype' => $definition->getAssetClassName(),
+                'itemtype' => $definition->getCustomObjectClassName(),
                 'items_id' => $asset->getID(),
             ]
         );
 
         // Check that the capacity can't be safely disabled
-        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
+        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isTrue();
     }
 }
