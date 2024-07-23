@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Form\Tag;
 use DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -59,21 +60,21 @@ final class SectionTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
-                provider: \Glpi\Form\Tag\SectionTagProvider::class,
-                color: \Glpi\Form\Tag\SectionTagProvider::ACCENT_COLOR,
+                provider: SectionTagProvider::class,
+                color: SectionTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Section: Professional information',
                 value: $this->getSectionId($form, 'Professional information'),
-                provider: \Glpi\Form\Tag\SectionTagProvider::class,
-                color: \Glpi\Form\Tag\SectionTagProvider::ACCENT_COLOR,
+                provider: SectionTagProvider::class,
+                color: SectionTagProvider::ACCENT_COLOR,
             ),
         ]);
     }
 
     private function checkTestGetTags(Form $form, array $expected): void
     {
-        $tagProvider = new \Glpi\Form\Tag\SectionTagProvider();
+        $tagProvider = new SectionTagProvider();
         $tags = $tagProvider->getTags($form);
         $this->assertEquals($expected, $tags);
     }
@@ -100,7 +101,7 @@ final class SectionTagProviderTest extends DbTestCase
         string $value,
         string $expected_content
     ): void {
-        $tag_provider = new \Glpi\Form\Tag\SectionTagProvider();
+        $tag_provider = new SectionTagProvider();
 
         $computed_content = $tag_provider->getTagContentForValue(
             $value,
