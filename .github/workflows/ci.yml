@@ -74,9 +74,11 @@ jobs:
         run: |
           .github/actions/init_show-versions.sh
       - name: "Force used PHP version"
+        # Strip the stability suffix (e.g. "8.4-rc" -> "php:>=8.4")
         run: |
+          REQUIRED_PHP_VERSION="$(echo "${{ matrix.php-version }}" | cut -d '-' -f 1)"
           docker compose exec -T app composer config --unset platform.php
-          docker compose exec -T app composer require "php:>=${{ matrix.php-version }}" --ignore-platform-req=php+ --no-install --no-scripts
+          docker compose exec -T app composer require "php:>=$REQUIRED_PHP_VERSION" --ignore-platform-req=php+ --no-install --no-scripts
       - name: "Build dependencies / translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
