@@ -74,7 +74,7 @@ class CommonTreeDropdown extends DbTestCase
     /**
      * @dataProvider completenameProvider
      */
-    public function testUnsanitizeSeparatorInCompletename(?string $sanitized, ?string $raw)
+    public function testUnsanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
         $this->variable(\CommonTreeDropdown::unsanitizeSeparatorInCompletename($sanitized))->isIdenticalTo($raw);
     }
