@@ -1,0 +1,74 @@
+diff --git a/src/Protocol/Smtp.php b/src/Protocol/Smtp.php
+index 0bbe3ee4..b1612ded 100644
+--- a/src/Protocol/Smtp.php
++++ b/src/Protocol/Smtp.php
+@@ -90,7 +90,7 @@ class Smtp extends AbstractProtocol
+      * @param  null|array   $config
+      * @throws Exception\InvalidArgumentException
+      */
+-    public function __construct($host = '127.0.0.1', $port = null, array $config = null)
++    public function __construct($host = '127.0.0.1', $port = null, ?array $config = null)
+     {
+         // Did we receive a configuration array?
+         if (is_array($host)) {
+diff --git a/src/Protocol/SmtpPluginManagerFactory.php b/src/Protocol/SmtpPluginManagerFactory.php
+index 0b0555fc..9bb8aec9 100644
+--- a/src/Protocol/SmtpPluginManagerFactory.php
++++ b/src/Protocol/SmtpPluginManagerFactory.php
+@@ -20,7 +20,7 @@ class SmtpPluginManagerFactory implements FactoryInterface
+      *
+      * @return SmtpPluginManager
+      */
+-    public function __invoke(ContainerInterface $container, $name, array $options = null)
++    public function __invoke(ContainerInterface $container, $name, ?array $options = null)
+     {
+         return new SmtpPluginManager($container, $options ?: []);
+     }
+diff --git a/src/Transport/File.php b/src/Transport/File.php
+index 7e772bb7..e34e4f7a 100644
+--- a/src/Transport/File.php
++++ b/src/Transport/File.php
+@@ -28,7 +28,7 @@ class File implements TransportInterface
+      *
+      * @param  null|FileOptions $options OPTIONAL (Default: null)
+      */
+-    public function __construct(FileOptions $options = null)
++    public function __construct(?FileOptions $options = null)
+     {
+         if (! $options instanceof FileOptions) {
+             $options = new FileOptions();
+diff --git a/src/Transport/Sendmail.php b/src/Transport/Sendmail.php
+index 80728201..e9e2a414 100644
+--- a/src/Transport/Sendmail.php
++++ b/src/Transport/Sendmail.php
+@@ -309,7 +309,7 @@ class Sendmail implements TransportInterface
+      * @param array  $errcontext
+      * @return bool always true
+      */
+-    public function handleMailErrors($errno, $errstr, $errfile = null, $errline = null, array $errcontext = null)
++    public function handleMailErrors($errno, $errstr, $errfile = null, $errline = null, ?array $errcontext = null)
+     {
+         $this->errstr = $errstr;
+         return true;
+diff --git a/src/Transport/Smtp.php b/src/Transport/Smtp.php
+index 51e54469..2e3bddb2 100644
+--- a/src/Transport/Smtp.php
++++ b/src/Transport/Smtp.php
+@@ -53,7 +53,7 @@ class Smtp implements TransportInterface
+      *
+      * @param  SmtpOptions $options Optional
+      */
+-    public function __construct(SmtpOptions $options = null)
++    public function __construct(?SmtpOptions $options = null)
+     {
+         if (! $options instanceof SmtpOptions) {
+             $options = new SmtpOptions();
+@@ -158,7 +158,7 @@ class Smtp implements TransportInterface
+      * @param  array|null $options
+      * @return Protocol\Smtp
+      */
+-    public function plugin($name, array $options = null)
++    public function plugin($name, ?array $options = null)
+     {
+         return $this->getPluginManager()->get($name, $options);
+     }

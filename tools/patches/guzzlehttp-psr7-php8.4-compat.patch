@@ -1,0 +1,98 @@
+diff --git a/src/CachingStream.php b/src/CachingStream.php
+index f34722c..7e4554d 100644
+--- a/src/CachingStream.php
++++ b/src/CachingStream.php
+@@ -33,7 +33,7 @@ final class CachingStream implements StreamInterface
+      */
+     public function __construct(
+         StreamInterface $stream,
+-        StreamInterface $target = null
++        ?StreamInterface $target = null
+     ) {
+         $this->remoteStream = $stream;
+         $this->stream = $target ?: new Stream(Utils::tryFopen('php://temp', 'r+'));
+diff --git a/src/HttpFactory.php b/src/HttpFactory.php
+index 30be222..94eb4a6 100644
+--- a/src/HttpFactory.php
++++ b/src/HttpFactory.php
+@@ -33,10 +33,10 @@ final class HttpFactory implements
+ {
+     public function createUploadedFile(
+         StreamInterface $stream,
+-        int $size = null,
++        ?int $size = null,
+         int $error = \UPLOAD_ERR_OK,
+-        string $clientFilename = null,
+-        string $clientMediaType = null
++        ?string $clientFilename = null,
++        ?string $clientMediaType = null
+     ): UploadedFileInterface {
+         if ($size === null) {
+             $size = $stream->getSize();
+diff --git a/src/MultipartStream.php b/src/MultipartStream.php
+index 3e12b74..84182c6 100644
+--- a/src/MultipartStream.php
++++ b/src/MultipartStream.php
+@@ -32,7 +32,7 @@ final class MultipartStream implements StreamInterface
+      *
+      * @throws \InvalidArgumentException
+      */
+-    public function __construct(array $elements = [], string $boundary = null)
++    public function __construct(array $elements = [], ?string $boundary = null)
+     {
+         $this->boundary = $boundary ?: bin2hex(random_bytes(20));
+         $this->stream = $this->createStream($elements);
+diff --git a/src/Response.php b/src/Response.php
+index 4c6ee6f..a6aba2d 100644
+--- a/src/Response.php
++++ b/src/Response.php
+@@ -96,7 +96,7 @@ class Response implements ResponseInterface
+         array $headers = [],
+         $body = null,
+         string $version = '1.1',
+-        string $reason = null
++        ?string $reason = null
+     ) {
+         $this->assertStatusCodeRange($status);
+ 
+diff --git a/src/StreamWrapper.php b/src/StreamWrapper.php
+index 2a93464..40cf5be 100644
+--- a/src/StreamWrapper.php
++++ b/src/StreamWrapper.php
+@@ -69,7 +69,7 @@ final class StreamWrapper
+         }
+     }
+ 
+-    public function stream_open(string $path, string $mode, int $options, string &$opened_path = null): bool
++    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path = null): bool
+     {
+         $options = stream_context_get_options($this->context);
+ 
+diff --git a/src/UploadedFile.php b/src/UploadedFile.php
+index b1521bc..5312fe1 100644
+--- a/src/UploadedFile.php
++++ b/src/UploadedFile.php
+@@ -64,8 +64,8 @@ class UploadedFile implements UploadedFileInterface
+         $streamOrFile,
+         ?int $size,
+         int $errorStatus,
+-        string $clientFilename = null,
+-        string $clientMediaType = null
++        ?string $clientFilename = null,
++        ?string $clientMediaType = null
+     ) {
+         $this->setError($errorStatus);
+         $this->size = $size;
+diff --git a/src/Uri.php b/src/Uri.php
+index 09e878d..9f89f41 100644
+--- a/src/Uri.php
++++ b/src/Uri.php
+@@ -278,7 +278,7 @@ class Uri implements UriInterface, \JsonSerializable
+      *
+      * @link https://tools.ietf.org/html/rfc3986#section-4.4
+      */
+-    public static function isSameDocumentReference(UriInterface $uri, UriInterface $base = null): bool
++    public static function isSameDocumentReference(UriInterface $uri, ?UriInterface $base = null): bool
+     {
+         if ($base !== null) {
+             $uri = UriResolver::resolve($base, $uri);

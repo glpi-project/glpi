@@ -1,0 +1,87 @@
+diff --git a/src/AbstractCsv.php b/src/AbstractCsv.php
+index 18d965b..0bb2b1a 100644
+--- a/src/AbstractCsv.php
++++ b/src/AbstractCsv.php
+@@ -310,7 +310,7 @@ abstract class AbstractCsv implements ByteSequence
+      * @return int Returns the number of characters read from the handle
+      *             and passed through to the output.
+      */
+-    public function output(string $filename = null): int
++    public function output(?string $filename = null): int
+     {
+         if (null !== $filename) {
+             $this->sendHeaders($filename);
+diff --git a/src/InvalidArgument.php b/src/InvalidArgument.php
+index fbfecc4..0dc8881 100644
+--- a/src/InvalidArgument.php
++++ b/src/InvalidArgument.php
+@@ -25,7 +25,7 @@ class InvalidArgument extends Exception
+      *
+      * @deprecated since version 9.7.0
+      */
+-    public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
++    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
+     {
+         parent::__construct($message, $code, $previous);
+     }
+diff --git a/src/Statement.php b/src/Statement.php
+index 4227719..8d0220c 100644
+--- a/src/Statement.php
++++ b/src/Statement.php
+@@ -36,7 +36,7 @@ class Statement
+     /**
+      * @throws Exception
+      */
+-    public static function create(callable $where = null, int $offset = 0, int $limit = -1): self
++    public static function create(?callable $where = null, int $offset = 0, int $limit = -1): self
+     {
+         $stmt = new self();
+         if (null !== $where) {
+diff --git a/src/Stream.php b/src/Stream.php
+index a083291..4972ef6 100644
+--- a/src/Stream.php
++++ b/src/Stream.php
+@@ -166,7 +166,7 @@ final class Stream implements SeekableIterator
+      *
+      * @throws InvalidArgument if the filter can not be appended
+      */
+-    public function appendFilter(string $filtername, int $read_write, array $params = null): void
++    public function appendFilter(string $filtername, int $read_write, ?array $params = null): void
+     {
+         $res = @stream_filter_append($this->stream, $filtername, $read_write, $params ?? []);
+         if (!is_resource($res)) {
+@@ -425,7 +425,7 @@ final class Stream implements SeekableIterator
+      *
+      * @return int|false
+      */
+-    public function fwrite(string $str, int $length = null)
++    public function fwrite(string $str, ?int $length = null)
+     {
+         $args = [$this->stream, $str];
+         if (null !== $length) {
+diff --git a/src/SyntaxError.php b/src/SyntaxError.php
+index e3549af..c096329 100644
+--- a/src/SyntaxError.php
++++ b/src/SyntaxError.php
+@@ -30,7 +30,7 @@ class SyntaxError extends Exception
+      *
+      * @deprecated since version 9.7.0
+      */
+-    public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
++    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
+     {
+         parent::__construct($message, $code, $previous);
+     }
+diff --git a/src/UnavailableFeature.php b/src/UnavailableFeature.php
+index 2013637..7934eaf 100644
+--- a/src/UnavailableFeature.php
++++ b/src/UnavailableFeature.php
+@@ -25,7 +25,7 @@ class UnavailableFeature extends Exception
+      *
+      * @deprecated since version 9.7.0
+      */
+-    public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
++    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
+     {
+         parent::__construct($message, $code, $previous);
+     }

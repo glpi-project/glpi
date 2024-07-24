@@ -1,0 +1,13 @@
+diff --git a/src/Provider/AbstractProvider.php b/src/Provider/AbstractProvider.php
+index d167999..267d7ae 100644
+--- a/src/Provider/AbstractProvider.php
++++ b/src/Provider/AbstractProvider.php
+@@ -401,7 +401,7 @@ abstract class AbstractProvider
+      */
+     public function authorize(
+         array $options = [],
+-        callable $redirectHandler = null
++        ?callable $redirectHandler = null
+     ) {
+         $url = $this->getAuthorizationUrl($options);
+         if ($redirectHandler) {

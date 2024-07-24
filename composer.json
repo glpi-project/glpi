@@ -143,23 +143,45 @@
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
-            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
-            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "build": [
             "bin/console dependencies install && bin/console locales:compile"
+        ],
+        "patch": [
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
+            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-4.1.0...4.2.0.patch || true",
+            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/atoum/stubs/ < tools/patches/atoum-stubs-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/firebase/php-jwt/ < tools/patches/firebase-php-jwt-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/friendsoftwig/twigcs/ < tools/patches/friendsoftwig-twigcs-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/promises/ < tools/patches/guzzlehttp-promises-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/psr7/ < tools/patches/guzzlehttp-psr7-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-servicemanager/ < tools/patches/laminas-laminas-servicemanager-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/league/csv/ < tools/patches/league-csv-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/league/oauth2-client/ < tools/patches/league-oauth2-client-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/mikey179/vfsstream/ < tools/patches/mikey179-vfsstream-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/monolog/monolog/ < tools/patches/monolog-monolog-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/michelf-php-markdown-php8-compat.patch || true",
+            "patch -f -p1 -d vendor/paragonie/sodium_compat/ < tools/patches/paragonie-sodium_compat-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/psr/http-factory/ < tools/patches/psr-http-factory-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/sabre/dav/ < tools/patches/sabre-dav-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/sabre/vobject/ < tools/patches/sabre-vobject-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/swaggest/json-diff/ < tools/patches/swaggest-json-diff-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/swaggest/json-schema/ < tools/patches/swaggest-json-schema-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/twig/string-extra/ < tools/patches/twig-string-extra-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true"
         ]
     },
     "repositories": {

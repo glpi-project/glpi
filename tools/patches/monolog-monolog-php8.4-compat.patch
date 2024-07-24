@@ -1,0 +1,121 @@
+diff --git a/src/Monolog/Handler/FilterHandler.php b/src/Monolog/Handler/FilterHandler.php
+index 718f17ef..5e43e1dc 100644
+--- a/src/Monolog/Handler/FilterHandler.php
++++ b/src/Monolog/Handler/FilterHandler.php
+@@ -161,7 +161,7 @@ class FilterHandler extends Handler implements ProcessableHandlerInterface, Rese
+      *
+      * @phpstan-param Record $record
+      */
+-    public function getHandler(array $record = null)
++    public function getHandler(?array $record = null)
+     {
+         if (!$this->handler instanceof HandlerInterface) {
+             $this->handler = ($this->handler)($record, $this);
+diff --git a/src/Monolog/Handler/FingersCrossedHandler.php b/src/Monolog/Handler/FingersCrossedHandler.php
+index 0627b445..dfcb3af2 100644
+--- a/src/Monolog/Handler/FingersCrossedHandler.php
++++ b/src/Monolog/Handler/FingersCrossedHandler.php
+@@ -210,7 +210,7 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
+      *
+      * @phpstan-param Record $record
+      */
+-    public function getHandler(array $record = null)
++    public function getHandler(?array $record = null)
+     {
+         if (!$this->handler instanceof HandlerInterface) {
+             $this->handler = ($this->handler)($record, $this);
+diff --git a/src/Monolog/Handler/SamplingHandler.php b/src/Monolog/Handler/SamplingHandler.php
+index c128a32d..25cce07f 100644
+--- a/src/Monolog/Handler/SamplingHandler.php
++++ b/src/Monolog/Handler/SamplingHandler.php
+@@ -90,7 +90,7 @@ class SamplingHandler extends AbstractHandler implements ProcessableHandlerInter
+      *
+      * @return HandlerInterface
+      */
+-    public function getHandler(array $record = null)
++    public function getHandler(?array $record = null)
+     {
+         if (!$this->handler instanceof HandlerInterface) {
+             $this->handler = ($this->handler)($record, $this);
+diff --git a/src/Monolog/Handler/Slack/SlackRecord.php b/src/Monolog/Handler/Slack/SlackRecord.php
+index 71a41094..9ae10037 100644
+--- a/src/Monolog/Handler/Slack/SlackRecord.php
++++ b/src/Monolog/Handler/Slack/SlackRecord.php
+@@ -100,7 +100,7 @@ class SlackRecord
+         bool $useShortAttachment = false,
+         bool $includeContextAndExtra = false,
+         array $excludeFields = array(),
+-        FormatterInterface $formatter = null
++        ?FormatterInterface $formatter = null
+     ) {
+         $this
+             ->setChannel($channel)
+diff --git a/src/Monolog/Handler/TelegramBotHandler.php b/src/Monolog/Handler/TelegramBotHandler.php
+index 8912eba5..a6223b79 100644
+--- a/src/Monolog/Handler/TelegramBotHandler.php
++++ b/src/Monolog/Handler/TelegramBotHandler.php
+@@ -108,9 +108,9 @@ class TelegramBotHandler extends AbstractProcessingHandler
+         string $channel,
+                $level = Logger::DEBUG,
+         bool   $bubble = true,
+-        string $parseMode = null,
+-        bool   $disableWebPagePreview = null,
+-        bool   $disableNotification = null,
++        ?string $parseMode = null,
++        ?bool   $disableWebPagePreview = null,
++        ?bool   $disableNotification = null,
+         bool   $splitLongMessages = false,
+         bool   $delayBetweenMessages = false
+     )
+@@ -130,7 +130,7 @@ class TelegramBotHandler extends AbstractProcessingHandler
+         $this->delayBetweenMessages($delayBetweenMessages);
+     }
+ 
+-    public function setParseMode(string $parseMode = null): self
++    public function setParseMode(?string $parseMode = null): self
+     {
+         if ($parseMode !== null && !in_array($parseMode, self::AVAILABLE_PARSE_MODES)) {
+             throw new \InvalidArgumentException('Unknown parseMode, use one of these: ' . implode(', ', self::AVAILABLE_PARSE_MODES) . '.');
+@@ -141,14 +141,14 @@ class TelegramBotHandler extends AbstractProcessingHandler
+         return $this;
+     }
+ 
+-    public function disableWebPagePreview(bool $disableWebPagePreview = null): self
++    public function disableWebPagePreview(?bool $disableWebPagePreview = null): self
+     {
+         $this->disableWebPagePreview = $disableWebPagePreview;
+ 
+         return $this;
+     }
+ 
+-    public function disableNotification(bool $disableNotification = null): self
++    public function disableNotification(?bool $disableNotification = null): self
+     {
+         $this->disableNotification = $disableNotification;
+ 
+diff --git a/src/Monolog/Logger.php b/src/Monolog/Logger.php
+index 1ab75b9e..04e32ef0 100644
+--- a/src/Monolog/Logger.php
++++ b/src/Monolog/Logger.php
+@@ -325,7 +325,7 @@ class Logger implements LoggerInterface, ResettableInterface
+      *
+      * @phpstan-param Level $level
+      */
+-    public function addRecord(int $level, string $message, array $context = [], DateTimeImmutable $datetime = null): bool
++    public function addRecord(int $level, string $message, array $context = [], ?DateTimeImmutable $datetime = null): bool
+     {
+         if (isset(self::RFC_5424_LEVELS[$level])) {
+             $level = self::RFC_5424_LEVELS[$level];
+diff --git a/src/Monolog/Processor/WebProcessor.php b/src/Monolog/Processor/WebProcessor.php
+index 51850e17..887f4d39 100644
+--- a/src/Monolog/Processor/WebProcessor.php
++++ b/src/Monolog/Processor/WebProcessor.php
+@@ -43,7 +43,7 @@ class WebProcessor implements ProcessorInterface
+      * @param array<string, mixed>|\ArrayAccess<string, mixed>|null $serverData  Array or object w/ ArrayAccess that provides access to the $_SERVER data
+      * @param array<string, string>|array<string>|null              $extraFields Field names and the related key inside $serverData to be added (or just a list of field names to use the default configured $serverData mapping). If not provided it defaults to: [url, ip, http_method, server, referrer] + unique_id if present in server data
+      */
+-    public function __construct($serverData = null, array $extraFields = null)
++    public function __construct($serverData = null, ?array $extraFields = null)
+     {
+         if (null === $serverData) {
+             $this->serverData = &$_SERVER;

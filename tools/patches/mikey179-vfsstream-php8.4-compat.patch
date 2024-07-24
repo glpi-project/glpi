@@ -1,0 +1,31 @@
+diff --git a/src/main/php/org/bovigo/vfs/vfsStream.php b/src/main/php/org/bovigo/vfs/vfsStream.php
+index 1eb382d..575b3b9 100644
+--- a/src/main/php/org/bovigo/vfs/vfsStream.php
++++ b/src/main/php/org/bovigo/vfs/vfsStream.php
+@@ -208,7 +208,7 @@ class vfsStream
+      * @see     https://github.com/mikey179/vfsStream/issues/14
+      * @see     https://github.com/mikey179/vfsStream/issues/20
+      */
+-    public static function create(array $structure, vfsStreamDirectory $baseDir = null)
++    public static function create(array $structure, ?vfsStreamDirectory $baseDir = null)
+     {
+         if (null === $baseDir) {
+             $baseDir = vfsStreamWrapper::getRoot();
+@@ -272,7 +272,7 @@ class vfsStream
+      * @since   0.11.0
+      * @see     https://github.com/mikey179/vfsStream/issues/4
+      */
+-    public static function copyFromFileSystem($path, vfsStreamDirectory $baseDir = null, $maxFileSize = 1048576)
++    public static function copyFromFileSystem($path, ?vfsStreamDirectory $baseDir = null, $maxFileSize = 1048576)
+     {
+         if (null === $baseDir) {
+             $baseDir = vfsStreamWrapper::getRoot();
+@@ -421,7 +421,7 @@ class vfsStream
+      * @since   0.10.0
+      * @see     https://github.com/mikey179/vfsStream/issues/10
+      */
+-    public static function inspect(vfsStreamVisitor $visitor, vfsStreamContent $content = null)
++    public static function inspect(vfsStreamVisitor $visitor, ?vfsStreamContent $content = null)
+     {
+         if (null !== $content) {
+             return $visitor->visit($content);

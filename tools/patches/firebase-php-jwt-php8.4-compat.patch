@@ -1,0 +1,53 @@
+diff --git a/src/CachedKeySet.php b/src/CachedKeySet.php
+index baf801f..4a6e596 100644
+--- a/src/CachedKeySet.php
++++ b/src/CachedKeySet.php
+@@ -80,9 +80,9 @@ class CachedKeySet implements ArrayAccess
+         ClientInterface $httpClient,
+         RequestFactoryInterface $httpFactory,
+         CacheItemPoolInterface $cache,
+-        int $expiresAfter = null,
++        ?int $expiresAfter = null,
+         bool $rateLimit = false,
+-        string $defaultAlg = null
++        ?string $defaultAlg = null
+     ) {
+         $this->jwksUri = $jwksUri;
+         $this->httpClient = $httpClient;
+diff --git a/src/JWK.php b/src/JWK.php
+index c7eff8a..6b87a71 100644
+--- a/src/JWK.php
++++ b/src/JWK.php
+@@ -46,7 +46,7 @@ class JWK
+      *
+      * @uses parseKey
+      */
+-    public static function parseKeySet(array $jwks, string $defaultAlg = null): array
++    public static function parseKeySet(array $jwks, ?string $defaultAlg = null): array
+     {
+         $keys = [];
+ 
+@@ -87,7 +87,7 @@ class JWK
+      *
+      * @uses createPemFromModulusAndExponent
+      */
+-    public static function parseKey(array $jwk, string $defaultAlg = null): ?Key
++    public static function parseKey(array $jwk, ?string $defaultAlg = null): ?Key
+     {
+         if (empty($jwk)) {
+             throw new InvalidArgumentException('JWK must not be empty');
+diff --git a/src/JWT.php b/src/JWT.php
+index 269e8ca..eae6466 100644
+--- a/src/JWT.php
++++ b/src/JWT.php
+@@ -185,8 +185,8 @@ class JWT
+         array $payload,
+         $key,
+         string $alg,
+-        string $keyId = null,
+-        array $head = null
++        ?string $keyId = null,
++        ?array $head = null
+     ): string {
+         $header = ['typ' => 'JWT', 'alg' => $alg];
+         if ($keyId !== null) {

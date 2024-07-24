@@ -1,0 +1,101 @@
+diff --git a/src/Compiler.php b/src/Compiler.php
+index ecafc8cb..0f3ef9ae 100644
+--- a/src/Compiler.php
++++ b/src/Compiler.php
+@@ -5001,7 +5001,7 @@ EOL;
+      *
+      * @return array
+      */
+-    protected function multiplyMedia(Environment $env = null, $childQueries = null)
++    protected function multiplyMedia(?Environment $env = null, $childQueries = null)
+     {
+         if (
+             ! isset($env) ||
+@@ -5093,7 +5093,7 @@ EOL;
+      *
+      * @return \ScssPhp\ScssPhp\Compiler\Environment
+      */
+-    protected function pushEnv(Block $block = null)
++    protected function pushEnv(?Block $block = null)
+     {
+         $env = new Environment();
+         $env->parent = $this->env;
+@@ -5157,7 +5157,7 @@ EOL;
+      *
+      * @return void
+      */
+-    protected function set($name, $value, $shadow = false, Environment $env = null, $valueUnreduced = null)
++    protected function set($name, $value, $shadow = false, ?Environment $env = null, $valueUnreduced = null)
+     {
+         $name = $this->normalizeName($name);
+ 
+@@ -5263,7 +5263,7 @@ EOL;
+      *
+      * @return mixed|null
+      */
+-    public function get($name, $shouldThrow = true, Environment $env = null, $unreduced = false)
++    public function get($name, $shouldThrow = true, ?Environment $env = null, $unreduced = false)
+     {
+         $normalizedName = $this->normalizeName($name);
+         $specialContentKey = static::$namespaces['special'] . 'content';
+@@ -5328,7 +5328,7 @@ EOL;
+      *
+      * @return bool
+      */
+-    protected function has($name, Environment $env = null)
++    protected function has($name, ?Environment $env = null)
+     {
+         return ! \is_null($this->get($name, false, $env));
+     }
+diff --git a/src/Formatter.php b/src/Formatter.php
+index 6137dc65..c477e6f9 100644
+--- a/src/Formatter.php
++++ b/src/Formatter.php
+@@ -272,7 +272,7 @@ abstract class Formatter
+      *
+      * @return string
+      */
+-    public function format(OutputBlock $block, SourceMapGenerator $sourceMapGenerator = null)
++    public function format(OutputBlock $block, ?SourceMapGenerator $sourceMapGenerator = null)
+     {
+         $this->sourceMapGenerator = null;
+ 
+diff --git a/src/Node/Number.php b/src/Node/Number.php
+index 48e711f0..a7d4c811 100644
+--- a/src/Node/Number.php
++++ b/src/Node/Number.php
+@@ -568,7 +568,7 @@ class Number extends Node implements \ArrayAccess
+      *
+      * @return string
+      */
+-    public function output(Compiler $compiler = null)
++    public function output(?Compiler $compiler = null)
+     {
+         $dimension = round($this->dimension, self::PRECISION);
+ 
+diff --git a/src/Parser.php b/src/Parser.php
+index 1c76e7c6..9b003901 100644
+--- a/src/Parser.php
++++ b/src/Parser.php
+@@ -140,7 +140,7 @@ class Parser
+      * @param bool                 $cssOnly
+      * @param LoggerInterface|null $logger
+      */
+-    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', Cache $cache = null, $cssOnly = false, LoggerInterface $logger = null)
++    public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', ?Cache $cache = null, $cssOnly = false, ?LoggerInterface $logger = null)
+     {
+         $this->sourceName       = $sourceName ?: '(stdin)';
+         $this->sourceIndex      = $sourceIndex;
+diff --git a/src/Warn.php b/src/Warn.php
+index 592b44c7..7ad06152 100644
+--- a/src/Warn.php
++++ b/src/Warn.php
+@@ -59,7 +59,7 @@ final class Warn
+      *
+      * @internal
+      */
+-    public static function setCallback(callable $callback = null)
++    public static function setCallback(?callable $callback = null)
+     {
+         $previousCallback = self::$callback;
+         self::$callback = $callback;

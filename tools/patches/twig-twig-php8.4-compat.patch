@@ -1,0 +1,466 @@
+diff --git a/src/Environment.php b/src/Environment.php
+index d7d51cdb..eb0beda5 100644
+--- a/src/Environment.php
++++ b/src/Environment.php
+@@ -259,7 +259,7 @@ class Environment
+      *
+      * @internal
+      */
+-    public function getTemplateClass(string $name, int $index = null): string
++    public function getTemplateClass(string $name, ?int $index = null): string
+     {
+         $key = $this->getLoader()->getCacheKey($name).$this->optionsHash;
+ 
+@@ -327,7 +327,7 @@ class Environment
+      *
+      * @internal
+      */
+-    public function loadTemplate(string $cls, string $name, int $index = null): Template
++    public function loadTemplate(string $cls, string $name, ?int $index = null): Template
+     {
+         $mainCls = $cls;
+         if (null !== $index) {
+@@ -382,7 +382,7 @@ class Environment
+      * @throws LoaderError When the template cannot be found
+      * @throws SyntaxError When an error occurred during compilation
+      */
+-    public function createTemplate(string $template, string $name = null): TemplateWrapper
++    public function createTemplate(string $template, ?string $name = null): TemplateWrapper
+     {
+         $hash = hash(\PHP_VERSION_ID < 80100 ? 'sha256' : 'xxh128', $template, false);
+         if (null !== $name) {
+diff --git a/src/Error/Error.php b/src/Error/Error.php
+index bca1fa64..0df21359 100644
+--- a/src/Error/Error.php
++++ b/src/Error/Error.php
+@@ -53,7 +53,7 @@ class Error extends \Exception
+      * @param int         $lineno  The template line where the error occurred
+      * @param Source|null $source  The source context where the error occurred
+      */
+-    public function __construct(string $message, int $lineno = -1, Source $source = null, \Throwable $previous = null)
++    public function __construct(string $message, int $lineno = -1, ?Source $source = null, ?\Throwable $previous = null)
+     {
+         parent::__construct('', 0, $previous);
+ 
+@@ -93,7 +93,7 @@ class Error extends \Exception
+         return $this->name ? new Source($this->sourceCode, $this->name, $this->sourcePath) : null;
+     }
+ 
+-    public function setSourceContext(Source $source = null): void
++    public function setSourceContext(?Source $source = null): void
+     {
+         if (null === $source) {
+             $this->sourceCode = $this->name = $this->sourcePath = null;
+diff --git a/src/Extension/SandboxExtension.php b/src/Extension/SandboxExtension.php
+index c861159b..ed402004 100644
+--- a/src/Extension/SandboxExtension.php
++++ b/src/Extension/SandboxExtension.php
+@@ -77,7 +77,7 @@ final class SandboxExtension extends AbstractExtension
+         }
+     }
+ 
+-    public function checkMethodAllowed($obj, $method, int $lineno = -1, Source $source = null): void
++    public function checkMethodAllowed($obj, $method, int $lineno = -1, ?Source $source = null): void
+     {
+         if ($this->isSandboxed()) {
+             try {
+@@ -91,7 +91,7 @@ final class SandboxExtension extends AbstractExtension
+         }
+     }
+ 
+-    public function checkPropertyAllowed($obj, $property, int $lineno = -1, Source $source = null): void
++    public function checkPropertyAllowed($obj, $property, int $lineno = -1, ?Source $source = null): void
+     {
+         if ($this->isSandboxed()) {
+             try {
+@@ -105,7 +105,7 @@ final class SandboxExtension extends AbstractExtension
+         }
+     }
+ 
+-    public function ensureToStringAllowed($obj, int $lineno = -1, Source $source = null)
++    public function ensureToStringAllowed($obj, int $lineno = -1, ?Source $source = null)
+     {
+         if ($this->isSandboxed() && \is_object($obj) && method_exists($obj, '__toString')) {
+             try {
+diff --git a/src/Extension/StringLoaderExtension.php b/src/Extension/StringLoaderExtension.php
+index 7b451471..7efc93ea 100644
+--- a/src/Extension/StringLoaderExtension.php
++++ b/src/Extension/StringLoaderExtension.php
+@@ -35,7 +35,7 @@ use Twig\TemplateWrapper;
+  * @param string $template A template as a string or object implementing __toString()
+  * @param string $name     An optional name of the template to be used in error messages
+  */
+-function twig_template_from_string(Environment $env, $template, string $name = null): TemplateWrapper
++function twig_template_from_string(Environment $env, $template, ?string $name = null): TemplateWrapper
+ {
+     return $env->createTemplate((string) $template, $name);
+ }
+diff --git a/src/Loader/FilesystemLoader.php b/src/Loader/FilesystemLoader.php
+index 1073a406..a31653e6 100644
+--- a/src/Loader/FilesystemLoader.php
++++ b/src/Loader/FilesystemLoader.php
+@@ -34,7 +34,7 @@ class FilesystemLoader implements LoaderInterface
+      * @param string|array $paths    A path or an array of paths where to look for templates
+      * @param string|null  $rootPath The root path common to all relative paths (null for getcwd())
+      */
+-    public function __construct($paths = [], string $rootPath = null)
++    public function __construct($paths = [], ?string $rootPath = null)
+     {
+         $this->rootPath = ($rootPath ?? getcwd()).\DIRECTORY_SEPARATOR;
+         if (null !== $rootPath && false !== ($realPath = realpath($rootPath))) {
+diff --git a/src/Node/BlockNode.php b/src/Node/BlockNode.php
+index 0632ba74..fb2564fd 100644
+--- a/src/Node/BlockNode.php
++++ b/src/Node/BlockNode.php
+@@ -21,7 +21,7 @@ use Twig\Compiler;
+  */
+ class BlockNode extends Node
+ {
+-    public function __construct(string $name, Node $body, int $lineno, string $tag = null)
++    public function __construct(string $name, Node $body, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['body' => $body], ['name' => $name], $lineno, $tag);
+     }
+diff --git a/src/Node/BlockReferenceNode.php b/src/Node/BlockReferenceNode.php
+index cc8af5b5..c8bc97e1 100644
+--- a/src/Node/BlockReferenceNode.php
++++ b/src/Node/BlockReferenceNode.php
+@@ -21,7 +21,7 @@ use Twig\Compiler;
+  */
+ class BlockReferenceNode extends Node implements NodeOutputInterface
+ {
+-    public function __construct(string $name, int $lineno, string $tag = null)
++    public function __construct(string $name, int $lineno, ?string $tag = null)
+     {
+         parent::__construct([], ['name' => $name], $lineno, $tag);
+     }
+diff --git a/src/Node/DeprecatedNode.php b/src/Node/DeprecatedNode.php
+index 5ff44307..ff9fcb4d 100644
+--- a/src/Node/DeprecatedNode.php
++++ b/src/Node/DeprecatedNode.php
+@@ -22,7 +22,7 @@ use Twig\Node\Expression\ConstantExpression;
+  */
+ class DeprecatedNode extends Node
+ {
+-    public function __construct(AbstractExpression $expr, int $lineno, string $tag = null)
++    public function __construct(AbstractExpression $expr, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['expr' => $expr], [], $lineno, $tag);
+     }
+diff --git a/src/Node/DoNode.php b/src/Node/DoNode.php
+index f7783d19..bf979dae 100644
+--- a/src/Node/DoNode.php
++++ b/src/Node/DoNode.php
+@@ -21,7 +21,7 @@ use Twig\Node\Expression\AbstractExpression;
+  */
+ class DoNode extends Node
+ {
+-    public function __construct(AbstractExpression $expr, int $lineno, string $tag = null)
++    public function __construct(AbstractExpression $expr, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['expr' => $expr], [], $lineno, $tag);
+     }
+diff --git a/src/Node/EmbedNode.php b/src/Node/EmbedNode.php
+index 903c3f6c..ce95f3a3 100644
+--- a/src/Node/EmbedNode.php
++++ b/src/Node/EmbedNode.php
+@@ -23,7 +23,7 @@ use Twig\Node\Expression\ConstantExpression;
+ class EmbedNode extends IncludeNode
+ {
+     // we don't inject the module to avoid node visitors to traverse it twice (as it will be already visited in the main module)
+-    public function __construct(string $name, int $index, ?AbstractExpression $variables, bool $only, bool $ignoreMissing, int $lineno, string $tag = null)
++    public function __construct(string $name, int $index, ?AbstractExpression $variables, bool $only, bool $ignoreMissing, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(new ConstantExpression('not_used', $lineno), $variables, $only, $ignoreMissing, $lineno, $tag);
+ 
+diff --git a/src/Node/Expression/ArrayExpression.php b/src/Node/Expression/ArrayExpression.php
+index 44428380..25f5c9df 100644
+--- a/src/Node/Expression/ArrayExpression.php
++++ b/src/Node/Expression/ArrayExpression.php
+@@ -55,7 +55,7 @@ class ArrayExpression extends AbstractExpression
+         return false;
+     }
+ 
+-    public function addElement(AbstractExpression $value, AbstractExpression $key = null): void
++    public function addElement(AbstractExpression $value, ?AbstractExpression $key = null): void
+     {
+         if (null === $key) {
+             $key = new ConstantExpression(++$this->index, $value->getTemplateLine());
+diff --git a/src/Node/Expression/BlockReferenceExpression.php b/src/Node/Expression/BlockReferenceExpression.php
+index b1e2a8f7..7b031baf 100644
+--- a/src/Node/Expression/BlockReferenceExpression.php
++++ b/src/Node/Expression/BlockReferenceExpression.php
+@@ -22,7 +22,7 @@ use Twig\Node\Node;
+  */
+ class BlockReferenceExpression extends AbstractExpression
+ {
+-    public function __construct(Node $name, ?Node $template, int $lineno, string $tag = null)
++    public function __construct(Node $name, ?Node $template, int $lineno, ?string $tag = null)
+     {
+         $nodes = ['name' => $name];
+         if (null !== $template) {
+diff --git a/src/Node/Expression/Filter/DefaultFilter.php b/src/Node/Expression/Filter/DefaultFilter.php
+index 6a572d48..b6853bb6 100644
+--- a/src/Node/Expression/Filter/DefaultFilter.php
++++ b/src/Node/Expression/Filter/DefaultFilter.php
+@@ -29,7 +29,7 @@ use Twig\Node\Node;
+  */
+ class DefaultFilter extends FilterExpression
+ {
+-    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, int $lineno, string $tag = null)
++    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, int $lineno, ?string $tag = null)
+     {
+         $default = new FilterExpression($node, new ConstantExpression('default', $node->getTemplateLine()), $arguments, $node->getTemplateLine());
+ 
+diff --git a/src/Node/Expression/FilterExpression.php b/src/Node/Expression/FilterExpression.php
+index 0fc15886..fec652a4 100644
+--- a/src/Node/Expression/FilterExpression.php
++++ b/src/Node/Expression/FilterExpression.php
+@@ -17,7 +17,7 @@ use Twig\Node\Node;
+ 
+ class FilterExpression extends CallExpression
+ {
+-    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, int $lineno, string $tag = null)
++    public function __construct(Node $node, ConstantExpression $filterName, Node $arguments, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['node' => $node, 'filter' => $filterName, 'arguments' => $arguments], [], $lineno, $tag);
+     }
+diff --git a/src/Node/Expression/ParentExpression.php b/src/Node/Expression/ParentExpression.php
+index 25491971..425a042e 100644
+--- a/src/Node/Expression/ParentExpression.php
++++ b/src/Node/Expression/ParentExpression.php
+@@ -21,7 +21,7 @@ use Twig\Compiler;
+  */
+ class ParentExpression extends AbstractExpression
+ {
+-    public function __construct(string $name, int $lineno, string $tag = null)
++    public function __construct(string $name, int $lineno, ?string $tag = null)
+     {
+         parent::__construct([], ['output' => false, 'name' => $name], $lineno, $tag);
+     }
+diff --git a/src/Node/ForLoopNode.php b/src/Node/ForLoopNode.php
+index d5ce845a..9120b962 100644
+--- a/src/Node/ForLoopNode.php
++++ b/src/Node/ForLoopNode.php
+@@ -20,7 +20,7 @@ use Twig\Compiler;
+  */
+ class ForLoopNode extends Node
+ {
+-    public function __construct(int $lineno, string $tag = null)
++    public function __construct(int $lineno, ?string $tag = null)
+     {
+         parent::__construct([], ['with_loop' => false, 'ifexpr' => false, 'else' => false], $lineno, $tag);
+     }
+diff --git a/src/Node/ForNode.php b/src/Node/ForNode.php
+index 04addfbf..c08b557a 100644
+--- a/src/Node/ForNode.php
++++ b/src/Node/ForNode.php
+@@ -25,7 +25,7 @@ class ForNode extends Node
+ {
+     private $loop;
+ 
+-    public function __construct(AssignNameExpression $keyTarget, AssignNameExpression $valueTarget, AbstractExpression $seq, ?Node $ifexpr, Node $body, ?Node $else, int $lineno, string $tag = null)
++    public function __construct(AssignNameExpression $keyTarget, AssignNameExpression $valueTarget, AbstractExpression $seq, ?Node $ifexpr, Node $body, ?Node $else, int $lineno, ?string $tag = null)
+     {
+         $body = new Node([$body, $this->loop = new ForLoopNode($lineno, $tag)]);
+ 
+diff --git a/src/Node/IfNode.php b/src/Node/IfNode.php
+index 569ab795..73f39e6e 100644
+--- a/src/Node/IfNode.php
++++ b/src/Node/IfNode.php
+@@ -21,7 +21,7 @@ use Twig\Compiler;
+  */
+ class IfNode extends Node
+ {
+-    public function __construct(Node $tests, ?Node $else, int $lineno, string $tag = null)
++    public function __construct(Node $tests, ?Node $else, int $lineno, ?string $tag = null)
+     {
+         $nodes = ['tests' => $tests];
+         if (null !== $else) {
+diff --git a/src/Node/ImportNode.php b/src/Node/ImportNode.php
+index 5378d799..1a3494c9 100644
+--- a/src/Node/ImportNode.php
++++ b/src/Node/ImportNode.php
+@@ -22,7 +22,7 @@ use Twig\Node\Expression\NameExpression;
+  */
+ class ImportNode extends Node
+ {
+-    public function __construct(AbstractExpression $expr, AbstractExpression $var, int $lineno, string $tag = null, bool $global = true)
++    public function __construct(AbstractExpression $expr, AbstractExpression $var, int $lineno, ?string $tag = null, bool $global = true)
+     {
+         parent::__construct(['expr' => $expr, 'var' => $var], ['global' => $global], $lineno, $tag);
+     }
+diff --git a/src/Node/IncludeNode.php b/src/Node/IncludeNode.php
+index d540d6b2..5970fc11 100644
+--- a/src/Node/IncludeNode.php
++++ b/src/Node/IncludeNode.php
+@@ -22,7 +22,7 @@ use Twig\Node\Expression\AbstractExpression;
+  */
+ class IncludeNode extends Node implements NodeOutputInterface
+ {
+-    public function __construct(AbstractExpression $expr, ?AbstractExpression $variables, bool $only, bool $ignoreMissing, int $lineno, string $tag = null)
++    public function __construct(AbstractExpression $expr, ?AbstractExpression $variables, bool $only, bool $ignoreMissing, int $lineno, ?string $tag = null)
+     {
+         $nodes = ['expr' => $expr];
+         if (null !== $variables) {
+diff --git a/src/Node/MacroNode.php b/src/Node/MacroNode.php
+index 7f1b24d5..4f2b1ab8 100644
+--- a/src/Node/MacroNode.php
++++ b/src/Node/MacroNode.php
+@@ -23,7 +23,7 @@ class MacroNode extends Node
+ {
+     public const VARARGS_NAME = 'varargs';
+ 
+-    public function __construct(string $name, Node $body, Node $arguments, int $lineno, string $tag = null)
++    public function __construct(string $name, Node $body, Node $arguments, int $lineno, ?string $tag = null)
+     {
+         foreach ($arguments as $argumentName => $argument) {
+             if (self::VARARGS_NAME === $argumentName) {
+diff --git a/src/Node/Node.php b/src/Node/Node.php
+index 30659ae0..7b90b609 100644
+--- a/src/Node/Node.php
++++ b/src/Node/Node.php
+@@ -35,7 +35,7 @@ class Node implements \Countable, \IteratorAggregate
+      * @param int    $lineno     The line number
+      * @param string $tag        The tag name associated with the Node
+      */
+-    public function __construct(array $nodes = [], array $attributes = [], int $lineno = 0, string $tag = null)
++    public function __construct(array $nodes = [], array $attributes = [], int $lineno = 0, ?string $tag = null)
+     {
+         foreach ($nodes as $name => $node) {
+             if (!$node instanceof self) {
+diff --git a/src/Node/PrintNode.php b/src/Node/PrintNode.php
+index 60386d29..09dc09d0 100644
+--- a/src/Node/PrintNode.php
++++ b/src/Node/PrintNode.php
+@@ -22,7 +22,7 @@ use Twig\Node\Expression\AbstractExpression;
+  */
+ class PrintNode extends Node implements NodeOutputInterface
+ {
+-    public function __construct(AbstractExpression $expr, int $lineno, string $tag = null)
++    public function __construct(AbstractExpression $expr, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['expr' => $expr], [], $lineno, $tag);
+     }
+diff --git a/src/Node/SandboxNode.php b/src/Node/SandboxNode.php
+index 4d5666bf..0ffef6db 100644
+--- a/src/Node/SandboxNode.php
++++ b/src/Node/SandboxNode.php
+@@ -20,7 +20,7 @@ use Twig\Compiler;
+  */
+ class SandboxNode extends Node
+ {
+-    public function __construct(Node $body, int $lineno, string $tag = null)
++    public function __construct(Node $body, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['body' => $body], [], $lineno, $tag);
+     }
+diff --git a/src/Node/SetNode.php b/src/Node/SetNode.php
+index 96b6bd8b..4a32cf23 100644
+--- a/src/Node/SetNode.php
++++ b/src/Node/SetNode.php
+@@ -21,7 +21,7 @@ use Twig\Node\Expression\ConstantExpression;
+  */
+ class SetNode extends Node implements NodeCaptureInterface
+ {
+-    public function __construct(bool $capture, Node $names, Node $values, int $lineno, string $tag = null)
++    public function __construct(bool $capture, Node $names, Node $values, int $lineno, ?string $tag = null)
+     {
+         parent::__construct(['names' => $names, 'values' => $values], ['capture' => $capture, 'safe' => false], $lineno, $tag);
+ 
+diff --git a/src/Node/WithNode.php b/src/Node/WithNode.php
+index 2ac9123d..0efaa19b 100644
+--- a/src/Node/WithNode.php
++++ b/src/Node/WithNode.php
+@@ -20,7 +20,7 @@ use Twig\Compiler;
+  */
+ class WithNode extends Node
+ {
+-    public function __construct(Node $body, ?Node $variables, bool $only, int $lineno, string $tag = null)
++    public function __construct(Node $body, ?Node $variables, bool $only, int $lineno, ?string $tag = null)
+     {
+         $nodes = ['body' => $body];
+         if (null !== $variables) {
+diff --git a/src/NodeVisitor/SafeAnalysisNodeVisitor.php b/src/NodeVisitor/SafeAnalysisNodeVisitor.php
+index 90d6f2e0..6df046e1 100644
+--- a/src/NodeVisitor/SafeAnalysisNodeVisitor.php
++++ b/src/NodeVisitor/SafeAnalysisNodeVisitor.php
+@@ -136,7 +136,7 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
+         return $node;
+     }
+ 
+-    private function intersectSafe(array $a = null, array $b = null): array
++    private function intersectSafe(?array $a = null, ?array $b = null): array
+     {
+         if (null === $a || null === $b) {
+             return [];
+diff --git a/src/Parser.php b/src/Parser.php
+index 4016a5f3..b1aa0f86 100644
+--- a/src/Parser.php
++++ b/src/Parser.php
+@@ -247,7 +247,7 @@ class Parser
+         $this->embeddedTemplates[] = $template;
+     }
+ 
+-    public function addImportedSymbol(string $type, string $alias, string $name = null, AbstractExpression $node = null): void
++    public function addImportedSymbol(string $type, string $alias, ?string $name = null, ?AbstractExpression $node = null): void
+     {
+         $this->importedSymbols[0][$type][$alias] = ['name' => $name, 'node' => $node];
+     }
+diff --git a/src/Template.php b/src/Template.php
+index ffbaae1e..0fc32cbd 100644
+--- a/src/Template.php
++++ b/src/Template.php
+@@ -148,7 +148,7 @@ abstract class Template
+      * @param array  $blocks    The current set of blocks
+      * @param bool   $useBlocks Whether to use the current set of blocks
+      */
+-    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true, self $templateContext = null)
++    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true, ?self $templateContext = null)
+     {
+         if ($useBlocks && isset($blocks[$name])) {
+             $template = $blocks[$name][0];
+diff --git a/src/Test/NodeTestCase.php b/src/Test/NodeTestCase.php
+index 8b1bef77..b810d217 100644
+--- a/src/Test/NodeTestCase.php
++++ b/src/Test/NodeTestCase.php
+@@ -29,7 +29,7 @@ abstract class NodeTestCase extends TestCase
+         $this->assertNodeCompilation($source, $node, $environment, $isPattern);
+     }
+ 
+-    public function assertNodeCompilation($source, Node $node, Environment $environment = null, $isPattern = false)
++    public function assertNodeCompilation($source, Node $node, ?Environment $environment = null, $isPattern = false)
+     {
+         $compiler = $this->getCompiler($environment);
+         $compiler->compile($node);
+@@ -41,7 +41,7 @@ abstract class NodeTestCase extends TestCase
+         }
+     }
+ 
+-    protected function getCompiler(Environment $environment = null)
++    protected function getCompiler(?Environment $environment = null)
+     {
+         return new Compiler($environment ?? $this->getEnvironment());
+     }
+diff --git a/src/TokenStream.php b/src/TokenStream.php
+index 1eac11a0..24c3ff8c 100644
+--- a/src/TokenStream.php
++++ b/src/TokenStream.php
+@@ -25,7 +25,7 @@ final class TokenStream
+     private $current = 0;
+     private $source;
+ 
+-    public function __construct(array $tokens, Source $source = null)
++    public function __construct(array $tokens, ?Source $source = null)
+     {
+         $this->tokens = $tokens;
+         $this->source = $source ?: new Source('', '');
+@@ -68,7 +68,7 @@ final class TokenStream
+     /**
+      * Tests a token and returns it or throws a syntax error.
+      */
+-    public function expect($type, $value = null, string $message = null): Token
++    public function expect($type, $value = null, ?string $message = null): Token
+     {
+         $token = $this->tokens[$this->current];
+         if (!$token->test($type, $value)) {

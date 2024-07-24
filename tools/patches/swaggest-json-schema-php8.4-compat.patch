@@ -1,0 +1,159 @@
+diff --git a/src/Context.php b/src/Context.php
+index c655dde..fff2862 100644
+--- a/src/Context.php
++++ b/src/Context.php
+@@ -75,7 +75,7 @@ class Context extends MagicMap
+      * ProcessingOptions constructor.
+      * @param RemoteRefProvider $remoteRefProvider
+      */
+-    public function __construct(RemoteRefProvider $remoteRefProvider = null)
++    public function __construct(?RemoteRefProvider $remoteRefProvider = null)
+     {
+         $this->remoteRefProvider = $remoteRefProvider;
+     }
+diff --git a/src/RemoteRef/Preloaded.php b/src/RemoteRef/Preloaded.php
+index e5b4a38..dc92937 100644
+--- a/src/RemoteRef/Preloaded.php
++++ b/src/RemoteRef/Preloaded.php
+@@ -42,7 +42,7 @@ class Preloaded implements RemoteRefProvider
+      * @param Context|null $options
+      * @throws \Swaggest\JsonSchema\Exception
+      */
+-    public function populateSchemas(RefResolver $refResolver, Context $options = null)
++    public function populateSchemas(RefResolver $refResolver, ?Context $options = null)
+     {
+         if ($options === null) {
+             $options = new Context();
+diff --git a/src/Schema.php b/src/Schema.php
+index 6c1cee8..ff07f0c 100644
+--- a/src/Schema.php
++++ b/src/Schema.php
+@@ -109,7 +109,7 @@ class Schema extends JsonSchema implements MetaHolder, SchemaContract, HasDefaul
+      * @throws InvalidValue
+      * @throws \Exception
+      */
+-    public static function import($data, Context $options = null)
++    public static function import($data, ?Context $options = null)
+     {
+         if (null === $options) {
+             $options = new Context();
+@@ -148,7 +148,7 @@ class Schema extends JsonSchema implements MetaHolder, SchemaContract, HasDefaul
+      * @throws InvalidValue
+      * @throws \Exception
+      */
+-    public function in($data, Context $options = null)
++    public function in($data, ?Context $options = null)
+     {
+         if (null !== $this->__booleanSchema) {
+             if ($this->__booleanSchema) {
+@@ -187,7 +187,7 @@ class Schema extends JsonSchema implements MetaHolder, SchemaContract, HasDefaul
+      * @throws InvalidValue
+      * @throws \Exception
+      */
+-    public function out($data, Context $options = null)
++    public function out($data, ?Context $options = null)
+     {
+         if ($options === null) {
+             $options = new Context();
+@@ -1385,7 +1385,7 @@ class Schema extends JsonSchema implements MetaHolder, SchemaContract, HasDefaul
+      * @param Context $options
+      * @return ObjectItemContract
+      */
+-    public function makeObjectItem(Context $options = null)
++    public function makeObjectItem(?Context $options = null)
+     {
+         if (null === $this->objectItemClass) {
+             return new ObjectItem();
+diff --git a/src/SchemaContract.php b/src/SchemaContract.php
+index a051305..bff1363 100644
+--- a/src/SchemaContract.php
++++ b/src/SchemaContract.php
+@@ -22,7 +22,7 @@ interface SchemaContract
+      * @throws InvalidValue
+      * @return array|mixed|null|object|\stdClass
+      */
+-    public function in($data, Context $options = null);
++    public function in($data, ?Context $options = null);
+ 
+     /**
+      * @param mixed $data
+@@ -30,7 +30,7 @@ interface SchemaContract
+      * @throws InvalidValue
+      * @return array|mixed|null|object|\stdClass
+      */
+-    public function out($data, Context $options = null);
++    public function out($data, ?Context $options = null);
+ 
+     /**
+      * @return mixed
+@@ -44,7 +44,7 @@ interface SchemaContract
+      * @param Context|null $options
+      * @return Structure\ObjectItemContract
+      */
+-    public function makeObjectItem(Context $options = null);
++    public function makeObjectItem(?Context $options = null);
+ 
+     /**
+      * @return string
+diff --git a/src/Structure/ClassStructureTrait.php b/src/Structure/ClassStructureTrait.php
+index c0bb6fc..393e65b 100644
+--- a/src/Structure/ClassStructureTrait.php
++++ b/src/Structure/ClassStructureTrait.php
+@@ -55,7 +55,7 @@ trait ClassStructureTrait
+      * @throws \Swaggest\JsonSchema\Exception
+      * @throws \Swaggest\JsonSchema\InvalidValue
+      */
+-    public static function import($data, Context $options = null)
++    public static function import($data, ?Context $options = null)
+     {
+         return static::schema()->in($data, $options);
+     }
+@@ -67,7 +67,7 @@ trait ClassStructureTrait
+      * @throws \Swaggest\JsonSchema\InvalidValue
+      * @throws \Exception
+      */
+-    public static function export($data, Context $options = null)
++    public static function export($data, ?Context $options = null)
+     {
+         return static::schema()->out($data, $options);
+     }
+@@ -150,7 +150,7 @@ trait ClassStructureTrait
+     /**
+      * @return static|NameMirror
+      */
+-    public static function names(Properties $properties = null, $mapping = Schema::DEFAULT_MAPPING)
++    public static function names(?Properties $properties = null, $mapping = Schema::DEFAULT_MAPPING)
+     {
+         if ($properties !== null) {
+             return new NameMirror($properties->getDataKeyMap($mapping));
+diff --git a/src/Wrapper.php b/src/Wrapper.php
+index 98946f6..421ec12 100644
+--- a/src/Wrapper.php
++++ b/src/Wrapper.php
+@@ -53,7 +53,7 @@ class Wrapper implements SchemaContract, MetaHolder, SchemaExporter, \JsonSerial
+      * @throws Exception
+      * @throws InvalidValue
+      */
+-    public function in($data, Context $options = null)
++    public function in($data, ?Context $options = null)
+     {
+         return $this->schema->in($data, $options);
+     }
+@@ -65,7 +65,7 @@ class Wrapper implements SchemaContract, MetaHolder, SchemaExporter, \JsonSerial
+      * @throws InvalidValue
+      * @throws \Exception
+      */
+-    public function out($data, Context $options = null)
++    public function out($data, ?Context $options = null)
+     {
+         return $this->schema->out($data, $options);
+     }
+@@ -199,7 +199,7 @@ class Wrapper implements SchemaContract, MetaHolder, SchemaExporter, \JsonSerial
+      * @param Context|null $options
+      * @return Structure\ObjectItemContract
+      */
+-    public function makeObjectItem(Context $options = null)
++    public function makeObjectItem(?Context $options = null)
+     {
+         return $this->schema->makeObjectItem($options);
+     }

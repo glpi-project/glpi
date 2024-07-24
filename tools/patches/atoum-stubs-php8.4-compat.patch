@@ -1,0 +1,24 @@
+diff --git a/classes/mageekguy/atoum.php b/classes/mageekguy/atoum.php
+index a4522fe..a456a9e 100644
+--- a/classes/mageekguy/atoum.php
++++ b/classes/mageekguy/atoum.php
+@@ -225,7 +225,7 @@ class atoum extends mageekguy\atoum\test
+      *
+      * @return object
+      */
+-    public function newMockInstance($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) {}
++    public function newMockInstance($class, $mockNamespace = null, $mockClass = null, ?array $constructorArguments = null) {}
+ 
+ 	/**
+ 	 * Allow to initialize the execution environment of the individual tests for all test method of the class.
+diff --git a/classes/mageekguy/atoum/stubs/asserters/exception.php b/classes/mageekguy/atoum/stubs/asserters/exception.php
+index bf70909..8adfa18 100644
+--- a/classes/mageekguy/atoum/stubs/asserters/exception.php
++++ b/classes/mageekguy/atoum/stubs/asserters/exception.php
+@@ -192,5 +192,5 @@ class exception extends phpObject
+      *
+      * @return $this
+      */
+-    public function hasNestedException(\exception $exception = null, $failMessage = null) {}
++    public function hasNestedException(?\exception $exception = null, $failMessage = null) {}
+ }
