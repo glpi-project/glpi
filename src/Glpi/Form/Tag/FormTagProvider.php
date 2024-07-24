@@ -37,22 +37,16 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use Glpi\Form\Section;
 use Override;
 
-final class SectionTagProvider implements TagProviderInterface
+final class FormTagProvider implements TagProviderInterface
 {
-    public const ACCENT_COLOR = "cyan";
+    public const ACCENT_COLOR = "yellow";
 
     #[Override]
     public function getTags(Form $form): array
     {
-        $tags = [];
-        foreach ($form->getSections() as $section) {
-            $tags[] = $this->getTagForSection($section);
-        }
-
-        return $tags;
+        return [$this->getTagForForm($form)];
     }
 
     #[Override]
@@ -62,18 +56,18 @@ final class SectionTagProvider implements TagProviderInterface
     ): string {
         $id = (int) $value;
 
-        $section = Section::getById($id);
-        if (!$section) {
+        $form = Form::getById($id);
+        if ($form === false) {
             return '';
         }
-        return $section->fields['name'];
+        return $form->fields['name'];
     }
 
-    public function getTagForSection(Section $section): Tag
+    public function getTagForForm(Form $form): Tag
     {
         return new Tag(
-            label: sprintf(__('Section: %s'), $section->fields['name']),
-            value: $section->getId(),
+            label: sprintf(__('Form name: %s'), $form->fields['name']),
+            value: $form->getId(),
             provider: self::class,
             color: self::ACCENT_COLOR,
         );
