@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * @var array $CFG_GLPI
@@ -68,9 +69,8 @@ foreach ($date_fields as $date_field) {
     }
 }
 
-// as _actors virtual field stores json, bypass automatic escaping
 if (isset($_UPOST['_actors'])) {
-    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+    $_POST['_actors'] = Sanitizer::sanitize(json_decode($_UPOST['_actors'], true));
     $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
