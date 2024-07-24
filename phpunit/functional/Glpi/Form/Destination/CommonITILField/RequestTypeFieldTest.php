@@ -223,7 +223,8 @@ final class RequestTypeFieldTest extends DbTestCase
         $formatted_answers = [];
         foreach ($answers as $question => $answer) {
             $key = $this->getQuestionId($form, $question);
-            $formatted_answers[$key] = $answer;
+            // Real answer will be decoded as string by default
+            $formatted_answers[$key] = (string) $answer;
         }
 
         // Submit form

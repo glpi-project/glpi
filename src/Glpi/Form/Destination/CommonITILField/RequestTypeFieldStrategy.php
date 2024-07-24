@@ -84,11 +84,11 @@ enum RequestTypeFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if (!is_int($value)) {
+        if (!is_numeric($value)) {
             return null;
         }
 
-        return $value;
+        return (int) $value;
     }
 
     private function getRequestTypeForLastValidAnswer(
@@ -104,10 +104,10 @@ enum RequestTypeFieldStrategy: string
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
-        if (!is_int($value)) {
+        if (!is_numeric($value)) {
             return null;
         }
 
-        return $value;
+        return (int) $value;
     }
 }
