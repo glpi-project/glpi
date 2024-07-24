@@ -324,7 +324,7 @@
                     'question'               : null,
                     'section'                : null,
                     'can_update'             : true,
-                    'is_anonymous_form'      : is_anonymous_form,
+                    'is_anonymous'      : is_anonymous_form,
                 }, with_context = false) }}
             </div>
         {% endfor %}
@@ -371,7 +371,6 @@
     window.glpi_form_editor_controller = new GlpiFormEditorController(
         "[data-glpi-form-editor-container]",
         {{ item.fields.is_draft ? "true" : "false" }},
-        {{ is_anonymous_form ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]"
     );

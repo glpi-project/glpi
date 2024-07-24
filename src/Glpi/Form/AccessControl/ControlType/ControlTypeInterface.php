@@ -101,4 +101,12 @@ interface ControlTypeInterface
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote;
+
+    /**
+     * Define if an unauthenticated user can view the form.
+     *
+     * @param JsonConfigInterface $config
+     * @return bool
+     */
+    public function allowUnauthenticated(JsonConfigInterface $config): bool;
 }

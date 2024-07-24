@@ -43,6 +43,7 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
 use ReflectionClass;
+use Session;
 
 /**
  * Question of a given helpdesk form's section
@@ -90,7 +91,7 @@ final class Question extends CommonDBChild implements BlockInterface
             'question_types_manager' => QuestionTypesManager::getInstance(),
             'section'                => $this->getItem(),
             'can_update'             => $this->getForm()->canUpdate(),
-            'is_anonymous_form'      => FormAccessControlManager::getInstance()->isAnonymousForm($this->getForm()),
+            'is_anonymous'           => FormAccessControlManager::getInstance()->isAnonymousForm($this->getForm()),
         ]);
     }
 

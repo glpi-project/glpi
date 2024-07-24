@@ -173,4 +173,9 @@ final class AllowList implements ControlTypeInterface
     ): bool {
         return in_array($session_info->getProfileId(), $config->getProfileIds());
     }
+
+    public function allowUnauthenticated(JsonConfigInterface $config): bool
+    {
+        return false;
+    }
 }

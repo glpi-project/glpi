@@ -146,4 +146,13 @@ final class DirectAccess implements ControlTypeInterface
 
         return $config->getToken() === $token;
     }
+
+    public function allowUnauthenticated(JsonConfigInterface $config): bool
+    {
+        if (!$config instanceof DirectAccessConfig) {
+            throw new \InvalidArgumentException("Invalid config class");
+        }
+
+        return $config->allowUnauthenticated();
+    }
 }

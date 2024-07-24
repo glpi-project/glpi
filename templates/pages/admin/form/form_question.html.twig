@@ -37,7 +37,7 @@
 {# @var question               Glpi\Form\Question|null #}
 {# @var section                Glpi\Form\Section|null #}
 {# @var can_update             bool #}
-{# @var is_anonymous_form      bool #}
+{# @var is_anonymous           bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -75,7 +75,7 @@
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
                 <i
-                    class="ti ti-alert-triangle text-warning me-2 {{ is_anonymous_form and not question_type.isAllowedForAnonymousForm() ? '' : 'd-none' }}"
+                    class="ti ti-alert-triangle text-warning me-2 {{ is_anonymous and not question_type.isAllowedForAnonymousForm() ? '' : 'd-none' }}"
                     data-glpi-form-editor-blacklisted-question-type-warning
                     data-bs-toggle="popover"
                     data-bs-placement="top"
@@ -254,6 +254,11 @@
             type="hidden"
             name="type"
             value="{{ constant('class', question_type) }}"
+        />
+        <input
+            type="hidden"
+            name="allow_anonymous"
+            value="{{ not is_anonymous or question_type.isAllowedForAnonymousForm() ? 1 : 0 }}"
         />
     </section>
     <div data-glpi-form-editor-question-extra-details>

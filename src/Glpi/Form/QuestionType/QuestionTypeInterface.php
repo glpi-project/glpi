@@ -94,7 +94,6 @@ interface QuestionTypeInterface
      * Get JS functions options for the form editor.
      *
      * The options must be a JSON object, accepting the following keys:
-     * The allowAnonymous key is used to allow or disallow the question type for anonymous forms.
      * The extractDefaultValue function is used to extract the default value from the form editor.
      * The convertDefaultValue function is used to convert the default value to the form editor.
      *

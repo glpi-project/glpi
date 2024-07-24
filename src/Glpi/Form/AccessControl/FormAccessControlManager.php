@@ -98,11 +98,7 @@ final class FormAccessControlManager
         return array_reduce(
             $access_controls,
             function ($acc, $control) {
-                if ($control->getStrategy() instanceof DirectAccess) {
-                    return $acc || $control->getConfig()->allowUnauthenticated();
-                }
-
-                return $acc;
+                return $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig());
             },
             false
         );
