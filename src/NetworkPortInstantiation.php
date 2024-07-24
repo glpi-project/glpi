@@ -190,8 +190,8 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $internet_super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -238,7 +238,7 @@ class NetworkPortInstantiation extends CommonDBChild
     protected function getPeerInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -265,7 +265,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTableWithPeer(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -334,7 +334,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         /** @var \DBmysql $DB */

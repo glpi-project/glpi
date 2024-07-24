@@ -408,7 +408,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         $item_right,
         $itemtype,
         $items_id,
-        CommonDBTM &$item = null
+        ?CommonDBTM &$item = null
     ) {
 
        // Do not get it twice
@@ -537,7 +537,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
 
         $unaffect = false;

@@ -87,7 +87,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      * @param string               $content see HTMLTableEntity#__construct()
      * @param HTMLTableHeader|null $father  father of the current column (default NULL)
      */
-    public function __construct($name, $content, HTMLTableHeader $father = null)
+    public function __construct($name, $content, ?HTMLTableHeader $father = null)
     {
 
         parent::__construct($content);
@@ -100,7 +100,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @param CommonDBTM $item
      **/
-    public function checkItemType(CommonDBTM $item = null)
+    public function checkItemType(?CommonDBTM $item = null)
     {
 
         if (($item === null) && (count($this->itemtypes) > 0)) {

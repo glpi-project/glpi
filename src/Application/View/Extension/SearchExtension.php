@@ -53,7 +53,7 @@ class SearchExtension extends AbstractExtension
 
     public function showItem(
         int $displaytype,
-        string $value = null,
+        ?string $value = null,
         int $num = 0,
         int $row = 0,
         string $extraparams = ""
