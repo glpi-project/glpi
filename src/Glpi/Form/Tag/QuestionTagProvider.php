@@ -62,7 +62,7 @@ final class QuestionTagProvider implements TagProviderInterface
     ): string {
         $id = (int) $value;
 
-        $question = Question::getById((int) $id);
+        $question = Question::getById($id);
         if (!$question) {
             return '';
         }

@@ -62,7 +62,7 @@ final class SectionTagProvider implements TagProviderInterface
     ): string {
         $id = (int) $value;
 
-        $section = Section::getById((int) $id);
+        $section = Section::getById($id);
         if (!$section) {
             return '';
         }

@@ -56,7 +56,7 @@ final class FormTagProvider implements TagProviderInterface
     ): string {
         $id = (int) $value;
 
-        $form = Form::getById((int) $id);
+        $form = Form::getById($id);
         if ($form === false) {
             return '';
         }
