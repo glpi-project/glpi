@@ -89,7 +89,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         // Compute input from fields configuration
         foreach ($this->getConfigurableFields() as $field) {
             $input = $field->applyConfiguratedValueToInputUsingAnswers(
-                $field->getValue($form, $config),
+                $field->getConfig($form, $config),
                 $input,
                 $answers_set
             );

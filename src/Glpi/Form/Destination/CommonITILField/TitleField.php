@@ -39,6 +39,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use InvalidArgumentException;
+use JsonConfigInterface;
 use Override;
 
 class TitleField extends AbstractConfigField
@@ -56,12 +58,22 @@ class TitleField extends AbstractConfigField
     }
 
     #[Override]
+    public function getConfigClass(): string
+    {
+        return SimpleValueConfig::class;
+    }
+
+    #[Override]
     public function renderConfigForm(
         Form $form,
-        mixed $configurated_value,
+        JsonConfigInterface $config,
         string $input_name,
         array $display_options
     ): string {
+        if (!$config instanceof SimpleValueConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
+
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -76,33 +88,32 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'label'      => $this->getLabel(),
-            'value'      => $configurated_value ?? '',
-            'input_name' => $input_name,
+            'value'      => $config->getValue(),
+            'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,
         ]);
     }
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        mixed $configurated_value,
+        JsonConfigInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (is_null($configurated_value)) {
-            return $input;
+        if (!$config instanceof SimpleValueConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $input['name'] = $configurated_value;
-
+        $input['name'] = $config->getValue();
         return $input;
     }
 
     #[Override]
-    public function getDefaultValue(Form $form): mixed
+    public function getDefaultConfig(Form $form): SimpleValueConfig
     {
         // TODO: use a "form name" tag here instead of an hardcoded string
         // that may not be valid if the form name is updated later on.
-        return $form->fields['name'];
+        return new SimpleValueConfig($form->fields['name']);
     }
 
     #[Override]

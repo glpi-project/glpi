@@ -116,6 +116,7 @@ TWIG;
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
                 value="{{ question.fields.default_value }}"
+                aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
 TWIG;
@@ -124,6 +125,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'   => $question,
             'input_type' => $this->getInputType(),
+            'label'      => $question->fields['name'],
         ]);
     }
 
