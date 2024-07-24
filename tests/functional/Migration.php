@@ -1276,6 +1276,70 @@ class Migration extends \GLPITestCase
         ]);
     }
 
+    public function testGiveRight()
+    {
+        global $DB;
+
+        // Clean profilrights table to handle potential failure of previous test
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'test_giveright_1'
+            ]
+        ]);
+
+        // Adding a READ right
+        $this->output(
+            function () {
+                $this->migration->giveRight('test_giveright_1', READ);
+            }
+        )->isEqualTo('Rights have been given for test_giveright_1, you should review ACLs after update');
+        $rights = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'test_giveright_1',
+            ]
+        ]);
+        $this->integer(count($rights))->isEqualTo(1);
+        $rights = $rights->current();
+        $this->integer($rights['rights'])->isEqualTo(READ);
+
+        // Adding an UPDATE right
+        $this->output(
+            function () {
+                $this->migration->giveRight('test_giveright_1', UPDATE);
+            }
+        )->isEqualTo('Rights have been given for test_giveright_1, you should review ACLs after update');
+        $rights = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'test_giveright_1',
+            ]
+        ]);
+        $this->integer(count($rights))->isEqualTo(1);
+        $rights = $rights->current();
+        $this->integer($rights['rights'])->isEqualTo(READ + UPDATE);
+
+        // Adding a READ right for second time
+        // Should not change the rights because it's already set
+        $this->migration->giveRight('test_giveright_1', READ);
+        $rights = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'test_giveright_1',
+            ]
+        ]);
+        $this->integer(count($rights))->isEqualTo(1);
+        $rights = $rights->current();
+        $this->integer($rights['rights'])->isEqualTo(READ + UPDATE);
+
+        // Clean profilrights
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'test_giveright_1'
+            ]
+        ]);
+    }
+
     public function testRemoveConfig()
     {
         global $DB;

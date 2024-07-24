@@ -1451,6 +1451,7 @@ class Migration
             ]
         );
 
+        $added = false;
         foreach ($prof_iterator as $profile) {
             // Check if the right is already present
             $existingRight = $DB->request([
@@ -1472,6 +1473,7 @@ class Migration
                         ['rights' => $newRights],
                         ['id' => $profile_right['id']]
                     );
+                    $added = true;
                 }
                 // If the value specified is already included, do nothing
             } else {
@@ -1484,20 +1486,23 @@ class Migration
                         'rights'       => $rights
                     ]
                 );
+                $added = true;
             }
 
             // Update last rights update for the profile
             $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
-        // Display a warning message
-        $this->displayWarning(
-            sprintf(
-                'Rights have been given for %1$s, you should review ACLs after update',
-                $name
-            ),
-            true
-        );
+        // Display a warning message if rights have been given
+        if ($added) {
+            $this->displayWarning(
+                sprintf(
+                    'Rights have been given for %1$s, you should review ACLs after update',
+                    $name
+                ),
+                true
+            );
+        }
     }
 
     /**

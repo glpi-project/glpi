@@ -165,38 +165,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        if (get_called_class() == TicketTask::class) {
-            $ticket = new Ticket();
-            $ticket->getFromDB($this->fields['tickets_id']);
-
-            return $ticket->canAddTasks();
-        } else {
-            $task_item_class = get_called_class();
-            if (is_subclass_of($task_item_class, self::class)) {
-                $item_type = $task_item_class::getItilObjectItemType();
-                $item = new $item_type();
-                $foreign_key = $item::getForeignKeyField();
-                if ($item->getFromDB($this->fields[$foreign_key])) {
-                    return (Session::haveRightsOr(
-                        self::$rightname,
-                        [
-                            UPDATE,
-                            $item::READMY
-                        ]
-                    )
-                        && ($item->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                            || (isset($_SESSION["glpigroups"])
-                                && $item->haveAGroup(
-                                    CommonITILActor::ASSIGN,
-                                    $_SESSION['glpigroups']
-                                )
-                            )));
-                }
-            }
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
+        if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            return $item->canAddTasks();
         }
+
         return false;
     }
-
 
     /**
      * Does current user have right to update the current task?
@@ -209,10 +185,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        $ticket = new Ticket();
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
         if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+            $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])
+            && in_array($item->fields['status'], $item->getClosedStatusArray())
         ) {
             return false;
         }
@@ -238,10 +215,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public function canPurgeItem(): bool
     {
-        $ticket = new Ticket();
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
         if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+            $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])
+            && in_array($item->fields['status'], $item->getClosedStatusArray())
         ) {
             return false;
         }

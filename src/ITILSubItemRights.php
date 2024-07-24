@@ -53,28 +53,26 @@ trait ITILSubItemRights
 
         if ($interface == 'central') {
             $values[self::UPDATEALL] = __('Update all');
-            $values[self::ADDALLITEM] = __('Add to all tickets');
+            $values[self::ADDALLITEM] = __('Add to all items');
             $values[self::SEEPRIVATE] = __('See private ones');
         }
 
         $values[self::ADD_AS_GROUP] = [
             'short' => __('Add (associated groups)'),
-            'long'  => __('Add to tickets of associated groups'),
+            'long'  => __('Add to items of associated groups'),
         ];
         $values[self::UPDATEMY] = __('Update (author)');
         $values[self::ADDMY] = [
             'short' => __('Add (requester)'),
-            'long'  => __('Add to tickets (requester)'),
+            'long'  => __('Add to items (requester)'),
         ];
         $values[self::ADD_AS_OBSERVER] = [
             'short' => __('Add (observer)'),
-            'long'  => __('Add to tickets (observer)'),
+            'long'  => __('Add to items (observer)'),
         ];
-        if (get_called_class() != ITILFollowup::class) {
-            $values[self::ADD_AS_TECHNICIAN] = ['short' => __('Add (technician)'),
-                'long'  => __('Add to tickets (technician)'),
-            ];
-        }
+        $values[self::ADD_AS_TECHNICIAN] = ['short' => __('Add (technician)'),
+            'long'  => __('Add to items (technician)'),
+        ];
         $values[self::SEEPUBLIC] = __('See public ones');
 
         if ($interface == 'helpdesk') {
