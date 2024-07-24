@@ -1,0 +1,74 @@
+diff --git a/lib/CardDAV/Plugin.php b/lib/CardDAV/Plugin.php
+index c2d31d9d..810ae3a1 100644
+--- a/lib/CardDAV/Plugin.php
++++ b/lib/CardDAV/Plugin.php
+@@ -800,7 +800,7 @@ class Plugin extends DAV\ServerPlugin
+      *
+      * @return string
+      */
+-    protected function convertVCard($data, $target, array $propertiesFilter = null)
++    protected function convertVCard($data, $target, ?array $propertiesFilter = null)
+     {
+         if (is_resource($data)) {
+             $data = stream_get_contents($data);
+diff --git a/lib/CardDAV/Xml/Property/SupportedAddressData.php b/lib/CardDAV/Xml/Property/SupportedAddressData.php
+index fe5f976a..536c5a19 100644
+--- a/lib/CardDAV/Xml/Property/SupportedAddressData.php
++++ b/lib/CardDAV/Xml/Property/SupportedAddressData.php
+@@ -34,7 +34,7 @@ class SupportedAddressData implements XmlSerializable
+     /**
+      * Creates the property.
+      */
+-    public function __construct(array $supportedData = null)
++    public function __construct(?array $supportedData = null)
+     {
+         if (is_null($supportedData)) {
+             $supportedData = [
+diff --git a/lib/DAV/Auth/Plugin.php b/lib/DAV/Auth/Plugin.php
+index eb4f27ca..47fbe205 100644
+--- a/lib/DAV/Auth/Plugin.php
++++ b/lib/DAV/Auth/Plugin.php
+@@ -58,7 +58,7 @@ class Plugin extends ServerPlugin
+      *
+      * @param Backend\BackendInterface $authBackend
+      */
+-    public function __construct(Backend\BackendInterface $authBackend = null)
++    public function __construct(?Backend\BackendInterface $authBackend = null)
+     {
+         if (!is_null($authBackend)) {
+             $this->addBackend($authBackend);
+diff --git a/lib/DAV/Exception/Locked.php b/lib/DAV/Exception/Locked.php
+index 28263cf1..24fad709 100644
+--- a/lib/DAV/Exception/Locked.php
++++ b/lib/DAV/Exception/Locked.php
+@@ -32,7 +32,7 @@ class Locked extends DAV\Exception
+      *
+      * @param DAV\Locks\LockInfo $lock
+      */
+-    public function __construct(DAV\Locks\LockInfo $lock = null)
++    public function __construct(?DAV\Locks\LockInfo $lock = null)
+     {
+         parent::__construct();
+ 
+diff --git a/lib/DAV/Server.php b/lib/DAV/Server.php
+index 1f8300d4..8cd834e8 100644
+--- a/lib/DAV/Server.php
++++ b/lib/DAV/Server.php
+@@ -211,7 +211,7 @@ class Server implements LoggerAwareInterface, EmitterInterface
+      *
+      * @throws Exception
+      */
+-    public function __construct($treeOrNode = null, HTTP\Sapi $sapi = null)
++    public function __construct($treeOrNode = null, ?HTTP\Sapi $sapi = null)
+     {
+         if ($treeOrNode instanceof Tree) {
+             $this->tree = $treeOrNode;
+@@ -882,7 +882,7 @@ class Server implements LoggerAwareInterface, EmitterInterface
+      *
+      * @return \Traversable
+      */
+-    private function generatePathNodes(PropFind $propFind, array $yieldFirst = null)
++    private function generatePathNodes(PropFind $propFind, ?array $yieldFirst = null)
+     {
+         if (null !== $yieldFirst) {
+             yield $yieldFirst;
