@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
+use Glpi\Toolbox\URL;
 
 /**
  * Transfer engine.
@@ -3895,7 +3896,8 @@ class Transfer extends CommonDBTM
         if ($edit_form) {
             $this->showFormHeader($options);
         } else {
-            echo "<form method='post' name=form action='" . $options['target'] . "'>";
+            $target = URL::sanitizeURL($options['target']);
+            echo "<form method='post' name=form action='" . $target . "'>";
             echo "<div class='center' id='tabsbody' >";
             echo "<table class='tab_cadre_fixe'>";
 
