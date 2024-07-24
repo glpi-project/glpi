@@ -306,7 +306,7 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(array $data = null)
+    public function handleLinks(?array $data = null)
     {
         if ($this->current_key !== null) {
             $data = [$this->data[$this->current_key]];

@@ -1093,7 +1093,7 @@ class Lock extends CommonGLPI
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

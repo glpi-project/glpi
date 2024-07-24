@@ -63,11 +63,11 @@ class RequirementsManager
     /**
      * Returns core requirement list.
      *
-     * @param \DBmysql $db  DB instance (if null BD requirements will not be returned).
+     * @param \DBmysql|null $db  DB instance (if null BD requirements will not be returned).
      *
      * @return RequirementsList
      */
-    public function getCoreRequirementList(\DBmysql $db = null): RequirementsList
+    public function getCoreRequirementList(?\DBmysql $db = null): RequirementsList
     {
         $requirements = [];
 
