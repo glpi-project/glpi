@@ -251,6 +251,63 @@ class LocationTest extends DbTestCase
         }
     }
 
+    public function testImportTree(): void
+    {
+        // Import a non existing tree
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            [
+                'entities_id'   => 0,
+                'name'          => 'location 1 > sub location A',
+            ]
+        );
+
+        $imported = \Location::getById($imported_id);
+        $this->assertInstanceOf(\Location::class, $imported);
+        $this->assertEquals('sub location A', $imported->fields['name']);
+        $this->assertGreaterThan(0, $imported->fields['locations_id']);
+
+        $imported_parent = \Location::getById($imported->fields['locations_id']);
+        $this->assertInstanceOf(\Location::class, $imported_parent);
+        $this->assertEquals('location 1', $imported_parent->fields['name']);
+        $this->assertEquals(0, $imported_parent->fields['locations_id']);
+
+        // Import a child of an existing location
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            [
+                'entities_id'   => 0,
+                'name'          => '_location01 > sub location B',
+            ]
+        );
+
+        $imported = \Location::getById($imported_id);
+        $this->assertInstanceOf(\Location::class, $imported);
+        $this->assertEquals('sub location B', $imported->fields['name']);
+        $this->assertEquals(getItemByTypeName(\Location::class, '_location01', true), $imported->fields['locations_id']);
+    }
+
+    public function testImportSeparator(): void
+    {
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            [
+                'entities_id'   => 0,
+                'name'          => '_location01 > _sublocation01',
+            ]
+        );
+        $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation01', true), $imported_id);
+
+        $instance = new \Location();
+        $imported_id = $instance->import(
+            [
+                'entities_id'   => 0,
+                'name'          => '_location02>_sublocation02', // no spaces around separator
+            ]
+        );
+        $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation02', true), $imported_id);
+    }
+
     public function testImportParentVisibleEntity(): void
     {
         $instance = new \Location();

@@ -281,7 +281,6 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-        $this->updateParentStatus($this->input['_job'], $this->input);
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
@@ -291,8 +290,6 @@ class ITILFollowup extends CommonDBChild
             ];
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
-
-        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
        // Add log entry in the ITILObject
         $changes = [
@@ -309,6 +306,9 @@ class ITILFollowup extends CommonDBChild
         );
 
         self::addToMergedTickets();
+
+        $this->updateParentStatus($this->input['_job'], $this->input);
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
         parent::post_addItem();
     }

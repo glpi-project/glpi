@@ -1073,8 +1073,12 @@ class NetworkPort extends CommonDBChild
                             $relations_id = 0;
                             $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
-                            if ($oppositePort !== false) {
-                                $device2 = $oppositePort->getItem();
+                            if ($oppositePort === false) {
+                                break;
+                            }
+
+                            $device2 = $oppositePort->getItem();
+                            if ($device2 !== false) {
                                 $output .= $this->getUnmanagedLink($device2, $oppositePort);
 
                                 //equipments connected to hubs

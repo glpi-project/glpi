@@ -230,8 +230,6 @@ class Rule extends CommonDBTM
                               = $rulecollection->getRuleClass()->getTitle();
                     $menu['rule']['options'][$rulecollection->menu_option]['page']
                               = $ruleclassname::getSearchURL(false);
-                    $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
-                              = $ruleclassname::getSearchURL(false);
                     if ($rulecollection->canCreate()) {
                         $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
                               = $ruleclassname::getFormURL(false);

@@ -2090,7 +2090,7 @@ JS;
      */
     public static function getExcludedTypes()
     {
-        return ['ConsumableItem', 'CartridgeItem', 'Software'];
+        return ['ConsumableItem', 'CartridgeItem'];
     }
 
 

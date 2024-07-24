@@ -116,6 +116,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
 
             if (!isCommandLine()) {
                 // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+                $debug_mode = $_SESSION['glpi_use_mode'];
                 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
                 Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
@@ -143,6 +144,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                     </div>
 TWIG, $twig_params);
                 Html::nullFooter();
+                $_SESSION['glpi_use_mode'] = $debug_mode;
             } else {
                 echo "GLPI seems to not be configured properly.\n";
                 echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
@@ -217,6 +219,7 @@ TWIG, $twig_params);
             Session::checkCookieSecureConfig();
 
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
+            $debug_mode = $_SESSION['glpi_use_mode'];
             Toolbox::setDebugMode(Session::NORMAL_MODE);
 
             Session::loadLanguage('', false);
@@ -286,6 +289,7 @@ TWIG, $twig_params);
             </div>
 TWIG, $twig_params);
             Html::nullFooter();
+            $_SESSION['glpi_use_mode'] = $debug_mode;
             exit();
         }
 

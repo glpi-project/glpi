@@ -762,11 +762,8 @@ TWIG, $twig_params);
         self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
         if ($table->getNumberOfRows() > 0) {
-            $number = $table->getNumberOfRows();
-            if ($item::class === FQDN::class) {
-                $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
@@ -799,9 +796,7 @@ TWIG, $twig_params);
                  Html::closeForm();
             }
 
-            if ($item::class === FQDN::class) {
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
         } else {
             echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No network name found') . "</th></tr>";
             echo "</table>";

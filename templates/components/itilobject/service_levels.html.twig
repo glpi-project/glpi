@@ -231,6 +231,7 @@
             full_width: true,
             is_horizontal: false,
             add_field_class: (is_expanded ? 'col-sm-6' : ''),
+            required: field_options.fields_template.isMandatoryField(la_field.lafieldname)
          }
       ) }}
    {% endif %}
