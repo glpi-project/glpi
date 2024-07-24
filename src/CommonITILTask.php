@@ -70,14 +70,183 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return 'ti ti-checkbox';
     }
 
+    public static function canCreate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::ADDALLITEM,
+                self::ADD_AS_GROUP,
+                self::ADDMY,
+                self::ADD_AS_OBSERVER,
+                self::ADD_AS_TECHNICIAN,
+                UPDATE
+            ],
+        ));
+    }
+
+    public static function canUpdate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::UPDATEALL,
+                self::UPDATEMY,
+                UPDATE
+            ]
+        ));
+    }
+
+
     public function canViewPrivates()
     {
-        return false;
+        return Session::haveRight(self::$rightname, self::SEEPRIVATE);
     }
+
 
     public function canEditAll()
     {
+        return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE, PURGE, self::UPDATEALL]);
+    }
+
+
+    /**
+     * Does current user have right to show the current task?
+     *
+     * @return boolean
+     **/
+    public function canViewItem(): bool
+    {
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+            return true;
+        }
+
+        if (
+            !$this->fields['is_private']
+            && Session::haveRight(self::$rightname, self::SEEPUBLIC)
+        ) {
+            return true;
+        }
+
+        // see task created or affected to me
+        if (
+            Session::getCurrentInterface() == "central"
+            && ($this->fields["users_id"] === Session::getLoginUserID())
+              || ($this->fields["users_id_tech"] === Session::getLoginUserID())
+        ) {
+            return true;
+        }
+
+        if (
+            $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
+            && isset($_SESSION["glpigroups"])
+            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+        ) {
+            return true;
+        }
+
         return false;
+    }
+
+
+    /**
+     * Does current user have right to create the current task?
+     *
+     * @return boolean
+     **/
+    public function canCreateItem(): bool
+    {
+
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        if (get_called_class() == TicketTask::class) {
+            $ticket = new Ticket();
+            $ticket->getFromDB($this->fields['tickets_id']);
+
+            return $ticket->canAddTasks();
+        } else {
+            $task_item_class = get_called_class();
+            if (is_subclass_of($task_item_class, self::class)) {
+                $item_type = $task_item_class::getItilObjectItemType();
+                $item = new $item_type();
+                $foreign_key = $item::getForeignKeyField();
+                if ($item->getFromDB($this->fields[$foreign_key])) {
+                    return (Session::haveRightsOr(
+                        self::$rightname,
+                        [
+                            UPDATE,
+                            $item::READMY
+                        ]
+                    )
+                        && ($item->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                            || (isset($_SESSION["glpigroups"])
+                                && $item->haveAGroup(
+                                    CommonITILActor::ASSIGN,
+                                    $_SESSION['glpigroups']
+                                )
+                            )));
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Does current user have right to update the current task?
+     *
+     * @return boolean
+     **/
+    public function canUpdateItem(): bool
+    {
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        if (
+            (($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight(self::$rightname, self::UPDATEALL)
+            && !Session::haveRight(self::$rightname, UPDATE))
+            || ($this->fields["users_id"] == Session::getLoginUserID()
+            && !Session::haveRight(self::$rightname, self::UPDATEMY))
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Does current user have right to purge the current task?
+     *
+     * @return boolean
+     **/
+    public function canPurgeItem(): bool
+    {
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        return Session::haveRight(self::$rightname, PURGE);
     }
 
     /**

@@ -895,41 +895,6 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-
-    public function getRights($interface = 'central')
-    {
-
-        $values = parent::getRights();
-        unset($values[UPDATE], $values[CREATE], $values[READ]);
-
-        if ($interface == 'central') {
-            $values[self::UPDATEALL] = __('Update all');
-            $values[self::ADDALLITEM] = __('Add to all tickets');
-            $values[self::SEEPRIVATE] = __('See private ones');
-        }
-
-        $values[self::ADD_AS_GROUP] = [
-            'short' => __('Add (associated groups)'),
-            'long'  => __('Add to tickets of associated groups'),
-        ];
-        $values[self::UPDATEMY] = __('Update (author)');
-        $values[self::ADDMY] = [
-            'short' => __('Add (requester)'),
-            'long'  => __('Add to tickets (requester)'),
-        ];
-        $values[self::ADD_AS_OBSERVER] = [
-            'short' => __('Add (observer)'),
-            'long'  => __('Add to tickets (observer)'),
-        ];
-        $values[self::SEEPUBLIC] = __('See public ones');
-
-        if ($interface == 'helpdesk') {
-            unset($values[PURGE]);
-        }
-
-        return $values;
-    }
-
     public static function showMassiveActionAddFollowupForm()
     {
         echo "<table class='tab_cadre_fixe'>";
