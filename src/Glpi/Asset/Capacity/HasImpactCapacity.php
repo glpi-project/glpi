@@ -105,6 +105,14 @@ class HasImpactCapacity extends AbstractCapacity
         $enabled_types = array_diff($enabled_types, [$classname]);
         Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
 
+        $relation = new ImpactRelation();
+        $relation->deleteByCriteria([
+            'OR' => [
+                'itemtype_source' => $classname,
+                'itemtype_impacted' => $classname,
+            ]
+        ], true, false);
+
         $impact_item = new ImpactItem();
         $impact_item->deleteByCriteria([
             'itemtype' => $classname,
