@@ -34,7 +34,6 @@
 
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
-use Glpi\Application\ErrorHandler;
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
@@ -56,10 +55,6 @@ $request = Request::createFromGlobals();
 
 $response = $kernel->handle($request);
 
-try {
-    $response->send();
+$response->send();
 
-    $kernel->terminate($request, $response);
-} catch (\Throwable $e) {
-    ErrorHandler::getInstance()->handleException($e);
-}
+$kernel->terminate($request, $response);
