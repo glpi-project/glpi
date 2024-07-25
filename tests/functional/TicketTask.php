@@ -745,7 +745,7 @@ class TicketTask extends DbTestCase
             ]
         );
 
-        // Create a profile right to be able to read my ticket
+        // Update a profile right to be able to read my ticket
         $this->updateItem(
             ProfileRight::class,
             $ticket_right->getID(),
@@ -754,12 +754,24 @@ class TicketTask extends DbTestCase
             ]
         );
 
+        $ticket_right = new ProfileRight();
+        $ticket_right->getFromDBByCrit(
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'task',
+            ]
+        );
+
         // Create a profile right to add a task to the ticket
-        $task_right = $this->createItem(ProfileRight::class, [
-            'profiles_id' => $profile->getID(),
-            'name' => 'task',
-            'rights' => CommonITILTask::ADDMY,
-        ]);
+        $task_right = $this->updateItem(
+            ProfileRight::class,
+            $ticket_right->getID(),
+            [
+                'profiles_id' => $profile->getID(),
+                'name' => 'task',
+                'rights' => CommonITILTask::ADDMY,
+            ]
+        );
 
         $this->login();
 
