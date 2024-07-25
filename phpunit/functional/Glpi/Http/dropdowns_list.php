@@ -244,4 +244,6 @@ return [
     '/front/vlan.php' => \Vlan::class,
     '/front/wifinetwork.form.php' => \WifiNetwork::class,
     '/front/wifinetwork.php' => \WifiNetwork::class,
+    '/front/webhookcategory.form.php' => \WebhookCategory::class,
+    '/front/webhookcategory.php' => \WebhookCategory::class,
 ];
