@@ -1029,7 +1029,7 @@ abstract class CommonITILObject extends CommonDBTM
                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
              )
              || (
-                 Session::haveRightsOr(CommonITILTask::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE, $this::READMY])
+                 Session::haveRightsOr(CommonITILTask::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE, static::class::READMY])
                  && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
              )
              || (
