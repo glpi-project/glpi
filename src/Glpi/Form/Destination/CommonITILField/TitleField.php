@@ -97,11 +97,17 @@ TWIG;
         return $input;
     }
 
-    #[Override()]
+    #[Override]
     public function getDefaultValue(Form $form): mixed
     {
         // TODO: use a "form name" tag here instead of an hardcoded string
         // that may not be valid if the form name is updated later on.
         return $form->fields['name'];
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
     }
 }

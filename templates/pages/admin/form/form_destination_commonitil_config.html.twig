@@ -37,7 +37,7 @@
 
 <div>
     {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
-    {% for field in item.getConfigurableFields() %}
+    {% for field in item.getConfigurableFields()|sort((a, b) => a.getWeight() <=> b.getWeight()) %}
 
         {% set extra_options = {} %}
         {% if field.supportAutoConfiguration() %}

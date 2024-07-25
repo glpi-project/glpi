@@ -284,4 +284,10 @@ TWIG;
 
         return $values;
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 30;
+    }
 }

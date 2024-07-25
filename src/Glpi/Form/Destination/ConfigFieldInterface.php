@@ -115,4 +115,12 @@ interface ConfigFieldInterface
      * @return mixed
      */
     public function getDefaultValue(Form $form): mixed;
+
+    /**
+     * Get the weight of this config field.
+     * The weight is used to sort fields in the form destination configuration.
+     *
+     * @return int
+     */
+    public function getWeight(): int;
 }
