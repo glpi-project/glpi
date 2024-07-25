@@ -231,6 +231,7 @@ The present file will list all changes made to the project; according to the
 - `$CFG_GLPI_PLUGINS` global variable.
 - `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
 - `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
+- `$GLPI` global variable.
 - `$LANG` global variable.
 - `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
 - `$SECURITY_STRATEGY` global variable.
