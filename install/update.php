@@ -41,7 +41,6 @@ include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**
  * @var \DBmysql $DB
- * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  * @var \Update $update
  * @var bool $HEADER_LOADED

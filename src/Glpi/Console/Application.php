@@ -335,17 +335,10 @@ class Application extends BaseApplication
     /**
      * Initalize GLPI.
      *
-     * @global GLPI  $GLPI
-     *
      * @return void
      */
     private function initApplication()
     {
-        /** @var \GLPI $GLPI */
-        global $GLPI;
-        $GLPI = new GLPI();
-        $GLPI->initLogger();
-        $GLPI->initErrorHandler();
     }
 
     /**

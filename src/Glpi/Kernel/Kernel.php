@@ -61,6 +61,11 @@ final class Kernel extends BaseKernel
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
         (new ConfigurationConstants($this->getProjectDir()))->computeConstants();
 
+        // TODO: refactor the GLPI class.
+        $glpi = (new \GLPI());
+        $glpi->initLogger();
+        $glpi->initErrorHandler();
+
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct($env, $env === 'development');
     }
