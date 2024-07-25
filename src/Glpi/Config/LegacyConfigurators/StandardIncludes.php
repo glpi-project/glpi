@@ -36,7 +36,6 @@ namespace Glpi\Config\LegacyConfigurators;
 
 use Session;
 use Auth;
-use GLPI;
 use DBConnection;
 use Config;
 use Html;
@@ -66,19 +65,25 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                $GLPI_CACHE
         ;
 
-        $no_checks_scripts = [
-            realpath(GLPI_ROOT . '/front/css.php'),
-            realpath(GLPI_ROOT . '/front/locale.php'),
-            realpath(GLPI_ROOT . '/install/install.php'),
-            realpath(GLPI_ROOT . '/install/update.php'),
-        ];
-        $skip_checks = in_array(realpath($_SERVER['SCRIPT_FILENAME']), $no_checks_scripts, true);
+        Config::detectRootDoc();
+
+        $skip_checks = false;
+        if (array_key_exists('REQUEST_URI', $_SERVER)) {
+            $no_checks_scripts = [
+                $CFG_GLPI['root_doc'] . '/front/css.php',
+                $CFG_GLPI['root_doc'] . '/front/locale.php',
+                $CFG_GLPI['root_doc'] . '/install/install.php',
+                $CFG_GLPI['root_doc'] . '/install/update.php',
+            ];
+            $skip_checks = preg_match(
+                '/^' . implode('|', array_map(fn ($url) => preg_quote($url, '/'), $no_checks_scripts)) . '/',
+                $_SERVER['REQUEST_URI']
+            ) === 1;
+        }
 
         //init cache
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-
-        Config::detectRootDoc();
 
         // Check if the DB is configured properly
         if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

@@ -52,6 +52,6 @@ final readonly class ExceptionListener implements EventSubscriberInterface
     {
         $handler = ErrorHandler::getInstance();
 
-        $handler->handleException($event->getThrowable());
+        $handler->handleException($event->getThrowable(), true);
     }
 }

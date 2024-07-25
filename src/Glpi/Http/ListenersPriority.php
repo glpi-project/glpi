@@ -45,7 +45,7 @@ final class ListenersPriority
 
         LegacyRouterListener::class         => 400,
 
-        // Config providers are still expecting the `$_SERVER['SCRIPT_FILENAME']` to matches the legacy script path.
+        // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
     ];
