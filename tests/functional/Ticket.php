@@ -4396,7 +4396,25 @@ HTML,
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); // Reload ticket actors
 
-       // Can add followup as user is assigned
+       // Cant add followup as user is assigned but do not have ADD_AS_TECHNICIAN right
+        $this->login();
+        $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isFalse();
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->canAddFollowups())->isFalse();
+
+         // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights' => \ITILFollowup::ADD_AS_TECHNICIAN
+            ],
+            [
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
+            ]
+        );
+
+         // User is assigned and have ADD_AS_TECHNICIAN, he should be able to add followup
         $this->login();
         $this->boolean((bool)$ticket->canUserAddFollowups($post_only_id))->isTrue();
         $this->login('post-only', 'postonly');

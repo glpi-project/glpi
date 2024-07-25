@@ -48,6 +48,27 @@ use User;
 
 class TicketTask extends DbTestCase
 {
+    protected function dataActorsAddTask(): array
+    {
+        return [
+            [
+                'testAddOnMyTicket',
+                CommonITILTask::ADDMY,
+                '_users_id_requester'
+            ],
+            [
+                'testAddAsObserver',
+                CommonITILTask::ADD_AS_OBSERVER,
+                '_users_id_observer'
+            ],
+            [
+                'testAddAsTechnician',
+                CommonITILTask::ADD_AS_TECHNICIAN,
+                '_users_id_assign'
+            ],
+        ];
+    }
+
     /**
      * Create a new ticket
      *
@@ -700,33 +721,16 @@ class TicketTask extends DbTestCase
     {
         global $DB;
 
-        $this->login();
         $uid = getItemByTypeName(User::class, TU_USER, true);
+        $profile = getItemByTypeName(Profile::class, 'Super-Admin');
 
-        //Create profile
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'testUpdateMyTask',
-            'interface' => 'central',
-        ]);
-
-        $profile_user = new Profile_User();
-        $profile_user->getFromDBByCrit([
-            'users_id' => $uid,
-        ]);
-
-        $DB->delete(
-            ProfileRight::getTable(),
-            [
-                'profiles_id' => $profile->getID(),
-                'name' => 'task'
-            ],
-        );
-
-        //Add the profile to the user
         $DB->update(
-            Profile_User::getTable(),
-            ['profiles_id' => $profile->getID()],
-            ['users_id' => $uid],
+            'glpi_profilerights',
+            ['rights' => 0],
+            [
+                'profiles_id'  => $profile->getID(),
+                'name'         => 'task'
+            ]
         );
 
         $this->login();
@@ -760,13 +764,6 @@ class TicketTask extends DbTestCase
         $this->login();
 
         $this->boolean((new \TicketTask())->canCreate())->isTrue();
-
-        // Check that the last_rights_update field is not null
-        $this->variable($profile->fields['last_rights_update'])->isNotNull();
-
-        $profile->getFromDB($profile->getID());
-
-        $this->login();
 
         // Get a ticket
         $ticket = self::getNewTicket();
@@ -807,7 +804,7 @@ class TicketTask extends DbTestCase
      *
      * @return void
      */
-    private function createTaskAndAssertCanCreate($profileName, $right, $ticketUserType)
+    private function createTaskAndAssertCanCreate(string $profileName, int $right, string $ticketUserType): void
     {
         global $DB;
 
@@ -846,16 +843,13 @@ class TicketTask extends DbTestCase
 
         $this->boolean((new \TicketTask())->canCreate())->isFalse();
 
-        $task = $this->createItem(
-            \TicketTask::class,
-            [
-                'state' => \Planning::TODO,
-                'tickets_id' => $ticket,
-                'content' => "Task",
-                'users_id' => $uid,
-            ]
-        );
-
+        $task = new \TicketTask();
+        $task->fields = [
+            'state' => \Planning::TODO,
+            'tickets_id' => $ticket,
+            'content' => "Task",
+            'users_id' => $uid,
+        ];
         $this->boolean($task->canCreateItem())->isFalse();
 
         $ticket_right = new ProfileRight();
@@ -897,47 +891,23 @@ class TicketTask extends DbTestCase
             ]
         );
 
-        $task = $this->createItem(
-            \TicketTask::class,
-            [
-                'state' => \Planning::TODO,
-                'tickets_id' => $ticket->getID(),
-                'content' => "Task",
-                'users_id' => $uid,
-            ]
-        );
+        $task = new \TicketTask();
+        $task->fields = [
+            'state' => \Planning::TODO,
+            'tickets_id' => $ticket->getID(),
+            'content' => "Task",
+            'users_id' => $uid,
+        ];
 
         $this->boolean($task->canCreateItem())->isTrue();
     }
 
     /**
-     * Test that the user can create a task on his ticket
-     *
-     * @return void
+     * @dataprovider dataActorsAddTask
      */
-    public function testAddOnMyTicket()
+    public function testAddTask(string $profileName, int $right, string $ticketUserType)
     {
-        $this->createTaskAndAssertCanCreate('testAddOnMyTicket', CommonITILTask::ADDMY, '_users_id_requester');
-    }
-
-    /**
-     * Test that the user can create a task on ticket where he is the observer
-     *
-     * @return void
-     */
-    public function testAddAsObserver()
-    {
-        $this->createTaskAndAssertCanCreate('testAddAsObserver', CommonITILTask::ADD_AS_OBSERVER, '_users_id_observer');
-    }
-
-    /**
-     * Test that the user can create a task on ticket where he is assigned
-     *
-     * @return void
-     */
-    public function testAddAsTechnician()
-    {
-        $this->createTaskAndAssertCanCreate('testAddAsTechnician', CommonITILTask::ADD_AS_TECHNICIAN, '_users_id_assign');
+        $this->createTaskAndAssertCanCreate($profileName, $right, $ticketUserType);
     }
 
     /**

@@ -996,7 +996,10 @@ abstract class CommonITILObject extends CommonDBTM
                 && isset($_SESSION["glpigroups"])
                 && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
             )
-            || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (
+                Session::haveRightsOr(ITILFollowup::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE])
+                && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            )
             || (
                 isset($_SESSION["glpigroups"])
                 && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
@@ -1029,7 +1032,7 @@ abstract class CommonITILObject extends CommonDBTM
                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
              )
              || (
-                 Session::haveRightsOr(CommonITILTask::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE, static::class::READMY])
+                 Session::haveRightsOr(CommonITILTask::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE])
                  && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
              )
              || (

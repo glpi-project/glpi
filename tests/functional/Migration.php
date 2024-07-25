@@ -1283,11 +1283,32 @@ class Migration extends \GLPITestCase
         // Clean profilrights table to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_giveright_1'
+                'test_giveright_1',
+                'test_giveright_2',
+                'test_giveright_3'
             ]
         ]);
 
-        // Adding a READ right
+        $profiles_id = getItemByTypeName('Profile', 'Super-Admin', true);
+
+        // Adding profiles with different rights
+        $DB->insert('glpi_profilerights', [
+            'name' => 'test_giveright_1',
+            'profiles_id' => $profiles_id,
+            'rights' => 0
+        ]);
+        $DB->insert('glpi_profilerights', [
+            'name' => 'test_giveright_2',
+            'profiles_id' => $profiles_id,
+            'rights' => READ | UPDATE
+        ]);
+        $DB->insert('glpi_profilerights', [
+            'name' => 'test_giveright_3',
+            'profiles_id' => $profiles_id,
+            'rights' => 0
+        ]);
+
+        // Adding a READ right with default required rights
         $this->output(
             function () {
                 $this->migration->giveRight('test_giveright_1', READ);
@@ -1303,7 +1324,7 @@ class Migration extends \GLPITestCase
         $rights = $rights->current();
         $this->integer($rights['rights'])->isEqualTo(READ);
 
-        // Adding an UPDATE right
+        // Adding an UPDATE right with default required rights
         $this->output(
             function () {
                 $this->migration->giveRight('test_giveright_1', UPDATE);
@@ -1332,10 +1353,40 @@ class Migration extends \GLPITestCase
         $rights = $rights->current();
         $this->integer($rights['rights'])->isEqualTo(READ + UPDATE);
 
+        // Adding a right with specific required rights
+        $this->output(
+            function () {
+                $this->migration->giveRight('test_giveright_2', CREATE, ['test_giveright_2' => READ | UPDATE]);
+            }
+        )->isEqualTo('Rights have been given for test_giveright_2, you should review ACLs after update');
+        $rights = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'test_giveright_2',
+            ]
+        ]);
+        $this->integer(count($rights))->isEqualTo(1);
+        $rights = $rights->current();
+        $this->integer($rights['rights'])->isEqualTo(READ | UPDATE | CREATE);
+
+        // Trying to add a right with specific required rights that are not met
+        $this->migration->giveRight('test_giveright_3', CREATE, ['test_giveright_3' => READ | UPDATE]);
+        $rights = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'test_giveright_3',
+            ]
+        ]);
+        $this->integer(count($rights))->isEqualTo(1);
+        $rights = $rights->current();
+        $this->integer($rights['rights'])->isEqualTo(0);
+
         // Clean profilrights
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_giveright_1'
+                'test_giveright_1',
+                'test_giveright_2',
+                'test_giveright_3'
             ]
         ]);
     }

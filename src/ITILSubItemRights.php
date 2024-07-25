@@ -70,7 +70,8 @@ trait ITILSubItemRights
             'short' => __('Add (observer)'),
             'long'  => __('Add to items (observer)'),
         ];
-        $values[self::ADD_AS_TECHNICIAN] = ['short' => __('Add (technician)'),
+        $values[self::ADD_AS_TECHNICIAN] = [
+            'short' => __('Add (technician)'),
             'long'  => __('Add to items (technician)'),
         ];
         $values[self::SEEPUBLIC] = __('See public ones');

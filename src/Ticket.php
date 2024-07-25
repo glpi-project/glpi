@@ -2072,7 +2072,10 @@ class Ticket extends CommonITILObject
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_GROUP, $entity_id)
             && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
          )
-         || $this->isUser(CommonITILActor::ASSIGN, $user_id)
+         || (
+            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_TECHNICIAN, $entity_id)
+            && $this->isUser(CommonITILActor::ASSIGN, $user_id)
+         )
          || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
     }
 
