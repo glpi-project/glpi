@@ -60,11 +60,9 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \GLPI $GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
         global $CFG_GLPI,
-               $GLPI,
                $GLPI_CACHE
         ;
 
@@ -75,10 +73,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             realpath(GLPI_ROOT . '/install/update.php'),
         ];
         $skip_checks = in_array(realpath($_SERVER['SCRIPT_FILENAME']), $no_checks_scripts, true);
-
-        $GLPI = new GLPI();
-        $GLPI->initLogger();
-        $GLPI->initErrorHandler();
 
         //init cache
         $cache_manager = new CacheManager();
