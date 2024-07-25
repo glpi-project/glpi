@@ -48,6 +48,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
+use MassiveAction;
 use Override;
 use ReflectionClass;
 use Session;
@@ -236,6 +237,32 @@ final class Form extends CommonDBTM
                 FormAccessControl::class,
             ]
         );
+    }
+
+    #[Override]
+    public function getSpecificMassiveActions($checkitem = null): array
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        $key = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . "export";
+        $icon = '<i class="ti ti-file-arrow-right"></i>';
+        $label = __('Export form');
+        $actions[$key] = $icon . $label;
+
+        return $actions;
+    }
+
+    #[Override]
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
+    {
+        $ids = array_values($ma->getItems()[Form::class]);
+        $export_url = "/form/export?" . http_build_query(['ids' => $ids]);
+
+        $label = __("Click here to download the exported forms...");
+        echo "<a href=\"$export_url\">$label</a>";
+        echo Html::scriptBlock("window.location.href = '$export_url';");
+
+        return true;
     }
 
     /**

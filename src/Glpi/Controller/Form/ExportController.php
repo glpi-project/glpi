@@ -35,48 +35,41 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
-use Glpi\Form\Tag\FormTagsManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class TagListController extends AbstractController
+final class ExportController extends AbstractController
 {
-    #[Route(
-        "/form/tag-list",
-        name: "glpi_form_tags_list",
-        methods: "GET"
-    )]
+    #[Route("/form/export", name: "glpi_form_export")]
     public function __invoke(Request $request): Response
     {
-        if (!Form::canUpdate()) {
+        // Right check
+        if (!Form::canView()) {
             throw new AccessDeniedHttpException();
         }
 
-        $form = $this->loadSubmittedForm($request);
-        $filter = $request->query->getString('filter');
+        // Read parameters
+        $ids = $request->query->all()["ids"] ?? [];
 
-        $tag_manager = new FormTagsManager();
-        return new JsonResponse($tag_manager->getTags($form, $filter));
-    }
+        // Execute export
+        $serializer = new FormSerializer();
+        $forms = Form::getByIds($ids);
+        $export = $serializer->exportFormsToJson($forms);
 
-    private function loadSubmittedForm(Request $request): Form
-    {
-        $forms_id = $request->query->getInt("form_id");
-        if (!$forms_id) {
-            throw new BadRequestHttpException();
-        }
+        // Output file
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $export->getFileName(),
+        );
+        $response = new Response($export->getJsonContent());
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'application/json');
 
-        $form = Form::getById($forms_id);
-        if (!$form) {
-            throw new NotFoundHttpException();
-        }
-
-        return $form;
+        return $response;
     }
 }

@@ -37,6 +37,7 @@ namespace Glpi\Form\Export\Serializer;
 
 use Entity;
 use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -53,8 +54,8 @@ final class FormSerializer extends AbstractFormSerializer
         return 1;
     }
 
-    /** @property Form[] $forms */
-    public function exportFormsToJson(array $forms): string
+    /** @param array<Form> $forms */
+    public function exportFormsToJson(array $forms): ExportResult
     {
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
@@ -65,7 +66,10 @@ final class FormSerializer extends AbstractFormSerializer
             $export_specification->addForm($form_spec);
         }
 
-        return $this->serialize($export_specification);
+        return new ExportResult(
+            filename: $this->computeJsonFileName($forms),
+            json_content: $this->serialize($export_specification),
+        );
     }
 
     /** @return Form[] */
@@ -99,6 +103,20 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         return $result;
+    }
+
+    /** @param array<Form> $forms */
+    private function computeJsonFileName(array $forms): string
+    {
+        if (count($forms) === 1) {
+            $form = current($forms);
+            $filename = $form->fields['name'];
+        } else {
+            $nb = count($forms);
+            $filename = "export-of-$nb-forms";
+        }
+
+        return \Toolbox::slugify($filename) . ".json";
     }
 
     private function exportFormToSpec(Form $form): FormContentSpecification
@@ -146,7 +164,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
         $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'];
+        $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
 
         $entity = Entity::getById($form->fields['entities_id']);

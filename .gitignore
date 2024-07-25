@@ -21,6 +21,8 @@ phpunit.xml
 /tests/code-coverage/
 /tests/coverage-*/
 /tests/cypress/screenshots/
+/tests/cypress/downloads/
+/tests/cypress/videos/
 /tests/files/
 /tests/.env
 /nbproject
