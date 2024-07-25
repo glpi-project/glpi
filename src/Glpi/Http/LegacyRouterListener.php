@@ -67,6 +67,11 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            // Legacy endpoints are not supposed to be executed in sub-requests.
+            return;
+        }
+
         $request = $event->getRequest();
 
         $response = $this->runLegacyRouter($request);
@@ -85,7 +90,7 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
          */
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
-        [$path, $pathinfo] = $this->getTargetPathInfo($path);
+        $path = $this->getTargetPath($path);
 
         // Enforce legacy index file for root URL.
         // This prevents Symfony from being called.
@@ -115,17 +120,11 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
         // (legacy) Redefine some $_SERVER variables to have same values whenever scripts are called directly
         // or through current router.
-        $target_path     = $uri_prefix . $path;
-        $_SERVER['PATH_INFO']       = $pathinfo;
-        $_SERVER['PHP_SELF']        = $target_path;
-        $_SERVER['SCRIPT_FILENAME'] = $target_file;
-        $_SERVER['SCRIPT_NAME']     = $target_path;
+        $target_path = $uri_prefix . $path;
+        $_SERVER['PHP_SELF']  = $target_path;
 
         // New server overrides:
-        $request->server->set('PATH_INFO', $pathinfo);
         $request->server->set('PHP_SELF', $target_path);
-        $request->server->set('SCRIPT_FILENAME', $target_file);
-        $request->server->set('SCRIPT_NAME', $target_path);
 
         /**
          * This will force Symfony to consider that routing was resolved already.
@@ -137,10 +136,9 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
         return null;
     }
 
-    private function getTargetPathInfo(string $init_path): array
+    private function getTargetPath(string $init_path): string
     {
         $path = '';
-        $pathinfo = null;
 
         // Parse URI to find requested script and PathInfo
         $slash_pos = 0;
@@ -149,16 +147,6 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
             $filepath = substr($init_path, 0, $slash_pos !== false ? $slash_pos : strlen($init_path));
             if (is_file($this->glpi_root . $filepath)) {
                 $path = $filepath;
-
-                $pathinfo = substr($init_path, strlen($filepath));
-                if ($pathinfo !== '') {
-                    // On any regular PHP script that is directly served by Apache, `$_SERVER['PATH_INFO']`
-                    // contains decoded URL.
-                    // We have to reproduce this decoding operation to prevent issues with endoded chars.
-                    $pathinfo = urldecode($pathinfo);
-                } else {
-                    $pathinfo = '';
-                }
                 break;
             }
         }
@@ -176,7 +164,7 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
             }
         }
 
-        return [$path, $pathinfo];
+        return $path;
     }
 
     /**
