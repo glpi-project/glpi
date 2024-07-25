@@ -144,4 +144,10 @@ TWIG;
 
         return $html;
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
+    }
 }
