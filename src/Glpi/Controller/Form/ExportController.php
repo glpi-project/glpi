@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Controller\Form;
+
+use Glpi\Controller\Controller;
+use Glpi\Form\Export\Serializer\FormSerializer;
+use Glpi\Form\Form;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Attribute\Route;
+
+final readonly class ExportController implements Controller
+{
+    #[Route(
+        "/form/export.php",
+        name: "form_export",
+    )]
+    public function __invoke(
+        Request $request,
+        #[MapQueryParameter] array $ids = [],
+        #[MapQueryParameter] string $filename = "export.json",
+    ): Response {
+        if (!Form::canView()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        // Convert ids into array of forms
+        $forms = [];
+        foreach ($ids as $id) {
+            $form = new Form();
+            if ($form->getFromDB($id)) {
+                $forms[] = $form;
+            }
+        }
+
+        // Execute export
+        $serializer = new FormSerializer();
+        $json = $serializer->exportFormsToJson($forms);
+
+        // Output file
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response = new Response($json);
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+}

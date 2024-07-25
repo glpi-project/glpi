@@ -71,11 +71,13 @@ if (count($actions)) {
             echo Html::hidden($key, ['value' => $val]);
         }
     }
-    echo _n('Action', 'Actions', 1);
+    $rand = mt_rand();
+
+    echo "<label for=\"dropdown_massiveaction$rand\">" . _n('Action', 'Actions', 1) . "</label>";
     echo "&nbsp;";
 
     $actions = ['-1' => Dropdown::EMPTY_VALUE] + $actions;
-    $rand    = Dropdown::showFromArray('massiveaction', $actions);
+    Dropdown::showFromArray('massiveaction', $actions, ['rand' => $rand]);
 
     echo "<br><br>";
 

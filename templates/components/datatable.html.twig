@@ -211,7 +211,7 @@
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                         <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               value="1" aria-label=""
+                                               value="1" aria-label="{{ __("Select item") }}"
                                                name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
                                     {% endif %}
                                 </td>

@@ -131,7 +131,7 @@
                            {% if call(row_itemtype ~ '::isMassiveActionAllowed', [row['id']]) %}
                               {% set checked = session('glpimassiveactionselected')[row_itemtype][row['id']] ?? false %}
                               <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                 value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
+                                 value="1" aria-label="{{ __("Select item") }}" {% if checked %}checked="checked"{% endif %}
                                  name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]"
                                  form="{{ massive_action_form_id }}" />
                            {% endif %}

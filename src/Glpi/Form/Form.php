@@ -47,6 +47,7 @@ use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
+use MassiveAction;
 use Override;
 use ReflectionClass;
 use Session;
@@ -246,6 +247,42 @@ final class Form extends CommonDBTM
                 FormAccessControl::class,
             ]
         );
+    }
+
+    #[Override]
+    public function getSpecificMassiveActions($checkitem = null): array
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        $key = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . "export";
+        $icon = '<i class="ti ti-file-arrow-right"></i>';
+        $label = __('Export form');
+        $actions[$key] = $icon . $label;
+
+        return $actions;
+    }
+
+    #[Override]
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
+    {
+        $ids = array_values($ma->getItems()[Form::class]);
+        if (count($ids) === 1) {
+            $id = current($ids);
+            $form = Form::getById($id);
+            $filename = $form->fields['name'];
+        } else {
+            $nb = count($ids);
+            $filename = "export-of-$nb-forms";
+        }
+        $filename = \Toolbox::slugify($filename) . ".json";
+
+        // TODO: use UrlGenerator service (not possible yet)
+        $export_url = "/form/export.php?" . http_build_query([
+            'ids'      => $ids,
+            'filename' => $filename,
+        ]);
+        echo "<a href=\"$export_url\">$filename</a>";
+        return true;
     }
 
     /**

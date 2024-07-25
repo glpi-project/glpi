@@ -141,7 +141,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
         $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'];
+        $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
 
         $entity = Entity::getById($form->fields['entities_id']);
