@@ -41,7 +41,11 @@ use Override;
 
 final class FormTagProvider implements TagProviderInterface
 {
-    public const ACCENT_COLOR = "yellow";
+    #[Override]
+    public function getTagColor(): string
+    {
+        return "yellow";
+    }
 
     #[Override]
     public function getTags(Form $form): array
@@ -69,7 +73,6 @@ final class FormTagProvider implements TagProviderInterface
             label: sprintf(__('Form name: %s'), $form->fields['name']),
             value: $form->getId(),
             provider: self::class,
-            color: self::ACCENT_COLOR,
         );
     }
 }

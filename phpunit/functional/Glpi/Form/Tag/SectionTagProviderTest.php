@@ -61,13 +61,11 @@ final class SectionTagProviderTest extends DbTestCase
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
                 provider: SectionTagProvider::class,
-                color: SectionTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Section: Professional information',
                 value: $this->getSectionId($form, 'Professional information'),
                 provider: SectionTagProvider::class,
-                color: SectionTagProvider::ACCENT_COLOR,
             ),
         ]);
     }

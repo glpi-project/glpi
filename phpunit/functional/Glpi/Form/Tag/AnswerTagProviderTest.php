@@ -63,13 +63,11 @@ final class AnswerTagProviderTest extends DbTestCase
                 label: 'Answer: First name',
                 value: $this->getQuestionId($form, 'First name'),
                 provider: AnswerTagProvider::class,
-                color: AnswerTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
                 provider: AnswerTagProvider::class,
-                color: AnswerTagProvider::ACCENT_COLOR,
             ),
         ]);
     }

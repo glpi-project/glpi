@@ -56,7 +56,7 @@ final class TagTest extends DbTestCase
         $tag = $this->getTagByName($tags, 'Question: First name');
         $question_id = $this->getQuestionId($form, 'First name');
         $provider = QuestionTagProvider::class;
-        $color = QuestionTagProvider::ACCENT_COLOR;
+        $color = (new $provider())->getTagColor();
 
         $expected = json_encode([
             'label' => 'Question: First name',

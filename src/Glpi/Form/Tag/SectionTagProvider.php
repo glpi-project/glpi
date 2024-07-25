@@ -42,7 +42,11 @@ use Override;
 
 final class SectionTagProvider implements TagProviderInterface
 {
-    public const ACCENT_COLOR = "cyan";
+    #[Override]
+    public function getTagColor(): string
+    {
+        return "cyan";
+    }
 
     #[Override]
     public function getTags(Form $form): array
@@ -75,7 +79,6 @@ final class SectionTagProvider implements TagProviderInterface
             label: sprintf(__('Section: %s'), $section->fields['name']),
             value: $section->getId(),
             provider: self::class,
-            color: self::ACCENT_COLOR,
         );
     }
 }
