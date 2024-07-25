@@ -48,9 +48,10 @@ final readonly class Tag
         string $label,
         string $value,
         string $provider,
-        string $color,
     ) {
         $this->label = $label;
+
+        $color = (new $provider())->getTagColor();
 
         // Build HTML representation of the tag.
         $properties = [

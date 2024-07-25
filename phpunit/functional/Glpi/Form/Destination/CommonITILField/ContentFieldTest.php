@@ -95,7 +95,6 @@ final class ContentFieldTest extends DbTestCase
             label   : 'Dummy label',
             value   : self::FAKE_QUESTION_ID,
             provider: AnswerTagProvider::class,
-            color   : AnswerTagProvider::ACCENT_COLOR,
         );
     }
 

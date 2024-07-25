@@ -55,7 +55,6 @@ final class FormTagProviderTest extends DbTestCase
                 label: 'Form name: Test form',
                 value: $form->getId(),
                 provider: FormTagProvider::class,
-                color: FormTagProvider::ACCENT_COLOR,
             )
         ]);
     }
@@ -68,7 +67,6 @@ final class FormTagProviderTest extends DbTestCase
                 label: 'Form name: My form',
                 value: $form->getId(),
                 provider: FormTagProvider::class,
-                color: FormTagProvider::ACCENT_COLOR,
             )
         ]);
     }

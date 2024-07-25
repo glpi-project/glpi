@@ -61,37 +61,31 @@ final class FormTagsManagerTest extends DbTestCase
                 label: 'Form name: First and last name form',
                 value: $form->getId(),
                 provider: FormTagProvider::class,
-                color: FormTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
                 provider: SectionTagProvider::class,
-                color: SectionTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Question: First name',
                 value: $this->getQuestionId($form, 'First name'),
                 provider: QuestionTagProvider::class,
-                color: QuestionTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Question: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
                 provider: QuestionTagProvider::class,
-                color: QuestionTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Answer: First name',
                 value: $this->getQuestionId($form, 'First name'),
                 provider: AnswerTagProvider::class,
-                color: AnswerTagProvider::ACCENT_COLOR,
             ),
             new Tag(
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
                 provider: AnswerTagProvider::class,
-                color: AnswerTagProvider::ACCENT_COLOR,
             )
         ];
 
