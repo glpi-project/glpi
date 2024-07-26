@@ -894,6 +894,50 @@ class ToolboxTest extends DbTestCase
         );
     }
 
+    public function testConvertTagToImageAlreadyInLink()
+    {
+        $img_tag = uniqid('', true);
+
+        $item = new \Ticket();
+        $item->fields['id'] = mt_rand(1, 50);
+
+        // Create document in DB
+        $document = new \Document();
+        $doc_id = $document->add([
+            'name'     => 'basic document',
+            'filename' => 'img.png',
+            'mime'     => 'image/png',
+            'tag'      => $img_tag,
+        ]);
+        $this->assertGreaterThan(0, (int)$doc_id);
+
+        $expected_url     = 'http://localhost';
+        $content_text     = '<a href="' . $expected_url . '" target="_blank" ><img id="' . $img_tag . '" width="10" height="10" /></a>';
+        $image_url        = '/front/document.send.php?docid=' . $doc_id;
+        $image_url       .= '&itemtype=' . $item->getType();
+        $image_url       .= '&items_id=' . $item->fields['id'];
+
+        $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $image_url . '" /></a>';
+
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->assertEquals(
+            Sanitizer::sanitize($expected_result),
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        );
+
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->assertEquals(
+            \Toolbox::addslashes_deep($expected_result),
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        );
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
+        $this->assertEquals(
+            $expected_result,
+            \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
+        );
+    }
+
     public static function shortenNumbers()
     {
         return [
