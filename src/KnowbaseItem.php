@@ -562,7 +562,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         } else {
             $where = self::getVisibilityCriteriaKB();
-            $where['is_faq'] = 1;
+            $where[] = [
+                'OR' => [
+                    ['is_faq' => 1],
+                    ['is_token_url' => 1, 'token' => $_GET['token'] ?? '']
+                ]
+            ];
         }
 
         return $where;
@@ -919,7 +924,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 $downloadlink = NOT_AVAILABLE;
 
                 if ($document->getFromDB($docID)) {
-                    $downloadlink = $document->getDownloadLink();
+                    $downloadlink = $document->getDownloadLink($this);
                 }
 
                 if (!isset($heading_names[$data["documentcategories_id"]])) {
