@@ -949,6 +949,12 @@ class GlpiFormEditorController
             tooltip_trigger_el => new bootstrap.Tooltip(tooltip_trigger_el)
         );
 
+        // Init popovers
+        const popover_trigger_list = copy.find('[data-bs-toggle="popover"]');
+        [...popover_trigger_list].map(
+            popover_trigger_el => new bootstrap.Popover(popover_trigger_el)
+        );
+
         return copy;
     }
 
@@ -1107,7 +1113,7 @@ class GlpiFormEditorController
         this.#setItemInput(question, "type", type);
 
         // Handle blacklisted question type warning visibility
-        const allow_anonymous = this.#getQuestionTemplate(type).find("input[name=allow_anonymous]").val();
+        const allow_anonymous = this.#getQuestionTemplate(type).find("[data-glpi-form-editor-question-details]").data("glpi-form-editor-allow-anonymous");
         question.find("[data-glpi-form-editor-blacklisted-question-type-warning]")
             .toggleClass("d-none", allow_anonymous == 1);
 

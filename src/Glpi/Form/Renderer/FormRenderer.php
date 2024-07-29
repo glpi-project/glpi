@@ -88,8 +88,7 @@ final class FormRenderer
         $twig = TemplateRenderer::getInstance();
         $html .= $twig->render('pages/form_renderer.html.twig', [
             'form'              => $form,
-            'is_anonymous_user' => FormAccessControlManager::getInstance()->isAnonymousForm($form)
-                && !Session::isAuthenticated(),
+            'is_anonymous_user' => !Session::isAuthenticated(),
         ]);
 
         return $html;
