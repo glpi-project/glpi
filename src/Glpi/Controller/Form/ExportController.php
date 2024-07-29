@@ -40,7 +40,6 @@ use Glpi\Form\Form;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -50,14 +49,16 @@ final readonly class ExportController implements Controller
         "/form/export.php",
         name: "form_export",
     )]
-    public function __invoke(
-        Request $request,
-        #[MapQueryParameter] array $ids = [],
-        #[MapQueryParameter] string $filename = "export.json",
-    ): Response {
+    public function __invoke(Request $request): Response
+    {
+        // Right check
         if (!Form::canView()) {
             throw new AccessDeniedHttpException();
         }
+
+        // Read parameters
+        $ids = $request->query->all()["ids"] ?? [];
+        $filename = $request->query->getString("filename", "export.json");
 
         // Execute export
         $serializer = new FormSerializer();
