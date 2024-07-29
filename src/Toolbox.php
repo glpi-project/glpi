@@ -974,7 +974,17 @@ class Toolbox
     {
 
        //TRANS: list of unit (o for octet)
-        $bytes = [__('o'), __('Kio'), __('Mio'), __('Gio'), __('Tio'), __('Pio'), __('Eio'), __('Zio'), __('Yio')];
+        $bytes = [
+            _x('size', 'B'),
+            _x('size', 'KiB'),
+            _x('size', 'MiB'),
+            _x('size', 'GiB'),
+            _x('size', 'TiB'),
+            _x('size', 'PiB'),
+            _x('size', 'EiB'),
+            _x('size', 'ZiB'),
+            _x('size', 'YiB'),
+        ];
         foreach ($bytes as $val) {
             if ($size > 1024) {
                 $size = $size / 1024;
