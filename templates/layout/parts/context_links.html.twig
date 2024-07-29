@@ -97,6 +97,13 @@
             <span class="d-none d-xxl-block">{{ __('Setup') }}</span>
          </a>
       </li>
+   {% elseif type == 'import_forms' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" title="{{ __('Import forms') }}">
+            <i class="ti ti-file-arrow-left"></i>
+            <span class="d-none d-xxl-block">{{ __('Import forms') }}</span>
+         </a>
+      </li>
    {% else %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2">
