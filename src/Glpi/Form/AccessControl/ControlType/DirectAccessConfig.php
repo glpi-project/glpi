@@ -36,11 +36,10 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use JsonSerializable;
 use Override;
 use Toolbox;
 
-final class DirectAccessConfig implements JsonFieldInterface, JsonSerializable
+final class DirectAccessConfig implements JsonFieldInterface
 {
     public function __construct(
         private string $token = "",

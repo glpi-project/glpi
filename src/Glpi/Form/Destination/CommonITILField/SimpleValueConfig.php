@@ -36,10 +36,9 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
-use JsonSerializable;
 use Override;
 
-class SimpleValueConfig implements JsonFieldInterface, JsonSerializable
+class SimpleValueConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const VALUE = 'value';

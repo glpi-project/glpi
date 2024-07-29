@@ -36,10 +36,9 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use JsonSerializable;
 use Override;
 
-final class AllowListConfig implements JsonFieldInterface, JsonSerializable
+final class AllowListConfig implements JsonFieldInterface
 {
     public function __construct(
         private array $user_ids = [],
