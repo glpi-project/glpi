@@ -34,12 +34,13 @@
  */
 
 namespace Glpi\DBAL;
+
 use JsonSerializable;
 
- /**
-  * Base interface that can be used to type check any json configuration
-  * from the database.
-  */
+/**
+ * Base interface that can be used to type check any json configuration
+ * from the database.
+ */
 interface JsonFieldInterface extends JsonSerializable
 {
     /**
