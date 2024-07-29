@@ -40,6 +40,7 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Http\JSONResponse;
@@ -58,6 +59,7 @@ final class CoreController extends AbstractController
     {
         return [
             'Session' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -90,6 +92,7 @@ final class CoreController extends AbstractController
                 ]
             ],
             'EntityTransferRecord' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
@@ -102,6 +105,7 @@ final class CoreController extends AbstractController
     }
 
     #[Route(path: '/', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'API Homepage. Displays the available API versions and a list of available routes. When logged in, more routes are displayed.',
         responses: [
@@ -151,6 +155,7 @@ final class CoreController extends AbstractController
     }
 
     #[Route(path: '/doc{ext}', methods: ['GET'], requirements: ['ext' => '(.json)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Displays the API documentation as a Swagger UI HTML page or as the raw JSON schema.',
         parameters: [
@@ -167,13 +172,13 @@ final class CoreController extends AbstractController
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $generator = new OpenAPIGenerator(Router::getInstance());
+        $generator = new OpenAPIGenerator(Router::getInstance(), $this->getAPIVersion($request));
 
         $requested_types = $request->getHeader('Accept');
         $requested_json = in_array('application/json', $requested_types, true) ||
             str_ends_with($request->getUri()->getPath(), '.json');
         if (!$requested_json) {
-            $swagger_content = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
+            $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
             $swagger_content .= \Html::script('/public/lib/swagger-ui.js');
             $swagger_content .= \Html::css('/public/lib/swagger-ui.css');
             $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
@@ -217,6 +222,7 @@ HTML;
     }
 
     #[Route(path: '/getting-started{ext}', methods: ['GET'], requirements: ['ext' => '(.md)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Displays the general API documentation to get started.',
         parameters: [
@@ -282,6 +288,7 @@ HTML;
     }
 
     #[Route('/{req}', ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], ['req' => '.*'], -1)]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'A fallback for when no other endpoint matches the request. A 404 error will be shown.',
         methods: ['GET', 'POST', 'PATCH', 'PUT', "DELETE"],
@@ -300,6 +307,7 @@ HTML;
     }
 
     #[Route(path: '/{req}', methods: ['OPTIONS'], requirements: ['req' => '.*'], priority: -1, security_level: Route::SECURITY_NONE)]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'A global route that enables the OPTIONS method on all endpoints. This responds with an Accept header indicating which methods are allowed.',
         methods: ['OPTIONS']
@@ -327,6 +335,7 @@ HTML;
     }
 
     #[Route(path: '/session', methods: ['GET'], tags: ['Session'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get information about the session',
         responses: [
@@ -403,6 +412,7 @@ HTML;
     }
 
     #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'], middlewares: [CookieAuthMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Authorize the API client using the authorization code grant type.',
     )]
@@ -451,6 +461,7 @@ HTML;
     }
 
     #[Route(path: '/token', methods: ['POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get an OAuth 2.0 token'
     )]
@@ -469,6 +480,7 @@ HTML;
     }
 
     #[Route(path: '/swagger-oauth-redirect', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    #[RouteVersion(introduced: '2.0')]
     public function swaggerOAuthRedirect(Request $request): Response
     {
         $content = file_get_contents(GLPI_ROOT . '/public/lib/swagger-ui-dist/oauth2-redirect.html');
@@ -476,6 +488,7 @@ HTML;
     }
 
     #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a list of all GLPI system status checker services.',
     )]
@@ -496,6 +509,7 @@ HTML;
     }
 
     #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
         responses: [
@@ -525,6 +539,7 @@ HTML;
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
         'service' => '[a-zA-Z0-9_]+'
     ], priority: 9, tags: ['Status'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the status of a GLPI system status checker service. Use "all" as the service to get the full system status.',
         responses: [
@@ -552,6 +567,7 @@ HTML;
     }
 
     #[Route(path: '/Transfer', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Transfer one or more items to another entity',
         parameters: [
@@ -581,7 +597,7 @@ HTML;
         $controllers = Router::getInstance()->getControllers();
         $schema_mappings = [];
         foreach ($controllers as $controller) {
-            $schemas = $controller::getKnownSchemas();
+            $schemas = $controller::getKnownSchemas($this->getAPIVersion($request));
             foreach ($schemas as $schema_name => $schema) {
                 if (isset($schema['x-itemtype'])) {
                     $schema_mappings[$schema_name] = $schema['x-itemtype'];

@@ -309,6 +309,80 @@ class Schema implements \ArrayAccess
         return $flattened;
     }
 
+    /**
+     * Filter a schema by the requested API version. May return null if the entire schema is not applicable to the requested version.
+     * @param array $schema
+     * @param string $api_version
+     * @return array|null The filtered schema or null
+     */
+    public static function filterSchemaByAPIVersion(array $schema, string $api_version): ?array
+    {
+        $schema_versions = [
+            'introduced' => $schema['x-version-introduced'],
+            'deprecated' => $schema['x-version-deprecated'] ?? null,
+            'removed' => $schema['x-version-removed'] ?? null
+        ];
+
+        // Check if the schema itself is applicable to the requested version
+        // If the requested version is before the introduction of the schema, or after the removal of the schema, it is not applicable
+        // Deprecation has no effect here
+        if (
+            version_compare($api_version, $schema_versions['introduced']) < 0
+            || ($schema_versions['removed'] !== null && version_compare($api_version, $schema_versions['removed']) >= 0)
+        ) {
+            return null;
+        }
+
+        $schema['properties'] = self::filterPropertiesByAPIVersion($schema['properties'], $schema_versions, $api_version);
+
+        // If all properties were filtered out, the schema can be considered not applicable
+        if (empty($schema['properties'])) {
+            return null;
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Recursively filter properties by the requested API version
+     * @param array $props The properties to filter
+     * @param array{introduced: string, deprecated?: string, removed?: string} $schema_versions The versioning info from the schema
+     * @param string $api_version The API version to filter by
+     * @return array The filtered properties
+     */
+    private static function filterPropertiesByAPIVersion(array $props, array $schema_versions, string $api_version): array
+    {
+        $filtered_props = [];
+        foreach ($props as $name => $prop) {
+            $prop_versions = [
+                'introduced' => $prop['x-version-introduced'] ?? $schema_versions['introduced'],
+                'deprecated' => $prop['x-version-deprecated'] ?? $schema_versions['deprecated'],
+                'removed' => $prop['x-version-removed'] ?? $schema_versions['removed']
+            ];
+            // Check if the property is applicable to the requested version
+            // If the requested version is before the introduction of the property, or after the removal of the property, it is not applicable
+            // Deprecation has no effect here
+            if (
+                version_compare($api_version, $prop_versions['introduced']) < 0
+                || ($prop_versions['removed'] !== null && version_compare($api_version, $prop_versions['removed']) >= 0)
+            ) {
+                continue;
+            }
+            $filtered_prop = $prop;
+            if ($prop['type'] === self::TYPE_OBJECT) {
+                if (!empty($prop['properties'])) {
+                    $filtered_prop['properties'] = self::filterPropertiesByAPIVersion($prop['properties'], $prop_versions, $api_version);
+                }
+            } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items'])) {
+                if (!empty($prop['items']['properties'])) {
+                    $filtered_prop['items']['properties'] = self::filterPropertiesByAPIVersion($prop['items']['properties'], $prop_versions, $api_version);
+                }
+            }
+            $filtered_props[$name] = $filtered_prop;
+        }
+        return $filtered_props;
+    }
+
     private static function validateTypeAndFormat(string $type, string $format, mixed $value): bool
     {
         // For now at least, null is acceptable for any type and format
@@ -452,12 +526,13 @@ class Schema implements \ArrayAccess
      * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
      * @see getUnionSchema
      */
-    public static function getUnionSchemaForItemtypes(array $itemtypes): array
+    public static function getUnionSchemaForItemtypes(array $itemtypes, string $api_version): array
     {
         $schemas = [];
         $controllers = Router::getInstance()->getControllers();
         foreach ($controllers as $controller) {
-            foreach ($controller::getKnownSchemas() as $schema_name => $schema) {
+            $known_schemas = $controller::getKnownSchemas($api_version);
+            foreach ($known_schemas as $schema_name => $schema) {
                 if (array_key_exists('x-itemtype', $schema) && in_array($schema['x-itemtype'], $itemtypes, true)) {
                     $schemas[$schema_name] = $schema;
                 }

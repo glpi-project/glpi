@@ -39,6 +39,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -51,6 +52,7 @@ final class RuleController extends AbstractController
     {
         $schemas = [
             'RuleCriteria' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-itemtype' => 'RuleCriteria',
                 'properties' => [
@@ -75,6 +77,7 @@ final class RuleController extends AbstractController
                 ]
             ],
             'RuleCriteriaCondition' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 // No x-itemtype because it isn't in the DB. It cannot be searched.
                 'properties' => [
@@ -93,6 +96,7 @@ final class RuleController extends AbstractController
                 ]
             ],
             'RuleCriteriaCriteria' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 // No x-itemtype because it isn't in the DB. It cannot be searched.
                 'properties' => [
@@ -101,6 +105,7 @@ final class RuleController extends AbstractController
                 ]
             ],
             'RuleActionType' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 // No x-itemtype because it isn't in the DB. It cannot be searched.
                 'properties' => [
@@ -116,6 +121,7 @@ final class RuleController extends AbstractController
                 ]
             ],
             'RuleActionField' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 // No x-itemtype because it isn't in the DB. It cannot be searched.
                 'properties' => [
@@ -131,6 +137,7 @@ final class RuleController extends AbstractController
                 ]
             ],
             'RuleAction' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-itemtype' => 'RuleAction',
                 'properties' => [
@@ -156,6 +163,7 @@ final class RuleController extends AbstractController
             ],
         ];
         $schemas['Rule'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => 'Rule',
             'properties' => [
@@ -256,7 +264,7 @@ final class RuleController extends AbstractController
     {
         $params = $request->getParameters();
         // Only allow updating if the criterion exists in the rule
-        $result = Search::getOneBySchema($this->getKnownSchema($schema), $request->getAttributes(), $params);
+        $result = Search::getOneBySchema($this->getKnownSchema($schema, $this->getAPIVersion($request)), $request->getAttributes(), $params);
         try {
             $decoded = json_decode((string)$result->getBody(), true, 512, JSON_THROW_ON_ERROR);
             return isset($decoded['rule']['id']) && $decoded['rule']['id'] === (int) $request->getAttribute('rule_id');
@@ -266,6 +274,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List all rule collections',
         responses: [
@@ -316,6 +325,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/CriteriaCondition', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List accepted "condition" values for criteria for rules in a collection',
         responses: [
@@ -353,6 +363,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/CriteriaCriteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List accepted "criteria" values for criteria for rules in a collection',
         responses: [
@@ -382,6 +393,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/ActionType', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List accepted "action_type" values for actions for rules in a collection',
         responses: [
@@ -419,6 +431,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/ActionField', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List accepted "field" values for actions for rules in a collection',
         responses: [
@@ -449,6 +462,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search rules in a collection',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -469,10 +483,11 @@ final class RuleController extends AbstractController
         $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('Rule'), $params);
+        return Search::searchBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a rule from a collection',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -493,10 +508,11 @@ final class RuleController extends AbstractController
         $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $params);
+        return Search::getOneBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Criteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get criteria for a rule from a collection',
         responses: [
@@ -517,10 +533,11 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('id');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('RuleCriteria'), $params);
+        return Search::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a specific criterion for a rule from a collection',
         responses: [
@@ -541,10 +558,11 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $params);
+        return Search::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Action', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get actions for a rule from a collection',
         responses: [
@@ -565,10 +583,11 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('RuleAction'), $params);
+        return Search::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a specific action for a rule from a collection',
         responses: [
@@ -589,10 +608,11 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $params);
+        return Search::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a rule in a collection',
         parameters: [
@@ -612,7 +632,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
 
-        return Search::createBySchema($this->getKnownSchema('Rule'), $params, [self::class, 'getRule'], [
+        return Search::createBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params, [self::class, 'getRule'], [
             'mapped' => [
                 'collection' => $request->getAttribute('collection')
             ]
@@ -620,6 +640,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a rule in a collection',
         parameters: [
@@ -639,10 +660,11 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
 
-        return Search::updateBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $params);
+        return Search::updateBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a rule in a collection'
     )]
@@ -651,10 +673,11 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, PURGE)) {
             return $response;
         }
-        return Search::deleteBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a criterion for a rule in a collection',
         parameters: [
@@ -674,7 +697,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleCriteria'), $params, [self::class, 'getRuleCriterion'], [
+        return Search::createBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params, [self::class, 'getRuleCriterion'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
                 'collection' => $request->getAttribute('collection')
@@ -683,6 +706,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a criterion for a rule in a collection',
         parameters: [
@@ -707,10 +731,11 @@ final class RuleController extends AbstractController
         $params['id'] = $request->getAttribute('id');
         $params['rule.id'] = $request->getAttribute('rule_id');
 
-        return Search::updateBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $params);
+        return Search::updateBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a criterion for a rule in a collection',
         parameters: [
@@ -730,10 +755,11 @@ final class RuleController extends AbstractController
             return self::getNotFoundErrorResponse();
         }
 
-        return Search::deleteBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create an action for a rule in a collection',
         parameters: [
@@ -753,7 +779,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleAction'), $params, [self::class, 'getRuleAction'], [
+        return Search::createBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params, [self::class, 'getRuleAction'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
                 'collection' => $request->getAttribute('collection')
@@ -762,6 +788,7 @@ final class RuleController extends AbstractController
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update an action for a rule in a collection',
         parameters: [
@@ -786,10 +813,11 @@ final class RuleController extends AbstractController
         $params['id'] = $request->getAttribute('id');
         $params['rule.id'] = $request->getAttribute('rule_id');
 
-        return Search::updateBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $params);
+        return Search::updateBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete an action for a rule in a collection',
         parameters: [
@@ -809,6 +837,6 @@ final class RuleController extends AbstractController
             return self::getNotFoundErrorResponse();
         }
 
-        return Search::deleteBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

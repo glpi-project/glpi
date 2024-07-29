@@ -389,7 +389,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
              * @var array $categories
              */
             foreach ($supported as $controller => $categories) {
-                $schemas = $controller::getKnownSchemas();
+                // TODO Allow pinning webhooks to specific API versions
+                $schemas = $controller::getKnownSchemas(Router::API_VERSION);
                 foreach ($categories as $category => $itemtypes) {
                     if ($category === 'main') {
                         foreach ($itemtypes as $i => $supported_itemtype) {
@@ -895,7 +896,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             echo __('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
-        return $controller_class::getKnownSchemas()[$schema_name] ?? null;
+        // TODO Allow pinning webhooks to specific API versions
+        return $controller_class::getKnownSchemas(Router::API_VERSION)[$schema_name] ?? null;
     }
 
     public static function getMonacoSuggestions(string|null $itemtype): array
