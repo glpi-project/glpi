@@ -6903,4 +6903,39 @@ HTML;
             'savedsearches_pinned' => exportArrayToDB($all_pinned),
         ]));
     }
+
+    /**
+     * Returns if user has a specific right.
+     *
+     * @param integer $userID
+     * @param integer $right  Right value like(ITILFollowup::SEEPRIVATE)
+     *
+     * @return boolean
+     */
+    public static function hasRightById(int $userID, int $right = 0): bool
+    {
+        /** @var DBMysql $DB */
+        global $DB;
+
+        $user_profiles_ids = Profile_User::getUserProfiles($userID);
+        if (count($user_profiles_ids) > 0) {
+            foreach ($user_profiles_ids as $key => $profile_id) {
+                $iterator = $DB->request([
+                    'SELECT' => 'rights',
+                    'FROM'   => 'glpi_profilerights',
+                    'WHERE'  => [
+                        'name'   => 'followup',
+                        'rights' => ['&', $right],
+                        'profiles_id' => $profile_id
+                    ]
+                ]);
+
+                if (count($iterator) > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
