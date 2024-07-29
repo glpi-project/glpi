@@ -49,7 +49,7 @@ describe ('Export forms', () => {
         });
     });
 
-    it.only('Export multiple form', () => {
+    it('Export multiple form', () => {
         cy.createFormWithAPI();
         cy.createFormWithAPI();
         cy.createFormWithAPI();
