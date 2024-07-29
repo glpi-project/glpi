@@ -39,9 +39,9 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 
 final class DirectAccessConfigTest extends \GLPITestCase
 {
-    public function testCreateFromRawArray(): void
+    public function testJsonDeserialize(): void
     {
-        $config = DirectAccessConfig::createFromRawArray(
+        $config = DirectAccessConfig::jsonDeserialize(
             ['token' => 'token', 'allow_unauthenticated' => true],
         );
         $this->assertEquals('token', $config->getToken());

@@ -46,5 +46,5 @@ interface JsonFieldInterface
      *
      * @param array $data
      */
-    public static function createFromRawArray(array $data): self;
+    public static function jsonDeserialize(array $data): self;
 }

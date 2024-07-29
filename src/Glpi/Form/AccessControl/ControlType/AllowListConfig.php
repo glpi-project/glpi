@@ -49,7 +49,7 @@ final class AllowListConfig implements JsonFieldInterface, JsonSerializable
     }
 
     #[Override]
-    public static function createFromRawArray(array $data): self
+    public static function jsonDeserialize(array $data): self
     {
         return new self(
             user_ids   : $data['user_ids'] ?? [],

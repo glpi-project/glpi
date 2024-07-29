@@ -54,7 +54,7 @@ final class RequestTypeFieldConfig implements JsonFieldInterface, JsonSerializab
     }
 
     #[Override]
-    public static function createFromRawArray(array $data): self
+    public static function jsonDeserialize(array $data): self
     {
         $strategy = RequestTypeFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {

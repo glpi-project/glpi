@@ -52,7 +52,7 @@ final class DirectAccessConfig implements JsonFieldInterface, JsonSerializable
     }
 
     #[Override]
-    public static function createFromRawArray(array $data): self
+    public static function jsonDeserialize(array $data): self
     {
         return new self(
             token: $data['token'] ?? "",

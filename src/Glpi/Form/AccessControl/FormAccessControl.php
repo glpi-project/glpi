@@ -257,7 +257,7 @@ final class FormAccessControl extends CommonDBChild
             throw new \RuntimeException("Invalid config class");
         }
 
-        return $config_class::createFromRawArray($config);
+        return $config_class::jsonDeserialize($config);
     }
 
     public function createConfigFromUserInput(array $input): JsonFieldInterface

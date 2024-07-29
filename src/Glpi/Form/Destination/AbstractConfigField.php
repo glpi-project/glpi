@@ -74,7 +74,7 @@ abstract class AbstractConfigField implements ConfigFieldInterface
         }
 
         $config_class = $this->getConfigClass();
-        return $config_class::createFromRawArray($config);
+        return $config_class::jsonDeserialize($config);
     }
 
     public function isAutoConfigurated(array $config): bool

@@ -94,7 +94,7 @@ final class AllowList implements ControlTypeInterface
     {
         $values = $input['_allow_list_dropdown'] ?? [];
         $values = $values ?: []; // No selected values is sent by the html form as an empty string
-        return AllowListConfig::createFromRawArray([
+        return AllowListConfig::jsonDeserialize([
             'user_ids'    => AllowListDropdown::getPostedIds($values, User::class),
             'group_ids'   => AllowListDropdown::getPostedIds($values, Group::class),
             'profile_ids' => AllowListDropdown::getPostedIds($values, Profile::class),
