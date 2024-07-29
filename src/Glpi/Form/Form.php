@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
@@ -265,23 +266,14 @@ final class Form extends CommonDBTM
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
+        $serializer = new FormSerializer();
         $ids = array_values($ma->getItems()[Form::class]);
-        if (count($ids) === 1) {
-            $id = current($ids);
-            $form = Form::getById($id);
-            $filename = $form->fields['name'];
-        } else {
-            $nb = count($ids);
-            $filename = "export-of-$nb-forms";
-        }
-        $filename = \Toolbox::slugify($filename) . ".json";
+        $filename =  $serializer->computeJsonFileName($ids);
 
         // TODO: use UrlGenerator service (not possible yet)
-        $export_url = "/form/export.php?" . http_build_query([
-            'ids'      => $ids,
-            'filename' => $filename,
-        ]);
+        $export_url = "/form/export.php?" . http_build_query(['ids' => $ids]);
         echo "<a href=\"$export_url\">$filename</a>";
+
         return true;
     }
 

@@ -50,6 +50,20 @@ final class FormSerializer extends AbstractFormSerializer
         return 1;
     }
 
+    public function computeJsonFileName(array $ids): string
+    {
+        if (count($ids) === 1) {
+            $id = current($ids);
+            $form = Form::getById($id);
+            $filename = $form->fields['name'];
+        } else {
+            $nb = count($ids);
+            $filename = "export-of-$nb-forms";
+        }
+
+        return \Toolbox::slugify($filename) . ".json";
+    }
+
     /** @property Form[] $forms */
     public function exportFormsToJson(array $forms): string
     {

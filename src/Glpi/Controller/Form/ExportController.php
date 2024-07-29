@@ -45,10 +45,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final readonly class ExportController implements Controller
 {
-    #[Route(
-        "/form/export.php",
-        name: "form_export",
-    )]
+    #[Route("/form/export.php", name: "form_export")]
     public function __invoke(Request $request): Response
     {
         // Right check
@@ -58,7 +55,6 @@ final readonly class ExportController implements Controller
 
         // Read parameters
         $ids = $request->query->all()["ids"] ?? [];
-        $filename = $request->query->getString("filename", "export.json");
 
         // Execute export
         $serializer = new FormSerializer();
@@ -66,6 +62,7 @@ final readonly class ExportController implements Controller
         $json = $serializer->exportFormsToJson($forms);
 
         // Output file
+        $filename =  $serializer->computeJsonFileName($ids);
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
             $filename,
