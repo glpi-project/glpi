@@ -39,7 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
+use JsonFieldInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Group;
 use Override;
@@ -103,7 +103,7 @@ final class AllowList implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof AllowListConfig) {

@@ -37,12 +37,12 @@
   * Base interface that can be used to type check any json configuration
   * from the database.
   */
-interface JsonConfigInterface
+interface JsonFieldInterface
 {
     /**
      * Create an instance from a raw array of data.
      *
      * @param array $data
      */
-    public static function createFromRawArray(array $data): JsonConfigInterface;
+    public static function createFromRawArray(array $data): static;
 }

@@ -44,7 +44,7 @@ use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
 use InvalidArgumentException;
-use JsonConfigInterface;
+use JsonFieldInterface;
 use Override;
 
 class ContentField extends AbstractConfigField
@@ -70,7 +70,7 @@ class ContentField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         string $input_name,
         array $display_options
     ): string {
@@ -106,7 +106,7 @@ TWIG;
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {

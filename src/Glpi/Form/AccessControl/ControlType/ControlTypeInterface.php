@@ -38,7 +38,7 @@ namespace Glpi\Form\AccessControl\ControlType;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
+use JsonFieldInterface;
 
 interface ControlTypeInterface
 {
@@ -84,21 +84,21 @@ interface ControlTypeInterface
      *
      * @param array $input
      *
-     * @return JsonConfigInterface
+     * @return JsonFieldInterface
      */
-    public function createConfigFromUserInput(array $input): JsonConfigInterface;
+    public function createConfigFromUserInput(array $input): JsonFieldInterface;
 
 
     /**
      * Check if the current user can answer the given form.
      *
-     * @param JsonConfigInterface $config
+     * @param JsonFieldInterface $config
      * @param FormAccessParameters $parameters
      *
      * @return AccessVote
      */
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote;
 }

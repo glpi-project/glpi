@@ -41,7 +41,7 @@ use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use InvalidArgumentException;
-use JsonConfigInterface;
+use JsonFieldInterface;
 use Override;
 use Ticket;
 
@@ -68,7 +68,7 @@ class RequestTypeField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         string $input_name,
         array $display_options
     ): string {
@@ -113,7 +113,7 @@ class RequestTypeField extends AbstractConfigField
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {

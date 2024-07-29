@@ -38,7 +38,7 @@ namespace Glpi\Form\AccessControl\ControlType;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
+use JsonFieldInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
 
@@ -106,7 +106,7 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {
