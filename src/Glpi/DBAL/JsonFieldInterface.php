@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\DBAL;
+
  /**
   * Base interface that can be used to type check any json configuration
   * from the database.
@@ -44,5 +46,5 @@ interface JsonFieldInterface
      *
      * @param array $data
      */
-    public static function createFromRawArray(array $data): static;
+    public static function createFromRawArray(array $data): self;
 }

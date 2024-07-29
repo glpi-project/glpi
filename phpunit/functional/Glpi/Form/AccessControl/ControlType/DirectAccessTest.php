@@ -35,12 +35,12 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;

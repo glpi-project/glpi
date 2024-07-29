@@ -35,7 +35,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use JsonFieldInterface;
+use Glpi\DBAL\JsonFieldInterface;
 use JsonSerializable;
 use Override;
 

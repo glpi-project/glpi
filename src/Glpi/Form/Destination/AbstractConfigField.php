@@ -35,9 +35,8 @@
 
 namespace Glpi\Form\Destination;
 
-use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Form;
-use JsonFieldInterface;
 use LogicException;
 use Override;
 

@@ -35,7 +35,7 @@
 
 namespace Glpi\Tests;
 
-use JsonFieldInterface;
+use Glpi\DBAL\JsonFieldInterface;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()

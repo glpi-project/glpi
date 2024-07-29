@@ -35,9 +35,9 @@
 
 namespace Glpi\Form\Destination;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
-use JsonFieldInterface;
 
 interface ConfigFieldInterface
 {

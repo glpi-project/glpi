@@ -36,11 +36,11 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
-use JsonFieldInterface;
 use Override;
 
 class TitleField extends AbstractConfigField

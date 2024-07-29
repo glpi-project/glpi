@@ -35,10 +35,10 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonFieldInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
 

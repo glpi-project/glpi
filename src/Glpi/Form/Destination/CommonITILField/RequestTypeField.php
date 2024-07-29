@@ -36,12 +36,12 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use InvalidArgumentException;
-use JsonFieldInterface;
 use Override;
 use Ticket;
 

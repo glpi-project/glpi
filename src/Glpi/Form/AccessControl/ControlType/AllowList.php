@@ -36,10 +36,10 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonFieldInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Group;
 use Override;
