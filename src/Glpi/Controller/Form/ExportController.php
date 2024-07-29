@@ -59,17 +59,9 @@ final readonly class ExportController implements Controller
             throw new AccessDeniedHttpException();
         }
 
-        // Convert ids into array of forms
-        $forms = [];
-        foreach ($ids as $id) {
-            $form = new Form();
-            if ($form->getFromDB($id)) {
-                $forms[] = $form;
-            }
-        }
-
         // Execute export
         $serializer = new FormSerializer();
+        $forms = Form::getByIds($ids);
         $json = $serializer->exportFormsToJson($forms);
 
         // Output file
