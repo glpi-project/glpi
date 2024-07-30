@@ -2055,28 +2055,34 @@ class Ticket extends CommonITILObject
         $rightname = ITILFollowup::$rightname;
 
         return (
-            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMY, $entity_id)
-            && ($this->isUser(CommonITILActor::REQUESTER, $user_id)
-               || (
-                  isset($this->fields['users_id_recipient'])
-                  && ($this->fields['users_id_recipient'] == $user_id)
-               )
+            (
+                Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMY, $entity_id)
+                && (
+                    $this->isUser(CommonITILActor::REQUESTER, $user_id)
+                    || (
+                        isset($this->fields['users_id_recipient'])
+                        && ($this->fields['users_id_recipient'] == $user_id)
+                    )
+                )
             )
-         )
-         || (
-            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
-            && $this->isUser(CommonITILActor::OBSERVER, $user_id)
-         )
-         || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLITEM, $entity_id)
-         || (
-            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_GROUP, $entity_id)
-            && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
-         )
-         || (
-            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_TECHNICIAN, $entity_id)
-            && $this->isUser(CommonITILActor::ASSIGN, $user_id)
-         )
-         || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
+            || (
+                Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
+                && $this->isUser(CommonITILActor::OBSERVER, $user_id)
+            )
+            || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLITEM, $entity_id)
+            || (
+                Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_GROUP, $entity_id)
+                && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+            )
+            || (
+                Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_TECHNICIAN, $entity_id)
+                && (
+                    $this->isUser(CommonITILActor::ASSIGN, $user_id)
+                    || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids)
+                )
+            )
+            || $this->isUserValidationRequested($user_id, true)
+        );
     }
 
 

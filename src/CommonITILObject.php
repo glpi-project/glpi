@@ -977,7 +977,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         return (
             (
-                Session::haveRight("followup", ITILFollowup::ADDMY)
+                Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY)
                 && (
                     $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                     || (
@@ -987,22 +987,24 @@ abstract class CommonITILObject extends CommonDBTM
                 )
             )
             || (
-                Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
+                Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_OBSERVER)
                 && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
             )
-            || Session::haveRight('followup', ITILFollowup::ADDALLITEM)
+            || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDALLITEM)
             || (
-                Session::haveRight('followup', ITILFollowup::ADD_AS_GROUP)
+                Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_GROUP)
                 && isset($_SESSION["glpigroups"])
                 && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
             )
             || (
-                Session::haveRightsOr(ITILFollowup::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE])
-                && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-            )
-            || (
-                isset($_SESSION["glpigroups"])
-                && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+                Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_TECHNICIAN)
+                && (
+                    $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                    || (
+                        isset($_SESSION["glpigroups"])
+                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+                    )
+                )
             )
             || $this->isUserValidationRequested(Session::getLoginUserID(), true)
         );
@@ -1011,34 +1013,36 @@ abstract class CommonITILObject extends CommonDBTM
     public function canAddTasks()
     {
         return (
-             (
-                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDMY)
-                 && (
-                     $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                     || (
-                         isset($this->fields["users_id_recipient"])
-                         && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
-                     )
-                 )
-             )
-             || (
-                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
-                 && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-             )
-             || Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDALLITEM)
-             || (
-                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_GROUP)
-                 && isset($_SESSION["glpigroups"])
-                 && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
-             )
-             || (
-                 Session::haveRightsOr(CommonITILTask::$rightname, [CommonITILTask::ADD_AS_TECHNICIAN, UPDATE])
-                 && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-             )
-             || (
-                 isset($_SESSION["glpigroups"])
-                 && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
-             )
+            (
+                Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDMY)
+                && (
+                    $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                    || (
+                        isset($this->fields["users_id_recipient"])
+                        && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
+                    )
+                )
+            )
+            || (
+                Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
+                && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+            )
+            || Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDALLITEM)
+            || (
+                Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_GROUP)
+                && isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+            )
+            || (
+                Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_TECHNICIAN)
+                && (
+                    $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                    || (
+                        isset($_SESSION["glpigroups"])
+                        && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
+                    )
+                )
+            )
         );
     }
 
