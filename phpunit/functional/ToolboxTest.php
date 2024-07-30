@@ -894,6 +894,82 @@ class ToolboxTest extends DbTestCase
         );
     }
 
+    public function testConvertTagToImageAlreadyInLink()
+    {
+        $img_1_tag = uniqid('', true);
+        $img_2_tag = uniqid('', true);
+
+        $item = new \Ticket();
+        $item->fields['id'] = mt_rand(1, 50);
+
+        $document_1 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'basic document',
+                'filename' => 'img.png',
+                'mime'     => 'image/png',
+                'tag'      => $img_1_tag,
+            ]
+        );
+        $document_2 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'another document',
+                'filename' => 'img2.png',
+                'mime'     => 'image/png',
+                'tag'      => $img_2_tag,
+            ]
+        );
+
+        $expected_url_1 = 'http://localhost/test/1';
+        $content_text   = <<<HTML
+            Some contents with <a href="http://example.org/">a link</a>
+            and a first image <a href="{$expected_url_1}" target="_blank"><img id="{$img_1_tag}" width="10" height="10" /></a> inside a link
+            then a second image surrounded by links <a href="http://www.example.org/">link1</a> <img id="{$img_2_tag}" width="10" height="10" /> <a href="http://www.example.org/2">link2</a>
+HTML;
+
+        $image_1_src = sprintf(
+            '/front/document.send.php?docid=%d&itemtype=%s&items_id=%d',
+            $document_1->getID(),
+            $item->getType(),
+            $item->fields['id']
+        );
+        $image_2_src = sprintf(
+            '/front/document.send.php?docid=%d&itemtype=%s&items_id=%d',
+            $document_2->getID(),
+            $item->getType(),
+            $item->fields['id']
+        );
+        $expected_result  = <<<HTML
+            Some contents with <a href="http://example.org/">a link</a>
+            and a first image <a href="{$expected_url_1}" target="_blank"><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /></a> inside a link
+            then a second image surrounded by links <a href="http://www.example.org/">link1</a> <a href="{$image_2_src}" target="_blank" ><img alt="{$img_2_tag}" width="10" src="{$image_2_src}" /></a> <a href="http://www.example.org/2">link2</a>
+HTML;
+
+        $docs_data = [
+            $document_1->getID() => ['tag' => $img_1_tag],
+            $document_2->getID() => ['tag' => $img_2_tag]
+        ];
+
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->assertEquals(
+            Sanitizer::sanitize($expected_result),
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, $docs_data)
+        );
+
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->assertEquals(
+            \Toolbox::addslashes_deep($expected_result),
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, $docs_data)
+        );
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
+        $this->assertEquals(
+            $expected_result,
+            \Toolbox::convertTagToImage($content_text, $item, $docs_data)
+        );
+    }
+
     public static function shortenNumbers()
     {
         return [
