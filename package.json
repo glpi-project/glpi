@@ -95,6 +95,7 @@
         "cypress-axe": "^1.5.0",
         "eslint": "^8.57.0",
         "eslint-plugin-cypress": "^2.15.1",
+        "eslint-plugin-mocha": "^10.5.0",
         "eslint-plugin-vue": "^9.17.0",
         "exports-loader": "^5.0.0",
         "glob": "^10.4.2",
