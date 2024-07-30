@@ -271,7 +271,7 @@ final class Form extends CommonDBTM
         $filename =  $serializer->computeJsonFileName($ids);
 
         // TODO: use UrlGenerator service (not possible yet)
-        $export_url = "/form/export.php?" . http_build_query(['ids' => $ids]);
+        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
         echo "<a href=\"$export_url\">$filename</a>";
 
         return true;

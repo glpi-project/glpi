@@ -45,7 +45,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final readonly class ExportController implements Controller
 {
-    #[Route("/form/export.php", name: "form_export")]
+    #[Route("/Form/Export", name: "form_export")]
     public function __invoke(Request $request): Response
     {
         // Right check
