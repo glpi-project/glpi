@@ -87,8 +87,8 @@ final class FormRenderer
         // Load template
         $twig = TemplateRenderer::getInstance();
         $html .= $twig->render('pages/form_renderer.html.twig', [
-            'form'              => $form,
-            'is_anonymous_user' => !Session::isAuthenticated(),
+            'form'                 => $form,
+            'unauthenticated_user' => !Session::isAuthenticated(),
         ]);
 
         return $html;

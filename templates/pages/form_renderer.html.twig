@@ -96,7 +96,7 @@
                 {% endif %}
 
                 {# Skip questions not allowed for anonymous forms #}
-                {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and is_anonymous_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
                     {% set skip_question = true %}
                 {% endif %}
 
