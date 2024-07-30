@@ -4544,6 +4544,12 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = '^';
                         $options['criteria'][1]['link']       = 'AND';
 
+                        $duration = Entity::getUsedConfig('inquest_duration', $_SESSION['glpiactive_entity']);
+                        if ($duration > 0) {
+                            $options['criteria'][1]['searchtype'] = 'morethan';
+                            $options['criteria'][1]['value']      = '-' . $duration . 'DAY';
+                        }
+
                         $options['criteria'][2]['field']      = 61; // date_answered
                         $options['criteria'][2]['searchtype'] = 'contains';
                         $options['criteria'][2]['value']      = 'NULL';
