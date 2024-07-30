@@ -38,6 +38,8 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
+use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
+use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
@@ -53,10 +55,14 @@ final class RequestTypeFieldTest extends DbTestCase
 
     public function testRequestTypeFromTemplate(): void
     {
+        $from_template_config = new RequestTypeFieldConfig(
+            RequestTypeFieldStrategy::FROM_TEMPLATE
+        );
+
         // The default GLPI's template use "INCIDENT"
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $this->createAndGetFormWithMultipleRequestTypeQuestions(),
-            config: ['value' => RequestTypeField::CONFIG_FROM_TEMPLATE],
+            config: $from_template_config,
             answers: [],
             expected_request_type: Ticket::INCIDENT_TYPE
         );
@@ -67,9 +73,9 @@ final class RequestTypeFieldTest extends DbTestCase
             'num' => 14, // Request type
             'value' => Ticket::DEMAND_TYPE,
         ]);
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $this->createAndGetFormWithMultipleRequestTypeQuestions(),
-            config: ['value' => RequestTypeField::CONFIG_FROM_TEMPLATE],
+            config: $from_template_config,
             answers: [],
             expected_request_type: Ticket::DEMAND_TYPE
         );
@@ -80,23 +86,23 @@ final class RequestTypeFieldTest extends DbTestCase
         $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
 
         // Specific value: DEMAND
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_SPECIFIC_VALUE,
-                RequestTypeField::EXTRA_CONFIG_REQUEST_TYPE => Ticket::DEMAND_TYPE,
-            ],
+            config: new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                specific_request_type: Ticket::DEMAND_TYPE
+            ),
             answers: [],
             expected_request_type: Ticket::DEMAND_TYPE
         );
 
         // Specific value: INCIDENT
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_SPECIFIC_VALUE,
-                RequestTypeField::EXTRA_CONFIG_REQUEST_TYPE => Ticket::INCIDENT_TYPE,
-            ],
+            config: new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                specific_request_type: Ticket::INCIDENT_TYPE
+            ),
             answers: [],
             expected_request_type: Ticket::INCIDENT_TYPE
         );
@@ -107,12 +113,12 @@ final class RequestTypeFieldTest extends DbTestCase
         $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
 
         // Using answer from first question
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_SPECIFIC_ANSWER,
-                RequestTypeField::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 1"),
-            ],
+            config: new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $this->getQuestionId($form, "Request type 1")
+            ),
             answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
                 "Request type 2" => Ticket::INCIDENT_TYPE,
@@ -121,12 +127,12 @@ final class RequestTypeFieldTest extends DbTestCase
         );
 
         // Using answer from second question
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_SPECIFIC_ANSWER,
-                RequestTypeField::EXTRA_CONFIG_QUESTION_ID => $this->getQuestionId($form, "Request type 2"),
-            ],
+            config: new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $this->getQuestionId($form, "Request type 2")
+            ),
             answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
                 "Request type 2" => Ticket::INCIDENT_TYPE,
@@ -138,13 +144,14 @@ final class RequestTypeFieldTest extends DbTestCase
     public function testRequestTypeFromLastValidQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleRequestTypeQuestions();
+        $last_valid_answer_config = new RequestTypeFieldConfig(
+            RequestTypeFieldStrategy::LAST_VALID_ANSWER
+        );
 
         // With multiple answers submitted
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
-            ],
+            config: $last_valid_answer_config,
             answers: [
                 "Request type 1" => Ticket::INCIDENT_TYPE,
                 "Request type 2" => Ticket::DEMAND_TYPE,
@@ -153,11 +160,9 @@ final class RequestTypeFieldTest extends DbTestCase
         );
 
         // Only first answer was submitted
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
-            ],
+            config: $last_valid_answer_config,
             answers: [
                 "Request type 1" => Ticket::DEMAND_TYPE,
             ],
@@ -165,11 +170,9 @@ final class RequestTypeFieldTest extends DbTestCase
         );
 
         // Only second answer was submitted
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
-            ],
+            config: $last_valid_answer_config,
             answers: [
                 "Request type 2" => Ticket::DEMAND_TYPE,
             ],
@@ -177,11 +180,9 @@ final class RequestTypeFieldTest extends DbTestCase
         );
 
         // No answers, fallback to default value
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
-            ],
+            config: $last_valid_answer_config,
             answers: [],
             expected_request_type: Ticket::INCIDENT_TYPE
         );
@@ -192,21 +193,19 @@ final class RequestTypeFieldTest extends DbTestCase
             'num' => 14, // Request type
             'value' => Ticket::DEMAND_TYPE,
         ]);
-        $this->checkRequestTypeFieldConfiguration(
+        $this->sendFormAndAssertTicketType(
             form: $form,
-            config: [
-                'value' => RequestTypeField::CONFIG_LAST_VALID_ANSWER,
-            ],
+            config: $last_valid_answer_config,
             answers: [],
             expected_request_type: Ticket::DEMAND_TYPE
         );
     }
 
-    private function checkRequestTypeFieldConfiguration(
+    private function sendFormAndAssertTicketType(
         Form $form,
-        array $config,
+        RequestTypeFieldConfig $config,
         array $answers,
-        int $expected_request_type
+        int $expected_request_type,
     ): void {
         // Insert config
         $destinations = $form->getDestinations();
@@ -215,7 +214,7 @@ final class RequestTypeFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['request_type' => $config]],
+            ['config' => ['request_type' => $config->jsonSerialize()]],
             ["config"],
         );
 
@@ -224,7 +223,8 @@ final class RequestTypeFieldTest extends DbTestCase
         $formatted_answers = [];
         foreach ($answers as $question => $answer) {
             $key = $this->getQuestionId($form, $question);
-            $formatted_answers[$key] = $answer;
+            // Real answer will be decoded as string by default
+            $formatted_answers[$key] = (string) $answer;
         }
 
         // Submit form

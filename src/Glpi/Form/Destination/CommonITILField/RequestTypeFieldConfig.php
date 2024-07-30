@@ -33,27 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\AccessControl\ControlType;
+namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-final class AllowListConfig implements JsonFieldInterface
+final class RequestTypeFieldConfig implements JsonFieldInterface
 {
+    // Unique reference to hardcoded names used for serialization and forms input names
+    public const STRATEGY = 'strategy';
+    public const QUESTION_ID = 'question_id';
+    public const REQUEST_TYPE = 'request_type';
+
     public function __construct(
-        private array $user_ids = [],
-        private array $group_ids = [],
-        private array $profile_ids = [],
+        private RequestTypeFieldStrategy $strategy,
+        private ?int $specific_question_id = null,
+        private ?int $specific_request_type = null,
     ) {
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
+        $strategy = RequestTypeFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        if ($strategy === null) {
+            $strategy = RequestTypeFieldStrategy::LAST_VALID_ANSWER;
+        }
+
         return new self(
-            user_ids   : $data['user_ids'] ?? [],
-            group_ids  : $data['group_ids'] ?? [],
-            profile_ids: $data['profile_ids'] ?? []
+            strategy: $strategy,
+            specific_question_id: $data[self::QUESTION_ID],
+            specific_request_type: $data[self::REQUEST_TYPE],
         );
     }
 
@@ -61,24 +71,24 @@ final class AllowListConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            'user_ids'    => $this->user_ids,
-            'group_ids'   => $this->group_ids,
-            'profile_ids' => $this->profile_ids,
+            self::STRATEGY => $this->strategy->value,
+            self::QUESTION_ID => $this->specific_question_id,
+            self::REQUEST_TYPE => $this->specific_request_type,
         ];
     }
 
-    public function getUserIds(): array
+    public function getStrategy(): RequestTypeFieldStrategy
     {
-        return $this->user_ids;
+        return $this->strategy;
     }
 
-    public function getGroupIds(): array
+    public function getSpecificQuestionId(): ?int
     {
-        return $this->group_ids;
+        return $this->specific_question_id;
     }
 
-    public function getProfileIds(): array
+    public function getSpecificRequestType(): ?int
     {
-        return $this->profile_ids;
+        return $this->specific_request_type;
     }
 }

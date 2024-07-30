@@ -72,7 +72,7 @@
         <section data-glpi-itildestination-field aria-label="{{ field.getLabel() ~ " configuration" }}">
             {{ field.renderConfigForm(
                 form,
-                field.getValue(form, config),
+                field.getConfig(form, config),
                 item.formatConfigInputName(field.getKey()),
                 {'is_horizontal': false}|merge(extra_options)
             )|raw }}

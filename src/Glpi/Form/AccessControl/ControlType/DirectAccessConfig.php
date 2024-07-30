@@ -35,12 +35,11 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use JsonConfigInterface;
-use JsonSerializable;
+use Glpi\DBAL\JsonFieldInterface;
 use Override;
 use Toolbox;
 
-final class DirectAccessConfig implements JsonConfigInterface, JsonSerializable
+final class DirectAccessConfig implements JsonFieldInterface
 {
     public function __construct(
         private string $token = "",
@@ -52,7 +51,7 @@ final class DirectAccessConfig implements JsonConfigInterface, JsonSerializable
     }
 
     #[Override]
-    public static function createFromRawArray(array $data): self
+    public static function jsonDeserialize(array $data): self
     {
         return new self(
             token: $data['token'] ?? "",

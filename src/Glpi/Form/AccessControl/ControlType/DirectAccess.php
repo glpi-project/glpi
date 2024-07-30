@@ -35,10 +35,10 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
 
@@ -98,7 +98,7 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function createConfigFromUserInput(array $input): DirectAccessConfig
     {
-        return DirectAccessConfig::createFromRawArray([
+        return DirectAccessConfig::jsonDeserialize([
             'token'                 => $input['_token'] ?? null,
             'allow_unauthenticated' => $input['_allow_unauthenticated'] ?? false,
         ]);
@@ -106,7 +106,7 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {

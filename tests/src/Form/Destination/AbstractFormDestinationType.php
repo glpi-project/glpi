@@ -37,15 +37,14 @@ namespace Glpi\Tests\Form\Destination;
 
 use CommonDBTM;
 use CommonGLPI;
-use Computer;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Impact;
 use ReflectionClass;
 
 abstract class AbstractFormDestinationType extends DbTestCase
@@ -74,9 +73,9 @@ abstract class AbstractFormDestinationType extends DbTestCase
                     $this->getTestedInstance()::class,
                     'test',
                     [
-                        'title'        => "My title",
+                        'title'        => (new SimpleValueConfig("My title"))->jsonSerialize(),
                         'title_auto'   => 0,
-                        'content'      => "My content",
+                        'content'      => (new SimpleValueConfig("My content"))->jsonSerialize(),
                         'content_auto' => 0,
                     ]
                 )

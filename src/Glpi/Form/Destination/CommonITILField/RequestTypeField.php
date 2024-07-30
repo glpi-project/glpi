@@ -36,27 +36,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use InvalidArgumentException;
 use Override;
 use Ticket;
 
 class RequestTypeField extends AbstractConfigField
 {
-    // Main configuration main
-    public const CONFIG_FROM_TEMPLATE = 'from_template_or_default';
-    public const CONFIG_SPECIFIC_VALUE = 'specific_value';
-    public const CONFIG_SPECIFIC_ANSWER = 'specific_answer';
-    public const CONFIG_LAST_VALID_ANSWER = 'last_valid_answer';
-
-    // Secondary config value that is used when the main value is CONFIG_SPECIFIC_VALUE
-    public const EXTRA_CONFIG_REQUEST_TYPE = 'specific_request_type';
-
-    // Secondary config value that is used when the main value is CONFIG_SPECIFIC_ANSWER
-    public const EXTRA_CONFIG_QUESTION_ID = 'specific_question_id';
-
     #[Override]
     public function getKey(): string
     {
@@ -70,20 +60,27 @@ class RequestTypeField extends AbstractConfigField
     }
 
     #[Override]
+    public function getConfigClass(): string
+    {
+        return RequestTypeFieldConfig::class;
+    }
+
+    #[Override]
     public function renderConfigForm(
         Form $form,
-        mixed $configurated_value,
+        JsonFieldInterface $config,
         string $input_name,
         array $display_options
     ): string {
-        if (!is_array($configurated_value)) {
-            $configurated_value = $this->getDefaultValue($form);
+        if (!$config instanceof RequestTypeFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $parameters = [
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('pages/admin/form/itil_config_fields/request_type.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => self::CONFIG_SPECIFIC_VALUE,
-            'CONFIG_SPECIFIC_ANSWER' => self::CONFIG_SPECIFIC_ANSWER,
+            'CONFIG_SPECIFIC_VALUE'  => RequestTypeFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_ANSWER' => RequestTypeFieldStrategy::SPECIFIC_ANSWER->value,
 
             // General display options
             'options' => $display_options,
@@ -91,186 +88,68 @@ class RequestTypeField extends AbstractConfigField
             // Main config field
             'main_config_field' => [
                 'label'           => $this->getLabel(),
-                'value'           => $configurated_value['value'] ?? $this->getDefaultValue($form)['value'],
-                'input_name'      => $input_name . "[value]",
+                'value'           => $config->getStrategy()->value,
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::STRATEGY . "]",
                 'possible_values' => $this->getMainConfigurationValuesforDropdown(),
             ],
 
-            // Specific additional confog for CONFIG_SPECIFIC_VALUE
+            // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select a request type..."),
-                'value'           => $this->getConfiguratedSpecificValue($configurated_value),
-                'input_name'      => $input_name . "[" . self::EXTRA_CONFIG_REQUEST_TYPE . "]",
+                'value'           => $config->getSpecificRequestType(),
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::REQUEST_TYPE . "]",
                 'possible_values' => Ticket::getTypes(),
             ],
 
-            // Specific additional confog for CONFIG_SPECIFIC_ANSWER
+            // Specific additional config for SPECIFIC_VALUE strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
-                'value'           => $this->getConfiguratedQuestionId($configurated_value),
-                'input_name'      => $input_name . "[" . self::EXTRA_CONFIG_QUESTION_ID . "]",
+                'value'           => $config->getSpecificQuestionId(),
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::QUESTION_ID . "]",
                 'possible_values' => $this->getRequestTypeQuestionsValuesForDropdown($form),
             ],
-        ];
-
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {{ fields.dropdownArrayField(
-                main_config_field.input_name,
-                main_config_field.value,
-                main_config_field.possible_values,
-                main_config_field.label,
-                options
-            ) }}
-
-            <div
-                {% if main_config_field.value != CONFIG_SPECIFIC_VALUE %}
-                    class="d-none"
-                {% endif %}
-                data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-                data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_VALUE }}"
-            >
-                {{ fields.dropdownArrayField(
-                    specific_value_extra_field.input_name,
-                    specific_value_extra_field.value,
-                    specific_value_extra_field.possible_values,
-                    "",
-                    options|merge({
-                        no_label: true,
-                        display_emptychoice: true,
-                        emptylabel: specific_value_extra_field.empty_label,
-                        aria_label: specific_value_extra_field.empty_label,
-                    })
-                ) }}
-            </div>
-
-            <div
-                {% if main_config_field.value != CONFIG_SPECIFIC_ANSWER %}
-                    class="d-none"
-                {% endif %}
-                data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-                data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
-            >
-                {{ fields.dropdownArrayField(
-                    specific_answer_extra_field.input_name,
-                    specific_answer_extra_field.value,
-                    specific_answer_extra_field.possible_values,
-                    "",
-                    options|merge({
-                        no_label: true,
-                        display_emptychoice: true,
-                        emptylabel: specific_answer_extra_field.empty_label,
-                        aria_label: specific_answer_extra_field.empty_label,
-                    })
-                ) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, $parameters);
+        ]);
     }
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        mixed $configurated_value,
+        JsonFieldInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (is_null($configurated_value)) {
-            return $input;
+        if (!$config instanceof RequestTypeFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
         }
 
-        switch ($configurated_value['value']) {
-            default:
-            case self::CONFIG_FROM_TEMPLATE:
-                // Let the template apply its default value by itself.
-                $value = null;
-                break;
-
-            case self::CONFIG_SPECIFIC_VALUE:
-                $value = $this->getConfiguratedSpecificValue($configurated_value);
-                break;
-
-            case self::CONFIG_SPECIFIC_ANSWER:
-                $question_id = $this->getConfiguratedQuestionId($configurated_value);
-                if ($question_id === null) {
-                    $value = null;
-                    break;
-                }
-
-                $answer = $answers_set->getAnswerByQuestionId($question_id);
-                if ($answer === null) {
-                    $value = null;
-                    break;
-                }
-
-                $value = $answer->getRawAnswer();
-                break;
-
-            case self::CONFIG_LAST_VALID_ANSWER:
-                $valid_answers = $answers_set->getAnswersByType(
-                    QuestionTypeRequestType::class
-                );
-
-                if (count($valid_answers) == 0) {
-                    $value = null;
-                    break;
-                }
-
-                $answer = end($valid_answers);
-                $value = $answer->getRawAnswer();
-                break;
-        }
+        // Compute value according to strategy
+        $request_type = $config->getStrategy()->getRequestType($config, $answers_set);
 
         // Do not edit input if invalid value was found
         $valid_values = [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE];
-        if (!array_search($value, $valid_values)) {
+        if (!array_search($request_type, $valid_values)) {
             return $input;
         }
 
         // Apply value
-        $input['type'] = $value;
+        $input['type'] = $request_type;
         return $input;
     }
 
     #[Override]
-    public function getDefaultValue(Form $form): mixed
+    public function getDefaultConfig(Form $form): RequestTypeFieldConfig
     {
-        return ['value' => self::CONFIG_LAST_VALID_ANSWER];
-    }
-
-    private function getConfiguratedSpecificValue(array $config): ?int
-    {
-        $value = $config[self::EXTRA_CONFIG_REQUEST_TYPE] ?? null;
-
-        $valid_values = [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE];
-        if (!array_search($value, $valid_values)) {
-            return null;
-        }
-
-        return $value;
-    }
-
-    private function getConfiguratedQuestionId(array $config): ?int
-    {
-        $value = $config[self::EXTRA_CONFIG_QUESTION_ID] ?? null;
-
-        if (!is_numeric($value)) {
-            return null;
-        }
-
-        return (int) $value;
+        return new RequestTypeFieldConfig(
+            RequestTypeFieldStrategy::LAST_VALID_ANSWER
+        );
     }
 
     private function getMainConfigurationValuesforDropdown(): array
     {
-        return [
-            self::CONFIG_FROM_TEMPLATE     => __("From template"),
-            self::CONFIG_SPECIFIC_VALUE    => __("Specific request type"),
-            self::CONFIG_SPECIFIC_ANSWER   => __("Answer from a specific question"),
-            self::CONFIG_LAST_VALID_ANSWER => __('Answer to last "Request type" question'),
-        ];
+        $values = [];
+        foreach (RequestTypeFieldStrategy::cases() as $strategies) {
+            $values[$strategies->value] = $strategies->getLabel();
+        }
+        return $values;
     }
 
     private function getRequestTypeQuestionsValuesForDropdown(Form $form): array

@@ -39,9 +39,9 @@ use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 
 final class AllowListConfigTest extends \GLPITestCase
 {
-    public function testCreateFromRawArray(): void
+    public function testJsonDeserialize(): void
     {
-        $config = AllowListConfig::createFromRawArray([
+        $config = AllowListConfig::jsonDeserialize([
             'user_ids'    => [1, 2, 3],
             'group_ids'   => [4, 5, 6],
             'profile_ids' => [7, 8, 9],

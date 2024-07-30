@@ -36,36 +36,83 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
-use Glpi\Form\AnswersSet;
+use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 
 final class TitleFieldTest extends DbTestCase
 {
-    public function testApplyConfiguratedValueToInputUsingAnswers(): void
-    {
-        $value = 'My custom title';
+    use FormTesterTrait;
 
-        $field = new \Glpi\Form\Destination\CommonITILField\TitleField();
-        $input = $field->applyConfiguratedValueToInputUsingAnswers(
-            configurated_value: $value,
-            input             : [],
-            answers_set       : new AnswersSet()
+    public function testDefaultTitle(): void
+    {
+        $this->sendFormAndAssertTicketTitle(
+            expected_title: "My form name",
+            form: $this->createAndGetFormWithFirstAndLastNameQuestions(),
+            config: null,
         );
-        $this->assertEquals('My custom title', $input['name']);
     }
 
-    public function testGetValue(): void
+    public function testSpecificTitle(): void
     {
-        $form = new Form();
-        $form->fields['name'] = "My form title";
-        $field = new \Glpi\Form\Destination\CommonITILField\TitleField();
+        $this->sendFormAndAssertTicketTitle(
+            expected_title: "My custom ticket title",
+            form: $this->createAndGetFormWithFirstAndLastNameQuestions(),
+            config: new SimpleValueConfig("My custom ticket title"),
+        );
+    }
 
-        // Default value
-        $generated_value = $field->getValue($form, []);
-        $this->assertEquals("My form title", $generated_value);
+    private function sendFormAndAssertTicketTitle(
+        string $expected_title,
+        Form $form,
+        ?SimpleValueConfig $config,
+    ): void {
+        $title_field = new TitleField();
 
-        // Manual value
-        $generated_value = $field->getValue($form, ["title" => "My custom title"]);
-        $this->assertEquals("My custom title", $generated_value);
+        // Insert config
+        if ($config !== null) {
+            $destinations = $form->getDestinations();
+            $this->assertCount(1, $destinations);
+            $destination = current($destinations);
+            $this->updateItem(
+                $destination::getType(),
+                $destination->getId(),
+                ['config' => [$title_field->getKey() => $config->jsonSerialize()]],
+                ["config"],
+            );
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(\User::class, TU_USER, true)
+        );
+
+        // Get created ticket
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $ticket = current($created_items);
+
+        // Check request type
+        $this->assertEquals($expected_title, $ticket->fields['name']);
+    }
+
+    private function createAndGetFormWithFirstAndLastNameQuestions(): Form
+    {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion("First name", QuestionTypeShortText::class);
+        $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        $builder->addDestination(
+            FormDestinationTicket::class,
+            "My ticket",
+        );
+        return $this->createForm($builder);
     }
 }

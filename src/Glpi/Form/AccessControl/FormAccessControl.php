@@ -38,8 +38,8 @@ namespace Glpi\Form\AccessControl;
 use CommonDBChild;
 use CommonGLPI;
 use InvalidArgumentException;
-use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\Form;
 use Override;
@@ -245,22 +245,22 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Get config for this item's strategy.
      *
-     * @return JsonConfigInterface
+     * @return JsonFieldInterface
      */
-    public function getConfig(): JsonConfigInterface
+    public function getConfig(): JsonFieldInterface
     {
         $config = json_decode($this->fields['config'], true);
         $strategy = $this->getStrategy();
         $config_class = $strategy->getConfigClass();
 
-        if (!is_a($config_class, JsonConfigInterface::class, true)) {
+        if (!is_a($config_class, JsonFieldInterface::class, true)) {
             throw new \RuntimeException("Invalid config class");
         }
 
-        return $config_class::createFromRawArray($config);
+        return $config_class::jsonDeserialize($config);
     }
 
-    public function createConfigFromUserInput(array $input): JsonConfigInterface
+    public function createConfigFromUserInput(array $input): JsonFieldInterface
     {
         $strategy_class = $input['strategy'] ?? $this->fields['strategy'] ?? null;
         if ($strategy_class === null || !$this->isValidStrategy($strategy_class)) {

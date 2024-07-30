@@ -33,40 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\AccessControl\ControlType;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\DBAL\JsonFieldInterface;
+use Override;
 
-final class DirectAccessConfigTest extends \GLPITestCase
+class SimpleValueConfig implements JsonFieldInterface
 {
-    public function testJsonDeserialize(): void
-    {
-        $config = DirectAccessConfig::jsonDeserialize(
-            ['token' => 'token', 'allow_unauthenticated' => true],
-        );
-        $this->assertEquals('token', $config->getToken());
-        $this->assertTrue($config->allowUnauthenticated());
+    // Unique reference to hardcoded names used for serialization and forms input names
+    public const VALUE = 'value';
+
+    public function __construct(
+        protected string $value,
+    ) {
     }
 
-    public function testGetToken(): void
+    #[Override]
+    public static function jsonDeserialize(array $data): self
     {
-        $direct_access_config = new DirectAccessConfig(
-            token: 'token',
+        return new self(
+            $data[self::VALUE],
         );
-        $this->assertEquals('token', $direct_access_config->getToken());
     }
 
-    public function testAllowUnauthenticated(): void
+    #[Override]
+    public function jsonSerialize(): array
     {
-        $direct_access_config = new DirectAccessConfig(
-            allow_unauthenticated: true,
-        );
-        $this->assertTrue($direct_access_config->allowUnauthenticated());
+        return [
+            self::VALUE => $this->value,
+        ];
     }
 
-    public function testEmptyTokenInitialization(): void
+    public function getValue(): string
     {
-        $direct_access_config = new DirectAccessConfig();
-        $this->assertNotEmpty($direct_access_config->getToken());
+        return $this->value;
     }
 }

@@ -36,10 +36,10 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Group;
 use Override;
@@ -94,7 +94,7 @@ final class AllowList implements ControlTypeInterface
     {
         $values = $input['_allow_list_dropdown'] ?? [];
         $values = $values ?: []; // No selected values is sent by the html form as an empty string
-        return AllowListConfig::createFromRawArray([
+        return AllowListConfig::jsonDeserialize([
             'user_ids'    => AllowListDropdown::getPostedIds($values, User::class),
             'group_ids'   => AllowListDropdown::getPostedIds($values, Group::class),
             'profile_ids' => AllowListDropdown::getPostedIds($values, Profile::class),
@@ -103,7 +103,7 @@ final class AllowList implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof AllowListConfig) {

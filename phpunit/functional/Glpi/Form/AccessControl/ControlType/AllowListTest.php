@@ -36,12 +36,12 @@
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -76,7 +76,7 @@ class AllowListTest extends \DbTestCase
 
         // Ensure the class exists and is valid
         $is_valid =
-            is_a($class, JsonConfigInterface::class, true)
+            is_a($class, JsonFieldInterface::class, true)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);
