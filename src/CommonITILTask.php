@@ -79,8 +79,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 self::ADD_AS_GROUP,
                 self::ADDMY,
                 self::ADD_AS_OBSERVER,
-                self::ADD_AS_TECHNICIAN,
-                UPDATE
+                self::ADD_AS_TECHNICIAN
             ],
         ));
     }
@@ -92,7 +91,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             [
                 self::UPDATEALL,
                 self::UPDATEMY,
-                UPDATE
             ]
         ));
     }
@@ -106,7 +104,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function canEditAll()
     {
-        return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE, PURGE, self::UPDATEALL]);
+        return Session::haveRightsOr(self::$rightname, [CREATE, DELETE, PURGE, self::UPDATEALL]);
     }
 
 

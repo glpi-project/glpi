@@ -125,13 +125,27 @@ class ITILFollowup extends CommonDBChild
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('change', UPDATE)
-             || Session::haveRight('problem', UPDATE)
-             || (Session::haveRightsOr(
-                 self::$rightname,
-                 [self::ADDALLITEM, self::ADDMY, self::ADD_AS_GROUP]
-             )
-             || Session::haveRight('ticket', Ticket::OWN));
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::ADDALLITEM,
+                self::ADD_AS_GROUP,
+                self::ADDMY,
+                self::ADD_AS_OBSERVER,
+                self::ADD_AS_TECHNICIAN
+            ],
+        ));
+    }
+
+    public static function canUpdate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::UPDATEALL,
+                self::UPDATEMY,
+            ]
+        ));
     }
 
 
