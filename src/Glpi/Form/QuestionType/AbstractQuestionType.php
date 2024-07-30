@@ -113,7 +113,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function isAllowedForAnonymousForm(): bool
+    public function isAllowedForUnauthenticatedAccess(): bool
     {
         return false;
     }

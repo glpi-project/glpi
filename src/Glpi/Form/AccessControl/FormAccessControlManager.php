@@ -92,7 +92,7 @@ final class FormAccessControlManager
         return array_values($controls);
     }
 
-    public function isAnonymousForm(Form $form): bool
+    public function allowUnauthenticatedAccess(Form $form): bool
     {
         $access_controls = $this->getActiveAccessControlsForForm($form);
         return array_reduce(
@@ -166,6 +166,12 @@ final class FormAccessControlManager
         $warnings = [];
         $warnings = $this->addWarningIfFormIsNotActive($form, $warnings);
         $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
+
+        // Add Access Control Strategy warnings
+        $access_controls = $this->getPossibleAccessControlsStrategies($form);
+        foreach ($access_controls as $access_control) {
+            $warnings = $access_control->getWarnings($form, $warnings);
+        }
 
         return $warnings;
     }

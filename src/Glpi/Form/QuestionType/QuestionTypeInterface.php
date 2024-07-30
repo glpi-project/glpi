@@ -176,5 +176,5 @@ interface QuestionTypeInterface
      *
      * @return bool
      */
-    public function isAllowedForAnonymousForm(): bool;
+    public function isAllowedForUnauthenticatedAccess(): bool;
 }

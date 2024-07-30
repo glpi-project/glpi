@@ -125,7 +125,7 @@ final class Form extends CommonDBTM
             'params'                 => $options,
             'question_types_manager' => $types_manager,
             'js_files'               => $js_files,
-            'is_anonymous_form'      => FormAccessControlManager::getInstance()->isAnonymousForm($this),
+            'allow_unauthenticated_access'      => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
         return true;
     }

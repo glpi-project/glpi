@@ -91,7 +91,7 @@ final class Question extends CommonDBChild implements BlockInterface
             'question_types_manager' => QuestionTypesManager::getInstance(),
             'section'                => $this->getItem(),
             'can_update'             => $this->getForm()->canUpdate(),
-            'is_anonymous'           => FormAccessControlManager::getInstance()->isAnonymousForm($this->getForm()),
+            'is_anonymous'           => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this->getForm()),
         ]);
     }
 

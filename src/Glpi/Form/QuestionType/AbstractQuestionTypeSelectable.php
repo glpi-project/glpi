@@ -327,7 +327,7 @@ TWIG;
     }
 
     #[Override]
-    public function isAllowedForAnonymousForm(): bool
+    public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
     }

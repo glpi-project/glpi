@@ -57,7 +57,7 @@
     <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
-        data-glpi-form-editor-allow-anonymous="{{ not is_anonymous or question_type.isAllowedForAnonymousForm() ? 1 : 0 }}"
+        data-glpi-form-editor-allow-anonymous="{{ not is_anonymous or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
         class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
         aria-label="{{ __("Question details") }}"
     >
@@ -76,13 +76,13 @@
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
                 <i
-                    class="ti ti-alert-triangle text-warning me-2 {{ is_anonymous and not question_type.isAllowedForAnonymousForm() ? '' : 'd-none' }}"
+                    class="ti ti-alert-triangle text-warning me-2 {{ is_anonymous and not question_type.isAllowedForUnauthenticatedAccess() ? '' : 'd-none' }}"
                     data-glpi-form-editor-blacklisted-question-type-warning
                     data-bs-toggle="popover"
                     data-bs-trigger="hover"
                     data-bs-placement="top"
                     data-bs-html="true"
-                    data-bs-content="{{ __("This question type cannot be used in a public form. User must be authenticated to view this question type. Check your access policy.") }}"
+                    data-bs-content="{{ __("The current access policy allows unauthenticated access to this form, but this question type will be hidden to unauthenticated users.") }}"
                 ></i>
                 <input
                     title="{{ __("Question name") }}"

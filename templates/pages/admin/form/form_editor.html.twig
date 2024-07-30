@@ -34,7 +34,7 @@
 {# @var item   Glpi\Form\Form #}
 {# @var params array #}
 {# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
-{# @var is_anonymous_form bool #}
+{# @var allow_unauthenticated_access bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -324,7 +324,7 @@
                     'question'               : null,
                     'section'                : null,
                     'can_update'             : true,
-                    'is_anonymous'      : is_anonymous_form,
+                    'is_anonymous'      : allow_unauthenticated_access,
                 }, with_context = false) }}
             </div>
         {% endfor %}
