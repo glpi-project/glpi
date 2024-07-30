@@ -60,7 +60,7 @@ interface ControlTypeInterface
     /**
      * Get the free json config config class name for this object.
      *
-     * @return string Class name which implements JsonConfigInterface
+     * @return string Class name which implements JsonFieldInterface
      */
     public function getConfigClass(): string;
 
@@ -115,8 +115,8 @@ interface ControlTypeInterface
     /**
      * Define if an unauthenticated user can view the form.
      *
-     * @param JsonConfigInterface $config
+     * @param JsonFieldInterface $config
      * @return bool
      */
-    public function allowUnauthenticated(JsonConfigInterface $config): bool;
+    public function allowUnauthenticated(JsonFieldInterface $config): bool;
 }
