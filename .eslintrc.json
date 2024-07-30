@@ -30,6 +30,9 @@
     "parserOptions": {
         "ecmaVersion": 13
     },
+    "plugins": [
+        "no-only-tests"
+    ],
     "rules": {
         "eol-last": [
             "error",
@@ -68,7 +71,8 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-only-tests/no-only-tests": "error"
     },
     "overrides": [
         {
