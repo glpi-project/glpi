@@ -39,6 +39,15 @@ use DbTestCase;
 
 class CommonITILTask extends DbTestCase
 {
+    protected function taskClassProvider(): iterable
+    {
+        return [
+            ['task_class' => \ChangeTask::class],
+            ['task_class' => \ProblemTask::class],
+            ['task_class' => \TicketTask::class],
+        ];
+    }
+
     protected function dataTechTicketTask(): array
     {
         $ticket = new \Ticket();
@@ -124,5 +133,350 @@ class CommonITILTask extends DbTestCase
                 'type' => \CommonITILActor::ASSIGN
             ]
         )))->isEqualTo(1);
+    }
+
+    /**
+     * @dataProvider taskClassProvider
+     */
+    public function testAddMyAsRecipient(string $task_class)
+    {
+        global $DB;
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey  = getForeignKeyFieldForItemType($itil_class);
+
+        // Create ITIL items
+        $this->login('tech', 'tech');
+        $tech_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'ITIL item from the tech user',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $this->login();
+        $my_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'My ITIL item',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+
+        $task_item = new $task_class();
+        $task_input = [
+            'state'     => \Planning::TODO,
+            'content'   => __FUNCTION__,
+        ];
+
+        // Cannot add task from my ITIL items without rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => 0,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+
+        // Can add task from my ITIL items with the ADDMY right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => \CommonITILTask::ADDMY,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isTrue();
+        $task_item->fields = $task_input + [$itil_fkey  => $tech_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+    }
+
+    protected function addAsUserActorProvider(): iterable
+    {
+        foreach ($this->taskClassProvider() as $test_case) {
+            yield 'ADDMY' => [
+                'task_class'  => $test_case['task_class'],
+                'actor_field' => '_users_id_requester',
+                'right'       => \CommonITILTask::ADDMY,
+            ];
+            yield 'ADD_AS_OBSERVER' => [
+                'task_class'  => $test_case['task_class'],
+                'actor_field' => '_users_id_observer',
+                'right'       => \CommonITILTask::ADD_AS_OBSERVER,
+            ];
+            yield 'ADD_AS_TECHNICIAN' => [
+                'task_class'  => $test_case['task_class'],
+                'actor_field' => '_users_id_assign',
+                'right'       => \CommonITILTask::ADD_AS_TECHNICIAN,
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider addAsUserActorProvider
+     */
+    public function testAddAsUserActor(string $task_class, string $actor_field, int $right)
+    {
+        global $DB;
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey  = getForeignKeyFieldForItemType($itil_class);
+
+        // Create ITIL items
+        $this->login('tech', 'tech');
+        $tech_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'ITIL item from the tech user',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $my_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'My ITIL item',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+                $actor_field    => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+
+        $task_item = new $task_class();
+        $task_input = [
+            'state'     => \Planning::TODO,
+            'content'   => __FUNCTION__,
+        ];
+
+        // Cannot add task without rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => 0,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+
+        // Can add task with the expected right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => $right,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isTrue();
+        $task_item->fields = $task_input + [$itil_fkey  => $tech_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+    }
+
+    protected function addAsGroupActorProvider(): iterable
+    {
+        foreach ($this->taskClassProvider() as $test_case) {
+            yield 'ADD_AS_GROUP' => [
+                'task_class'  => $test_case['task_class'],
+                'actor_field' => '_groups_id_requester',
+                'right'       => \CommonITILTask::ADD_AS_GROUP,
+            ];
+            yield 'ADD_AS_TECHNICIAN' => [
+                'task_class'  => $test_case['task_class'],
+                'actor_field' => '_groups_id_assign',
+                'right'       => \CommonITILTask::ADD_AS_TECHNICIAN,
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider addAsGroupActorProvider
+     */
+    public function testAddAsGroupActor(string $task_class, string $actor_field, int $right)
+    {
+        global $DB;
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey  = getForeignKeyFieldForItemType($itil_class);
+
+        // Create group
+        $group = $this->createItem(
+            \Group::class,
+            [
+                'name'          => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $this->createItem(
+            \Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+
+        // Create ITIL items
+        $this->login('tech', 'tech');
+        $tech_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'ITIL item from the tech user',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $my_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'My ITIL item',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+                $actor_field    => $group->getID(),
+            ]
+        );
+
+        $task_item = new $task_class();
+        $task_input = [
+            'state'     => \Planning::TODO,
+            'content'   => __FUNCTION__,
+        ];
+
+        // Cannot add task without rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => 0,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+
+        // Can add task with the expected right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => $right,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isTrue();
+        $task_item->fields = $task_input + [$itil_fkey  => $tech_item->getID()];
+        $this->boolean($task_item->canCreateItem())->isFalse();
+    }
+
+    /**
+     * @dataProvider taskClassProvider
+     */
+    public function testUpdateMy(string $task_class)
+    {
+        global $DB;
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey  = getForeignKeyFieldForItemType($itil_class);
+
+        // Create ITIL items and tasks
+        $this->login('tech', 'tech');
+        $tech_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'ITIL item from the tech user',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $tech_task = $this->createItem(
+            $task_class,
+            [
+                'state'     => \Planning::TODO,
+                $itil_fkey  => $tech_item->getID(),
+                'content'   => 'Task for the tech user',
+            ]
+        );
+        $this->login();
+        $my_item = $this->createItem(
+            $itil_class,
+            [
+                'name'          => 'My ITIL item',
+                'content'       => __FUNCTION__,
+                'entities_id'   => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $my_task = $this->createItem(
+            $task_class,
+            [
+                'state'     => \Planning::TODO,
+                $itil_fkey  => $my_item->getID(),
+                'content'   => 'My task',
+            ]
+        );
+
+        // Cannot update task from my ITIL items without rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => 0,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $this->boolean($my_task->canUpdateItem())->isFalse();
+        $this->boolean($tech_task->canUpdateItem())->isFalse();
+
+        // Can update task from my ITIL items with the UPDATEMY right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights'        => \CommonITILTask::UPDATEMY,
+            ],
+            [
+                'profiles_id'   => $profile_id,
+                'name'          => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+        $this->boolean($my_task->canUpdateItem())->isTrue();
+        $this->boolean($tech_task->canUpdateItem())->isFalse();
     }
 }

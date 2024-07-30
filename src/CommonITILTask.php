@@ -194,17 +194,18 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        if (
-            (($this->fields["users_id"] != Session::getLoginUserID())
-            && !Session::haveRight(self::$rightname, self::UPDATEALL)
-            && !Session::haveRight(self::$rightname, UPDATE))
-            || ($this->fields["users_id"] == Session::getLoginUserID()
-            && !Session::haveRight(self::$rightname, self::UPDATEMY))
-        ) {
-            return false;
+        if (Session::haveRight(self::$rightname, self::UPDATEALL)) {
+            return true;
         }
 
-        return true;
+        if (
+            $this->fields['users_id'] == Session::getLoginUserID()
+            && Session::haveRight(self::$rightname, self::UPDATEMY)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 
