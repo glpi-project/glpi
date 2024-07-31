@@ -48,17 +48,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use Glpi\Features\ParentStatus;
     use Glpi\Features\PlanningEvent;
     use VobjectConverterTrait;
+    use ITILSubItemRights;
 
    // From CommonDBTM
     public $auto_message_on_action = false;
 
-    const SEEPUBLIC       =    1;
-    const UPDATEMY        =    2;
-    const UPDATEALL       = 1024;
-   //   const NOTUSED      = 2048;
-    const ADDALLITEM      = 4096;
-    const SEEPRIVATE      = 8192;
-
+    public static $rightname = 'task';
 
     public static function getItilObjectItemType()
     {
@@ -75,14 +70,160 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return 'ti ti-checkbox';
     }
 
+    public static function canCreate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::ADDALLITEM,
+                self::ADD_AS_GROUP,
+                self::ADDMY,
+                self::ADD_AS_OBSERVER,
+                self::ADD_AS_TECHNICIAN
+            ],
+        ));
+    }
+
+    public static function canUpdate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::UPDATEALL,
+                self::UPDATEMY,
+            ]
+        ));
+    }
+
+
     public function canViewPrivates()
     {
-        return false;
+        return Session::haveRight(self::$rightname, self::SEEPRIVATE);
     }
+
 
     public function canEditAll()
     {
+        return Session::haveRightsOr(self::$rightname, [CREATE, DELETE, PURGE, self::UPDATEALL]);
+    }
+
+
+    /**
+     * Does current user have right to show the current task?
+     *
+     * @return boolean
+     **/
+    public function canViewItem(): bool
+    {
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+            return true;
+        }
+
+        if (
+            !$this->fields['is_private']
+            && Session::haveRight(self::$rightname, self::SEEPUBLIC)
+        ) {
+            return true;
+        }
+
+        // see task created or affected to me
+        if (
+            Session::getCurrentInterface() == "central"
+            && ($this->fields["users_id"] === Session::getLoginUserID())
+              || ($this->fields["users_id_tech"] === Session::getLoginUserID())
+        ) {
+            return true;
+        }
+
+        if (
+            $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
+            && isset($_SESSION["glpigroups"])
+            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+        ) {
+            return true;
+        }
+
         return false;
+    }
+
+
+    /**
+     * Does current user have right to create the current task?
+     *
+     * @return boolean
+     **/
+    public function canCreateItem(): bool
+    {
+
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
+        if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            return $item->canAddTasks();
+        }
+
+        return false;
+    }
+
+    /**
+     * Does current user have right to update the current task?
+     *
+     * @return boolean
+     **/
+    public function canUpdateItem(): bool
+    {
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
+
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
+        if (
+            $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])
+            && in_array($item->fields['status'], $item->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        if (Session::haveRight(self::$rightname, self::UPDATEALL)) {
+            return true;
+        }
+
+        if (
+            $this->fields['users_id'] == Session::getLoginUserID()
+            && Session::haveRight(self::$rightname, self::UPDATEMY)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Does current user have right to purge the current task?
+     *
+     * @return boolean
+     **/
+    public function canPurgeItem(): bool
+    {
+        $itemtype = static::getItilObjectItemType();
+        $item = new $itemtype();
+        if (
+            $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])
+            && in_array($item->fields['status'], $item->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        return Session::haveRight(self::$rightname, PURGE);
     }
 
     /**

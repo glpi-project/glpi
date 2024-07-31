@@ -1326,14 +1326,34 @@ class Migration
      *                   Default is ['config' => READ | UPDATE].
      *
      * @return void
+     *
+     * @deprecated 11.0.0
      */
     public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    {
+        Toolbox::deprecated('Migration::updateRight() is deprecated. Use Migration::replaceRight() instead.');
+        $this->replaceRight($name, $rights, $requiredrights);
+    }
+
+    /**
+     * Replace right to profiles that match rights requirements.
+     * Default is to update rights of profiles with READ and UPDATE rights on config.
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get its rights updated.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function replaceRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get all profiles with required rights
-
+        // Get all profiles with required rights
         $join = [];
         $i = 1;
         foreach ($requiredrights as $reqright => $reqvalue) {
@@ -1383,6 +1403,106 @@ class Migration
             ),
             true
         );
+    }
+
+    /**
+     * Give right to profiles that match rights requirements
+     *   Default is to give rights to profiles with READ and UPDATE rights on config
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get its rights added.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function giveRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Build JOIN clause to get all profiles with required rights
+        $join = [];
+        $i = 1;
+        foreach ($requiredrights as $reqright => $reqvalue) {
+            $join["glpi_profilerights as right$i"] = [
+                'ON' => [
+                    "right$i"       => 'profiles_id',
+                    'glpi_profiles' => 'id',
+                    [
+                        'AND' => [
+                            "right$i.name"   => $reqright,
+                            new QueryExpression("{$DB::quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                        ]
+                    ]
+                ]
+            ];
+            $i++;
+        }
+
+        // Get all profiles with required rights
+        $prof_iterator = $DB->request(
+            [
+                'SELECT'     => 'glpi_profiles.id',
+                'FROM'       => 'glpi_profiles',
+                'INNER JOIN' => $join,
+            ]
+        );
+
+        $added = false;
+        foreach ($prof_iterator as $profile) {
+            // Check if the right is already present
+            $existingRight = $DB->request([
+                'FROM'  => 'glpi_profilerights',
+                'WHERE' => [
+                    'profiles_id' => $profile['id'],
+                    'name'        => $name,
+                ],
+            ]);
+
+            if ($existingRight->numrows() > 0) {
+                $profile_right = $existingRight->current();
+                // If the value specified is not already included, update the rights by adding the value
+                if (($profile_right['rights'] & $rights) !== $rights) {
+                    // Mettre à jour les droits en ajoutant la valeur spécifiée
+                    $newRights = $profile_right['rights'] | $rights;
+                    $DB->update(
+                        'glpi_profilerights',
+                        ['rights' => $newRights],
+                        ['id' => $profile_right['id']]
+                    );
+                    $added = true;
+                }
+                // If the value specified is already included, do nothing
+            } else {
+                // If the right does not exist, add it
+                $DB->insert(
+                    'glpi_profilerights',
+                    [
+                        'profiles_id'  => $profile['id'],
+                        'name'         => $name,
+                        'rights'       => $rights
+                    ]
+                );
+                $added = true;
+            }
+
+            // Update last rights update for the profile
+            $this->updateProfileLastRightsUpdate($profile['id']);
+        }
+
+        // Display a warning message if rights have been given
+        if ($added) {
+            $this->displayWarning(
+                sprintf(
+                    'Rights have been given for %1$s, you should review ACLs after update',
+                    $name
+                ),
+                true
+            );
+        }
     }
 
     /**

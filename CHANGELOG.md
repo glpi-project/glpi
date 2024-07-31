@@ -213,10 +213,14 @@ The present file will list all changes made to the project; according to the
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
 - `HookManager::enableCSRF()`
+- `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
+- `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.
+- `ITILFollowup::ADDALLTICKET` constant. Use `ITILFollowup::ADDALLITEM`.
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
+- `Migration::updateRight()`. Use `Migration::replaceRight()` instead.
 - `Pdu_Plug` has been deprecated and replaced by `Item_Plug`
 - `Search::getOptions()` no longer returns a reference
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
