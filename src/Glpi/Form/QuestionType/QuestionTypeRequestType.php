@@ -137,4 +137,10 @@ TWIG;
     {
         return QuestionTypeCategory::REQUEST_TYPE;
     }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
+    }
 }

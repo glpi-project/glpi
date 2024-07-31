@@ -41,6 +41,7 @@ use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Form;
 use Group;
 use Override;
 use Profile;
@@ -65,6 +66,12 @@ final class AllowList implements ControlTypeInterface
     public function getConfigClass(): string
     {
         return AllowListConfig::class;
+    }
+
+    #[Override]
+    public function getWarnings(Form $form, array $warnings): array
+    {
+        return $warnings;
     }
 
     #[Override]
@@ -172,5 +179,10 @@ final class AllowList implements ControlTypeInterface
         SessionInfo $session_info
     ): bool {
         return in_array($session_info->getProfileId(), $config->getProfileIds());
+    }
+
+    public function allowUnauthenticated(JsonFieldInterface $config): bool
+    {
+        return false;
     }
 }

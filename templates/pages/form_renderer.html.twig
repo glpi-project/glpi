@@ -88,8 +88,19 @@
                     {% set question_type = form_block.getQuestionType() %}
                 {% endif %}
 
+                {% set skip_question = false %}
+
                 {# Skip unknown types (may be a disabled plugin) #}
-                {% if form_block is not instanceof('Glpi\\Form\\Question') or question_type is not null %}
+                {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
+                    {% set skip_question = true %}
+                {% endif %}
+
+                {# Skip questions not allowed for anonymous forms #}
+                {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                    {% set skip_question = true %}
+                {% endif %}
+
+                {% if not skip_question %}
                     <section
                         aria-label="{{ form_block.fields.name }}"
                         class="card mb-3 {{ is_first_section ? "" : "d-none" }}"

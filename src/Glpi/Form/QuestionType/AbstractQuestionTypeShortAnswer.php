@@ -147,4 +147,10 @@ TWIG;
     {
         return QuestionTypeCategory::SHORT_ANSWER;
     }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
+    }
 }

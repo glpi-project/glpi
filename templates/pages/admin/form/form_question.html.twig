@@ -31,12 +31,13 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form                   Glpi\Form #}
-{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
-{# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
-{# @var question               Glpi\Form\Question|null #}
-{# @var section                Glpi\Form\Section|null #}
-{# @var can_update             bool #}
+{# @var form                         Glpi\Form #}
+{# @var question_types_manager       Glpi\Form\QuestionType\QuestionTypesManager #}
+{# @var question_type                Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question                     Glpi\Form\Question|null #}
+{# @var section                      Glpi\Form\Section|null #}
+{# @var can_update                   bool #}
+{# @var allow_unauthenticated_access bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -56,6 +57,7 @@
     <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
+        data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
         class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
         aria-label="{{ __("Question details") }}"
     >
@@ -73,6 +75,15 @@
             </div>
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
+                <i
+                    class="ti ti-alert-triangle text-warning me-2 {{ allow_unauthenticated_access and not question_type.isAllowedForUnauthenticatedAccess() ? '' : 'd-none' }}"
+                    data-glpi-form-editor-blacklisted-question-type-warning
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-placement="top"
+                    data-bs-html="true"
+                    data-bs-content="{{ __("The current access policy allows unauthenticated access to this form, but this question type will be hidden to unauthenticated users.") }}"
+                ></i>
                 <input
                     title="{{ __("Question name") }}"
                     class="form-control content-editable-h2 mb-0"

@@ -40,6 +40,8 @@ use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Form;
 use Override;
 
 final class DirectAccess implements ControlTypeInterface
@@ -60,6 +62,29 @@ final class DirectAccess implements ControlTypeInterface
     public function getConfigClass(): string
     {
         return DirectAccessConfig::class;
+    }
+
+    #[Override]
+    public function getWarnings(Form $form, array $warnings): array
+    {
+        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+    }
+
+    private function addWarningIfFormHasBlacklistedQuestionTypes(
+        Form $form,
+        array $warnings
+    ): array {
+        if (
+            FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
+            && array_reduce(
+                $form->getQuestions(),
+                fn ($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+            )
+        ) {
+            $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');
+        }
+
+        return $warnings;
     }
 
     #[Override]
@@ -145,5 +170,14 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         return $config->getToken() === $token;
+    }
+
+    public function allowUnauthenticated(JsonFieldInterface $config): bool
+    {
+        if (!$config instanceof DirectAccessConfig) {
+            throw new \InvalidArgumentException("Invalid config class");
+        }
+
+        return $config->allowUnauthenticated();
     }
 }

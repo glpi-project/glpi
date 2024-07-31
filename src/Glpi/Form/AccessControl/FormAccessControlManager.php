@@ -92,6 +92,18 @@ final class FormAccessControlManager
         return array_values($controls);
     }
 
+    public function allowUnauthenticatedAccess(Form $form): bool
+    {
+        $access_controls = $this->getActiveAccessControlsForForm($form);
+        return array_reduce(
+            $access_controls,
+            function ($acc, $control) {
+                return $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig());
+            },
+            false
+        );
+    }
+
     /**
      * Check if the current user can answer the given form.
      *
@@ -154,6 +166,12 @@ final class FormAccessControlManager
         $warnings = [];
         $warnings = $this->addWarningIfFormIsNotActive($form, $warnings);
         $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
+
+        // Add Access Control Strategy warnings
+        $access_controls = $this->getPossibleAccessControlsStrategies();
+        foreach ($access_controls as $access_control) {
+            $warnings = $access_control->getWarnings($form, $warnings);
+        }
 
         return $warnings;
     }

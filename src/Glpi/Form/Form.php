@@ -45,6 +45,7 @@ use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
@@ -124,6 +125,7 @@ final class Form extends CommonDBTM
             'params'                 => $options,
             'question_types_manager' => $types_manager,
             'js_files'               => $js_files,
+            'allow_unauthenticated_access'      => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
         return true;
     }

@@ -93,7 +93,7 @@ interface QuestionTypeInterface
     /**
      * Get JS functions options for the form editor.
      *
-     * The options must be a JSON object, accepting two functions:
+     * The options must be a JSON object, accepting the following keys:
      * The extractDefaultValue function is used to extract the default value from the form editor.
      * The convertDefaultValue function is used to convert the default value to the form editor.
      *
@@ -169,4 +169,12 @@ interface QuestionTypeInterface
      * @return int
      */
     public function getWeight(): int;
+
+    /**
+     * Check if this question type is allowed for anonymous forms.
+     * If this method returns false, the question type will not be displayed in the end user form.
+     *
+     * @return bool
+     */
+    public function isAllowedForUnauthenticatedAccess(): bool;
 }

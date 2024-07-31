@@ -39,6 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 
 interface ControlTypeInterface
 {
@@ -59,9 +60,18 @@ interface ControlTypeInterface
     /**
      * Get the free json config config class name for this object.
      *
-     * @return string Class name which implements JsonConfigInterface
+     * @return string Class name which implements JsonFieldInterface
      */
     public function getConfigClass(): string;
+
+    /**
+     * Get the warnings for the given form.
+     *
+     * @param  Form $form
+     * @param  string[] $warnings
+     * @return string[]
+     */
+    public function getWarnings(Form $form, array $warnings): array;
 
     /**
      * Render the configuration form of this control type.
@@ -101,4 +111,12 @@ interface ControlTypeInterface
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote;
+
+    /**
+     * Define if an unauthenticated user can view the form.
+     *
+     * @param JsonFieldInterface $config
+     * @return bool
+     */
+    public function allowUnauthenticated(JsonFieldInterface $config): bool;
 }

@@ -37,11 +37,13 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
 use ReflectionClass;
+use Session;
 
 /**
  * Question of a given helpdesk form's section
@@ -83,12 +85,13 @@ final class Question extends CommonDBChild implements BlockInterface
     public function displayBlockForEditor(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_question.html.twig', [
-            'form'                   => $this->getForm(),
-            'question'               => $this,
-            'question_type'          => $this->getQuestionType(),
-            'question_types_manager' => QuestionTypesManager::getInstance(),
-            'section'                => $this->getItem(),
-            'can_update'             => $this->getForm()->canUpdate(),
+            'form'                         => $this->getForm(),
+            'question'                     => $this,
+            'question_type'                => $this->getQuestionType(),
+            'question_types_manager'       => QuestionTypesManager::getInstance(),
+            'section'                      => $this->getItem(),
+            'can_update'                   => $this->getForm()->canUpdate(),
+            'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this->getForm()),
         ]);
     }
 

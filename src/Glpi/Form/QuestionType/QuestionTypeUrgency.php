@@ -141,4 +141,10 @@ TWIG;
     {
         return QuestionTypeCategory::URGENCY;
     }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
+    }
 }

@@ -111,4 +111,10 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     {
         return 10;
     }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return false;
+    }
 }

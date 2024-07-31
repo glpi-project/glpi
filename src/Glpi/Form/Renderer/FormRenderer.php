@@ -36,8 +36,10 @@
 namespace Glpi\Form\Renderer;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Form;
 use Html;
+use Session;
 
 /**
  * Utility class used to easily render a form
@@ -85,7 +87,8 @@ final class FormRenderer
         // Load template
         $twig = TemplateRenderer::getInstance();
         $html .= $twig->render('pages/form_renderer.html.twig', [
-            'form' => $form,
+            'form'                 => $form,
+            'unauthenticated_user' => !Session::isAuthenticated(),
         ]);
 
         return $html;

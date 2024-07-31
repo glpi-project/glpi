@@ -81,6 +81,17 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
 
 /**
  * @memberof Cypress.Chainable.prototype
+ * @method logout
+ * @description Logout of GLPI
+ * @returns Chainable
+ */
+Cypress.Commands.add('logout', () => {
+    cy.findByRole('link', {name: 'User menu'}).click();
+    cy.findByRole('link', {name: 'Logout'}).click();
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
  * @method changeProfile
  * @description Change the profile of the current user. Only supports the default GLPI profiles.
  * @param {string} profile - Profile to change to

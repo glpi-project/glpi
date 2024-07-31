@@ -42,6 +42,8 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -251,6 +253,51 @@ class DirectAccessTest extends \DBTestCase
             $expected,
             $direct_access->canAnswer($config, $parameters)
         );
+    }
+
+    public static function formWarningsProvider(): iterable
+    {
+        yield 'form without blacklisted question types' => [
+            (new FormBuilder())
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                    allow_unauthenticated: true,
+                )),
+            []
+        ];
+
+        yield 'form with blacklisted question types' => [
+            (new FormBuilder())
+                ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                    allow_unauthenticated: true,
+                )),
+            [
+                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.'
+            ]
+        ];
+
+        yield 'inactive form with blacklisted question types' => [
+            (new FormBuilder())
+                ->setIsActive(false)
+                ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                    allow_unauthenticated: true,
+                )),
+            [
+                'This form is not visible to anyone because it is not active.',
+                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.'
+            ]
+        ];
+    }
+
+    #[DataProvider('formWarningsProvider')]
+    public function testGetWarningsForForm($formBuilder, $expectedWarnings): void
+    {
+        $form = $this->createForm($formBuilder);
+        $this->assertEquals($expectedWarnings, FormAccessControlManager::getInstance()->getWarnings($form));
     }
 
     private static function getConfigWithAuthenticadedAccess(): DirectAccessConfig

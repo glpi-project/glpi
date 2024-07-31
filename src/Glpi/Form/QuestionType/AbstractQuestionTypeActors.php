@@ -297,4 +297,10 @@ TWIG;
     {
         return QuestionTypeCategory::ACTORS;
     }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return false;
+    }
 }
