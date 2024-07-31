@@ -110,13 +110,6 @@ class ErrorHandler
     private $logger;
 
     /**
-     * Last fatal error trace.
-     *
-     * @var string
-     */
-    private $last_fatal_trace;
-
-    /**
      * Indicates wether output is disabled.
      *
      * @var bool
@@ -153,6 +146,11 @@ class ErrorHandler
     {
         $this->logger = $logger;
         $this->env = $env;
+    }
+
+    public function freeMemory(): void
+    {
+        $this->reserved_memory = null;
     }
 
     /**
@@ -259,7 +257,6 @@ class ErrorHandler
      */
     public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
     {
-
        // Have to false to forward to PHP internal error handler.
         $return = !$this->forward_to_internal_handler;
 
@@ -267,12 +264,8 @@ class ErrorHandler
         array_shift($trace);  // Remove current method from trace
         $error_trace = $this->getTraceAsString($trace);
 
-        if (in_array($error_code, self::FATAL_ERRORS)) {
-           // Fatal errors are handled by shutdown function
-           // (as some are not recoverable and cannot be handled here).
-           // Store backtrace to be able to use it there.
-            $this->last_fatal_trace = $error_trace;
-            return $return;
+        if (in_array($error_code, self::FATAL_ERRORS, true)) {
+            throw $this->convertErrorToThrowable($error_code, $error_message, $filename, $line_number);
         }
 
         if (!(error_reporting() & $error_code)) {
@@ -292,9 +285,7 @@ class ErrorHandler
             $filename,
             $line_number
         );
-
         $log_level = self::ERROR_LEVEL_MAP[$error_code];
-
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
         $this->outputDebugMessage($error_type, $error_description, $log_level);
 
@@ -393,23 +384,11 @@ class ErrorHandler
     {
         $this->exit_code = 255;
 
-        $error_type = sprintf(
-            'Uncaught Exception %s',
-            get_class($exception)
-        );
-        $error_description = sprintf(
-            '%s in %s at line %s',
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine()
-        );
-        $error_trace = $this->getTraceAsString($exception->getTrace());
+        $this->logException($exception);
 
-        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
-
-        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-        if (!$quiet) {
-            $this->outputDebugMessage($error_type, $error_description, $log_level);
+        if (!$quiet && isCommandLine()) {
+            $log_level = self::ERROR_LEVEL_MAP[$exception->getCode()] ?? 255;
+            $this->outputDebugMessage($exception->getCode(), $exception->getMessage(), $log_level);
         }
     }
 
@@ -439,14 +418,12 @@ class ErrorHandler
                 $error['line']
             );
 
-           // debug_backtrace is not available in shutdown function
-           // so get stored trace if any exists
-            $error_trace = $this->last_fatal_trace ?? '';
-
             $log_level = self::ERROR_LEVEL_MAP[$error['type']];
 
-            $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-            $this->outputDebugMessage($error_type, $error_description, $log_level);
+            $this->logErrorMessage($error_type, $error_description, '', $log_level);
+            if (isCommandLine()) {
+                $this->outputDebugMessage($error_type, $error_description, $log_level);
+            }
         }
 
         if ($this->exit_code !== null) {
@@ -643,5 +620,46 @@ class ErrorHandler
         }
 
         return $message;
+    }
+
+    private function convertErrorToThrowable(int $error_code, string $error_message, string $filename, int $line_number): \Throwable
+    {
+        $handler = new \Symfony\Component\ErrorHandler\ErrorHandler(null, $this->isDebug());
+        try {
+            $handler->handleError($error_code, $error_message, $filename, $line_number);
+        } catch (\Throwable $thrownException) {
+            return $thrownException;
+        }
+
+        return new \ErrorException(
+            message: \sprintf("An error occured (code %d, in %s::%d):\n%s", $error_code, $filename, $line_number, $error_message),
+            code: $error_code,
+            filename: $filename,
+            line: $line_number,
+        );
+    }
+
+    private function isDebug(): bool
+    {
+        return $this->env === GLPI::ENV_DEVELOPMENT || $this->env === GLPI::ENV_TESTING;
+    }
+
+    public function logException(\Throwable $exception): void
+    {
+        $error_type = sprintf(
+            'Uncaught Exception %s',
+            get_class($exception)
+        );
+        $error_description = sprintf(
+            '%s in %s at line %s',
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+        $error_trace = $this->getTraceAsString($exception->getTrace());
+
+        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+
+        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
     }
 }
