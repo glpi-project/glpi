@@ -168,7 +168,7 @@ final class FormAccessControlManager
         $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
 
         // Add Access Control Strategy warnings
-        $access_controls = $this->getPossibleAccessControlsStrategies($form);
+        $access_controls = $this->getPossibleAccessControlsStrategies();
         foreach ($access_controls as $access_control) {
             $warnings = $access_control->getWarnings($form, $warnings);
         }
