@@ -439,7 +439,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
@@ -467,12 +467,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {# TODO: dropdown id did not match its label because the Dropdown class
-   does some additional processing on the ID (replacing "[" and "]" by underscore) #}
-   {# As a quick fix, this same replacement was manually done here but we should look
-   for a stronger solution (and apply for all dropdowns inputs) #}
-   {% set id = ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']' : '_'}) %}
-   {{ _self.field(name, field, label, options|merge({'id': id})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownTimestampField(name, value, label = '', options = {}) %}
@@ -499,7 +494,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownYesNo(name, value, label = '', options = {}) %}
@@ -525,7 +520,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemTypes(name, value, label = '', options = {}) %}
@@ -554,7 +549,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemsFromItemtypes(name, label = '', options = {}) %}
@@ -569,7 +564,7 @@
    {% set field %}
       {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
    {% endset %}
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownIcons(name, value, label = '', options = {}) %}
@@ -595,7 +590,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownWebIcons(name, value, label = '', options = {}) %}
@@ -642,7 +637,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownFrequency(name, value, label = '', options = {}) %}
@@ -667,7 +662,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
@@ -704,7 +699,7 @@
    {% endset %}
 
    {% if field|trim is not empty %}
-      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
    {% endif %}
 {% endmacro %}
 
