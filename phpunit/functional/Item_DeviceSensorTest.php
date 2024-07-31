@@ -37,18 +37,18 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_DeviceSensor extends DbTestCase
+class Item_DeviceSensorTest extends DbTestCase
 {
     public function testCreate()
     {
         $this->login();
         $obj = new \Item_DeviceSensor();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $this->assertInstanceOf('\DeviceSensor', $deviceSensor);
         $in = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -56,13 +56,13 @@ class Item_DeviceSensor extends DbTestCase
             'entities_id'        => 0,
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, (int)$id);
+        $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
-        $this->variable($obj->getField('id'))->isEqualTo($id);
+        // getField methods
+        $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
@@ -71,31 +71,31 @@ class Item_DeviceSensor extends DbTestCase
         $this->login();
         $obj = new \Item_DeviceSensor();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $this->assertInstanceOf('\DeviceSensor', $deviceSensor);
         $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesensors_id'   => $deviceSensor->getID(),
             'entities_id'        => 0,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                       => $id,
             'serial'                   => $this->getUniqueString(),
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
@@ -104,23 +104,23 @@ class Item_DeviceSensor extends DbTestCase
         $this->login();
         $obj = new \Item_DeviceSensor();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSensor = getItemByTypeName('DeviceSensor', '_test_sensor_1');
-        $this->object($deviceSensor)->isInstanceOf('\DeviceSensor');
+        $this->assertInstanceOf('\DeviceSensor', $deviceSensor);
         $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesensors_id'   => $deviceSensor->getID(),
             'entities_id'        => 0,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];
-        $this->boolean($obj->delete($in))->isTrue();
+        $this->assertTrue($obj->delete($in));
     }
 }

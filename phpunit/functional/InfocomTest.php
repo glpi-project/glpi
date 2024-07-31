@@ -37,7 +37,7 @@ namespace tests\units;
 
 /* Test for inc/infocom.class.php */
 
-class Infocom extends \GLPITestCase
+class InfocomTest extends \GLPITestCase
 {
     public function dataLinearAmortise()
     {
@@ -198,10 +198,10 @@ class Infocom extends \GLPITestCase
             $usedate
         );
         foreach ($expected as $year => $values) {
-            $this->array($amortise[$year])->isIdenticalTo($values);
+            $this->assertSame($values, $amortise[$year]);
         }
         if (count($oldmft)) {
-            $this->array(\Infocom::mapOldAmortiseFormat($amortise, false))->isIdenticalTo($oldmft);
+            $this->assertSame($oldmft, \Infocom::mapOldAmortiseFormat($amortise, false));
         }
     }
 }

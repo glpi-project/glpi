@@ -37,7 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_DeviceSimcard extends DbTestCase
+class Item_DeviceSimcardTest extends DbTestCase
 {
     public function testCreate()
     {
@@ -46,9 +46,9 @@ class Item_DeviceSimcard extends DbTestCase
 
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertInstanceOf('\DeviceSimcard', $deviceSimcard);
         $in = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -56,13 +56,13 @@ class Item_DeviceSimcard extends DbTestCase
             'entities_id'        => 0,
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, (int)$id);
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
-        $this->variable($obj->getField('id'))->isEqualTo($id);
+        $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
@@ -73,16 +73,16 @@ class Item_DeviceSimcard extends DbTestCase
 
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertInstanceOf('\DeviceSimcard', $deviceSimcard);
         $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
             'entities_id'        => 0,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
        // Update
         $id = $obj->getID();
@@ -93,12 +93,12 @@ class Item_DeviceSimcard extends DbTestCase
             'puk'                      => '2345',
             'puk2'                     => '3456',
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
@@ -131,9 +131,9 @@ class Item_DeviceSimcard extends DbTestCase
 
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertInstanceOf('\DeviceSimcard', $deviceSimcard);
         $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -144,7 +144,7 @@ class Item_DeviceSimcard extends DbTestCase
             'puk'                => '2345',
             'puk2'               => '3456',
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
        // Update
         $id = $obj->getID();
@@ -155,13 +155,13 @@ class Item_DeviceSimcard extends DbTestCase
             'puk'                => '0000',
             'puk2'               => '0000',
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
         unset($in['id']);
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isNotEqualTo($v);
+            $this->assertNotEquals($v, $obj->getField($k));
         }
     }
 
@@ -173,21 +173,21 @@ class Item_DeviceSimcard extends DbTestCase
 
        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertInstanceOf('\DeviceSimcard', $deviceSimcard);
         $id = $obj->add([
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
             'devicesimcards_id'  => $deviceSimcard->getID(),
             'entities_id'        => 0,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];
-        $this->boolean($obj->delete($in))->isTrue();
+        $this->assertTrue($obj->delete($in));
     }
 }

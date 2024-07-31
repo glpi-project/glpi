@@ -40,14 +40,14 @@ use Rack;
 
 /* Test for inc/item_rack.class.php */
 
-class Item_Rack extends DbTestCase
+class Item_RackTest extends DbTestCase
 {
     /**
      * Models provider
      *
      * @return array
      */
-    protected function modelsProvider()
+    public static function modelsProvider()
     {
         return [
             [
@@ -98,9 +98,10 @@ class Item_Rack extends DbTestCase
     {
         $model = new \ComputerModel();
         foreach ($this->modelsProvider() as $row) {
-            $this->integer(
-                (int)$model->add($row)
-            )->isGreaterThan(0);
+            $this->assertGreaterThan(
+                0,
+                $model->add($row)
+            );
         }
     }
 
@@ -109,7 +110,7 @@ class Item_Rack extends DbTestCase
      *
      * @return array
      */
-    protected function computersProvider()
+    public static function computersProvider()
     {
         return [
             [
@@ -168,12 +169,13 @@ class Item_Rack extends DbTestCase
         $computer = new \Computer();
         foreach ($this->computersProvider() as $row) {
             $row['computermodels_id'] = getItemByTypeName('ComputerModel', $row['model'], true);
-            $this->integer((int)$row['computermodels_id'])->isGreaterThan(0);
+            $this->assertGreaterThan(0, (int)$row['computermodels_id']);
             $row['entities_id'] = 0;
             unset($row['model']);
-            $this->integer(
-                (int)$computer->add($row)
-            )->isGreaterThan(0);
+            $this->assertGreaterThan(
+                0,
+                $computer->add($row)
+            );
         }
     }
 
@@ -189,259 +191,266 @@ class Item_Rack extends DbTestCase
         $this->createComputers();
 
         $rack = new \Rack();
-       //create a 10u rack
-        $this->integer(
-            (int)$rack->add([
+        //create a 10u rack
+        $this->assertGreaterThan(
+            0,
+            $rack->add([
                 'name'         => 'Test rack',
                 'number_units' => 10,
                 'dcrooms_id'   => 0,
                 'position'     => 0,
                 'entities_id'  => 0,
             ])
-        )->isGreaterThan(0);
+        );
 
         $ira = new \Item_Rack();
 
         $SRVNUX1 = getItemByTypeName('Computer', 'SRV-NUX-1', true);
-       //try to add outside rack capabilities
+        //try to add outside rack capabilities
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 15,
                 'itemtype'  => 'Computer',
                 'items_id'  => $SRVNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
-       //add item at the first position
+        //add item at the first position
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $SRVNUX1
             ])
-        )->isGreaterThan(0);
+        );
 
         $BIGNUX1 = getItemByTypeName('Computer', 'BIG-NUX-1', true);
-       //take a 3U item and try to add it at the end
+        //take a 3U item and try to add it at the end
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 10,
                 'itemtype'  => 'Computer',
                 'items_id'  => $BIGNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
-       //take a 3U item and try to add it at the end - 1
+        //take a 3U item and try to add it at the end - 1
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 9,
                 'itemtype'  => 'Computer',
                 'items_id'  => $BIGNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
-       //take a 3U item and try to add it at the end - 2
+        //take a 3U item and try to add it at the end - 2
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 8,
                 'itemtype'  => 'Computer',
                 'items_id'  => $BIGNUX1
             ])
-        )->isGreaterThan(0);
+        );
 
-       //test half racks
+        //test half racks
         $MIDNUX1 = getItemByTypeName('Computer', 'MID-NUX-1', true);
         $MIDNUX2 = getItemByTypeName('Computer', 'MID-NUX-2', true);
         $MIDNUX3 = getItemByTypeName('Computer', 'MID-NUX-3', true);
-       //item is half rack. hpos is required
+        //item is half rack. hpos is required
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['You must define an horizontal position for this item']);
 
-       //try to add a half size on the first row
+        //try to add a half size on the first row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX1,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
-       //add it on second row
+        //add it on second row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX1,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add second half rack item it on second row, at same position
+        //add second half rack item it on second row, at same position
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX2,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
-       //add second half rack item it on second row, on the other position
+        //add second half rack item it on second row, on the other position
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX2,
                 'hpos'      => $rack::POS_RIGHT
             ])
-        )->isGreaterThan(0);
+        );
 
-       //Unit is full!
+        //Unit is full!
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX3,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
-       //test depth < 1
+        //test depth < 1
         $DEPNUX1 = getItemByTypeName('Computer', 'DEP-NUX-1', true);
         $DEPNUX2 = getItemByTypeName('Computer', 'DEP-NUX-2', true);
 
-       //item ahs a depth <= 0.5. orientation is required
+        //item ahs a depth <= 0.5. orientation is required
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['You must define an orientation for this item']);
 
-       //try to add on the first row
+        //try to add on the first row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
                 'orientation'  => $rack::FRONT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
        //try to add on the second row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
                 'orientation'  => $rack::FRONT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
        //add on the third row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
                 'orientation'  => $rack::FRONT
             ])
-        )->isGreaterThan(0);
+        );
 
        //add not full depth rack item with same orientation
        //try to add on the first row
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX2,
                 'orientation'  => $rack::FRONT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX2,
                 'orientation'  => $rack::REAR
             ])
-        )->isGreaterThan(0);
+        );
 
-       //test hf full depth + 2x hf mid depth
+        //test hf full depth + 2x hf mid depth
         $MADNUX1 = getItemByTypeName('Computer', 'MAD-NUX-1', true);
         $MADNUX2 = getItemByTypeName('Computer', 'MAD-NUX-2', true);
 
-       //first element on unit2 (MID-NUX-1) is half racked on left; and is full depth
-       //drop second element on unit2
+        //first element on unit2 (MID-NUX-1) is half racked on left; and is full depth
+        //drop second element on unit2
         $ira->deleteByCriteria(['items_id' => $MIDNUX2], 1);
 
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
@@ -449,13 +458,14 @@ class Item_Rack extends DbTestCase
                 'orientation'  => $rack::REAR,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
@@ -463,11 +473,11 @@ class Item_Rack extends DbTestCase
                 'orientation'  => $rack::REAR,
                 'hpos'      => $rack::POS_RIGHT
             ])
-        )->isGreaterThan(0);
+        );
 
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertFalse(
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
@@ -475,13 +485,14 @@ class Item_Rack extends DbTestCase
                 'orientation'  => $rack::REAR,
                 'hpos'      => $rack::POS_LEFT
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
         $ira->getEmpty();
-        $this->integer(
-            (int)$ira->add([
+        $this->assertGreaterThan(
+            0,
+            $ira->add([
                 'racks_id'  => $rack->getID(),
                 'position'  => 2,
                 'itemtype'  => 'Computer',
@@ -489,7 +500,7 @@ class Item_Rack extends DbTestCase
                 'orientation'  => $rack::FRONT,
                 'hpos'      => $rack::POS_RIGHT
             ])
-        )->isGreaterThan(0);
+        );
     }
 
     /**
@@ -542,19 +553,22 @@ class Item_Rack extends DbTestCase
 
         // Update the ComputerModel
         for ($i = 1; $i < 15; $i++) {
-            $this->boolean($model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => $i,
-            ]))->isEqualTo($i <= 10);
+            $this->assertEquals(
+                $i <= 10,
+                $model1->update([
+                    'id'              => $model1->getID(),
+                    'required_units'  => $i,
+                ])
+            );
         }
 
         $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'required_units'  => 1,
-        ]))->isTrue();
+        ]));
 
         // Add a new Computer with a new ComputerModel
         $model2 = $this->createItem(
@@ -588,146 +602,158 @@ class Item_Rack extends DbTestCase
 
         // Update the ComputerModel
         for ($i = 1; $i < 15; $i++) {
-            $this->boolean($model2->update([
-                'id'              => $model2->getID(),
-                'required_units'  => $i,
-            ]))->isEqualTo($i <= 8);
+            $this->assertEquals(
+                $i <= 8,
+                $model2->update([
+                    'id'              => $model2->getID(),
+                    'required_units'  => $i,
+                ])
+            );
         }
 
         $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean($model2->update([
+        $this->assertTrue($model2->update([
             'id'              => $model2->getID(),
             'required_units'  => 1,
-        ]))->isTrue();
+        ]));
 
         // Update the ComputerModel
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'is_half_rack'    => 1,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($model2->update([
+        $this->assertTrue($model2->update([
             'id'              => $model2->getID(),
             'is_half_rack'    => 1,
-        ]))->isTrue();
+        ]));
 
         // Update the Item_Rack
-        $this->boolean($itemRack1->update([
+        $this->assertTrue($itemRack1->update([
             'id'   => $itemRack1->getID(),
             'hpos' => 1,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($itemRack2->update([
+        $this->assertTrue($itemRack2->update([
             'id'   => $itemRack2->getID(),
             'hpos' => 2,
-        ]))->isTrue();
+        ]));
 
         // Update the ComputerModel
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean($model1->update([
+            $this->assertTrue($model1->update([
                 'id'              => $model1->getID(),
                 'required_units'  => $i,
-            ]))->isTrue();
+            ]));
 
-            $this->boolean($model2->update([
+            $this->assertTrue($model2->update([
                 'id'              => $model2->getID(),
                 'required_units'  => $i,
-            ]))->isTrue();
+            ]));
         }
 
         // Update the ComputerModel
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'required_units'  => 1,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($model2->update([
+        $this->assertTrue($model2->update([
             'id'              => $model2->getID(),
             'is_half_rack'    => 0,
             'required_units'  => 1,
-        ]))->isTrue();
+        ]));
 
         // Update the ComputerModel
         for ($i = 1; $i <= 5; $i++) {
-            $this->boolean($model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => $i,
-            ]))->isEqualTo($i < 3);
+            $this->assertEquals(
+                $i < 3,
+                $model1->update([
+                    'id'              => $model1->getID(),
+                    'required_units'  => $i,
+                ])
+            );
         }
 
         $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'required_units'  => 1,
-        ]))->isTrue();
+        ]));
 
         // Test orientation
-        $this->boolean($itemRack1->update([
+        $this->assertTrue($itemRack1->update([
             'id'   => $itemRack1->getID(),
             'orientation' => Rack::REAR,
             'hpos' => Rack::POS_LEFT,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($itemRack2->update([
+        $this->assertTrue($itemRack2->update([
             'id'   => $itemRack2->getID(),
             'orientation' => Rack::FRONT,
             'is_half_rack' => 0,
-        ]))->isTrue();
+        ]));
 
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean($model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => $i,
-            ]))->isEqualTo($i < 3);
+            $this->assertEquals(
+                $i < 3,
+                $model1->update([
+                    'id'              => $model1->getID(),
+                    'required_units'  => $i,
+                ])
+            );
         }
 
         $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
 
         // Test depth
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'required_units'  => 1,
             'depth'           => 0.5,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($model2->update([
+        $this->assertTrue($model2->update([
             'id'              => $model2->getID(),
             'depth'           => 0.5,
-        ]))->isTrue();
+        ]));
 
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean($model1->update([
+            $this->assertTrue($model1->update([
                 'id'              => $model1->getID(),
                 'required_units'  => $i,
-            ]))->isTrue();
+            ]));
 
-            $this->boolean($model2->update([
+            $this->assertTrue($model2->update([
                 'id'              => $model2->getID(),
                 'required_units'  => $i,
-            ]))->isTrue();
+            ]));
         }
 
-        $this->boolean($model1->update([
+        $this->assertTrue($model1->update([
             'id'              => $model1->getID(),
             'required_units'  => 1,
             'depth'           => 0.5,
-        ]))->isTrue();
+        ]));
 
-        $this->boolean($model2->update([
+        $this->assertTrue($model2->update([
             'id'              => $model2->getID(),
             'required_units'  => 1,
             'depth'           => 1,
-        ]))->isTrue();
+        ]));
 
         for ($i = 1; $i <= 10; $i++) {
-            $this->boolean($model1->update([
-                'id'              => $model1->getID(),
-                'required_units'  => $i,
-            ]))->isEqualTo($i < 3);
+            $this->assertEquals(
+                $i < 3,
+                $model1->update([
+                    'id'              => $model1->getID(),
+                    'required_units'  => $i,
+                ])
+            );
         }
 
         $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
@@ -782,7 +808,7 @@ class Item_Rack extends DbTestCase
         );
 
         // Check horizontal position
-        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_NONE);
+        $this->assertEquals(Rack::POS_NONE, $itemRack->fields['hpos']);
 
         // Update model
         $this->updateItem(
@@ -795,7 +821,7 @@ class Item_Rack extends DbTestCase
         $itemRack->getFromDB($itemRack->getID());
 
         // Check horizontal position
-        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_LEFT);
+        $this->assertEquals(Rack::POS_LEFT, $itemRack->fields['hpos']);
 
         // Update model
         $this->updateItem(
@@ -808,7 +834,7 @@ class Item_Rack extends DbTestCase
         $itemRack->getFromDB($itemRack->getID());
 
         // Check horizontal position
-        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_NONE);
+        $this->assertEquals(Rack::POS_NONE, $itemRack->fields['hpos']);
 
         // Update item rack
         $this->updateItem(
@@ -830,6 +856,6 @@ class Item_Rack extends DbTestCase
         $itemRack->getFromDB($itemRack->getID());
 
         // Check horizontal position
-        $this->integer($itemRack->fields['hpos'])->isEqualTo(Rack::POS_RIGHT);
+        $this->assertEquals(Rack::POS_RIGHT, $itemRack->fields['hpos']);
     }
 }

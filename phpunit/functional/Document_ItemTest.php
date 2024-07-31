@@ -36,101 +36,90 @@
 namespace tests\units;
 
 use DbTestCase;
+use Monolog\Logger;
 
 /* Test for inc/document_item.class.php */
 
-class Document_Item extends DbTestCase
+class Document_ItemTest extends DbTestCase
 {
     public function testGetForbiddenStandardMassiveAction()
     {
-        $this->newTestedInstance();
-        $this->array(
-            $this->testedInstance->getForbiddenStandardMassiveAction()
-        )->isIdenticalTo(['clone', 'update']);
+        $ditem = new \Document_Item();
+        $this->assertSame(
+            ['clone', 'update'],
+            $ditem->getForbiddenStandardMassiveAction()
+        );
     }
 
     public function testPrepareInputForAdd()
     {
         $input = [];
-        $ditem = $this->newTestedInstance;
+        $ditem = new \Document_Item();
 
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Item type is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Item type is mandatory',
+            Logger::WARNING
+        );
 
         $input['itemtype'] = '';
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Item type is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Item type is mandatory',
+            Logger::WARNING
+        );
 
         $input['itemtype'] = 'NotAClass';
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('No class found for type NotAClass')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'No class found for type NotAClass',
+            Logger::WARNING
+        );
 
         $input['itemtype'] = 'Computer';
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Item ID is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Item ID is mandatory',
+            Logger::WARNING
+        );
 
         $input['items_id'] = 0;
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Item ID is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Item ID is mandatory',
+            Logger::WARNING
+        );
 
         $cid = getItemByTypeName('Computer', '_test_pc01', true);
         $input['items_id'] = $cid;
 
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Document ID is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Document ID is mandatory',
+            Logger::WARNING
+        );
 
         $input['documents_id'] = 0;
-        $this->when(
-            function () use ($input) {
-                $this->boolean($this->testedInstance->add($input))->isFalse();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Document ID is mandatory')
-         ->exists();
+        $res = $ditem->add($input);
+        $this->assertFalse($res);
+        $this->hasPhpLogRecordThatContains(
+            'Document ID is mandatory',
+            Logger::WARNING
+        );
 
         $document = new \Document();
-        $this->integer(
-            (int)$document->add([
+        $this->assertGreaterThan(
+            0,
+            $document->add([
                 'name'   => 'Test document to link'
             ])
-        )->isGreaterThan(0);
+        );
         $input['documents_id'] = $document->getID();
 
         $expected = [
@@ -142,9 +131,10 @@ class Document_Item extends DbTestCase
             'is_recursive' => 0
         ];
 
-        $this->array(
-            $this->testedInstance->prepareInputForAdd($input)
-        )->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            $ditem->prepareInputForAdd($input)
+        );
     }
 
 
@@ -165,7 +155,7 @@ class Document_Item extends DbTestCase
             ],
             'ORDER'           => 'itemtype'
         ];
-        $this->array(\Document_Item::getDistinctTypesParams(1))->isIdenticalTo($expected);
+        $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1));
 
         $extra_where = ['date_mod' => ['>', '2000-01-01']];
         $expected = [
@@ -189,7 +179,7 @@ class Document_Item extends DbTestCase
             ],
             'ORDER'           => 'itemtype'
         ];
-        $this->array(\Document_Item::getDistinctTypesParams(1, $extra_where))->isIdenticalTo($expected);
+        $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1, $extra_where));
     }
 
 
@@ -204,55 +194,62 @@ class Document_Item extends DbTestCase
             'date_mod' => '2020-01-01'
         ]);
 
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
-       // Document and Document_Item
+        // Document and Document_Item
         $doc = new \Document();
-        $this->integer(
-            (int)$doc->add([
+        $this->assertGreaterThan(
+            0,
+            $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
                 'name'         => 'A simple document object'
             ])
-        )->isGreaterThan(0);
+        );
 
-       //do not change ticket modification date
+        //do not change ticket modification date
         $doc_item = new \Document_Item();
-        $this->integer(
-            (int)$doc_item->add([
+        $this->assertGreaterThan(
+            0,
+            $doc_item->add([
                 'users_id'      => $uid,
                 'items_id'      => $tickets_id,
                 'itemtype'      => 'Ticket',
                 'documents_id'  => $doc->getID(),
                 '_do_update_ticket' => false
             ])
-        )->isGreaterThan(0);
+        );
 
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->string($ticket->fields['date_mod'])->isIdenticalTo('2020-01-01 00:00:00');
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertSame('2020-01-01 00:00:00', $ticket->fields['date_mod']);
 
-       //do change ticket modification date
+        //do change ticket modification date
         $_SESSION["glpi_currenttime"] = '2021-01-01 00:00:01';
         $doc = new \Document();
-        $this->integer(
-            (int)$doc->add([
+        $this->assertGreaterThan(
+            0,
+            $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
                 'name'         => 'A simple document object'
             ])
-        )->isGreaterThan(0);
+        );
 
         $doc_item = new \Document_Item();
-        $this->integer(
-            (int)$doc_item->add([
+        $this->assertGreaterThan(
+            0,
+            $doc_item->add([
                 'users_id'      => $uid,
                 'items_id'      => $tickets_id,
                 'itemtype'      => 'Ticket',
                 'documents_id'  => $doc->getID(),
             ])
-        )->isGreaterThan(0);
+        );
 
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->string($ticket->fields['date_mod'])->isNotEqualTo('2021-01-01 00:00:01');
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertNotEquals(
+            '2021-01-01 00:00:01',
+            $ticket->fields['date_mod']
+        );
     }
 }

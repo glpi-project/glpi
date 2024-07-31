@@ -49,48 +49,78 @@ use Ticket_User;
 
 /* Test for inc/entity.class.php */
 
-class Entity extends DbTestCase
+class EntityTest extends DbTestCase
 {
     public function testSonsAncestors()
     {
         $ent0 = getItemByTypeName('Entity', '_test_root_entity');
-        $this->string($ent0->getField('completename'))
-         ->isIdenticalTo('Root entity > _test_root_entity');
+        $this->assertSame(
+            'Root entity > _test_root_entity',
+            $ent0->getField('completename')
+        );
 
         $ent1 = getItemByTypeName('Entity', '_test_child_1');
-        $this->string($ent1->getField('completename'))
-         ->isIdenticalTo('Root entity > _test_root_entity > _test_child_1');
+        $this->assertSame(
+            'Root entity > _test_root_entity > _test_child_1',
+            $ent1->getField('completename')
+        );
 
         $ent2 = getItemByTypeName('Entity', '_test_child_2');
-        $this->string($ent2->getField('completename'))
-         ->isIdenticalTo('Root entity > _test_root_entity > _test_child_2');
+        $this->assertSame(
+            'Root entity > _test_root_entity > _test_child_2',
+            $ent2->getField('completename')
+        );
 
-        $this->array(array_keys(getAncestorsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo([0]);
-        $this->array(array_values(getAncestorsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo([0]);
-        $this->array(array_keys(getSonsOf('glpi_entities', $ent0->getID())))
-         ->isEqualTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
-        $this->array(array_values(getSonsOf('glpi_entities', $ent0->getID())))
-         ->isIdenticalTo([$ent0->getID(), $ent1->getID(), $ent2->getID()]);
+        $this->assertSame(
+            [0],
+            array_keys(getAncestorsOf('glpi_entities', $ent0->getID()))
+        );
+        $this->assertSame(
+            [0],
+            array_values(getAncestorsOf('glpi_entities', $ent0->getID()))
+        );
+        $this->assertEquals(
+            [$ent0->getID(), $ent1->getID(), $ent2->getID()],
+            array_keys(getSonsOf('glpi_entities', $ent0->getID()))
+        );
+        $this->assertSame(
+            [$ent0->getID(), $ent1->getID(), $ent2->getID()],
+            array_values(getSonsOf('glpi_entities', $ent0->getID()))
+        );
 
-        $this->array(array_keys(getAncestorsOf('glpi_entities', $ent1->getID())))
-         ->isEqualTo([0, $ent0->getID()]);
-        $this->array(array_values(getAncestorsOf('glpi_entities', $ent1->getID())))
-         ->isEqualTo([0, $ent0->getID()]);
-        $this->array(array_keys(getSonsOf('glpi_entities', $ent1->getID())))
-         ->isEqualTo([$ent1->getID()]);
-        $this->array(array_values(getSonsOf('glpi_entities', $ent1->getID())))
-         ->isEqualTo([$ent1->getID()]);
+        $this->assertEquals(
+            [0, $ent0->getID()],
+            array_keys(getAncestorsOf('glpi_entities', $ent1->getID()))
+        );
+        $this->assertEquals(
+            [0, $ent0->getID()],
+            array_values(getAncestorsOf('glpi_entities', $ent1->getID()))
+        );
+        $this->assertEquals(
+            [$ent1->getID()],
+            array_keys(getSonsOf('glpi_entities', $ent1->getID()))
+        );
+        $this->assertEquals(
+            [$ent1->getID()],
+            array_values(getSonsOf('glpi_entities', $ent1->getID()))
+        );
 
-        $this->array(array_keys(getAncestorsOf('glpi_entities', $ent2->getID())))
-         ->isEqualTo([0, $ent0->getID()]);
-        $this->array(array_values(getAncestorsOf('glpi_entities', $ent2->getID())))
-         ->isEqualTo([0, $ent0->getID()]);
-        $this->array(array_keys(getSonsOf('glpi_entities', $ent2->getID())))
-         ->isEqualTo([$ent2->getID()]);
-        $this->array(array_values(getSonsOf('glpi_entities', $ent2->getID())))
-         ->isEqualTo([$ent2->getID()]);
+        $this->assertEquals(
+            [0, $ent0->getID()],
+            array_keys(getAncestorsOf('glpi_entities', $ent2->getID()))
+        );
+        $this->assertEquals(
+            [0, $ent0->getID()],
+            array_values(getAncestorsOf('glpi_entities', $ent2->getID()))
+        );
+        $this->assertEquals(
+            [$ent2->getID()],
+            array_keys(getSonsOf('glpi_entities', $ent2->getID()))
+        );
+        $this->assertEquals(
+            [$ent2->getID()],
+            array_values(getSonsOf('glpi_entities', $ent2->getID()))
+        );
     }
 
     public function testPrepareInputForAdd()
@@ -98,29 +128,27 @@ class Entity extends DbTestCase
         $this->login();
         $entity = new \Entity();
 
-        $this->boolean(
+        $this->assertFalse(
             $entity->prepareInputForAdd([
                 'name' => ''
             ])
-        )->isFalse();
+        );
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
-        $this->boolean(
+        $this->assertFalse(
             $entity->prepareInputForAdd([
                 'anykey' => 'anyvalue'
             ])
-        )->isFalse();
+        );
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
-        $this->array(
-            $entity->prepareInputForAdd([
-                'name' => 'entname'
-            ])
-        )
-         ->string['name']->isIdenticalTo('entname')
-         ->string['completename']->isIdenticalTo('entname')
-         ->integer['level']->isIdenticalTo(1)
-         ->integer['entities_id']->isIdenticalTo(0);
+        $prepared = $entity->prepareInputForAdd([
+            'name' => 'entname'
+        ]);
+        $this->assertSame('entname', $prepared['name']);
+        $this->assertSame('entname', $prepared['completename']);
+        $this->assertSame(1, $prepared['level']);
+        $this->assertSame(0, $prepared['entities_id']);
     }
 
     /**
@@ -148,70 +176,70 @@ class Entity extends DbTestCase
             'name'         => 'Sub child entity',
             'entities_id'  => $ent1
         ]);
-        $this->integer($new_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $new_id);
         $ackey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
 
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1];
         if ($cache === true) {
-            $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
         }
 
         $ancestors = getAncestorsOf('glpi_entities', $new_id);
-        $this->array($ancestors)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
         }
 
         $expected = [$ent1 => $ent1, $new_id => $new_id];
 
         $sons = getSonsOf('glpi_entities', $ent1);
-        $this->array($sons)->isIdenticalTo($expected);
+        $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($sckey_ent1))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent1));
         }
 
-       //change parent entity
-        $this->boolean(
+        //change parent entity
+        $this->assertTrue(
             $entity->update([
                 'id'           => $new_id,
                 'entities_id'  => $ent2
             ])
-        )->isTrue();
+        );
 
         $expected = [0 => 0, $ent0 => $ent0, $ent2 => $ent2];
         if ($cache === true) {
-            $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
         }
 
         $ancestors = getAncestorsOf('glpi_entities', $new_id);
-        $this->array($ancestors)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ancestors);
 
         if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($ackey_new_id))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($ackey_new_id));
         }
 
         $expected = [$ent1 => $ent1];
         $sons = getSonsOf('glpi_entities', $ent1);
-        $this->array($sons)->isIdenticalTo($expected);
+        $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($sckey_ent1))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent1));
         }
 
         $expected = [$ent2 => $ent2, $new_id => $new_id];
         $sons = getSonsOf('glpi_entities', $ent2);
-        $this->array($sons)->isIdenticalTo($expected);
+        $this->assertSame($expected, $sons);
 
         if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($sckey_ent2))->isIdenticalTo($expected);
+            $this->assertSame($expected, $GLPI_CACHE->get($sckey_ent2));
         }
 
-       //clean new entity
-        $this->boolean(
+        //clean new entity
+        $this->assertTrue(
             $entity->delete(['id' => $new_id], true)
-        )->isTrue();
+        );
     }
 
     private function checkParentsSonsAreReset()
@@ -222,18 +250,18 @@ class Entity extends DbTestCase
 
         $expected = [0 => 0, 1 => $ent0];
         $ancestors = getAncestorsOf('glpi_entities', $ent1);
-        $this->array($ancestors)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ancestors);
 
         $ancestors = getAncestorsOf('glpi_entities', $ent2);
-        $this->array($ancestors)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ancestors);
 
         $expected = [$ent1 => $ent1];
         $sons = getSonsOf('glpi_entities', $ent1);
-        $this->array($sons)->isIdenticalTo($expected);
+        $this->assertSame($expected, $sons);
 
         $expected = [$ent2 => $ent2];
         $sons = getSonsOf('glpi_entities', $ent2);
-        $this->array($sons)->isIdenticalTo($expected);
+        $this->assertSame($expected, $sons);
     }
 
     public function testChangeEntityParent()
@@ -280,16 +308,16 @@ class Entity extends DbTestCase
             'longitude'    => '2.3522',
             'altitude'     => '115'
         ]);
-        $this->integer((int) $ent1_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int) $ent1_id);
         $ent2 = new \Entity();
         $ent2_id = $ent2->add([
             'entities_id'  => $ent1_id,
             'name'         => 'inherit_geo_test_child',
         ]);
-        $this->integer((int) $ent2_id)->isGreaterThan(0);
-        $this->string($ent2->fields['latitude'])->isEqualTo($ent1->fields['latitude']);
-        $this->string($ent2->fields['longitude'])->isEqualTo($ent1->fields['longitude']);
-        $this->string($ent2->fields['altitude'])->isEqualTo($ent1->fields['altitude']);
+        $this->assertGreaterThan(0, (int) $ent2_id);
+        $this->assertEquals($ent1->fields['latitude'], $ent2->fields['latitude']);
+        $this->assertEquals($ent1->fields['longitude'], $ent2->fields['longitude']);
+        $this->assertEquals($ent1->fields['altitude'], $ent2->fields['altitude']);
 
        // Make sure we don't overwrite data a user sets
         $ent3 = new \Entity();
@@ -300,10 +328,10 @@ class Entity extends DbTestCase
             'longitude'    => '2.1734',
             'altitude'     => '39'
         ]);
-        $this->integer((int) $ent3_id)->isGreaterThan(0);
-        $this->string($ent3->fields['latitude'])->isEqualTo('41.3851');
-        $this->string($ent3->fields['longitude'])->isEqualTo('2.1734');
-        $this->string($ent3->fields['altitude'])->isEqualTo('39');
+        $this->assertGreaterThan(0, (int) $ent3_id);
+        $this->assertEquals('41.3851', $ent3->fields['latitude']);
+        $this->assertEquals('2.1734', $ent3->fields['longitude']);
+        $this->assertEquals('39', $ent3->fields['altitude']);
     }
 
     public function testDeleteEntity()
@@ -318,10 +346,10 @@ class Entity extends DbTestCase
                 'entities_id'  => $root_id,
             ]
         );
-        $this->integer($entity_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $entity_id);
 
         //make sure parent entity cannot be removed
-        $this->boolean($entity->delete(['id' => $root_id]))->isFalse();
+        $this->assertFalse($entity->delete(['id' => $root_id]));
         $this->hasSessionMessages(ERROR, ["You cannot delete an entity which contains sub-entities."]);
 
         $user_id = getItemByTypeName('User', 'normal', true);
@@ -335,15 +363,15 @@ class Entity extends DbTestCase
                 'users_id'    => $user_id,
             ]
         );
-        $this->integer($profile_user_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $profile_user_id);
 
        // Profile_User exists
-        $this->boolean($profile_user->getFromDB($profile_user_id))->isTrue();
+        $this->assertTrue($profile_user->getFromDB($profile_user_id));
 
-        $this->boolean($entity->delete(['id' => $entity_id]))->isTrue();
+        $this->assertTrue($entity->delete(['id' => $entity_id]));
 
        // Profile_User has been deleted when entity has been deleted
-        $this->boolean($profile_user->getFromDB($profile_user_id))->isFalse();
+        $this->assertFalse($profile_user->getFromDB($profile_user_id));
     }
 
     protected function getUsedConfigProvider(): iterable
@@ -544,15 +572,15 @@ class Entity extends DbTestCase
         $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
 
         $entity = new \Entity();
-        $this->boolean($entity->update(['id' => $root_id] + $root_values))->isTrue();
-        $this->boolean($entity->update(['id' => $child_id] + $child_values))->isTrue();
-        $this->boolean($entity->update(['id' => $grandchild_id] + $grandchild_values))->isTrue();
+        $this->assertTrue($entity->update(['id' => $root_id] + $root_values));
+        $this->assertTrue($entity->update(['id' => $child_id] + $child_values));
+        $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
 
-        $this->variable(call_user_func_array([\Entity::class, 'getUsedConfig'], $params))->isEqualTo($expected_result);
+        $this->assertEquals($expected_result, call_user_func_array([\Entity::class, 'getUsedConfig'], $params));
     }
 
 
-    protected function customCssProvider()
+    public static function customCssProvider()
     {
 
         $root_id  = getItemByTypeName('Entity', 'Root entity', true);
@@ -667,7 +695,7 @@ class Entity extends DbTestCase
 
         $entity = new \Entity();
 
-       // Define configuration values
+        // Define configuration values
         $update = $entity->update(
             [
                 'id'                => getItemByTypeName('Entity', 'Root entity', true),
@@ -675,7 +703,7 @@ class Entity extends DbTestCase
                 'custom_css_code'   => $root_custom_css_code
             ]
         );
-        $this->boolean($update)->isTrue();
+        $this->assertTrue($update);
         $update = $entity->update(
             [
                 'id'                => getItemByTypeName('Entity', '_test_child_1', true),
@@ -683,11 +711,11 @@ class Entity extends DbTestCase
                 'custom_css_code'   => $child_custom_css_code
             ]
         );
-        $this->boolean($update)->isTrue();
+        $this->assertTrue($update);
 
-       // Validate method result
-        $this->boolean($entity->getFromDB($entity_id))->isTrue();
-        $this->string($entity->getCustomCssTag())->isEqualTo($expected);
+        // Validate method result
+        $this->assertTrue($entity->getFromDB($entity_id));
+        $this->assertSame($expected, $entity->getCustomCssTag());
     }
 
     protected function testAnonymizeSettingProvider(): array
@@ -774,50 +802,50 @@ class Entity extends DbTestCase
         $this->login();
         $possible_values = ['test_anon_user', 'user_nick_6436345654', "Helpdesk user"];
 
-       // Set entity setting
+        // Set entity setting
         $entity = getItemByTypeName("Entity", "_test_root_entity");
         $update = $entity->update([
             'id'                       => $entity->getID(),
             'anonymize_support_agents' => $setting,
         ]);
-        $this->boolean($update)->isTrue();
+        $this->assertTrue($update);
 
-       // create a user for this test (avoid using current logged user as we don't anonymize him)
+        // create a user for this test (avoid using current logged user as we don't anonymize him)
         $user_obj = new \User();
         $user_obj->add([
             'name'     => 'test_anon_user',
             'password' => 'test_anon_user'
         ]);
 
-       // // Set user nickname
+        // Set user nickname
         $user = getItemByTypeName('User', 'test_anon_user');
 
         if ($user_nick == "" && $user->fields['nickname'] == null) {
-           // Special case, glpi wont update null to "" so we need to set
-           // another value first
+            // Special case, glpi wont update null to "" so we need to set
+            // another value first
             $update = $user->update([
                 'id'       => $user->getID(),
                 'nickname' => 'TMP',
             ]);
-            $this->boolean($update)->isTrue();
-            $this->boolean($user->getFromDB($user->getID()))->isTrue();
-            $this->string($user->fields['nickname'])->isEqualTo('TMP');
+            $this->assertTrue($update);
+            $this->assertTrue($user->getFromDB($user->getID()));
+            $this->assertEquals('TMP', $user->fields['nickname']);
         }
 
         $update = $user->update([
             'id'       => $user->getID(),
             'nickname' => $user_nick,
         ]);
-        $this->boolean($update)->isTrue();
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->string($user->fields['nickname'])->isEqualTo($user_nick);
+        $this->assertTrue($update);
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertEquals($user_nick, $user->fields['nickname']);
 
-       // Build test ticket
+        // Build test ticket
         $this->login('tech', 'tech');
 
-       //force set entity because $_SESSION['glpiactive_entity'] contains 0 without
-       //and break test from NotificationTargetCommonITILObject::getDataForObject()
-       //and fails to recover the configuration of the anonymization
+        //force set entity because $_SESSION['glpiactive_entity'] contains 0 without
+        //and break test from NotificationTargetCommonITILObject::getDataForObject()
+        //and fails to recover the configuration of the anonymization
         $this->setEntity($entity->getID(), true);
 
         $ticket = new Ticket();
@@ -829,40 +857,43 @@ class Entity extends DbTestCase
             'entities_id'          => $entity->getID(),
             'users_id_recipient'   => getItemByTypeName('User', 'tech', true),
             'users_id_lastupdater' => getItemByTypeName('User', 'tech', true),
-         // The default requesttype is "Helpdesk" and will mess up our tests,
-         // we need another one to be sure the "Helpdesk" string will only be
-         // printed by the anonymization code
+            // The default requesttype is "Helpdesk" and will mess up our tests,
+            // we need another one to be sure the "Helpdesk" string will only be
+            // printed by the anonymization code
             'requesttypes_id'      => 4,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
-       // Unset temporary fields that will not be found in tickets table
+        // Unset temporary fields that will not be found in tickets table
         unset($input['_users_id_assign']);
         unset($input['_users_id_requester']);
 
-       // Check expected fields and reload object from DB
+        // Check expected fields and reload object from DB
         $this->checkInput($ticket, $tickets_id, $input);
 
-       // Check linked users
+        // Check linked users
         $ticket_users = $DB->request([
             'SELECT' => ['tickets_id', 'users_id', 'type'],
             'FROM'   => Ticket_User::getTable(),
             'WHERE'  => ['tickets_id' => $tickets_id],
         ]);
-        $this->array(iterator_to_array($ticket_users))->isEqualTo([
-            0 => [
-                'tickets_id' => $tickets_id,
-                'users_id'   => getItemByTypeName('User', 'post-only', true),
-                'type'       => CommonITILActor::REQUESTER,
+        $this->assertEquals(
+            [
+                0 => [
+                    'tickets_id' => $tickets_id,
+                    'users_id'   => getItemByTypeName('User', 'post-only', true),
+                    'type'       => CommonITILActor::REQUESTER,
+                ],
+                1 => [
+                    'tickets_id' => $tickets_id,
+                    'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
+                    'type'       => CommonITILActor::ASSIGN,
+                ],
             ],
-            1 => [
-                'tickets_id' => $tickets_id,
-                'users_id'   => getItemByTypeName('User', 'test_anon_user', true),
-                'type'       => CommonITILActor::ASSIGN,
-            ],
-        ]);
+            iterator_to_array($ticket_users)
+        );
 
-       // Add followup to test ticket
+        // Add followup to test ticket
         $fup = new ITILFollowup();
         $fup_id = $fup->add([
             'content' => 'test',
@@ -871,9 +902,9 @@ class Entity extends DbTestCase
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
         ]);
-        $this->integer($fup_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $fup_id);
 
-       // Add solution to test ticket
+        // Add solution to test ticket
         $solution = new ITILSolution();
         $solutions_id = $solution->add([
             'content' => 'test',
@@ -882,36 +913,38 @@ class Entity extends DbTestCase
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
         ]);
-        $this->integer($solutions_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solutions_id);
 
-       // Save and replace session data
+        // Save and replace session data
         $old_interface = $_SESSION['glpiactiveprofile']['interface'];
         $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
-       // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
+        // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
-       // Case 2: test values recovered from CommonITILObject:::showShort()
+        // Case 2: test values recovered from CommonITILObject:::showShort()
         ob_start();
         Ticket::showShort($tickets_id);
         $html = ob_get_clean();
 
         foreach ($possible_values as $value) {
             if ($value == $expected) {
-                $this->string($html)->contains(
+                $this->assertStringContainsString(
                     $value,
+                    $html,
                     "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
                 );
             } else {
-                $this->string($html)->notContains(
+                $this->assertStringNotContainsString(
                     $value,
-                    "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+                    $html,
+                    "Ticket showShort must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
                 );
             }
         }
 
-       // Case 3: removed (timeline merged with main form)
+        // Case 3: removed (timeline merged with main form)
 
-       // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
+        // Case 4: test values recovered from NotificationTargetCommonITILObject::getDataForObject()
         $notification = new NotificationTargetTicket();
         $notif_data = $notification->getDataForObject($ticket, [
             'additionnaloption' => [
@@ -925,36 +958,44 @@ class Entity extends DbTestCase
             if ($n_fup['##followup.author##'] !== null) {
                 foreach ($possible_values as $value) {
                     if ($value == $expected) {
-                        $this->string($n_fup['##followup.author##'])->contains($value);
+                        $this->assertStringContainsString(
+                            $value,
+                            $n_fup['##followup.author##']
+                        );
                     } else {
-                        $this->string($n_fup['##followup.author##'])->notContains($value);
+                        $this->assertStringNotContainsString(
+                            $value,
+                            $n_fup['##followup.author##']
+                        );
                     }
                 }
             }
         }
 
-       // Case 5: test values recovered from Ticket::showForm()
+        // Case 5: test values recovered from Ticket::showForm()
         ob_start();
         $ticket->showForm($tickets_id);
         $html = ob_get_clean();
-       // Drop answers form, as new validation form contains current user name
+        // Drop answers form, as new validation form contains current user name
         $html = preg_replace('/<div id="new-itilobject-form".*$/s', '', $html);
 
         foreach ($possible_values as $value) {
             if ($value == $expected) {
-                $this->string($html)->contains(
+                $this->assertStringContainsString(
                     $value,
+                    $html,
                     "Ticket form must contains '$value' in interface '$interface' with settings '$setting'"
                 );
             } else {
-                $this->string($html)->notContains(
+                $this->assertStringNotContainsString(
                     $value,
+                    $html,
                     "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
                 );
             }
         }
 
-       // Reset session
+        // Reset session
         $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
     }
 
@@ -967,125 +1008,125 @@ class Entity extends DbTestCase
         $ticket_contract = new Ticket_Contract();
         $contract = new Contract();
 
-       // Create test entity
+        // Create test entity
         $entities_id = $entity->add([
             'name'        => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->integer($entities_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $entities_id);
 
-       // Create test contracts
+        // Create test contracts
         $contracts_id_1 = $contract->add([
             'name'        => 'test1',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'renewal'    => Contract::RENEWAL_TACIT,
         ]);
-        $this->integer($contracts_id_1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $contracts_id_1);
 
         $contracts_id_2 = $contract->add([
             'name'        => 'test2',
             'entities_id' => $entities_id,
             'renewal'    => Contract::RENEWAL_TACIT,
         ]);
-        $this->integer($contracts_id_2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $contracts_id_2);
 
-       // Test 1: no config
+        // Test 1: no config
         $tickets_id = $ticket->add([
             'name'        => 'Test ticket 1',
             'content'     => 'Test ticket 1',
             'entities_id' => $entities_id,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
-       // Case 1: no entity specified, no contract expected
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        // Case 1: no entity specified, no contract expected
+        $this->assertTrue($ticket->getFromDB($tickets_id));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(0);
+        $this->assertEquals(0, count($links));
 
-       // Test 2: Use specific contract
+        // Test 2: Use specific contract
         $res = $entity->update([
             'id' => $entities_id,
             'contracts_id_default' => $contracts_id_1,
         ]);
-        $this->boolean($res)->isTrue();
+        $this->assertTrue($res);
 
-       // Case 1: no contract specified, specific default expected
+        // Case 1: no contract specified, specific default expected
         $tickets_id = $ticket->add([
             'name'        => 'Test ticket 1',
             'content'     => 'Test ticket 1',
             'entities_id' => $entities_id,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(1);
+        $this->assertEquals(1, count($links));
         $link = $links->current();
-        $this->integer($link['id'])->isEqualTo($contracts_id_1);
+        $this->assertEquals($contracts_id_1, $link['id']);
 
-       // Case 2: contract specified, should not change
+        // Case 2: contract specified, should not change
         $tickets_id = $ticket->add([
             'name'          => 'Test ticket 1',
             'content'       => 'Test ticket 1',
             'entities_id'   => $entities_id,
             '_contracts_id' => $contracts_id_2,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(1);
+        $this->assertEquals(1, count($links));
         $link = $links->current();
-        $this->integer($link['id'])->isEqualTo($contracts_id_2);
+        $this->assertEquals($contracts_id_2, $link['id']);
 
-       // Test 3: Use contract in current entity
+        // Test 3: Use contract in current entity
         $res = $entity->update([
             'id' => $entities_id,
             'contracts_id_default' => '-1',
         ]);
-        $this->boolean($res)->isTrue();
+        $this->assertTrue($res);
 
-       // Case 1: root entity, expect no contract (no config for this entity)
+        // Case 1: root entity, expect no contract (no config for this entity)
         $tickets_id_2 = $ticket->add([
             'name'        => 'Test ticket 1',
             'content'     => 'Test ticket 1',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->integer($tickets_id_2)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+        $this->assertGreaterThan(0, $tickets_id_2);
+        $this->assertTrue($ticket->getFromDB($tickets_id_2));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(0);
+        $this->assertEquals(0, count($links));
 
-       // Case 2: sub entity, expect contract 2
+        // Case 2: sub entity, expect contract 2
         $tickets_id = $ticket->add([
             'name'        => 'Test ticket 1',
             'content'     => 'Test ticket 1',
             'entities_id' => $entities_id,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(1);
+        $this->assertEquals(1, count($links));
         $link = $links->current();
-        $this->integer($link['id'])->isEqualTo($contracts_id_2);
+        $this->assertEquals($contracts_id_2, $link['id']);
 
-       // Case 3: contract specified, should not change
+        // Case 3: contract specified, should not change
         $tickets_id = $ticket->add([
             'name'          => 'Test ticket 1',
             'content'       => 'Test ticket 1',
             'entities_id'   => $entities_id,
             '_contracts_id' => $contracts_id_1,
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
 
         $links = $ticket_contract::getListForItem($ticket);
-        $this->integer(count($links))->isEqualTo(1);
+        $this->assertEquals(1, count($links));
         $link = $links->current();
-        $this->integer($link['id'])->isEqualTo($contracts_id_1);
+        $this->assertEquals($contracts_id_1, $link['id']);
     }
 
 
@@ -1103,22 +1144,22 @@ class Entity extends DbTestCase
         // Check that no clones exists
         $entity = new \Entity();
         $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
-        $this->array($res)->hasSize(0);
+        $this->assertCount(0, $res);
 
         // Clone multiple times
         $entity = getItemByTypeName('Entity', 'test clone entity', false);
-        $this->boolean($entity->cloneMultiple(4))->isTrue();
+        $this->assertTrue($entity->cloneMultiple(4));
 
         // Check that 4 clones were created
         $entity = new \Entity();
         $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
-        $this->array($res)->hasSize(4);
+        $this->assertCount(4, $res);
 
         // Try to read each clones
-        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy)', true))->isGreaterThan(0);
-        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 2)', true))->isGreaterThan(0);
-        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 3)', true))->isGreaterThan(0);
-        $this->integer(getItemByTypeName('Entity', 'test clone entity (copy 4)', true))->isGreaterThan(0);
+        $this->assertGreaterThan(0, getItemByTypeName('Entity', 'test clone entity (copy)', true));
+        $this->assertGreaterThan(0, getItemByTypeName('Entity', 'test clone entity (copy 2)', true));
+        $this->assertGreaterThan(0, getItemByTypeName('Entity', 'test clone entity (copy 3)', true));
+        $this->assertGreaterThan(0, getItemByTypeName('Entity', 'test clone entity (copy 4)', true));
     }
 
     public function testRename()
@@ -1142,19 +1183,19 @@ class Entity extends DbTestCase
         );
 
         $entities_id = $new_entity->fields['id'];
-        $this->integer($entities_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $entities_id);
 
         //try to rename on existing name
-        $this->boolean(
+        $this->assertTrue(
             $new_entity->update([
                 'id'   => $entities_id,
                 'name' => 'Existing entity',
             ])
-        )->isTrue();
+        );
         $this->hasSessionMessages(ERROR, ['An entity with that name already exists at the same level.']);
 
-        $this->boolean($new_entity->getFromDB($entities_id))->isTrue();
-        $this->string($new_entity->fields['name'])->isEqualTo('New entity');
+        $this->assertTrue($new_entity->getFromDB($entities_id));
+        $this->assertEquals('New entity', $new_entity->fields['name']);
     }
 
     protected function entityTreeProvider(): iterable
@@ -1236,8 +1277,8 @@ class Entity extends DbTestCase
     {
         $this->login();
 
-        $entity = $this->newTestedInstance();
-        $this->array($this->callPrivateMethod($entity, 'getEntityTree', $entity_id))->isEqualTo($result);
+        $entity = new \Entity();
+        $this->assertEquals($result, $this->callPrivateMethod($entity, 'getEntityTree', $entity_id));
     }
 
     public function testGetEntitySelectorTree(): void
@@ -1273,28 +1314,31 @@ class Entity extends DbTestCase
         };
 
         $entities = $fn_get_current_entities();
-        $this->array($entities)->size->isGreaterThan(0);
+        $this->assertGreaterThan(0, count($entities));
         $selector = \Entity::getEntitySelectorTree();
         $found = [];
         $fn_find_entities_in_selector($selector, $entities, null, $found);
-        $this->array($found)->size->isEqualTo(count($entities));
+        $this->assertCount(count($entities), $found);
 
         // Create a new entity
         $entity = new \Entity();
-        $this->integer($entities_id = $entity_id = $entity->add([
-            'name' => __FUNCTION__ . '1',
-            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true)
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $entities_id = $entity_id = $entity->add([
+                'name' => __FUNCTION__ . '1',
+                'entities_id' => getItemByTypeName('Entity', '_test_child_2', true)
+            ])
+        );
         $found = [];
         $entities = $fn_get_current_entities();
         $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
-        $this->array($found)->size->isEqualTo(count($entities));
+        $this->assertCount(count($entities), $found);
 
         // Delete the entity
-        $this->boolean($entity->delete(['id' => $entity_id]))->isTrue();
+        $this->assertTrue($entity->delete(['id' => $entity_id]));
         $found = [];
         $entities = $fn_get_current_entities();
         $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
-        $this->array($found)->size->isEqualTo(count($entities));
+        $this->assertCount(count($entities), $found);
     }
 }

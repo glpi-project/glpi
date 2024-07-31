@@ -42,13 +42,13 @@ use DbTestCase;
 /**
  * @engine isolate
  */
-class Item_SoftwareVersion extends DbTestCase
+class Item_SoftwareVersionTest extends DbTestCase
 {
     public function testTypeName()
     {
-        $this->string(\Item_SoftwareVersion::getTypeName(1))->isIdenticalTo('Installation');
-        $this->string(\Item_SoftwareVersion::getTypeName(0))->isIdenticalTo('Installations');
-        $this->string(\Item_SoftwareVersion::getTypeName(10))->isIdenticalTo('Installations');
+        $this->assertSame('Installation', \Item_SoftwareVersion::getTypeName(1));
+        $this->assertSame('Installations', \Item_SoftwareVersion::getTypeName(0));
+        $this->assertSame('Installations', \Item_SoftwareVersion::getTypeName(10));
     }
 
     public function testPrepareInputForAdd()
@@ -60,11 +60,14 @@ class Item_SoftwareVersion extends DbTestCase
 
        // Do some installations
         $ins = new \Item_SoftwareVersion();
-        $this->integer((int)$ins->add([
-            'items_id'              => $computer1->getID(),
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $ver,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $ins->add([
+                'items_id'              => $computer1->getID(),
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $ver,
+            ])
+        );
 
         $input = [
             'items_id'  => $computer1->getID(),
@@ -83,7 +86,7 @@ class Item_SoftwareVersion extends DbTestCase
         ];
 
         $this->setEntity('_test_root_entity', true);
-        $this->array($ins->prepareInputForAdd($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $ins->prepareInputForAdd($input));
     }
 
     public function testPrepareInputForUpdate()
@@ -95,11 +98,14 @@ class Item_SoftwareVersion extends DbTestCase
 
        // Do some installations
         $ins = new \Item_SoftwareVersion();
-        $this->integer((int)$ins->add([
-            'items_id'              => $computer1->getID(),
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $ver,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $ins->add([
+                'items_id'              => $computer1->getID(),
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $ver,
+            ])
+        );
 
         $input = [
             'items_id'              => $computer1->getID(),
@@ -115,7 +121,7 @@ class Item_SoftwareVersion extends DbTestCase
             'is_deleted_item'       => $computer1->getField('is_deleted')
         ];
 
-        $this->array($ins->prepareInputForUpdate($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $ins->prepareInputForUpdate($input));
     }
 
 
@@ -130,34 +136,40 @@ class Item_SoftwareVersion extends DbTestCase
 
        // Do some installations
         $ins = new \Item_SoftwareVersion();
-        $this->integer((int)$ins->add([
-            'items_id'              => $computer1,
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $ver,
-        ]))->isGreaterThan(0);
-        $this->integer($ins->add([
-            'items_id'              => $computer11,
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $ver,
-        ]))->isGreaterThan(0);
-        $this->integer($ins->add([
-            'items_id'              => $computer12,
-            'itemtype'              => 'Computer',
-            'softwareversions_id'   => $ver,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $ins->add([
+                'items_id'              => $computer1,
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $ver,
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $ins->add([
+                'items_id'              => $computer11,
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $ver,
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $ins->add([
+                'items_id'              => $computer12,
+                'itemtype'              => 'Computer',
+                'softwareversions_id'   => $ver,
+            ])
+        );
 
-       // Count installations
+        // Count installations
         $this->setEntity('_test_root_entity', true);
-        $this->integer((int)\Item_SoftwareVersion::countForVersion($ver), 'count in all tree')
-         ->isIdenticalTo(3);
+        $this->assertSame(3, \Item_SoftwareVersion::countForVersion($ver), 'count in all tree');
 
         $this->setEntity('_test_root_entity', false);
-        $this->integer((int)\Item_SoftwareVersion::countForVersion($ver), 'count in root')
-         ->isIdenticalTo(1);
+        $this->assertSame(1, \Item_SoftwareVersion::countForVersion($ver), 'count in root');
 
         $this->setEntity('_test_child_1', false);
-        $this->integer((int)\Item_SoftwareVersion::countForVersion($ver), 'count in child')
-         ->isIdenticalTo(2);
+        $this->assertSame(2, \Item_SoftwareVersion::countForVersion($ver), 'count in child');
     }
 
     public function testUpdateDatasFromComputer()
@@ -167,47 +179,47 @@ class Item_SoftwareVersion extends DbTestCase
         $ver1 = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
         $ver2 = getItemByTypeName('SoftwareVersion', '_test_softver_2', true);
 
-       // Do some installations
+        // Do some installations
         $softver = new \Item_SoftwareVersion();
         $softver01 = $softver->add([
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'softwareversions_id'   => $ver1,
         ]);
-        $this->integer((int)$softver01)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$softver01);
         $softver02 = $softver->add([
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'softwareversions_id'   => $ver2,
         ]);
-        $this->integer((int)$softver02)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$softver02);
 
         foreach ([$softver01, $softver02] as $tsoftver) {
             $o = new \Item_SoftwareVersion();
-            $this->boolean($o->getFromDb($tsoftver))->isTrue();
-            $this->variable($o->getField('is_deleted_item'))->isEqualTo(0);
+            $this->assertTrue($o->getFromDb($tsoftver));
+            $this->assertEquals(0, $o->getField('is_deleted_item'));
         }
 
-       //computer that does not exists
-        $this->boolean($softver->updateDatasForItem('Computer', $c00))->isFalse();
+        //computer that does not exist
+        $this->assertFalse($softver->updateDatasForItem('Computer', $c00));
 
-       //update existing computer
+        //update existing computer
         $input = $computer1->fields;
         $input['is_deleted'] = '1';
-        $this->boolean($computer1->update($input))->isTrue();
+        $this->assertTrue($computer1->update($input));
 
-        $this->boolean($softver->updateDatasForItem('Computer', $computer1->getID()))->isTrue();
+        $this->assertTrue($softver->updateDatasForItem('Computer', $computer1->getID()));
 
-       //check if all has been updated
+        //check if all has been updated
         foreach ([$softver01, $softver02] as $tsoftver) {
             $o = new \Item_SoftwareVersion();
-            $this->boolean($o->getFromDb($tsoftver))->isTrue();
-            $this->variable($o->getField('is_deleted_item'))->isEqualTo(1);
+            $this->assertTrue($o->getFromDb($tsoftver));
+            $this->assertEquals(1, $o->getField('is_deleted_item'));
         }
 
-       //restore computer state
+        //restore computer state
         $input['is_deleted'] = '0';
-        $this->boolean($computer1->update($input))->isTrue();
+        $this->assertTrue($computer1->update($input));
     }
 
     public function testCountForSoftware()
@@ -217,21 +229,24 @@ class Item_SoftwareVersion extends DbTestCase
 
         $this->Login();
 
-        $this->integer(
-            (int)\Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
-        )->isIdenticalTo(0);
+        $this->assertSame(
+            0,
+            \Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
+        );
 
         $csoftver = new \Item_SoftwareVersion();
-        $this->integer(
-            (int)$csoftver->add([
+        $this->assertGreaterThan(
+            0,
+            $csoftver->add([
                 'items_id'              => $computer1->fields['id'],
                 'itemtype'              => 'Computer',
                 'softwareversions_id'   => $soft1->fields['id']
             ])
-        )->isGreaterThan(0);
+        );
 
-        $this->integer(
-            (int)\Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
-        )->isIdenticalTo(1);
+        $this->assertSame(
+            1,
+            \Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
+        );
     }
 }

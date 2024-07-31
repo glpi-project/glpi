@@ -37,86 +37,86 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_Disk extends DbTestCase
+class Item_DiskTest extends DbTestCase
 {
     public function testCreate()
     {
         $this->login();
 
-        $this->newTestedInstance();
-        $obj = $this->testedInstance;
+        $obj = new \Item_Disk();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             $id = (int)$obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/'
             ])
-        )->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
-        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
+        );
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame('/', $obj->fields['mountpoint']);
     }
 
     public function testUpdate()
     {
         $this->login();
 
-        $this->newTestedInstance();
-        $obj = $this->testedInstance;
+        $obj = new \Item_Disk();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             $id = (int)$obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/'
             ])
-        )->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
-        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
+        );
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame('/', $obj->fields['mountpoint']);
 
-        $this->boolean($obj->update([
+        $this->assertTrue($obj->update([
             'id'           => $id,
             'mountpoint'   => '/mnt'
-        ]))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
-        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/mnt');
+        ]));
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame('/mnt', $obj->fields['mountpoint']);
     }
 
     public function testDelete()
     {
         $this->login();
 
-        $this->newTestedInstance();
-        $obj = $this->testedInstance;
+        $obj = new \Item_Disk();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf('\Computer', $computer);
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             $id = (int)$obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/'
             ])
-        )->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
-        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
+        );
+        $this->assertTrue($obj->getFromDB($id));
+        $this->assertSame('/', $obj->fields['mountpoint']);
 
-        $this->boolean(
-            (bool)$obj->delete([
+        $this->assertTrue(
+            $obj->delete([
                 'id'  => $id
             ])
-        )->isTrue();
-        $this->boolean($obj->getFromDB($id))->istrue(); //it's always in DB but with is_deleted = 1
-        $this->integer($obj->fields['is_deleted'])->isIdenticalTo(1);
+        );
+        $this->assertTrue($obj->getFromDB($id)); //it's always in DB but with is_deleted = 1
+        $this->assertSame(1, $obj->fields['is_deleted']);
     }
 }

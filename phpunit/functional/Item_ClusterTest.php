@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/item_cluster.class.php */
 
-class Item_Cluster extends DbTestCase
+class Item_ClusterTest extends DbTestCase
 {
     /**
      * Computers provider
@@ -67,9 +67,7 @@ class Item_Cluster extends DbTestCase
         $computer = new \Computer();
         foreach ($this->computersProvider() as $row) {
             $row['entities_id'] = 0;
-            $this->integer(
-                (int)$computer->add($row)
-            )->isGreaterThan(0);
+            $this->assertGreaterThan(0, $computer->add($row));
         }
     }
 
@@ -84,13 +82,14 @@ class Item_Cluster extends DbTestCase
 
         $cluster = new \Cluster();
 
-        $this->integer(
-            (int)$cluster->add([
+        $this->assertGreaterThan(
+            0,
+            $cluster->add([
                 'name'         => 'Test cluster',
                 'uuid'         => 'ytreza',
                 'entities_id'  => 0
             ])
-        )->isGreaterThan(0);
+        );
 
         $icl = new \Item_Cluster();
 
@@ -99,56 +98,58 @@ class Item_Cluster extends DbTestCase
 
        //try to add without required field
         $icl->getEmpty();
-        $this->integer(
-            (int)$icl->add([
+        $this->assertFalse(
+            $icl->add([
                 'itemtype'     => 'Computer',
                 'items_id'     => $SRVNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['A cluster is required']);
 
-       //try to add without required field
+        //try to add without required field
         $icl->getEmpty();
-        $this->integer(
-            (int)$icl->add([
+        $this->assertFalse(
+            $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'items_id'     => $SRVNUX1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['An item type is required']);
 
-       //try to add without required field
+        //try to add without required field
         $icl->getEmpty();
-        $this->integer(
-            (int)$icl->add([
+        $this->assertFalse(
+            $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'itemtype'     => 'Computer',
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['An item is required']);
 
        //try to add without error
         $icl->getEmpty();
-        $this->integer(
-            (int)$icl->add([
+        $this->assertGreaterThan(
+            0,
+            $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'itemtype'     => 'Computer',
                 'items_id'     => $SRVNUX1
             ])
-        )->isGreaterThan(0);
+        );
 
        //Add another item in cluster
         $icl->getEmpty();
-        $this->integer(
-            (int)$icl->add([
+        $this->assertGreaterThan(
+            0,
+            $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'itemtype'     => 'Computer',
                 'items_id'     => $SRVNUX2
             ])
-        )->isGreaterThan(0);
+        );
 
         global $DB;
         $items = $DB->request([
@@ -157,6 +158,6 @@ class Item_Cluster extends DbTestCase
                 'clusters_id' => $cluster->fields['id']
             ]
         ]);
-        $this->array(iterator_to_array($items))->hasSize(2);
+        $this->assertCount(2, iterator_to_array($items));
     }
 }

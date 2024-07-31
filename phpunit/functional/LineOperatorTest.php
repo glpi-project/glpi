@@ -37,85 +37,74 @@ namespace tests\units;
 
 use DbTestCase;
 
-class LineType extends DbTestCase
+class LineOperatorTest extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $this->login();
-        $obj = new \LineType();
+        $obj = new \LineOperator();
 
-       // Add
+        // Add
         $in = [
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
+            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true)
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, (int)$id);
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
-        $this->variable($obj->getField('id'))->isEqualTo($id);
+        $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v, "The property $k does not match: expected $v, got " . $obj->getField($k));
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testUpdate()
     {
         $this->login();
-        $obj = new \LineType();
+        $obj = new \LineOperator();
 
-       // Add
+        // Add
         $id = $obj->add([
             'name'                     => $this->getUniqueString(),
             'comment'                  => $this->getUniqueString(),
+            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                       => $id,
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testDelete()
     {
         $this->login();
-        $obj = new \LineType();
+        $obj = new \LineOperator();
 
-       // Add
+        // Add
         $id = $obj->add([
-            'name'                     => $this->method,
+            'name'                     => __METHOD__,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];
-        $this->boolean($obj->delete($in))->isTrue();
+        $this->assertTrue($obj->delete($in));
     }
 }

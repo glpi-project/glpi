@@ -37,89 +37,71 @@ namespace tests\units;
 
 use DbTestCase;
 
-class DeviceSimcard extends DbTestCase
+class DeviceSensorTypeTest extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $this->login();
-        $obj = new \DeviceSimcard();
+        $obj = new \DeviceSensorType();
 
        // Add
         $in = [
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1'
+            'name'                     => __METHOD__,
+            'comment'                  => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, (int)$id);
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
-        $this->variable($obj->getField('id'))->isEqualTo($id);
+        $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testUpdate()
     {
         $this->login();
-        $obj = new \DeviceSimcard();
+        $obj = new \DeviceSensorType();
 
        // Add
         $id = $obj->add([
-            'designation' => $this->getUniqueString(),
+            'name'                     => $this->getUniqueString(),
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
        // Update
+        $id = $obj->getID();
         $in = [
             'id'                       => $id,
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1'
+            'name'                     => __METHOD__,
+            'comment'                  => $this->getUniqueString(),
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
        // getField methods
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testDelete()
     {
         $this->login();
-        $obj = new \DeviceSimcard();
+        $obj = new \DeviceSensorType();
 
        // Add
         $id = $obj->add([
-            'designation' => $this->method,
+            'name'                     => __METHOD__,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];
-        $this->boolean($obj->delete($in))->isTrue();
+        $this->assertTrue($obj->delete($in));
     }
 }

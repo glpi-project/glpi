@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/databaseinstance.class.php */
 
-class DatabaseInstance extends DbTestCase
+class DatabaseInstanceTest extends DbTestCase
 {
     public function testDelete()
     {
@@ -51,34 +51,33 @@ class DatabaseInstance extends DbTestCase
             'size' => 52000
         ]);
 
-       //check DB is created, and load it
-        $this->integer($instid)->isGreaterThan(0);
-        $this->boolean($instance->getFromDB($instid))->isTrue();
+        //check DB is created, and load it
+        $this->assertGreaterThan(0, $instid);
+        $this->assertTrue($instance->getFromDB($instid));
 
-       //create databases
+        //create databases
         for ($i = 0; $i < 5; ++$i) {
             $database = new \Database();
-            $this->integer(
+            $this->assertGreaterThan(
+                0,
                 $database->add([
                     'name'                   => 'Database ' . $i,
                     'databaseinstances_id'   => $instid
                 ])
-            )->isGreaterThan(0);
+            );
         }
-        $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(5);
+        $this->assertSame(5, countElementsInTable(\Database::getTable()));
 
        //test removal
-        $this->boolean($instance->delete(['id' => $instid], 1))->isTrue();
-        $this->boolean($instance->getFromDB($instid))->isFalse();
+        $this->assertTrue($instance->delete(['id' => $instid], 1));
+        $this->assertFalse($instance->getFromDB($instid));
 
        //ensure databases has been dropped aswell
-        $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(0);
+        $this->assertSame(0, countElementsInTable(\Database::getTable()));
     }
 
     public function testGetInventoryAgent(): void
     {
-        $root_entity = getItemByTypeName(\Entity::class, '_test_root_entity', true);
-
         $computer = $this->createItem(
             \Computer::class,
             [
@@ -96,7 +95,7 @@ class DatabaseInstance extends DbTestCase
         );
 
         $db_agent = $dbinstance->getInventoryAgent();
-        $this->variable($db_agent)->isNull();
+        $this->assertNull($db_agent);
 
         $agenttype_id = getItemByTypeName(\AgentType::class, 'Core', true);
 
@@ -122,7 +121,7 @@ class DatabaseInstance extends DbTestCase
             ]
         );
 
-        $agent3 = $this->createItem(
+        $this->createItem(
             \Agent::class,
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
@@ -146,23 +145,23 @@ class DatabaseInstance extends DbTestCase
 
         // most recent agent directly linked
         $db_agent = $dbinstance->getInventoryAgent();
-        $this->object($db_agent)->isInstanceOf(\Agent::class);
-        $this->array($db_agent->fields)->isEqualTo($agent1->fields);
+        $this->assertInstanceOf(\Agent::class, $db_agent);
+        $this->assertEquals($agent1->fields, $db_agent->fields);
 
-        $this->boolean($agent1->delete(['id' => $agent1->fields['id']]))->isTrue();
+        $this->assertTrue($agent1->delete(['id' => $agent1->fields['id']]));
 
         // most recent agent directly linked
         $db_agent = $dbinstance->getInventoryAgent();
-        $this->object($db_agent)->isInstanceOf(\Agent::class);
-        $this->array($db_agent->fields)->isEqualTo($agent2->fields);
+        $this->assertInstanceOf(\Agent::class, $db_agent);
+        $this->assertEquals($agent2->fields, $db_agent->fields);
 
-        $this->boolean($agent2->delete(['id' => $agent2->fields['id']]))->isTrue();
+        $this->assertTrue($agent2->delete(['id' => $agent2->fields['id']]));
 
         // most recent agent found from linked item, as there is no more agent linked directly
         $db_agent = $dbinstance->getInventoryAgent();
-        $this->object($db_agent)->isInstanceOf(\Agent::class);
+        $this->assertInstanceOf(\Agent::class, $db_agent);
         $computer_agent = $computer->getInventoryAgent();
-        $this->object($computer_agent)->isInstanceOf(\Agent::class);
-        $this->array($db_agent->fields)->isEqualTo($computer_agent->fields);
+        $this->assertInstanceOf(\Agent::class, $computer_agent);
+        $this->assertEquals($computer_agent->fields, $db_agent->fields);
     }
 }

@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/savedsearch_user.class.php */
 
-class SavedSearch_User extends DbTestCase
+class SavedSearch_UserTest extends DbTestCase
 {
     public function testGetDefault()
     {
@@ -49,13 +49,13 @@ class SavedSearch_User extends DbTestCase
         $uid =  getItemByTypeName('User', TU_USER, true);
 
        // with no default bookmark
-        $this->boolean(
-            (bool)\SavedSearch_User::getDefault($uid, 'Ticket')
-        )->isFalse();
+        $this->assertFalse(
+            \SavedSearch_User::getDefault($uid, 'Ticket')
+        );
 
-       // now add a bookmark on Ticket view
+        // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
-        $this->boolean(
+        $this->assertTrue(
             (bool)$bk->add(['name'         => 'All my tickets',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -65,32 +65,34 @@ class SavedSearch_User extends DbTestCase
                 'is_recursive' => 1,
                 'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
             ])
-        )->isTrue();
+        );
 
         $bk_id = $bk->fields['id'];
 
         $bk_user = new \SavedSearch_User();
-        $this->boolean(
+        $this->assertTrue(
             (bool)$bk_user->add(['users_id' => $uid,
                 'itemtype' => 'Ticket',
                 'savedsearches_id' => $bk_id
             ])
-        )->isTrue();
+        );
 
        // should get a default bookmark
         $bk = \SavedSearch_User::getDefault($uid, 'Ticket');
-        $this->array(
-            $bk
-        )->isEqualTo(['itemtype'         => 'Ticket',
-            'sort'             => '2',
-            'order'            => 'DESC',
-            'savedsearches_id' => $bk_id,
-            'criteria'         => [0 => ['field' => '5',
-                'searchtype' => 'equals',
-                'value' => $uid
-            ]
+        $this->assertEquals(
+            [
+                'itemtype'         => 'Ticket',
+                'sort'             => '2',
+                'order'            => 'DESC',
+                'savedsearches_id' => $bk_id,
+                'criteria'         => [0 => ['field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid
+                ]
+                ],
+                'reset'            => 'reset',
             ],
-            'reset'            => 'reset',
-        ]);
+            $bk
+        );
     }
 }

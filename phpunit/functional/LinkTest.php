@@ -37,10 +37,86 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Link extends DbTestCase
+class LinkTest extends DbTestCase
 {
-    protected function linkContentProvider(): iterable
+    public static function linkContentProvider(): iterable
     {
+        // Empty link
+        yield [
+            'link'     => '',
+            'safe_url' => false,
+            'expected' => [''],
+        ];
+        yield [
+            'link'     => '',
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+
+        foreach ([true, false] as $safe_url) {
+            // Link that is actually a title (it is a normal usage!)
+            yield [
+                'link'     => '[LOCATION] > [SERIAL]/[MODEL] ([USER])',
+                'safe_url' => $safe_url,
+                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6/_test_computermodel_1 (glpi)'],
+            ];
+
+            // Link that is actually a long text (it is a normal usage!)
+            yield [
+                'link'     => <<<TEXT
+id:       [ID]
+name:     [NAME]
+serial:   [SERIAL]/[OTHERSERIAL]
+model:    [MODEL]
+location: [LOCATION] ([LOCATIONID])
+domain:   [DOMAIN] ([NETWORK])
+owner:    [USER]/[GROUP]
+TEXT,
+                'safe_url' => $safe_url,
+                'expected' => [
+                    $safe_url
+                        ? '#'
+                        : <<<TEXT
+id:       %ITEM_ID%
+name:     Test computer
+serial:   ABC0004E6/X0000015
+model:    _test_computermodel_1
+location: _location01 (1)
+domain:   domain1.tld (LAN)
+owner:    glpi/_test_group_1
+TEXT,
+                ],
+            ];
+
+            // Valid http link
+            yield [
+                'link'     => 'https://[LOGIN]@[DOMAIN]/[FIELD:uuid]/',
+                'safe_url' => $safe_url,
+                'expected' => ['https://_test_user@domain1.tld/c938f085-4192-4473-a566-46734bbaf6ad/'],
+            ];
+        }
+
+        // Javascript link
+        yield [
+            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'safe_url' => false,
+            'expected' => ['javascript:alert(1);" title="Test computer"'],
+        ];
+        yield [
+            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+    }
+
+    /**
+     * @dataProvider linkContentProvider
+     */
+    public function testGenerateLinkContents(
+        string $link,
+        bool $safe_url,
+        array $expected
+    ): void {
         $this->login();
 
         // Create network
@@ -100,98 +176,19 @@ class Link extends DbTestCase
             ]
         );
 
-        // Empty link
-        yield [
-            'link'     => '',
-            'item'     => $item,
-            'safe_url' => false,
-            'expected' => [''],
-        ];
-        yield [
-            'link'     => '',
-            'item'     => $item,
-            'safe_url' => true,
-            'expected' => ['#'],
-        ];
-
-        foreach ([true, false] as $safe_url) {
-            // Link that is actually a title (it is a normal usage!)
-            yield [
-                'link'     => '[LOCATION] > [SERIAL]/[MODEL] ([USER])',
-                'item'     => $item,
-                'safe_url' => $safe_url,
-                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6/_test_computermodel_1 (glpi)'],
-            ];
-
-            // Link that is actually a long text (it is a normal usage!)
-            yield [
-                'link'     => <<<TEXT
-id:       [ID]
-name:     [NAME]
-serial:   [SERIAL]/[OTHERSERIAL]
-model:    [MODEL]
-location: [LOCATION] ([LOCATIONID])
-domain:   [DOMAIN] ([NETWORK])
-owner:    [USER]/[GROUP]
-TEXT,
-                'item'     => $item,
-                'safe_url' => $safe_url,
-                'expected' => [
-                    $safe_url
-                        ? '#'
-                        : <<<TEXT
-id:       {$item->getID()}
-name:     Test computer
-serial:   ABC0004E6/X0000015
-model:    _test_computermodel_1
-location: _location01 (1)
-domain:   domain1.tld (LAN)
-owner:    glpi/_test_group_1
-TEXT,
-                ],
-            ];
-
-            // Valid http link
-            yield [
-                'link'     => 'https://[LOGIN]@[DOMAIN]/[FIELD:uuid]/',
-                'item'     => $item,
-                'safe_url' => $safe_url,
-                'expected' => ['https://_test_user@domain1.tld/c938f085-4192-4473-a566-46734bbaf6ad/'],
-            ];
-        }
-
-        // Javascript link
-        yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
-            'item'     => $item,
-            'safe_url' => false,
-            'expected' => ['javascript:alert(1);" title="Test computer"'],
-        ];
-        yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
-            'item'     => $item,
-            'safe_url' => true,
-            'expected' => ['#'],
-        ];
-    }
-
-    /**
-     * @dataProvider linkContentProvider
-     */
-    public function testGenerateLinkContents(
-        string $link,
-        \CommonDBTM $item,
-        bool $safe_url,
-        array $expected
-    ): void {
-        $this->newTestedInstance();
-        $this->array($this->testedInstance->generateLinkContents($link, $item, $safe_url))
-            ->isEqualTo($expected);
+        $instance = new \Link();
+        $expected = str_replace('%ITEM_ID%', $item->getID(), $expected);
+        $this->assertEquals(
+            $expected,
+            $instance->generateLinkContents($link, $item, $safe_url)
+        );
 
         // Validates that default values is true
         if ($safe_url) {
-            $this->array($this->testedInstance->generateLinkContents($link, $item))
-                ->isEqualTo($expected);
+            $this->assertEquals(
+                $expected,
+                $instance->generateLinkContents($link, $item)
+            );
         }
     }
 }

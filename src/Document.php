@@ -704,7 +704,7 @@ class Document extends CommonDBTM
     public function canViewFile(array $options = [])
     {
 
-       // Check if it is my doc
+        // Check if it is my doc
         if (
             Session::getLoginUserID()
             && ($this->can($this->fields["id"], READ)

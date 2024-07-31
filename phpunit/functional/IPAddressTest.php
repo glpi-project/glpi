@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/networkport.class.php */
 
-class IPAddress extends DbTestCase
+class IPAddressTest extends DbTestCase
 {
     public function testAddIPV4()
     {
@@ -48,7 +48,7 @@ class IPAddress extends DbTestCase
        //first create NetworkName
         $networkName = new \NetworkName();
         $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
-        $this->integer($networkName_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $networkName_id);
 
         $IPV4ShouldWork = [];
         $IPV4ShouldWork["1.0.1.0"] = ["items_id" => $networkName_id,
@@ -133,7 +133,7 @@ class IPAddress extends DbTestCase
                 "items_id" => "$networkName_id"
             ];
             $id = $ipAdress->add($input);
-            $this->integer($id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $id);
 
            //check name store in DB
             $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
@@ -146,7 +146,7 @@ class IPAddress extends DbTestCase
             unset($currentIP['is_dynamic']);
             unset($currentIP['mainitems_id']);
             unset($currentIP['mainitemtype']);
-            $this->array($currentIP)->isIdenticalTo($expected);
+            $this->assertSame($expected, $currentIP);
         }
 
         $IPV4ShouldNotWork = [
@@ -174,7 +174,7 @@ class IPAddress extends DbTestCase
                 "Invalid IP address: " . $name,
             ];
 
-            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
+            $this->assertSame($expectedSession, $_SESSION['MESSAGE_AFTER_REDIRECT']);
             $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
         }
     }
@@ -187,7 +187,7 @@ class IPAddress extends DbTestCase
        //first create NetworkName
         $networkName = new \NetworkName();
         $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
-        $this->integer($networkName_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $networkName_id);
 
         $IPV6ShouldWork = [];
         $IPV6ShouldWork["59FB::1005:CC57:6571"] = ["items_id" => $networkName_id,
@@ -245,7 +245,7 @@ class IPAddress extends DbTestCase
                 "items_id" => "$networkName_id"
             ];
             $id = $ipAdress->add($input);
-            $this->integer($id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $id);
 
            //check name store in DB
             $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
@@ -259,7 +259,7 @@ class IPAddress extends DbTestCase
             unset($currentIP['mainitems_id']);
             unset($currentIP['mainitemtype']);
            //var_dump($currentIP);
-            $this->array($currentIP)->isIdenticalTo($expected);
+            $this->assertSame($expected, $currentIP);
         }
 
         $IPV6ShouldNotWork = [
@@ -289,7 +289,7 @@ class IPAddress extends DbTestCase
                 "Invalid IP address: " . $name,
             ];
 
-            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
+            $this->assertSame($expectedSession, $_SESSION['MESSAGE_AFTER_REDIRECT']);
             $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
         }
     }

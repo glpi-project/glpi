@@ -37,9 +37,11 @@ namespace tests\units;
 
 use DbTestCase;
 
+use function PHPUnit\Framework\assertContains;
+
 /* Test for inc/savedsearch.class.php */
 
-class SavedSearch extends DbTestCase
+class SavedSearchTest extends DbTestCase
 {
     public function testGetVisibilityCriteria()
     {
@@ -47,21 +49,25 @@ class SavedSearch extends DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         // No restrictions when having the config UPDATE right
-        $this->array(\SavedSearch::getVisibilityCriteria())->isEqualTo(['WHERE' => []]);
+        $this->assertEquals(
+            ['WHERE' => []],
+            \SavedSearch::getVisibilityCriteria()
+        );
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
-        $this->array(\SavedSearch::getVisibilityCriteria()['WHERE'])->isNotEmpty();
+        $this->assertNotEmpty(\SavedSearch::getVisibilityCriteria()['WHERE']);
     }
 
     public function testAddVisibilityRestrict()
     {
        //first, as a super-admin
         $this->login();
-        $this->string(\SavedSearch::addVisibilityRestrict())
-            ->isIdenticalTo('');
+        $this->assertSame('', \SavedSearch::addVisibilityRestrict());
 
         $this->login('normal', 'normal');
-        $this->string(\SavedSearch::addVisibilityRestrict())
-            ->isIdenticalTo("`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5'");
+        $this->assertSame(
+            "`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5'",
+            \SavedSearch::addVisibilityRestrict()
+        );
 
         //add public saved searches read right for normal profile
         global $DB;
@@ -77,13 +83,17 @@ class SavedSearch extends DbTestCase
         //ACLs have changed: login again.
         $this->login('normal', 'normal');
 
-        $this->string(\SavedSearch::addVisibilityRestrict())
-            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0'))");
+        $this->assertSame(
+            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0'))",
+            \SavedSearch::addVisibilityRestrict()
+        );
 
         // Check entity restriction
         $this->setEntity('_test_root_entity', true);
-        $this->string(\SavedSearch::addVisibilityRestrict())
-            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('1', '2', '3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))");
+        $this->assertSame(
+            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('1', '2', '3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
+            \SavedSearch::addVisibilityRestrict()
+        );
     }
 
     public function testGetMine()
@@ -101,7 +111,7 @@ class SavedSearch extends DbTestCase
 
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
-        $this->boolean(
+        $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'public root recursive',
                 'type'         => 1,
@@ -112,8 +122,8 @@ class SavedSearch extends DbTestCase
                 'is_recursive' => 1,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
-        )->isTrue();
-        $this->boolean(
+        );
+        $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'public root NOT recursive',
                 'type'         => 1,
@@ -124,8 +134,8 @@ class SavedSearch extends DbTestCase
                 'is_recursive' => 0,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
-        )->isTrue();
-        $this->boolean(
+        );
+        $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'public child 1 recursive',
                 'type'         => 1,
@@ -136,9 +146,9 @@ class SavedSearch extends DbTestCase
                 'is_recursive' => 1,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'private TU_USER',
                 'type'         => 1,
@@ -149,9 +159,9 @@ class SavedSearch extends DbTestCase
                 'is_recursive' => 1,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'private normal user',
                 'type'         => 1,
@@ -162,7 +172,7 @@ class SavedSearch extends DbTestCase
                 'is_recursive' => 1,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
-        )->isTrue();
+        );
         // With UPDATE 'config' right, we still shouldn't see other user's private searches
         $expected = [
             'public root recursive',
@@ -171,18 +181,27 @@ class SavedSearch extends DbTestCase
             'private TU_USER',
         ];
         $mine = $bk->getMine();
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
 
         // Normal user cannot see public saved searches by default
         $this->login('normal', 'normal');
 
         $mine = $bk->getMine();
-        $this->array($mine)->hasSize(1);
-        $this->array(array_column($mine, 'name'))->containsValues(['private normal user']);
+        $this->assertCount(1, $mine);
+        $this->assertEqualsCanonicalizing(
+            ['name' => 'private normal user'],
+            array_column($mine, 'name')
+        );
 
         //add public saved searches read right for normal profile
         $DB->update(
@@ -201,8 +220,11 @@ class SavedSearch extends DbTestCase
             'private normal user',
         ];
         $mine = $bk->getMine('Ticket');
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
 
         // Check entity restrictions
         $this->setEntity('_test_root_entity', false);
@@ -212,8 +234,11 @@ class SavedSearch extends DbTestCase
             'private normal user',
         ];
         $mine = $bk->getMine('Ticket');
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
 
         $this->setEntity('_test_child_1', true);
         $expected = [
@@ -222,8 +247,11 @@ class SavedSearch extends DbTestCase
             'private normal user',
         ];
         $mine = $bk->getMine('Ticket');
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
 
         $this->setEntity('_test_child_1', false);
         $expected = [
@@ -232,7 +260,10 @@ class SavedSearch extends DbTestCase
             'private normal user',
         ];
         $mine = $bk->getMine('Ticket');
-        $this->array($mine)->hasSize(count($expected));
-        $this->array(array_column($mine, 'name'))->containsValues($expected);
+        $this->assertCount(count($expected), $mine);
+        $this->assertEqualsCanonicalizing(
+            $expected,
+            array_column($mine, 'name')
+        );
     }
 }
