@@ -93,6 +93,11 @@ trait TreeBrowse
 JAVASCRIPT;
 
         if ($update) {
+            $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
+            $results = Search::getDatas($itemtype, $params);
+            $results['searchform_id'] = $params['searchform_id'] ?? null;
+            Search::displayData($results);
+
             $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
             $JS .= <<<JAVASCRIPT
             $('#tree_category').fancytree('option', 'source', {$category_list});
