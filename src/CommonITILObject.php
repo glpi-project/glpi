@@ -4726,7 +4726,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
         $tab[] = $newtab;
 
-        $newtab = [
+        $tab[] = [
             'id'                 => '500',
             'table'              => 'glpi_usercategories',
             'field'              => 'name',
@@ -4749,8 +4749,6 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ]
         ];
-
-        $tab[] = $newtab;
 
         $newtab = [
             'id'                 => '71',  // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
@@ -4826,7 +4824,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $newtab = [
+        $tab[]= [
             'id'                 => '501',
             'table'              => 'glpi_usercategories',
             'field'              => 'name',
@@ -4849,8 +4847,6 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ]
         ];
-
-        $tab[] = $newtab;
 
         $tab[] = [
             'id'                 => '65', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
@@ -4916,7 +4912,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $newtab = [
+        $tab[]= [
             'id'                 => '502',
             'table'              => 'glpi_usercategories',
             'field'              => 'name',
@@ -4939,8 +4935,6 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ]
         ];
-
-        $tab[] = $newtab;
 
         $tab[] = [
             'id'                 => '8', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
