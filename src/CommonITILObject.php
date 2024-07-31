@@ -4824,7 +4824,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $tab[]= [
+        $tab[] = [
             'id'                 => '501',
             'table'              => 'glpi_usercategories',
             'field'              => 'name',
@@ -4912,7 +4912,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $tab[]= [
+        $tab[] = [
             'id'                 => '502',
             'table'              => 'glpi_usercategories',
             'field'              => 'name',
