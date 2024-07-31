@@ -313,26 +313,12 @@ trait AssignableItem
             Group_Item::GROUP_TYPE_TECH   => 'groups_id_tech',
         ];
         foreach ($group_fields as $type => $field) {
-            if (in_array($type, $this->getGroupTypes(), true)) {
-                $this->fields[$field] = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
-            }
+            $this->fields[$field] = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
         }
     }
 
     public function post_getFromDB()
     {
         $this->loadGroupFields();
-    }
-
-    /**
-     * Get the types of groups supported by the asset.
-     * @return array<Group_Item::GROUP_TYPE_*>
-     */
-    final public function getGroupTypes(): array
-    {
-        return [
-            Group_Item::GROUP_TYPE_NORMAL,
-            Group_Item::GROUP_TYPE_TECH,
-        ];
     }
 }

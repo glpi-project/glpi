@@ -61,26 +61,6 @@ class AssignableItem extends \DbTestCase
         $this->boolean(in_array(\Glpi\Features\AssignableItem::class, class_uses($class), true))->isTrue();
     }
 
-    protected function groupAssignableItemtypeProvider(): iterable
-    {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
-
-        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
-            yield $itemtype . '-normal' => [
-                'class' => $itemtype,
-                'type'  => Group_Item::GROUP_TYPE_NORMAL,
-            ];
-
-            yield $itemtype . '-normal' => [
-                'class' => $itemtype,
-                'type'  => Group_Item::GROUP_TYPE_TECH,
-            ];
-        }
-    }
-
     /**
      * Test adding an item with the groups_id/groups_id_tech field as an array and null.
      * Test updating an item with the groups_id/groups_id_tech field as an array and null.
@@ -241,5 +221,15 @@ class AssignableItem extends \DbTestCase
         $this->boolean($updated)->isTrue();
         $this->array($item->fields['groups_id'])->isEqualTo([3]);
         $this->array($item->fields['groups_id_tech'])->isEqualTo([4]);
+    }
+
+    public function testGenericAsset(): void
+    {
+        $class = $this->initAssetDefinition()->getAssetClassName();
+
+        $this->testAddAndUpdateMultipleGroups($class);
+        $this->testLoadGroupsFromDb($class);
+        $this->testGetEmpty($class);
+        $this->testAddUpdateWithIntGroups($class);
     }
 }
