@@ -35,28 +35,34 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use InvalidArgumentException;
 use Override;
-use Ticket;
 
-class RequestTypeField extends AbstractConfigField
+class UrgencyField extends AbstractConfigField
 {
     #[Override]
     public function getLabel(): string
     {
-        return __("Request type");
+        return __("Urgency");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 40;
     }
 
     #[Override]
     public function getConfigClass(): string
     {
-        return RequestTypeFieldConfig::class;
+        return UrgencyFieldConfig::class;
     }
 
     #[Override]
@@ -66,15 +72,15 @@ class RequestTypeField extends AbstractConfigField
         string $input_name,
         array $display_options
     ): string {
-        if (!$config instanceof RequestTypeFieldConfig) {
+        if (!$config instanceof UrgencyFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/itil_config_fields/request_type.html.twig', [
+        return $twig->render('pages/admin/form/itil_config_fields/urgency.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => RequestTypeFieldStrategy::SPECIFIC_VALUE->value,
-            'CONFIG_SPECIFIC_ANSWER' => RequestTypeFieldStrategy::SPECIFIC_ANSWER->value,
+            'CONFIG_SPECIFIC_VALUE'  => UrgencyFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_ANSWER' => UrgencyFieldStrategy::SPECIFIC_ANSWER->value,
 
             // General display options
             'options' => $display_options,
@@ -83,24 +89,24 @@ class RequestTypeField extends AbstractConfigField
             'main_config_field' => [
                 'label'           => $this->getLabel(),
                 'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::STRATEGY . "]",
+                'input_name'      => $input_name . "[" . UrgencyFieldConfig::STRATEGY . "]",
                 'possible_values' => $this->getMainConfigurationValuesforDropdown(),
             ],
 
-            // Specific additional config for SPECIFIC_ANSWER strategy
+            // Specific additional config for SPECIFIC_VALUE strategy
             'specific_value_extra_field' => [
-                'empty_label'     => __("Select a request type..."),
-                'value'           => $config->getSpecificRequestType(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::REQUEST_TYPE . "]",
-                'possible_values' => Ticket::getTypes(),
+                'empty_label'     => __("Select an urgency level..."),
+                'value'           => $config->getSpecificUrgency(),
+                'input_name'      => $input_name . "[" . UrgencyFieldConfig::SPECIFIC_URGENCY_VALUE . "]",
+                'possible_values' => $this->getUrgencyLevels(),
             ],
 
-            // Specific additional config for SPECIFIC_VALUE strategy
+            // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::QUESTION_ID . "]",
-                'possible_values' => $this->getRequestTypeQuestionsValuesForDropdown($form),
+                'input_name'      => $input_name . "[" . UrgencyFieldConfig::SPECIFIC_QUESTION_ID . "]",
+                'possible_values' => $this->getUrgencyQuestionsValuesForDropdown($form),
             ],
         ]);
     }
@@ -111,56 +117,56 @@ class RequestTypeField extends AbstractConfigField
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (!$config instanceof RequestTypeFieldConfig) {
+        if (!$config instanceof UrgencyFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
         // Compute value according to strategy
-        $request_type = $config->getStrategy()->getRequestType($config, $answers_set);
+        $urgency = $config->getStrategy()->computeUrgency($config, $answers_set);
 
         // Do not edit input if invalid value was found
-        $valid_values = [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE];
-        if (array_search($request_type, $valid_values) === false) {
+        $valid_values = array_keys($this->getUrgencyLevels());
+        if (array_search($urgency, $valid_values) === false) {
             return $input;
         }
 
         // Apply value
-        $input['type'] = $request_type;
+        $input['urgency'] = $urgency;
         return $input;
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): RequestTypeFieldConfig
+    public function getDefaultConfig(Form $form): UrgencyFieldConfig
     {
-        return new RequestTypeFieldConfig(
-            RequestTypeFieldStrategy::LAST_VALID_ANSWER
+        return new UrgencyFieldConfig(UrgencyFieldStrategy::LAST_VALID_ANSWER);
+    }
+
+    private function getUrgencyLevels(): array
+    {
+        return array_combine(
+            range(1, 5),
+            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
     }
 
     private function getMainConfigurationValuesforDropdown(): array
     {
         $values = [];
-        foreach (RequestTypeFieldStrategy::cases() as $strategies) {
+        foreach (UrgencyFieldStrategy::cases() as $strategies) {
             $values[$strategies->value] = $strategies->getLabel();
         }
         return $values;
     }
 
-    private function getRequestTypeQuestionsValuesForDropdown(Form $form): array
+    private function getUrgencyQuestionsValuesForDropdown(Form $form): array
     {
         $values = [];
-        $questions = $form->getQuestionsByType(QuestionTypeRequestType::class);
+        $questions = $form->getQuestionsByType(QuestionTypeUrgency::class);
 
         foreach ($questions as $question) {
             $values[$question->getId()] = $question->fields['name'];
         }
 
         return $values;
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 30;
     }
 }
