@@ -90,7 +90,7 @@ class ContentField extends AbstractConfigField
                     'enable_images'    : false,
                     'enable_form_tags' : true,
                     'form_tags_form_id': form_id,
-                    'content_style'    : 'body { line-height: 2.3; }'
+                    'content_style'    : 'body { line-height: 2.3; } h2 { margin: 1rem 0 0.5rem; }',
                 })
             ) }}
 TWIG;
@@ -119,6 +119,13 @@ TWIG;
         $input['content'] = $tag_manager->insertTagsContent(
             $config->getValue(),
             $answers_set
+        );
+
+        // Add margin to h2 tags to improve readability
+        $input['content'] = preg_replace(
+            '/<h2>/',
+            '<h2 style="margin: 1rem 0 0.5rem;">',
+            $input['content']
         );
 
         return $input;
