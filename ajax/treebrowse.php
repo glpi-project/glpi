@@ -65,13 +65,14 @@ switch ($_REQUEST['action']) {
             }
         }
 
-        $params['criteria'][] = [
+        $_SESSION['treebrowse'][$itemtype] = [
             'link'   => "AND",
             'field'  => $field,
             'searchtype'   => "equals",
             'virtual'      => true,
             'value'  => ($_REQUEST['cat_id'] > 0) ? $_REQUEST['cat_id'] : 0,
         ];
+        $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
         Search::showList($itemtype, $params);
         return;
 }

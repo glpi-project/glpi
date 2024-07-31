@@ -73,13 +73,16 @@ switch ($_REQUEST['action']) {
 
         $search_params = Search::manageParams($itemtype, $_REQUEST);
 
-        if (isset($search_params['browse']) && $search_params['browse'] == 1) {
-            $itemtype::showBrowseView($itemtype, $search_params, true);
-        } else {
-            $results = Search::getDatas($itemtype, $search_params);
-            $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
-            Search::displayData($results);
+        if (
+            isset($search_params['browse']) &&
+            $search_params['browse'] == 1 &&
+            isset($_SESSION['treebrowse'][$itemtype])
+        ) {
+            $search_params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
         }
+        $results = Search::getDatas($itemtype, $search_params);
+        $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
+        Search::displayData($results);
         break;
 }
 
