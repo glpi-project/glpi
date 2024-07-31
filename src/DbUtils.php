@@ -210,6 +210,10 @@ final class DbUtils
                     $table = substr($table, \strlen(NS_GLPI));
                 }
             }
+            //handle PHPUnit mocks
+            if (str_starts_with($table, 'mock_')) {
+                $table = preg_replace('/^mock_(.+)_.+$/', '$1', $table);
+            }
             $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
             if (strstr($table, '_')) {
                 $split = explode('_', $table);
