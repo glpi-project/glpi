@@ -396,14 +396,14 @@ abstract class Asset extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $this->prepareGroupFields($input);
+        $input = $this->prepareGroupFields($input);
 
         return $this->prepareDefinitionInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $this->prepareGroupFields($input);
+        $input = $this->prepareGroupFields($input);
 
         return $this->prepareDefinitionInput($input);
     }
