@@ -86,10 +86,11 @@ class ContentField extends AbstractConfigField
                 value,
                 label,
                 options|merge({
-                    'enable_richtext': true,
-                    'enable_images': false,
-                    'enable_form_tags': true,
-                    'form_tags_form_id': form_id
+                    'enable_richtext'  : true,
+                    'enable_images'    : false,
+                    'enable_form_tags' : true,
+                    'form_tags_form_id': form_id,
+                    'content_style'    : 'body { line-height: 2.3; }',
                 })
             ) }}
 TWIG;
@@ -144,13 +145,17 @@ TWIG;
                 $html .= "<h2>$section_tag->html</h2>";
             }
 
-            $i = 1;
-            foreach ($section->getQuestions() as $question) {
-                $question_tag  = $question_provider->getTagForQuestion($question);
-                $answer_tag    = $answer_provider->getTagForQuestion($question);
+            if (!empty($section->getQuestions())) {
+                $html .= "<p>";
+                $i = 1;
+                foreach ($section->getQuestions() as $question) {
+                    $question_tag  = $question_provider->getTagForQuestion($question);
+                    $answer_tag    = $answer_provider->getTagForQuestion($question);
 
-                $html .= "<p><b>$i) $question_tag->html</b>: $answer_tag->html </p>";
-                $i++;
+                    $html .= "<b>$i) $question_tag->html</b>: $answer_tag->html<br>";
+                    $i++;
+                }
+                $html .= "</p>";
             }
         }
 

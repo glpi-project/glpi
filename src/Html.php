@@ -3523,6 +3523,7 @@ JS;
      * @param bool    $init             init the editor (default: true)
      * @param string  $placeholder      textarea placeholder
      * @param bool    $statusbar        tinymce statusbar (default: true)
+     * @param string  $content_style    content style to apply to the editor
      *
      * @return void|string
      *    integer if param display=true
@@ -3540,7 +3541,8 @@ JS;
         bool $init = true,
         string $placeholder = '',
         bool $toolbar = true,
-        bool $statusbar = true
+        bool $statusbar = true,
+        string $content_style = ''
     ) {
         /**
          * @var array $CFG_GLPI
@@ -3658,6 +3660,7 @@ JS;
                     skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
                     body_class: '{$body_class}',
                     content_css: '{$content_css}',
+                    content_style: '{$content_style}',
                     highlight_on_focus: false,
                     autoresize_bottom_margin: 0, // Avoid excessive bottom padding
                     autoresize_overflow_padding: 0,

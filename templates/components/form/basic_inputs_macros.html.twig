@@ -316,6 +316,7 @@
         'form_tags_form_id': null,
         'aria_label': "",
         'statusbar': true,
+        'content_style': "",
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -349,7 +350,8 @@
             options.init,
             options.placeholder,
             options.toolbar,
-            options.statusbar
+            options.statusbar,
+            options.content_style,
         ]) %}
    {% endif %}
 
