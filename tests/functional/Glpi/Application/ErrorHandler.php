@@ -180,28 +180,10 @@ class ErrorHandler extends \GLPITestCase
                 yield [
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
-                    'error_code'           => E_ERROR,
-                    'expected_log_level'   => Level::Critical,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Error' . $log_suffix,
-                    'is_fatal_error'       => true,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
                     'error_code'           => E_WARNING,
                     'expected_log_level'   => Level::Warning,
                     'expected_msg_pattern' => $log_prefix . 'PHP Warning' . $log_suffix,
                     'is_fatal_error'       => false,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
-                    'error_code'           => E_PARSE,
-                    'expected_log_level'   => Level::Alert,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Parsing Error' . $log_suffix,
-                    'is_fatal_error'       => true,
                 ];
 
                 yield [
@@ -216,15 +198,6 @@ class ErrorHandler extends \GLPITestCase
                 yield [
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
-                    'error_code'           => E_CORE_ERROR,
-                    'expected_log_level'   => Level::Critical,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Core Error' . $log_suffix,
-                    'is_fatal_error'       => true,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
                     'error_code'           => E_CORE_WARNING,
                     'expected_log_level'   => Level::Warning,
                     'expected_msg_pattern' => $log_prefix . 'PHP Core Warning' . $log_suffix,
@@ -234,28 +207,10 @@ class ErrorHandler extends \GLPITestCase
                 yield [
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
-                    'error_code'           => E_COMPILE_ERROR,
-                    'expected_log_level'   => Level::Alert,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Compile Error' . $log_suffix,
-                    'is_fatal_error'       => true,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
                     'error_code'           => E_COMPILE_WARNING,
                     'expected_log_level'   => Level::Warning,
                     'expected_msg_pattern' => $log_prefix . 'PHP Compile Warning' . $log_suffix,
                     'is_fatal_error'       => false,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
-                    'error_code'           => E_USER_ERROR,
-                    'expected_log_level'   => Level::Error,
-                    'expected_msg_pattern' => $log_prefix . 'PHP User Error' . $log_suffix,
-                    'is_fatal_error'       => true,
                 ];
 
                 yield [
@@ -274,15 +229,6 @@ class ErrorHandler extends \GLPITestCase
                     'expected_log_level'   => Level::Notice,
                     'expected_msg_pattern' => $log_prefix . 'PHP User Notice' . $log_suffix,
                     'is_fatal_error'       => false,
-                ];
-
-                yield [
-                    'session_mode'         => $session_mode,
-                    'env'                  => $env,
-                    'error_code'           => E_RECOVERABLE_ERROR,
-                    'expected_log_level'   => Level::Error,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Catchable Fatal Error' . $log_suffix,
-                    'is_fatal_error'       => true,
                 ];
 
                 yield [
@@ -311,7 +257,7 @@ class ErrorHandler extends \GLPITestCase
      *
      * @dataProvider handleErrorProvider
      */
-    public function testHandleErrorAndHandleFatalError(
+    public function testHandleError(
         int $session_mode,
         string $env,
         int $error_code,

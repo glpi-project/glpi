@@ -873,7 +873,7 @@ class CronTask extends CommonDBTM
                             try {
                                   $retcode = $function($crontask);
                             } catch (\Throwable $e) {
-                                ErrorHandler::getInstance()->handleException($e);
+                                ErrorHandler::getInstance()->handleException($e, false);
                                 Toolbox::logInFile(
                                     'cron',
                                     sprintf(

@@ -32,26 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Glpi\Application\ErrorHandler;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Glpi\Controller\ErrorController;
 
-final readonly class ExceptionListener implements EventSubscriberInterface
-{
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::EXCEPTION => 'onKernelException',
-        ];
-    }
-
-    public function onKernelException(ExceptionEvent $event): void
-    {
-        $handler = ErrorHandler::getInstance();
-
-        $handler->handleException($event->getThrowable(), true);
-    }
-}
+return static function (ContainerConfigurator $container): void {
+    $container->extension('framework', [
+        'error_controller' => ErrorController::class,
+    ]);
+};

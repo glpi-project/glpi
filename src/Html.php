@@ -131,7 +131,7 @@ class Html
         try {
             $date = new \DateTime($time);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, false);
             Session::addMessageAfterRedirect(
                 htmlspecialchars(sprintf(
                     __('%1$s %2$s'),

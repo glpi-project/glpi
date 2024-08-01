@@ -129,7 +129,7 @@ class SavedSearch_Alert extends CommonDBChild
                 $count = $data['data']['totalcount'];
             }
         } catch (\RuntimeException $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, false);
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/alert.html.twig', [
@@ -450,7 +450,7 @@ class SavedSearch_Alert extends CommonDBChild
                     }
                 } catch (\Throwable $e) {
                     self::restoreContext($context);
-                    ErrorHandler::getInstance()->handleException($e);
+                    ErrorHandler::getInstance()->handleException($e, false);
                 }
             }
             return 1;

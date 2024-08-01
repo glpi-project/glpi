@@ -112,7 +112,7 @@ final readonly class ApiController implements Controller
                 400
             );
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
             $response = new Response(500);
             $response->send();
         }
