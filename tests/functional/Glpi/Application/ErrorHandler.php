@@ -470,7 +470,10 @@ class ErrorHandler extends \GLPITestCase
     public function testHandleException()
     {
         $exception = new \RuntimeException('Something went wrong');
-        $expected_msg_pattern = '/0: Something went wrong/';
+        $expected_msg_pattern = '/'
+         . preg_quote('Uncaught Exception RuntimeException: Something went wrong in ' . __FILE__ . ' at line ', '/')
+         . '\d+'
+         . '/';
 
         $previous_use_mode         = $_SESSION['glpi_use_mode'];
 

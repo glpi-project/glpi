@@ -66,7 +66,7 @@ final readonly class StatusController implements Controller
             $response = Router::getInstance()->handleRequest($request);
             $response->send();
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
             $response = new Response(500);
             $response->send();
         }

@@ -257,7 +257,7 @@ class ErrorHandler
      */
     public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
     {
-       // Have to false to forward to PHP internal error handler.
+        // Have to false to forward to PHP internal error handler.
         $return = !$this->forward_to_internal_handler;
 
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -269,8 +269,8 @@ class ErrorHandler
         }
 
         if (!(error_reporting() & $error_code)) {
-           // Do not handle error if '@' operator is used on errored expression
-           // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+            // Do not handle error if '@' operator is used on errored expression
+            // see https://www.php.net/manual/en/language.operators.errorcontrol.php
             return $return;
         }
 
@@ -286,6 +286,7 @@ class ErrorHandler
             $line_number
         );
         $log_level = self::ERROR_LEVEL_MAP[$error_code];
+
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
         $this->outputDebugMessage($error_type, $error_description, $log_level);
 
@@ -376,19 +377,38 @@ class ErrorHandler
      * or manually called by the application to log exception details.
      *
      * @param \Throwable $exception
-     * @param bool $quiet
+     * @param ?bool $quiet
      *
      * @return void
      */
-    public function handleException(\Throwable $exception, bool $quiet = false): void
+    public function handleException(\Throwable $exception, ?bool $quiet = null): void
     {
+        if ($quiet === null) {
+            // By default, do not output message unless in CLI context.
+            // In web context, the exception will be catched by the `public/index.php` router
+            // and the error message will be displayed in the error page.
+            $quiet = !isCommandLine();
+        }
+
         $this->exit_code = 255;
 
-        $this->logException($exception);
+        $error_type = sprintf(
+            'Uncaught Exception %s',
+            get_class($exception)
+        );
+        $error_description = sprintf(
+            '%s in %s at line %s',
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+        $error_trace = $this->getTraceAsString($exception->getTrace());
 
-        if (!$quiet && isCommandLine()) {
-            $log_level = self::ERROR_LEVEL_MAP[$exception->getCode()] ?? 255;
-            $this->outputDebugMessage($exception->getCode(), $exception->getMessage(), $log_level);
+        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
+
+        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
+        if (!$quiet) {
+            $this->outputDebugMessage($error_type, $error_description, $log_level);
         }
     }
 
@@ -421,7 +441,11 @@ class ErrorHandler
             $log_level = self::ERROR_LEVEL_MAP[$error['type']];
 
             $this->logErrorMessage($error_type, $error_description, '', $log_level);
+
             if (isCommandLine()) {
+                // By default, do not output message unless in CLI context.
+                // In web context, the fatal error will be catched by the `public/index.php` router
+                // and the error message will be displayed in the error page.
                 $this->outputDebugMessage($error_type, $error_description, $log_level);
             }
         }
@@ -642,24 +666,5 @@ class ErrorHandler
     private function isDebug(): bool
     {
         return $this->env === GLPI::ENV_DEVELOPMENT || $this->env === GLPI::ENV_TESTING;
-    }
-
-    public function logException(\Throwable $exception): void
-    {
-        $error_type = sprintf(
-            'Uncaught Exception %s',
-            get_class($exception)
-        );
-        $error_description = sprintf(
-            '%s in %s at line %s',
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine()
-        );
-        $error_trace = $this->getTraceAsString($exception->getTrace());
-
-        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
-
-        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
     }
 }

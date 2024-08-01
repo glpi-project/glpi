@@ -51,8 +51,8 @@ class ErrorController implements Controller
         }
 
         if (!$exception instanceof OutOfMemoryError) {
-            // These exceptions cannot pass through GLPI's ErrorHandler, so we log here instead.
-            ErrorHandler::getInstance()->logException($exception);
+            // Forward to GLPI error handler to log the exception trace.
+            ErrorHandler::getInstance()->handleException($exception, true);
         }
 
         return new StreamedResponse(fn() => $this->renderErrorPage($exception), 500);
