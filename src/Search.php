@@ -792,7 +792,7 @@ class Search
 
        // default string
         $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
-        $first       = empty($COMMONWHERE);
+        $first = empty($COMMONWHERE);
 
        // Add deleted if item have it
         if ($data['item'] && $data['item']->maybeDeleted()) {
@@ -4377,7 +4377,10 @@ JAVASCRIPT;
             case 'Ticket':
                // Same structure in addDefaultJoin
                 $condition = '';
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (
+                    !Session::haveRight("ticket", Ticket::READALL)
+                    && Session::getCurrentInterface() != 'helpdesk'
+                ) {
                     $searchopt
                     = self::getOptions($itemtype);
                     $requester_table
