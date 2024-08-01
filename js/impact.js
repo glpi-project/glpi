@@ -1629,14 +1629,111 @@ var GLPIImpact = {
         this.initToolbar();
     },
 
+
+    /**
+     *
+     * @param target node or edge
+     */
+    bindPopper: function(target) {
+
+        let tooltipId = `popper-target-${target.id()}`;
+        let existingTarget = document.getElementById(tooltipId);
+        if (existingTarget && existingTarget.length !== 0) {
+            existingTarget.remove();
+        }
+
+        let popper = target.popper({
+
+            content: () => {
+                // create div container
+                let tooltip = document.createElement('div');
+
+                // adding id for easier JavaScript control
+                tooltip.id = tooltipId;
+
+                if ("itemtype" in target.data()) {
+                    // adding class for easier CSS control
+                    tooltip.classList.add('target-popper');
+
+                    // create actual table
+                    let table = document.createElement('table');
+
+                    // append table to div container
+                    tooltip.append(table);
+                    let targetData = target.data();
+                    let propname = '';
+                    let fields = ['label', 'type', 'criticity', 'status', 'comment'];
+                    // loop through target data
+                    for (let prop in targetData) {
+                        if (!fields.includes(prop) || !Object.hasOwn(targetData, 'itemtype')) {
+                            continue;
+                        }
+
+                        let targetValue = targetData[prop];
+
+                        // no recursive or reduce support
+                        if (typeof targetValue === "object") {
+                            continue;
+                        }
+
+                        let tr = table.insertRow();
+
+                        let tdTitle = tr.insertCell();
+                        let tdValue = tr.insertCell();
+                        if (prop == 'label') {
+                            propname = __("Name");
+                        }
+                        if (prop == 'criticity') {
+                            propname = _n("Business criticity", "Business criticities", 1);
+                        }
+                        if (prop == 'type') {
+                            propname = _n("Type", "Types", 1);
+                        }
+                        if (prop == 'status') {
+                            propname = __("Status");
+                        }
+                        if (prop == 'comment') {
+                            propname = __("Comments");
+                        }
+                        if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
+                            tdTitle.innerText = _.escape(propname);
+                            tdValue.innerText = $('<textarea />').html(targetValue).text();
+                        }
+                    }
+
+                    document.body.appendChild(tooltip);
+                }
+                return tooltip;
+            }
+        });
+
+        target.on('position', () => {
+            popper.update();
+        });
+
+        target.cy().on('pan zoom resize', () => {
+            popper.update();
+        });
+
+        target.on('mouseover', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.add('active');
+            }
+        }).on('mouseout', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.remove('active');
+            }
+        });
+    },
+
     /**
     * Build the network graph
     *
     * @param {string} data (json)
     */
     buildNetwork: function(data, params, readonly) {
-        var layout;
 
+        var layout;
         // Init workspace status
         GLPIImpact.showDefaultWorkspaceStatus();
 
@@ -1670,6 +1767,11 @@ var GLPIImpact = {
             style    : this.getNetworkStyle(),
             layout   : layout,
             wheelSensitivity: 0.25,
+        });
+
+
+        this.cy.filter('node', 'edge').forEach(t => {
+            this.bindPopper(t);
         });
 
         // If we used the preset layout, some nodes might lack positions
