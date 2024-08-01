@@ -4543,9 +4543,9 @@ JAVASCRIPT;
                             ],
                             [
                                 'field'       => 60, // date_created
-                                'searchtype'  => 'notcontains',
+                                'searchtype'  => 'empty',
                                 'value'       => 'NULL',
-                                'link'        => 'AND'
+                                'link'        => 'AND NOT'
                             ],
                             [
                                 'link'     => 'AND',
@@ -4566,7 +4566,7 @@ JAVASCRIPT;
                             ],
                             [
                                 'field'       => 61, // date_answered
-                                'searchtype'  => 'contains',
+                                'searchtype'  => 'empty',
                                 'value'       => 'NULL',
                                 'link'        => 'AND'
                             ]
@@ -4580,13 +4580,13 @@ JAVASCRIPT;
                                         'link'        => 'AND',
                                         'field'       => 22, // author
                                         'searchtype'  => 'equals',
-                                        'value'       => Session::getLoginUserID(),
+                                        'value'       => 'myself',
                                     ],
                                     [
                                         'link'        => 'OR',
                                         'field'       => 4, // requester
                                         'searchtype'  => 'equals',
-                                        'value'       => Session::getLoginUserID(),
+                                        'value'       => 'myself',
                                     ]
                                 ]
                             ];
@@ -4594,7 +4594,7 @@ JAVASCRIPT;
                             $options['criteria'][] = [
                                 'field' => 4, // requester
                                 'searchtype' => 'equals',
-                                'value' => Session::getLoginUserID(),
+                                'value' => 'myself',
                                 'link' => 'AND'
                             ];
                         }
