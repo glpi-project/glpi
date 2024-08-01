@@ -500,29 +500,16 @@ final class SQLProvider implements SearchProviderInterface
                 case "date_delay":
                     $interval = $opt['delayunit'] ?? "MONTH";
 
-                    $datafields1 = $opt['datafields'][1];
-                    if (strpos($datafields1, '.') === false) {
-                        $datafields1 = "{$table}{$addtable}.{$datafields1}";
-                    }
-                    $datafields2 = $opt['datafields'][2];
-                    if (strpos($datafields2, '.') === false) {
-                        $datafields2 = "{$table}{$addtable}.{$datafields2}";
-                    }
-
                     $add_minus = '';
                     if (isset($opt["datafields"][3])) {
-                        $datafields3 = $opt['datafields'][3];
-                        if (strpos($datafields3, '.') === false) {
-                            $datafields3 = "{$table}{$addtable}.{$datafields3}";
-                        }
-                        $add_minus = '-' . $DB::quoteName($datafields3);
+                        $add_minus = '-' . $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][3]}");
                     }
                     if ($meta || $opt->isForceGroupBy()) {
                         return array_merge([
                             QueryFunction::groupConcat(
                                 expression: QueryFunction::dateAdd(
-                                    date: $datafields1,
-                                    interval: new QueryExpression($DB::quoteName($datafields2) . $add_minus),
+                                    date: "{$table}{$addtable}.{$opt["datafields"][1]}",
+                                    interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt["datafields"][2]}") . $add_minus),
                                     interval_unit: $interval
                                 ),
                                 separator: \Search::LONGSEP,
@@ -533,8 +520,8 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return array_merge([
                         QueryFunction::dateAdd(
-                            date: $datafields1,
-                            interval: new QueryExpression($DB::quoteName($datafields2) . $add_minus),
+                            date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                            interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                             interval_unit: $interval,
                             alias: $NAME
                         ),
@@ -1705,27 +1692,13 @@ final class SQLProvider implements SearchProviderInterface
                     $search_unit = $opt['searchunit'] ?? 'MONTH';
                     if ($opt["datatype"] === "date_delay") {
                         $delay_unit = $opt['delayunit'] ?? 'MONTH';
-
-                        $datafields1 = $opt['datafields'][1];
-                        if (strpos($datafields1, '.') === false) {
-                            $datafields1 = "{$table}.{$datafields1}";
-                        }
-                        $datafields2 = $opt['datafields'][2];
-                        if (strpos($datafields2, '.') === false) {
-                            $datafields2 = "{$table}.{$datafields2}";
-                        }
-
                         $add_minus = '';
                         if (isset($opt["datafields"][3])) {
-                            $datafields3 = $opt['datafields'][3];
-                            if (strpos($datafields3, '.') === false) {
-                                $datafields3 = "{$table}.{$datafields3}";
-                            }
-                            $add_minus = '-' . $DB::quoteName($datafields3);
+                            $add_minus = '-' . $DB::quoteName($table . '.' . $opt["datafields"][3]);
                         }
                         $date_computation = QueryFunction::dateAdd(
-                            date: $datafields1,
-                            interval: new QueryExpression($DB::quoteName($datafields2) . $add_minus),
+                            date: "$table." . $opt["datafields"][1],
+                            interval: new QueryExpression($DB::quoteName("$table." . $opt["datafields"][2]) . $add_minus),
                             interval_unit: $delay_unit
                         );
                     }
@@ -3736,27 +3709,13 @@ final class SQLProvider implements SearchProviderInterface
                             $interval = $searchopt[$ID]['delayunit'];
                         }
 
-                        $datafields1 = $searchopt[$ID]['datafields'][1];
-                        if (strpos($datafields1, '.') === false) {
-                            $datafields1 = "{$table}{$addtable}.{$datafields1}";
-                        }
-                        $datafields2 = $searchopt[$ID]['datafields'][2];
-                        if (strpos($datafields2, '.') === false) {
-                            $datafields2 = "{$table}{$addtable}.{$datafields2}";
-                        }
-
                         $add_minus = '';
                         if (isset($searchopt[$ID]["datafields"][3])) {
-                            $datafields3 = $searchopt[$ID]['datafields'][3];
-                            if (strpos($datafields3, '.') === false) {
-                                $datafields3 = "{$table}{$addtable}.{$datafields3}";
-                            }
-                            $add_minus = '-' . $DB::quoteName($datafields3);
+                            $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
                         }
-
                         $criterion = QueryFunction::dateAdd(
-                            date: $datafields1,
-                            interval: new QueryExpression($DB::quoteName($datafields2) . " $add_minus"),
+                            date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
+                            interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
                             interval_unit: $interval,
                         ) . " $order";
                 }
