@@ -156,3 +156,19 @@ Alternatively, a REST API interface is available for the raw GraphQL type declar
 As is standard with GraphQL, you MUST specify each property that you want to be returned.
 
 For more information about GraphQL, see the [GraphQL documentation](https://graphql.org/learn/).
+
+
+## API Versioning
+
+The API is versioned by the URL path. If no version is specified, the latest version will be used.
+If you specify `v1`, your request will be routed to the legacy API while `v2` and later will be routed to the high-level API.
+Example: `/api.php/v2/...`
+
+### Version pinning strategy
+
+When you specify a version in the URL, the API will use the following rules when determining which version to use:
+- If only a major version is specified, the latest minor version will be used. For example `/api.php/v2/...` may use `v2.1` if it is the latest version.
+- If a major and minor version are specified, the latest patch version will be used. For example `/api.php/v2.1/...` may use `v2.1.3` if it is the latest version.
+- If a major, minor, and patch version are specified, that exact version will be used. For example `/api.php/v2.1.3/...` will use `v2.1.3`.
+
+In general, specifying only the major version is sufficient and shouldn't break your application when new versions are released as long as there is a supported version available.
