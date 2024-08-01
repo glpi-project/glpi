@@ -445,12 +445,10 @@ class Link extends CommonDBTM
         ];
 
         if (Toolbox::hasTrait($item::class, AssignableItem::class)) {
-            if (in_array(Group_Item::GROUP_TYPE_NORMAL, $item->getGroupTypes(), true)) {
-                $group_names = array_map(static fn ($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
-                $vars['GROUPS'] = $group_names;
-                // GROUP - BC for < GLPI 11
-                $vars['GROUP'] = count($group_names) > 0 ? array_shift($group_names) : '';
-            }
+            $group_names = array_map(static fn ($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
+            $vars['GROUPS'] = $group_names;
+            // GROUP - BC for < GLPI 11
+            $vars['GROUP'] = count($group_names) > 0 ? array_shift($group_names) : '';
         } else {
             $vars['GROUPS'] = [];
             // GROUP - BC for < GLPI 11
