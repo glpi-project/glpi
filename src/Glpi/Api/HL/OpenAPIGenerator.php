@@ -83,7 +83,7 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-writeonly', 'x-readonly', 'x-full-schema'];
+        return ['x-writeonly', 'x-readonly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
