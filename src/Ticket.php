@@ -4539,16 +4539,10 @@ JAVASCRIPT;
                         $options['criteria'][0]['value']      = self::CLOSED;
                         $options['criteria'][0]['link']       = 'AND';
 
-                        $options['criteria'][1]['field']      = 60; // enquete generee
-                        $options['criteria'][1]['searchtype'] = 'contains';
-                        $options['criteria'][1]['value']      = '^';
+                        $options['criteria'][1]['field']      = 72; // end_date
+                        $options['criteria'][1]['searchtype'] = 'morethan';
+                        $options['criteria'][1]['value']      = 'NOW';
                         $options['criteria'][1]['link']       = 'AND';
-
-                        $duration = Entity::getUsedConfig('inquest_duration', $_SESSION['glpiactive_entity']);
-                        if ($duration > 0) {
-                            $options['criteria'][1]['searchtype'] = 'morethan';
-                            $options['criteria'][1]['value']      = '-' . $duration . 'DAY';
-                        }
 
                         $options['criteria'][2]['field']      = 61; // date_answered
                         $options['criteria'][2]['searchtype'] = 'contains';

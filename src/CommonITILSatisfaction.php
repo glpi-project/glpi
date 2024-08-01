@@ -425,6 +425,22 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             ]
         ];
 
+        $tab[] = [
+            'id'                 => 72 + $base_id,
+            'table'              => $table,
+            'field'              => 'end_date',
+            'name'               => __('End date'),
+            'datatype'           => 'date_delay',
+            'datafields'         => [
+                '1'                  => 'date_begin',
+                '2'                  => 'glpi_entities.inquest_duration'
+            ],
+            'searchunit'         => 'DAY',
+            'delayunit'          => 'DAY',
+            'maybefuture'        => true,
+            'massiveaction'      => false
+        ];
+
         return $tab;
     }
 }
