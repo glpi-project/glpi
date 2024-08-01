@@ -1579,6 +1579,33 @@ class Change extends CommonITILObject
 
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
-        return [];
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $tab = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $tab[] = [
+                'id'            => 141,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of changes'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+
+        return $tab;
     }
 }

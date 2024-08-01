@@ -813,4 +813,42 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'states_id' => $inv_states_id
         ]));
     }
+
+    public function testUpdateVirtualMachineComment()
+    {
+        //inventory
+        $source = json_decode('{"content":{"hardware":{"dns":"10.100.230.2\\/10.100.230.4","memory":130625,"name":"ESX-03-DMZ","uuid":"8c8c8944-0074-5632-7452-b2c04f564712","vmsystem":"Physical","workgroup":"teclib.fr"},"versionclient":"GLPI-Agent_v1.4-1","virtualmachines":[{"comment":"Computer VM","mac":"00:50:56:90:43:42","memory":1024,"name":"SRV-DMZ-EZ","status":"running","uuid":"420904FE-6a92-95e8-13f9-a37fc3607c14","vcpu":1,"vmtype":"vmware"}]},"deviceid":"ESX-03-DMZ.insep.fr-2023-02-02-11-34-53","action":"inventory","itemtype":"Computer"}');
+        $inventory = $this->doInventory($source);
+
+        $id_first = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $id_first);
+
+        //one VM
+        $vm = new \ItemVirtualMachine();
+        $this->assertCount(1, $vm->find());
+
+        //get ComputervirtualMachine
+        $vm = new \ItemVirtualMachine();
+        $this->assertTrue($vm->getFromDBByCrit([
+            'uuid'     => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+            'itemtype' => \Computer::class,
+            'items_id' => $id_first
+        ]));
+
+        $this->assertSame('Computer VM', $vm->fields['comment']);
+
+        //change comment, do inventory again
+        $source = json_decode('{"content":{"hardware":{"dns":"10.100.230.2\\/10.100.230.4","memory":130625,"name":"ESX-03-DMZ","uuid":"8c8c8944-0074-5632-7452-b2c04f564712","vmsystem":"Physical","workgroup":"teclib.fr"},"versionclient":"GLPI-Agent_v1.4-1","virtualmachines":[{"comment":"Edited Computer VM","mac":"00:50:56:90:43:42","memory":1024,"name":"SRV-DMZ-EZ","status":"running","uuid":"420904FE-6a92-95e8-13f9-a37fc3607c14","vcpu":1,"vmtype":"vmware"}]},"deviceid":"ESX-03-DMZ.insep.fr-2023-02-02-11-34-53","action":"inventory","itemtype":"Computer"}');
+        $this->doInventory($source);
+
+        //still one VM
+        $this->assertCount(1, $vm->find());
+
+        $this->assertTrue($vm->getFromDBByCrit([
+            'uuid'     => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+            'itemtype' => \Computer::class,
+            'items_id' => $id_first
+        ]));
+        $this->assertSame('Edited Computer VM', $vm->fields['comment']);
+    }
 }

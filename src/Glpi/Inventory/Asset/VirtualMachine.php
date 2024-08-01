@@ -251,7 +251,7 @@ class VirtualMachine extends InventoryAsset
                             'is_dynamic'   => 1
                         ];
 
-                        foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                        foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id', 'comment'] as $prop) {
                             if (property_exists($val, $prop)) {
                                 $input[$prop] = $handled_input[$prop];
                             }

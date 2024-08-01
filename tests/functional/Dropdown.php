@@ -345,9 +345,9 @@ class Dropdown extends DbTestCase
     public function dataGetValueWithUnit()
     {
         return [
-            [1,      'auto',        null, '1024 Kio'],
-            [1,      'auto',        null, '1024 Kio'],
-            [1025,   'auto',        null, '1 Gio'],
+            [1,      'auto',        null, '1024 KiB'],
+            [1,      'auto',        null, '1024 KiB'],
+            [1025,   'auto',        null, '1 GiB'],
             [1,      'year',        null, '1 year'],
             [2,      'year',        null, '2 years'],
             [3,      '%',           null, '3%'],

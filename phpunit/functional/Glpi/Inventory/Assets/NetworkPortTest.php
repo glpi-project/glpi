@@ -1397,4 +1397,137 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $this->assertSame($networkport2->fields['id'], $networkport1->fields['id']);
     }
+
+    public function testNetworkEquipmentsConnections(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        //checks there are no unmanageds
+        $unmanaged = new \Unmanaged();
+        $this->assertCount(0, $unmanaged->find());
+
+        //create a network equipment with 00:01:23:45:67:89 MAC
+        $equipment1 = new \NetworkEquipment();
+        $nport = new \NetworkPort();
+
+        $id_1 = $equipment1->add([
+            'name' => 'Equipment One',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $id_1);
+
+        $this->assertGreaterThan(
+            0,
+            $nport->add([
+                'itemtype' => $equipment1::getType(),
+                'items_id' => $id_1,
+                'name' => 'Linked Port',
+                'mac' => '00:01:23:45:67:89'
+            ])
+        );
+
+        // Import the linked network equipment into GLPI
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $equipment2 = new \NetworkEquipment();
+        $this->assertTrue(
+            $equipment2->getFromDBByCrit(['serial' => '9876543210'])
+        );
+
+        //8 connections on port, but one related to existing equipment
+        $this->assertCount(7, $unmanaged->find());
+    }
+
+    public function testNetworkEquipmentsConnectionsConverted(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        //checks there are no unmanageds
+        $unmanaged = new \Unmanaged();
+        $this->assertCount(0, $unmanaged->find());
+
+        // Import the network equipment
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $equipment2 = new \NetworkEquipment();
+        $this->assertTrue(
+            $equipment2->getFromDBByCrit(['serial' => '9876543210'])
+        );
+
+        //8 connections on port + one hub
+        $this->assertCount(9, $unmanaged->find());
+
+        $port = new \NetworkPort();
+        $this->assertTrue($port->getFromDBByCrit(['itemtype' => $unmanaged->getType(), 'mac' => '00:01:23:45:67:89']));
+        $this->assertTrue($unmanaged->getFromDB($port->fields['items_id']));
+
+        //convert to NetworkEquipment
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $ma->method('getAction')->willReturn('convert');
+        $ma->method('addMessage')->willReturnCallback(function () {
+        });
+        $ma->method('getInput')->willReturn([]);
+
+        // Execute method
+        $_POST['itemtype'] = \NetworkEquipment::getType();
+        \Unmanaged::processMassiveActionsForOneItemtype($ma, $unmanaged, [$unmanaged->fields['id']]);
+
+        //8 connections on port + one hub - 1 converted
+        $unmanageds = $unmanaged->find();
+        $this->assertCount(8, $unmanageds);
+        foreach ($unmanageds as $toremove) {
+            $this->assertTrue($unmanaged->delete(['id' => $toremove['id']], true, false));
+        }
+        $this->assertCount(0, $unmanaged->find());
+
+        // Import the network equipment again
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        //8 connections on port, but one related to existing equipment
+        $this->assertCount(7, $unmanaged->find());
+    }
 }
