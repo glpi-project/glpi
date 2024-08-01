@@ -50,37 +50,31 @@ class ErrorController implements Controller
             return new Response('Error controller was not called properly.', 500);
         }
 
-        if (!$exception instanceof OutOfMemoryError) {
-            // Forward to GLPI error handler to log the exception trace.
-            ErrorHandler::getInstance()->handleException($exception, true);
-        }
+        ErrorHandler::getInstance()->handleException($exception, true);
 
         return new StreamedResponse(fn() => $this->renderErrorPage($exception), 500);
     }
 
     private function renderErrorPage(\Throwable $exception): void
     {
-        $renderer = TemplateRenderer::getInstance();
+        $message = sprintf("%s\nIn %s::%s", $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
         if ($exception instanceof OutOfMemoryError) {
-            // We need the memory space to display the page.
-            ErrorHandler::getInstance()->freeMemory();
-
             /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
             global $TRANSLATE;
             // Disable translation for error pages because it consumes too much memory
             $TRANSLATE = null;
+
             \Html::simpleHeader('Error');
+            // Note: FatalError has no stack trace, we can only get filename and line.
         } else {
             \Html::header('Error');
+            if (GLPI_ENVIRONMENT_TYPE === 'development') {
+                $message .= "\n" . $this->getTraceAsString($exception);
+            }
         }
 
-        $message = sprintf("%s\nIn %s::%s", $exception->getMessage(), $exception->getFile(), $exception->getLine());
-        if (GLPI_ENVIRONMENT_TYPE === 'development' && !$exception instanceof OutOfMemoryError) {
-            // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-            $message .= "\n" . $this->getTraceAsString($exception);
-        }
-
+        $renderer = TemplateRenderer::getInstance();
         $renderer->display('display_and_die.html.twig', [
             'title'   => __('Access denied'),
             'message' => $message,

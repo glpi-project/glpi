@@ -132,13 +132,6 @@ class ErrorHandler
     private $output_handler;
 
     /**
-     * Reserved memory that will be used in case of an "out of memory" error.
-     *
-     * @var string
-     */
-    private $reserved_memory;
-
-    /**
      * @param LoggerInterface|null $logger
      * @param string               $env
      */
@@ -146,11 +139,6 @@ class ErrorHandler
     {
         $this->logger = $logger;
         $this->env = $env;
-    }
-
-    public function freeMemory(): void
-    {
-        $this->reserved_memory = null;
     }
 
     /**
@@ -231,11 +219,13 @@ class ErrorHandler
     public function register(): void
     {
         set_error_handler([$this, 'handleError']);
-        if (!defined('TU_USER')) {
+
+        if (isCommandLine() && !defined('TU_USER')) {
+            // Register the exception handler only in CLI context.
+            // In web context, the exception will be catched by the `public/index.php` router
+            // and the error message will be displayed in the error page.
             set_exception_handler([$this, 'handleException']);
-            register_shutdown_function([$this, 'handleFatalError']);
         }
-        $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
 
         // Force reporting of all errors, to ensure that all log levels that are supposed to be
         // pushed in logs according to `GLPI_LOG_LVL`/`GLPI_ENVIRONMENT_TYPE` are actually reported.
@@ -377,19 +367,12 @@ class ErrorHandler
      * or manually called by the application to log exception details.
      *
      * @param \Throwable $exception
-     * @param ?bool $quiet
+     * @param bool $quiet
      *
      * @return void
      */
-    public function handleException(\Throwable $exception, ?bool $quiet = null): void
+    public function handleException(\Throwable $exception, bool $quiet = false): void
     {
-        if ($quiet === null) {
-            // By default, do not output message unless in CLI context.
-            // In web context, the exception will be catched by the `public/index.php` router
-            // and the error message will be displayed in the error page.
-            $quiet = !isCommandLine();
-        }
-
         $this->exit_code = 255;
 
         $error_type = sprintf(
@@ -409,57 +392,6 @@ class ErrorHandler
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
         if (!$quiet) {
             $this->outputDebugMessage($error_type, $error_description, $log_level);
-        }
-    }
-
-    /**
-     * Handle fatal errors.
-     *
-     * @retun void
-     */
-    public function handleFatalError(): void
-    {
-       // Free reserved memory to be able to handle "out of memory" errors
-        $this->reserved_memory = null;
-
-        $error = error_get_last();
-        if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
-            $this->exit_code = 255;
-
-            $error_type = sprintf(
-                'PHP %s (%s)',
-                $this->codeToString($error['type']),
-                $error['type']
-            );
-            $error_description = sprintf(
-                '%s in %s at line %s',
-                $error['message'],
-                $error['file'],
-                $error['line']
-            );
-
-            $log_level = self::ERROR_LEVEL_MAP[$error['type']];
-
-            $this->logErrorMessage($error_type, $error_description, '', $log_level);
-
-            if (isCommandLine()) {
-                // By default, do not output message unless in CLI context.
-                // In web context, the fatal error will be catched by the `public/index.php` router
-                // and the error message will be displayed in the error page.
-                $this->outputDebugMessage($error_type, $error_description, $log_level);
-            }
-        }
-
-        if ($this->exit_code !== null) {
-           // If an exit code is defined, register a shutdown function that will be called after
-           // thoose that are already defined, in order to exit the script with the correct code.
-            $exit_code = $this->exit_code;
-            register_shutdown_function(
-                'register_shutdown_function',
-                static function () use ($exit_code) {
-                    exit($exit_code);
-                }
-            );
         }
     }
 
