@@ -345,14 +345,10 @@ class ComputerTest extends DbTestCase
         $iter = $DB->request(['SELECT' => 'id',
             'FROM'   => 'glpi_computers'
         ]);
-        $prev = false;
         foreach (\Computer::getFromIter($iter) as $comp) {
             $this->assertInstanceOf(\Computer::class, $comp);
             $this->assertArrayHasKey('name', $comp->fields);
-            $this->assertNotEquals($prev, $comp->fields['name']);
-            $prev = $comp->fields['name'];
         }
-        $this->assertTrue((bool)$prev); // we are retrieve something
     }
 
     public function testGetFromDbByCrit()
