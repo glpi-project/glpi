@@ -45,14 +45,6 @@ interface QuestionTypeInterface
     public function __construct();
 
     /**
-     * Load the required JS files for this question type.
-     * This method is called when the form editor page is loaded.
-     *
-     * @return array List of JS files to load.
-     */
-    public function loadJavascriptFiles(): array;
-
-    /**
      * Format the default value for the database.
      * This method is called before saving the question.
      *

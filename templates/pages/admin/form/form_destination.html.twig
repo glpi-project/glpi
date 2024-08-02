@@ -145,11 +145,13 @@
     </div>
 </div>
 
-<script src="{{ js_path("js/form_destination_auto_config_controller.js") }}"></script>
-<script src="{{ js_path("js/dynamic_dropdown_controller.js") }}"></script>
 <script>
-    new GlpiFormDestinationAutoConfigController();
-    new DynamicDropdownController();
+    import("{{ js_path('js/modules/Forms/DestinationAutoConfigController.js') }}").then((m) => {
+        new m.GlpiFormDestinationAutoConfigController();
+    });
+    import("{{ js_path('js/modules/DynamicDropdownController.js') }}").then((m) => {
+        new m.DynamicDropdownController();
+    });
 </script>
 
 

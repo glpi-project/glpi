@@ -67,7 +67,6 @@ export class GlpiFormQuestionTypeSelectable {
                 .siblings('div[data-glpi-form-editor-question-extra-details]')
                 .each((index, option) => this._registerOptionListeners($(option)));
 
-            // Compute the state to update the input names
             this.#getFormController().computeState();
 
             // Restore the checked state

@@ -31,6 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
+[data-glpi-form-editor-container]{
+    &:not(.initialized) {
+        pointer-events: none;
+    }
+}
+
 .form-editor {
     // Use all available parent space
     flex-grow: 1;

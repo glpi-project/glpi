@@ -91,12 +91,6 @@ TWIG;
     }
 
     #[Override]
-    public function loadJavascriptFiles(): array
-    {
-        return [];
-    }
-
-    #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {
@@ -261,9 +255,12 @@ TWIG;
             {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
         </div>
 
-
         <script>
-            {$this->getFormInlineScript()}
+            // TODO: avoid this, the script should probably run in a dedicated method that the framework can call at
+            // the right time.
+            $("[data-glpi-form-editor-container]").on('initialized', () => {
+                {$this->getFormInlineScript()}
+            });
         </script>
 TWIG;
 

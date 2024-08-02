@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-class GlpiFormEditorConvertedExtractedDefaultValue
+export class GlpiFormEditorConvertedExtractedDefaultValue
 {
     /**
      * Enum for data types
