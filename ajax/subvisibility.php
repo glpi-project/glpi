@@ -61,6 +61,10 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
             if (Session::canViewAllEntities()) {
                 $params['toadd'] = [-1 => __('No restriction')];
             }
+            if (isset($_POST['entity']) && $_POST['entity'] >= 0) {
+                $params['entity'] = $_POST['entity'];
+                $params['entity_sons'] = $_POST['is_recursive'] ?? false;
+            }
             echo "<table class='tab_format'><tr><td>";
             echo Entity::getTypeName(1);
             echo "</td><td>";

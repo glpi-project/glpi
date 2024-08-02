@@ -39,6 +39,12 @@
 abstract class CommonDBVisible extends CommonDBTM
 {
     /**
+     * Types of target available for the itemtype
+     * @var string[]
+     */
+    public static $types = ['Entity', 'Group', 'Profile', 'User'];
+
+    /**
      * Entities on which item is visible.
      * Keys are ID, values are DB fields values.
      * @var array
@@ -203,6 +209,15 @@ abstract class CommonDBVisible extends CommonDBTM
     }
 
     /**
+     * Get right which will be used to determine which users can be targeted
+     * @return string
+     */
+    public function getVisibilityRight()
+    {
+        return strtolower($this::getType()) . '_public';
+    }
+
+    /**
      * Show visibility configuration
      *
      * @since 9.2 moved from each class to parent class
@@ -230,7 +245,7 @@ abstract class CommonDBVisible extends CommonDBTM
             echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Add a target') . "</tr>";
             echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
-            $types   = ['Entity', 'Group', 'Profile', 'User'];
+            $types   = static::$types;
 
             $addrand = Dropdown::showItemTypes('_type', $types);
             $params = $this->getShowVisibilityDropdownParams();
@@ -289,7 +304,8 @@ abstract class CommonDBVisible extends CommonDBTM
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
                         echo "<td>";
-                        Html::showMassiveActionCheckBox($this::getType() . '_User', $data["id"]);
+                        $itemtype = $this::getType() != SavedSearch::getType() ? $this::getType() . '_User' : $this::getType() . '_UserTarget';
+                        Html::showMassiveActionCheckBox($itemtype, $data["id"]);
                         echo "</td>";
                     }
                     echo "<td>" . User::getTypeName(1) . "</td>";
@@ -434,10 +450,10 @@ abstract class CommonDBVisible extends CommonDBTM
      */
     protected function getShowVisibilityDropdownParams()
     {
-        $params = [
-            'type'          => '__VALUE__',
-            'right'         => strtolower($this::getType()) . '_public',
-        ];
+        $params = ['type'  => '__VALUE__'];
+        if ($right = $this->getVisibilityRight()) {
+            $params['right'] = $right;
+        }
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];
         }
