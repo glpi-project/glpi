@@ -909,7 +909,7 @@ class ConfigTest extends DbTestCase
         ];
         $infocom_types = array_diff($infocom_types, $excluded_types);
 
-        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
+        $infocom_auto_create_original = $CFG_GLPI["auto_create_infocoms"] ?? 0;
 
         $infocom = new \Infocom();
         foreach ($infocom_types as $asset_type) {

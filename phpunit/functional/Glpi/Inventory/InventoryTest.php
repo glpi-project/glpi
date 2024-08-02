@@ -5280,7 +5280,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testImportPhone()
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
 
