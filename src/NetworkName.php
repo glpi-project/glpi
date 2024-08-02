@@ -191,6 +191,7 @@ class NetworkName extends FQDNLabel
             'field'              => 'name',
             'name'               => __('IP'),
             'forcegroupby'       => true,
+            'searchequalsonfield'=> true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'  => 'mainitemtype_mainitem',
