@@ -374,7 +374,7 @@ class EntityTest extends DbTestCase
         $this->assertFalse($profile_user->getFromDB($profile_user_id));
     }
 
-    protected function getUsedConfigProvider(): iterable
+    public static function getUsedConfigProvider(): iterable
     {
         $root_id       = getItemByTypeName('Entity', 'Root entity', true);
         $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -1198,7 +1198,7 @@ class EntityTest extends DbTestCase
         $this->assertEquals('New entity', $new_entity->fields['name']);
     }
 
-    protected function entityTreeProvider(): iterable
+    public static function entityTreeProvider(): iterable
     {
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');

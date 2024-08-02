@@ -46,7 +46,7 @@ class Item_ClusterTest extends DbTestCase
      *
      * @return array
      */
-    protected function computersProvider()
+    public static function computersProvider()
     {
         return [
             [
