@@ -82,6 +82,7 @@ final class DropdownController extends AbstractController
         $schemas = [];
 
         $schemas['Location'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Location::class,
             'description' => Location::getTypeName(1),
@@ -116,6 +117,7 @@ final class DropdownController extends AbstractController
         ];
 
         $schemas['State'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => State::class,
             'description' => State::getTypeName(1),
@@ -153,6 +155,7 @@ final class DropdownController extends AbstractController
         }
 
         $schemas['State_Visibilities'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => []
         ];
@@ -180,6 +183,7 @@ final class DropdownController extends AbstractController
         $schemas['State']['properties']['visibilities']['properties'] = $schemas['State_Visibilities']['properties'];
 
         $schemas['Manufacturer'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Manufacturer::class,
             'description' => Manufacturer::getTypeName(1),
@@ -197,6 +201,7 @@ final class DropdownController extends AbstractController
         ];
 
         $schemas['Calendar'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Calendar::class,
             'description' => Calendar::getTypeName(1),

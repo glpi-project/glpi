@@ -42,6 +42,7 @@ use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RSQLInput;
 use Glpi\Http\JSONResponse;
+use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
@@ -116,6 +117,16 @@ abstract class AbstractController
     ];
 
     /**
+     * Get the requested API version from the request
+     * @param Request $request
+     * @return string
+     */
+    protected function getAPIVersion(Request $request): string
+    {
+        return $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
+    }
+
+    /**
      * @return array<string, Doc\Schema>
      */
     protected static function getRawKnownSchemas(): array
@@ -124,10 +135,12 @@ abstract class AbstractController
     }
 
     /**
+     * Get all known schemas for this controller for the requested API version
+     * @param ?string $api_version The API version or null if all versions should be returned
      * @return array
      * @phpstan-return array<string, Doc\Schema>
      */
-    final public static function getKnownSchemas(): array
+    final public static function getKnownSchemas(?string $api_version): array
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
@@ -135,12 +148,28 @@ abstract class AbstractController
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
-        return $schemas;
+
+        if ($api_version !== null) {
+            foreach ($schemas as $schema_name => &$schema) {
+                if (str_starts_with($schema_name, '_')) {
+                    continue;
+                }
+                $schema = Doc\Schema::filterSchemaByAPIVersion($schema, $api_version);
+            }
+        }
+        // Remove any null schemas
+        return array_filter($schemas);
     }
 
-    protected function getKnownSchema(string $name): ?array
+    /**
+     * Get a schema by name and API version
+     * @param string $name The name of the schema
+     * @param string $api_version The API version
+     * @return array|null
+     */
+    protected function getKnownSchema(string $name, string $api_version): ?array
     {
-        $schemas = static::getKnownSchemas();
+        $schemas = static::getKnownSchemas($api_version);
         return array_change_key_case($schemas)[strtolower($name)] ?? null;
     }
 

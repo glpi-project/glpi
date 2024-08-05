@@ -51,14 +51,15 @@ final class GraphQL
 
     public static function processRequest(Request $request): array
     {
+        $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
         $query = (string) $request->getBody();
-        $generator = new GraphQLGenerator();
+        $generator = new GraphQLGenerator($api_version);
         $schema_str = $generator->getSchema();
         try {
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: BuildSchema::build($schema_str),
                 source: $query,
-                fieldResolver: function ($source, $args, $context, ResolveInfo $info) {
+                fieldResolver: static function ($source, $args, $context, ResolveInfo $info) use ($api_version) {
                     $resolve_obj = true;
                     if ($source !== null) {
                         $resolve_obj = false;
@@ -67,11 +68,11 @@ final class GraphQL
                         $field_selection = $info->getFieldSelection(self::MAX_QUERY_FIELD_DEPTH);
                         // Get the raw Schema for the type
                         $requested_type = $info->fieldName;
-                        $schema = OpenAPIGenerator::getComponentSchemas()[$requested_type] ?? null;
+                        $schema = OpenAPIGenerator::getComponentSchemas($api_version)[$requested_type] ?? null;
                         if ($schema === null) {
                             return null;
                         }
-                        $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection);
+                        $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection, null, $api_version);
 
                         if (isset($args['id'])) {
                             $result = json_decode(Search::getOneBySchema($completed_schema, ['id' => $args['id']], [])->getBody(), true);
@@ -90,10 +91,10 @@ final class GraphQL
         return $result->toArray();
     }
 
-    private static function expandSchemaFromRequestedFields(array $schema, array $fields_requested, ?string $object_prop_key = null): array
+    private static function expandSchemaFromRequestedFields(array $schema, array $fields_requested, ?string $object_prop_key, string $api_version): array
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
-        $itemtype = self::getSchemaItemtype($schema);
+        $itemtype = self::getSchemaItemtype($schema, $api_version);
         if ($is_schema_array) {
             $properties = $schema['items']['properties'];
         } else {
@@ -103,7 +104,7 @@ final class GraphQL
         foreach ($field_names as $field_name) {
             // Check if any requested field is missing and then try to replace it with the full schema
             if (!isset($properties[$field_name])) {
-                $properties = self::replacePartialObjectType($schema);
+                $properties = self::replacePartialObjectType($schema, $api_version);
                 if ($is_schema_array) {
                     $properties = $properties['items']['properties'];
                 } else {
@@ -116,7 +117,7 @@ final class GraphQL
             if (!in_array($schema_field, $field_names, true)) {
                 $properties = self::hideOrRemoveProperty($itemtype, $schema_field, $properties, array_keys($fields_requested), $object_prop_key);
             } else if (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
-                $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field);
+                $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field, $api_version);
             }
         }
         if ($is_schema_array) {
@@ -127,14 +128,14 @@ final class GraphQL
         return $schema;
     }
 
-    private static function replacePartialObjectType(array $schema): array
+    private static function replacePartialObjectType(array $schema, string $api_version): array
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
         $full_schema_name = ($is_schema_array ? $schema['items']['x-full-schema'] : $schema['x-full-schema']) ?? null;
         if ($full_schema_name === null) {
             return $schema;
         }
-        $full_schema = OpenAPIGenerator::getComponentSchemas()[$full_schema_name] ?? null;
+        $full_schema = OpenAPIGenerator::getComponentSchemas($api_version)[$full_schema_name] ?? null;
         if ($full_schema === null) {
             return $schema;
         }
@@ -150,9 +151,10 @@ final class GraphQL
     /**
      * Find the related itemtype of the given partial or complete schema.
      * @param array $schema The schema to find the itemtype of.
+     * @param string $api_version The API version
      * @return string|null The itemtype of the given schema or null if it could not be found.
      */
-    private static function getSchemaItemtype(array $schema): ?string
+    private static function getSchemaItemtype(array $schema, string $api_version): ?string
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
         $real_schema = $is_schema_array ? $schema['items'] : $schema;
@@ -160,7 +162,7 @@ final class GraphQL
             return $real_schema['x-itemtype'];
         }
         if (isset($real_schema['x-full-schema'])) {
-            $full_schema = OpenAPIGenerator::getComponentSchemas()[$real_schema['x-full-schema']] ?? null;
+            $full_schema = OpenAPIGenerator::getComponentSchemas($api_version)[$real_schema['x-full-schema']] ?? null;
             if ($full_schema !== null) {
                 return $full_schema['x-itemtype'] ?? null;
             }

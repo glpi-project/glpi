@@ -165,11 +165,32 @@ class HLAPITestCase extends \DbTestCase
 // @codingStandardsIgnoreStart
 final class HLAPIHelper
 {
+    private Router $router;
+    private HLAPITestCase $test;
+    private string $api_version;
+
     // @codingStandardsIgnoreEnd
-    public function __construct(
-        private Router $router,
-        private HLAPITestCase $test
-    ) {
+
+    /**
+     * @param Router $router
+     * @param HLAPITestCase $test
+     * @param string|null $api_version The API version to use. Cannot be specified or overriden by the request URL. Defaults to the current API version.
+     */
+    public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
+    {
+        $this->router = $router;
+        $this->test = $test;
+        $this->api_version = $api_version ?? $router::API_VERSION;
+    }
+
+    /**
+     * Get a new API helper with a specific API version
+     * @param string $api_version
+     * @return HLAPIHelper
+     */
+    public function withVersion(string $api_version)
+    {
+        return new HLAPIHelper($this->router, $this->test, $api_version);
     }
 
     public function getRouter(): Router
@@ -229,7 +250,7 @@ final class HLAPIHelper
         $schema = $body_param->getSchema();
         if ($schema instanceof Doc\SchemaReference) {
             $is_array = str_ends_with($schema->getRef(), '[]');
-            $schema = Doc\SchemaReference::resolveRef($schema->getRef(), $route_path->getController(), $attributes);
+            $schema = Doc\SchemaReference::resolveRef($schema->getRef(), $route_path->getController(), $attributes, $this->api_version);
             if ($is_array) {
                 $schema = [
                     'type' => Doc\Schema::TYPE_ARRAY,
@@ -252,7 +273,7 @@ final class HLAPIHelper
         }
         $schema = $response->getSchema();
         if ($schema instanceof Doc\SchemaReference) {
-            $schema = Doc\SchemaReference::resolveRef($schema->getRef(), $route_path->getController(), $attributes);
+            $schema = Doc\SchemaReference::resolveRef($schema->getRef(), $route_path->getController(), $attributes, $this->api_version);
         }
         return $schema;
     }
@@ -300,6 +321,7 @@ final class HLAPIHelper
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
         }
+        $request = $request->withHeader('GLPI-API-Version', $this->api_version);
         $response = $this->router->handleRequest($request);
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
@@ -703,7 +725,7 @@ final class HLAPICallAsserter
         return match ($name) {
             'originalRequest' => new HLAPIRequestAsserter($this, $this->router->getOriginalRequest()),
             'finalRequest' => new HLAPIRequestAsserter($this, $this->router->getFinalRequest()),
-            'response' => new HLAPIResponseAsserter($this, $this->response),
+            'response' => new HLAPIResponseAsserter($this, $this->response, $this->router->getOriginalRequest()->getHeaderLine('GLPI-API-Version') ?: $this->router::API_VERSION),
             'route' => new HLAPIRouteAsserter($this, $this->router->getLastInvokedRoute()),
             default => null,
         };
@@ -762,7 +784,8 @@ final class HLAPIResponseAsserter
     // @codingStandardsIgnoreEnd
     public function __construct(
         private HLAPICallAsserter $call_asserter,
-        private Response $response
+        private Response $response,
+        private string $api_version,
     ) {
     }
 
@@ -861,7 +884,7 @@ final class HLAPIResponseAsserter
             $matched_route = $this->call_asserter->route->get();
             /** @var class-string<\Glpi\Api\HL\Controller\AbstractController> $controller */
             $controller = $matched_route->getController();
-            $schema = $controller::getKnownSchemas()[$schema];
+            $schema = $controller::getKnownSchemas($this->api_version)[$schema];
         } else {
             $is_schema_array = $schema['type'] === Doc\Schema::TYPE_ARRAY;
         }

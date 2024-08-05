@@ -39,6 +39,8 @@ use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -59,6 +61,7 @@ final class AdministrationController extends AbstractController
     {
         return [
             'User' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => User::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
@@ -186,6 +189,7 @@ final class AdministrationController extends AbstractController
                 ]
             ],
             'Group' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => Group::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -237,6 +241,7 @@ final class AdministrationController extends AbstractController
                 ]
             ],
             'Entity' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => Entity::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -287,6 +292,7 @@ final class AdministrationController extends AbstractController
                 ]
             ],
             'Profile' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => Profile::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -307,6 +313,7 @@ final class AdministrationController extends AbstractController
                 ]
             ],
             'EmailAddress' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \UserEmail::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -333,6 +340,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search users',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -342,10 +350,11 @@ final class AdministrationController extends AbstractController
     )]
     public function searchUsers(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('User'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Group', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search groups',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -355,10 +364,11 @@ final class AdministrationController extends AbstractController
     )]
     public function searchGroups(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Group'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Entity', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search entities',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -368,10 +378,11 @@ final class AdministrationController extends AbstractController
     )]
     public function searchEntities(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Entity'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Profile', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search profiles',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -381,7 +392,7 @@ final class AdministrationController extends AbstractController
     )]
     public function searchProfiles(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Profile'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     /**
@@ -416,6 +427,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the current user',
         responses: [
@@ -425,10 +437,11 @@ final class AdministrationController extends AbstractController
     public function me(Request $request): Response
     {
         $my_user_id = $this->getMyUserID();
-        return Search::getOneBySchema($this->getKnownSchema('User'), ['id' => $my_user_id], $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), ['id' => $my_user_id], $request->getParameters());
     }
 
     #[Route(path: '/User/Me/Email', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the current user\'s email addresses',
         responses: [
@@ -441,6 +454,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me/Email', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a new email address for the current user',
         parameters: [
@@ -500,6 +514,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me/Email/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a specific email address for the current user',
         responses: [
@@ -518,6 +533,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me/Emails/Default', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the default email address for the current user',
         responses: [
@@ -552,6 +568,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me/Picture', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
@@ -571,6 +588,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Create a new user', parameters: [
         [
             'name' => '_',
@@ -580,10 +598,11 @@ final class AdministrationController extends AbstractController
     ])]
     public function createUser(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('User'), $request->getParameters(), [self::class, 'getUserByID']);
+        return Search::createBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getUserByID']);
     }
 
     #[Route(path: '/User/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a user by ID',
         responses: [
@@ -592,10 +611,11 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserByID(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a user by username',
         responses: [
@@ -604,10 +624,11 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserByUsername(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::getOneBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
     #[Route(path: '/User/{id}/Picture', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
@@ -627,6 +648,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/username/{username}/Picture', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
@@ -646,6 +668,7 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a user by ID',
         parameters: [
@@ -662,10 +685,11 @@ final class AdministrationController extends AbstractController
     )]
     public function updateUserByID(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['PATCH'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a user by username',
         parameters: [
@@ -682,29 +706,31 @@ final class AdministrationController extends AbstractController
     )]
     public function updateUserByUsername(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::updateBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
     #[Route(path: '/User/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete a user by ID')]
     public function deleteUserByID(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/User/username/{username}', methods: ['DELETE'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete a user by username')]
     public function deleteUserByUsername(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+        return Search::deleteBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
-    private function getUsedOrManagedItems(int $users_id, bool $is_managed, array $request_params): Response
+    private function getUsedOrManagedItems(int $users_id, bool $is_managed, array $request_params, string $api_version): Response
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         // Create a union schema with all relevant item types
-        $schema = Doc\Schema::getUnionSchemaForItemtypes($CFG_GLPI['assignable_types']);
+        $schema = Doc\Schema::getUnionSchemaForItemtypes($CFG_GLPI['assignable_types'], $api_version);
         $rsql_filter = $request_params['filter'] ?? '';
         if (!empty($rsql_filter)) {
             $rsql_filter = "($rsql_filter);";
@@ -716,68 +742,75 @@ final class AdministrationController extends AbstractController
     }
 
     #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the used items for the current user',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getMyUsedItems(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($this->getMyUserID(), false, $request->getParameters());
+        return $this->getUsedOrManagedItems($this->getMyUserID(), false, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/User/{id}/UsedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the used items for a user by ID',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserUsedItemsByID(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($request->getAttribute('id'), false, $request->getParameters());
+        return $this->getUsedOrManagedItems($request->getAttribute('id'), false, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/User/username/{username}/UsedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the used items for a user by username',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserUsedItemsByUsername(Request $request): Response
     {
-        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User'), 'username', $request->getAttribute('username'));
-        return $this->getUsedOrManagedItems($users_id, false, $request->getParameters());
+        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
+        return $this->getUsedOrManagedItems($users_id, false, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the managed items for the current user',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getMyManagedItems(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($this->getMyUserID(), true, $request->getParameters());
+        return $this->getUsedOrManagedItems($this->getMyUserID(), true, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/User/{id}/ManagedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the managed items for a user by ID',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserManagedItemsByID(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($request->getAttribute('id'), true, $request->getParameters());
+        return $this->getUsedOrManagedItems($request->getAttribute('id'), true, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/User/username/{username}/ManagedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the managed items for a user by username',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserManagedItemsByUsername(Request $request): Response
     {
-        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User'), 'username', $request->getAttribute('username'));
-        return $this->getUsedOrManagedItems($users_id, true, $request->getParameters());
+        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
+        return $this->getUsedOrManagedItems($users_id, true, $request->getParameters(), $this->getAPIVersion($request));
     }
 
     #[Route(path: '/Group', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Create a new group', parameters: [
         [
             'name' => '_',
@@ -787,10 +820,11 @@ final class AdministrationController extends AbstractController
     ])]
     public function createGroup(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Group'), $request->getParameters(), [self::class, 'getGroupByID']);
+        return Search::createBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getGroupByID']);
     }
 
     #[Route(path: '/Group/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a group by ID',
         responses: [
@@ -799,10 +833,11 @@ final class AdministrationController extends AbstractController
     )]
     public function getGroupByID(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Group/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a group by ID',
         parameters: [
@@ -819,17 +854,19 @@ final class AdministrationController extends AbstractController
     )]
     public function updateGroupByID(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Group/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete a group by ID')]
     public function deleteGroupByID(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Group'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Create a new entity', parameters: [
         [
             'name' => '_',
@@ -839,10 +876,11 @@ final class AdministrationController extends AbstractController
     ])]
     public function createEntity(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Entity'), $request->getParameters(), [self::class, 'getEntityByID']);
+        return Search::createBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getEntityByID']);
     }
 
     #[Route(path: '/Entity/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get an entity by ID',
         responses: [
@@ -851,10 +889,11 @@ final class AdministrationController extends AbstractController
     )]
     public function getEntityByID(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update an entity by ID',
         parameters: [
@@ -871,17 +910,19 @@ final class AdministrationController extends AbstractController
     )]
     public function updateEntityByID(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete an entity by ID')]
     public function deleteEntityByID(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Entity'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Create a new profile', parameters: [
         [
             'name' => '_',
@@ -891,10 +932,11 @@ final class AdministrationController extends AbstractController
     ])]
     public function createProfile(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Profile'), $request->getParameters(), [self::class, 'getProfileByID']);
+        return Search::createBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getProfileByID']);
     }
 
     #[Route(path: '/Profile/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a profile by ID',
         responses: [
@@ -903,10 +945,11 @@ final class AdministrationController extends AbstractController
     )]
     public function getProfileByID(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a profile by ID',
         parameters: [
@@ -923,13 +966,14 @@ final class AdministrationController extends AbstractController
     )]
     public function updateProfileByID(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Profile/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete a profile by ID')]
     public function deleteProfileByID(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Profile'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

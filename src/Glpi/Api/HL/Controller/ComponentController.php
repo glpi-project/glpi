@@ -38,6 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -120,16 +121,19 @@ class ComponentController extends AbstractController
 
         return [
             'BatteryType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceBatteryType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'BatteryModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceBatteryModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Battery' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceBattery::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -140,11 +144,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'CameraModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceCameraModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Camera' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceCamera::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -158,16 +164,19 @@ class ComponentController extends AbstractController
                 ]
             ],
             'CaseType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceCaseType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'CaseModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceCaseModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Case' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceCase::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -176,11 +185,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'ControllerModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceControlModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Controller' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceControl::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -190,11 +201,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'DriveModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceDriveModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Drive' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -205,16 +218,19 @@ class ComponentController extends AbstractController
                 ]
             ],
             'FirmwareType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceFirmwareType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'FirmwareModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceFirmwareModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Firmware' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceFirmware::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -225,16 +241,19 @@ class ComponentController extends AbstractController
                 ]
             ],
             'GenericDeviceType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceGenericType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'GenericDeviceModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceGenericModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'GenericDevice' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceGeneric::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -244,11 +263,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'GraphicCardModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceGraphicCardModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'GraphicCard' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceGraphicCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -259,11 +280,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'HardDriveModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceHardDriveModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'HardDrive' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceHardDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -275,21 +298,25 @@ class ComponentController extends AbstractController
                 ]
             ],
             'InterfaceType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \InterfaceType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'MemoryType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceMemoryType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'MemoryModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceMemoryModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Memory' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceMemory::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -300,11 +327,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'NetworkCardModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceNetworkCardModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'NetworkCard' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceNetworkCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -314,11 +343,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'PCIModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DevicePciModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'PCIDevice' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DevicePci::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -326,11 +357,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'PowerSupplyModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DevicePowerSupplyModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'PowerSupply' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DevicePowerSupply::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -340,11 +373,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'ProcessorModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceProcessorModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Processor' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceProcessor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -356,16 +391,19 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SensorType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSensorType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'SensorModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSensorModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'Sensor' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSensor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -375,11 +413,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SIMCardType' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSimcardType::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_type_properties
             ],
             'SIMCard' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSimcard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -389,11 +429,13 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SoundCardModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSoundCardModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties
             ],
             'SoundCard' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceSoundCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -401,6 +443,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SystemboardModel' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceMotherboardModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_model_properties + [
@@ -408,6 +451,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'Systemboard' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \DeviceMotherboard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_device_properties + [
@@ -416,6 +460,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'BatteryItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceBattery::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -429,6 +474,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'CameraItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceCamera::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => array_filter($common_item_device_properties + [
@@ -436,6 +482,7 @@ class ComponentController extends AbstractController
                 ], static fn($key) => !in_array($key, ['status', 'location', 'serial', 'otherserial']), ARRAY_FILTER_USE_KEY) // Cameras don't follow the general schema of the others
             ],
             'CaseItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceCase::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -443,6 +490,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'ControllerItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceControl::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -451,6 +499,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'DriveItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -459,6 +508,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'FirmwareItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceFirmware::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -466,6 +516,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'GenericDeviceItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceGeneric::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -473,6 +524,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'GraphicCardItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceGraphicCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -482,6 +534,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'HardDriveItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceHardDrive::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -491,6 +544,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'MemoryItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceMemory::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -500,6 +554,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'NetworkCardItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceNetworkCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -509,6 +564,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'PCIDeviceItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DevicePci::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -517,6 +573,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'PowerSupplyItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DevicePowerSupply::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -524,6 +581,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'ProcessorItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceProcessor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -535,6 +593,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SensorItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceSensor::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -542,6 +601,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SIMCardItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceSimcard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -557,6 +617,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SoundCardItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceSoundCard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -565,6 +626,7 @@ class ComponentController extends AbstractController
                 ]
             ],
             'SystemboardItem' => [
+                'x-version-introduced' => '2.0',
                 'x-itemtype' => \Item_DeviceMotherboard::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => $common_item_device_properties + [
@@ -575,6 +637,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components', methods: ['GET'], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all available component types',
         methods: ['GET'],
@@ -622,6 +685,7 @@ class ComponentController extends AbstractController
     #[Route(path: '/Components/{component_type}', methods: ['GET'], requirements: [
         'component_type' => '\w*'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the component definitions of the specified type',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -632,13 +696,14 @@ class ComponentController extends AbstractController
     public function getComponentTypes(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::searchBySchema($this->getKnownSchema($component_type), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a specific component definition',
         responses: [
@@ -648,12 +713,13 @@ class ComponentController extends AbstractController
     public function getComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::getOneBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}', methods: ['POST'], requirements: [
         'component_type' => '\w*'
     ], tags: ['Components'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a component definition of the specified type',
         parameters: [
@@ -669,13 +735,14 @@ class ComponentController extends AbstractController
         $component_type = $request->getAttribute('component_type');
         // Needed to determine the correct URL for getComponentsOfType route
         $request->setParameter('component_type', $component_type);
-        return Search::createBySchema($this->getKnownSchema($component_type), $request->getParameters(), [self::class, 'getComponentType']);
+        return Search::createBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getComponentType']);
     }
 
     #[Route(path: '/Components/{component_type}/{id}/Items', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -687,11 +754,11 @@ class ComponentController extends AbstractController
     {
         $component_type = $request->getAttribute('component_type');
         $component_id = $request->getAttribute('id');
-        $item_schema = $this->getKnownSchema($component_type . 'Item');
+        $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
         // Find property that links to the component type
         $component_property = null;
 
-        $component_table = ($this->getKnownSchema($component_type)['x-itemtype'])::getTable();
+        $component_table = ($this->getKnownSchema($component_type, $this->getAPIVersion($request))['x-itemtype'])::getTable();
         foreach ($item_schema['properties'] as $property => $property_schema) {
             if (isset($property_schema['x-join']) && $property_schema['x-join']['table'] === $component_table) {
                 $component_property = $property;
@@ -711,6 +778,7 @@ class ComponentController extends AbstractController
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Components'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a component definition of the specified type',
         parameters: [
@@ -724,26 +792,28 @@ class ComponentController extends AbstractController
     public function updateComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::updateBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['DELETE'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Components'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a component definition of the specified type',
     )]
     public function deleteComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::deleteBySchema($this->getKnownSchema($component_type), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/Items/{id}', methods: ['GET'], requirements: [
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a specific component',
         responses: [
@@ -753,7 +823,7 @@ class ComponentController extends AbstractController
     public function getComponent(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        $item_schema = $this->getKnownSchema($component_type . 'Item');
+        $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
 
         return Search::getOneBySchema($item_schema, $request->getAttributes(), $request->getParameters());
     }
@@ -763,6 +833,7 @@ class ComponentController extends AbstractController
         'component_type' => '\w*',
         'id' => '\d+'
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all components for an asset',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -779,7 +850,7 @@ class ComponentController extends AbstractController
         $request->setParameter('filter', $filters);
 
         $component_type = $request->getAttribute('component_type');
-        $item_schema = $this->getKnownSchema($component_type . 'Item');
+        $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
 
         return Search::searchBySchema($item_schema, $request->getParameters());
     }
