@@ -52,7 +52,7 @@
 
    <div id="single-ma-action-menu" class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
       {% for key, action in input['actions'] %}
-         <a class="dropdown-item" data-action="{{ key }}" href="#">{{ action|raw }}</a>
+         <a class="dropdown-item" data-action="{{ key }}" role="button" href="#">{{ action|raw }}</a>
       {% endfor %}
    </div>
 </div>

@@ -5940,6 +5940,33 @@ TWIG, $twig_params);
     }
 
     /**
+     * Retrieve multiple items from the database
+     *
+     * @param int[] $ids
+     *
+     * @return static[]
+     */
+    public static function getByIds(array $ids): array
+    {
+        $items = [];
+
+        foreach ($ids as $id) {
+            if (!is_numeric($id)) {
+                continue;
+            }
+
+            $item = static::getById((int) $id);
+            if (!$item) {
+                continue;
+            }
+
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
      * Correct entity id if needed when cloning a template
      *
      * @param array   $data

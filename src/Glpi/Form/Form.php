@@ -42,12 +42,14 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
+use MassiveAction;
 use Override;
 use ReflectionClass;
 use Session;
@@ -248,6 +250,33 @@ final class Form extends CommonDBTM
                 FormAccessControl::class,
             ]
         );
+    }
+
+    #[Override]
+    public function getSpecificMassiveActions($checkitem = null): array
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        $key = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . "export";
+        $icon = '<i class="ti ti-file-arrow-right"></i>';
+        $label = __('Export form');
+        $actions[$key] = $icon . $label;
+
+        return $actions;
+    }
+
+    #[Override]
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
+    {
+        $serializer = new FormSerializer();
+        $ids = array_values($ma->getItems()[Form::class]);
+        $filename =  $serializer->computeJsonFileName($ids);
+
+        // TODO: use UrlGenerator service (not possible yet)
+        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
+        echo "<a href=\"$export_url\">$filename</a>";
+
+        return true;
     }
 
     /**
