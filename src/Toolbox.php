@@ -2108,6 +2108,9 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
+        // To prevent problem of execution time
+        ini_set("max_execution_time", "0");
+
         if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
             echo "Errors occurred inserting default database";
         } else {
