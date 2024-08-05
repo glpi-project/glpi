@@ -36,10 +36,12 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
+use Glpi\DBAL\QuerySubQuery;
 use Group;
+use Group_User;
 use Override;
 use Profile;
-use Search;
+use Profile_User;
 use User;
 
 final class AllowListDropdown extends AbstractRightsDropdown
@@ -63,6 +65,89 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): array {
+        return [
+            'count' => self::countUsers($users, $groups, $profiles),
+            'link'  => self::computeSearchResultLink($users, $groups, $profiles),
+        ];
+    }
+
+    #[Override]
+    protected static function getAjaxUrl(): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return $CFG_GLPI['root_doc'] . "/ajax/form/allowListDropdownValue.php";
+    }
+
+    #[Override]
+    protected static function getTypes(): array
+    {
+        return [
+            User::getType(),
+            Profile::getType(),
+            Group::getType(),
+        ];
+    }
+
+    protected static function countUsers(
+        array $users,
+        array $groups,
+        array $profiles,
+    ): int {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $condition = [
+            'is_deleted' => 0,
+            'id' => ['<>', $CFG_GLPI['system_user']],
+        ];
+
+        $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
+        if (!$all_users_are_allowed) {
+            $condition['OR'] = [];
+
+            // Filter by user
+            if (!empty($users)) {
+                $condition['OR'][] = ['id' => array_values($users)];
+            }
+
+            // Filter by group
+            if (!empty($groups)) {
+                $condition['OR'][] = [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => 'users_id',
+                        'FROM'   => Group_User::getTable(),
+                        'WHERE'  => ['groups_id' => array_values($groups)]
+                    ])
+                ];
+            }
+
+            // Filter by profile
+            if (!empty($profiles)) {
+                $condition['OR'][] = [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => 'users_id',
+                        'FROM'   => Profile_User::getTable(),
+                        'WHERE'  => ['profiles_id' => array_values($profiles)]
+                    ])
+                ];
+            }
+
+            // Empty condition must find 0 users
+            if (empty($condition['OR'])) {
+                $condition['OR'][] = ['id' => -1];
+            }
+        }
+
+        return countElementsInTable(User::getTable(), $condition);
+    }
+
+    protected static function computeSearchResultLink(
+        array $users,
+        array $groups,
+        array $profiles,
+    ): string {
         $criteria = [];
         $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
 
@@ -106,32 +191,7 @@ final class AllowListDropdown extends AbstractRightsDropdown
             ];
         }
 
-        // Execute search
         $params = ['criteria' => $criteria];
-        $search_data = Search::getDatas(User::class, $params);
-
-        return [
-            'count' => $search_data['data']['totalcount'],
-            'link' => User::getSearchURL() . "?" . http_build_query($params),
-        ];
-    }
-
-    #[Override]
-    protected static function getAjaxUrl(): string
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        return $CFG_GLPI['root_doc'] . "/ajax/form/allowListDropdownValue.php";
-    }
-
-    #[Override]
-    protected static function getTypes(): array
-    {
-        return [
-            User::getType(),
-            Profile::getType(),
-            Group::getType(),
-        ];
+        return User::getSearchURL() . "?" . http_build_query($params);
     }
 }
