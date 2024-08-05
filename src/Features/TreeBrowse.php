@@ -258,14 +258,12 @@ JAVASCRIPT;
                 ]
             ]
         )->current();
-        if ($no_cat_count['cpt'] > 0) {
-            $categories[] = [
-                'id'          => -1,
-                'name'        => __s('Without Category'),
-                'items_count' => $no_cat_count['cpt'],
-                $cat_fk       => 0,
-            ];
-        }
+        $categories[] = [
+            'id'          => -1,
+            'name'        => __s('Without Category'),
+            'items_count' => $no_cat_count['cpt'],
+            $cat_fk       => 0,
+        ];
 
         // construct flat data
         $nodes   = [];
