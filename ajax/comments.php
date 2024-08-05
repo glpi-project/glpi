@@ -98,25 +98,7 @@ if (
             ];
             if ($_POST['value'] != 0) {
                 $group = new \Group();
-                if (is_array($_POST["value"])) {
-                    $comments = [];
-                    foreach ($_POST["value"] as $groups_id) {
-                        if ($group->getFromDB($groups_id) && $group->canView()) {
-                            $group_params = [
-                                'id' => $groups_id,
-                                'group_name' => $group->fields['completename'],
-                                'comment' => $group->fields['comment'],
-                            ];
-                            $comments[] = TemplateRenderer::getInstance()->render('components/group/info_card.html.twig', [
-                                'group' => $group_params,
-                            ]);
-                        }
-                    }
-                    $tmpname = [
-                        'comment' => implode("<br>", $comments),
-                    ];
-                    unset($_POST['withlink']);
-                } else {
+                if (!is_array($_POST["value"])) {
                     if ($group->getFromDB($_POST['value']) && $group->canView()) {
                         $group_params = [
                             'id' => $group->getID(),
