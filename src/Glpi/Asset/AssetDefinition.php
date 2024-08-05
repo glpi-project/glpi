@@ -45,6 +45,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\AssetImage;
 use Glpi\Search\SearchOption;
 use Profile;
 use ProfileRight;
@@ -52,6 +53,8 @@ use Session;
 
 final class AssetDefinition extends CommonDBTM
 {
+    use AssetImage;
+
     public static $rightname = 'config';
 
     public static function getTypeName($nb = 0)
@@ -350,6 +353,8 @@ final class AssetDefinition extends CommonDBTM
                 $input[$json_field] = [];
             }
         }
+
+        $input = $this->managePictures($input);
         return $this->prepareInput($input);
     }
 
@@ -381,6 +386,7 @@ final class AssetDefinition extends CommonDBTM
             $input['translations'] = $translations;
         }
 
+        $input = $this->managePictures($input);
         return $this->prepareInput($input);
     }
 
