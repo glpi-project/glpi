@@ -41,6 +41,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use ITILTemplate;
 use Override;
 
 class TemplateField extends AbstractConfigField
@@ -49,6 +50,10 @@ class TemplateField extends AbstractConfigField
 
     public function __construct(string $itil_template_class)
     {
+        if (!is_subclass_of($itil_template_class, ITILTemplate::class)) {
+            throw new InvalidArgumentException("Invalid ITIL template class");
+        }
+
         $this->itil_template_class = $itil_template_class;
     }
 
@@ -161,7 +166,7 @@ TWIG;
         }
 
         // Apply value
-        $input['tickettemplates_id'] = $template_id;
+        $input[$this->itil_template_class::getForeignKeyField()] = $template_id;
         return $input;
     }
 

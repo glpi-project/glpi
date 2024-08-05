@@ -43,19 +43,95 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Ticket;
 use TicketTemplate;
+use TicketTemplatePredefinedField;
 
 final class TemplateFieldTest extends DbTestCase
 {
     use FormTesterTrait;
 
+    public function testDefaultTemplateWithPredefinedField(): void
+    {
+        $urgency = 5;
+
+        $default_template = (new Ticket())->getITILTemplateToUse(
+            entities_id: $_SESSION["glpiactive_entity"]
+        );
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $default_template->getID(),
+                'num'                => 10,
+                'value'              => $urgency,
+            ]
+        );
+
+        $created_ticket = $this->checkTemplateFieldConfiguration(
+            form: $this->createAndGetFormWithTicketDestination(),
+            config: new TemplateFieldConfig(
+                strategy: TemplateFieldStrategy::DEFAULT_TEMPLATE,
+            ),
+            expected_tickettemplates_id: $default_template->getID()
+        );
+
+        $this->assertEquals($urgency, $created_ticket->fields['urgency']);
+    }
+
+    public function testSpecificTemplateWithPredefinedField(): void
+    {
+        $default_urgency = 5;
+        $specified_urgency = 2;
+
+        $default_template = (new Ticket())->getITILTemplateToUse(
+            entities_id: $_SESSION["glpiactive_entity"]
+        );
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $default_template->getID(),
+                'num'                => 10,
+                'value'              => $default_urgency,
+            ]
+        );
+
+        $ticket_template = $this->createItem(
+            TicketTemplate::class,
+            ['name' => 'Template 1']
+        );
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $ticket_template->getID(),
+                'num'                => 10,
+                'value'              => $specified_urgency,
+            ]
+        );
+
+        $created_ticket = $this->checkTemplateFieldConfiguration(
+            form: $this->createAndGetFormWithTicketDestination(),
+            config: new TemplateFieldConfig(
+                strategy: TemplateFieldStrategy::SPECIFIC_TEMPLATE,
+                specific_template_id: $ticket_template->getID()
+            ),
+            expected_tickettemplates_id: $ticket_template->getID()
+        );
+
+        $this->assertEquals($specified_urgency, $created_ticket->fields['urgency']);
+    }
+
     public function testDefaultTemplate(): void
     {
+        $default_template = (new Ticket())->getITILTemplateToUse(
+            entities_id: $_SESSION["glpiactive_entity"]
+        );
+
         $this->checkTemplateFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
             config: new TemplateFieldConfig(
                 TemplateFieldStrategy::DEFAULT_TEMPLATE
-            )
+            ),
+            expected_tickettemplates_id: $default_template->getID()
         );
     }
 
@@ -83,8 +159,8 @@ final class TemplateFieldTest extends DbTestCase
     private function checkTemplateFieldConfiguration(
         Form $form,
         TemplateFieldConfig $config,
-        int $expected_tickettemplates_id = 0
-    ): void {
+        int $expected_tickettemplates_id
+    ): Ticket {
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -111,6 +187,9 @@ final class TemplateFieldTest extends DbTestCase
 
         // Check template
         $this->assertEquals($expected_tickettemplates_id, $ticket->fields['tickettemplates_id']);
+
+        // Return the created ticket to be able to check other fields
+        return $ticket;
     }
 
     private function createAndGetFormWithTicketDestination(): Form

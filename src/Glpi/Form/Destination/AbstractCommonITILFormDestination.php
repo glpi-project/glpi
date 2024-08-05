@@ -85,6 +85,16 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             'entities_id' => $form->fields['entities_id']
         ];
 
+        // Template field must be computed before applying predefined fields
+        $target_itemtype = static::getTargetItemtype();
+        $template_class = (new $target_itemtype())->getTemplateClass();
+        $template_field = new TemplateField($template_class);
+        $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
+            $template_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
+
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
 
@@ -172,6 +182,13 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         $template = $itil->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
+        $template_foreign_key = $template::getForeignKeyField();
+
+        if (isset($input[$template_foreign_key])) {
+            $template->getFromDB($input[$template_foreign_key]);
+        } else {
+            $input[$template_foreign_key] = $template->getID();
+        }
 
         $predefined_fields_class = $itemtype . "TemplatePredefinedField";
 

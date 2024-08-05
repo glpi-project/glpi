@@ -90,7 +90,9 @@ describe('Template configuration', () => {
             cy.get('@template_dropdown').should('have.text', 'Specific template');
             cy.get('@specific_template_id_dropdown').should('have.text', ticket_template_name);
         });
+    });
 
+    it('can create ticket using default configuration', () => {
         // Go to preview
         cy.findByRole('tab', {'name': "Form"}).click();
         cy.findByRole('link', {'name': "Preview"})
@@ -103,5 +105,7 @@ describe('Template configuration', () => {
 
         // Check ticket values
         cy.getDropdownByLabelText('Status').should('not.exist');
+
+        // Others possibles configurations are tested directly by the backend.
     });
 });
