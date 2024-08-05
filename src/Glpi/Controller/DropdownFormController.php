@@ -59,7 +59,7 @@ final readonly class DropdownFormController implements Controller
         }
 
         if (!\is_subclass_of($class, CommonDropdown::class)) {
-            throw new BadRequestException('The "class" attribute is mandatory for dropdown form routes.');
+            throw new BadRequestException('The "class" attribute must be a valid dropdown class.');
         }
 
         $options = $request->attributes->get(self::OPTIONS_KEY, []) ?: [];
