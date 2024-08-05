@@ -665,26 +665,52 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case 'ProjectTask':
-                $teamtable  = 'glpi_projecttaskteams';
-                $group_criteria = [];
-                if (count($_SESSION['glpigroups'])) {
-                    $group_criteria = [
-                        "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups']
+                if (!Session::haveRightsOr('project', [\Project::READALL, \Project::READMY])) {
+                    // Can only see the tasks assigned to the user or one of his groups
+                    $teamtable = 'glpi_projecttaskteams';
+                    $group_criteria = [];
+                    if (count($_SESSION['glpigroups'])) {
+                        $group_criteria = [
+                            "$teamtable.itemtype" => Group::class,
+                            "$teamtable.items_id" => $_SESSION['glpigroups']
+                        ];
+                    }
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID()
                     ];
-                }
-                $user_criteria = [
-                    "$teamtable.itemtype" => User::class,
-                    "$teamtable.items_id" => Session::getLoginUserID()
-                ];
-                $criteria = [
-                    "glpi_projects.is_template" => 0,
-                    'OR' => [
-                        $user_criteria
-                    ]
-                ];
-                if (!empty($group_criteria)) {
-                    $criteria['OR'][] = $group_criteria;
+                    $criteria = [
+                        "glpi_projects.is_template" => 0,
+                        'OR' => [
+                            $user_criteria
+                        ]
+                    ];
+                    if (!empty($group_criteria)) {
+                        $criteria['OR'][] = $group_criteria;
+                    }
+                } else if (Session::haveRight('project', \Project::READMY)) {
+                    // User must be the manager, in the manager group or in the project team
+                    $teamtable = 'glpi_projectteams';
+                    $group_criteria = [];
+                    if (count($_SESSION['glpigroups'])) {
+                        $group_criteria = [
+                            "$teamtable.itemtype" => Group::class,
+                            "$teamtable.items_id" => $_SESSION['glpigroups']
+                        ];
+                    }
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID()
+                    ];
+                    $criteria = [
+                        'OR' => [
+                            $user_criteria,
+                            'glpi_projects.users_id' => Session::getLoginUserID()
+                        ]
+                    ];
+                    if (!empty($group_criteria)) {
+                        $criteria['OR'][] = $group_criteria;
+                    }
                 }
                 break;
 
@@ -1982,6 +2008,16 @@ final class SQLProvider implements SearchProviderInterface
                     $already_link_tables,
                     "glpi_projecttaskteams",
                     "projecttaskteams_id",
+                    0,
+                    0,
+                    ['jointype' => 'child']
+                ));
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                    $itemtype,
+                    'glpi_projects',
+                    $already_link_tables,
+                    "glpi_projectteams",
+                    "projectteams_id",
                     0,
                     0,
                     ['jointype' => 'child']

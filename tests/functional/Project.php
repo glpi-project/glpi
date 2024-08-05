@@ -621,4 +621,44 @@ class Project extends DbTestCase
         // Check if a group with a project, assigned to a group project team, returns an empty array when $search_in_team is false
         $this->array(\Project::getActiveProjectIDsForGroup([$group->getID()], false))->isEmpty();
     }
+
+    public function testMyTasksURL()
+    {
+        $expected_criteria_params = http_build_query([
+            'criteria' => [
+                [
+                    'field' => 87,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ],
+                [
+                    'link' => 'AND',
+                    'field' => 88,
+                    'searchtype' => 'equals',
+                    'value' => 'mygroups'
+                ]
+            ]
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
+        $this->string(\Project::getAdditionalMenuContent()['project']['page'])->contains($expected_criteria_params);
+
+        $this->login();
+        $this->boolean(\Project::getAdditionalMenuContent())->isFalse();
+
+        $menu_options = \Project::getAdditionalMenuOptions();
+        $this->string($menu_options['task']['page'])->contains($expected_criteria_params);
+        $this->string($menu_options['task']['links']['search'])->contains($expected_criteria_params);
+
+        $menu_links = \Project::getAdditionalMenuLinks();
+        $has_my_tasks_link = false;
+        foreach ($menu_links as $link) {
+            if (str_contains($link, $expected_criteria_params)) {
+                $has_my_tasks_link = true;
+                break;
+            }
+        }
+        $this->boolean($has_my_tasks_link)->isTrue();
+    }
 }
