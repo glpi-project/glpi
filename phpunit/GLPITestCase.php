@@ -46,6 +46,7 @@ class GLPITestCase extends TestCase
     private $int;
     private $str;
     protected $has_failed = false;
+    private ?array $config_copy = null;
 
     /**
      * @var TestHandler
@@ -59,10 +60,12 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-       // By default, no session, not connected
+        $this->storeGlobals();
+
+        // By default, no session, not connected
         $this->resetSession();
 
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
@@ -79,6 +82,8 @@ class GLPITestCase extends TestCase
 
     public function tearDown(): void
     {
+        $this->resetGlobalsAndStaticValues();
+
         vfsStreamWrapper::unregister();
 
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
@@ -332,5 +337,34 @@ class GLPITestCase extends TestCase
     protected function getTestRootEntity(bool $only_id = false)
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
+    }
+
+    /**
+     * Store Globals
+     *
+     * @return void
+     */
+    private function storeGlobals(): void
+    {
+        global $CFG_GLPI;
+
+        if ($this->config_copy === null) {
+            $this->config_copy = $CFG_GLPI;
+        }
+    }
+
+    /**
+     * Reset globals and static variables
+     *
+     * @return void
+     */
+    private function resetGlobalsAndStaticValues(): void
+    {
+        // Globals
+        global $CFG_GLPI;
+        $CFG_GLPI = $this->config_copy;
+
+        // Statics values
+        Log::$use_queue = false;
     }
 }
