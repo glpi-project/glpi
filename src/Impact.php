@@ -1280,7 +1280,7 @@ JS);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if ($icon_path !== null) {
+        if (!empty($icon_path)) {
             // Special case for images returned dynamicly
             if (str_contains($icon_path, ".php")) {
                 return $icon_path;
@@ -1300,7 +1300,7 @@ JS);
         }
 
         // Fallback "default" icon
-        return "pics/impact/default.png";
+        return $CFG_GLPI['root_doc'] . "/pics/impact/default.png";
     }
 
     /**
