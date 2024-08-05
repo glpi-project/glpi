@@ -93,12 +93,10 @@ if (
             break;
 
         case Group::getType():
-            if ($_POST['value'] == 0) {
-                $tmpname = [
-                    'link'    => $CFG_GLPI['root_doc'] . "/front/group.php",
-                    'comment' => "",
-                ];
-            } else {
+            $tmpname = [
+                'comment' => "",
+            ];
+            if ($_POST['value'] != 0) {
                 $group = new \Group();
                 if (is_array($_POST["value"])) {
                     $comments = [];
@@ -135,12 +133,6 @@ if (
                 }
             }
             echo($tmpname["comment"] ?? '');
-
-            if (isset($_POST['withlink']) && isset($tmpname['link'])) {
-                echo "<script type='text/javascript' >\n";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
-                echo "</script>\n";
-            }
             break;
 
         default:
