@@ -60,6 +60,7 @@ describe('Access Control', () => {
             ;
         });
         cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
+        cy.findByRole('link', {'name': "There are 7 user(s) matching these criteria."}).should('exist');
 
         // Save changes
         cy.findByRole('button', {name: 'Save changes'}).click();
