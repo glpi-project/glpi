@@ -254,6 +254,8 @@ The present file will list all changes made to the project; according to the
 - `X-GLPI-Sanitized-Content` REST API header support.
 - Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
+- `AuthLDAP::manageValuesInSession()`
+- `AuthLDAP::showDateRestrictionForm()`
 - `Cartridge::getNotificationParameters()`
 - `CartridgeItem::showDebug()`
 - `Certificate::showDebug()`
@@ -296,6 +298,7 @@ The present file will list all changes made to the project; according to the
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`
 - `Document_Item::showSimpleAddForItem()`
+- `Dropdown::showAdvanceDateRestrictionSwitch()`
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
@@ -456,7 +459,7 @@ The present file will list all changes made to the project; according to the
 - `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
-
+- `ajax/ldapdaterestriction.php` script.
 
 ## [10.0.17] unreleased
 
