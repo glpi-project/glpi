@@ -308,11 +308,22 @@
             if ($('.user-info-card:hover').length > 0) {
                return false;
             }
+            // prevent closing popover when group card is hover
+            if ($('.group-info-card:hover').length > 0) {
+               return false;
+            }
          });
       });
 
         // when the mouse leave the user card in the popover, close it
         $(document).on('mouseleave', '.user-info-card', function() {
+            setTimeout(() => {
+                $('.popover').popover('hide');
+            }, 300);
+        });
+
+        // when the mouse leave the group card in the popover, close it
+        $(document).on('mouseleave', '.group-info-card', function() {
             setTimeout(() => {
                 $('.popover').popover('hide');
             }, 300);
