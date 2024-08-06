@@ -100,7 +100,7 @@ final class DirectAccess implements ControlTypeInterface
 
         // Build form URL with integrated token parameter
         $url = $CFG_GLPI['url_base'];
-        $url .= "/front/form/form_renderer.php?";
+        $url .= "/Form/Render?";
         $url .= http_build_query([
             'id'    => $_GET['id'],
             'token' => $config->getToken(),
