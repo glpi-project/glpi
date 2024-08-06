@@ -73,8 +73,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         AnswersSet $answers_set,
         array $config
     ): array {
-        $typename = static::getTypeName(1);
-        $itemtype = static::getTargetItemtype();
+        $typename        = static::getTypeName(1);
+        $itemtype        = static::getTargetItemtype();
+        $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
         // missing from the input.
@@ -93,6 +94,12 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             $template_field->getConfig($form, $config),
             $input,
             $answers_set
+        );
+
+        // Remove template field from fields to apply
+        $fields_to_apply = array_filter(
+            $fields_to_apply,
+            fn($field) => !$field instanceof TemplateField
         );
 
         // Compute and apply template predefined template fields
