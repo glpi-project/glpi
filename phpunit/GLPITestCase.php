@@ -62,6 +62,9 @@ class GLPITestCase extends TestCase
     {
         $this->storeGlobals();
 
+        global $DB;
+        $DB->setTimezone('UTC');
+
         // By default, no session, not connected
         $this->resetSession();
 
