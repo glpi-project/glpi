@@ -31,9 +31,11 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable, GlpiFormQuestionTypeSelectable */
+/* global sortable */
 
-class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
+import { GlpiFormQuestionTypeSelectable } from './QuestionSelectable.js';
+
+export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
 
     /**
      * Create a new GlpiFormQuestionTypeSelectable instance.

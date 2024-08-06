@@ -41,7 +41,7 @@
  * - data-glpi-parent-dropdown-condition: the value that the parent dropdown
  *  must have for this dropdown to be displayed
  */
-class DynamicDropdownController
+export class DynamicDropdownController
 {
     constructor() {
         this.#watchForDropdownChanges();

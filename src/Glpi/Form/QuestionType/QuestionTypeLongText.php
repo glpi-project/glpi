@@ -50,6 +50,10 @@ final class QuestionTypeLongText extends AbstractQuestionType
         return <<<JS
             {
                 "extractDefaultValue": function (question) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
                     const textarea = question.find('[data-glpi-form-editor-question-type-specific]')
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
                     const inst = tinyMCE.get(textarea.attr('id'));
@@ -69,6 +73,10 @@ final class QuestionTypeLongText extends AbstractQuestionType
                     return '';
                 },
                 "convertDefaultValue": function (question, value) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
                     if (value == null) {
                         return '';
                     }

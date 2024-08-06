@@ -70,16 +70,17 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
      */
     protected function getFormInlineScript(): string
     {
+        // language=Twig
         $js = <<<TWIG
-            $(document).ready(function() {
+            import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                    new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                         }
                     });
                 {% endif %}
@@ -87,12 +88,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
 TWIG;
 
         return $js;
-    }
-
-    #[Override]
-    public function loadJavascriptFiles(): array
-    {
-        return ['js/form_question_selectable.js'];
     }
 
     #[Override]
@@ -260,9 +255,12 @@ TWIG;
             {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
         </div>
 
-
         <script>
-            {$this->getFormInlineScript()}
+            // TODO: avoid this, the script should probably run in a dedicated method that the framework can call at
+            // the right time.
+            $("[data-glpi-form-editor-container]").on('initialized', () => {
+                {$this->getFormInlineScript()}
+            });
         </script>
 TWIG;
 

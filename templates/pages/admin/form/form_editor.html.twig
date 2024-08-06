@@ -44,10 +44,6 @@
     'no_label'     : true,
 } %}
 
-{% for js_file in js_files %}
-    <script src="{{ js_path(js_file) }}"></script>
-{% endfor %}
-
 <form
     id="main-form"
     data-glpi-form-editor-container
@@ -367,20 +363,38 @@
     </div>
 {% endif %}
 
-<script>
-    window.glpi_form_editor_controller = new GlpiFormEditorController(
-        "[data-glpi-form-editor-container]",
+<script defer type="module">
+(async () => {
+    const modules = await Promise.all([
+        import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
+        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}")
+    ]);
+    const GlpiFormEditorController = modules[0].GlpiFormEditorController;
+    const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
+
+    const container_selector = "[data-glpi-form-editor-container]";
+    const controller = new GlpiFormEditorController(
+        container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]"
     );
 
+    // Temporary solution, would be better to import it directly where it is needed but the current
+    // design doesn't allow it.
+    $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
+
     {% for question_type in question_types_manager.getQuestionTypes() %}
-        window.glpi_form_editor_controller.registerQuestionTypeOptions(
+        controller.registerQuestionTypeOptions(
             '{{ get_class(question_type)|e('js') }}',
             {{ question_type.getFormEditorJsOptions()|raw }}
         );
     {% endfor %}
+
+    $(container_selector).data('controller', controller);
+    $(container_selector).addClass("initialized");
+    $(container_selector).trigger("initialized");
+})();
 </script>
 
 <style>

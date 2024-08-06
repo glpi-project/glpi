@@ -57,6 +57,10 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
         return <<<JS
             {
                 "extractDefaultValue": function (question) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
                     const input = question.find('[data-glpi-form-editor-question-type-specific]')
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
 
@@ -66,6 +70,10 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                     );
                 },
                 "convertDefaultValue": function (question, value) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
                     if (value == null) {
                         return '';
                     }

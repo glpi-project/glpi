@@ -36,7 +36,7 @@
 /**
  * Client code to handle users actions on the form_renderer template
  */
-class GlpiFormRendererController
+export class GlpiFormRendererController
 {
     /**
      * Target form (jquery selector)

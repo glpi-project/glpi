@@ -36,7 +36,7 @@
 /**
  * Client code to handle users actions on the form_editor template
  */
-class GlpiFormEditorController
+export class GlpiFormEditorController
 {
     /**
      * Target form editor (jquery selector)

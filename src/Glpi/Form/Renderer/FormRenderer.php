@@ -81,16 +81,9 @@ final class FormRenderer
      */
     public function render(Form $form): string
     {
-        // Load JS controller
-        $html = Html::script("js/form_renderer_controller.js");
-
-        // Load template
-        $twig = TemplateRenderer::getInstance();
-        $html .= $twig->render('pages/form_renderer.html.twig', [
-            'form'                 => $form,
+        return TemplateRenderer::getInstance()->render('pages/form_renderer.html.twig', [
+            'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
         ]);
-
-        return $html;
     }
 }
