@@ -34,30 +34,44 @@
 
 namespace Glpi\Http;
 
+use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class FirewallListener implements EventSubscriberInterface
 {
-    public const STRATEGY_KEY = '_glpi_security_strategy';
-
     public function __construct(private FirewallInterface $firewall)
     {
     }
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::REQUEST => ['onKernelRequest', 0]];
+        return [KernelEvents::CONTROLLER => 'onKernelController'];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelController(ControllerEvent $event): void
     {
-        $request = $event->getRequest();
+        $strategy = null;
+
+        /** @var SecurityStrategy[] $attributes */
+        if (\is_array($attributes = $event->getAttributes()[SecurityStrategy::class] ?? null)) {
+            $number_of_attributes = \count($attributes);
+            if ($number_of_attributes > 1) {
+                throw new \RuntimeException(\sprintf(
+                    'You can apply only one security strategy per HTTP request. You actually used the "%s" attribute %d times.',
+                    SecurityStrategy::class,
+                    $number_of_attributes,
+                ));
+            }
+
+            $strategy = $attributes[0]->strategy;
+        }
+
 
         $this->firewall->applyStrategy(
-            $request->server->get('PHP_SELF'),
-            $request->attributes->get(self::STRATEGY_KEY),
+            $event->getRequest()->server->get('PHP_SELF'),
+            $strategy,
         );
     }
 }

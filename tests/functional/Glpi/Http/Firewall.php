@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,82 +40,120 @@ class Firewall extends \GLPITestCase
 {
     protected function pathProvider(): iterable
     {
-        // Init stream, required to compute relative path between GLPI_ROOT and PLUGINS_DIRECTORIES.
         vfsStream::setup(
             'glpi',
             null,
             [
+                'ajax' => [
+                    'common.tabs.php' => '',
+                    'dashboard.php' => '',
+                    'getDropdown.php' => '',
+                    'knowbase.php' => '',
+                    'telemetry.php' => '',
+                ],
+                'front' => [
+                    'foo' => [
+                        'bar.php' => '',
+                    ],
+                    'form' => [
+                        'form_renderer.php' => '',
+                    ],
+                    'central.php' => '',
+                    'computer.php' => '',
+                    'cron.php' => '',
+                    'css.php' => '',
+                    'document.send.php' => '',
+                    'helpdesk.php' => '',
+                    'helpdesk.faq.php' => '',
+                    'inventory.php' => '',
+                    'locale.php' => '',
+                    'login.php' => '',
+                    'logout.php' => '',
+                    'lostpassword.php' => '',
+                    'planning.php' => '',
+                    'tracking.injector.php' => '',
+                    'updatepassword.php' => '',
+                ],
                 'marketplace' => [
+                    'myplugin' => [
+                        'ajax' => [
+                            'bar' => [
+                                'script.php' => '',
+                            ],
+                            'foo.php' => '',
+                        ],
+                        'front' => [
+                            'dir' => [
+                                'bar.php' => '',
+                            ],
+                            'foo.php' => '',
+                        ],
+                        'index.php' => '',
+                    ]
                 ],
-                'mycustomplugindir' => [
-                ],
-                'plugins' => [
+                'myplugindir' => [
+                    'pluginb' => [
+                        'ajax' => [
+                            'foo' => [
+                                'bar.php' => '',
+                            ],
+                            'barfoo.php' => '',
+                        ],
+                        'front' => [
+                            'a' => [
+                                'b.php' => '',
+                            ],
+                            'foo.php' => '',
+                        ],
+                        'test.php' => '',
+                    ],
                 ],
             ]
         );
 
-        $strategy_no_check   = 'no_check';
-        $default_for_core    = 'authenticated';
-        $default_for_plugins = 'no_check';
+        $default_for_core_legacy    = 'authenticated';
+        $default_for_core_routes    = 'authenticated';
+        $default_for_plugins_legacy = 'no_check';
+        $default_for_plugins_routes = 'authenticated';
 
-        $protected_paths = ['/ajax/foo.php', '/ajax/bar/script.php', '/front/foo.php', '/front/dir/bar.php'];
-        $unprotected_paths = ['index.php', 'api.php', '/dir/foo.php', '/a/ajax/test.php', '/bar/front/foo.php'];
+        $legacy_scripts = [
+            '/ajax/getDropdown.php'                     => $default_for_core_legacy,
+            '/front/foo/bar.php'                        => $default_for_core_legacy,
+            '/front/computer.php'                       => $default_for_core_legacy,
+            '/Core/Route'                               => $default_for_core_routes,
 
-        $directories = [
-            '' => $default_for_core,
-            '/marketplace/myplugin' => $default_for_plugins,
-            '/mycustomplugindir/foo' => $default_for_plugins,
-            '/plugins/bar' => $default_for_plugins,
+            '/marketplace/myplugin/ajax/bar/script.php' => $default_for_plugins_legacy,
+            '/marketplace/myplugin/ajax/foo.php'        => $default_for_plugins_legacy,
+            '/marketplace/myplugin/front/dir/bar.php'   => $default_for_plugins_legacy,
+            '/marketplace/myplugin/front/foo.php'       => $default_for_plugins_legacy,
+            '/marketplace/myplugin/index.php'           => $default_for_plugins_legacy,
+            '/marketplace/myplugin/PluginRoute'         => $default_for_plugins_routes,
+
+            '/myplugindir/pluginb/ajax/foo/bar.php'     => $default_for_plugins_legacy,
+            '/myplugindir/pluginb/ajax/barfoo.php'      => $default_for_plugins_legacy,
+            '/myplugindir/pluginb/front/a/b.php'        => $default_for_plugins_legacy,
+            '/myplugindir/pluginb/front/foo.php'        => $default_for_plugins_legacy,
+            '/myplugindir/pluginb/test.php'             => $default_for_plugins_legacy,
+            '/marketplace/pluginb/Route/To/Something'   => $default_for_plugins_routes,
+
         ];
 
-        foreach ($directories as $path_prefix => $expected_strategy) {
-            foreach ($protected_paths as $path) {
-                yield [
-                    'root_doc'          => '',
-                    'path'              => $path_prefix . $path,
-                    'expected_strategy' => $expected_strategy,
-                ];
-                yield [
-                    'root_doc'          => '/glpi',
-                    'path'              => '/glpi' . $path_prefix . $path,
-                    'expected_strategy' => $expected_strategy,
-                ];
-                yield [
-                    'root_doc'          => '/path/to/app',
-                    'path'              => '/path/to/app' . $path_prefix . $path,
-                    'expected_strategy' => $expected_strategy,
-                ];
-
-                // paths not matching root doc
-                yield [
-                    'root_doc'          => '/not/glpi',
-                    'path'              => '/glpi' . $path_prefix . $path,
-                    'expected_strategy' => $strategy_no_check,
-                ];
-                yield [
-                    'root_doc'          => '',
-                    'path'              => '/glpi' . $path_prefix . $path,
-                    'expected_strategy' => $strategy_no_check,
-                ];
-            }
-
-            foreach ($unprotected_paths as $path) {
-                yield [
-                    'root_doc'          => '',
-                    'path'              => $path_prefix . $path,
-                    'expected_strategy' => $strategy_no_check,
-                ];
-                yield [
-                    'root_doc'          => '/glpi',
-                    'path'              => '/glpi' . $path_prefix . $path,
-                    'expected_strategy' => $strategy_no_check,
-                ];
-                yield [
-                    'root_doc'          => '/path/to/app',
-                    'path'              => '/path/to/app' . $path_prefix . $path,
-                    'expected_strategy' => $strategy_no_check,
-                ];
-            }
+        foreach ($legacy_scripts as $path => $expected_strategy) {
+            yield $path => [
+                'root_doc'          => '',
+                'path'              => $path,
+                'expected_strategy' => $expected_strategy,
+            ];
+            yield '/glpi' . $path => [
+                'root_doc'          => '/glpi',
+                'path'              => '/glpi' . $path,
+                'expected_strategy' => $expected_strategy,
+            ];
+            yield '/path/to/app' . $path => [
+                'root_doc'          => '/path/to/app',
+                'path'              => '/path/to/app' . $path,
+                'expected_strategy' => $expected_strategy,
+            ];
         }
 
         // Hardcoded strategies
@@ -125,7 +162,7 @@ class Firewall extends \GLPITestCase
             yield '/front/central.php without dashboard' => [
                 'root_doc'          => $root_doc,
                 'path'              => $root_doc . '/front/central.php',
-                'expected_strategy' => $default_for_core,
+                'expected_strategy' => $default_for_core_legacy,
             ];
             $_GET['embed'] = '1';
             $_GET['dashboard'] = 'central';
@@ -140,7 +177,7 @@ class Firewall extends \GLPITestCase
             yield '/front/planning.php without token' => [
                 'root_doc'          => $root_doc,
                 'path'              => $root_doc . '/front/planning.php',
-                'expected_strategy' => $default_for_core,
+                'expected_strategy' => $default_for_core_legacy,
             ];
             $_GET['token'] = 'abc';
             yield '/front/planning.php with token' => [
@@ -197,7 +234,7 @@ class Firewall extends \GLPITestCase
         $this->newTestedInstance(
             $root_doc,
             vfsStream::url('glpi'),
-            [vfsStream::url('glpi/mycustomplugindir'), vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+            [vfsStream::url('glpi/myplugindir'), vfsStream::url('glpi/marketplace')]
         );
         $this->string($this->callPrivateMethod($this->testedInstance, 'computeFallbackStrategy', $path, null))->isEqualTo($expected_strategy);
     }
