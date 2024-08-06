@@ -292,7 +292,7 @@ TWIG;
                 <label class="form-check">
                     <input
                         type="{{ input_type }}"
-                        name="{{ question.getEndUserInputName() }}"
+                        name="{{ question.getEndUserInputName() }}[]"
                         value="{{ value.value }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
@@ -307,6 +307,16 @@ TWIG;
             'values'     => $this->getValues($question),
             'input_type' => $this->getInputType($question),
         ]);
+    }
+
+    #[Override]
+    public function formatRawAnswer($answer): string
+    {
+        if (is_string($answer)) {
+            return $answer;
+        }
+
+        return implode(', ', $answer);
     }
 
     #[Override]

@@ -77,7 +77,7 @@ final class AnswerTagProvider implements TagProviderInterface
         }
 
         $answer = array_pop($answers);
-        return $answer->getRawAnswer();
+        return $answer->getFormattedAnswer();
     }
 
     public function getTagForQuestion(Question $question): Tag

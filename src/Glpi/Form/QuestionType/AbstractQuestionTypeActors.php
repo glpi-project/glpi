@@ -252,6 +252,26 @@ TWIG;
     }
 
     #[Override]
+    public function formatRawAnswer($answer): string
+    {
+        $formatted_actors = [];
+        foreach ($answer as $actor) {
+            foreach ($this->getAllowedActorTypes() as $type) {
+                if (strpos($actor, $type::getForeignKeyField()) === 0) {
+                    $items_id = (int)substr($actor, strlen($type::getForeignKeyField()) + 1);
+                    $item     = $type::getById($items_id);
+
+                    if ($item !== null) {
+                        $formatted_actors[] = $item->fields['name'];
+                    }
+                }
+            }
+        }
+
+        return implode(', ', $formatted_actors);
+    }
+
+    #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
         $template = <<<TWIG

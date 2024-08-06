@@ -39,6 +39,7 @@ use CartridgeItem;
 use ConsumableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use Group;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -235,6 +236,17 @@ TWIG;
             'itemtype' => $answer['itemtype'],
             'items_id' => $answer['items_id'],
         ]);
+    }
+
+    #[Override]
+    public function formatRawAnswer($answer): string
+    {
+        $item = $answer['itemtype']::getById($answer['items_id']);
+        if (!$item) {
+            return '';
+        }
+
+        return $item->fields['name'];
     }
 
     #[Override]
