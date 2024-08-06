@@ -1985,7 +1985,7 @@ class User extends CommonDBTM
     /**
      * Function that tries to load the user information from LDAP.
      *
-     * @param resource $ldap_connection LDAP connection
+     * @param resource|LDAP\Connection $ldap_connection LDAP connection
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
