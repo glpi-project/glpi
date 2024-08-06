@@ -95,8 +95,15 @@ class Asset extends DbTestCase
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
             // definition is automatically set if missing
-            $this->array($asset->{$method}([]))->isEqualTo(['assets_assetdefinitions_id' => $definition->getID()]);
-            $this->array($asset->{$method}(['name' => 'test']))->isEqualTo(['name' => 'test', 'assets_assetdefinitions_id' => $definition->getID()]);
+            $this->array($asset->{$method}([]))->isEqualTo([
+                'assets_assetdefinitions_id' => $definition->getID(),
+                'custom_fields' => '[]'
+            ]);
+            $this->array($asset->{$method}(['name' => 'test']))->isEqualTo([
+                'name' => 'test',
+                'assets_assetdefinitions_id' => $definition->getID(),
+                'custom_fields' => '[]'
+            ]);
 
             // an exception is thrown if definition is invalid
             $this->exception(
@@ -138,5 +145,140 @@ class Asset extends DbTestCase
                 $this->array($asset->searchOptions());
             }
         )->error()->notExists();
+    }
+
+    public function testAddWhereDropdownType()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $custom_field_definition = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_dropdown',
+            'label' => 'Test dropdown',
+            'type' => 'dropdown',
+            'itemtype' => \Computer::class,
+            'default_value' => '2',
+        ]);
+        $field_id = $custom_field_definition->getID();
+
+        $this->string(\Glpi\Asset\Asset::addWhere('AND', false, '', 0, '', '5', $custom_field_definition->getSearchOption()))
+            ->isEqualTo("AND ('5' = COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2'))");
+        $this->string(\Glpi\Asset\Asset::addWhere('OR', false, '', 0, '', '5', $custom_field_definition->getSearchOption()))
+            ->isEqualTo("OR ('5' = COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2'))");
+        $this->string(\Glpi\Asset\Asset::addWhere('AND', true, '', 0, '', '5', $custom_field_definition->getSearchOption()))
+            ->isEqualTo("AND ('5' != COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2'))");
+    }
+
+    public function testPrepareInputForAdd()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $string_field = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_string',
+            'label' => 'Test string',
+            'type' => 'string',
+            'default_value' => 'default',
+        ]);
+        $placeholder_field = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_placeholder',
+            'label' => 'Test placeholder',
+            'type' => 'placeholder',
+        ], ['name']);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+
+        $asset = new ($asset_definition->getAssetClassName());
+        $input = $asset->prepareInputForAdd([
+            'custom_test_string' => 'test',
+            $placeholder_field->fields['name'] => 'placeholder',
+        ]);
+        $this->string($input['custom_fields'])
+            ->isEqualTo(json_encode([$string_field->getID() => 'test']));
+    }
+
+    public function testPrepareInputForUpdate()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $string_field = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_string',
+            'label' => 'Test string',
+            'type' => 'string',
+            'default_value' => 'default',
+        ]);
+        $placeholder_field = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_placeholder',
+            'label' => 'Test placeholder',
+            'type' => 'placeholder',
+        ], ['name']);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+
+        $asset = new ($asset_definition->getAssetClassName());
+        $input = $asset->prepareInputForUpdate([
+            'custom_test_string' => 'test',
+            $placeholder_field->fields['name'] => 'placeholder',
+        ]);
+        $this->string($input['custom_fields'])
+            ->isEqualTo(json_encode([$string_field->getID() => 'test']));
+    }
+
+    public function testGetEmpty()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_string',
+            'label' => 'Test string',
+            'type' => 'string',
+            'default_value' => 'default',
+        ]);
+        $placeholder_field = $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_placeholder',
+            'label' => 'Test placeholder',
+            'type' => 'placeholder',
+        ], ['name']);
+        $asset = new ($asset_definition->getAssetClassName());
+        $asset->getEmpty();
+
+        $this->string($asset->fields['custom_test_string'])->isEqualTo('default');
+        $this->array($asset->fields)->notHasKey('custom_' . $placeholder_field->fields['name']);
+    }
+
+    public function testPostGetFromDB()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_string',
+            'label' => 'Test string',
+            'type' => 'string',
+            'default_value' => 'default',
+        ]);
+        $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_string_two',
+            'label' => 'Test string 2',
+            'type' => 'string',
+            'default_value' => 'default2',
+        ]);
+        $this->createItem(\Glpi\Asset\CustomField::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test_dropdown',
+            'label' => 'Test dropdown',
+            'type' => 'dropdown',
+            'field_options' => ['multiple' => true]
+        ], ['field_options']);
+
+        $asset = $this->createItem($asset_definition->getAssetClassName(), [
+            'custom_test_string' => 'test',
+            'custom_test_dropdown' => ['1', '2'],
+        ], ['custom_test_dropdown']);
+        $this->boolean($asset->getFromDB($asset->getID()))->isTrue();
+        $this->string($asset->fields['custom_test_string'])->isEqualTo('test');
+        $this->string($asset->fields['custom_test_string_two'])->isEqualTo('default2');
+        $this->array($asset->fields['custom_test_dropdown'])->isEqualTo(['1', '2']);
     }
 }

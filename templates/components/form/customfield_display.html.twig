@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,28 +30,34 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% set field_options = field_options|default({}) %}
 
-{% set params  = params ?? [] %}
-
-{% block more_fields %}
-    {% if item.isNewItem() %}
-        {{ fields.hiddenField(
-            'Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key,
-            _get['Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key]|default(0),
-        ) }}
-    {% endif %}
-
-    {% for custom_field_definition in custom_field_definitions %}
-        {% set field_name = 'custom_' ~ custom_field_definition.fields['name'] %}
-        {{ include('components/form/customfield_display.html.twig', {
-            name: field_name,
-            type: custom_field_definition.fields['type'],
-            itemtype: custom_field_definition.fields['itemtype'],
-            value: item.fields[field_name],
-            label: custom_field_definition.fields['label'],
-            field_options: custom_field_definition.fields['field_options']|default({}),
-        }, with_context = false) }}
-    {% endfor %}
-{% endblock %}
+{% if type == 'string' %}
+    {{ fields.textField(name, value, label, field_options + {
+        additional_attributes: {
+            maxlength: 255,
+        },
+    }) }}
+{% elseif type == 'text' %}
+    {{ fields.textareaField(name, value, label, field_options) }}
+{% elseif type == 'url' %}
+    {{ fields.urlField(name, value, label, field_options) }}
+{% elseif type == 'number' %}
+    {{ fields.numberField(name, value, label, field_options) }}
+{% elseif type == 'date' %}
+    {{ fields.dateField(name, value, label, field_options) }}
+{% elseif type == 'datetime' %}
+    {{ fields.datetimeField(name, value, label, field_options) }}
+{% elseif type == 'bool' %}
+    {{ fields.dropdownYesNo(name, value, label, field_options|merge({
+        values: {}
+    })) }}
+{% elseif type == 'dropdown' %}
+    {{ fields.dropdownField(itemtype, name, value, label, field_options|merge({
+        values: value|default({}),
+        entity: session('glpiactiveentities'),
+    })) }}
+{% elseif type == 'placeholder' %}
+    {{ fields.nullField() }}
+{% endif %}

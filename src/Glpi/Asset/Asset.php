@@ -36,6 +36,7 @@
 namespace Glpi\Asset;
 
 use CommonDBTM;
+use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Group_Item;
 use Entity;
@@ -48,7 +49,10 @@ use User;
 
 abstract class Asset extends CommonDBTM
 {
-    use \Glpi\Features\AssignableItem;
+    use \Glpi\Features\AssignableItem {
+        getEmpty as getEmptyFromAssignableItem;
+        post_getFromDB as post_getFromDBFromAssignableItem;
+    }
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
 
@@ -360,6 +364,15 @@ abstract class Asset extends CommonDBTM
             }
         }
 
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
+        foreach ($custom_fields as $custom_field) {
+            $opt = $custom_field->getSearchOption();
+            if ($opt !== null) {
+                $opt['itemtype'] ??= static::class;
+                $search_options[] = $opt;
+            }
+        }
+
         return $search_options;
     }
 
@@ -389,6 +402,7 @@ abstract class Asset extends CommonDBTM
             [
                 'item'   => $this,
                 'params' => $options,
+                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
             ]
         );
         return true;
@@ -398,6 +412,8 @@ abstract class Asset extends CommonDBTM
     {
         $input = $this->prepareGroupFields($input);
 
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
@@ -405,7 +421,81 @@ abstract class Asset extends CommonDBTM
     {
         $input = $this->prepareGroupFields($input);
 
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
+    }
+
+    protected function handleCustomFieldsUpdate(array $input): array
+    {
+        $custom_fields = [];
+
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            if ($custom_field->fields['type'] === 'placeholder') {
+                continue;
+            }
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            if (!isset($input[$custom_field_name])) {
+                continue;
+            }
+            $value = $input[$custom_field_name];
+
+            if (!$custom_field->validateValue($value)) {
+                continue;
+            }
+
+            $custom_fields[$custom_field->getID()] = $value;
+        }
+        $input['custom_fields'] = json_encode($custom_fields);
+
+        return $input;
+    }
+
+    public function getEmpty()
+    {
+        if (!$this->getEmptyFromAssignableItem()) {
+            return false;
+        }
+
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            if ($custom_field->fields['type'] === 'placeholder') {
+                continue;
+            }
+            $f_name = 'custom_' . $custom_field->fields['name'];
+            $this->fields[$f_name] = $custom_field->fields['default_value'];
+            if (($custom_field->fields['field_options']['multiple'] ?? false) && is_string($this->fields[$f_name])) {
+                $this->fields[$f_name] = empty($custom_field->fields['default_value']) ? [] : [$custom_field->fields['default_value']];
+            }
+        }
+        return true;
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        $this->post_getFromDBFromAssignableItem();
+
+        $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
+        $custom_field_values = json_decode($this->fields['custom_fields'], true) ?? [];
+
+        foreach ($custom_field_definitions as $custom_field) {
+            if ($custom_field->fields['type'] === 'placeholder') {
+                continue;
+            }
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $value = $custom_field_values[$custom_field->getID()] ?? $custom_field->fields['default_value'];
+
+            if ($custom_field->fields['type'] === 'dropdown') {
+                $is_multiple = $custom_field->fields['field_options']['multiple'] ?? false;
+                if ($is_multiple && $value !== null && !is_array($value)) {
+                    $value = [$value];
+                } else if (!$is_multiple && is_array($value)) {
+                    $value = $value[0] ?? '';
+                }
+            }
+            $this->fields[$custom_field_name] = $custom_field::formatFromDB($custom_field, $value);
+        }
     }
 
     /**
@@ -446,5 +536,79 @@ abstract class Asset extends CommonDBTM
             $relations = [...$relations, ...$capacity->getCloneRelations()];
         }
         return array_unique($relations);
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if ($options['searchopt']['datatype'] !== 'specific' || !isset($options['searchopt']['field_definition'])) {
+            return parent::getSpecificValueToSelect($field, $name, $values, $options);
+        }
+
+        // Handle complex custom fields
+        /** @var CustomField $field_definition */
+        $field_definition = $options['searchopt']['field_definition'];
+        if ($field_definition->fields['type'] === 'dropdown') {
+            $field_options = $field_definition->fields['field_options'] ?? [];
+            $field_options['multiple'] = false;
+            $field_options['required'] = false;
+            $field_options['readonly'] = false;
+            $field_options['name'] = $name;
+            $field_options['display'] = false;
+            $field_options['entity'] = $_SESSION['glpiactiveentities'];
+            $field_options['value'] = $values[$field] ?? null;
+
+            $itemtype = $field_definition->fields['itemtype'];
+            if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                return $itemtype::dropdown($field_options);
+            }
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if ($options['searchopt']['datatype'] !== 'specific' || !isset($options['searchopt']['field_definition'])) {
+            return parent::getSpecificValueToDisplay($field, $values, $options);
+        }
+
+        // Handle complex custom fields
+        /** @var CustomField $field_definition */
+        $field_definition = $options['searchopt']['field_definition'];
+        if ($field_definition->fields['type'] === 'dropdown') {
+            $dropdown_values = json_decode($values[$field], true);
+            if (!is_array($dropdown_values)) {
+                $dropdown_values = [$dropdown_values];
+            }
+
+            $itemtype = $field_definition->fields['itemtype'];
+            $output = '';
+            if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                foreach ($dropdown_values as $dropdown_value) {
+                    $output .= htmlspecialchars(Dropdown::getDropdownName($itemtype::getTable(), $dropdown_value)) . '<br>';
+                }
+                return $output;
+            }
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $opt)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if ($opt['datatype'] !== 'specific' || !isset($opt['field_definition'])) {
+            return '';
+        }
+        $field_definition = $opt['field_definition'];
+        if ($field_definition->fields['type'] === 'dropdown') {
+            $value_to_compare = $opt['computation'];
+            $operator = $nott ? '!=' : '=';
+
+            $val = $DB::quoteValue((int) $val);
+            return "$link ($val $operator $value_to_compare)";
+        }
+        return '';
     }
 }

@@ -97,6 +97,7 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             `template_name` varchar(255) DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
+            `custom_fields` json,
             PRIMARY KEY (`id`),
             KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
             KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
@@ -128,6 +129,7 @@ SQL;
     $migration->dropField('glpi_assets_assets', 'groups_id');
     $migration->dropKey('glpi_assets_assets', 'groups_id_tech');
     $migration->dropField('glpi_assets_assets', 'groups_id_tech');
+    $migration->addField('glpi_assets_assets', 'custom_fields', 'json', ['update' => $DB::quoteValue('{}')]);
 }
 
 if (!$DB->tableExists('glpi_assets_assetmodels')) {
@@ -174,6 +176,25 @@ if (!$DB->tableExists('glpi_assets_assettypes')) {
           KEY `name` (`name`),
           KEY `date_mod` (`date_mod`),
           KEY `date_creation` (`date_creation`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQueryOrDie($query);
+}
+
+if (!$DB->tableExists('glpi_assets_customfields')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_assets_customfields` (
+          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+          `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
+          `name` varchar(255) NOT NULL,
+          `label` varchar(255) NOT NULL,
+          `type` varchar(255) NOT NULL,
+          `field_options` json,
+          `itemtype` VARCHAR(255) NULL DEFAULT NULL,
+          `default_value` text,
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
+          KEY `name` (`name`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQueryOrDie($query);

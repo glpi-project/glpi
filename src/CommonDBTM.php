@@ -5201,7 +5201,7 @@ class CommonDBTM extends CommonGLPI
                     return Dropdown::showLanguages($name, $options);
             }
            // Get specific display if available
-            $itemtype = getItemTypeForTable($searchoptions['table']);
+            $itemtype = $searchoptions['itemtype'] ?? getItemTypeForTable($searchoptions['table']);
             if ($item = getItemForItemtype($itemtype)) {
                 $options['searchopt'] = $searchoptions;
                 $specific = $item->getSpecificValueToSelect(

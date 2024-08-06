@@ -1211,7 +1211,7 @@ final class SQLProvider implements SearchProviderInterface
 
         //Check in current item if a specific where is defined
         if (method_exists($itemtype, 'addWhere')) {
-            $out = $itemtype::addWhere('AND', $nott, $itemtype, $ID, $searchtype, $val);
+            $out = $itemtype::addWhere('AND', $nott, $itemtype, $ID, $searchtype, $val, $opt);
             // Remove 'AND' from the beginning of the string. There may be extra spaces around it.
             $out = preg_replace('/^\s*AND\s*/', '', $out);
             if (!empty($out)) {
@@ -1685,7 +1685,8 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                        // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = \DBConnection::getDefaultCharset();
                         $date_computation = QueryFunction::convert($date_computation, $default_charset);

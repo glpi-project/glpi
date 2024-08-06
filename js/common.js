@@ -1933,6 +1933,7 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
+        tags: config.tags || false
     })
         .bind('setValue', function (e, value) {
             $('#' + field_id).val(value).trigger('change');

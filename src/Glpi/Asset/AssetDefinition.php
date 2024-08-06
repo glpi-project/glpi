@@ -120,7 +120,12 @@ final class AssetDefinition extends CommonDBTM
                     self::class,
                     'ti ti-adjustments'
                 ),
-                // 2 is reserved for "Fields"
+                2 => self::createTabEntry(
+                    CustomField::getTypeName(Session::getPluralNumber()),
+                    0,
+                    CustomField::class,
+                    CustomField::getIcon()
+                ),
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
                     $profiles_count,
@@ -147,7 +152,7 @@ final class AssetDefinition extends CommonDBTM
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    // 2 is reserved for "Fields" form
+                    CustomField::displayTabContentForItem($item, $tabnum, $withtemplate);
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -1140,5 +1145,35 @@ TWIG, ['name' => $name, 'value' => $value]);
         }
 
         return $is_valid;
+    }
+
+    /**
+     * @return CustomField[]
+     */
+    public function getCustomFieldDefinitions(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        static $fields = null;
+
+        if ($fields === null) {
+            $fields = [];
+            $it = $DB->request([
+                'FROM'   => CustomField::getTable(),
+                'WHERE'  => [
+                    self::getForeignKeyField() => $this->getID(),
+                ],
+            ]);
+
+            foreach ($it as $field) {
+                $custom_field = new CustomField();
+                $custom_field->getFromResultSet($field);
+                $custom_field->post_getFromDB();
+                $fields[] = $custom_field;
+            }
+        }
+
+        return $fields;
     }
 }

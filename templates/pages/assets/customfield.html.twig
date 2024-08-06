@@ -1,0 +1,161 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+{% block form_fields %}
+    <input type="hidden" name="{{ 'Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key }}" value="{{ assetdefinitions_id }}">
+
+    {{ fields.textField('label', item.fields['label'], __('Label')) }}
+    <input type="hidden" name="name" value="{{ item.fields['name'] }}">
+    {{ fields.htmlField('', item.fields['name'], __('System name'), {
+        add_field_class: 'displayed-name'
+    }) }}
+    {{ fields.dropdownArrayField('type', item.fields['type']|default('string'), field_types, _n('Type', 'Types', 1)) }}
+    <div class="placeholder-type-info">
+        {{ alerts.alert_info(__('Placeholders are empty fields without a label or value to help with the form layout')) }}
+    </div>
+    {{ fields.nullField() }}
+
+
+    {{ fields.sliderField('field_options[full_width]', item.fields['field_options']['full_width']|default(false), __('Full width'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.sliderField('field_options[readonly]', item.fields['field_options']['readonly']|default(false), __('Readonly'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.sliderField('field_options[required]', item.fields['field_options']['required']|default(false), __('Mandatory'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.sliderField('field_options[multiple]', item.fields['field_options']['multiple']|default(false), __('Multiple values'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.numberField('field_options[min]', item.fields['field_options']['min']|default(0), __('Minimum'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.numberField('field_options[max]', item.fields['field_options']['max']|default(constant('PHP_INT_MAX')), __('Maximum'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.numberField('field_options[step]', item.fields['field_options']['step']|default(1), _n('Step', 'Steps', 1), {
+        add_field_class: 'd-none',
+        step: 0.01
+    }) }}
+
+    {{ fields.dropdownArrayField('itemtype', item.fields['itemtype'], allowed_dropdown_itemtypes, __('Item type'), {
+        add_field_class: 'd-none'
+    }) }}
+    {{ fields.dropdownArrayField('field_options[values]', '', item.fields['field_options']['values']|default([]), __('Allowed values'), {
+        add_field_class: 'd-none',
+        multiple: true,
+        enable_tags: true,
+        values: item.fields['field_options']['values']|default([])
+    }) }}
+
+    <div class="field-default-value"></div>
+
+    <script>
+        $(() => {
+            const autoUpdateNameField = () => {
+                let name_prefix = '';
+                const selected_type = $('select[name="type"]').val();
+                if (selected_type === 'date' || selected_type === 'datetime') {
+                    name_prefix = 'date_';
+                }
+                // label is made lowercase and spaces are replaced with underscores. All other characters are removed
+                $('input[name="name"]').val(name_prefix + $('input[name="label"]').val().toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+                $('.form-field.displayed-name .form-control-plaintext').text($('input[name="name"]').val());
+            };
+            const updateDefaultValueField = () => {
+                let field_options = {
+                    min: $('input[type="number"][name="field_options[min]"]').val(),
+                    max: $('input[type="number"][name="field_options[max]"]').val(),
+                    step: $('input[type="number"][name="field_options[step]"]').val(),
+                    values: $('select[name="field_options[values][]"]').val(),
+                };
+                if ($('input[type="checkbox"][name="field_options[multiple]"]').is(':checked')) {
+                    field_options.multiple = true;
+                }
+
+                $(`.field-default-value`).load('{{ path('ajax/asset/customfield.php') }}', {
+                    action: 'get_custom_field',
+                    name: 'default_value',
+                    label: __('Default value'),
+                    itemtype: $('select[name="itemtype"]').val(),
+                    type: $('select[name="type"]').val(),
+                    value: $('input[name="default_value"]').val(),
+                    field_options: field_options,
+                })
+            }
+
+            $('input[name="label"]').on('input', () => {
+                autoUpdateNameField();
+            });
+            $('select[name="type"]').on('change', () => {
+                autoUpdateNameField();
+                const selected_type = $('select[name="type"]').val();
+                $('input[type="checkbox"][name="field_options[full_width]"]').closest('.form-field').toggleClass('d-none', selected_type === 'placeholder');
+                $('input[type="checkbox"][name="field_options[readonly]"]').closest('.form-field').toggleClass('d-none', selected_type === 'placeholder');
+                $('input[type="checkbox"][name="field_options[required]"]').closest('.form-field').toggleClass('d-none', selected_type === 'placeholder');
+                $('.placeholder-type-info').toggleClass('d-none', selected_type !== 'placeholder');
+                // Label and name aren't used for placeholder fields since they are only used for display
+                $('input[name="label"]').closest('.form-field').toggleClass('d-none', selected_type === 'placeholder');
+                $('input[name="name"]').closest('.form-field').toggleClass('d-none', selected_type === 'placeholder');
+                $('.form-field.displayed-name').toggleClass('d-none', selected_type === 'placeholder');
+                if (selected_type === 'placeholder') {
+                    $('input[name="label"]').data('last-value', $('input[name="label"]').val()).val('');
+                    $('.form-field.displayed-name .form-control-plaintext').text('');
+                } else if ($('input[name="label"]').data('last-value') !== undefined) {
+                    $('input[name="label"]')
+                        .val($('input[name="label"]').data('last-value'))
+                        .data('last-value', undefined);
+                    autoUpdateNameField();
+                }
+
+                $('input[type="checkbox"][name="field_options[multiple]"]').closest('.form-field').toggleClass('d-none', selected_type !== 'dropdown');
+                $('input[type="number"][name="field_options[min]"]').closest('.form-field').toggleClass('d-none', selected_type !== 'number');
+                $('input[type="number"][name="field_options[max]"]').closest('.form-field').toggleClass('d-none', selected_type !== 'number');
+                $('input[type="number"][name="field_options[step]"]').closest('.form-field').toggleClass('d-none', selected_type !== 'number');
+                $('select[name="itemtype"]').closest('.form-field').toggleClass('d-none', selected_type !== 'dropdown');
+
+                updateDefaultValueField();
+            }).trigger('change');
+            $('select[name="itemtype"]').on('change', () => {
+                updateDefaultValueField();
+            });
+            $('select[name="field_options[values][]"]').on('change', () => {
+                updateDefaultValueField();
+            });
+        });
+    </script>
+{% endblock %}

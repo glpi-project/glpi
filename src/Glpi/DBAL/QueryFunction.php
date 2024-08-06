@@ -52,6 +52,9 @@ use DBmysqlIterator;
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'LEAST' function call
+ * @method static QueryExpression jsonExtract(array $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
+ * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
+ * @method static QueryExpression jsonRemove(array $params, ?string $alias = null) Build a 'JSON_REMOVE' function call
  * @method static QueryExpression least(array $params, ?string $alias = null) Build a 'LEAST' function call
  * @method static QueryExpression lower(string|QueryExpression $expression, ?string $alias = null) Build a 'LOWER' SQL function call
  * @method static QueryExpression max(string|QueryExpression $expression, ?string $alias = null) Build a 'MAX' SQL function call
