@@ -248,7 +248,7 @@ trait Clonable
             if (
                 \Infocom::canApplyOn($this)
                 && isset($new_item->input['states_id'])
-                && !($new_item->input['is_template'] && false)
+                && !($new_item->input['is_template'] ?? false)
             ) {
                 //Check if we have to automatically fill dates
                 \Infocom::manageDateOnStatusChange($new_item);
