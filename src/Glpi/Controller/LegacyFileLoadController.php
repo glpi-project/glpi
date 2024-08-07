@@ -34,12 +34,16 @@
 
 namespace Glpi\Controller;
 
-use Glpi\DependencyInjection\PublicService;
+use Glpi\Config\AppConfig;
+use Glpi\Config\HasAppConfig;
+use Glpi\Config\WithAppConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class LegacyFileLoadController implements PublicService
+final class LegacyFileLoadController implements Controller, HasAppConfig
 {
+    use WithAppConfig;
+
     public const REQUEST_FILE_KEY = '_glpi_file_to_load';
 
     private ?Request $request = null;

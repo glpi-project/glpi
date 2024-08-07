@@ -40,7 +40,7 @@ const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
 const DELTA_ACTION_DELETE = 3;
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 /**
