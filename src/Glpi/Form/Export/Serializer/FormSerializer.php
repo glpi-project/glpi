@@ -39,6 +39,7 @@ use Entity;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Form;
@@ -65,10 +66,37 @@ final class FormSerializer extends AbstractFormSerializer
         return $this->serialize($export_specification);
     }
 
-    /** @return Form[] */
+    public function previewImport(
+        string $json,
+        DatabaseMapper $mapper = new DatabaseMapper(),
+    ): ImportResultPreview {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new \InvalidArgumentException("Unsupported version");
+        }
+
+        // Validate each forms
+        $results = new ImportResultPreview();
+        foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($requirements);
+
+            $form_name = $form_spec->name;
+            if ($mapper->validateRequirements($requirements)) {
+                $results->addValidForm($form_name);
+            } else {
+                $results->addInvalidForm($form_name);
+            }
+        }
+
+        return $results;
+    }
+
     public function importFormsFromJson(
         string $json,
-        DatabaseMapper $context = new DatabaseMapper(),
+        DatabaseMapper $mapper = new DatabaseMapper(),
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -81,9 +109,9 @@ final class FormSerializer extends AbstractFormSerializer
         $result = new ImportResult();
         foreach ($export_specification->forms as $form_spec) {
             $requirements = $form_spec->data_requirements;
-            $context->loadExistingContextForRequirements($requirements);
+            $mapper->mapExistingItemsForRequirements($requirements);
 
-            if (!$context->validateRequirements($requirements)) {
+            if (!$mapper->validateRequirements($requirements)) {
                 $result->addFailedFormImport(
                     $form_spec->name,
                     ImportError::MISSING_DATA_REQUIREMENT
@@ -91,7 +119,7 @@ final class FormSerializer extends AbstractFormSerializer
                 continue;
             }
 
-            $form = $this->importFormFromSpec($form_spec, $context);
+            $form = $this->importFormFromSpec($form_spec, $mapper);
             $result->addImportedForm($form);
         }
 
@@ -141,7 +169,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
         $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'];
+        $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
 
         $entity = Entity::getById($form->fields['entities_id']);

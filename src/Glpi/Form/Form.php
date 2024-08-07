@@ -43,7 +43,6 @@ use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
@@ -236,6 +235,19 @@ final class Form extends CommonDBTM
                 FormAccessControl::class,
             ]
         );
+    }
+
+    #[Override]
+    public static function getAdditionalMenuLinks(): array
+    {
+        $links = [];
+
+        if (self::canCreate()) {
+            // TODO: use UrlGenerator service
+            $links['import_forms'] = '/Form/Import';
+        }
+
+        return $links;
     }
 
     /**
