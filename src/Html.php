@@ -3662,7 +3662,7 @@ JS;
                     content_css: '{$content_css}',
                     content_style: '{$content_style}',
                     highlight_on_focus: false,
-                    autoresize_bottom_margin: 0, // Avoid excessive bottom padding
+                    autoresize_bottom_margin: 1, // Avoid excessive bottom padding
                     autoresize_overflow_padding: 0,
 
                     min_height: $editor_height,
