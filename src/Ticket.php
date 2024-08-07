@@ -4822,7 +4822,7 @@ JAVASCRIPT;
 
         if (Session::getCurrentInterface() != "central") {
             $twig_params['title']['button'] = [
-                'link'   => $CFG_GLPI["root_doc"] . '/front/helpdesk.public.php?create_ticket=1',
+                'link'   => $CFG_GLPI["root_doc"] . '/ServiceCatalog',
                 'text'   => __('Create a ticket'),
                 'icon'   => 'ti ti-plus',
             ];

@@ -93,54 +93,48 @@ if (
 
 Session::checkValidSessionId();
 
-if (isset($_GET['create_ticket'])) {
-    Html::helpHeader(__('New ticket'), "create_ticket");
-    $ticket = new Ticket();
-    $ticket->showFormHelpdesk(Session::getLoginUserID());
-} else {
-    Html::helpHeader(__('Home'));
+Html::helpHeader(__('Home'));
 
-    $password_alert = "";
-    $user = new User();
-    $user->getFromDB(Session::getLoginUserID());
+$password_alert = "";
+$user = new User();
+$user->getFromDB(Session::getLoginUserID());
 
-    $ticket_summary = "";
-    $survey_list    = "";
-    if (Session::haveRight('ticket', CREATE)) {
-        $ticket_summary = Ticket::showCentralCount(true, false);
-        $survey_list    = Ticket::showCentralList(0, "survey", false, false);
-    }
-
-    $reminder_list = "";
-    if (Session::haveRight("reminder_public", READ)) {
-        $reminder_list = Reminder::showListForCentral(false, false);
-    }
-
-    $rss_feed = "";
-    if (Session::haveRight("rssfeed_public", READ)) {
-        $rss_feed = RSSFeed::showListForCentral(false, false);
-    }
-
-    $kb_popular    = "";
-    $kb_recent     = "";
-    $kb_lastupdate = "";
-    if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-        $kb_popular    = KnowbaseItem::showRecentPopular("popular", false);
-        $kb_recent     = KnowbaseItem::showRecentPopular("recent", false);
-        $kb_lastupdate = KnowbaseItem::showRecentPopular("lastupdate", false);
-    }
-
-    Html::requireJs('masonry');
-    TemplateRenderer::getInstance()->display('pages/self-service/home.html.twig', [
-        'password_alert' => $user->getPasswordExpirationMessage(),
-        'ticket_summary' => $ticket_summary,
-        'survey_list'    => $survey_list,
-        'reminder_list'  => $reminder_list,
-        'rss_feed'       => $rss_feed,
-        'kb_popular'     => $kb_popular,
-        'kb_recent'      => $kb_recent,
-        'kb_lastupdate'  => $kb_lastupdate,
-    ]);
+$ticket_summary = "";
+$survey_list    = "";
+if (Session::haveRight('ticket', CREATE)) {
+    $ticket_summary = Ticket::showCentralCount(true, false);
+    $survey_list    = Ticket::showCentralList(0, "survey", false, false);
 }
+
+$reminder_list = "";
+if (Session::haveRight("reminder_public", READ)) {
+    $reminder_list = Reminder::showListForCentral(false, false);
+}
+
+$rss_feed = "";
+if (Session::haveRight("rssfeed_public", READ)) {
+    $rss_feed = RSSFeed::showListForCentral(false, false);
+}
+
+$kb_popular    = "";
+$kb_recent     = "";
+$kb_lastupdate = "";
+if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+    $kb_popular    = KnowbaseItem::showRecentPopular("popular", false);
+    $kb_recent     = KnowbaseItem::showRecentPopular("recent", false);
+    $kb_lastupdate = KnowbaseItem::showRecentPopular("lastupdate", false);
+}
+
+Html::requireJs('masonry');
+TemplateRenderer::getInstance()->display('pages/self-service/home.html.twig', [
+    'password_alert' => $user->getPasswordExpirationMessage(),
+    'ticket_summary' => $ticket_summary,
+    'survey_list'    => $survey_list,
+    'reminder_list'  => $reminder_list,
+    'rss_feed'       => $rss_feed,
+    'kb_popular'     => $kb_popular,
+    'kb_recent'      => $kb_recent,
+    'kb_lastupdate'  => $kb_lastupdate,
+]);
 
 Html::helpFooter();
