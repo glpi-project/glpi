@@ -41,6 +41,7 @@ use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ErrorController implements Controller
 {
@@ -52,7 +53,9 @@ class ErrorController implements Controller
 
         ErrorHandler::getInstance()->handleException($exception, true);
 
-        return new StreamedResponse(fn() => $this->renderErrorPage($exception), 500);
+        $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+
+        return new StreamedResponse(fn() => $this->renderErrorPage($exception), $status_code);
     }
 
     private function renderErrorPage(\Throwable $exception): void
@@ -74,9 +77,12 @@ class ErrorController implements Controller
             }
         }
 
+        if ($exception instanceof HttpExceptionInterface) {
+            $message = 'HTTP Error ' . $exception->getStatusCode() . ": " . $message;
+        }
+
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('display_and_die.html.twig', [
-            'title'   => __('Access denied'),
             'message' => $message,
             'link'    => \Html::getBackUrl(),
         ]);
