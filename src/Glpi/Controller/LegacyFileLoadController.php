@@ -42,7 +42,7 @@ final class LegacyFileLoadController implements PublicService
 {
     public const REQUEST_FILE_KEY = '_glpi_file_to_load';
 
-    private ?Request $request = null;
+    protected ?Request $request = null;
 
     public function __invoke(Request $request): StreamedResponse
     {
@@ -54,7 +54,9 @@ final class LegacyFileLoadController implements PublicService
             throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
         }
 
-        $callback = fn () => require $target_file;
+        $callback = function () use ($target_file) {
+            require $target_file;
+        };
 
         return new StreamedResponse($callback->bindTo($this, self::class));
     }
