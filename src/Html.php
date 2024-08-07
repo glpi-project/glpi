@@ -1512,7 +1512,7 @@ HTML;
 
         if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-                'default' => '/front/helpdesk.public.php?create_ticket=1',
+                'default' => '/ServiceCatalog',
                 'title'   => __('Create a ticket'),
                 'icon'    => 'ti ti-plus',
             ];
@@ -1537,7 +1537,7 @@ HTML;
             ];
 
             if (Session::haveRight("ticket", CREATE)) {
-                $menu['tickets']['content']['ticket']['links']['add'] = '/front/helpdesk.public.php?create_ticket=1';
+                $menu['tickets']['content']['ticket']['links']['add'] = '/ServiceCatalog';
             }
         }
 

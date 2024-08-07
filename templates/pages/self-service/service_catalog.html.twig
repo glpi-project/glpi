@@ -1,0 +1,66 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set tabler_container_size = "xl" %}
+
+{% block content_title %}
+    {{ __('Service catalog') }}
+{% endblock content_title %}
+
+{% block content_body %}
+    <section aria-label="{{ __("Forms") }}" class="row">
+        {% for form in forms %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+                <a
+                    class="card mx-1 my-2 flex-grow-1"
+                    href=" {{ "/Form/Render/" ~ form.fields.id }}"
+                >
+                    <section
+                        class="card-body"
+                        aria-labelledby="form-{{ form.fields.id }}"
+                    >
+                        <h2 id="form-{{ form.fields.id }}" class="card-title">
+                            {{ form.fields.name }}
+                        </h2>
+                        {# TODO: showing description instead of header (description does not yet
+                           exist and header is meant to be displated above the form in its own
+                           page). We use header for now to "fill" the space. #}
+                        <div class="text-secondary">{{ form.fields.header|raw }}</div>
+                    </section>
+                </a>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock content_body %}

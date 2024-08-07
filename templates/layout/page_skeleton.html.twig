@@ -30,7 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
-{% do call(['Html', 'header'], {
+{% set interface = call("Session::getCurrentInterface") %}
+{% set header_method = interface == 'central' ? 'header' : 'helpHeader' %}
+
+{% do call(['Html', header_method], {
     title: title,
     sector: menu[0] ?? 'none',
     item  : menu[1] ?? 'none',

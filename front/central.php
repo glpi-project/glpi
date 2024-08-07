@@ -54,7 +54,7 @@ if (isset($_REQUEST['newprofile'])) {
         Session::changeProfile($_REQUEST['newprofile']);
         if (Session::getCurrentInterface() == "helpdesk") {
             if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-                Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
+                Html::redirect($CFG_GLPI['root_doc'] . "/ServiceCatalog");
             } else {
                 Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
             }

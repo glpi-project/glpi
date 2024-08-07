@@ -317,6 +317,10 @@ Cypress.Commands.add("getMany", (names) => {
 
 Cypress.Commands.add("createWithAPI", (url, values) => {
     return cy.initApi().doApiRequest("POST", url, values).then(response => {
+        if (response.status !== 201) {
+            throw new Error('Failed to create item');
+        }
+
         return response.body.id;
     });
 });

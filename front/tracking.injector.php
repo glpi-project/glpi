@@ -99,7 +99,7 @@ if (isset($_POST['add'])) {
         if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
             Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.php");
         } else {
-            Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
+            Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");
         }
     }
     Html::nullFooter();
