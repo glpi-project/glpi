@@ -66,6 +66,14 @@
     .card {
         border-bottom-left-radius: var(--tblr-border-radius) !important;
     }
+
+    [data-fix-dropdown-flex] {
+        .select2-selection__rendered {
+            // Weird chrome only css issue that break select2 dropdown for
+            // question type dropdowns...
+            display: flex !important;
+        }
+    }
 }
 
 .editor-footer {
