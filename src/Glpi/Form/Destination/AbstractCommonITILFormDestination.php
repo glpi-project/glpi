@@ -39,6 +39,7 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Override;
@@ -71,8 +72,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         AnswersSet $answers_set,
         array $config
     ): array {
-        $typename = static::getTypeName(1);
-        $itemtype = static::getTargetItemtype();
+        $typename        = static::getTypeName(1);
+        $itemtype        = static::getTargetItemtype();
+        $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
         // missing from the input.
@@ -82,6 +84,22 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             // Temporary as entity configuration is not yet available
             'entities_id' => $form->fields['entities_id']
         ];
+
+        // Template field must be computed before applying predefined fields
+        $target_itemtype = static::getTargetItemtype();
+        $template_class = (new $target_itemtype())->getTemplateClass();
+        $template_field = new TemplateField($template_class);
+        $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
+            $template_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
+
+        // Remove template field from fields to apply
+        $fields_to_apply = array_filter(
+            $fields_to_apply,
+            fn($field) => !$field instanceof TemplateField
+        );
 
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
@@ -140,9 +158,13 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
      */
     public function getConfigurableFields(): array
     {
+        $target_itemtype = static::getTargetItemtype();
+        $template_class = (new $target_itemtype())->getTemplateClass();
+
         return [
             new TitleField(),
             new ContentField(),
+            new TemplateField($template_class),
         ];
     }
 
@@ -165,6 +187,13 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         $template = $itil->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
+        $template_foreign_key = $template::getForeignKeyField();
+
+        if (isset($input[$template_foreign_key])) {
+            $template->getFromDB($input[$template_foreign_key]);
+        } else {
+            $input[$template_foreign_key] = $template->getID();
+        }
 
         $predefined_fields_class = $itemtype . "TemplatePredefinedField";
 
