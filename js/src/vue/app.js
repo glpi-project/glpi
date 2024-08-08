@@ -68,6 +68,11 @@ const component_context = import.meta.webpackContext('.', {
     mode: 'lazy',
     chunkName: '/vue-sfc/[request]'
 });
+
+/* global __webpack_public_path__ */
+// eslint-disable-next-line no-global-assign
+__webpack_public_path__ = CFG_GLPI.root_doc + __webpack_public_path__;
+
 const components = {};
 component_context.keys().forEach((f) => {
     // Ex: ./Debug/Toolbar.vue => DebugToolbar

@@ -11,7 +11,7 @@ const config = {
         filename: 'app.js',
         chunkFilename: "[name].js",
         path: path.resolve(__dirname, 'public/build/vue'),
-        publicPath: '/public/build/vue/',
+        publicPath: '/public/build/vue',
         asyncChunks: true,
         clean: true,
     },

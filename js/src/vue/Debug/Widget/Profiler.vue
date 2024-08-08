@@ -1,4 +1,5 @@
 <script setup>
+    import ProfilerTable from './ProfilerTable.vue';
     import {computed, ref} from "vue";
 
     const props = defineProps({
@@ -19,8 +20,8 @@
             Hide near-instant sections (&lt;= 1 ms):
             <input type="checkbox" name="hide_instant_sections" v-model="hide_instant_sections">
         </label>
-        <widget-profiler-table :parent_duration="0" :nest_level="0" :profiler_sections="profiler_sections" :parent_id="null"
-                               :hide_instant_sections="hide_instant_sections"></widget-profiler-table>
+        <ProfilerTable :parent_duration="0" :nest_level="0" :profiler_sections="profiler_sections" :parent_id="null"
+                       :hide_instant_sections="hide_instant_sections"></ProfilerTable>
     </div>
 </template>
 

@@ -175,4 +175,7 @@
     #debug-sql-request-table::v-deep(span.mtk1) {
         color: var(--tblr-body-color);
     }
+    #debug-sql-request-table code {
+        color: var(--tblr-body-color);
+    }
 </style>

@@ -31,8 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import tinycolor from 'tinycolor2';
-
+/* global tinycolor */
 export class TeamBadgeProvider {
     constructor(display_initials, max_team_images = 3) {
         this.badges = {
