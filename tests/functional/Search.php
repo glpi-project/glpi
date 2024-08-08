@@ -3612,7 +3612,7 @@ class Search extends DbTestCase
     }
 
     /**
-     * @dataprovider testCriteriaWithSubqueriesProvider
+     * @dataProvider testCriteriaWithSubqueriesProvider
      */
     public function testCriteriaWithSubqueries(
         string $itemtype,
@@ -4838,7 +4838,7 @@ class Search extends DbTestCase
     }
 
     /**
-     * @dataprovider containsCriterionProvider
+     * @dataProvider containsCriterionProvider
      */
     public function testContainsCriterion(
         string $itemtype,
@@ -5071,7 +5071,7 @@ class Search extends DbTestCase
     }
 
     /**
-     * @dataprovider testRichTextProvider
+     * @dataProvider testRichTextProvider
      */
     public function testRichText(
         array $search_params,

@@ -393,7 +393,7 @@ class CommonITILValidation extends DbTestCase
     }
 
     /**
-     * @dataprovider testComputeValidationProvider
+     * @dataProvider testComputeValidationProvider
      */
     public function testComputeValidation(
         int $accepted,

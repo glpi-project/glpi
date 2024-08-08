@@ -89,7 +89,7 @@ class Calendar extends DbTestCase
     /**
      * Test cases for the computeEndDate function
      *
-     * @dataprovider testComputeEndDateProvider
+     * @dataProvider testComputeEndDateProvider
      *
      * @param \Calendar $calendar                    Test calendar
      * @param array     $compute_end_date_parameters Arguments for the computeEndDate function
