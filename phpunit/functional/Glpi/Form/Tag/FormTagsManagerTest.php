@@ -40,6 +40,8 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\CommentDescriptionTagProvider;
+use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
@@ -66,6 +68,16 @@ final class FormTagsManagerTest extends DbTestCase
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
                 provider: SectionTagProvider::class,
+            ),
+            new Tag(
+                label: 'Comment title: Comment title',
+                value: $this->getCommentId($form, 'Comment title'),
+                provider: CommentTitleTagProvider::class,
+            ),
+            new Tag(
+                label: 'Comment description: Comment description',
+                value: $this->getCommentId($form, 'Comment title'),
+                provider: CommentDescriptionTagProvider::class,
             ),
             new Tag(
                 label: 'Question: First name',
@@ -97,6 +109,8 @@ final class FormTagsManagerTest extends DbTestCase
             $this->getTagByName($tags, 'Question: Last name'),
             $this->getTagByName($tags, 'Answer: First name'),
             $this->getTagByName($tags, 'Answer: Last name'),
+            $this->getTagByName($tags, 'Comment title: Comment title'),
+            $this->getTagByName($tags, 'Comment description: Comment description'),
         ]);
 
         // With "name" filter
@@ -150,6 +164,22 @@ final class FormTagsManagerTest extends DbTestCase
         $this->checkGetTags($form, "Section", [
             $this->getTagByName($tags, 'Section: Personal information'),
         ]);
+
+        // With "Comment" filter
+        $this->checkGetTags($form, "Comment", [
+            $this->getTagByName($tags, 'Comment title: Comment title'),
+            $this->getTagByName($tags, 'Comment description: Comment description'),
+        ]);
+
+        // With "Comment title" filter
+        $this->checkGetTags($form, "Comment title", [
+            $this->getTagByName($tags, 'Comment title: Comment title'),
+        ]);
+
+        // With "Comment description" filter
+        $this->checkGetTags($form, "Comment description", [
+            $this->getTagByName($tags, 'Comment description: Comment description'),
+        ]);
     }
 
     private function checkGetTags(
@@ -198,19 +228,29 @@ final class FormTagsManagerTest extends DbTestCase
             $tags,
             'Answer: Last name'
         );
+        $comment_title_tag = $this->getTagByName(
+            $tags,
+            'Comment title: Comment title'
+        );
+        $comment_description_tag = $this->getTagByName(
+            $tags,
+            'Comment description: Comment description'
+        );
 
         $content_with_tag =
             "$form_name_tag->html, "
             . "$section_tag->html, "
             . "$first_name_question_tag->html: $first_name_answer_tag->html, "
-            . "$last_name_question_tag->html: $last_name_answer_tag->html"
+            . "$last_name_question_tag->html: $last_name_answer_tag->html, "
+            . "$comment_title_tag->html, "
+            . "$comment_description_tag->html"
         ;
         $computed_content = $tag_manager->insertTagsContent(
             $content_with_tag,
             $answers
         );
 
-        $this->assertEquals('First and last name form, Personal information, First name: John, Last name: Smith', $computed_content);
+        $this->assertEquals('First and last name form, Personal information, First name: John, Last name: Smith, Comment title, Comment description', $computed_content);
     }
 
     public function testGetTagProviders(): void
@@ -227,6 +267,7 @@ final class FormTagsManagerTest extends DbTestCase
         $builder->addSection("Personal information");
         $builder->addQuestion("First name", QuestionTypeShortText::class);
         $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        $builder->addComment("Comment title", "Comment description");
         return $this->createForm($builder);
     }
 }

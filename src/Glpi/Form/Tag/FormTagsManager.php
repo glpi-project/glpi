@@ -95,6 +95,8 @@ final class FormTagsManager
             new SectionTagProvider(),
             new QuestionTagProvider(),
             new AnswerTagProvider(),
+            new CommentTitleTagProvider(),
+            new CommentDescriptionTagProvider(),
         ]);
     }
 

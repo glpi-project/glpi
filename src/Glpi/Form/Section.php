@@ -87,8 +87,9 @@ final class Section extends CommonDBChild
     /**
      * Get blocks of this section
      * Block can be a question or a comment
+     * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return Block[]
+     * @return (BlockInterface & CommonDBChild)[]
      */
     public function getBlocks(): array
     {
