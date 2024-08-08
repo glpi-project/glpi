@@ -53,9 +53,10 @@ final class RendererController implements Controller
 {
     #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
     #[Route(
-        "/Form/Render",
+        "/Form/Render/{id}",
         name: "glpi_form_render",
-        methods: "GET"
+        methods: "GET",
+        requirements: ['id' => '\d+'],
     )]
     public function __invoke(Request $request): Response
     {
@@ -72,7 +73,7 @@ final class RendererController implements Controller
 
     private function loadTargetForm(Request $request): Form
     {
-        $forms_id = $request->query->getInt("id");
+        $forms_id = (int) $request->get("id");
         if (!$forms_id) {
             throw new BadRequestHttpException(
                 "The 'id' parameter is mandatory."
