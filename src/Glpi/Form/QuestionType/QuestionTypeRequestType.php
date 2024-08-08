@@ -120,16 +120,9 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function formatRawAnswer($answer): string
     {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => Ticket::getTicketTypeName($answer)
-        ]);
+        return Ticket::getTicketTypeName($answer);
     }
 
     #[Override]

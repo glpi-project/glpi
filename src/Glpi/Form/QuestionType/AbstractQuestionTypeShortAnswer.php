@@ -138,19 +138,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => $answer,
-        ]);
-    }
-
-    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::SHORT_ANSWER;

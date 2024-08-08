@@ -52,6 +52,8 @@ use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
@@ -209,6 +211,14 @@ class AnswersSetTest extends DbTestCase
                         123 => 'Dropdown 1'
                     ]
                 ]))
+                ->addQuestion("GLPI Objects", QuestionTypeItem::class, [
+                    'itemtype' => 'User',
+                    'items_id' => 0
+                ])
+                ->addQuestion("Dropdowns", QuestionTypeItemDropdown::class, [
+                    'itemtype' => 'Location',
+                    'items_id' => 0
+                ])
         );
 
         // File question type requires an uploaded file
@@ -245,6 +255,14 @@ class AnswersSetTest extends DbTestCase
             $this->getQuestionId($form, "Radio") => 'Radio 1',
             $this->getQuestionId($form, "Checkbox") => 'Checkbox 1',
             $this->getQuestionId($form, "Dropdown") => 'Dropdown 1',
+            $this->getQuestionId($form, "GLPI Objects") => [
+                'itemtype' => 'User',
+                'items_id' => 0
+            ],
+            $this->getQuestionId($form, "Dropdowns") => [
+                'itemtype' => 'Location',
+                'items_id' => 0
+            ],
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

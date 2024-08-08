@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Override;
 
@@ -86,6 +87,28 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
         return ''; // No options by default
+    }
+
+    #[Override]
+    public function renderAnswerTemplate($answer): string
+    {
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(
+            '<div class="form-control-plaintext">{{ answer }}</div>',
+            ['answer' => $this->formatRawAnswer($answer)]
+        );
+    }
+
+    #[Override]
+    public function formatRawAnswer($answer): string
+    {
+        // By default only return the string ansswer
+        if (!is_string($answer) && !is_numeric($answer)) {
+            throw new \InvalidArgumentException(
+                'Raw answer must be a string or a method must be implemented to format the answer'
+            );
+        }
+
+        return (string) $answer;
     }
 
     #[Override]
