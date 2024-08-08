@@ -99,12 +99,17 @@
       'id': '%id%'
    }|merge(options) %}
 
-   {% set field %}
-        {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.text(name, value, options) }}
-   {% endset %}
+   {% if options.readonly %}
+        {{ _self.htmlField(name, value, label, options) }}
+   {% else %}
+        {% set field %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+            {{ _inputs.text(name, value, options) }}
+        {% endset %}
 
-   {{ _self.field(name, field, label, options) }}
+        {{ _self.field(name, field, label, options) }}
+   {% endif %}
+
 {% endmacro %}
 
 {% macro urlField(name, value, label = '', options = {}) %}

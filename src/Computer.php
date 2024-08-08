@@ -140,6 +140,7 @@ class Computer extends CommonDBTM
          ->addStandardTab('Appliance_Item', $ong, $options)
          ->addStandardTab('DatabaseInstance', $ong, $options)
          ->addStandardTab('RuleMatchedLog', $ong, $options)
+         ->addStandardTab('PrintPreview', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
         return $ong;

@@ -1244,6 +1244,7 @@ HTML;
         }
         $tpl_vars['custom_header_tags'] = $custom_header_tags;
 
+        $tpl_vars['css_files'][] = ['path' => 'css/print.scss'];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
