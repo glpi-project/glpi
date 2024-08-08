@@ -226,13 +226,17 @@ class PrinterTest extends DbTestCase
         $entity = new \Entity();
         $DB->update(
             \Entity::getTable(),
-            ['autofill_delivery_date' => $state_param],
+            [
+                'autofill_delivery_date' => $state_param,
+                'autofill_warranty_date' => \Infocom::COPY_DELIVERY_DATE,
+            ],
             ['id' => $entity_id]
         );
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
         $this->assertTrue($entity->getFromDB($entity_id));
         $this->assertEquals($state_param, $entity->getField('autofill_delivery_date'));
+        $this->assertEquals(\Infocom::COPY_DELIVERY_DATE, $entity->getField('autofill_warranty_date'));
 
         // Create printer from template
         $printer = new \Printer();
@@ -250,5 +254,6 @@ class PrinterTest extends DbTestCase
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
         $this->assertEquals(36, $infocom->getField('warranty_duration'));
         $this->assertEquals(date('Y-m-d'), $infocom->getField('delivery_date')); // = today
+        $this->assertEquals($infocom->getField('warranty_date'), $infocom->getField('warranty_date'));
     }
 }
