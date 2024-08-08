@@ -40,9 +40,9 @@ use Glpi\Toolbox\Sanitizer;
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
-class DataExport extends \GLPITestCase
+class DataExportTest extends \GLPITestCase
 {
-    protected function normalizeValueForTextExportProvider(): iterable
+    public static function normalizeValueForTextExportProvider(): iterable
     {
         // Standard value
         yield [
@@ -97,8 +97,8 @@ HTML),
      */
     public function testNormalizeValueForTextExport(string $value, string $expected_result)
     {
-        $dataexport = $this->newTestedInstance();
+        $dataexport = new \Glpi\Toolbox\DataExport();
 
-        $this->string($dataexport->normalizeValueForTextExport($value))->isEqualTo($expected_result);
+        $this->assertEquals($expected_result, $dataexport->normalizeValueForTextExport($value));
     }
 }

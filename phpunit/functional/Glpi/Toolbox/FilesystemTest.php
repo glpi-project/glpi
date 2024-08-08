@@ -37,41 +37,41 @@ namespace tests\units\Glpi\Toolbox;
 
 use org\bovigo\vfs\vfsStream;
 
-class Filesystem extends \GLPITestCase
+class FilesystemTest extends \GLPITestCase
 {
     public function testCanWriteFile(): void
     {
         $config_dir = vfsStream::setup('config');
 
-        $this->newTestedInstance();
+        $instance = new \Glpi\Toolbox\Filesystem();
 
         // Files can be written when they not exists and directory is writable
         $config_dir->chmod(0700);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/config_db.php')))->isEqualTo(true);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/whatever.yml')))->isEqualTo(true);
-        $this->boolean($this->testedInstance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]))->isEqualTo(true);
+        $this->assertTrue($instance->canWriteFile(vfsStream::url('config/config_db.php')));
+        $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
+        $this->assertTrue($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
         // Files cannot be written when they not exists and directory is not writable
         $config_dir->chmod(0500);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/config_db.php')))->isEqualTo(false);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/whatever.yml')))->isEqualTo(false);
-        $this->boolean($this->testedInstance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]))->isEqualTo(false);
+        $this->assertFalse($instance->canWriteFile(vfsStream::url('config/config_db.php')));
+        $this->assertFalse($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
+        $this->assertFalse($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
-        // Files cannot be written when they exists but are not writable (even if directory is writable)
+        // Files cannot be written when they exist but are not writable (even if directory is writable)
         $config_dir->chmod(0700);
         $file1 = vfsStream::newFile('config_db.php', 0400)->at($config_dir)->setContent('<?php //my config file');
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/config_db.php')))->isEqualTo(false);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/whatever.yml')))->isEqualTo(true);
-        $this->boolean($this->testedInstance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]))->isEqualTo(false);
+        $this->assertFalse($instance->canWriteFile(vfsStream::url('config/config_db.php')));
+        $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
+        $this->assertFalse($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
-        // Files can be written when they exists and are writable (even if directory is not writable)
-        $file1->chmod(0600);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/config_db.php')))->isEqualTo(true);
-        $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/whatever.yml')))->isEqualTo(true);
-        $this->boolean($this->testedInstance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]))->isEqualTo(true);
+        // Files can be written when they exist and are writable (even if directory is not writable)
+        $file1->chmod(0666);
+        $this->assertTrue($instance->canWriteFile(vfsStream::url('config/config_db.php')));
+        $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
+        $this->assertTrue($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
     }
 
-    protected function isFilepathSafeProvider(): iterable
+    public static function isFilepathSafeProvider(): iterable
     {
         // Unix paths and file scheme
         foreach (['', 'file://'] as $prefix) {
@@ -177,7 +177,7 @@ class Filesystem extends \GLPITestCase
      */
     public function testIsFilepathSafe(string $path, ?string $restricted_directory, bool $is_safe): void
     {
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isFilepathSafe($path, $restricted_directory))->isEqualTo($is_safe);
+        $instance = new \Glpi\Toolbox\Filesystem();
+        $this->assertSame($is_safe, $instance->isFilepathSafe($path, $restricted_directory));
     }
 }

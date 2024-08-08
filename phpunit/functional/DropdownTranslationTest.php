@@ -39,9 +39,9 @@ use DbTestCase;
 use ITILCategory;
 use QueryExpression;
 
-class DropdownTranslation extends DbTestCase
+class DropdownTranslationTest extends DbTestCase
 {
-    protected function completenameGenerationProvider(): iterable
+    private function completenameGenerationFakeProvider(): iterable
     {
         $this->login();
 
@@ -66,7 +66,7 @@ class DropdownTranslation extends DbTestCase
             ]
         );
 
-        // Default value is alway returned when there is no translation
+        // Default value is always returned when there is no translation
         foreach ([$category->getID(), $sub_category->getID(), $sub_sub_category->getID()] as $category_id) {
             yield [
                 'translations'  => [
@@ -166,31 +166,40 @@ class DropdownTranslation extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider completenameGenerationProvider
-     */
-    public function testgetTranslatedCompletename(
-        array $translations,
-        int $category_id,
-        string $language,
-        string $default_value,
-        string $result
-    ): void {
+    public function testgetTranslatedCompletename(): void
+    {
         global $CFG_GLPI, $DB;
         $CFG_GLPI['translate_dropdowns'] = 1;
 
-        // Delete existing translations to prevent conflicts with tested data
-        $DB->delete(\DropdownTranslation::getTable(), [new QueryExpression("true")]);
+        $values = $this->completenameGenerationFakeProvider();
+        foreach ($values as $value) {
+            // Delete existing translations to prevent conflicts with tested data
+            $DB->delete(\DropdownTranslation::getTable(), [new QueryExpression("true")]);
 
-        $this->createItems(\DropdownTranslation::class, $translations);
+            $translations = $value['translations'];
+            $category_id = $value['category_id'];
+            $language = $value['language'];
+            $default_value = $value['default_value'];
+            $result = $value['result'];
 
-        foreach (['en_GB', 'fr_FR', 'es_ES'] as $session_language) {
-            // Current session language should not affect result
-            $_SESSION['glpilanguage'] = $session_language;
-            $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($session_language);
+            $this->createItems(\DropdownTranslation::class, $translations);
 
-            $this->string(\DropdownTranslation::getTranslatedValue($category_id, ITILCategory::class, 'completename', $language, $default_value))
-                ->isEqualTo($result);
+            foreach (['en_GB', 'fr_FR', 'es_ES'] as $session_language) {
+                // Current session language should not affect result
+                $_SESSION['glpilanguage'] = $session_language;
+                $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($session_language);
+
+                $this->assertEquals(
+                    $result,
+                    \DropdownTranslation::getTranslatedValue(
+                        $category_id,
+                        ITILCategory::class,
+                        'completename',
+                        $language,
+                        $default_value
+                    )
+                );
+            }
         }
     }
 }

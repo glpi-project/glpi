@@ -36,13 +36,14 @@
 namespace tests\units;
 
 use Glpi\Plugin\Hooks;
+use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
 
 /* Test for inc/glpikey.class.php */
 
-class GLPIKey extends \DbTestCase
+class GLPIKeyTest extends \DbTestCase
 {
-    protected function getExpectedKeyPathProvider()
+    public static function getExpectedKeyPathProvider()
     {
         return [
             ['0.90.5', null],
@@ -64,48 +65,45 @@ class GLPIKey extends \DbTestCase
      */
     public function testGetExpectedKeyPath($glpi_version, $expected_path)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->variable($this->testedInstance->getExpectedKeyPath($glpi_version))->isEqualTo($expected_path);
+        $glpikey = new \GLPIKey();
+        $this->assertEquals($expected_path, $glpikey->getExpectedKeyPath($glpi_version));
     }
 
     public function testKeyExists()
     {
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
-
-        $this->boolean($this->testedInstance->keyExists())->isFalse();
+        $this->assertFalse($glpikey->keyExists());
 
         vfsStream::create(['glpicrypt.key' => 'keyfilecontents'], $structure->getChild('config'));
-        $this->boolean($this->testedInstance->keyExists())->isTrue();
+        $this->assertTrue($glpikey->keyExists());
     }
 
-    protected function legacyEncryptedProvider()
+    public static function legacyEncryptedProvider()
     {
-       // basic string, default key
+        // basic string, default key
         yield [
             'encrypted' => 'G6y/xA==',
             'decrypted' => 'test',
             'key'       => null,
         ];
 
-       // string with special chars, default key
+        // string with special chars, default key
         yield [
             'encrypted' => 'IYx+rrgV1IqUtqSD1repTebaf4c=',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
             'key'       => null,
         ];
 
-       // basic string, simple custom key
+        // basic string, simple custom key
         yield [
             'encrypted' => '7cjo5w==',
             'decrypted' => 'test',
             'key'       => 'custom_k3y',
         ];
 
-       // string with special chars, complex custom  key
+        // string with special chars, complex custom  key
         yield [
             'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVkimkW8=',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
@@ -118,26 +116,20 @@ class GLPIKey extends \DbTestCase
      */
     public function testDecryptUsingLegacyKey(string $encrypted, string $decrypted, ?string $key)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->decryptUsingLegacyKey($encrypted, $key))->isEqualTo($decrypted);
+        $glpikey = new \GLPIKey();
+        $this->assertEquals($decrypted, $glpikey->decryptUsingLegacyKey($encrypted, $key));
     }
 
     public function testGetWithoutKey()
     {
         vfsStream::setup('glpi', null, ['config' => []]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
-
-        $this->when(
-            function () {
-                $this->testedInstance->get();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('You must create a security key, see security:change_key command.')
-         ->exists();
+        $glpikey->get();
+        $this->hasPhpLogRecordThatContains(
+            'You must create a security key, see security:change_key command.',
+            Logger::WARNING
+        );
     }
 
     public function testGetUnreadableKey()
@@ -145,32 +137,26 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0222);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->when(
-            function () {
-                $this->testedInstance->get();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unable to get security key file contents.')
-         ->exists();
+        $glpikey->get();
+        $this->hasPhpLogRecordThatContains(
+            'Unable to get security key file contents.',
+            Logger::WARNING
+        );
     }
 
     public function testGetInvalidKey()
     {
         vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->when(
-            function () {
-                $this->testedInstance->get();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Invalid security key file contents.')
-         ->exists();
+        $glpikey->get();
+        $this->hasPhpLogRecordThatContains(
+            'Invalid security key file contents.',
+            Logger::WARNING
+        );
     }
 
     public function testGet()
@@ -178,33 +164,33 @@ class GLPIKey extends \DbTestCase
         $valid_key = 'abcdefghijklmnopqrstuvwxyz123456';
         vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => $valid_key]]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $key = $this->testedInstance->get();
+        $key = $glpikey->get();
 
-        $this->string($key)->isEqualTo($valid_key);
+        $this->assertEquals($valid_key, $key);
     }
 
     public function testGetLegacyKeyDefault()
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $key = $this->testedInstance->getLegacyKey();
+        $key = $glpikey->getLegacyKey();
 
-        $this->string($key)->isEqualTo("GLPI£i'snarss'ç");
+        $this->assertEquals("GLPI£i'snarss'ç", $key);
     }
 
     public function testGetLegacyKeyCustom()
     {
         vfsStream::setup('glpi', null, ['config' => ['glpi.key' => 'mylegacykey']]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $key = $this->testedInstance->getLegacyKey();
+        $key = $glpikey->getLegacyKey();
 
-        $this->string($key)->isEqualTo('mylegacykey');
+        $this->assertEquals('mylegacykey', $key);
     }
 
     public function testGetLegacyKeyUnreadable()
@@ -212,84 +198,78 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpi.key' => 'unreadable file']]);
         $structure->getChild('config/glpi.key')->chmod(0222);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->when(
-            function () {
-                $this->testedInstance->getLegacyKey();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unable to get security legacy key file contents.')
-         ->exists();
+        $glpikey->getLegacyKey();
+        $this->hasPhpLogRecordThatContains(
+            'Unable to get security legacy key file contents.',
+            Logger::WARNING
+        );
     }
 
     public function testGenerateWithoutPreviousKey()
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $success = $this->testedInstance->generate();
-        $this->boolean($success)->isTrue();
+        $success = $glpikey->generate();
+        $this->assertTrue($success);
 
-       // key file exists and key can be retrieved
-        $this->boolean(file_exists(vfsStream::url('glpi/config/glpicrypt.key')))->isTrue();
-        $this->string($this->testedInstance->get())->isNotEmpty();
+        // key file exists and key can be retrieved
+        $this->assertTrue(file_exists(vfsStream::url('glpi/config/glpicrypt.key')));
+        $this->assertNotEmpty($glpikey->get());
     }
 
     public function testGenerateWithExistingPreviousKey()
     {
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
+        $structure->getChild('config/glpicrypt.key')->chmod(0666);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $success = $this->testedInstance->generate();
-        $this->boolean($success)->isTrue();
+        $success = $glpikey->generate();
+        $this->assertTrue($success);
 
-       // key file exists and key can be retrieved
-        $this->boolean(file_exists(vfsStream::url('glpi/config/glpicrypt.key')))->isTrue();
-        $this->string($this->testedInstance->get())->isNotEmpty();
+        // key file exists and key can be retrieved
+        $this->assertTrue(file_exists(vfsStream::url('glpi/config/glpicrypt.key')));
+        $this->assertNotEmpty($glpikey->get());
 
-       // check that decrypted value of _local_ldap.rootdn_passwd is correct
+        // check that decrypted value of _local_ldap.rootdn_passwd is correct
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-        $this->string($this->testedInstance->decrypt($ldap->fields['rootdn_passwd']))->isEqualTo('insecure');
+        $this->assertEquals('insecure', $glpikey->decrypt($ldap->fields['rootdn_passwd']));
     }
 
     public function testGenerateFailureWithUnwritableConfigDir()
     {
-       // Unwritable dir
+        // Unwritable dir
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         $structure->getChild('config')->chmod(0555);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
 
-        $result = null;
-        $this->when(
-            function () use (&$result) {
-                $result = $this->testedInstance->generate();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.')
-         ->exists();
-        $this->boolean($result)->isFalse();
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-       // Unwritable key file
+        $this->assertFalse($glpikey->generate());
+        $this->hasPhpLogRecordThatContains(
+            'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
+            Logger::WARNING
+        );
+    }
+
+    public function testGenerateFailureWithUnwritableConfigFile()
+    {
+        // Unwritable key file
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'previouskey']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0444);
 
-        $result = null;
-        $this->when(
-            function () use (&$result) {
-                $result = $this->testedInstance->generate();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.')
-         ->exists();
-        $this->boolean($result)->isFalse();
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        $this->assertFalse($glpikey->generate());
+        $this->hasPhpLogRecordThatContains(
+            'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
+            Logger::WARNING
+        );
     }
 
     public function testGenerateFailureWithUnreadableKey()
@@ -297,36 +277,26 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0222);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $result = null;
-        $this->when(
-            function () use (&$result) {
-                $result = $this->testedInstance->generate();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unable to get security key file contents.')
-         ->exists();
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($glpikey->generate());
+        $this->hasPhpLogRecordThatContains(
+            'Unable to get security key file contents.',
+            Logger::WARNING
+        );
     }
 
     public function testGenerateFailureWithInvalidPreviousKey()
     {
         vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $result = null;
-        $this->when(
-            function () use (&$result) {
-                $result = $this->testedInstance->generate();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Invalid security key file contents.')
-         ->exists();
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($glpikey->generate());
+        $this->hasPhpLogRecordThatContains(
+            'Invalid security key file contents.',
+            Logger::WARNING
+        );
     }
 
     public function testEncryptDecryptUsingDefaultKey()
@@ -334,25 +304,25 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-       // Short string with no special chars
+        // Short string with no special chars
         $string = 'MyP4ssw0rD';
-        $encrypted = $this->testedInstance->encrypt($string);
-        $decrypted = $this->testedInstance->decrypt($encrypted);
-        $this->string($decrypted)->isEqualTo($string);
+        $encrypted = $glpikey->encrypt($string);
+        $decrypted = $glpikey->decrypt($encrypted);
+        $this->assertEquals($string, $decrypted);
 
-       // Empty string
+        // Empty string
         $string = '';
-        $encrypted = $this->testedInstance->encrypt($string);
-        $decrypted = $this->testedInstance->decrypt($encrypted);
-        $this->string($decrypted)->isEqualTo($string);
+        $encrypted = $glpikey->encrypt($string);
+        $decrypted = $glpikey->decrypt($encrypted);
+        $this->assertEquals($string, $decrypted);
 
-       // Complex string with special chars
+        // Complex string with special chars
         $string = 'This is a string I want to crypt, with some unusual chars like %, \', @, and so on!';
-        $encrypted = $this->testedInstance->encrypt($string);
-        $decrypted = $this->testedInstance->decrypt($encrypted);
-        $this->string($decrypted)->isEqualTo($string);
+        $encrypted = $glpikey->encrypt($string);
+        $decrypted = $glpikey->decrypt($encrypted);
+        $this->assertEquals($string, $decrypted);
     }
 
     protected function encryptDecryptProvider()
@@ -385,17 +355,17 @@ class GLPIKey extends \DbTestCase
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-       // NONCE produce different result each time
-        $this->string($this->testedInstance->encrypt($string, $key))->isNotEqualTo($encrypted);
+        // NONCE produce different result each time
+        $this->assertNotEquals($encrypted, $glpikey->encrypt($string, $key));
 
-       // As encryption produces different result each time, we cannot validate encrypted value.
-       // So we validates that encryption alters string, and decryption reproduces the initial string.
-        $encrypted = $this->testedInstance->encrypt($string, $key);
-        $this->string($encrypted)->isNotEqualTo($string);
-        $decrypted = $this->testedInstance->decrypt($encrypted, $key);
-        $this->string($decrypted)->isEqualTo($string);
+        // As encryption produces different result each time, we cannot validate encrypted value.
+        // So we validate that encryption alters string, and decryption reproduces the initial string.
+        $encrypted = $glpikey->encrypt($string, $key);
+        $this->assertNotEquals($string, $encrypted);
+        $decrypted = $glpikey->decrypt($encrypted, $key);
+        $this->assertEquals($string, $decrypted);
     }
 
     /**
@@ -405,10 +375,10 @@ class GLPIKey extends \DbTestCase
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $decrypted = $this->testedInstance->decrypt($encrypted, $key);
-        $this->string($decrypted)->isEqualTo($string);
+        $decrypted = $glpikey->decrypt($encrypted, $key);
+        $this->assertEquals($string, $decrypted);
     }
 
     /**
@@ -419,10 +389,10 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->variable($this->testedInstance->decrypt(null))->isNull();
-        $this->string($this->testedInstance->decrypt(''))->isEmpty();
+        $this->assertNull($glpikey->decrypt(null));
+        $this->assertEmpty($glpikey->decrypt(''));
     }
 
     public function testDecryptInvalidString()
@@ -430,20 +400,13 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $result = null;
-
-        $this->when(
-            function () use (&$result) {
-                $result = $this->testedInstance->decrypt('not a valid value');
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unable to extract nonce from string. It may not have been crypted with sodium functions.')
-         ->exists();
-
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($glpikey->decrypt('not a valid value'));
+        $this->hasPhpLogRecordThatContains(
+            'Unable to extract nonce from string. It may not have been crypted with sodium functions.',
+            Logger::WARNING
+        );
     }
 
     public function testDecryptUsingBadKey()
@@ -451,28 +414,20 @@ class GLPIKey extends \DbTestCase
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $result = null;
-
-        $this->when(
-            function () use (&$result) {
-               // 'test' string crypted with a valid key used just for that
-                $result = $this->testedInstance->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY=');
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unable to decrypt string. It may have been crypted with another key.')
-         ->exists();
-
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($glpikey->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY='));
+        $this->hasPhpLogRecordThatContains(
+            'Unable to decrypt string. It may have been crypted with another key.',
+            Logger::WARNING
+        );
     }
 
     public function testGetFields()
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
         global $PLUGIN_HOOKS;
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_FIELDS] ?? null;
@@ -487,14 +442,14 @@ class GLPIKey extends \DbTestCase
             ],
         ];
 
-        $fields = $this->testedInstance->getFields();
+        $fields = $glpikey->getFields();
 
         unset($PLUGIN_HOOKS[Hooks::SECURED_FIELDS]);
         if ($hooks_backup !== null) {
             $PLUGIN_HOOKS[Hooks::SECURED_FIELDS] = $hooks_backup;
         }
 
-        $this->array($fields)->isEqualTo(
+        $this->assertEquals(
             [
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
@@ -503,7 +458,8 @@ class GLPIKey extends \DbTestCase
                 'glpi_plugin_myplugin_remote.key',
                 'glpi_plugin_myplugin_remote.secret',
                 'glpi_plugin_anotherplugin_link.pass',
-            ]
+            ],
+            $fields
         );
     }
 
@@ -511,7 +467,7 @@ class GLPIKey extends \DbTestCase
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
         global $PLUGIN_HOOKS;
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] ?? null;
@@ -525,14 +481,14 @@ class GLPIKey extends \DbTestCase
             ],
         ];
 
-        $configs = $this->testedInstance->getConfigs();
+        $configs = $glpikey->getConfigs();
 
         unset($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]);
         if ($hooks_backup !== null) {
             $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] = $hooks_backup;
         }
 
-        $this->array($configs)->isEqualTo(
+        $this->assertEquals(
             [
                 'core' => [
                     'glpinetwork_registration_key',
@@ -547,7 +503,8 @@ class GLPIKey extends \DbTestCase
                 'plugin:anotherplugin' => [
                     'secret',
                 ],
-            ]
+            ],
+            $configs
         );
     }
 
@@ -555,8 +512,7 @@ class GLPIKey extends \DbTestCase
     {
         vfsStream::setup('glpi', null, ['config' => []]);
 
-        $this->newTestedInstance(vfsStream::url('glpi/config'));
-
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
         global $PLUGIN_HOOKS;
         $hooks_backup = $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] ?? null;
 
@@ -566,21 +522,21 @@ class GLPIKey extends \DbTestCase
             ],
         ];
 
-        $is_url_base_secured = $this->testedInstance->isConfigSecured('core', 'url_base');
-        $is_smtp_passwd_secured = $this->testedInstance->isConfigSecured('core', 'smtp_passwd');
-        $is_myplugin_password_secured = $this->testedInstance->isConfigSecured('plugin:myplugin', 'password');
-        $is_myplugin_href_secured = $this->testedInstance->isConfigSecured('plugin:myplugin', 'href');
-        $is_someplugin_conf_secured = $this->testedInstance->isConfigSecured('plugin:someplugin', 'conf');
+        $is_url_base_secured = $glpikey->isConfigSecured('core', 'url_base');
+        $is_smtp_passwd_secured = $glpikey->isConfigSecured('core', 'smtp_passwd');
+        $is_myplugin_password_secured = $glpikey->isConfigSecured('plugin:myplugin', 'password');
+        $is_myplugin_href_secured = $glpikey->isConfigSecured('plugin:myplugin', 'href');
+        $is_someplugin_conf_secured = $glpikey->isConfigSecured('plugin:someplugin', 'conf');
 
         unset($PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]);
         if ($hooks_backup !== null) {
             $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS] = $hooks_backup;
         }
 
-        $this->boolean($is_url_base_secured)->isFalse();
-        $this->boolean($is_smtp_passwd_secured)->isTrue();
-        $this->boolean($is_myplugin_password_secured)->isTrue();
-        $this->boolean($is_myplugin_href_secured)->isFalse();
-        $this->boolean($is_someplugin_conf_secured)->isFalse();
+        $this->assertFalse($is_url_base_secured);
+        $this->assertTrue($is_smtp_passwd_secured);
+        $this->assertTrue($is_myplugin_password_secured);
+        $this->assertFalse($is_myplugin_href_secured);
+        $this->assertFalse($is_someplugin_conf_secured);
     }
 }

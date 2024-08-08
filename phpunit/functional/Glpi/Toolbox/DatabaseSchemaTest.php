@@ -35,9 +35,9 @@
 
 namespace tests\units\Glpi\Toolbox;
 
-class DatabaseSchema extends \GLPITestCase
+class DatabaseSchemaTest extends \GLPITestCase
 {
-    protected function versionsProvider(): iterable
+    public static function versionsProvider(): iterable
     {
         foreach (['-dev', '-alpha', '-alpha1', '-alpha3', '-beta', '-beta2', '-rc', '-rc1', ''] as $suffix) {
             // Unavailable versions
@@ -70,10 +70,10 @@ class DatabaseSchema extends \GLPITestCase
      */
     public function testGetEmptySchemaPath(string $version, ?string $expected): void
     {
-        $instance = $this->newTestedInstance();
+        $instance = new \Glpi\Toolbox\DatabaseSchema();
         if ($expected !== null) {
             $expected = realpath(GLPI_ROOT) . '/install/mysql/' . $expected;
         }
-        $this->variable($instance->getEmptySchemaPath($version))->isEqualTo($expected);
+        $this->assertEquals($expected, $instance->getEmptySchemaPath($version));
     }
 }

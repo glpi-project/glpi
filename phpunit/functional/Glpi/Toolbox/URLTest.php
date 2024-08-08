@@ -35,9 +35,9 @@
 
 namespace tests\units\Glpi\Toolbox;
 
-class URL extends \GLPITestCase
+class URLTest extends \GLPITestCase
 {
-    protected function urlProvider(): iterable
+    public static function urlProvider(): iterable
     {
         yield [
             'url'      => null,
@@ -116,7 +116,7 @@ class URL extends \GLPITestCase
      */
     public function testSanitizeURL(?string $url, string $expected): void
     {
-        $this->newTestedInstance();
-        $this->string($this->testedInstance->sanitizeURL($url))->isEqualTo($expected);
+        $instance = new \Glpi\Toolbox\URL();
+        $this->assertEquals($expected, $instance->sanitizeURL($url));
     }
 }

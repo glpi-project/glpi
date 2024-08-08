@@ -48,30 +48,28 @@ use User;
 
 /* Test for inc/dropdown.class.php */
 
-class Dropdown extends DbTestCase
+class DropdownTest extends DbTestCase
 {
     public function testShowLanguages()
     {
 
         $opt = [ 'display_emptychoice' => true, 'display' => false ];
         $out = \Dropdown::showLanguages('dropfoo', $opt);
-        $this->string($out)
-         ->contains("name='dropfoo'")
-         ->contains("value='' selected")
-         ->notContains("value='0'")
-         ->contains("value='fr_FR'");
+        $this->assertStringContainsString("name='dropfoo'", $out);
+        $this->assertStringContainsString("value='' selected", $out);
+        $this->assertStringNotContainsString("value='0'", $out);
+        $this->assertStringContainsString("value='fr_FR'", $out);
 
         $opt = ['display' => false, 'value' => 'cs_CZ', 'rand' => '1234'];
         $out = \Dropdown::showLanguages('language', $opt);
-        $this->string($out)
-         ->notContains("value=''")
-         ->notContains("value='0'")
-         ->contains("name='language' id='dropdown_language1234")
-         ->contains("value='cs_CZ' selected")
-         ->contains("value='fr_FR'");
+        $this->assertStringNotContainsString("value=''", $out);
+        $this->assertStringNotContainsString("value='0'", $out);
+        $this->assertStringContainsString("name='language' id='dropdown_language1234", $out);
+        $this->assertStringContainsString("value='cs_CZ' selected", $out);
+        $this->assertStringContainsString("value='fr_FR'", $out);
     }
 
-    public function dataTestImport()
+    public static function dataTestImport()
     {
         return [
             // input,             name,  message
@@ -90,16 +88,16 @@ class Dropdown extends DbTestCase
     {
         $id = \Dropdown::import('UserTitle', $input);
         if ($result) {
-            $this->integer((int)$id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, (int)$id);
             $ut = new \UserTitle();
-            $this->boolean($ut->getFromDB($id))->isTrue();
-            $this->string($ut->getField('name'))->isIdenticalTo($result);
+            $this->assertTrue($ut->getFromDB($id));
+            $this->assertSame($result, $ut->getField('name'));
         } else {
-            $this->integer((int)$id)->isLessThan(0);
+            $this->assertLessThan(0, (int)$id);
         }
     }
 
-    public function dataTestTreeImport()
+    public static function dataTestTreeImport()
     {
         return [
             // input,                                  name,    completename, message
@@ -126,13 +124,13 @@ class Dropdown extends DbTestCase
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
         $id = \Dropdown::import('Location', $input);
         if ($result) {
-            $this->integer((int)$id, $msg)->isGreaterThan(0);
+            $this->assertGreaterThan(0, (int)$id, $msg);
             $ut = new \Location();
-            $this->boolean($ut->getFromDB($id))->isTrue();
-            $this->string($ut->getField('name'))->isIdenticalTo($result);
-            $this->string($ut->getField('completename'))->isIdenticalTo($complete);
+            $this->assertTrue($ut->getFromDB($id));
+            $this->assertSame($result, $ut->getField('name'));
+            $this->assertSame($complete, $ut->getField('completename'));
         } else {
-            $this->integer((int)$id)->isLessThanOrEqualTo(0);
+            $this->assertLessThanOrEqual(0, (int)$id);
         }
     }
 
@@ -143,34 +141,34 @@ class Dropdown extends DbTestCase
         $encoded_sep = Sanitizer::sanitize(' > ');
 
         $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
-        $this->string($ret)->isIdenticalTo('&nbsp;');
+        $this->assertSame('&nbsp;', $ret);
 
         $cat = getItemByTypeName('TaskCategory', '_cat_1');
 
         $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
-       // basic test returns string only
+        // basic test returns string only
         $expected = $cat->fields['name'] . $encoded_sep . $subCat->fields['name'];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return with comments
+        // test of return with comments
         $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
             'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_sep
                                     . $subCat->fields['name'] . "<br><span class='b'>&nbsp;Comments&nbsp;</span>"
                                     . $subCat->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return without $tooltip
+        // test of return without $tooltip
         $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
             'comment' => $subCat->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return with translations
+        // test of return with translations
         $CFG_GLPI['translate_dropdowns'] = 1;
         // Force generation of completename that was not done on dataset bootstrap
         // because `translate_dropdowns` is false by default.
@@ -185,34 +183,34 @@ class Dropdown extends DbTestCase
             'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
-       // switch back to default language
+        // switch back to default language
         $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       ////////////////////////////////
-       // test for other dropdown types
-       ////////////////////////////////
+        ////////////////////////////////
+        // test for other dropdown types
+        ////////////////////////////////
 
-       ///////////
-       // Computer
+        ///////////
+        // Computer
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $ret = \Dropdown::getDropdownName('glpi_computers', $computer->getID());
-        $this->string($ret)->isIdenticalTo($computer->getName());
+        $this->assertSame($computer->getName(), $ret);
 
         $expected = ['name'    => $computer->getName(),
             'comment' => $computer->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_computers', $computer->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       //////////
-       // Contact
+        //////////
+        // Contact
         $contact = getItemByTypeName('Contact', '_contact01_name');
         $expected = $contact->getName();
         $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return with comments
+        // test of return with comments
         $expected = ['name'    => $contact->getName(),
             'comment' => "Comment for contact _contact01_name<br><span class='b'>" .
                                     "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>" .
@@ -220,62 +218,62 @@ class Dropdown extends DbTestCase
                                     "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com"
         ];
         $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return without $tooltip
+        // test of return without $tooltip
         $expected = ['name'    => $contact->getName(),
             'comment' => $contact->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true, true, false);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       ///////////
-       // Supplier
+        ///////////
+        // Supplier
         $supplier = getItemByTypeName('Supplier', '_suplier01_name');
         $expected = $supplier->getName();
         $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return with comments
+        // test of return with comments
         $expected = ['name'    => $supplier->getName(),
             'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>" .
                                      "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com"
         ];
         $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return without $tooltip
+        // test of return without $tooltip
         $expected = ['name'    => $supplier->getName(),
             'comment' => $supplier->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true, true, false);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       ///////////
-       // Budget
+        ///////////
+        // Budget
         $budget = getItemByTypeName('Budget', '_budget01');
         $expected = $budget->getName();
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return with comments
+        // test of return with comments
         $expected = ['name'    =>  $budget->getName(),
             'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: " .
                                        "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>" .
                                        "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 "
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
-       // test of return without $tooltip
+        // test of return without $tooltip
         $expected = ['name'    => $budget->getName(),
             'comment' => $budget->fields['comment']
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
     }
 
-    public function dataGetValueWithUnit()
+    public static function dataGetValueWithUnit()
     {
         return [
             [1,      'auto',        null, '1024 KiB'],
@@ -315,10 +313,10 @@ class Dropdown extends DbTestCase
         $value = $decimals !== null
          ? \Dropdown::getValueWithUnit($input, $unit, $decimals)
          : \Dropdown::getValueWithUnit($input, $unit);
-        $this->string($value)->isIdenticalTo($expected);
+        $this->assertSame($expected, $value);
     }
 
-    protected function getDropdownValueProvider()
+    public static function getDropdownValueProvider()
     {
         return [
             [
@@ -916,7 +914,7 @@ class Dropdown extends DbTestCase
         $this->login();
 
         $bkp_params = [];
-       //set session params if any
+        //set session params if any
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
                 if (isset($_SESSION[$param])) {
@@ -930,7 +928,7 @@ class Dropdown extends DbTestCase
 
         $result = \Dropdown::getDropdownValue($params, false);
 
-       //reset session params before executing test
+        //reset session params before executing test
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
                 if (isset($bkp_params[$param])) {
@@ -941,10 +939,10 @@ class Dropdown extends DbTestCase
             }
         }
 
-        $this->array($result)->isIdenticalTo($expected);
+        $this->assertSame($expected, $result);
     }
 
-    protected function getDropdownConnectProvider()
+    public static function getDropdownConnectProvider()
     {
         $encoded_sep = Sanitizer::sanitize('>');
 
@@ -1083,7 +1081,7 @@ class Dropdown extends DbTestCase
         $this->login();
 
         $bkp_params = [];
-       //set session params if any
+        //set session params if any
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
                 if (isset($_SESSION[$param])) {
@@ -1097,7 +1095,7 @@ class Dropdown extends DbTestCase
 
         $result = \Dropdown::getDropdownConnect($params, false);
 
-       //reset session params before executing test
+        //reset session params before executing test
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
                 if (isset($bkp_params[$param])) {
@@ -1108,10 +1106,10 @@ class Dropdown extends DbTestCase
             }
         }
 
-        $this->array($result)->isIdenticalTo($expected);
+        $this->assertSame($expected, $result);
     }
 
-    protected function getDropdownNumberProvider()
+    public static function getDropdownNumberProvider()
     {
         return [
             [
@@ -1264,10 +1262,10 @@ class Dropdown extends DbTestCase
         $CFG_GLPI['dropdown_max'] = 10;
         $result = \Dropdown::getDropdownNumber($params, false);
         $CFG_GLPI['dropdown_max'] = $orig_max;
-        $this->array($result)->isIdenticalTo($expected);
+        $this->assertSame($expected, $result);
     }
 
-    protected function getDropdownUsersProvider()
+    public static function getDropdownUsersProvider()
     {
         return [
             [
@@ -1389,7 +1387,7 @@ class Dropdown extends DbTestCase
 
         $params['_idor_token'] = \Session::getNewIDORToken('User');
         $result = \Dropdown::getDropdownUsers($params, false);
-        $this->array($result)->isIdenticalTo($expected);
+        $this->assertSame($expected, $result);
     }
 
     /**
@@ -1400,14 +1398,15 @@ class Dropdown extends DbTestCase
      */
     public function testGetDropdownValuePaginate()
     {
-       //let's add some content in Locations
+        //let's add some content in Locations
         $location = new \Location();
         for ($i = 0; $i <= 20; ++$i) {
-            $this->integer(
+            $this->assertGreaterThan(
+                0,
                 (int)$location->add([
                     'name'   => "Test location $i"
                 ])
-            )->isGreaterThan(0);
+            );
         }
 
         $post = [
@@ -1421,53 +1420,55 @@ class Dropdown extends DbTestCase
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
-        $this->array($values)
-         ->integer['count']->isEqualTo(10)
-         ->array['results']
-            ->hasSize(2);
+        $this->assertSame(10, $values['count']);
+        $this->assertCount(2, $values['results']);
 
         $results = (array)$values['results'];
-        $this->array((array)$results[0])
-         ->isIdenticalTo([
-             'id'     => 0,
-             'text'   => '-----'
-         ]);
+        $this->assertSame(
+            [
+                'id'     => 0,
+                'text'   => '-----'
+            ],
+            (array)$results[0]
+        );
 
         $list_results = (array)$results[1];
-        $this->array($list_results)
-         ->hasSize(3)
-         ->string['text']->isIdenticalTo('Root entity')
-         ->string['itemtype']->isIdenticalTo('Entity');
+        $this->assertCount(3, $list_results);
+        $this->assertSame('Root entity', $list_results['text']);
+        $this->assertSame('Entity', $list_results['itemtype']);
 
         $children = (array)$list_results['children'];
-        $this->array($children)->hasSize(10);
-        $this->array((array)$children[0])
-         ->hasKeys([
-             'id',
-             'text',
-             'level',
-             'title',
-             'selection_text'
-         ]);
+        $this->assertCount(10, $children);
+        $this->assertSame(
+            [
+                'id',
+                'text',
+                'level',
+                'title',
+                'selection_text'
+            ],
+            array_keys((array)$children[0])
+        );
 
         $post['page'] = 2;
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
-        $this->array($values)
-         ->integer['count']->isEqualTo(10);
+        $this->assertEquals(10, $values['count']);
 
-        $this->array($values['results'])->hasSize(10);
-        $this->array((array)$values['results'][0])
-         ->hasKeys([
-             'id',
-             'text',
-             'level',
-             'title',
-             'selection_text'
-         ]);
+        $this->assertCount(10, $values['results']);
+        $this->assertSame(
+            [
+                'id',
+                'text',
+                'level',
+                'title',
+                'selection_text'
+            ],
+            array_keys((array)$values['results'][0])
+        );
 
-       //use a array condition
+        //use a array condition
         $post = [
             'itemtype'              => $location::getType(),
             'condition'             => ['name' => ['LIKE', "%3%"]],
@@ -1480,13 +1481,11 @@ class Dropdown extends DbTestCase
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
-        $this->array($values)
-         ->integer['count']->isEqualTo(2)
-         ->array['results']
-            ->hasSize(2);
+        $this->assertEquals(2, $values['count']);
+        $this->assertCount(2, $values['results']);
 
-       //use a string condition
-       // Put condition in session and post its key
+        //use a string condition
+        // Put condition in session and post its key
         $condition_key = sha1(serialize($post['condition']));
         $_SESSION['glpicondition'][$condition_key] = $post['condition'];
         $post['condition']   = $condition_key;
@@ -1494,12 +1493,10 @@ class Dropdown extends DbTestCase
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
-        $this->array($values)
-         ->integer['count']->isEqualTo(2)
-         ->array['results']
-            ->hasSize(2);
+        $this->assertEquals(2, $values['count']);
+        $this->assertCount(2, $values['results']);
 
-       //use a condition that does not exists in session
+        //use a condition that does not exist in session
         $post = [
             'itemtype'              => $location::getType(),
             'condition'             => '`name` LIKE "%4%"',
@@ -1512,10 +1509,8 @@ class Dropdown extends DbTestCase
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
-        $this->array($values)
-         ->integer['count']->isEqualTo(10)
-         ->array['results']
-            ->hasSize(2);
+        $this->assertEquals(10, $values['count']);
+        $this->assertCount(2, $values['results']);
     }
 
     private function generateIdor(array $params = [])
@@ -1537,7 +1532,7 @@ class Dropdown extends DbTestCase
                 'states_id' => 0,
             ]
         );
-        $this->integer($state_1_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_1_id);
 
         $state = new State();
         $state_1_1_id = $state->add(
@@ -1546,7 +1541,7 @@ class Dropdown extends DbTestCase
                 'states_id' => $state_1_id,
             ]
         );
-        $this->integer($state_1_1_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_1_1_id);
 
         $state = new State();
         $state_1_1_1_id = $state->add(
@@ -1555,7 +1550,7 @@ class Dropdown extends DbTestCase
                 'states_id' => $state_1_1_id,
             ]
         );
-        $this->integer($state_1_1_1_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_1_1_1_id);
 
         $state = new State();
         $state_1_2_id = $state->add(
@@ -1564,7 +1559,7 @@ class Dropdown extends DbTestCase
                 'states_id' => $state_1_id,
             ]
         );
-        $this->integer($state_1_2_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_1_2_id);
 
         $state_2_id = $state->add(
             [
@@ -1572,7 +1567,7 @@ class Dropdown extends DbTestCase
                 'states_id' => 0,
             ]
         );
-        $this->integer($state_2_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_2_id);
 
         $state_2_1_id = $state->add(
             [
@@ -1580,7 +1575,7 @@ class Dropdown extends DbTestCase
                 'states_id' => $state_2_id,
             ]
         );
-        $this->integer($state_2_1_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $state_2_1_id);
 
         // Check filtering on "State 1"
         $tree_1 = \Dropdown::getDropdownValue(
@@ -1594,7 +1589,7 @@ class Dropdown extends DbTestCase
             false
         );
 
-        $this->array($tree_1)->isEqualTo(
+        $this->assertEquals(
             [
                 'results' => [
                     [
@@ -1632,7 +1627,8 @@ class Dropdown extends DbTestCase
                     ],
                 ],
                 'count' => 3,
-            ]
+            ],
+            $tree_1
         );
 
         // Check filtering on "State 1.1"
@@ -1647,7 +1643,7 @@ class Dropdown extends DbTestCase
             false
         );
 
-        $this->array($tree_1)->isEqualTo(
+        $this->assertEquals(
             [
                 'results' => [
                     [
@@ -1677,7 +1673,8 @@ class Dropdown extends DbTestCase
                     ],
                 ],
                 'count' => 1,
-            ]
+            ],
+            $tree_1
         );
 
         // Check filtering on "State 2"
@@ -1692,7 +1689,7 @@ class Dropdown extends DbTestCase
             false
         );
 
-        $this->array($tree_1)->isEqualTo(
+        $this->assertEquals(
             [
                 'results' => [
                     [
@@ -1716,7 +1713,8 @@ class Dropdown extends DbTestCase
                     ],
                 ],
                 'count' => 1,
-            ]
+            ],
+            $tree_1
         );
     }
 
@@ -1725,7 +1723,7 @@ class Dropdown extends DbTestCase
      *
      * @return Generator
      */
-    protected function testDropdownNumberProvider(): Generator
+    public static function testDropdownNumberProvider(): Generator
     {
         yield [
             'params' => [
@@ -1796,7 +1794,7 @@ class Dropdown extends DbTestCase
     /**
      * Tests for Dropdown::DropdownNumber()
      *
-     * @dataprovider testDropdownNumberProvider
+     * @dataProvider testDropdownNumberProvider
      *
      * @param array $params
      * @param array $expected
@@ -1808,24 +1806,22 @@ class Dropdown extends DbTestCase
         $params['display'] = false;
 
         $data = \Dropdown::getDropdownNumber($params, false);
-        $this->array($data)->hasKey("results");
-        $this->array($data['results'])->hasSize(count($expected));
-        $this->integer($data['count'])->isEqualTo(count($expected));
+        $this->assertArrayHasKey('results', $data);
+        $this->assertCount(count($expected), $data['results']);
+        $this->assertSame(count($expected), $data['count']);
 
         foreach ($data['results'] as $key => $dropdown_entry) {
-            $this->array($dropdown_entry)->hasKeys([
-                "id",
-                "text"
-            ]);
+            $this->assertArrayHasKey("id", $dropdown_entry);
+            $this->assertArrayHasKey("text", $dropdown_entry);
 
             $numeric_text_value = floatval($dropdown_entry['text']);
-            $this->variable($dropdown_entry['id'])->isEqualTo($numeric_text_value);
+            $this->assertEquals($numeric_text_value, $dropdown_entry['id']);
 
-            $this->variable($dropdown_entry['id'])->isEqualTo($expected[$key]);
+            $this->assertEquals($expected[$key], $dropdown_entry['id']);
         }
     }
 
-    protected function displayWithProvider(): iterable
+    public static function displayWithProvider(): iterable
     {
         yield [
             'item'        => new Computer(),
@@ -1838,48 +1834,6 @@ class Dropdown extends DbTestCase
             'displaywith' => ['id', 'notavalidfield', 'serial'],
             'filtered'    => ['id', 'serial'],
         ];
-
-        $this->login('post-only', 'postonly');
-        yield [
-            'item'        => new Item_DeviceSimcard(),
-            'displaywith' => ['serial', 'pin', 'puk'],
-            'filtered'    => ['serial'], // pin and puk disallowed by profile
-        ];
-
-        $this->login();
-        yield [
-            'item'        => new Item_DeviceSimcard(),
-            'displaywith' => ['serial', 'pin', 'puk'],
-            'filtered'    => ['serial', 'pin', 'puk'], // pin and puk allowed by profile
-        ];
-
-        $this->logOut();
-        yield [
-            'item'        => new Item_DeviceSimcard(),
-            'displaywith' => ['serial', 'pin', 'puk'],
-            'filtered'    => ['serial'], // pin and puk disallowed when not connected
-        ];
-
-        $this->login('post-only', 'postonly');
-        yield [
-            'item'        => new User(),
-            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
-            'filtered'    => ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed by profile
-        ];
-
-        $this->login();
-        yield [
-            'item'        => new User(),
-            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
-            'filtered'    => ['id', 'firstname', 'password_forget_token'], // password_forget_token allowed by profile
-        ];
-
-        $this->logOut();
-        yield [
-            'item'        => new User(),
-            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
-            'filtered'    => ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed when not connected
-        ];
     }
 
     /**
@@ -1887,7 +1841,85 @@ class Dropdown extends DbTestCase
      */
     public function testFilterDisplayWith(CommonDBTM $item, array $displaywith, array $filtered): void
     {
-        $instance = $this->newTestedInstance();
-        $this->array($this->callPrivateMethod($instance, 'filterDisplayWith', $item, $displaywith))->isEqualTo($filtered);
+        $instance = new \Dropdown();
+        $this->assertEquals(
+            $filtered,
+            $this->callPrivateMethod($instance, 'filterDisplayWith', $item, $displaywith)
+        );
+    }
+
+    public function testFilterDisplayWithLoggedIn(): void
+    {
+        $this->login('post-only', 'postonly');
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['serial'], // pin and puk disallowed by profile
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new Item_DeviceSimcard(),
+                ['serial', 'pin', 'puk']
+            )
+        );
+
+        $this->login();
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['serial', 'pin', 'puk'], // pin and puk allowed by profile
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new \Item_DeviceSimcard(),
+                ['serial', 'pin', 'puk']
+            )
+        );
+
+        $this->logOut();
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['serial'], // pin and puk disallowed when not connected
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new \Item_DeviceSimcard(),
+                ['serial', 'pin', 'puk']
+            )
+        );
+
+        $this->login('post-only', 'postonly');
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed by profile
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new \User(),
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+            )
+        );
+
+        $this->login();
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['id', 'firstname', 'password_forget_token'], // password_forget_token allowed by profile
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new \User(),
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+            )
+        );
+
+        $this->logOut();
+        $dd = new \Dropdown();
+        $this->assertEquals(
+            ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed when not connected
+            $this->callPrivateMethod(
+                $dd,
+                'filterDisplayWith',
+                new \User(),
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+            )
+        );
     }
 }

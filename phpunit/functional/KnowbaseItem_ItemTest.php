@@ -39,17 +39,17 @@ use DbTestCase;
 
 /* Test for inc/knowbaseitem_item.class.php */
 
-class KnowbaseItem_Item extends DbTestCase
+class KnowbaseItem_ItemTest extends DbTestCase
 {
     public function testGetTypeName()
     {
         $expected = 'Knowledge base item';
-        $this->string(\KnowbaseItem_Item::getTypeName(1))->isIdenticalTo($expected);
+        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(1));
 
         $expected = 'Knowledge base items';
-        $this->string(\KnowbaseItem_Item::getTypeName(0))->isIdenticalTo($expected);
-        $this->string(\KnowbaseItem_Item::getTypeName(2))->isIdenticalTo($expected);
-        $this->string(\KnowbaseItem_Item::getTypeName(10))->isIdenticalTo($expected);
+        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(0));
+        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(2));
+        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(10));
     }
 
     public function testGetItemsFromKB()
@@ -57,7 +57,7 @@ class KnowbaseItem_Item extends DbTestCase
         $this->login();
         $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
         $items = \KnowbaseItem_Item::getItems($kb1);
-        $this->array($items)->hasSize(3);
+        $this->assertCount(3, $items);
 
         $expecteds = [
             0 => [
@@ -76,13 +76,13 @@ class KnowbaseItem_Item extends DbTestCase
 
         foreach ($expecteds as $key => $expected) {
             $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-            $this->object($item)->isInstanceOf($expected['itemtype']);
+            $this->assertInstanceOf($expected['itemtype'], $item);
         }
 
-       //add start & limit
+        //add start & limit
         $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
         $items = \KnowbaseItem_Item::getItems($kb1, 1, 1);
-        $this->array($items)->hasSize(1);
+        $this->assertCount(1, $items);
 
         $expecteds = [
             1 => [
@@ -93,12 +93,12 @@ class KnowbaseItem_Item extends DbTestCase
 
         foreach ($expecteds as $key => $expected) {
             $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-            $this->object($item)->isInstanceOf($expected['itemtype']);
+            $this->assertInstanceOf($expected['itemtype'], $item);
         }
 
         $kb2 = getItemByTypeName('KnowbaseItem', '_knowbaseitem02');
         $items = \KnowbaseItem_Item::getItems($kb2);
-        $this->array($items)->hasSize(2);
+        $this->assertCount(2, $items);
 
         $expecteds = [
             0 => [
@@ -113,7 +113,7 @@ class KnowbaseItem_Item extends DbTestCase
 
         foreach ($expecteds as $key => $expected) {
             $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-            $this->object($item)->isInstanceOf($expected['itemtype']);
+            $this->assertInstanceOf($expected['itemtype'], $item);
         }
     }
 
@@ -122,48 +122,43 @@ class KnowbaseItem_Item extends DbTestCase
         $this->login();
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = \KnowbaseItem_Item::getItems($ticket3);
-        $this->array($kbs)
-         ->hasSize(2);
+        $this->assertCount(2, $kbs);
 
         $kb_ids = [];
         foreach ($kbs as $kb) {
-            $this->array($kb)
-            ->string['itemtype']->isIdenticalTo($ticket3->getType())
-            ->integer['items_id']->isIdenticalTo($ticket3->getID());
-
+            $this->assertSame($ticket3->getType(), $kb['itemtype']);
+            $this->assertSame($ticket3->getID(), $kb['items_id']);
             $kb_ids[] = $kb['knowbaseitems_id'];
         }
 
-       //test get "used"
+        //test get "used"
         $kbs = \KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
-        $this->array($kbs)->hasSize(2);
+        $this->assertCount(2, $kbs);
 
         foreach ($kbs as $key => $kb) {
-            $this->variable($kb)->isEqualTo($key);
-            $this->array($kb_ids)->contains($key);
+            $this->assertEquals($key, $kb);
+            $this->assertContains($key, $kb_ids);
         }
 
         $ticket1 = getItemByTypeName(\Ticket::getType(), '_ticket01');
         $kbs = \KnowbaseItem_Item::getItems($ticket1);
-        $this->array($kbs)->hasSize(1);
+        $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
-            $this->array($kb)
-            ->string['itemtype']->isIdenticalTo($ticket1->getType())
-            ->integer['items_id']->isIdenticalTo($ticket1->getID());
+            $this->assertSame($ticket1->getType(), $kb['itemtype']);
+            $this->assertSame($ticket1->getID(), $kb['items_id']);
         }
 
         $computer21 = getItemByTypeName(\Computer::getType(), '_test_pc21');
         $kbs = \KnowbaseItem_Item::getItems($computer21);
-        $this->array($kbs)->hasSize(1);
+        $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
-            $this->array($kb)
-            ->string['itemtype']->isIdenticalTo($computer21->getType())
-            ->integer['items_id']->isIdenticalTo($computer21->getID());
+            $this->assertSame($computer21->getType(), $kb['itemtype']);
+            $this->assertSame($computer21->getID(), $kb['items_id']);
         }
 
-       //test with entitiesrestriction
+        //test with entitiesrestriction
         $_SESSION['glpishowallentities'] = 0;
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_root_entity');
@@ -171,21 +166,21 @@ class KnowbaseItem_Item extends DbTestCase
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = \KnowbaseItem_Item::getItems($ticket3);
-        $this->array($kbs)->hasSize(0);
+        $this->assertCount(0, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_1');
         $_SESSION['glpiactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = \KnowbaseItem_Item::getItems($ticket3);
-        $this->array($kbs)->hasSize(2);
+        $this->assertCount(2, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_2');
         $_SESSION['glpiactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = \KnowbaseItem_Item::getItems($ticket3);
-        $this->array($kbs)->hasSize(0);
+        $this->assertCount(0, $kbs);
 
         $_SESSION['glpishowallentities'] = 1;
         unset($_SESSION['glpiactiveentities']);
@@ -199,23 +194,23 @@ class KnowbaseItem_Item extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Associated elements <span class=\'badge\'>3</span>');
+        $this->assertSame('Associated elements <span class=\'badge\'>3</span>', $name);
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Associated elements');
+        $this->assertSame('Associated elements', $name);
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($ticket3, true);
-        $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
+        $this->assertSame('Knowledge base <span class=\'badge\'>2</span>', $name);
 
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
+        $this->assertSame('Knowledge base <span class=\'badge\'>2</span>', $name);
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->string($name)->isIdenticalTo('Knowledge base');
+        $this->assertSame('Knowledge base', $name);
     }
 }

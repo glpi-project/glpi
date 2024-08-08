@@ -38,13 +38,13 @@ namespace tests\units\Glpi\Toolbox;
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
-class FrontEnd extends \GLPITestCase
+class FrontEndTest extends \GLPITestCase
 {
     public function testGetVersionCacheKey()
     {
-        $instance = $this->newTestedInstance();
+        $instance = new \Glpi\Toolbox\FrontEnd();
 
-        $this->string($instance->getVersionCacheKey(GLPI_VERSION))->isNotEqualTo(GLPI_VERSION);
-        $this->string($instance->getVersionCacheKey(GLPI_VERSION))->isNotEqualTo(sha1(GLPI_VERSION)); // too predicatable
+        $this->assertNotEquals(GLPI_VERSION, $instance->getVersionCacheKey(GLPI_VERSION));
+        $this->assertNotEquals(sha1(GLPI_VERSION), $instance->getVersionCacheKey(GLPI_VERSION)); // too predicatable
     }
 }

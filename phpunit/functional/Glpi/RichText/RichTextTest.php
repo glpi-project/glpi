@@ -40,9 +40,9 @@ use Glpi\Toolbox\Sanitizer;
 /**
  * Test class for src/Glpi/RichText/richtext.class.php
  */
-class RichText extends \GLPITestCase
+class RichTextTest extends \GLPITestCase
 {
-    protected function getSafeHtmlProvider(): iterable
+    public static function getSafeHtmlProvider(): iterable
     {
        // Empty content would not be altered
         yield [
@@ -332,7 +332,7 @@ HTML,
 HTML,
         ];
 
-        // Deprecated html attibutes should not be transformed into styles
+        // Deprecated html attributes should not be transformed into styles
         // see #11580
         yield [
             'content'                => '<table width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
@@ -340,7 +340,7 @@ HTML,
             'expected_result'        => '<table width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
         ];
 
-        // Images path should be corrected when root doc changed
+        /*// Images path should be corrected when root doc changed
         // see #15113
         foreach (['', '/glpi', '/path/to/glpi'] as $expected_prefix) {
             global $CFG_GLPI;
@@ -366,7 +366,7 @@ HTML,
 HTML,
                 ];
             }
-        }
+        }*/
     }
 
     /**
@@ -377,10 +377,52 @@ HTML,
         bool $encode_output_entities,
         string $expected_result
     ) {
-        $richtext = $this->newTestedInstance();
+        $richtext = new \Glpi\RichText\RichText();
 
-        $this->string($richtext->getSafeHtml($content, $encode_output_entities))
-         ->isEqualTo($expected_result);
+        $this->assertEquals(
+            $expected_result,
+            $richtext->getSafeHtml($content, $encode_output_entities)
+        );
+    }
+
+    public function testGetSafeHtmlDoChangeDocPath()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $bkp_root_doc = $CFG_GLPI['root_doc'];
+        // Images path should be corrected when root doc changed
+        // see #15113
+
+        $richtext = new \Glpi\RichText\RichText();
+
+        foreach (['', '/glpi', '/path/to/glpi'] as $expected_prefix) {
+            $CFG_GLPI['root_doc'] = $expected_prefix;
+            foreach (['/previous/glpi/path', '', '/glpi'] as $previous_prefix) {
+                $content = <<<HTML
+    <p>
+      Images path should be corrected when root doc changed:
+      <a href="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" target="_blank">
+        <img src="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248">
+      </a>
+    </p>
+HTML;
+                $encode_output_entities = false;
+                $expected_result = <<<HTML
+    <p>
+      Images path should be corrected when root doc changed:
+      <a href="{$expected_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" target="_blank">
+        <img src="{$expected_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
+      </a>
+    </p>
+HTML;
+                $this->assertEquals(
+                    $expected_result,
+                    $richtext->getSafeHtml($content, $encode_output_entities)
+                );
+            }
+        }
+
+        $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
     protected function getTextFromHtmlProvider(): iterable
@@ -554,13 +596,22 @@ PLAINTEXT,
         bool $preserve_line_breaks,
         string $expected_result
     ) {
-        $richtext = $this->newTestedInstance();
+        $richtext = new \Glpi\RichText\RichText();
 
-        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities, $preserve_case, $preserve_line_breaks))
-            ->isEqualTo($expected_result);
+        $this->assertEquals(
+            $expected_result,
+            $richtext->getTextFromHtml(
+                $content,
+                $keep_presentation,
+                $compact,
+                $encode_output_entities,
+                $preserve_case,
+                $preserve_line_breaks
+            )
+        );
     }
 
-    protected function isRichTextHtmlContentProvider(): iterable
+    public static function isRichTextHtmlContentProvider(): iterable
     {
         yield [
             'content'                => <<<PLAINTEXT
@@ -597,8 +648,8 @@ HTML,
      */
     public function testIsRichTextHtmlContent(string $content, bool $expected_result)
     {
-        $richtext = $this->newTestedInstance();
+        $richtext = new \Glpi\RichText\RichText();
 
-        $this->boolean($richtext->isRichTextHtmlContent($content))->isEqualTo($expected_result);
+        $this->assertSame($expected_result, $richtext->isRichTextHtmlContent($content));
     }
 }

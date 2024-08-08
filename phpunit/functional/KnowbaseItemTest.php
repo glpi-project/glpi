@@ -40,17 +40,17 @@ use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
 
-class KnowbaseItem extends DbTestCase
+class KnowbaseItemTest extends DbTestCase
 {
     public function testGetTypeName()
     {
         $expected = 'Knowledge base';
-        $this->string(\KnowbaseItem::getTypeName(1))->isIdenticalTo($expected);
+        $this->assertSame($expected, \KnowbaseItem::getTypeName(1));
 
         $expected = 'Knowledge base';
-        $this->string(\KnowbaseItem::getTypeName(0))->isIdenticalTo($expected);
-        $this->string(\KnowbaseItem::getTypeName(2))->isIdenticalTo($expected);
-        $this->string(\KnowbaseItem::getTypeName(10))->isIdenticalTo($expected);
+        $this->assertSame($expected, \KnowbaseItem::getTypeName(0));
+        $this->assertSame($expected, \KnowbaseItem::getTypeName(2));
+        $this->assertSame($expected, \KnowbaseItem::getTypeName(10));
     }
 
     public function testCleanDBonPurge()
@@ -60,7 +60,8 @@ class KnowbaseItem extends DbTestCase
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $kb = new \KnowbaseItem();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kb->add([
                 'name'     => 'Test to remove',
                 'answer'   => 'An KB entry to remove',
@@ -68,9 +69,9 @@ class KnowbaseItem extends DbTestCase
                 'users_id' => $users_id,
                 'date'     => '2017-10-06 12:27:48',
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add some comments
+        //add some comments
         $comment = new \KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
@@ -80,73 +81,80 @@ class KnowbaseItem extends DbTestCase
         $id = 0;
         for ($i = 0; $i < 4; ++$i) {
             $input['comment'] = "Comment $i";
-            $this->integer(
+            $this->assertGreaterThan(
+                $id,
                 (int)$comment->add($input)
-            )->isGreaterThan($id);
+            );
             $id = (int)$comment->getID();
         }
 
-       //change KB entry
-        $this->boolean(
+        //change KB entry
+        $this->assertTrue(
             $kb->update([
                 'id'     => $kb->getID(),
                 'answer' => 'Answer has changed'
             ])
-        )->isTrue();
+        );
 
-       //add an user
+        //add an user
         $kbu = new \KnowbaseItem_User();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kbu->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'users_id'           => $users_id
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add an entity
+        //add an entity
         $kbe = new \Entity_KnowbaseItem();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kbe->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'entities_id'        => 0
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add a group
+        //add a group
         $group = new \Group();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group->add([
                 'name'   => 'KB group'
             ])
-        )->isGreaterThan(0);
+        );
         $kbg = new \Group_KnowbaseItem();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kbg->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'groups_id'          => $group->getID()
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add a profile
+        //add a profile
         $profiles_id = getItemByTypeName('Profile', 'Admin', true);
         $kbp = new \KnowbaseItem_Profile();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kbp->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'profiles_id'        => $profiles_id
             ])
-        )->isGreaterThan(0);
+        );
 
-       //add an item
+        //add an item
         $kbi = new \KnowbaseItem_Item();
         $tickets_id = getItemByTypeName('Ticket', '_ticket01', true);
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$kbi->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'itemtype'           => 'Ticket',
                 'items_id'           => $tickets_id
             ])
-        )->isGreaterThan(0);
+        );
 
         $relations = [
             $comment->getTable(),
@@ -164,21 +172,21 @@ class KnowbaseItem extends DbTestCase
                 'FROM'   => $relation,
                 'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
             ]);
-            $this->integer(count($iterator))->isGreaterThan(0);
+            $this->assertGreaterThan(0, count($iterator));
         }
 
-       //remove KB entry
-        $this->boolean(
+        //remove KB entry
+        $this->assertTrue(
             $kb->delete(['id' => $kb->getID()], true)
-        )->isTrue();
+        );
 
-       //check all relations has been removed
+        //check all relations has been removed
         foreach ($relations as $relation) {
             $iterator = $DB->request([
                 'FROM'   => $relation,
                 'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
             ]);
-            $this->integer(count($iterator))->isIdenticalTo(0);
+            $this->assertSame(0, count($iterator));
         }
     }
 
@@ -187,8 +195,11 @@ class KnowbaseItem extends DbTestCase
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-       // Test uploads for item creation
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        // Test uploads for item creation
+        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.png';
+        $fcontents = file_get_contents($fpath);
+        $this->assertNotSame(false, $fcontents, 'Cannot read ' . $fpath);
+        $base64Image = base64_encode($fcontents);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $users_id = getItemByTypeName('User', TU_USER, true);
         $instance = new \KnowbaseItem();
@@ -212,15 +223,22 @@ HTML
             'users_id' => $users_id,
             'date'     => '2017-10-06 12:27:48',
         ];
-        copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
-        $instance->add($input);
-        $this->boolean($instance->isNewItem())->isFalse();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.png';
+        $this->assertTrue(
+            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            'Cannot copy ' . $fpath
+        );
+        $this->assertGreaterThan(0, $instance->add($input));
+        $this->assertFalse($instance->isNewItem());
+        $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['answer'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['answer']);
 
-       // Test uploads for item update
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+        // Test uploads for item update
+        $fpath = __DIR__ . '/../../tests/fixtures/uploads/bar.png';
+        $fcontents = file_get_contents($fpath);
+        $this->assertNotSame(false, $fcontents, 'Cannot read ' . $fpath);
+        $base64Image = base64_encode($fcontents);
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
         $tmpFilename = GLPI_TMP_DIR . '/' . $filename;
         file_put_contents($tmpFilename, base64_decode($base64Image));
@@ -241,11 +259,11 @@ HTML
                 '5e5e92ffd9bd91.44444444',
             ],
         ]);
-        $this->boolean($success)->isTrue();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
-       // Ensure there is an anchor to the uploaded document
+        $this->assertTrue($success);
+        $this->assertTrue($instance->getFromDB($instance->getId()));
+        // Ensure there is an anchor to the uploaded document
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['answer'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['answer']);
     }
 
     public function testUploadDocuments()
@@ -253,7 +271,7 @@ HTML
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-       // Test uploads for item creation
+        // Test uploads for item creation
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         $instance = new \KnowbaseItem();
         $input = [
@@ -269,19 +287,27 @@ HTML
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
-        copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.txt';
+        $this->assertTrue(
+            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            'Cannot copy ' . $fpath
+        );
         $instance->add($input);
-        $this->boolean($instance->isNewItem())->isFalse();
-        $this->string($instance->fields['answer'])->contains('testUploadDocuments');
+        $this->assertFalse($instance->isNewItem());
+        $this->assertStringContainsString('testUploadDocuments', $instance->fields['answer']);
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
             'itemtype' => 'KnowbaseItem',
             'items_id' => $instance->getID(),
         ]);
-        $this->integer($count)->isEqualTo(1);
+        $this->assertEquals(1, $count);
 
-       // Test uploads for item update (adds a 2nd document)
+        // Test uploads for item update (adds a 2nd document)
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
-        copy(__DIR__ . '/../fixtures/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        $fpath = __DIR__ . '/../../tests/fixtures/uploads/bar.txt';
+        $this->assertTrue(
+            copy($fpath, GLPI_TMP_DIR . '/' . $filename),
+            'Cannot copy ' . $fpath
+        );
         $success = $instance->update([
             'id' => $instance->getID(),
             'answer' => 'update testUploadDocuments',
@@ -295,55 +321,62 @@ HTML
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
-        $this->boolean($success)->isTrue();
-        $this->string($instance->fields['answer'])->contains('update testUploadDocuments');
+        $this->assertTrue($success);
+        $this->assertStringContainsString('update testUploadDocuments', $instance->fields['answer']);
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
             'itemtype' => 'KnowbaseItem',
             'items_id' => $instance->getID(),
         ]);
-        $this->integer($count)->isEqualTo(2);
+        $this->assertEquals(2, $count);
     }
 
     public function testGetForCategory()
     {
         global $DB;
+        $orig_db = clone $DB;
 
-       // Prepare mocks
-        $m_db = new \mock\DB();
-        $m_kbi = new \mock\KnowbaseItem();
+        // Prepare mocks
+        $m_db = $this->getMockBuilder(\DB::class)
+            ->onlyMethods(['request'])
+            ->getMock();
 
-       // Mocked db request result
+        $m_kbi = $this->getMockBuilder(\KnowbaseItem::class)
+            ->onlyMethods(['getFromDB', 'canViewItem'])
+            ->getMock();
+
+        // Mocked db request result
         $it = new \ArrayIterator([
             ['id' => '1'],
             ['id' => '2'],
             ['id' => '3'],
         ]);
-        $this->calling($m_db)->request = $it;
+        $m_db->method('request')->willReturn($it);
 
-       // Ignore get fromDB
-        $this->calling($m_kbi)->getFromDB = true;
+        // Ignore get fromDB
+        $m_kbi->method('getFromDB')->willReturn(true);
 
-       // True for call 1 & 3, false for call 2 and every following calls
-        $this->calling($m_kbi)->canViewItem[0] = false;
-        $this->calling($m_kbi)->canViewItem[1] = true;
-        $this->calling($m_kbi)->canViewItem[2] = false;
-        $this->calling($m_kbi)->canViewItem[3] = true;
+        // True for call 1 & 3, false for call 2 and every following calls
+        $m_kbi->method('canViewItem')->willReturn(true, false, true, false);
 
-       // Replace global DB with mocked DB
+        // Expected : [1, 3]
+        // Replace global DB with mocked DB
         $DB = $m_db;
+        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $DB = $orig_db;
+        $this->assertCount(2, $result);
+        $this->assertContains('1', $result);
+        $this->assertContains('3', $result);
 
-       // Expected : [1, 3]
-        $this->array(\KnowbaseItem::getForCategory(1, $m_kbi))
-         ->hasSize(2)
-         ->containsValues([1, 3]);
-
-       // Expected : [-1]
-        $this->array(\KnowbaseItem::getForCategory(1, $m_kbi))
-         ->hasSize(1)
-         ->contains(-1);
+        // Expected : [-1]
+        // Replace global DB with mocked DB
+        $DB = $m_db;
+        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $DB = $orig_db;
+        $this->assertCount(1, $result);
+        $this->assertContains(-1, $result);
     }
 
-    protected function fullTextSearchProvider(): iterable
+    public static function fullTextSearchProvider(): iterable
     {
         // Spaces around search terms are trimmed
         yield [
@@ -499,15 +532,15 @@ HTML
     }
 
     /**
-     * @dataprovider fullTextSearchProvider
+     * @dataProvider fullTextSearchProvider
      */
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
-        $search = $this->callPrivateMethod($this->newTestedInstance(), 'computeBooleanFullTextSearch', $search);
-        $this->string($search)->isEqualTo($expected);
+        $search = $this->callPrivateMethod(new \KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
+        $this->assertEquals($expected, $search);
     }
 
-    protected function testGetListRequestProvider(): array
+    public static function testGetListRequestProvider(): array
     {
         return [
             [
@@ -690,7 +723,7 @@ HTML
     }
 
     /**
-     * @dataprovider testGetListRequestProvider
+     * @dataProvider testGetListRequestProvider
      */
     public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
@@ -699,24 +732,24 @@ HTML
 
         // Build criteria array
         $criteria = \KnowbaseItem::getListRequest($params, $type);
-        $this->array($criteria);
+        $this->assertIsArray($criteria);
 
         // Check that the request is valid
         $iterator = $DB->request($criteria);
 
         //count KnowBaseItem found
-        $this->integer($iterator->numrows())->isEqualTo($count);
+        $this->assertEquals($count, $iterator->numrows());
 
         // check order if needed
         if ($sort != null) {
             $names = array_column(iterator_to_array($iterator), 'name');
-            $this->array($names)->isEqualTo($sort);
+            $this->assertEquals($sort, $names);
         }
     }
 
     public function testGetAnswerAnchors(): void
     {
-       // Create test KB with multiple headers
+        // Create test KB with multiple headers
         $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
         $input = [
             'name' => $kb_name,
@@ -724,26 +757,27 @@ HTML
         ];
         $this->createItems('KnowbaseItem', [$input]);
 
-       // Load KB
+        // Load KB
         /** @var \KnowbaseItem */
         $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
         $answer = $kbi->getAnswer();
 
-       // Test anchors, there should be one per header
-        $this->string($answer)->contains('<h1 id="title-1a">');
-        $this->string($answer)->contains('<a href="#title-1a">');
-        $this->string($answer)->contains('<h2 id="title2">');
-        $this->string($answer)->contains('<a href="#title2">');
-        $this->string($answer)->contains('<h1 id="title-1b">');
-        $this->string($answer)->contains('<a href="#title-1b">');
-        $this->string($answer)->contains('<h1 id="title-1c">');
-        $this->string($answer)->contains('<a href="#title-1c">');
+        // Test anchors, there should be one per header
+        $this->assertStringContainsString('<h1 id="title-1a">', $answer);
+        $this->assertStringContainsString('<a href="#title-1a">', $answer);
+        $this->assertStringContainsString('<h2 id="title2">', $answer);
+        $this->assertStringContainsString('<a href="#title2">', $answer);
+        $this->assertStringContainsString('<h1 id="title-1b">', $answer);
+        $this->assertStringContainsString('<a href="#title-1b">', $answer);
+        $this->assertStringContainsString('<h1 id="title-1c">', $answer);
+        $this->assertStringContainsString('<a href="#title-1c">', $answer);
     }
 
     /**
+     * FIXME: delete?
      * To be deleted after 10.1 release
      */
-    public function testCreateWithCategoriesDeprecated()
+    /*public function testCreateWithCategoriesDeprecated()
     {
         $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -774,7 +808,7 @@ HTML
         // Check category id
         $data = array_pop($linked_categories);
         $this->integer($data['knowbaseitemcategories_id'])->isEqualTo($category->getID());
-    }
+    }*/
 
     public function testCreateWithCategories()
     {
@@ -790,7 +824,7 @@ HTML
             'is_recursive' => 1,
             'knowbaseitemcategories_id' => 0,
         ]);
-        $this->integer($kb_cat_id1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $kb_cat_id1);
 
         $kb_cat_id2 = $kb_category->add([
             'name' => __FUNCTION__ . '_2',
@@ -799,7 +833,7 @@ HTML
             'is_recursive' => 1,
             'knowbaseitemcategories_id' => 0,
         ]);
-        $this->integer($kb_cat_id2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $kb_cat_id2);
 
         $kbitem = new \KnowbaseItem();
         // Create a new KB item with the first category
@@ -808,7 +842,7 @@ HTML
             'answer' => __FUNCTION__ . '_1',
             '_categories' => [$kb_cat_id1],
         ]);
-        $this->integer($kbitems_id1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $kbitems_id1);
 
         // Expect the KB item to have the first category
         $iterator = $DB->request([
@@ -817,8 +851,8 @@ HTML
                 'knowbaseitems_id' => $kbitems_id1,
             ],
         ]);
-        $this->integer($iterator->count())->isEqualTo(1);
-        $this->integer($iterator->current()['knowbaseitemcategories_id'])->isEqualTo($kb_cat_id1);
+        $this->assertEquals(1, $iterator->count());
+        $this->assertEquals($kb_cat_id1, $iterator->current()['knowbaseitemcategories_id']);
 
         // Create a new KB item with both categories
         $kbitems_id2 = $kbitem->add([
@@ -826,7 +860,7 @@ HTML
             'answer' => __FUNCTION__ . '_2',
             '_categories' => [$kb_cat_id1, $kb_cat_id2],
         ]);
-        $this->integer($kbitems_id2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $kbitems_id2);
 
         // Expect the KB item to have both categories
         $iterator = $DB->request([
@@ -835,12 +869,12 @@ HTML
                 'knowbaseitems_id' => $kbitems_id2,
             ],
         ]);
-        $this->integer($iterator->count())->isEqualTo(2);
+        $this->assertEquals(2, $iterator->count());
         $category_ids = [];
         foreach ($iterator as $row) {
             $category_ids[] = $row['knowbaseitemcategories_id'];
         }
-        $this->array($category_ids)->containsValues([$kb_cat_id1, $kb_cat_id2]);
+        $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
     }
 
     protected function testGetVisibilityCriteriaProvider(): iterable
@@ -856,7 +890,7 @@ HTML
 
         // Removing existing data
         $DB->delete(\KnowbaseItem::getTable(), [1]);
-        $this->integer(countElementsInTable(\KnowbaseItem::getTable()))->isEqualTo(0);
+        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -915,7 +949,7 @@ HTML
 
         // Removing existing data
         $DB->delete(\KnowbaseItem::getTable(), [1]);
-        $this->integer(countElementsInTable(\KnowbaseItem::getTable()))->isEqualTo(0);
+        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -1019,9 +1053,10 @@ HTML
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
             'is_recursive' => 1,
         ]);
-        $this->integer($postonly_group)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $postonly_group);
         $group_user = new \Group_User();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id'    => $postonly_group,
                 'users_id'     => getItemByTypeName("User", "post-only", true),
@@ -1032,8 +1067,9 @@ HTML
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
             'is_recursive' => 1,
         ]);
-        $this->integer($tech_group)->isGreaterThan(0);
-        $this->integer(
+        $this->assertGreaterThan(0, $tech_group);
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id'    => $tech_group,
                 'users_id'     => getItemByTypeName("User", "tech", true),
@@ -1061,17 +1097,17 @@ HTML
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
         ]);
-        $this->integer($faq_entity1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $faq_entity1);
         $faq_entity2 = (int)$entity->add([
             'name' => 'FAQ 2 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
         ]);
-        $this->integer($faq_entity2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $faq_entity2);
         $faq_entity11 = (int)$entity->add([
             'name' => 'FAQ 1.1 entity',
             'entities_id' => $faq_entity1,
         ]);
-        $this->integer($faq_entity11)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $faq_entity11);
 
         $this->createItems("Entity_KnowbaseItem", [
             [
@@ -1348,25 +1384,25 @@ HTML
         ];
     }
 
-    /**
-     * @dataprovider testGetVisibilityCriteriaProvider
-     */
-    public function testGetVisibilityCriteria(array $articles)
+    public function testGetVisibilityCriteria()
     {
         global $DB;
 
-        $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
-            'SELECT' => 'name',
-            'FROM'   => \KnowbaseItem::getTable()
-        ]);
+        $values = $this->testGetVisibilityCriteriaProvider();
+        foreach ($values as $value) {
+            $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
+                'SELECT' => 'name',
+                'FROM' => \KnowbaseItem::getTable()
+            ]);
 
-        $data = $DB->request($criteria);
-        $result = array_column(iterator_to_array($data), "name");
+            $data = $DB->request($criteria);
+            $result = array_column(iterator_to_array($data), "name");
 
-        // We need to sort data before comparing or the tests will fails on mariaDB
-        sort($articles);
-        sort($result);
+            // We need to sort data before comparing or the tests will fail on mariaDB
+            sort($value['articles']);
+            sort($result);
 
-        $this->array($result)->isEqualTo($articles);
+            $this->assertEquals($value['articles'], $result);
+        }
     }
 }

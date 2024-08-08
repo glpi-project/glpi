@@ -38,9 +38,9 @@ namespace tests\units\Glpi\Toolbox;
 /**
  * Test class for src/Glpi/Toolbox/versionparser.class.php
  */
-class VersionParser extends \GLPITestCase
+class VersionParserTest extends \GLPITestCase
 {
-    protected function versionsProvider()
+    public static function versionsProvider()
     {
         return [
             [
@@ -156,8 +156,8 @@ class VersionParser extends \GLPITestCase
      */
     public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
-        $version_parser = $this->newTestedInstance();
-        $this->string($version_parser->getNormalizedVersion($version, $keep_stability_flag))->isEqualTo($normalized);
+        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $this->assertEquals($normalized, $version_parser->getNormalizedVersion($version, $keep_stability_flag));
     }
 
     /**
@@ -165,8 +165,8 @@ class VersionParser extends \GLPITestCase
      */
     public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
-        $version_parser = $this->newTestedInstance();
-        $this->boolean($version_parser->isStableRelease($version))->isEqualTo($stable);
+        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $this->assertSame($stable, $version_parser->isStableRelease($version));
     }
 
     /**
@@ -174,7 +174,7 @@ class VersionParser extends \GLPITestCase
      */
     public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
-        $version_parser = $this->newTestedInstance();
-        $this->boolean($version_parser->isDevVersion($version))->isEqualTo($dev);
+        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $this->assertSame($dev, $version_parser->isDevVersion($version));
     }
 }
