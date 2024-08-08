@@ -1581,6 +1581,10 @@ JAVASCRIPT;
         $params['toupdate']            = '';
         $params['display']             = true;
         $params['track_changes']       = true;
+        $params['init']                = true;
+        $params['width']               = '';
+        $params['no_sort']             = false;
+        $params['aria_label']          = '';
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1591,17 +1595,11 @@ JAVASCRIPT;
         if (!is_array($types)) {
             $types = $CFG_GLPI["state_types"];
         }
-        $options = [];
+        $options = self::buildDropdownOptions($types, $params['checkright']);
 
-        foreach ($types as $type) {
-            if ($item = getItemForItemtype($type)) {
-                if ($params['checkright'] && !$item->canView()) {
-                    continue;
-                }
-                $options[$type] = $item->getTypeName($params['plural'] ? 2 : 1);
-            }
+        if (!$params['no_sort']) {
+            asort($options);
         }
-        asort($options);
 
         if (count($options)) {
             return Dropdown::showFromArray($params['name'], $options, [
@@ -1613,9 +1611,56 @@ JAVASCRIPT;
                 'display'             => $params['display'],
                 'rand'                => $params['rand'],
                 'track_changes'       => $params['track_changes'],
+                'init'                => $params['init'],
+                'width'               => $params['width'],
+                'aria_label'          => $params['aria_label'],
             ]);
         }
         return 0;
+    }
+
+    /**
+     * Build dropdown options and check rights if needed
+     *
+     * This method dynamically builds dropdown options based on the provided types.
+     * It supports both single and multiple types (nested) and checks access rights if required.
+     *
+     * @param array|string $types The types for which to build dropdown options. Can be a single type or an array of types.
+     * @param bool         $checkright Whether to check access rights for the type(s).
+     * @return array|string|null The built dropdown options, or null if access is denied or type is invalid.
+     */
+    public static function buildDropdownOptions($types, $checkright = false): array|string|null
+    {
+        $options = []; // Initialize the options array to accumulate results.
+
+        // Handle the case where $types is not an array, implying a single type.
+        if (!is_array($types)) {
+            if ($item = getItemForItemtype($types)) {
+                if ($checkright && !$item->canView()) {
+                    return null; // Access denied, return null.
+                }
+                // Access granted, return the type name.
+                return $item->getTypeName();
+            }
+
+            return null; // Item not found or invalid type, return null.
+        }
+
+        // Handle the case where $types is an array, potentially containing nested types.
+        foreach ($types as $label => $type) {
+            // If the type is not an array, use it directly as the label.
+            if (!is_array($type)) {
+                $label = $type;
+            }
+
+            // Recursively build dropdown options for the current type.
+            $opts = self::buildDropdownOptions($type, $checkright);
+            if ($opts !== null) {
+                $options[$label] = $opts;
+            }
+        }
+
+        return $options;
     }
 
 
@@ -1649,22 +1694,28 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $params = [
-            'itemtype_name'             => 'itemtype',
-            'items_id_name'             => 'items_id',
-            'itemtypes'                 => '',
-            'default_itemtype'          => 0,
-            'default_items_id'          => -1,
-            'entity_restrict'           => -1,
-            'onlyglobal'                => false,
-            'checkright'                => false,
-            'showItemSpecificity'       => '',
-            'emptylabel'                => self::EMPTY_VALUE,
-            'display_emptychoice'       => true,
-            'used'                      => [],
-            'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
-            'display'                   => true,
-            'rand'                      => mt_rand(),
-            'itemtype_track_changes'    => false,
+            'itemtype_name'                   => 'itemtype',
+            'items_id_name'                   => 'items_id',
+            'itemtypes'                       => '',
+            'default_itemtype'                => 0,
+            'default_items_id'                => -1,
+            'entity_restrict'                 => -1,
+            'onlyglobal'                      => false,
+            'checkright'                      => false,
+            'showItemSpecificity'             => '',
+            'emptylabel'                      => self::EMPTY_VALUE,
+            'display_emptychoice'             => true,
+            'used'                            => [],
+            'ajax_page'                       => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'display'                         => true,
+            'rand'                            => mt_rand(),
+            'itemtype_track_changes'          => false,
+            'init'                            => true,
+            'width'                           => '80%',
+            'container_css_class'             => '',
+            'no_sort'                         => false,
+            'aria_label'                      => '',
+            'specific_tags_items_id_dropdown' => [],
         ];
 
         if (is_array($options) && count($options)) {
@@ -1681,14 +1732,21 @@ JAVASCRIPT;
             'display'             => $params['display'],
             'rand'                => $params['rand'],
             'track_changes'       => $params['itemtype_track_changes'],
+            'init'                => $params['init'],
+            'width'               => $params['width'],
+            'no_sort'             => $params['no_sort'],
+            'aria_label'          => $params['aria_label'],
         ]);
 
         $p_ajax = [
-            'idtable'             => '__VALUE__',
-            'name'                => $params['items_id_name'],
-            'entity_restrict'     => $params['entity_restrict'],
-            'showItemSpecificity' => $params['showItemSpecificity'],
-            'rand'                => $params['rand']
+            'idtable'                         => '__VALUE__',
+            'name'                            => $params['items_id_name'],
+            'entity_restrict'                 => $params['entity_restrict'],
+            'showItemSpecificity'             => $params['showItemSpecificity'],
+            'rand'                            => $params['rand'],
+            'width'                           => $params['width'],
+            'container_css_class'             => $params['container_css_class'],
+            'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
         ];
 
        // manage condition

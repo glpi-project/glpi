@@ -33,59 +33,48 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Tag;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Answer;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
-use Glpi\Form\Question;
+use Dropdown;
 use Override;
+use Session;
 
-final class AnswerTagProvider implements TagProviderInterface
+final class QuestionTypeItemDropdown extends QuestionTypeItem
 {
     #[Override]
-    public function getTagColor(): string
+    public function __construct()
     {
-        return "teal";
+        parent::__construct();
+
+        $this->itemtype_aria_label = __('Select a dropdown type');
+        $this->items_id_aria_label = __('Select a dropdown item');
+    }
+
+    public function getAllowedItemtypes(): array
+    {
+        $dropdown_itemtypes = Dropdown::getStandardDropdownItemTypes();
+        array_walk_recursive($dropdown_itemtypes, function (&$value, $key) {
+            $value = $key;
+        });
+
+        return $dropdown_itemtypes;
     }
 
     #[Override]
-    public function getTags(Form $form): array
+    public function getName(): string
     {
-        $tags = [];
-        foreach ($form->getQuestions() as $question) {
-            $tags[] = $this->getTagForQuestion($question);
-        }
-
-        return $tags;
+        return _n('Dropdown', 'Dropdowns', Session::getPluralNumber());
     }
 
     #[Override]
-    public function getTagContentForValue(
-        string $value,
-        AnswersSet $answers_set
-    ): string {
-        $id = (int) $value;
-
-        $answers = array_filter(
-            $answers_set->getAnswers(),
-            fn (Answer $answer) => $answer->getQuestionId() === $id
-        );
-
-        if (count($answers) !== 1) {
-            return "";
-        }
-
-        $answer = array_pop($answers);
-        return $answer->getFormattedAnswer();
+    public function getIcon(): string
+    {
+        return 'ti ti-edit';
     }
 
-    public function getTagForQuestion(Question $question): Tag
+    #[Override]
+    public function getWeight(): int
     {
-        return new Tag(
-            label: sprintf(__('Answer: %s'), $question->fields['name']),
-            value: $question->getId(),
-            provider: self::class,
-        );
+        return 20;
     }
 }

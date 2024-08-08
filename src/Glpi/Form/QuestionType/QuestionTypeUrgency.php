@@ -124,16 +124,9 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function formatRawAnswer($answer): string
     {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => CommonITILObject::getUrgencyName($answer)
-        ]);
+        return CommonITILObject::getUrgencyName($answer);
     }
 
     #[Override]
