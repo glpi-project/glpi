@@ -133,6 +133,15 @@ TWIG;
     }
 
     #[Override]
+    public function formatRawAnswer($answer): string
+    {
+        return implode(', ', array_map(
+            fn($document_id) => (new Document())->getById($document_id)->fields['filename'],
+            $answer
+        ));
+    }
+
+    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::FILE;

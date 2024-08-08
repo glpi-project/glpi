@@ -39,9 +39,11 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Override;
+use Ticket;
 
 abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
 {
@@ -82,6 +84,14 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             // Temporary as entity configuration is not yet available
             'entities_id' => $form->fields['entities_id']
         ];
+
+        // ITILCategory field must be computed beofre applying predefined fields
+        $itilcategory_field = new ITILCategoryField();
+        $input = $itilcategory_field->applyConfiguratedValueToInputUsingAnswers(
+            $itilcategory_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
 
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
@@ -143,6 +153,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         return [
             new TitleField(),
             new ContentField(),
+            new ITILCategoryField(),
         ];
     }
 
@@ -163,8 +174,17 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();
         $template = $itil->getITILTemplateToUse(
-            entities_id: $_SESSION["glpiactive_entity"]
+            entities_id: $_SESSION["glpiactive_entity"],
+            itilcategories_id: $input['itilcategories_id'] ?? 0,
+            type: $input['type'] ?? (isset($input['itilcategories_id']) ? Ticket::INCIDENT_TYPE : null)
         );
+        $template_foreign_key = $template::getForeignKeyField();
+
+        if (isset($input[$template_foreign_key])) {
+            $template->getFromDB($input[$template_foreign_key]);
+        } else {
+            $input[$template_foreign_key] = $template->getID();
+        }
 
         $predefined_fields_class = $itemtype . "TemplatePredefinedField";
 
