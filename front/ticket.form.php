@@ -263,7 +263,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
+        Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");
         die;
     }
 
