@@ -108,6 +108,7 @@ TWIG;
             {
                 'no_label'            : true,
                 'display_emptychoice' : true,
+                'aria_label'          : label
             }
         ) }}
 TWIG;
@@ -120,6 +121,7 @@ TWIG;
                 range(1, 5),
                 array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
             ),
+            'label' => $question->fields['name'],
         ]);
     }
 

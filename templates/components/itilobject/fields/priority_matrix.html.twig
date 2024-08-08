@@ -57,7 +57,9 @@
       'rand': rand,
    }|merge(urgency_options)),
    __('Urgency'),
-   field_options
+   field_options|merge({
+      'id': 'dropdown_urgency' ~ field_options.rand,
+   })
 ) }}
 
 {% set impact_options = field_options %}

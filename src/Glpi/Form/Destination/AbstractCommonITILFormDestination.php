@@ -40,6 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Form;
 use Override;
 
@@ -143,6 +144,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         return [
             new TitleField(),
             new ContentField(),
+            new UrgencyField(),
         ];
     }
 
