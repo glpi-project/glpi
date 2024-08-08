@@ -4527,6 +4527,7 @@ JS;
             'parent_id_field'     => null,
             'templateResult'      => 'templateResult',
             'templateSelection'   => 'templateSelection',
+            'container_css_class' => '',
             'aria_label'          => '',
         ];
         $params = array_merge($default_options, $params);
@@ -4539,6 +4540,7 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
+        $container_css_class = $params['container_css_class'];
         $aria_label = $params['aria_label'];
         unset($params["on_change"], $params["width"]);
 
@@ -4612,6 +4614,7 @@ JS;
                 on_change: {$on_change},
                 templateResult: {$templateResult},
                 templateSelection: {$templateSelection},
+                container_css_class: '{$params['container_css_class']}',
                 params: {
                     {$js_params}
                 }
