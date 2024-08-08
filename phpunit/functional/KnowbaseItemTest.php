@@ -338,6 +338,7 @@ HTML
         // Prepare mocks
         $m_db = $this->getMockBuilder(\DB::class)
             ->onlyMethods(['request'])
+            ->disableOriginalConstructor()
             ->getMock();
 
         $m_kbi = $this->getMockBuilder(\KnowbaseItem::class)
