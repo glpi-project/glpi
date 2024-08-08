@@ -1502,6 +1502,7 @@ $RELATION = [
             'users_id_tech',
             'users_id',
         ],
+        'glpi_discovers_discovers_users' => 'users_id',
         '_glpi_displaypreferences'      => 'users_id',
         'glpi_domains'                  => [
             'users_id_tech',

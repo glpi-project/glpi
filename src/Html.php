@@ -40,6 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
+use Glpi\Discover\Discover;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -1761,6 +1762,8 @@ HTML;
         }
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
+
+        Discover::loadDiscover();
 
         if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
             foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {

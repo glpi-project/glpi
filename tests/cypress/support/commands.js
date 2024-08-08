@@ -344,14 +344,19 @@ Cypress.Commands.add("initApi", () => {
 });
 
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
-    return cy.request({
+    let request = {
         method: method,
         url: '/apirest.php/' + encodeURI(endpoint),
-        body: {input: values},
         headers: {
             'Session-Token': token,
         }
-    }).then((response) => {
+    };
+
+    if (values) {
+        request.body = { input: values };
+    }
+
+    return cy.request(request).then((response) => {
         return response;
     });
 });
@@ -394,5 +399,33 @@ Cypress.Commands.add('disableDebugMode', () => {
         },
     }).then(() => {
         cy.reload();
+    });
+});
+
+Cypress.Commands.add('getUserId', (username) => {
+    return cy.initApi().doApiRequest('GET', 'search/User?criteria[0][field]=1&criteria[0][searchtype]=equal&criteria[0][value]=' + username + '&forcedisplay[0]=2').then((response) => {
+        return response.body.data[0][2];
+    });
+});
+
+Cypress.Commands.add('getDiscoverUserId', (user_id) => {
+    return cy.initApi().doApiRequest('GET', 'search/Glpi\\Discover\\Discover_User?criteria[0][field]=3&criteria[0][searchtype]=contains&criteria[0][value]=' + user_id + '&forcedisplay[0]=3').then((response) => {
+        if (response.body.count === 0) {
+            return null;
+        }
+
+        return response.body.data[0][2];
+    });
+});
+
+Cypress.Commands.add('resetDiscoverProgression', (username = 'e2e_tests') => {
+    cy.getUserId(username).then((user_id) => {
+        cy.getDiscoverUserId(user_id).then((discover_user_id) => {
+            if (discover_user_id === null) {
+                return;
+            }
+
+            cy.initApi().doApiRequest('DELETE', 'Glpi\\Discover\\Discover_User/' + discover_user_id);
+        });
     });
 });

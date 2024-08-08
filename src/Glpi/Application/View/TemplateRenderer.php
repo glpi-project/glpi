@@ -55,6 +55,9 @@ use Plugin;
 use Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
+use Twig\Extra\Markdown\DefaultMarkdown;
+use Twig\Extra\Markdown\MarkdownExtension;
+use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 
@@ -102,6 +105,16 @@ class TemplateRenderer
        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
+        $this->environment->addExtension(new MarkdownExtension());
+        $this->environment->addRuntimeLoader(new class implements \Twig\RuntimeLoader\RuntimeLoaderInterface
+        {
+            public function load($class)
+            {
+                if (MarkdownRuntime::class === $class) {
+                    return new MarkdownRuntime(new DefaultMarkdown());
+                }
+            }
+        });
        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());

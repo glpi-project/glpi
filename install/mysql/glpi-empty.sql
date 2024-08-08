@@ -9805,6 +9805,7 @@ CREATE TABLE `glpi_queuedwebhooks` (
   KEY `sent_time` (`sent_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
 DROP TABLE IF EXISTS `glpi_stencils`;
 CREATE TABLE `glpi_stencils` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -9879,6 +9880,15 @@ CREATE TABLE `glpi_assets_assets` (
   KEY `is_template` (`is_template`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_discovers_discovers_users`;
+CREATE TABLE `glpi_discovers_discovers_users` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL DEFAULT '0',
+    `progression` JSON,
+    PRIMARY KEY (`id`),
+    KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_assets_assetmodels`;

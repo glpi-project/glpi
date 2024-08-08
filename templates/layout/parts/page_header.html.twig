@@ -33,6 +33,8 @@
 
 {% set anonymous = session('glpiactiveprofile') is null %}
 
+{% set is_super_admin = has_profile_right('config', constant('UPDATE')) %}
+
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }}">
