@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,57 +32,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
+namespace Glpi\Http;
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Form;
-use Html;
-use Session;
+use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Utility class used to easily render a form
- */
-final class FormRenderer
+final class GlpiPageResponse extends Response
 {
-    /**
-     * Singleton instance.
-     */
-    protected static ?FormRenderer $instance = null;
+    public function __construct(
+        string $view,
+        array $parameters = [],
+        int $status = 200,
+        array $headers = [],
+    ) {
+        $twig = TemplateRenderer::getInstance();
 
-    /**
-     * Singleton constructor.
-     */
-    private function __construct()
-    {
-    }
+        // We must use output buffering here as Html::header() and Html::footer()
+        // output content directly.
+        // TODO: fix header() and footer() methods and remove output buffering
+        ob_start();
+        $twig->display($view, $parameters);
+        $content = ob_get_clean();
 
-    /**
-     * Get the singleton instance.
-     *
-     * @return FormRenderer
-     */
-    public static function getInstance(): FormRenderer
-    {
-        if (!isset(static::$instance)) {
-            static::$instance = new self();
-        }
-
-        return static::$instance;
-    }
-
-    /**
-     * Render the given form.
-     *
-     * @param Form $form
-     *
-     * @return string
-     */
-    public function render(Form $form): string
-    {
-        return TemplateRenderer::getInstance()->render('pages/form_renderer.html.twig', [
-            'form' => $form,
-            'unauthenticated_user' => !Session::isAuthenticated(),
-        ]);
+        parent::__construct($content, $status, $headers);
     }
 }

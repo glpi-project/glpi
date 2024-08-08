@@ -68,7 +68,7 @@ describe('Form access policy', () => {
 
         // Visit the direct access URL
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
-            cy.visit('/front/' + direct_access_url.split('/front/')[1]);
+            cy.visit(direct_access_url);
 
             // Check if the form title is displayed
             cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
@@ -102,7 +102,7 @@ describe('Form access policy', () => {
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
             // Check if we can't access the form
             cy.request({
-                url: '/front/' + direct_access_url.split('/front/')[1],
+                url: direct_access_url,
                 failOnStatusCode: false,
             }).then((response) => {
                 expect( response.status).to.eq(403);
@@ -135,7 +135,7 @@ describe('Form access policy', () => {
 
         // Visit the direct access URL
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
-            cy.visit('/front/' + direct_access_url.split('/front/')[1]);
+            cy.visit(direct_access_url);
 
             // Check if the form title is displayed
             cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
@@ -196,7 +196,7 @@ describe('Form access policy', () => {
 
         // Visit the direct access URL
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
-            cy.visit('/front/' + direct_access_url.split('/front/')[1]);
+            cy.visit(direct_access_url);
 
             // Check if the form title is displayed
             cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
