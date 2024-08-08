@@ -33,29 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Override;
-use Ticket;
+use Glpi\Form\AnswersSet;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+enum SLAFieldStrategy: string
 {
-    #[Override]
-    public static function getTargetItemtype(): string
+    case FROM_TEMPLATE = 'from_template';
+    case SPECIFIC_VALUE = 'specific_value';
+    public function getLabel(): string
     {
-        return Ticket::class;
+        return match ($this) {
+            self::FROM_TEMPLATE     => __("From template"),
+            self::SPECIFIC_VALUE    => __("Specific SLA"),
+        };
     }
 
-    #[Override]
-    public function getConfigurableFields(): array
-    {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-        ]);
+    public function getSLAID(
+        SLAFieldConfig $config,
+        AnswersSet $answers_set,
+    ): ?int {
+        return match ($this) {
+            self::FROM_TEMPLATE => null, // Let the template apply its default value by itself.
+            self::SPECIFIC_VALUE => $config->getSpecificSLAID(),
+        };
     }
 }

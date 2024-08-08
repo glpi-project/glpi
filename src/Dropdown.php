@@ -133,6 +133,7 @@ class Dropdown
         $params['parent_id_field']      = null;
         $params['multiple']             = false;
         $params['init']                 = true;
+        $params['aria_label']           = '';
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -260,6 +261,7 @@ class Dropdown
             'parent_id_field'      => $params['parent_id_field'],
             'multiple'             => $params['multiple'] ?? false,
             'init'                 => $params['init'] ?? true,
+            'aria_label'           => $params['aria_label'],
         ];
 
         if ($params['multiple']) {
