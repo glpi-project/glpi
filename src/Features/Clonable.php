@@ -244,6 +244,15 @@ trait Clonable
         if ($newID !== false) {
             $new_item->cloneRelations($this, $history);
             $new_item->post_clone($this, $history);
+
+            if (
+                \Infocom::canApplyOn($this)
+                && isset($new_item->input['states_id'])
+                && !($new_item->input['is_template'] ?? false)
+            ) {
+                //Check if we have to automatically fill dates
+                \Infocom::manageDateOnStatusChange($new_item);
+            }
         }
 
         return $newID;

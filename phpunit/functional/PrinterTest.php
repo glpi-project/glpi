@@ -166,4 +166,94 @@ class PrinterTest extends DbTestCase
         $nb_after = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
         $this->assertSame($nb_before + 1, $nb_after);
     }
+
+    public function testCloneFromTemplateWithInfocoms()
+    {
+        global $DB, $GLPI_CACHE;
+
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create Status
+        $state = new \State();
+        $state->add([
+            'name' => __METHOD__,
+            'entities_id' => $entity_id
+        ]);
+        $this->assertTrue($state->getFromDB($state->getID()));
+
+        // Create template
+        $template = new \Printer();
+        $template->add([
+            'name' => __METHOD__,
+            'entities_id' => $entity_id,
+            'states_id' => $state->getID(),
+            'is_template' => 1
+        ]);
+        $this->assertTrue($template->getFromDB($template->getID()));
+        $this->assertEquals(0, $template->getField('is_deleted'));
+        $this->assertEquals(0, $template->isDeleted());
+
+        // Add infocoms to template
+        $infocom = new \Infocom();
+        $infocom->add([
+            'items_id' => $template->getID(),
+            'itemtype' => 'Printer',
+            'warranty_duration' => 36,
+        ]);
+        $this->assertTrue($infocom->getFromDB($infocom->getID()));
+        $this->assertEquals(0, $infocom->isDeleted());
+
+        // Create printer from template
+        $printer = new \Printer();
+        $printer_id = $template->clone();
+        $this->assertTrue($printer->getFromDB($printer_id));
+        $this->assertEquals(0, $printer->getField('is_template'));
+        $this->assertEquals($state->getID(), $printer->getField('states_id'));
+
+        // Check infocoms
+        $infocom = new \Infocom();
+        $infocom->getFromDBByCrit([
+            'itemtype' => \Printer::getType(),
+            'items_id' => $printer_id,
+        ]);
+        $this->assertTrue($infocom->getFromDB($infocom->getID()));
+        $this->assertEquals(36, $infocom->getField('warranty_duration'));
+        $this->assertEquals(null, $infocom->getField('delivery_date'));
+        $this->assertEquals(null, $infocom->getField('warranty_date'));
+
+        // Update entity config
+        $state_param = \Infocom::ON_STATUS_CHANGE . '_' . $state->getID();
+
+        $entity = new \Entity();
+        $DB->update(
+            \Entity::getTable(),
+            [
+                'autofill_delivery_date' => $state_param,
+                'autofill_warranty_date' => \Infocom::COPY_DELIVERY_DATE,
+            ],
+            ['id' => $entity_id]
+        );
+        $GLPI_CACHE->clear();
+        $this->assertTrue($entity->getFromDB($entity_id));
+        $this->assertEquals($state_param, $entity->getField('autofill_delivery_date'));
+        $this->assertEquals(\Infocom::COPY_DELIVERY_DATE, $entity->getField('autofill_warranty_date'));
+
+        // Create printer from template
+        $printer = new \Printer();
+        $printer_id = $template->clone();
+        $this->assertTrue($printer->getFromDB($printer_id));
+        $this->assertEquals(0, $printer->getField('is_template'));
+        $this->assertEquals($state->getID(), $printer->getField('states_id'));
+
+        // Check infocoms
+        $infocom = new \Infocom();
+        $infocom->getFromDBByCrit([
+            'itemtype' => \Printer::getType(),
+            'items_id' => $printer_id,
+        ]);
+        $this->assertTrue($infocom->getFromDB($infocom->getID()));
+        $this->assertEquals(36, $infocom->getField('warranty_duration'));
+        $this->assertEquals(date('Y-m-d'), $infocom->getField('delivery_date')); // = today
+        $this->assertEquals($infocom->getField('warranty_date'), $infocom->getField('warranty_date'));
+    }
 }
