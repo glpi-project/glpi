@@ -169,7 +169,7 @@ class PrinterTest extends DbTestCase
 
     public function testCloneFromTemplateWithInfocoms()
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
@@ -219,6 +219,7 @@ class PrinterTest extends DbTestCase
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
         $this->assertEquals(36, $infocom->getField('warranty_duration'));
         $this->assertEquals(null, $infocom->getField('delivery_date'));
+        $this->assertEquals(null, $infocom->getField('warranty_date'));
 
         // Update entity config
         $state_param = \Infocom::ON_STATUS_CHANGE . '_' . $state->getID();
@@ -232,7 +233,6 @@ class PrinterTest extends DbTestCase
             ],
             ['id' => $entity_id]
         );
-        global $GLPI_CACHE;
         $GLPI_CACHE->clear();
         $this->assertTrue($entity->getFromDB($entity_id));
         $this->assertEquals($state_param, $entity->getField('autofill_delivery_date'));
