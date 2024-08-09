@@ -33,29 +33,53 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
+use Glpi\DBAL\JsonFieldInterface;
 use Override;
-use Ticket;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class SLAFieldConfig implements JsonFieldInterface
 {
-    #[Override]
-    public static function getTargetItemtype(): string
-    {
-        return Ticket::class;
+    // Unique reference to hardcoded names used for serialization and forms input names
+    public const STRATEGY = 'strategy';
+    public const SLA_ID = 'sla_id';
+
+    public function __construct(
+        private SLAFieldStrategy $strategy,
+        private ?int $specific_sla_id = null,
+    ) {
     }
 
     #[Override]
-    public function getConfigurableFields(): array
+    public static function jsonDeserialize(array $data): self
     {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-        ]);
+        $strategy = SLAFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        if ($strategy === null) {
+            $strategy = SLAFieldStrategy::FROM_TEMPLATE;
+        }
+
+        return new self(
+            strategy: $strategy,
+            specific_sla_id: $data[self::SLA_ID],
+        );
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            self::STRATEGY => $this->strategy->value,
+            self::SLA_ID => $this->specific_sla_id,
+        ];
+    }
+
+    public function getStrategy(): SLAFieldStrategy
+    {
+        return $this->strategy;
+    }
+
+    public function getSpecificSLAID(): ?int
+    {
+        return $this->specific_sla_id;
     }
 }

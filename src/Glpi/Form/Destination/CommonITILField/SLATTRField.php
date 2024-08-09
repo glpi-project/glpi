@@ -33,29 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Override;
-use Ticket;
+use SLA;
+use SLM;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class SLATTRField extends SLAField
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getKey(): string
     {
-        return Ticket::class;
+        return 'sla_ttr';
     }
 
     #[Override]
-    public function getConfigurableFields(): array
+    public function getLabel(): string
     {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-        ]);
+        return __("SLA TTR");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 40;
+    }
+
+    #[Override]
+    public function getType(): int
+    {
+        return SLM::TTR;
     }
 }
