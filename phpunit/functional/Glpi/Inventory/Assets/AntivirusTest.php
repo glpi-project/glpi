@@ -372,7 +372,6 @@ class AntivirusTest extends AbstractInventoryAsset
         //we now have 1 antivirus only
         $results = $antivirus->find(['computers_id' => $computers_id]);
         $this->assertCount(1, $results);
-
     }
 
     public function testPartialUpdate()
