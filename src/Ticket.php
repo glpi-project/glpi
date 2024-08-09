@@ -4529,42 +4529,69 @@ JAVASCRIPT;
                         break;
 
                     case "survey":
-                        $options['criteria'][0]['field']      = 12; // status
-                        $options['criteria'][0]['searchtype'] = 'equals';
-                        $options['criteria'][0]['value']      = self::CLOSED;
-                        $options['criteria'][0]['link']       = 'AND';
-
-                        $options['criteria'][1]['field']      = 60; // enquete generee
-                        $options['criteria'][1]['searchtype'] = 'contains';
-                        $options['criteria'][1]['value']      = '^';
-                        $options['criteria'][1]['link']       = 'AND';
-
-                        $options['criteria'][2]['field']      = 61; // date_answered
-                        $options['criteria'][2]['searchtype'] = 'contains';
-                        $options['criteria'][2]['value']      = 'NULL';
-                        $options['criteria'][2]['link']       = 'AND';
+                        $options['criteria'] = [
+                            [
+                                'field'       => 12, // status
+                                'searchtype'  => 'equals',
+                                'value'       => self::CLOSED,
+                                'link'        => 'AND'
+                            ],
+                            [
+                                'field'       => 60, // date_created
+                                'searchtype'  => 'empty',
+                                'value'       => 'NULL',
+                                'link'        => 'AND NOT'
+                            ],
+                            [
+                                'link'     => 'AND',
+                                'criteria' => [
+                                    [
+                                        'field'       => 72, // end_date
+                                        'searchtype'  => 'morethan',
+                                        'value'       => 'NOW',
+                                        'link'        => 'OR'
+                                    ],
+                                    [
+                                        'field'       => 72, // end_date
+                                        'searchtype'  => 'empty',
+                                        'value'       => 'NULL',
+                                        'link'        => 'OR'
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field'       => 61, // date_answered
+                                'searchtype'  => 'empty',
+                                'value'       => 'NULL',
+                                'link'        => 'AND'
+                            ]
+                        ];
 
                         if (Session::haveRight('ticket', Ticket::SURVEY)) {
-                            $options['criteria'][3]['link']     = 'AND';
-                            $options['criteria'][3]['criteria'] = [
-                                [
-                                    'link'        => 'AND',
-                                    'field'       => 22, // author
-                                    'searchtype'  => 'equals',
-                                    'value'       => Session::getLoginUserID(),
-                                ],
-                                [
-                                    'link'        => 'OR',
-                                    'field'       => 4, // requester
-                                    'searchtype'  => 'equals',
-                                    'value'       => Session::getLoginUserID(),
+                            $options['criteria'][] = [
+                                'link'     => 'AND',
+                                'criteria' => [
+                                    [
+                                        'link'        => 'AND',
+                                        'field'       => 22, // author
+                                        'searchtype'  => 'equals',
+                                        'value'       => 'myself',
+                                    ],
+                                    [
+                                        'link'        => 'OR',
+                                        'field'       => 4, // requester
+                                        'searchtype'  => 'equals',
+                                        'value'       => 'myself',
+                                    ]
                                 ]
                             ];
                         } else {
-                            $options['criteria'][3]['field']        = 4; // requester
-                            $options['criteria'][3]['searchtype']   = 'equals';
-                            $options['criteria'][3]['value']        = Session::getLoginUserID();
-                            $options['criteria'][3]['link']         = 'AND';
+                            $options['criteria'][] = [
+                                'field' => 4, // requester
+                                'searchtype' => 'equals',
+                                'value' => 'myself',
+                                'link' => 'AND'
+                            ];
                         }
                         $forcetab                 = 'Ticket$3';
 

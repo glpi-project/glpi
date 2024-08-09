@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
@@ -354,6 +356,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $base_id = static::getSearchOptionIDOffset();
         $table = static::getTable();
 
@@ -423,6 +428,30 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ]
+        ];
+
+        $tab[] = [
+            'id'                 => 72 + $base_id,
+            'table'              => $table,
+            'field'              => 'inquest_duration',
+            'name'               => __('End date'),
+            'datatype'           => 'datetime',
+            'maybefuture'        => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'usehaving'          => true,
+            'nometa'             => true,
+            'computation'        => QueryFunction::if(
+                condition: ['glpi_entities.inquest_duration' => ['>', 0]],
+                true_expression: QueryFunction::dateAdd(
+                    date: "$table.date_begin",
+                    interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                    interval_unit: 'DAY',
+                ),
+                false_expression: new QueryExpression($DB::quoteValue(''))
+            )
         ];
 
         return $tab;
