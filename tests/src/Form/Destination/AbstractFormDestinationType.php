@@ -40,7 +40,9 @@ use CommonGLPI;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -65,6 +67,9 @@ abstract class AbstractFormDestinationType extends DbTestCase
         $itemtype = $this->getTestedInstance()::getTargetItemtype();
         $link_itemtype = $itemtype::getItemLinkClass();
 
+        $title_field = new TitleField();
+        $content_field = new ContentField();
+
         // Create a form with a single FormDestinationTicket destination
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
@@ -73,10 +78,10 @@ abstract class AbstractFormDestinationType extends DbTestCase
                     $this->getTestedInstance()::class,
                     'test',
                     [
-                        'title'        => (new SimpleValueConfig("My title"))->jsonSerialize(),
-                        'title_auto'   => 0,
-                        'content'      => (new SimpleValueConfig("My content"))->jsonSerialize(),
-                        'content_auto' => 0,
+                        $title_field->getKey()             => (new SimpleValueConfig("My title"))->jsonSerialize(),
+                        $title_field->getAutoConfigKey()   => 0,
+                        $content_field->getKey()           => (new SimpleValueConfig("My content"))->jsonSerialize(),
+                        $content_field->getAutoConfigKey() => 0,
                     ]
                 )
         );
