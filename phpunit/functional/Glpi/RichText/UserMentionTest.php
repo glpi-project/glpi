@@ -52,7 +52,7 @@ use User;
 
 class UserMentionTest extends DbTestCase
 {
-    public static function getTpesMapping(): array
+    public static function getTypesMapping(): array
     {
         return [
             'Change' => [
@@ -78,7 +78,7 @@ class UserMentionTest extends DbTestCase
         $tech_id = getItemByTypeName('User', 'tech', true);
         $normal_id = getItemByTypeName('User', 'normal', true);
 
-        foreach (self::getTpesMapping() as $main_type => $sub_types) {
+        foreach (self::getTypesMapping() as $main_type => $sub_types) {
             foreach (array_merge([$main_type], $sub_types) as $itemtype) {
                 yield [
                     'itemtype'      => $itemtype,
@@ -230,7 +230,7 @@ HTML
         $update = $user->update(['id' => $normal_id, '_useremails' => ['normal@glpi-project.org']]);
         $this->assertTrue($update);
 
-        foreach (self::getTpesMapping() as $main_type => $sub_types) {
+        foreach (self::getTypesMapping() as $main_type => $sub_types) {
             $this->createNotification($main_type);
         }
 
