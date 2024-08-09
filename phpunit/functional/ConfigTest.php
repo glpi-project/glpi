@@ -233,9 +233,6 @@ class ConfigTest extends DbTestCase
         $this->assertTrue(\Config::validatePassword('my1paSsword'));
         $CFG_GLPI['password_need_symbol'] = 1; //reset
         $this->hasNoSessionMessage(ERROR);
-
-        //reset to default.
-        $CFG_GLPI['use_password_security'] = 0;
     }
 
     public function testGetLibraries()

@@ -182,7 +182,6 @@ class CertificateTest extends DbTestCase
     public function testCronCertificate()
     {
         global $CFG_GLPI;
-        $bkp_cfg = $CFG_GLPI;
 
         $this->login();
         $obj = new \Certificate();
@@ -252,7 +251,5 @@ class CertificateTest extends DbTestCase
         $this->assertEquals('Certificate', $alert_certificate['itemtype']);
         $this->assertEquals($id, $alert_certificate['items_id']);
         $this->assertEquals($alert_id + 1, $alert_certificate['id']);
-
-        $CFG_GLPI = $bkp_cfg;
     }
 }
