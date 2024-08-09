@@ -850,10 +850,10 @@ class Item_Devices extends CommonDBRelation
         CommonDBTM $item,
         HTMLTableMain $table,
         array $options,
-        HTMLTableSuperHeader $delete_all_column = null,
+        ?HTMLTableSuperHeader $delete_all_column,
         HTMLTableSuperHeader $common_column,
         HTMLTableSuperHeader $specific_column,
-        HTMLTableSuperHeader $delete_column = null,
+        ?HTMLTableSuperHeader $delete_column,
         $dynamic_column
     ) {
         /** @var \DBmysql $DB */

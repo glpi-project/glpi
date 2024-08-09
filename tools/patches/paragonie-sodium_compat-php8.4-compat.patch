@@ -1,0 +1,182 @@
+diff --git a/src/Core/Curve25519/Ge/Cached.php b/src/Core/Curve25519/Ge/Cached.php
+index 39bf897..2d776b0 100644
+--- a/src/Core/Curve25519/Ge/Cached.php
++++ b/src/Core/Curve25519/Ge/Cached.php
+@@ -40,10 +40,10 @@ class ParagonIE_Sodium_Core_Curve25519_Ge_Cached
+      * @param ParagonIE_Sodium_Core_Curve25519_Fe|null $T2d
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core_Curve25519_Fe $YplusX = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $YminusX = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $Z = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $T2d = null
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $YplusX = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $YminusX = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $Z = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $T2d = null
+     ) {
+         if ($YplusX === null) {
+             $YplusX = new ParagonIE_Sodium_Core_Curve25519_Fe();
+diff --git a/src/Core/Curve25519/Ge/P1p1.php b/src/Core/Curve25519/Ge/P1p1.php
+index a63d6ab..c1d258a 100644
+--- a/src/Core/Curve25519/Ge/P1p1.php
++++ b/src/Core/Curve25519/Ge/P1p1.php
+@@ -39,10 +39,10 @@ class ParagonIE_Sodium_Core_Curve25519_Ge_P1p1
+      * @param ParagonIE_Sodium_Core_Curve25519_Fe|null $t
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $z = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $t = null
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $z = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $t = null
+     ) {
+         if ($x === null) {
+             $x = new ParagonIE_Sodium_Core_Curve25519_Fe();
+diff --git a/src/Core/Curve25519/Ge/P2.php b/src/Core/Curve25519/Ge/P2.php
+index aee4000..6684f62 100644
+--- a/src/Core/Curve25519/Ge/P2.php
++++ b/src/Core/Curve25519/Ge/P2.php
+@@ -34,9 +34,9 @@ class ParagonIE_Sodium_Core_Curve25519_Ge_P2
+      * @param ParagonIE_Sodium_Core_Curve25519_Fe|null $z
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $z = null
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $z = null
+     ) {
+         if ($x === null) {
+             $x = new ParagonIE_Sodium_Core_Curve25519_Fe();
+diff --git a/src/Core/Curve25519/Ge/P3.php b/src/Core/Curve25519/Ge/P3.php
+index 00f5b27..65dbbf6 100644
+--- a/src/Core/Curve25519/Ge/P3.php
++++ b/src/Core/Curve25519/Ge/P3.php
+@@ -40,10 +40,10 @@ class ParagonIE_Sodium_Core_Curve25519_Ge_P3
+      * @param ParagonIE_Sodium_Core_Curve25519_Fe|null $t
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $z = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $t = null
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $z = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $t = null
+     ) {
+         if ($x === null) {
+             $x = new ParagonIE_Sodium_Core_Curve25519_Fe();
+diff --git a/src/Core/Curve25519/Ge/Precomp.php b/src/Core/Curve25519/Ge/Precomp.php
+index 59611c1..6b00f3e 100644
+--- a/src/Core/Curve25519/Ge/Precomp.php
++++ b/src/Core/Curve25519/Ge/Precomp.php
+@@ -34,9 +34,9 @@ class ParagonIE_Sodium_Core_Curve25519_Ge_Precomp
+      * @param ParagonIE_Sodium_Core_Curve25519_Fe $xy2d
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core_Curve25519_Fe $yplusx = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $yminusx = null,
+-        ParagonIE_Sodium_Core_Curve25519_Fe $xy2d = null
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $yplusx = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $yminusx = null,
++        ?ParagonIE_Sodium_Core_Curve25519_Fe $xy2d = null
+     ) {
+         if ($yplusx === null) {
+             $yplusx = new ParagonIE_Sodium_Core_Curve25519_Fe();
+diff --git a/src/Core32/Curve25519/Ge/Cached.php b/src/Core32/Curve25519/Ge/Cached.php
+index 970481f..434200b 100644
+--- a/src/Core32/Curve25519/Ge/Cached.php
++++ b/src/Core32/Curve25519/Ge/Cached.php
+@@ -40,10 +40,10 @@ class ParagonIE_Sodium_Core32_Curve25519_Ge_Cached
+      * @param ParagonIE_Sodium_Core32_Curve25519_Fe|null $T2d
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $YplusX = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $YminusX = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $Z = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $T2d = null
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $YplusX = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $YminusX = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $Z = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $T2d = null
+     ) {
+         if ($YplusX === null) {
+             $YplusX = new ParagonIE_Sodium_Core32_Curve25519_Fe();
+diff --git a/src/Core32/Curve25519/Ge/P1p1.php b/src/Core32/Curve25519/Ge/P1p1.php
+index ff10b1d..71296cd 100644
+--- a/src/Core32/Curve25519/Ge/P1p1.php
++++ b/src/Core32/Curve25519/Ge/P1p1.php
+@@ -42,10 +42,10 @@ class ParagonIE_Sodium_Core32_Curve25519_Ge_P1p1
+      * @throws TypeError
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $z = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $t = null
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $z = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $t = null
+     ) {
+         if ($x === null) {
+             $x = ParagonIE_Sodium_Core32_Curve25519::fe_0();
+diff --git a/src/Core32/Curve25519/Ge/P2.php b/src/Core32/Curve25519/Ge/P2.php
+index 8a45a91..b725854 100644
+--- a/src/Core32/Curve25519/Ge/P2.php
++++ b/src/Core32/Curve25519/Ge/P2.php
+@@ -34,9 +34,9 @@ class ParagonIE_Sodium_Core32_Curve25519_Ge_P2
+      * @param ParagonIE_Sodium_Core32_Curve25519_Fe|null $z
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $z = null
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $z = null
+     ) {
+         if ($x === null) {
+             $x = new ParagonIE_Sodium_Core32_Curve25519_Fe();
+diff --git a/src/Core32/Curve25519/Ge/P3.php b/src/Core32/Curve25519/Ge/P3.php
+index c9e4b16..bcee5b5 100644
+--- a/src/Core32/Curve25519/Ge/P3.php
++++ b/src/Core32/Curve25519/Ge/P3.php
+@@ -40,10 +40,10 @@ class ParagonIE_Sodium_Core32_Curve25519_Ge_P3
+      * @param ParagonIE_Sodium_Core32_Curve25519_Fe|null $t
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $z = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $t = null
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $x = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $y = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $z = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $t = null
+     ) {
+         if ($x === null) {
+             $x = new ParagonIE_Sodium_Core32_Curve25519_Fe();
+diff --git a/src/Core32/Curve25519/Ge/Precomp.php b/src/Core32/Curve25519/Ge/Precomp.php
+index b590b75..b3541a8 100644
+--- a/src/Core32/Curve25519/Ge/Precomp.php
++++ b/src/Core32/Curve25519/Ge/Precomp.php
+@@ -36,9 +36,9 @@ class ParagonIE_Sodium_Core32_Curve25519_Ge_Precomp
+      * @throws TypeError
+      */
+     public function __construct(
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $yplusx = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $yminusx = null,
+-        ParagonIE_Sodium_Core32_Curve25519_Fe $xy2d = null
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $yplusx = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $yminusx = null,
++        ?ParagonIE_Sodium_Core32_Curve25519_Fe $xy2d = null
+     ) {
+         if ($yplusx === null) {
+             $yplusx = ParagonIE_Sodium_Core32_Curve25519::fe_0();

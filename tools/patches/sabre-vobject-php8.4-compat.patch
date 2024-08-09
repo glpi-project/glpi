@@ -1,0 +1,185 @@
+diff --git a/lib/Component/VCalendar.php b/lib/Component/VCalendar.php
+index 4db3181..017aed7 100644
+--- a/lib/Component/VCalendar.php
++++ b/lib/Component/VCalendar.php
+@@ -281,7 +281,7 @@ class VCalendar extends VObject\Document
+      *
+      * @return VCalendar
+      */
+-    public function expand(DateTimeInterface $start, DateTimeInterface $end, DateTimeZone $timeZone = null)
++    public function expand(DateTimeInterface $start, DateTimeInterface $end, ?DateTimeZone $timeZone = null)
+     {
+         $newChildren = [];
+         $recurringEvents = [];
+diff --git a/lib/DateTimeParser.php b/lib/DateTimeParser.php
+index 1c25343..5d8174e 100644
+--- a/lib/DateTimeParser.php
++++ b/lib/DateTimeParser.php
+@@ -31,7 +31,7 @@ class DateTimeParser
+      *
+      * @return DateTimeImmutable
+      */
+-    public static function parseDateTime($dt, DateTimeZone $tz = null)
++    public static function parseDateTime($dt, ?DateTimeZone $tz = null)
+     {
+         // Format is YYYYMMDD + "T" + hhmmss
+         $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])([Z]?)$/', $dt, $matches);
+@@ -61,7 +61,7 @@ class DateTimeParser
+      *
+      * @return DateTimeImmutable
+      */
+-    public static function parseDate($date, DateTimeZone $tz = null)
++    public static function parseDate($date, ?DateTimeZone $tz = null)
+     {
+         // Format is YYYYMMDD
+         $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])$/', $date, $matches);
+diff --git a/lib/Document.php b/lib/Document.php
+index 14a77c9..f2765a6 100644
+--- a/lib/Document.php
++++ b/lib/Document.php
+@@ -157,7 +157,7 @@ abstract class Document extends Component
+      *
+      * @return Component
+      */
+-    public function createComponent($name, array $children = null, $defaults = true)
++    public function createComponent($name, ?array $children = null, $defaults = true)
+     {
+         $name = strtoupper($name);
+         $class = Component::class;
+@@ -189,7 +189,7 @@ abstract class Document extends Component
+      *
+      * @return Property
+      */
+-    public function createProperty($name, $value = null, array $parameters = null, $valueType = null)
++    public function createProperty($name, $value = null, ?array $parameters = null, $valueType = null)
+     {
+         // If there's a . in the name, it means it's prefixed by a groupname.
+         if (false !== ($i = strpos($name, '.'))) {
+diff --git a/lib/FreeBusyGenerator.php b/lib/FreeBusyGenerator.php
+index 81b8126..56ae166 100644
+--- a/lib/FreeBusyGenerator.php
++++ b/lib/FreeBusyGenerator.php
+@@ -89,7 +89,7 @@ class FreeBusyGenerator
+      * @param mixed             $objects
+      * @param DateTimeZone      $timeZone
+      */
+-    public function __construct(DateTimeInterface $start = null, DateTimeInterface $end = null, $objects = null, DateTimeZone $timeZone = null)
++    public function __construct(?DateTimeInterface $start = null, ?DateTimeInterface $end = null, $objects = null, ?DateTimeZone $timeZone = null)
+     {
+         $this->setTimeRange($start, $end);
+ 
+@@ -158,7 +158,7 @@ class FreeBusyGenerator
+      * @param DateTimeInterface $start
+      * @param DateTimeInterface $end
+      */
+-    public function setTimeRange(DateTimeInterface $start = null, DateTimeInterface $end = null)
++    public function setTimeRange(?DateTimeInterface $start = null, ?DateTimeInterface $end = null)
+     {
+         if (!$start) {
+             $start = new DateTimeImmutable(Settings::$minDate);
+diff --git a/lib/ITip/Broker.php b/lib/ITip/Broker.php
+index b66a59f..791ba74 100644
+--- a/lib/ITip/Broker.php
++++ b/lib/ITip/Broker.php
+@@ -108,7 +108,7 @@ class Broker
+      *
+      * @return VCalendar|null
+      */
+-    public function processMessage(Message $itipMessage, VCalendar $existingObject = null)
++    public function processMessage(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         // We only support events at the moment.
+         if ('VEVENT' !== $itipMessage->component) {
+@@ -266,7 +266,7 @@ class Broker
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageRequest(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageRequest(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         if (!$existingObject) {
+             // This is a new invite, and we're just going to copy over
+@@ -301,7 +301,7 @@ class Broker
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageCancel(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageCancel(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         if (!$existingObject) {
+             // The event didn't exist in the first place, so we're just
+@@ -326,7 +326,7 @@ class Broker
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageReply(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageReply(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         // A reply can only be processed based on an existing object.
+         // If the object is not available, the reply is ignored.
+@@ -800,7 +800,7 @@ class Broker
+      *
+      * @return array
+      */
+-    protected function parseEventInfo(VCalendar $calendar = null)
++    protected function parseEventInfo(?VCalendar $calendar = null)
+     {
+         $uid = null;
+         $organizer = null;
+diff --git a/lib/Property/ICalendar/DateTime.php b/lib/Property/ICalendar/DateTime.php
+index ca71633..3ea21e2 100644
+--- a/lib/Property/ICalendar/DateTime.php
++++ b/lib/Property/ICalendar/DateTime.php
+@@ -131,7 +131,7 @@ class DateTime extends Property
+      *
+      * @return \DateTimeImmutable
+      */
+-    public function getDateTime(DateTimeZone $timeZone = null)
++    public function getDateTime(?DateTimeZone $timeZone = null)
+     {
+         $dt = $this->getDateTimes($timeZone);
+         if (!$dt) {
+@@ -153,7 +153,7 @@ class DateTime extends Property
+      * @return \DateTimeImmutable[]
+      * @return \DateTime[]
+      */
+-    public function getDateTimes(DateTimeZone $timeZone = null)
++    public function getDateTimes(?DateTimeZone $timeZone = null)
+     {
+         // Does the property have a TZID?
+         $tzid = $this['TZID'];
+diff --git a/lib/Recur/EventIterator.php b/lib/Recur/EventIterator.php
+index 61f05d7..55d6e47 100644
+--- a/lib/Recur/EventIterator.php
++++ b/lib/Recur/EventIterator.php
+@@ -93,7 +93,7 @@ class EventIterator implements \Iterator
+      * @param DateTimeZone    $timeZone reference timezone for floating dates and
+      *                                  times
+      */
+-    public function __construct($input, $uid = null, DateTimeZone $timeZone = null)
++    public function __construct($input, $uid = null, ?DateTimeZone $timeZone = null)
+     {
+         if (is_null($timeZone)) {
+             $timeZone = new DateTimeZone('UTC');
+diff --git a/lib/TimeZoneUtil.php b/lib/TimeZoneUtil.php
+index 6422c09..0d77e71 100644
+--- a/lib/TimeZoneUtil.php
++++ b/lib/TimeZoneUtil.php
+@@ -75,7 +75,7 @@ class TimeZoneUtil
+      * Alternatively, if $failIfUncertain is set to true, it will throw an
+      * exception if we cannot accurately determine the timezone.
+      */
+-    private function findTimeZone(string $tzid, Component $vcalendar = null, bool $failIfUncertain = false): DateTimeZone
++    private function findTimeZone(string $tzid, ?Component $vcalendar = null, bool $failIfUncertain = false): DateTimeZone
+     {
+         foreach ($this->timezoneFinders as $timezoneFinder) {
+             $timezone = $timezoneFinder->find($tzid, $failIfUncertain);
+@@ -126,7 +126,7 @@ class TimeZoneUtil
+      *
+      * @return DateTimeZone
+      */
+-    public static function getTimeZone($tzid, Component $vcalendar = null, $failIfUncertain = false)
++    public static function getTimeZone($tzid, ?Component $vcalendar = null, $failIfUncertain = false)
+     {
+         return self::getInstance()->findTimeZone($tzid, $vcalendar, $failIfUncertain);
+     }

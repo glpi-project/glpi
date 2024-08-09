@@ -1,0 +1,236 @@
+diff --git a/src/BodySummarizer.php b/src/BodySummarizer.php
+index 6eca94ef..761506dd 100644
+--- a/src/BodySummarizer.php
++++ b/src/BodySummarizer.php
+@@ -11,7 +11,7 @@ final class BodySummarizer implements BodySummarizerInterface
+      */
+     private $truncateAt;
+ 
+-    public function __construct(int $truncateAt = null)
++    public function __construct(?int $truncateAt = null)
+     {
+         $this->truncateAt = $truncateAt;
+     }
+@@ -22,7 +22,7 @@ final class BodySummarizer implements BodySummarizerInterface
+     public function summarize(MessageInterface $message): ?string
+     {
+         return $this->truncateAt === null
+-            ? \GuzzleHttp\Psr7\Message::bodySummary($message)
+-            : \GuzzleHttp\Psr7\Message::bodySummary($message, $this->truncateAt);
++            ? Psr7\Message::bodySummary($message)
++            : Psr7\Message::bodySummary($message, $this->truncateAt);
+     }
+ }
+diff --git a/src/Client.php b/src/Client.php
+index 58f1d891..186cada6 100644
+--- a/src/Client.php
++++ b/src/Client.php
+@@ -52,7 +52,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
+      *
+      * @param array $config Client configuration settings.
+      *
+-     * @see \GuzzleHttp\RequestOptions for a list of available request options.
++     * @see RequestOptions for a list of available request options.
+      */
+     public function __construct(array $config = [])
+     {
+diff --git a/src/Exception/BadResponseException.php b/src/Exception/BadResponseException.php
+index a80956c9..ba67ad49 100644
+--- a/src/Exception/BadResponseException.php
++++ b/src/Exception/BadResponseException.php
+@@ -14,7 +14,7 @@ class BadResponseException extends RequestException
+         string $message,
+         RequestInterface $request,
+         ResponseInterface $response,
+-        \Throwable $previous = null,
++        ?\Throwable $previous = null,
+         array $handlerContext = []
+     ) {
+         parent::__construct($message, $request, $response, $previous, $handlerContext);
+diff --git a/src/Exception/ConnectException.php b/src/Exception/ConnectException.php
+index e1a31519..eab51ca1 100644
+--- a/src/Exception/ConnectException.php
++++ b/src/Exception/ConnectException.php
+@@ -25,7 +25,7 @@ class ConnectException extends TransferException implements NetworkExceptionInte
+     public function __construct(
+         string $message,
+         RequestInterface $request,
+-        \Throwable $previous = null,
++        ?\Throwable $previous = null,
+         array $handlerContext = []
+     ) {
+         parent::__construct($message, 0, $previous);
+diff --git a/src/Exception/RequestException.php b/src/Exception/RequestException.php
+index c2d0a9cc..ae05ccfa 100644
+--- a/src/Exception/RequestException.php
++++ b/src/Exception/RequestException.php
+@@ -32,8 +32,8 @@ class RequestException extends TransferException implements RequestExceptionInte
+     public function __construct(
+         string $message,
+         RequestInterface $request,
+-        ResponseInterface $response = null,
+-        \Throwable $previous = null,
++        ?ResponseInterface $response = null,
++        ?\Throwable $previous = null,
+         array $handlerContext = []
+     ) {
+         // Set the code of the exception if the response is set and not future.
+@@ -63,10 +63,10 @@ class RequestException extends TransferException implements RequestExceptionInte
+      */
+     public static function create(
+         RequestInterface $request,
+-        ResponseInterface $response = null,
+-        \Throwable $previous = null,
++        ?ResponseInterface $response = null,
++        ?\Throwable $previous = null,
+         array $handlerContext = [],
+-        BodySummarizerInterface $bodySummarizer = null
++        ?BodySummarizerInterface $bodySummarizer = null
+     ): self {
+         if (!$response) {
+             return new self(
+diff --git a/src/Handler/MockHandler.php b/src/Handler/MockHandler.php
+index 79664e27..e500747d 100644
+--- a/src/Handler/MockHandler.php
++++ b/src/Handler/MockHandler.php
+@@ -52,21 +52,21 @@ class MockHandler implements \Countable
+      * @param callable|null $onFulfilled Callback to invoke when the return value is fulfilled.
+      * @param callable|null $onRejected  Callback to invoke when the return value is rejected.
+      */
+-    public static function createWithMiddleware(array $queue = null, callable $onFulfilled = null, callable $onRejected = null): HandlerStack
++    public static function createWithMiddleware(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null): HandlerStack
+     {
+         return HandlerStack::create(new self($queue, $onFulfilled, $onRejected));
+     }
+ 
+     /**
+      * The passed in value must be an array of
+-     * {@see \Psr\Http\Message\ResponseInterface} objects, Exceptions,
++     * {@see ResponseInterface} objects, Exceptions,
+      * callables, or Promises.
+      *
+      * @param array<int, mixed>|null $queue       The parameters to be passed to the append function, as an indexed array.
+      * @param callable|null          $onFulfilled Callback to invoke when the return value is fulfilled.
+      * @param callable|null          $onRejected  Callback to invoke when the return value is rejected.
+      */
+-    public function __construct(array $queue = null, callable $onFulfilled = null, callable $onRejected = null)
++    public function __construct(?array $queue = null, ?callable $onFulfilled = null, ?callable $onRejected = null)
+     {
+         $this->onFulfilled = $onFulfilled;
+         $this->onRejected = $onRejected;
+@@ -199,7 +199,7 @@ class MockHandler implements \Countable
+     private function invokeStats(
+         RequestInterface $request,
+         array $options,
+-        ResponseInterface $response = null,
++        ?ResponseInterface $response = null,
+         $reason = null
+     ): void {
+         if (isset($options['on_stats'])) {
+diff --git a/src/Handler/StreamHandler.php b/src/Handler/StreamHandler.php
+index 543f825a..64c25134 100644
+--- a/src/Handler/StreamHandler.php
++++ b/src/Handler/StreamHandler.php
+@@ -83,8 +83,8 @@ class StreamHandler
+         array $options,
+         RequestInterface $request,
+         ?float $startTime,
+-        ResponseInterface $response = null,
+-        \Throwable $error = null
++        ?ResponseInterface $response = null,
++        ?\Throwable $error = null
+     ): void {
+         if (isset($options['on_stats'])) {
+             $stats = new TransferStats($request, $response, Utils::currentTime() - $startTime, $error, []);
+diff --git a/src/HandlerStack.php b/src/HandlerStack.php
+index e0a1d119..90942a77 100644
+--- a/src/HandlerStack.php
++++ b/src/HandlerStack.php
+@@ -58,7 +58,7 @@ class HandlerStack
+     /**
+      * @param (callable(RequestInterface, array): PromiseInterface)|null $handler Underlying HTTP handler.
+      */
+-    public function __construct(callable $handler = null)
++    public function __construct(?callable $handler = null)
+     {
+         $this->handler = $handler;
+     }
+diff --git a/src/Middleware.php b/src/Middleware.php
+index 7035c77f..7e9f4c2c 100644
+--- a/src/Middleware.php
++++ b/src/Middleware.php
+@@ -53,7 +53,7 @@ final class Middleware
+      *
+      * @return callable(callable): callable Returns a function that accepts the next handler.
+      */
+-    public static function httpErrors(BodySummarizerInterface $bodySummarizer = null): callable
++    public static function httpErrors(?BodySummarizerInterface $bodySummarizer = null): callable
+     {
+         return static function (callable $handler) use ($bodySummarizer): callable {
+             return static function ($request, array $options) use ($handler, $bodySummarizer) {
+@@ -127,7 +127,7 @@ final class Middleware
+      *
+      * @return callable Returns a function that accepts the next handler.
+      */
+-    public static function tap(callable $before = null, callable $after = null): callable
++    public static function tap(?callable $before = null, ?callable $after = null): callable
+     {
+         return static function (callable $handler) use ($before, $after): callable {
+             return static function (RequestInterface $request, array $options) use ($handler, $before, $after) {
+@@ -170,7 +170,7 @@ final class Middleware
+      *
+      * @return callable Returns a function that accepts the next handler.
+      */
+-    public static function retry(callable $decider, callable $delay = null): callable
++    public static function retry(callable $decider, ?callable $delay = null): callable
+     {
+         return static function (callable $handler) use ($decider, $delay): RetryMiddleware {
+             return new RetryMiddleware($decider, $handler, $delay);
+diff --git a/src/RequestOptions.php b/src/RequestOptions.php
+index 20b31bc2..ecdc5fbf 100644
+--- a/src/RequestOptions.php
++++ b/src/RequestOptions.php
+@@ -63,7 +63,7 @@ final class RequestOptions
+      * Specifies whether or not cookies are used in a request or what cookie
+      * jar to use or what cookies to send. This option only works if your
+      * handler has the `cookie` middleware. Valid values are `false` and
+-     * an instance of {@see \GuzzleHttp\Cookie\CookieJarInterface}.
++     * an instance of {@see Cookie\CookieJarInterface}.
+      */
+     public const COOKIES = 'cookies';
+ 
+diff --git a/src/RetryMiddleware.php b/src/RetryMiddleware.php
+index 0236a9d5..95fcf88f 100644
+--- a/src/RetryMiddleware.php
++++ b/src/RetryMiddleware.php
+@@ -40,7 +40,7 @@ class RetryMiddleware
+      *                                                                         and returns the number of
+      *                                                                         milliseconds to delay.
+      */
+-    public function __construct(callable $decider, callable $nextHandler, callable $delay = null)
++    public function __construct(callable $decider, callable $nextHandler, ?callable $delay = null)
+     {
+         $this->decider = $decider;
+         $this->nextHandler = $nextHandler;
+@@ -107,7 +107,7 @@ class RetryMiddleware
+         };
+     }
+ 
+-    private function doRetry(RequestInterface $request, array $options, ResponseInterface $response = null): PromiseInterface
++    private function doRetry(RequestInterface $request, array $options, ?ResponseInterface $response = null): PromiseInterface
+     {
+         $options['delay'] = ($this->delay)(++$options['retries'], $response, $request);
+ 
+diff --git a/src/Utils.php b/src/Utils.php
+index e355f321..f455dcb7 100644
+--- a/src/Utils.php
++++ b/src/Utils.php
+@@ -71,7 +71,7 @@ final class Utils
+             return \STDOUT;
+         }
+ 
+-        return \GuzzleHttp\Psr7\Utils::tryFopen('php://output', 'w');
++        return Psr7\Utils::tryFopen('php://output', 'w');
+     }
+ 
+     /**

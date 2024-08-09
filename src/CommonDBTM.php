@@ -2900,7 +2900,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function can($ID, $right, array &$input = null)
+    public function can($ID, $right, ?array &$input = null)
     {
         if (Session::isInventory()) {
             return true;
@@ -3032,7 +3032,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function check($ID, $right, array &$input = null)
+    public function check($ID, $right, ?array &$input = null)
     {
 
        // Check item exists
@@ -3979,7 +3979,7 @@ class CommonDBTM extends CommonGLPI
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
     }
 

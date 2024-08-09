@@ -192,7 +192,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    protected function handleImportError($message, ProgressBar $progress_bar = null, bool $prevent_exit = false): void
+    protected function handleImportError($message, ?ProgressBar $progress_bar = null, bool $prevent_exit = false): void
     {
         $skip_errors = $this->input->getOption('skip-errors');
 
@@ -325,7 +325,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      *
      * @return null|CommonDBTM Stored item.
      */
-    protected function storeItem(string $itemtype, ?int $existing_item_id, array $input, ProgressBar $progress_bar = null): ?CommonDBTM
+    protected function storeItem(string $itemtype, ?int $existing_item_id, array $input, ?ProgressBar $progress_bar = null): ?CommonDBTM
     {
         if (!is_a($itemtype, CommonDBTM::class, true)) {
             throw new \LogicException(sprintf('Invalid itemtype "%s".', $itemtype));
@@ -373,7 +373,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    protected function storeInfocomForItem(CommonDBTM $item, array $infocom_input, ProgressBar $progress_bar = null): void
+    protected function storeInfocomForItem(CommonDBTM $item, array $infocom_input, ?ProgressBar $progress_bar = null): void
     {
         $infocom = new Infocom();
 
