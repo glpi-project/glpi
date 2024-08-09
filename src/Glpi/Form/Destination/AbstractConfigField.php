@@ -39,13 +39,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Form;
 use LogicException;
 use Override;
+use Toolbox;
 
 abstract class AbstractConfigField implements ConfigFieldInterface
 {
     #[Override]
     public function getKey(): string
     {
-        return static::class;
+        return Toolbox::slugify(static::class);
     }
 
     #[Override]
