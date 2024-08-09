@@ -432,7 +432,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
         $tab[] = [
             'id'                 => 72 + $base_id,
-            'table'              => 'glpi_entities',
+            'table'              => $table,
             'field'              => 'inquest_duration',
             'name'               => __('End date'),
             'datatype'           => 'datetime',
@@ -444,10 +444,10 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'usehaving'          => true,
             'nometa'             => true,
             'computation'        => QueryFunction::if(
-                condition: ['TABLE.inquest_duration' => ['>', 0]],
+                condition: ['glpi_entities.inquest_duration' => ['>', 0]],
                 true_expression: QueryFunction::dateAdd(
                     date: "$table.date_begin",
-                    interval: new QueryExpression($DB::quoteName('TABLE.inquest_duration')),
+                    interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
                     interval_unit: 'DAY',
                 ),
                 false_expression: new QueryExpression($DB::quoteValue(''))

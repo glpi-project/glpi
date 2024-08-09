@@ -4638,6 +4638,138 @@ class SearchTest extends DbTestCase
             $data['sql']['search']
         );
     }
+
+    public function testCommonITILSatisfactionEndDate()
+    {
+        global $DB, $GLPI_CACHE;
+        $entity_root_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entity_child_1_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
+        $user_id = getItemByTypeName('User', TU_USER, true);
+
+        $this->login();
+
+        $DB->update(
+            \Entity::getTable(),
+            [
+                'inquest_duration' => '0',
+            ],
+            ['id' => $entity_root_id]
+        );
+        $DB->update(
+            \Entity::getTable(),
+            [
+                'inquest_duration' => '2',
+            ],
+            ['id' => $entity_child_1_id]
+        );
+        $DB->update(
+            \Entity::getTable(),
+            [
+                'inquest_duration' => '4',
+            ],
+            ['id' => $entity_child_2_id]
+        );
+        $GLPI_CACHE->clear();
+
+        // Create a closed ticket
+        $ticket = new \Ticket();
+        $ticket1_id = (int) $ticket->add([
+            'entity_id' => $entity_root_id,
+            'name' => __FUNCTION__ . ' 1',
+            'content' => __FUNCTION__ . ' 1 content',
+            'solvedate' => $_SESSION['glpi_currenttime'],
+            'status' => \CommonITILObject::CLOSED,
+            'users_id_recipient' => $user_id,
+        ]);
+        $this->assertTrue($ticket->getFromDB($ticket1_id));
+        $this->assertTrue($ticket->isClosed());
+
+        $ticket2_id = (int) $ticket->add([
+            'entity_id' => $entity_child_1_id,
+            'name' => __FUNCTION__ . ' 2',
+            'content' => __FUNCTION__ . ' 2 content',
+            'solvedate' => $_SESSION['glpi_currenttime'],
+            'status' => \CommonITILObject::CLOSED,
+            'users_id_recipient' => $user_id,
+        ]);
+        $this->assertTrue($ticket->getFromDB($ticket2_id));
+        $this->assertTrue($ticket->isClosed());
+
+        $ticket3_id = (int) $ticket->add([
+            'entity_id' => $entity_child_2_id,
+            'name' => __FUNCTION__ . ' 3',
+            'content' => __FUNCTION__ . ' 3 content',
+            'solvedate' => $_SESSION['glpi_currenttime'],
+            'status' => \CommonITILObject::CLOSED,
+            'users_id_recipient' => $user_id,
+        ]);
+        $this->assertTrue($ticket->getFromDB($ticket3_id));
+        $this->assertTrue($ticket->isClosed());
+
+        // Create satisfaction
+        $satisfaction = new \TicketSatisfaction();
+        $satisfaction->add([
+            'tickets_id' => $ticket1_id,
+            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+        ]);
+        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
+
+        $satisfaction->add([
+            'tickets_id' => $ticket2_id,
+            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+        ]);
+        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
+
+        $satisfaction->add([
+            'tickets_id' => $ticket3_id,
+            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+        ]);
+        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
+
+        $search_params = [
+            'is_deleted' => 0,
+            'start' => 0,
+            'criteria' => [
+                [
+                    'field' => 1, // name
+                    'searchtype' => 'contains',
+                    'value' => __FUNCTION__,
+                ],
+                [
+                    'field' => 72, // satisfaction end date
+                    'searchtype' => 'contains',
+                    'value' => '',
+                ],
+            ],
+            'order' => 1,
+        ];
+
+        $data = $this->doSearch(\Ticket::class, $search_params);
+
+        $items = [];
+        foreach ($data['data']['rows'] as $row) {
+            $items[] = [
+                $row['raw']['ITEM_Ticket_2'],
+                $row['raw']['ITEM_Ticket_72'],
+            ];
+        }
+        $expected = [
+            [
+                $ticket1_id,
+                '',
+            ],
+            [
+                $ticket2_id,
+                date('Y-m-d H:i', strtotime('+2 days', strtotime($_SESSION['glpi_currenttime']))),
+            ],
+            [
+                $ticket3_id,
+                date('Y-m-d H:i', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+            ],
+        ];
+        $this->assertEquals($expected, $items);
+    }
 }
 
 // @codingStandardsIgnoreStart
