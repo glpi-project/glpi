@@ -48,12 +48,6 @@ use Override;
 class TitleField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
-    {
-        return 'title';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("Title");

@@ -43,6 +43,12 @@ use Override;
 abstract class AbstractConfigField implements ConfigFieldInterface
 {
     #[Override]
+    public function getKey(): string
+    {
+        return static::class;
+    }
+
+    #[Override]
     public function supportAutoConfiguration(): bool
     {
         return false;

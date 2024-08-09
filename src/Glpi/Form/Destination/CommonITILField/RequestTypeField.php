@@ -48,12 +48,6 @@ use Ticket;
 class RequestTypeField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
-    {
-        return 'request_type';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("Request type");
