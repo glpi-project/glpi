@@ -185,7 +185,7 @@ class TemplateManager extends DbTestCase
     /**
      * Verify that actors are rendered correctly on creation (commonitilobject)
      *
-     * @dataprovider commonITILObjectclassesProvider
+     * @dataProvider commonITILObjectclassesProvider
      *
      * @return void
      */

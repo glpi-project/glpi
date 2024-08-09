@@ -2340,7 +2340,7 @@ class RuleTicket extends DbTestCase
     }
 
     /**
-     * @dataprovider testMailHeaderCriteriaProvider
+     * @dataProvider testMailHeaderCriteriaProvider
      */
     public function testMailHeaderCriteria(
         string $pattern,
@@ -3295,7 +3295,7 @@ class RuleTicket extends DbTestCase
      *
      * @return void
      *
-     * @dataprovider testAssignLocationFromUserProvider
+     * @dataProvider testAssignLocationFromUserProvider
      */
     public function testAssignLocationFromUser(
         ?int $input_locations_id,
