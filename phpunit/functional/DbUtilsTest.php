@@ -128,15 +128,15 @@ class DbUtilsTest extends DbTestCase
     public static function dataTableType()
     {
         // Pseudo plugin class for test
-        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
-        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
-        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+        require_once FIXTURE_DIR . '/another_test.php';
+        require_once FIXTURE_DIR . '/pluginbarabstractstuff.php';
+        require_once FIXTURE_DIR . '/pluginbarfoo.php';
+        require_once FIXTURE_DIR . '/pluginfoobar.php';
+        require_once FIXTURE_DIR . '/pluginfooservice.php';
+        require_once FIXTURE_DIR . '/pluginfoo_search_item_filter.php';
+        require_once FIXTURE_DIR . '/pluginfoo_item_filter.php';
+        require_once FIXTURE_DIR . '/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once FIXTURE_DIR . '/test_a_b.php';
 
         return [
             ['glpi_dbmysqls', 'DBmysql', false], // not a CommonGLPI, should not be valid
@@ -291,7 +291,7 @@ class DbUtilsTest extends DbTestCase
 
     public function testGetItemForItemtypeAbstract()
     {
-        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once FIXTURE_DIR . '/pluginbarabstractstuff.php';
 
         $instance = new \DbUtils();
         $instance->getItemForItemtype('CommonDevice');
@@ -303,7 +303,7 @@ class DbUtilsTest extends DbTestCase
 
     public function testGetItemForItemtypeAbstract2()
     {
-        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once FIXTURE_DIR . '/pluginbarabstractstuff.php';
 
         $instance = new \DbUtils();
         $instance->getItemForItemtype('GlpiPlugin\Bar\AbstractStuff');

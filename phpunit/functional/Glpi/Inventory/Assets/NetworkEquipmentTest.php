@@ -2996,7 +2996,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testStackedDellSwitchN3048P()
     {
-        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/dell_n3048p.xml');
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/dell_n3048p.xml');
         // Import the switch(es) into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
@@ -3162,7 +3162,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
      */
     public function testStackedCiscoSwitchC9300()
     {
-        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/cisco-C9300.xml');
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
         // Import the switch(es) into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));

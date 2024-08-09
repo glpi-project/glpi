@@ -849,7 +849,7 @@ class ConfigTest extends DbTestCase
         ];
         $infocom_types = array_diff($infocom_types, $excluded_types);
 
-        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
+        $auto_create_infocoms_original = $CFG_GLPI["auto_create_infocoms"] ?? 0;
 
         $infocom = new \Infocom();
         foreach ($infocom_types as $asset_type) {
@@ -862,7 +862,7 @@ class ConfigTest extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
+            $CFG_GLPI['auto_create_infocoms'] = $auto_create_infocoms_original;
             // Verify an Infocom object exists for the newly created asset
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id);
             $this->assertTrue($infocom_exists);
@@ -876,7 +876,7 @@ class ConfigTest extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
+            $CFG_GLPI['auto_create_infocoms'] = $auto_create_infocoms_original;
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
             $this->assertFalse($infocom_exists);
         }

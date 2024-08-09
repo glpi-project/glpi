@@ -2745,7 +2745,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testImportStackedNetworkEquipment2()
     {
-        $xml = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/stacked_switch_name.xml');
+        $xml = file_get_contents(FIXTURE_DIR . '/inventories/stacked_switch_name.xml');
 
         $date_now = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date_now;
@@ -4787,7 +4787,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
     {
         global $DB;
 
-        $json = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/lxc-server-1.json'));
+        $json = json_decode(file_get_contents(FIXTURE_DIR . '/inventories/lxc-server-1.json'));
 
         $count_vms = count($json->content->virtualmachines);
         $this->assertSame(1, $count_vms);
@@ -4831,7 +4831,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35', $cvms->fields['uuid']);
 
         //import again, RAM has changed
-        $json = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/lxc-server-1.json'));
+        $json = json_decode(file_get_contents(FIXTURE_DIR . '/inventories/lxc-server-1.json'));
         $json_vm = $json->content->virtualmachines[0];
         $json_vm->memory = 4096;
         $json_vms = [$json_vm];
@@ -5295,7 +5295,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testImportPhone()
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
 

@@ -327,7 +327,7 @@ class ITILFollowup extends DbTestCase
     }
 
     /**
-     * @dataprovider testIsFromSupportAgentProvider
+     * @dataProvider testIsFromSupportAgentProvider
      */
     public function testIsFromSupportAgent(
         array $roles,

@@ -63,6 +63,9 @@ class GLPITestCase extends TestCase
     {
         $this->storeGlobals();
 
+        global $DB;
+        $DB->setTimezone('UTC');
+
         // By default, no session, not connected
         $this->resetSession();
 
@@ -409,6 +412,11 @@ class GLPITestCase extends TestCase
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
     }
 
+    /**
+     * Store Globals
+     *
+     * @return void
+     */
     private function storeGlobals(): void
     {
         global $CFG_GLPI;
@@ -418,6 +426,11 @@ class GLPITestCase extends TestCase
         }
     }
 
+    /**
+     * Reset globals and static variables
+     *
+     * @return void
+     */
     private function resetGlobalsAndStaticValues(): void
     {
         // Globals

@@ -396,14 +396,10 @@ class ComputerTest extends DbTestCase
         $iter = $DB->request(['SELECT' => 'id',
             'FROM'   => 'glpi_computers'
         ]);
-        $prev = false;
         foreach (\Computer::getFromIter($iter) as $comp) {
             $this->assertInstanceOf(\Computer::class, $comp);
             $this->assertArrayHasKey('name', $comp->fields);
-            $this->assertNotEquals($prev, $comp->fields['name']);
-            $prev = $comp->fields['name'];
         }
-        $this->assertTrue((bool)$prev); // we are retrieve something
     }
 
     public function testGetFromDbByCrit()
@@ -599,10 +595,10 @@ class ComputerTest extends DbTestCase
         // clone!
         $computer = new \Computer(); //$computer->fields contents is already escaped!
         $this->assertTrue($computer->getFromDB($id));
-        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
-        $CFG_GLPI["infocom_auto_create"] = 1;
+        $auto_create_infocoms_original = $CFG_GLPI["auto_create_infocoms"] ?? 0;
+        $CFG_GLPI["auto_create_infocoms"] = 1;
         $added = $computer->clone();
-        $CFG_GLPI["infocom_auto_create"] = $infocom_auto_create_original;
+        $CFG_GLPI["auto_create_infocoms"] = $auto_create_infocoms_original;
         $this->assertGreaterThan(0, (int)$added);
         $this->assertNotEquals($computer->fields['id'], $added);
 

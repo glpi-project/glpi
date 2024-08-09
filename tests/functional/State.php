@@ -82,7 +82,7 @@ class State extends DbTestCase
     }
 
     /**
-     * @dataprovider testIsUniqueProvider
+     * @dataProvider testIsUniqueProvider
      */
     public function testIsUnique(array $input, bool $expected): void
     {
