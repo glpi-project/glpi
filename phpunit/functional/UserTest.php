@@ -38,8 +38,10 @@ namespace tests\units;
 use DateTime;
 use DateInterval;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Glpi\DBAL\QuerySubQuery;
+use Psr\Log\LogLevel;
 
 /* Test for inc/user.class.php */
 
@@ -69,7 +71,7 @@ class UserTest extends \DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             "Failed to find a single user for 'this-email-does-not-exists@example.com', 0 user(s) found.",
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -293,7 +295,7 @@ class UserTest extends \DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -304,7 +306,7 @@ class UserTest extends \DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Unexpected token value received: "string" expected, received "array".',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -448,9 +450,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider prepareInputForTimezoneUpdateProvider
-     */
+    #[dataProvider('prepareInputForTimezoneUpdateProvider')]
     public function testPrepareInputForUpdateTimezone(array $input, array $expected)
     {
         $this->login();
@@ -475,7 +475,7 @@ class UserTest extends \DbTestCase
         $this->assertSame($expected, $result);
     }
 
-    public static function prepareInputForUpdatePasswordProvider()
+    protected function prepareInputForUpdatePasswordProvider()
     {
         return [
             [
@@ -507,55 +507,60 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider prepareInputForUpdatePasswordProvider
-     */
-    public function testPrepareInputForUpdatePassword(array $input, $expected, array $messages = null)
+    public function testPrepareInputForUpdatePassword()
     {
         $this->login();
-        $user = new \User();
-        $username = 'prepare_for_update_' . mt_rand();
-        $user_id = $user->add(
-            [
-                'name'         => $username,
-                'password'     => 'initial_pass',
-                'password2'    => 'initial_pass',
-                '_profiles_id' => 1
-            ]
-        );
-        $this->assertGreaterThan(0, (int)$user_id);
 
-        $this->login($username, 'initial_pass');
+        $data = $this->prepareInputForUpdatePasswordProvider();
+        foreach ($data as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $messages = $row['messages'] ?? null;
 
-        $input = ['id' => $user_id] + $input;
-        $result = $user->prepareInputForUpdate($input);
+            $user = new \User();
+            $username = 'prepare_for_update_' . mt_rand();
+            $user_id = $user->add(
+                [
+                    'name' => $username,
+                    'password' => 'initial_pass',
+                    'password2' => 'initial_pass',
+                    '_profiles_id' => 1
+                ]
+            );
+            $this->assertGreaterThan(0, (int)$user_id);
 
-        if (null !== $messages) {
-            $this->assertSame($messages, $_SESSION['MESSAGE_AFTER_REDIRECT']);
-            $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
-        }
+            $this->login($username, 'initial_pass');
 
-        if (false === $expected) {
+            $input = ['id' => $user_id] + $input;
+            $result = $user->prepareInputForUpdate($input);
+
+            if (null !== $messages) {
+                $this->assertSame($messages, $_SESSION['MESSAGE_AFTER_REDIRECT']);
+                $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+            }
+
+            if (false === $expected) {
+                $this->assertSame($expected, $result);
+                return;
+            }
+
+            if (array_key_exists('password', $expected) && true === $expected['password']) {
+                // password_hash result is unpredictable, so we cannot test its exact value
+                $this->assertArrayHasKey('password', $result);
+                $this->assertNotEmpty($result['password']);
+
+                unset($expected['password']);
+                unset($result['password']);
+            }
+
+            $expected = ['id' => $user_id] + $expected;
+            if (array_key_exists('password_last_update', $expected) && true === $expected['password_last_update']) {
+                // $_SESSION['glpi_currenttime'] was reset on login, value cannot be provided by test provider
+                $expected['password_last_update'] = $_SESSION['glpi_currenttime'];
+            }
+
             $this->assertSame($expected, $result);
-            return;
         }
-
-        if (array_key_exists('password', $expected) && true === $expected['password']) {
-            // password_hash result is unpredictable, so we cannot test its exact value
-            $this->assertArrayHasKey('password', $result);
-            $this->assertNotEmpty($result['password']);
-
-            unset($expected['password']);
-            unset($result['password']);
-        }
-
-        $expected = ['id' => $user_id] + $expected;
-        if (array_key_exists('password_last_update', $expected) && true === $expected['password_last_update']) {
-            // $_SESSION['glpi_currenttime'] was reset on login, value cannot be provided by test provider
-            $expected['password_last_update'] = $_SESSION['glpi_currenttime'];
-        }
-
-        $this->assertSame($expected, $result);
     }
 
     public function testPost_addItem()
@@ -827,9 +832,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider rawNameProvider
-     */
+    #[dataProvider('rawNameProvider')]
     public function testGetFriendlyName($input, $rawname)
     {
         $user = new \User();
@@ -951,7 +954,7 @@ class UserTest extends \DbTestCase
         $this->assertFalse($user->getAdditionalMenuOptions());
     }
 
-    public static function passwordExpirationMethodsProvider()
+    protected function passwordExpirationMethodsProvider()
     {
         $time = time();
 
@@ -1013,47 +1016,48 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider passwordExpirationMethodsProvider
-     */
-    public function testPasswordExpirationMethods(
-        string $creation_date,
-        ?string $last_update,
-        int $expiration_delay,
-        int $expiration_notice,
-        $expected_expiration_time,
-        $expected_should_change_password,
-        $expected_has_password_expire
-    ) {
+    public function testPasswordExpirationMethods()
+    {
         global $CFG_GLPI;
 
-        $user = new \User();
-        $username = 'prepare_for_update_' . mt_rand();
-        $user_id = $user->add(
-            [
-                'date_creation' => $creation_date,
-                'name'          => $username,
-                'password'      => 'pass',
-                'password2'     => 'pass'
-            ]
-        );
-        $this->assertGreaterThan(0, $user_id);
-        $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
-        $this->assertTrue($user->getFromDB($user->fields['id']));
+        $data = $this->passwordExpirationMethodsProvider();
+        foreach ($data as $row) {
+            $creation_date = $row['creation_date'];
+            $last_update = $row['last_update'];
+            $expiration_delay = $row['expiration_delay'];
+            $expiration_notice = $row['expiration_notice'];
+            $expected_expiration_time = $row['expected_expiration_time'];
+            $expected_should_change_password = $row['expected_should_change_password'];
+            $expected_has_password_expire = $row['expected_has_password_expire'];
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
-        $CFG_GLPI['password_expiration_notice'] = $expiration_notice;
+            $user = new \User();
+            $username = 'prepare_for_update_' . mt_rand();
+            $user_id = $user->add(
+                [
+                    'date_creation' => $creation_date,
+                    'name' => $username,
+                    'password' => 'pass',
+                    'password2' => 'pass'
+                ]
+            );
+            $this->assertGreaterThan(0, $user_id);
+            $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
+            $this->assertTrue($user->getFromDB($user->fields['id']));
 
-        $expiration_time = $user->getPasswordExpirationTime();
-        $should_change_password = $user->shouldChangePassword();
-        $has_password_expire = $user->hasPasswordExpired();
+            $cfg_backup = $CFG_GLPI;
+            $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
+            $CFG_GLPI['password_expiration_notice'] = $expiration_notice;
 
-        $CFG_GLPI = $cfg_backup;
+            $expiration_time = $user->getPasswordExpirationTime();
+            $should_change_password = $user->shouldChangePassword();
+            $has_password_expire = $user->hasPasswordExpired();
 
-        $this->assertEquals($expected_expiration_time, $expiration_time);
-        $this->assertEquals($expected_should_change_password, $should_change_password);
-        $this->assertEquals($expected_has_password_expire, $has_password_expire);
+            $CFG_GLPI = $cfg_backup;
+
+            $this->assertEquals($expected_expiration_time, $expiration_time);
+            $this->assertEquals($expected_should_change_password, $should_change_password);
+            $this->assertEquals($expected_has_password_expire, $has_password_expire);
+        }
     }
 
 
@@ -1133,9 +1137,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider cronPasswordExpirationNotificationsProvider
-     */
+    #[dataProvider('cronPasswordExpirationNotificationsProvider')]
     public function testCronPasswordExpirationNotifications(
         int $expiration_delay,
         int $notice_delay,
@@ -1202,11 +1204,11 @@ class UserTest extends \DbTestCase
         $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
     }
 
-    public function providerGetSubstitutes()
+    protected function providerGetSubstitutes()
     {
         // remove all substitutes, if any
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = $this->getTestedClassName();
+        $testedClass = \User::class;
         $validator_substitute->deleteByCriteria([
             'users_id' => $testedClass::getIdByName('normal'),
         ]);
@@ -1235,26 +1237,26 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerGetSubstitutes
-     *
-     * @param integer $input
-     * @param array $expected
-     * @return void
-     */
-    public function testGetSubstitutes(int $input, array $expected)
+
+    public function testGetSubstitutes(): void
     {
-        $instance = $this->newTestedInstance;
-        $instance->getFromDB($input);
-        $output = $instance->getSubstitutes($input);
-        $this->array($output)->isEqualTo($expected);
+        $data = $this->providerGetSubstitutes();
+        foreach ($data as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+
+            $instance = new \User();
+            $instance->getFromDB($input);
+            $output = $instance->getSubstitutes();
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerGetDelegators()
+    protected function providerGetDelegators()
     {
         // remove all delegators, if any
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = $this->getTestedClassName();
+        $testedClass = \User::class;
         $validator_substitute->deleteByCriteria([
             'users_id_substitute' => $testedClass::getIdByName('normal'),
         ]);
@@ -1284,25 +1286,24 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerGetDelegators
-     *
-     * @param integer $input
-     * @param array $expected
-     * @return void
-     */
-    public function testGetDelegators(int $input, array $expected)
+    public function testGetDelegators(): void
     {
-        $instance = $this->newTestedInstance;
-        $instance->getFromDB($input);
-        $output = $instance->getDelegators($input);
-        $this->array($output)->isEqualTo($expected);
+        $data = $this->providerGetDelegators();
+        foreach ($data as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+
+            $instance = new \User();
+            $instance->getFromDB($input);
+            $output = $instance->getDelegators($input);
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerIsSubstituteOf()
+    protected function providerIsSubstituteOf()
     {
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = $this->getTestedClassName();
+        $testedClass = \User::class;
         $validator_substitute->deleteByCriteria([
             'users_id' => $testedClass::getIdByName('normal'),
         ]);
@@ -1324,12 +1325,12 @@ class UserTest extends \DbTestCase
             'expected'           => true,
         ];
 
-        $instance = $this->newTestedInstance;
+        $instance = new \User();
         $success = $instance->update([
             'id' => $testedClass::getIdByName('normal'),
             'substitution_end_date' => '1999-01-01 12:00:00',
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1342,7 +1343,7 @@ class UserTest extends \DbTestCase
             'substitution_end_date' => '',
             'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1355,7 +1356,7 @@ class UserTest extends \DbTestCase
             'substitution_end_date' => (new DateTime())->add(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
             'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1368,7 +1369,7 @@ class UserTest extends \DbTestCase
             'substitution_end_date' => (new DateTime())->sub(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
             'substitution_start_date' => (new DateTime())->sub(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1381,7 +1382,7 @@ class UserTest extends \DbTestCase
             'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
             'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1393,7 +1394,7 @@ class UserTest extends \DbTestCase
             'id' => $testedClass::getIdByName('normal'),
             'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1405,7 +1406,7 @@ class UserTest extends \DbTestCase
             'id' => $testedClass::getIdByName('normal'),
             'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         yield [
             'users_id'           => $testedClass::getIdByName('glpi'),
             'users_id_delegator' => $testedClass::getIdByName('normal'),
@@ -1414,21 +1415,20 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerIsSubstituteOf
-     *
-     * @param integer $users_id
-     * @param integer $users_id_delegator
-     * @param boolean $use_date_range
-     * @param [type] $expected
-     * @return void
-     */
-    public function testIsSubstituteOf(int $users_id, int $users_id_delegator, bool $use_date_range, $expected)
+    public function testIsSubstituteOf(): void
     {
-        $instance = $this->newTestedInstance;
-        $instance->getFromDB($users_id);
-        $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
-        $this->boolean($output)->isEqualTo($expected);
+        $data = $this->providerIsSubstituteOf();
+        foreach ($data as $row) {
+            $users_id = $row['users_id'];
+            $users_id_delegator = $row['users_id_delegator'];
+            $use_date_range = $row['use_date_range'];
+            $expected = $row['expected'];
+
+            $instance = new \User();
+            $instance->getFromDB($users_id);
+            $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
+            $this->assertEquals($expected, $output);
+        }
     }
 
     public function testGetUserByForgottenPasswordToken()
@@ -1438,7 +1438,7 @@ class UserTest extends \DbTestCase
         $user = new \User();
         // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
         $token = bin2hex(random_bytes(16));
-        $this->boolean(
+        $this->assertTrue(
             $DB->update(
                 'glpi_users',
                 [
@@ -1449,17 +1449,17 @@ class UserTest extends \DbTestCase
                     'id' => getItemByTypeName('User', TU_USER, true),
                 ]
             )
-        )->isTrue();
+        );
 
         // Set password_init_token_delay config option to 1 day
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
 
-        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNull();
+        $this->assertNull(\User::getUserByForgottenPasswordToken($token));
 
         // Set password_init_token_delay config option to 10 days
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
 
-        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNotNull();
+        $this->assertNotNull(\User::getUserByForgottenPasswordToken($token));
     }
 
     /**
@@ -1475,16 +1475,16 @@ class UserTest extends \DbTestCase
         $user = getItemByTypeName('User', TU_USER);
 
         // Password security must be disabled by default
-        $this->boolean((bool)$CFG_GLPI['use_password_security'])->isFalse();
+        $this->assertFalse((bool)$CFG_GLPI['use_password_security']);
         yield [$user, 'mypass'];
 
         // Enable security
         $CFG_GLPI['use_password_security'] = 1;
-        $this->integer((int)$CFG_GLPI['password_min_length'])->isIdenticalTo(8);
-        $this->integer((int)$CFG_GLPI['password_need_number'])->isIdenticalTo(1);
-        $this->integer((int)$CFG_GLPI['password_need_letter'])->isIdenticalTo(1);
-        $this->integer((int)$CFG_GLPI['password_need_caps'])->isIdenticalTo(1);
-        $this->integer((int)$CFG_GLPI['password_need_symbol'])->isIdenticalTo(1);
+        $this->assertEquals(8, (int)$CFG_GLPI['password_min_length']);
+        $this->assertEquals(1, (int)$CFG_GLPI['password_need_number']);
+        $this->assertEquals(1, (int)$CFG_GLPI['password_need_letter']);
+        $this->assertEquals(1, (int)$CFG_GLPI['password_need_caps']);
+        $this->assertEquals(1, (int)$CFG_GLPI['password_need_symbol']);
         $errors = [
             'Password too short!',
             'Password must include at least a digit!',
@@ -1554,7 +1554,7 @@ class UserTest extends \DbTestCase
         $password4 = "P@ssword4"; // Not yet used password
         $this->updateItem('User', $user->getID(), ['password' => $password2, 'password2' => $password2], ['password', 'password2']);
         $this->updateItem('User', $user->getID(), ['password' => $password3, 'password2' => $password3], ['password', 'password2']);
-        $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($user->fields['id']));
 
         // Last 3 passwords should not work
         yield [$user, $password1, ["Password was used too recently."]];
@@ -1568,25 +1568,25 @@ class UserTest extends \DbTestCase
     /**
      * Tests for $user->validatePassword()
      *
-     * @dataprovider testValidatePasswordProvider
-     *
-     * @param User   $user     Test subject
+     * @param \User  $user     Test subject
      * @param string $password Password to validate
      * @param array  $errors   Expected errors
      *
      * @return void
      */
-    public function testValidatePassword(
-        \User $user,
-        string $password,
-        array $errors = [],
-    ): void {
-        $expected = count($errors) === 0;
-        $password_errors = [];
-        $this->boolean($user->validatePassword($password, $password_errors))->isEqualTo($expected);
-        $this->array($password_errors)->isEqualto($errors);
+    public function testValidatePassword(): void
+    {
+        $data = $this->testValidatePasswordProvider();
+        foreach ($data as $row) {
+            $user = $row[0];
+            $password = $row[1];
+            $errors = $row[2] ?? [];
 
-        return;
+            $expected = count($errors) === 0;
+            $password_errors = [];
+            $this->assertEquals($expected, $user->validatePassword($password, $password_errors));
+            $this->assertEquals($errors, $password_errors);
+        }
     }
 
     /**
@@ -1612,7 +1612,7 @@ class UserTest extends \DbTestCase
         ]);
         $this->assertCount(4, $users);
         $this->assertEquals(
-            ['glpi', TU_USER, "jsmith123", "e2e_tests"],
+            ['glpi', "e2e_tests", TU_USER, "jsmith123"],
             array_column($users, 'name')
         );
 
@@ -1627,8 +1627,8 @@ class UserTest extends \DbTestCase
         $this->assertTrue($tu_user->delete(['id' => $tu_user->getID()]));
         $this->assertTrue($jsmith123->canDeleteItem());
         $this->assertTrue($jsmith123->delete(['id' => $jsmith123->getID()]));
-        $this->boolean($e2e_tests->canDeleteItem())->isTrue();
-        $this->boolean($e2e_tests->delete(['id' => $e2e_tests->getID()]))->isTrue();
+        $this->assertTrue($e2e_tests->canDeleteItem());
+        $this->assertTrue($e2e_tests->delete(['id' => $e2e_tests->getID()]));
 
         // Last user, can't be deleted or disabled
         $this->assertTrue($glpi->update([
@@ -1847,9 +1847,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider toggleSavedSearchPinProvider
-     */
+    #[dataProvider('toggleSavedSearchPinProvider')]
     public function testToggleSavedSearchPin(string $initial_db_value, string $itemtype, bool $success, string $result_db_value): void
     {
         $user = $this->createItem(

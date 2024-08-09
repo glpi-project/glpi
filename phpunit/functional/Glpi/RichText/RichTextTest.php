@@ -37,6 +37,7 @@ namespace tests\units\Glpi\RichText;
 
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test class for src/Glpi/RichText/richtext.class.php
@@ -407,9 +408,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider getSafeHtmlProvider
-     */
+    #[DataProvider('getSafeHtmlProvider')]
     public function testGetSafeHtml(
         ?string $content,
         bool $encode_output_entities,
@@ -448,8 +447,8 @@ HTML;
                 $expected_result = <<<HTML
     <p>
       Images path should be corrected when root doc changed:
-      <a href="{$expected_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" target="_blank">
-        <img src="{$expected_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
+      <a href="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" target="_blank">
+        <img src="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
       </a>
     </p>
 HTML;
@@ -462,7 +461,7 @@ HTML;
         $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
-    protected function getTextFromHtmlProvider(): iterable
+    public static function getTextFromHtmlProvider(): iterable
     {
         // Handling of basic content
         yield [
@@ -612,9 +611,7 @@ PLAINTEXT,
         ];
     }
 
-    /**
-     * @dataProvider getTextFromHtmlProvider
-     */
+    #[DataProvider('getTextFromHtmlProvider')]
     public function testGetTextFromHtml(
         string $content,
         bool $keep_presentation,
@@ -671,9 +668,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider isRichTextHtmlContentProvider
-     */
+    #[DataProvider('isRichTextHtmlContentProvider')]
     public function testIsRichTextHtmlContent(string $content, bool $expected_result)
     {
         $richtext = new \Glpi\RichText\RichText();

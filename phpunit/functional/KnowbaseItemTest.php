@@ -36,6 +36,7 @@
 namespace test\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -354,7 +355,7 @@ HTML,
         $m_kbi->method('getFromDB')->willReturn(true);
 
         // True for call 1 & 3, false for call 2 and every following calls
-        $m_kbi->method('canViewItem')->willReturn(true, false, true, false);
+        $m_kbi->method('canViewItem')->willReturn(true, false, true, false, false, false);
 
         // Expected : [1, 3]
         // Replace global DB with mocked DB
@@ -529,9 +530,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider fullTextSearchProvider
-     */
+    #[DataProvider('fullTextSearchProvider')]
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
         $search = $this->callPrivateMethod(new \KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
@@ -720,9 +719,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider testGetListRequestProvider
-     */
+    #[DataProvider('testGetListRequestProvider')]
     public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
         global $DB;
@@ -1455,36 +1452,37 @@ HTML,
 
             $this->assertEquals($value['articles'], $result);
 
-        // Check that every article can be opened
-        $item = new \KnowbaseItem();
-        foreach ($articles as $name) {
-            $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
-            $this->boolean($item->can($kb_id, READ))->isTrue();
+            // Check that every article can be opened
+            $item = new \KnowbaseItem();
+            foreach ($value['articles'] as $name) {
+                $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
+                $this->assertTrue($item->can($kb_id, READ));
+            }
+
+            // Compare with Search::showList result
+
+            // Run search and capture results
+            $params =  [
+                'display_type' => \Search::NAMES_OUTPUT,
+                'criteria'     => [],
+                'item_type'    => 'KnowbaseItem',
+                'is_deleted'   => 0,
+                'as_map'       => 0,
+                'browse'       => 0,
+                'unpublished'  => 1,
+            ];
+            ob_start();
+            \Search::showList('KnowbaseItem', $params);
+            $names = ob_get_contents();
+            ob_end_clean();
+
+            // Convert results to array
+            $names = trim($names);
+            $names = empty($names) ? [] : explode("\n", $names);
+
+            // Check results
+            $this->assertCount(count($value['articles']), $names);
+            $this->assertEqualsCanonicalizing($value['articles'], $names);
         }
-
-        // Compare with Search::showList result
-
-        // Run search and capture results
-        $params =  [
-            'display_type' => \Search::NAMES_OUTPUT,
-            'criteria'     => [],
-            'item_type'    => 'KnowbaseItem',
-            'is_deleted'   => 0,
-            'as_map'       => 0,
-            'browse'       => 0,
-            'unpublished'  => 1,
-        ];
-        ob_start();
-        \Search::showList('KnowbaseItem', $params);
-        $names = ob_get_contents();
-        ob_end_clean();
-
-        // Convert results to array
-        $names = trim($names);
-        $names = empty($names) ? [] : explode("\n", $names);
-
-        // Check results
-        $this->array($names)->size->isEqualTo(count($articles));
-        $this->array($names)->containsValues($articles);
     }
 }

@@ -45,7 +45,6 @@ error_reporting(E_ALL);
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
-define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 

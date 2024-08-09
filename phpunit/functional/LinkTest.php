@@ -36,52 +36,12 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LinkTest extends DbTestCase
 {
     public static function linkContentProvider(): iterable
     {
-        $networkport_1 = $this->createItem('NetworkPort', [
-            'name' => 'eth0',
-            'itemtype' => 'Computer',
-            'items_id' => $item->getID(),
-            'instantiation_type' => 'NetworkPortEthernet',
-            'mac' => 'aa:aa:aa:aa:aa:aa'
-        ]);
-        $networkport_2 = $this->createItem('NetworkPort', [
-            'name' => 'eth1',
-            'itemtype' => 'Computer',
-            'items_id' => $item->getID(),
-            'instantiation_type' => 'NetworkPortEthernet',
-            'mac' => 'bb:bb:bb:bb:bb:bb'
-        ]);
-        $networkname_1 = $this->createItem('NetworkName', [
-            'itemtype' => 'NetworkPort',
-            'items_id' => $networkport_1->getID(),
-        ]);
-        $networkname_2 = $this->createItem('NetworkName', [
-            'itemtype' => 'NetworkPort',
-            'items_id' => $networkport_2->getID(),
-        ]);
-        $ip_1 = $this->createItem('IPAddress', [
-            'itemtype' => 'NetworkName',
-            'items_id' => $networkname_1->getID(),
-            'name' => '10.10.13.12',
-        ]);
-        $ip_2 = $this->createItem('IPAddress', [
-            'itemtype' => 'NetworkName',
-            'items_id' => $networkname_2->getID(),
-            'name' => '10.10.13.13',
-        ]);
-
-        $item_2 = $this->createItem(
-            \Computer::class,
-            [
-                'name'         => 'Test computer 2',
-                'entities_id'  => $_SESSION['glpiactive_entity'],
-            ]
-        );
-
         // Empty link
         yield [
             'link'     => '',
@@ -145,41 +105,25 @@ TEXT,
         ];
         yield [
             'link'     => 'javascript:alert(1);" title="{{ NAME }}"',
-            'item'     => $item,
             'safe_url' => true,
             'expected' => ['#'],
         ];
         yield [
             'link'     => '{% for domain in DOMAINS %}{{ domain }} {% endfor %}',
-            'item'     => $item,
             'safe_url' => false,
             'expected' => ['domain1.tld domain2.tld '],
         ];
         yield [
             'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
-            'item'     => $item,
             'safe_url' => false,
             'expected' => [
-                'ip' . $ip_1->getID() => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
-                'ip' . $ip_2->getID() => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
+                'ip%IP1_ID%' => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
+                'ip%IP2_ID%' => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
             ],
-        ];
-        yield [
-            'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
-            'item'     => $item_2,
-            'safe_url' => false,
-            'expected' => [],
-        ];
-        yield [
-            'link'     => '<script>alert(1);</script>',
-            'safe_url' => true,
-            'expected' => ['#'],
         ];
     }
 
-    /**
-     * @dataProvider linkContentProvider
-     */
+    #[dataProvider('linkContentProvider')]
     public function testGenerateLinkContents(
         string $link,
         bool $safe_url,
@@ -245,7 +189,48 @@ TEXT,
             ]
         );
 
+        $networkport_1 = $this->createItem('NetworkPort', [
+            'name' => 'eth0',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'aa:aa:aa:aa:aa:aa'
+        ]);
+        $networkport_2 = $this->createItem('NetworkPort', [
+            'name' => 'eth1',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'bb:bb:bb:bb:bb:bb'
+        ]);
+        $networkname_1 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_1->getID(),
+        ]);
+        $networkname_2 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_2->getID(),
+        ]);
+        $ip_1 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_1->getID(),
+            'name' => '10.10.13.12',
+        ]);
+        $ip_2 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_2->getID(),
+            'name' => '10.10.13.13',
+        ]);
+
         $instance = new \Link();
+        if (isset($expected['ip%IP1_ID%'])) {
+            $expected['ip' . $ip_1->getID()] = $expected['ip%IP1_ID%'];
+            unset($expected['ip%IP1_ID%']);
+        }
+        if (isset($expected['ip%IP2_ID%'])) {
+            $expected['ip' . $ip_2->getID()] = $expected['ip%IP2_ID%'];
+            unset($expected['ip%IP2_ID%']);
+        }
         $expected = str_replace('%ITEM_ID%', $item->getID(), $expected);
         $this->assertEquals(
             $expected,
@@ -261,7 +246,30 @@ TEXT,
         }
     }
 
-    protected function invalidLinkContentsProvider()
+    public function testGenerateLinkContents2(): void
+    {
+        $this->login();
+
+        $item = $this->createItem(
+            \Computer::class,
+            [
+                'name'         => 'Test computer 2',
+                'entities_id'  => $_SESSION['glpiactive_entity'],
+            ]
+        );
+
+        $instance = new \Link();
+        $this->assertEquals(
+            [],
+            $instance->generateLinkContents('{{ NAME }} {{ MAC }} {{ IP }}', $item)
+        );
+
+        $this->assertEquals(
+            ['#'],
+            $instance->generateLinkContents('<script>alert(1);</script>', $item)
+        );
+    }
+    public static function invalidLinkContentsProvider()
     {
         return [
             ['{{'],
@@ -270,21 +278,19 @@ TEXT,
         ];
     }
 
-    /**
-     * @dataProvider invalidLinkContentsProvider
-     */
+    #[dataProvider('invalidLinkContentsProvider')]
     public function testInvalidLinkContents($content)
     {
         $link = new \Link();
-        $this->boolean($link->add([
+        $this->assertFalse($link->add([
             'link' => $content
-        ]))->isFalse();
+        ]));
         $this->hasSessionMessages(ERROR, [
             __('Invalid twig template syntax')
         ]);
-        $this->boolean($link->add([
+        $this->assertFalse($link->add([
             'data' => $content
-        ]))->isFalse();
+        ]));
         $this->hasSessionMessages(ERROR, [
             __('Invalid twig template syntax')
         ]);

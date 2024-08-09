@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test class for src/Glpi/Toolbox/sanitizer.class.php
  */
@@ -160,9 +162,7 @@ class SanitizerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testSanitize(
         $value,
         $sanitized_value,
@@ -171,7 +171,7 @@ class SanitizerTest extends \GLPITestCase
         $db_escape = true
     ) {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
-        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($value, true));
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($value, $db_escape));
 
         if ($htmlencoded_value !== null) {
             // Calling `sanitize()` with `$db_escape = false` should produce HTML encoded value
@@ -179,12 +179,10 @@ class SanitizerTest extends \GLPITestCase
         }
 
         // Calling sanitize on sanitized value should have no effect
-        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($sanitized_value));
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($sanitized_value, $db_escape));
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testEncodeHtmlSpecialChars(
         $value,
         $sanitized_value,
@@ -203,9 +201,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($htmlencoded_value, @$sanitizer->encodeHtmlSpecialChars($htmlencoded_value));
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testEncodeHtmlSpecialCharsRecursive(
         $value,
         $sanitized_value,
@@ -224,9 +220,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($htmlencoded_value, @$sanitizer->encodeHtmlSpecialCharsRecursive($htmlencoded_value));
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testDbEscape(
         $value,
         $sanitized_value,
@@ -245,9 +239,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($dbescaped_value, @$sanitizer->dbEscape($dbescaped_value));
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testDbEscapeRecursive(
         $value,
         $sanitized_value,
@@ -294,9 +286,7 @@ class SanitizerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider sanitizedValueProvider
-     */
+    #[DataProvider('sanitizedValueProvider')]
     public function testUnanitize(
         $value,
         $unsanitized_value,
@@ -310,9 +300,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, @$sanitizer->unsanitize($unsanitized_value));
     }
 
-    /**
-     * @dataProvider sanitizedValueProvider
-     */
+    #[DataProvider('sanitizedValueProvider')]
     public function testDbUnescape(
         $value,
         $unsanitized_value,
@@ -330,9 +318,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, @$sanitizer->dbUnescape($unsanitized_value));
     }
 
-    /**
-     * @dataProvider sanitizedValueProvider
-     */
+    #[DataProvider('sanitizedValueProvider')]
     public function testDbUnescapeRecursive(
         $value,
         $unsanitized_value,
@@ -350,9 +336,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, @$sanitizer->dbUnescapeRecursive($unsanitized_value));
     }
 
-    /**
-     * @dataProvider sanitizedValueProvider
-     */
+    #[DataProvider('sanitizedValueProvider')]
     public function testDecodeHtmlSpecialChars(
         $value,
         $unsanitized_value,
@@ -370,9 +354,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, @$sanitizer->decodeHtmlSpecialChars($unsanitized_value));
     }
 
-    /**
-     * @dataProvider sanitizedValueProvider
-     */
+    #[DataProvider('sanitizedValueProvider')]
     public function testDecodeHtmlSpecialCharsRecursive(
         $value,
         $unsanitized_value,
@@ -390,7 +372,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, @$sanitizer->decodeHtmlSpecialCharsRecursive($unsanitized_value));
     }
 
-    protected function isHtmlEncodedValueProvider(): iterable
+    public static function isHtmlEncodedValueProvider(): iterable
     {
         yield [
             'value'      => 'mystring',
@@ -422,17 +404,16 @@ class SanitizerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider isHtmlEncodedValueProvider
-     */
+    #[DataProvider('isHtmlEncodedValueProvider')]
     public function testIsHtmlEncoded(string $value, bool $is_encoded)
     {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
         $this->assertSame($is_encoded, @$sanitizer->isHtmlEncoded($value));
     }
 
-    protected function isDbEscapedValueProvider(): iterable
+    public static function isDbEscapedValueProvider(): iterable
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Raw char should not be considered as escaped
@@ -584,9 +565,7 @@ TXT;
         ];
     }
 
-    /**
-     * @dataProvider isDbEscapedValueProvider
-     */
+    #[DataProvider('isDbEscapedValueProvider')]
     public function testIsDbEscaped(string $value, bool $is_escaped)
     {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
@@ -594,9 +573,7 @@ TXT;
         $this->assertSame($is_escaped, @$sanitizer->isDbEscaped($value), $value);
     }
 
-    /**
-     * @dataProvider rawValueProvider
-     */
+    #[DataProvider('rawValueProvider')]
     public function testSanitizationReversibility(
         $value,
         $sanitized_value,
@@ -607,13 +584,13 @@ TXT;
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
 
         // Value should stay the same if it has been sanitized then unsanitized
-        $this->assertEquals($value, @$sanitizer->unsanitize($sanitizer->sanitize($value)));
+        $this->assertEquals($value, @$sanitizer->unsanitize(@$sanitizer->sanitize($value, $db_escape)));
 
         // Re-sanitize a value provide the same result as first sanitization
-        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($sanitizer->unsanitize($value)));
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize(@$sanitizer->unsanitize($value), $db_escape));
     }
 
-    protected function isNsClassOrCallableIdentifierProvider(): iterable
+    public static function isNsClassOrCallableIdentifierProvider(): iterable
     {
         yield [
             'value'    => 'mystring',
@@ -637,9 +614,7 @@ TXT;
         ];
     }
 
-    /**
-     * @dataProvider isNsClassOrCallableIdentifierProvider
-     */
+    #[DataProvider('isNsClassOrCallableIdentifierProvider')]
     public function testIsNsClassOrCallableIdentifier(string $value, bool $is_class)
     {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();

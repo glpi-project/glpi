@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/document.class.php */
 
@@ -69,9 +70,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider canApplyOnProvider
-     */
+    #[dataProvider('canApplyOnProvider')]
     public function testCanApplyOn($item, $can)
     {
         $doc = new \Document();
@@ -328,9 +327,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider validDocProvider
-     */
+    #[dataProvider('validDocProvider')]
     public function testIsValidDoc($filename, $expected)
     {
         $this->assertSame($expected, \Document::isValidDoc($filename));
@@ -358,7 +355,7 @@ class DocumentTest extends DbTestCase
         $this->assertSame('#datag#', \Document::getImageTag('datag'));
     }
 
-    protected function isImageProvider()
+    public static function isImageProvider()
     {
         return [
             [__FILE__, false],
@@ -370,9 +367,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider isImageProvider
-     */
+    #[dataProvider('isImageProvider')]
     public function testIsImage($file, $expected)
     {
         $this->assertSame($expected, \Document::isImage($file));
@@ -662,9 +657,8 @@ class DocumentTest extends DbTestCase
 
     /**
      * Check visibility of document attached to ITIL objects.
-     *
-     * @dataProvider itilTypeProvider
      */
+    #[dataProvider('itilTypeProvider')]
     public function testCanViewItilFile($itemtype)
     {
 
@@ -797,9 +791,8 @@ class DocumentTest extends DbTestCase
 
     /**
      * Check visibility of document inlined in ITIL followup, tasks, solutions.
-     *
-     * @dataProvider ticketChildClassProvider
      */
+    #[dataProvider('ticketChildClassProvider')]
     public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype)
     {
 

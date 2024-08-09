@@ -43,6 +43,7 @@ use Notification_NotificationTemplate;
 use NotificationTarget;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Ticket;
 use Ticket_User;
@@ -196,9 +197,7 @@ HTML
         }
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testHandleUserMentions(
         string $itemtype,
         string $main_itemtype,
@@ -458,9 +457,8 @@ HTML
 
     /**
      * Specific tests on TicketValidation that contains 2 content fields.
-     *
-     * @dataProvider ticketValidationProvider
      */
+    #[DataProvider('ticketValidationProvider')]
     public function testHandleUserMentionsOnTicketValidation(
         ?string $submission_add,
         ?string $validation_add,

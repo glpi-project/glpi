@@ -42,6 +42,7 @@ use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
 use NotificationTargetTicket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Ticket;
 use Ticket_Contract;
@@ -555,9 +556,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getUsedConfigProvider
-     */
+    #[dataProvider('getUsedConfigProvider')]
     public function testGetUsedConfig(
         array $root_values,
         array $child_values,
@@ -680,9 +679,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider customCssProvider
-     */
+    #[dataProvider('customCssProvider')]
     public function testGetCustomCssTag(
         int $entity_id,
         int $root_enable_custom_css,
@@ -718,7 +715,7 @@ class EntityTest extends DbTestCase
         $this->assertSame($expected, $entity->getCustomCssTag());
     }
 
-    protected function testAnonymizeSettingProvider(): array
+    public static function testAnonymizeSettingProvider(): array
     {
         return [
             [
@@ -788,9 +785,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testAnonymizeSettingProvider
-     */
+    #[dataProvider('testAnonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,
@@ -1283,9 +1278,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider entityTreeProvider
-     */
+    #[dataProvider('entityTreeProvider')]
     public function testGetEntityTree(int $entity_id, array $result): void
     {
         $this->login();

@@ -43,6 +43,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\AssignableItem;
 use Glpi\Socket;
 use Item_DeviceSimcard;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use State;
 use User;
@@ -82,9 +83,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataTestImport
-     */
+    #[dataProvider('dataTestImport')]
     public function testImport($input, $result, $msg)
     {
         $id = \Dropdown::import('UserTitle', $input);
@@ -117,9 +116,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataTestTreeImport
-     */
+    #[dataProvider('dataTestTreeImport')]
     public function testTreeImport($input, $result, $complete, $msg)
     {
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -279,7 +276,7 @@ class DropdownTest extends DbTestCase
         $location = getItemByTypeName('Location', '_location01');
         $expected = $location->getName();
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
          // test of return with comments
         $expected = [
@@ -288,13 +285,13 @@ class DropdownTest extends DbTestCase
                         "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _location01"
         ];
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
         //Location with code only:
         $location = getItemByTypeName('Location', '_location02 > _sublocation02');
         $expected = "_location02 > _sublocation02 - code_sublocation02";
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
          // test of return with comments
         $expected = [
@@ -304,13 +301,13 @@ class DropdownTest extends DbTestCase
                         "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation02"
         ];
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
         //Location with alias only:
         $location = getItemByTypeName('Location', '_location02 > _sublocation03');
         $expected = "alias_sublocation03";
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
          // test of return with comments
         $expected = [
@@ -320,13 +317,13 @@ class DropdownTest extends DbTestCase
                         "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation03"
         ];
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
         //Location with alias and code:
         $location = getItemByTypeName('Location', '_location02 > _sublocation04');
         $expected = "alias_sublocation04 - code_sublocation04";
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
-        $this->string($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
 
          // test of return with comments
         $expected = [
@@ -337,7 +334,7 @@ class DropdownTest extends DbTestCase
                         "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation04"
         ];
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
-        $this->array($ret)->isIdenticalTo($expected);
+        $this->assertSame($expected, $ret);
     }
 
     public static function dataGetValueWithUnit()
@@ -372,9 +369,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataGetValueWithUnit
-     */
+    #[dataProvider('dataGetValueWithUnit')]
     public function testGetValueWithUnit($input, $unit, $decimals, $expected)
     {
         $value = $decimals !== null
@@ -950,9 +945,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getDropdownValueProvider
-     */
+    #[dataProvider('getDropdownValueProvider')]
     public function testGetDropdownValue($params, $expected, $session_params = [])
     {
         $this->login();
@@ -1115,9 +1108,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getDropdownConnectProvider
-     */
+    #[dataProvider('getDropdownConnectProvider')]
     public function testGetDropdownConnect($params, $expected, $session_params = [])
     {
         $this->login();
@@ -1301,9 +1292,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getDropdownNumberProvider
-     */
+    #[dataProvider('getDropdownNumberProvider')]
     public function testGetDropdownNumber($params, $expected)
     {
         global $CFG_GLPI;
@@ -1427,9 +1416,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getDropdownUsersProvider
-     */
+    #[dataProvider('getDropdownUsersProvider')]
     public function testGetDropdownUsers($params, $expected)
     {
         $this->login();
@@ -1843,13 +1830,12 @@ class DropdownTest extends DbTestCase
     /**
      * Tests for Dropdown::DropdownNumber()
      *
-     * @dataProvider testDropdownNumberProvider
-     *
      * @param array $params
      * @param array $expected
      *
      * @return void
      */
+    #[dataProvider('testDropdownNumberProvider')]
     public function testDropdownNumber(array $params, array $expected): void
     {
         $params['display'] = false;
@@ -1870,67 +1856,61 @@ class DropdownTest extends DbTestCase
         }
     }
 
-    protected function cloneProvider()
+    public function testClone()
     {
         $this->login();
+
         $dropdowns = \Dropdown::getStandardDropdownItemTypes();
         foreach ($dropdowns as $items) {
-            foreach ($items as $item => $n) {
-                if (is_subclass_of($item, \CommonDropdown::class) && \Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
-                    yield [$item];
+            foreach ($items as $itemclass => $n) {
+                if (is_subclass_of($itemclass, \CommonDropdown::class) && \Toolbox::hasTrait($itemclass, \Glpi\Features\Clonable::class)) {
+                    /** @var \CommonDropdown&Clonable $item */
+                    $item = new $itemclass();
+
+                    $extra_fields = $item->getAdditionalFields();
+                    $input = [
+                        'name' => __FUNCTION__
+                    ];
+                    $parent_id = null;
+                    foreach ($extra_fields as $field) {
+                        if (!isset($field['type'])) {
+                            continue;
+                        }
+                        if ($field['type'] === 'parent' && $parent_id === null) {
+                            $this->assertGreaterThan(
+                                0,
+                                $parent_id = $item->add([
+                                    'name' => __FUNCTION__ . '_parent'
+                                ])
+                            );
+                        }
+                        $value = match ($field['type']) {
+                            'text' => $field['name'],
+                            'bool' => 1,
+                            'tinymce' => '<p>' . $field['name'] . '</p>',
+                            'parent' => $parent_id,
+                            default => null
+                        };
+                        if ($value !== null && isset($field['name']) && is_string($field['name'])) {
+                            $input[$field['name']] = $value;
+                        }
+                    }
+                    if ($itemclass === \NetworkName::class) {
+                        $input['itemtype'] = 'Computer';
+                        $input['items_id'] = 1;
+                    }
+                    $this->assertGreaterThan(0, $original_items_id = $item->add($input));
+                    $original_fields = $item->fields;
+                    $this->assertNotEquals($original_items_id, $item->clone());
+                    foreach ($original_fields as $field => $value) {
+                        $this->assertEquals($value, $item->fields[$field]);
+                    }
                 }
             }
         }
     }
 
-    /**
-     * @dataProvider cloneProvider
-     */
-    public function testClone($dropdown_class)
-    {
-        $this->login();
-
-        /** @var \CommonDropdown&Clonable $item */
-        $item = new $dropdown_class();
-
-        $extra_fields = $item->getAdditionalFields();
-        $input = [
-            'name' => __FUNCTION__
-        ];
-        $parent_id = null;
-        foreach ($extra_fields as $field) {
-            if (!isset($field['type'])) {
-                continue;
-            }
-            if ($field['type'] === 'parent' && $parent_id === null) {
-                $this->integer($parent_id = $item->add([
-                    'name' => __FUNCTION__ . '_parent'
-                ]))->isGreaterThan(0);
-            }
-            $value = match ($field['type']) {
-                'text' => $field['name'],
-                'bool' => 1,
-                'tinymce' => '<p>' . $field['name'] . '</p>',
-                'parent' => $parent_id,
-                default => null
-            };
-            if ($value !== null && isset($field['name']) && is_string($field['name'])) {
-                $input[$field['name']] = $value;
-            }
-        }
-        if ($dropdown_class === \NetworkName::class) {
-            $input['itemtype'] = 'Computer';
-            $input['items_id'] = 1;
-        }
-        $this->integer($original_items_id = $item->add($input))->isGreaterThan(0);
-        $original_fields = $item->fields;
-        $this->integer($item->clone())->isNotEqualTo($original_items_id);
-        foreach ($original_fields as $field => $value) {
-            $this->variable($item->fields[$field])->isEqualTo($value);
-        }
-    }
-
-    protected function assignableAssetsProvider()
+    public static function assignableAssetsProvider()
     {
         return [
             [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
@@ -1938,44 +1918,57 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider assignableAssetsProvider
-     */
+    #[dataProvider('assignableAssetsProvider')]
     public function testGetDropdownValueAssignableItems($itemtype)
     {
         $this->login();
 
-        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableItem::class))->isTrue();
+        $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
         $group = new \Group();
-        $this->integer($groups_id = $group->add([
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $groups_id = $group->add([
+                'name' => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_recursive' => 1
+            ])
+        );
         // Add user to group
         $group_user = new \Group_User();
-        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+        );
 
         Session::loadGroups();
 
         // Create three items. One with the user assigned, one without, and one with a group assigned.
         $item = new $itemtype();
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '1',
-            'entities_id' => $this->getTestRootEntity(true)
-        ]))->isGreaterThan(0);
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '2',
-            'entities_id' => $this->getTestRootEntity(true),
-            'users_id_tech' => $_SESSION['glpiID']
-        ]))->isGreaterThan(0);
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '3',
-            'entities_id' => $this->getTestRootEntity(true),
-            'groups_id_tech' => $groups_id
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '1',
+                'entities_id' => $this->getTestRootEntity(true)
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '2',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id_tech' => $_SESSION['glpiID']
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '3',
+                'entities_id' => $this->getTestRootEntity(true),
+                'groups_id_tech' => $groups_id
+            ])
+        );
 
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
@@ -1985,12 +1978,9 @@ class DropdownTest extends DbTestCase
         // get optgroup id (key in the results array) for the test root entity "_test_root_entity"
         $optgroup_id = array_search("Root _test_root_entity", array_column($results, 'text'));
 
-        $expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
-        ];
-        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
+        $this->assertContains(__FUNCTION__ . '1', array_column($results[$optgroup_id]['children'], 'text'));
+        $this->assertContains(__FUNCTION__ . '2', array_column($results[$optgroup_id]['children'], 'text'));
+        $this->assertContains(__FUNCTION__ . '3', array_column($results[$optgroup_id]['children'], 'text'));
 
         // Remove permission to read all items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
@@ -1999,15 +1989,9 @@ class DropdownTest extends DbTestCase
             'display_emptychoice' => 0,
             '_idor_token' => \Session::getNewIDORToken($itemtype)
         ], false)['results'];
-        $expected = [
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
-        ];
-        $not_expected = [
-            __FUNCTION__ . '1'
-        ];
-        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
-        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->notContainsValues($not_expected);
+        $this->assertNotContains(__FUNCTION__ . '1', array_column($results[$optgroup_id]['children'], 'text'));
+        $this->assertContains(__FUNCTION__ . '2', array_column($results[$optgroup_id]['children'], 'text'));
+        $this->assertContains(__FUNCTION__ . '3', array_column($results[$optgroup_id]['children'], 'text'));
 
         // Remove permission to read assigned items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
@@ -2016,67 +2000,83 @@ class DropdownTest extends DbTestCase
             'display_emptychoice' => 0,
             '_idor_token' => \Session::getNewIDORToken($itemtype)
         ], false)['results'];
-        $not_expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
-        ];
         $children = $results[$optgroup_id]['children'] ?? null;
         if ($children === null) {
             $children = [];
         }
-        $this->array($children)->notContainsValues($not_expected);
+        $this->assertNotContains(__FUNCTION__ . '1', $children);
+        $this->assertNotContains(__FUNCTION__ . '2', $children);
+        $this->assertNotContains(__FUNCTION__ . '3', $children);
     }
 
-    /**
-     * @dataProvider assignableAssetsProvider
-     */
+    #[dataProvider('assignableAssetsProvider')]
     public function testGetDropdownFindNumAssignableItems($itemtype)
     {
         $this->login();
 
-        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableItem::class))->isTrue();
+        $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
         $group = new \Group();
-        $this->integer($groups_id = $group->add([
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $groups_id = $group->add([
+                'name' => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_recursive' => 1
+            ])
+        );
         // Add user to group
         $group_user = new \Group_User();
-        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+        );
 
         Session::loadGroups();
 
         // Create three items. One with the user assigned, one without, and one with a group assigned.
         $item = new $itemtype();
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '1',
-            'entities_id' => $this->getTestRootEntity(true)
-        ]))->isGreaterThan(0);
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '2',
-            'entities_id' => $this->getTestRootEntity(true),
-            'users_id_tech' => $_SESSION['glpiID']
-        ]))->isGreaterThan(0);
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '3',
-            'entities_id' => $this->getTestRootEntity(true),
-            'groups_id_tech' => $groups_id
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '1',
+                'entities_id' => $this->getTestRootEntity(true)
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '2',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id_tech' => $_SESSION['glpiID']
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '3',
+                'entities_id' => $this->getTestRootEntity(true),
+                'groups_id_tech' => $groups_id
+            ])
+        );
         // Create two items. One with the user as the owner, and one with a group as the owner.
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '4',
-            'entities_id' => $this->getTestRootEntity(true),
-            'users_id' => $_SESSION['glpiID']
-        ]))->isGreaterThan(0);
-        $this->integer($item->add([
-            'name' => __FUNCTION__ . '5',
-            'entities_id' => $this->getTestRootEntity(true),
-            'groups_id' => $groups_id
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '4',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id' => $_SESSION['glpiID']
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => __FUNCTION__ . '5',
+                'entities_id' => $this->getTestRootEntity(true),
+                'groups_id' => $groups_id
+            ])
+        );
 
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
@@ -2086,14 +2086,11 @@ class DropdownTest extends DbTestCase
             ])
         ], false)['results'];
 
-        $expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3',
-            __FUNCTION__ . '4',
-            __FUNCTION__ . '5',
-        ];
-        $this->array(array_column($results, 'text'))->containsValues($expected);
+        $this->assertContains(__FUNCTION__ . '1', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '2', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '3', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '4', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         // Remove permission to read all items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
@@ -2104,17 +2101,12 @@ class DropdownTest extends DbTestCase
                 'table' => $itemtype::getTable()
             ])
         ], false)['results'];
-        $expected = [
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3',
-        ];
-        $not_expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '4',
-            __FUNCTION__ . '5',
-        ];
-        $this->array(array_column($results, 'text'))->containsValues($expected);
-        $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '2', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '3', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '4', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $results = \Dropdown::getDropdownFindNum([
@@ -2124,17 +2116,12 @@ class DropdownTest extends DbTestCase
                 'table' => $itemtype::getTable()
             ])
         ], false)['results'];
-        $expected = [
-            __FUNCTION__ . '4',
-            __FUNCTION__ . '5',
-        ];
-        $not_expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3',
-        ];
-        $this->array(array_column($results, 'text'))->containsValues($expected);
-        $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '2', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '3', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '4', array_column($results, 'text'));
+        $this->assertContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         // Remove permission to read assigned items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
@@ -2145,17 +2132,11 @@ class DropdownTest extends DbTestCase
                 'table' => $itemtype::getTable()
             ])
         ], false)['results'];
-        $expected = [
-        ];
-        $not_expected = [
-            __FUNCTION__ . '1',
-            __FUNCTION__ . '2',
-            __FUNCTION__ . '3',
-            __FUNCTION__ . '4',
-            __FUNCTION__ . '5',
-        ];
-        $this->array(array_column($results, 'text'))->containsValues($expected);
-        $this->array($results)->notContainsValues($not_expected);
+        $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '2', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '3', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '4', array_column($results, 'text'));
+        $this->assertNotContains(__FUNCTION__ . '5', array_column($results, 'text'));
     }
 
     public static function displayWithProvider(): iterable
@@ -2173,9 +2154,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider displayWithProvider
-     */
+    #[dataProvider('displayWithProvider')]
     public function testFilterDisplayWith(CommonDBTM $item, array $displaywith, array $filtered): void
     {
         $instance = new \Dropdown();

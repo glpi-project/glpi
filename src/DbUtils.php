@@ -236,8 +236,8 @@ final class DbUtils
         }
 
         // handle PHPUnit mocks
-        if (str_starts_with($table, 'mock_')) {
-            $table = preg_replace('/^mock_(.+)_.+$/', '$1', $table);
+        if (str_starts_with($table, 'mockobject_')) {
+            $table = preg_replace('/^mockobject_(.+)_.+$/', '$1', $table);
         }
         // handle aoutm mocks
         $table = str_replace(['mock\\', '\\'], ['', '_'], $table);

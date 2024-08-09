@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Toolbox;
 
 use Glpi\Form\Form;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 
 class URLTest extends \GLPITestCase
@@ -114,16 +115,14 @@ class URLTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[DataProvider('urlProvider')]
     public function testSanitizeURL(?string $url, string $expected): void
     {
         $instance = new \Glpi\Toolbox\URL();
         $this->assertEquals($expected, $instance->sanitizeURL($url));
     }
 
-    public function extractItemtypeFromUrlPathProvider(): iterable
+    public static function extractItemtypeFromUrlPathProvider(): iterable
     {
         // Core
         yield 'Core class' => [
@@ -180,9 +179,7 @@ class URLTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider extractItemtypeFromUrlPathProvider
-     */
+    #[DataProvider('extractItemtypeFromUrlPathProvider')]
     public function testExtractItemtypeFromUrlPath(
         string $path,
         string $expected
@@ -191,8 +188,8 @@ class URLTest extends \GLPITestCase
         // of the itemtype, thus we must expect the lowercase version here.
         $expected = strtolower($expected);
 
-        $this->newTestedInstance();
-        $itemtype = $this->testedInstance->extractItemtypeFromUrlPath($path);
-        $this->string($itemtype)->isEqualTo($expected);
+        $instance = new \Glpi\Toolbox\URL();
+        $itemtype = $instance->extractItemtypeFromUrlPath($path);
+        $this->assertEquals($expected, $itemtype);
     }
 }

@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
@@ -90,9 +92,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider normalizeValueForTextExportProvider
-     */
+    #[DataProvider('normalizeValueForTextExportProvider')]
     public function testNormalizeValueForTextExport(string $value, string $expected_result)
     {
         $dataexport = new \Glpi\Toolbox\DataExport();

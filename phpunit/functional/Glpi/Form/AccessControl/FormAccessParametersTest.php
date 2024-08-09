@@ -84,9 +84,6 @@ class FormAccessParametersTest extends GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider isAuthenticatedProvider
-     */
     #[DataProvider('isAuthenticatedProvider')]
     public function testIsAuthenticated(
         \Glpi\Form\AccessControl\FormAccessParameters $form_access_parameters,

@@ -47,10 +47,6 @@ abstract class CommonDropdown extends DbTestCase
     abstract protected function getObjectClass();
 
     abstract public static function typenameProvider();
-
-    /**
-     * @dataProvider typenameProvider
-     */
     #[dataProvider('typenameProvider')]
     public function testGetTypeName($string, $expected)
     {

@@ -37,9 +37,11 @@ namespace tests\units;
 
 /* Test for inc/infocom.class.php */
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class InfocomTest extends \GLPITestCase
 {
-    public function dataLinearAmortise()
+    public static function dataLinearAmortise()
     {
         return [
             [
@@ -185,9 +187,7 @@ class InfocomTest extends \GLPITestCase
     }
 
 
-    /**
-     * @dataProvider dataLinearAmortise
-     */
+    #[DataProvider('dataLinearAmortise')]
     public function testLinearAmortise($value, $duration, $fiscaldate, $buydate, $usedate, $expected, $oldmft)
     {
         $amortise = \Infocom::linearAmortise(

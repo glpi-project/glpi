@@ -176,7 +176,7 @@ class KnowbaseTest extends DbTestCase
                 'a_attr' => ['data-id' => -1],
             ]
         ];
-        $this->array($tree)->isEqualTo($expected);
+        $this->assertEquals($expected, $tree);
 
         // Add 2nd category
         $kbitem_cat_id = $kbitem_cat->add(
@@ -234,8 +234,7 @@ class KnowbaseTest extends DbTestCase
                 'a_attr' => ['data-id' => -1],
             ]
         ];
-        $this->array($tree)->isEqualTo($expected);
-            $tree
+        $this->assertEquals($expected, $tree);
 
         // Add a FAQ item
         $kbitem = new \KnowbaseItem();
@@ -289,7 +288,7 @@ class KnowbaseTest extends DbTestCase
                 'a_attr' => ['data-id' => -1],
             ]
         ];
-        $this->array($tree_with_no_public_faq)->isEqualTo($expected);
+        $this->assertEquals($expected, $tree_with_no_public_faq);
 
         $expected = [
             [
@@ -319,7 +318,8 @@ class KnowbaseTest extends DbTestCase
                 'title' => 'Without Category',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
+            ]
         ];
-        $this->array($tree_with_public_faq)->isEqualTo($expected);
+        $this->assertEquals($expected, $tree_with_public_faq);
     }
 }

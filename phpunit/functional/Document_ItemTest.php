@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 /* Test for inc/document_item.class.php */
 
@@ -60,7 +61,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Item type is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $input['itemtype'] = '';
@@ -68,7 +69,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Item type is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $input['itemtype'] = 'NotAClass';
@@ -76,7 +77,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'No class found for type NotAClass',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $input['itemtype'] = 'Computer';
@@ -84,7 +85,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Item ID is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $input['items_id'] = 0;
@@ -92,7 +93,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Item ID is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $cid = getItemByTypeName('Computer', '_test_pc01', true);
@@ -102,7 +103,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Document ID is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $input['documents_id'] = 0;
@@ -110,7 +111,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
             'Document ID is mandatory',
-            Logger::WARNING
+            LogLevel::WARNING
         );
 
         $document = new \Document();
