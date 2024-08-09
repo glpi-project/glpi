@@ -291,7 +291,8 @@ class Inventory
                 $empty_props = [
                     'virtualmachines',
                     'remote_mgmt',
-                    'monitors'
+                    'monitors',
+                    'antivirus',
                 ];
             }
 
