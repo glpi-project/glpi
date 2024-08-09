@@ -418,7 +418,6 @@ HTML;
                 );
             }
         }
-
     }
 
     protected function getTextFromHtmlProvider(): iterable

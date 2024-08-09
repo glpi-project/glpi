@@ -818,8 +818,8 @@ class SoftwareTest extends AbstractInventoryAsset
      */
     public function testSoftwareWithHtmlentites($path)
     {
-
-        $json_source = json_decode(file_get_contents(FIXTURE_DIR . '/inventories/software/' . $path));
+        $fixtures_path = FIXTURE_DIR . '/inventories/software/';
+        $json_source = json_decode(file_get_contents($fixtures_path . $path));
         $this->doInventory($json_source);
 
         $computer = new \Computer();
@@ -846,7 +846,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
 
         //redo an inventory
-        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
+        $json_source = json_decode(file_get_contents($fixtures_path . $path));
         $this->doInventory($json_source);
 
         $computer = new \Computer();
