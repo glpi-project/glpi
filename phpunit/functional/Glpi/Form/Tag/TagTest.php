@@ -60,7 +60,7 @@ final class TagTest extends DbTestCase
 
         $expected = json_encode([
             'label' => 'Question: First name',
-            'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\" class=\"bg-$color-lt\">Question: First name</span>"
+            'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\" class=\"border-$color border-start border-3 bg-dark-lt\">Question: First name</span>"
         ]);
         $this->assertEquals($expected, json_encode($tag));
     }

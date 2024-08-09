@@ -59,7 +59,7 @@ final readonly class Tag
             "data-form-tag"          => "true",
             "data-form-tag-value"    => $value,
             "data-form-tag-provider" => $provider,
-            "class"                  => "bg-$color-lt"
+            "class"                  => "border-$color border-start border-3 bg-dark-lt",
         ];
         $properties = implode(" ", array_map(
             fn($key, $value) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)),
