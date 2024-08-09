@@ -12,5 +12,8 @@
   </testsuites>
   <php>
     <ini name="memory_limit" value="256M" />
+    <server name="KERNEL_CLASS" value="Glpi\Kernel\Kernel" />
+    <server name="APP_ENV" value="testing" />
+    <server name="APP_DEBUG" value="0" />
   </php>
 </phpunit>

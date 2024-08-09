@@ -32,31 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace GlpiPlugin\Tester\Controller;
 
-use Glpi\Config\LegacyConfigProviderListener;
+use Glpi\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class ListenersPriority
+class TestController implements Controller
 {
-    public const LEGACY_LISTENERS_PRIORITIES = [
-        // Static assets must be served without executing anything else.
-        // Keep them on top priority.
-        LegacyAssetsListener::class         => 500,
-
-        LegacyRouterListener::class         => 400,
-
-        // Config providers may still expect some `$_SERVER` variables to be redefined.
-        // They must therefore be executed after the `LegacyRouterListener`.
-        LegacyConfigProviderListener::class => 350,
-
-        // This listener allows disabling plugins routes at runtime,
-        //   that's why it's executed right after Symfony's Router,
-        //   and also after GLPI's config is set.
-        // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        PluginsRoutesListener::class => 31,
-    ];
-
-    private function __construct()
+    #[Route("/plugin-test", name: "plugin_test")]
+    public function __invoke(Request $request): Response
     {
+        return new Response('It works!');
     }
 }

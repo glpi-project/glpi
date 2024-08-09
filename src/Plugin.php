@@ -1110,6 +1110,8 @@ class Plugin extends CommonDBTM
                     )
                 );
 
+                $this->clearPluginsRoutesCache();
+
                 return true;
             } else {
                 $this->unload($this->fields['directory']);
@@ -1201,6 +1203,8 @@ class Plugin extends CommonDBTM
                     User::getNameForLog(Session::getLoginUserID(true))
                 )
             );
+
+            $this->clearPluginsRoutesCache();
 
             return true;
         }
@@ -2989,5 +2993,21 @@ TWIG;
         }
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
+    }
+
+    /**
+     * It is mandatory that when a plugin is activated / deactivated,
+     *   we remove Symfony's cache, to reset the routing.
+     *
+     * In the future, it would be great that plugins routes are active **by default**,
+     *   since they are disabled by the PluginsRoutesListener class at runtime for safety,
+     *   this will ensure we don't need to clear Symfony's cache whenever we activate/deactivate plugins.
+     *
+     * @see \Glpi\Kernel\Kernel::registerPluginsRoutes
+     * @see \Glpi\Http\PluginsRoutesListener
+     */
+    private function clearPluginsRoutesCache(): void
+    {
+        (new CacheManager())->clearSymfonyCache();
     }
 }

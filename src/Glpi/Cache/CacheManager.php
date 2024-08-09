@@ -571,7 +571,7 @@ PHP;
     /**
      * Clears the Symfony cache.
      */
-    private function clearSymfonyCache(): void
+    public function clearSymfonyCache(): void
     {
         /** @var Kernel|null $kernel */
         global $kernel;

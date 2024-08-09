@@ -44,10 +44,17 @@ final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigPr
 
     public function execute(): void
     {
+        $req = $this->getRequest();
+        $server = $req->server;
+
         // Security of PHP_SELF
-        $self = \Html::cleanParametersURL($this->getRequest()->server->get('PHP_SELF'));
+        $self = \Html::cleanParametersURL($server->get('PHP_SELF'));
 
         $_SERVER['PHP_SELF'] = $self;
-        $this->getRequest()->server->set('PHP_SELF', $self);
+        $server->set('PHP_SELF', $self);
+
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            $_SERVER['REQUEST_URI'] = $server->get('request_uri') ?? $req->getRequestUri();
+        }
     }
 }

@@ -36,8 +36,10 @@
 namespace tests\units;
 
 use DbTestCase;
+use GlpiPlugin\Tester\Controller\TestController;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use GlpiPlugin\Tester\MyPsr4Class;
 
 require_once __DIR__ . '/../Autoload.php';
 
@@ -83,15 +85,26 @@ class AutoloadTest extends DbTestCase
     }
 
     #[RunInSeparateProcess]
-    public function testPluginAutoloading()
+    #[DataProvider('provideClassesAutoload')]
+    public function testPluginAutoloading(string $class): void
     {
-        // PSR4 autoloader (registered during plugins initialization)
-        $this->assertTrue(class_exists('GlpiPlugin\\Tester\\MyPsr4Class'));
+        $this->assertTrue(\class_exists($class), \sprintf("Failed asserting that class %s exists", $class));
+    }
 
-        // Pseudo-PSR4 class with no namespace
-        $this->assertTrue(class_exists('PluginTesterMyPseudoPsr4Class'));
+    public static function provideClassesAutoload(): array
+    {
+        return [
+            // PSR4 autoloader (registered during plugins initialization)
+            MyPsr4Class::class => [MyPsr4Class::class],
 
-        // Legacy `inc/*.class.php` files
-        $this->assertTrue(class_exists('PluginTesterMyLegacyClass'));
+            // Full PSR4 class with namespace
+            TestController::class => [TestController::class],
+
+            // Pseudo-PSR4 class with no namespace
+            \PluginTesterMyPseudoPsr4Class::class => [\PluginTesterMyPseudoPsr4Class::class],
+
+            // Legacy `inc/*.class.php` files
+            \PluginTesterMyLegacyClass::class => [\PluginTesterMyLegacyClass::class],
+        ];
     }
 }
