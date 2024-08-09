@@ -802,14 +802,14 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         return [
             //To test FullCompareKey (with special chars on software name / manufacturer)
-            ['/tests/fixtures/inventories/softwares/01-test_software_with_special_chars_with_version.json'],
-            ['/tests/fixtures/inventories/softwares/02-test_software_with_special_chars_with_version.json'],
+            ['01-test_software_with_special_chars_with_version.json'],
+            ['02-test_software_with_special_chars_with_version.json'],
             //To test FullCompareKey without version (with special chars on software name / manufacturer)
-            ['/tests/fixtures/inventories/softwares/03-test_software_with_special_chars_and_without_version.json'],
+            ['03-test_software_with_special_chars_and_without_version.json'],
             // /To test FullCompareKey with version (with special chars on software name / manufacturer name / OS name / arch name)
-            ['/tests/fixtures/inventories/softwares/04-test_software_with_special_chars_and_with_version_and_os.json'],
+            ['04-test_software_with_special_chars_and_with_version_and_os.json'],
             // /To test FullCompareKey without version (with special chars on software name / manufacturer name / OS name / arch name)
-            ['/tests/fixtures/inventories/softwares/05-test_software_with_special_chars_and_without_version_and_os.json'],
+            ['05-test_software_with_special_chars_and_without_version_and_os.json'],
         ];
     }
 
@@ -819,7 +819,7 @@ class SoftwareTest extends AbstractInventoryAsset
     public function testSoftwareWithHtmlentites($path)
     {
 
-        $json_source = json_decode(file_get_contents(GLPI_ROOT . $path));
+        $json_source = json_decode(file_get_contents(FIXTURE_DIR . '/inventories/software/' . $path));
         $this->doInventory($json_source);
 
         $computer = new \Computer();

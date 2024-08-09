@@ -196,7 +196,7 @@ class KnowbaseItemTest extends DbTestCase
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
         // Test uploads for item creation
-        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.png';
+        $fpath = FIXTURE_DIR . '/uploads/foo.png';
         $fcontents = file_get_contents($fpath);
         $this->assertNotSame(false, $fcontents, 'Cannot read ' . $fpath);
         $base64Image = base64_encode($fcontents);
@@ -223,7 +223,7 @@ HTML
             'users_id' => $users_id,
             'date'     => '2017-10-06 12:27:48',
         ];
-        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.png';
+        $fpath = FIXTURE_DIR . '/uploads/foo.png';
         $this->assertTrue(
             copy($fpath, GLPI_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath
@@ -235,7 +235,7 @@ HTML
         $this->assertStringContainsString($expected, $instance->fields['answer']);
 
         // Test uploads for item update
-        $fpath = __DIR__ . '/../../tests/fixtures/uploads/bar.png';
+        $fpath = FIXTURE_DIR . '/uploads/bar.png';
         $fcontents = file_get_contents($fpath);
         $this->assertNotSame(false, $fcontents, 'Cannot read ' . $fpath);
         $base64Image = base64_encode($fcontents);
@@ -287,7 +287,7 @@ HTML
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
-        $fpath = __DIR__ . '/../../tests/fixtures/uploads/foo.txt';
+        $fpath = FIXTURE_DIR . '/uploads/foo.txt';
         $this->assertTrue(
             copy($fpath, GLPI_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath
@@ -303,7 +303,7 @@ HTML
 
         // Test uploads for item update (adds a 2nd document)
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
-        $fpath = __DIR__ . '/../../tests/fixtures/uploads/bar.txt';
+        $fpath = FIXTURE_DIR . '/uploads/bar.txt';
         $this->assertTrue(
             copy($fpath, GLPI_TMP_DIR . '/' . $filename),
             'Cannot copy ' . $fpath

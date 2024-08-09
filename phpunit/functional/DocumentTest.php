@@ -922,11 +922,11 @@ class DocumentTest extends DbTestCase
         $instance = new \Document();
 
        // Test when the file is not in the DB
-        $output = $instance->getDuplicateOf(0, __DIR__ . '/../../tests/fixtures/uploads/foo.png');
+        $output = $instance->getDuplicateOf(0, FIXTURE_DIR . '/uploads/foo.png');
         $this->assertFalse($output);
 
         $filename = 'foo.png';
-        copy(__DIR__ . '/../../tests/fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
             'filename' => 'foo.png',
@@ -946,7 +946,7 @@ class DocumentTest extends DbTestCase
 
         // Check the file is found in the FB
         $instance = new \Document();
-        $output = $instance->getDuplicateOf(0, __DIR__ . '/../../tests/fixtures/uploads/foo.png');
+        $output = $instance->getDuplicateOf(0, FIXTURE_DIR . '/uploads/foo.png');
         $this->assertTrue($output);
 
         // toggle the blacklisted flag
@@ -957,7 +957,7 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($success);
 
         // Test when the document exists and is blacklisted
-        $output = $instance->getDuplicateOf(0, __DIR__ . '/../../tests/fixtures/uploads/foo.png');
+        $output = $instance->getDuplicateOf(0, FIXTURE_DIR . '/uploads/foo.png');
         $this->assertFalse($output);
     }
 }
