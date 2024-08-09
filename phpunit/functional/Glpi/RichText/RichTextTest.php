@@ -387,6 +387,9 @@ HTML,
 
     public function testGetSafeHtmlDoChangeDocPath()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $bkp_root_doc = $CFG_GLPI['root_doc'];
         // Images path should be corrected when root doc changed
         // see #15113
 
@@ -418,6 +421,7 @@ HTML;
                 );
             }
         }
+        $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
     protected function getTextFromHtmlProvider(): iterable
