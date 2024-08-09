@@ -207,6 +207,8 @@ final class RequestTypeFieldTest extends DbTestCase
         array $answers,
         int $expected_request_type,
     ): void {
+        $field = new RequestTypeField();
+
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -214,7 +216,7 @@ final class RequestTypeFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['request_type' => $config->jsonSerialize()]],
+            ['config' => [$field->getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

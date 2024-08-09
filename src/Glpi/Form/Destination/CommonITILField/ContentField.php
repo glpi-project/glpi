@@ -50,12 +50,6 @@ use Override;
 class ContentField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
-    {
-        return 'content';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("Content");
