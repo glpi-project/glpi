@@ -61,7 +61,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
 
     public static function canView(): bool
     {
-        $rule_class = (new static())->getRuleClassName();
+        $rule_class = static::getRuleClassName();
         return Session::haveRightsOr(static::$rightname, [READ, $rule_class::PARENT]);
     }
 
@@ -80,7 +80,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
 
     public function showInheritedTab()
     {
-        $rule_class = $this->getRuleClassName();
+        $rule_class = static::getRuleClassName();
         return (Session::haveRight(self::$rightname, $rule_class::PARENT) && ($this->entity));
     }
 

@@ -268,7 +268,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                 }
 
                // Manage cartridge assoc Update items
-                if ($this->getRuleClassName() === RuleDictionnaryPrinterModel::class) {
+                if (static::getRuleClassName() === RuleDictionnaryPrinterModel::class) {
                     $iterator2 = $DB->request([
                         'FROM'   => 'glpi_cartridgeitems_printermodels',
                         'WHERE'  => ['printermodels_id' => $ID]

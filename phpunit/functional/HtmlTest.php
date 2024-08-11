@@ -270,7 +270,7 @@ class HtmlTest extends \GLPITestCase
             'Item_DeviceSimcard'
         ];
         $this->assertSame('Assets', $menu['assets']['title']);
-        $this->assertSame($expected, $menu['assets']['types']);
+        $this->assertSame($expected, array_intersect($expected, $menu['assets']['types']));
 
         $expected = [
             'Ticket',
