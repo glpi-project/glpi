@@ -177,6 +177,7 @@ final class AssetDefinitionManager
             'location_types',
             'state_types',
             'ticket_types',
+            'unicity_types'
         ];
         foreach ($config_keys as $config_key) {
             $CFG_GLPI[$config_key][] = $asset_class_name;

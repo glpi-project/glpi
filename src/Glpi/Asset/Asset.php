@@ -363,6 +363,13 @@ abstract class Asset extends CommonDBTM
         return $search_options;
     }
 
+    public function getUnallowedFieldsForUnicity()
+    {
+        $not_allowed = parent::getUnallowedFieldsForUnicity();
+        $not_allowed[] = AssetDefinition::getForeignKeyField();
+        return $not_allowed;
+    }
+
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
         $table_prefix = $tablename !== null
