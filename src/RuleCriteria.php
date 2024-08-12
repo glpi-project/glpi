@@ -274,7 +274,7 @@ class RuleCriteria extends CommonDBChild
                         }
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
-                        return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
+                        return $rule->dropdownConditions($options);
                     }
                 }
                 break;
