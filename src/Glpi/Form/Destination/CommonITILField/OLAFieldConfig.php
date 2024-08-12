@@ -33,33 +33,53 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
+use Glpi\DBAL\JsonFieldInterface;
 use Override;
-use Ticket;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class OLAFieldConfig implements JsonFieldInterface
 {
-    #[Override]
-    public static function getTargetItemtype(): string
-    {
-        return Ticket::class;
+    // Unique reference to hardcoded names used for serialization and forms input names
+    public const STRATEGY = 'strategy';
+    public const OLA_ID = 'ola_id';
+
+    public function __construct(
+        private OLAFieldStrategy $strategy,
+        private ?int $specific_ola_id = null,
+    ) {
     }
 
     #[Override]
-    public function getConfigurableFields(): array
+    public static function jsonDeserialize(array $data): self
     {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-            new OLATTOField(),
-            new OLATTRField(),
-        ]);
+        $strategy = OLAFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        if ($strategy === null) {
+            $strategy = OLAFieldStrategy::FROM_TEMPLATE;
+        }
+
+        return new self(
+            strategy: $strategy,
+            specific_ola_id: $data[self::OLA_ID],
+        );
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            self::STRATEGY => $this->strategy->value,
+            self::OLA_ID => $this->specific_ola_id,
+        ];
+    }
+
+    public function getStrategy(): OLAFieldStrategy
+    {
+        return $this->strategy;
+    }
+
+    public function getSpecificOLAID(): ?int
+    {
+        return $this->specific_ola_id;
     }
 }

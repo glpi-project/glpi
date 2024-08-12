@@ -33,33 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
 use Override;
-use Ticket;
+use SLM;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class OLATTRField extends OLAField
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getKey(): string
     {
-        return Ticket::class;
+        return 'ola_ttr';
     }
 
     #[Override]
-    public function getConfigurableFields(): array
+    public function getLabel(): string
     {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-            new OLATTOField(),
-            new OLATTRField(),
-        ]);
+        return __("OLA TTR");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 40;
+    }
+
+    #[Override]
+    public function getType(): int
+    {
+        return SLM::TTR;
     }
 }

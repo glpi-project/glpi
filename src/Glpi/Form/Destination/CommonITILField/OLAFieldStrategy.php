@@ -33,33 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
-use Override;
-use Ticket;
+use Glpi\Form\AnswersSet;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+enum OLAFieldStrategy: string
 {
-    #[Override]
-    public static function getTargetItemtype(): string
+    case FROM_TEMPLATE = 'from_template';
+    case SPECIFIC_VALUE = 'specific_value';
+    public function getLabel(): string
     {
-        return Ticket::class;
+        return match ($this) {
+            self::FROM_TEMPLATE     => __("From template"),
+            self::SPECIFIC_VALUE    => __("Specific OLA"),
+        };
     }
 
-    #[Override]
-    public function getConfigurableFields(): array
-    {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-            new OLATTOField(),
-            new OLATTRField(),
-        ]);
+    public function getOLAID(
+        OLAFieldConfig $config,
+        AnswersSet $answers_set,
+    ): ?int {
+        return match ($this) {
+            self::FROM_TEMPLATE => null, // Let the template apply its default value by itself.
+            self::SPECIFIC_VALUE => $config->getSpecificOLAID(),
+        };
     }
 }
