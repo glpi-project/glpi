@@ -478,11 +478,30 @@ final class AssetDefinition extends CommonDBTM
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         if ($this->isActive()) {
             $this->syncProfilesRights();
 
             // Force menu refresh when active state change
             unset($_SESSION['menu']);
+        }
+
+        // Add default display preferences for the new asset definition
+        // Status, Manufacturer, Serial, Type, Model, Location, Last Update
+        $prefs = [31, 23, 5, 4, 40, 3, 19];
+        $rank = 1;
+        foreach ($prefs as $field) {
+            $DB->insert(
+                'glpi_displaypreferences',
+                [
+                    'itemtype' => $this->getAssetClassName(),
+                    'num'    => $field,
+                    'rank'     => $rank++,
+                    'users_id' => 0,
+                ]
+            );
         }
     }
 
@@ -589,6 +608,7 @@ final class AssetDefinition extends CommonDBTM
                 force: true,
                 history: false
             );
+            (new \DisplayPreference())->deleteByCriteria(['itemtype' => $classname]);
         }
     }
 
