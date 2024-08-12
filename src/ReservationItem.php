@@ -977,10 +977,10 @@ class ReservationItem extends CommonDBChild
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         if ($item->getType() == __CLASS__) {
             switch ($tabnum) {
                 case 1:
+                    /** @var ReservationItem $item */
                     $item->showListSimple();
                     break;
 

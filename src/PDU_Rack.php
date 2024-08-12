@@ -110,7 +110,7 @@ class PDU_Rack extends CommonDBRelation
 
         $pdus_id  = $input['pdus_id'] ?? $this->fields['pdus_id'] ?? null;
         $racks_id = $input['racks_id'] ?? $this->fields['racks_id'] ?? null;
-        $position = $input['position'] ?? $this->fields['position'] ?? null;
+        $position = $input['position'] ?? $this->fields['position'] ?? 0;
         $side     = $input['side'] ?? $this->fields['side'] ?? null;
 
         if (!count($error_detected)) {
@@ -128,14 +128,14 @@ class PDU_Rack extends CommonDBRelation
             $model = new PDUModel();
             if ($model->getFromDB($pdu->fields['pdumodels_id'])) {
                 if ($model->fields['required_units'] > 1) {
-                    $required_units = $model->fields['required_units'];
+                    $required_units = (int)$model->fields['required_units'];
                 }
             }
 
             if (
                 in_array($side, [self::SIDE_LEFT, self::SIDE_RIGHT])
                 && ($position > $rack->fields['number_units']
-                 || $position + $required_units  > $rack->fields['number_units'] + 1)
+                 || $position + $required_units  > (int)$rack->fields['number_units'] + 1)
             ) {
                 $error_detected[] = __('Item is out of rack bounds');
             } else {

@@ -178,7 +178,7 @@ class NetworkPortInstantiation extends CommonDBChild
      * Get HTMLTable columns headers for a given item type
      * Beware : the internet information are "sons" of each instantiation ...
      *
-     * @param HTMLTableSuperHeader $group           HTMLTableGroup object
+     * @param HTMLTableGroup       $group           HTMLTableGroup object
      * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
      * @param HTMLTableSuperHeader $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
      * @param HTMLTableHeader      $father          HTMLTableHeader object (default NULL)
@@ -855,7 +855,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->getType() == "NetworkPort") {
+        if (get_class($item) == NetworkPort::class) {
             $instantiation = $item->getInstantiation();
             if ($instantiation !== false) {
                 $log = new Log();
@@ -874,7 +874,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == "NetworkPort") {
+        if (get_class($item) == NetworkPort::class) {
             $instantiation = $item->getInstantiation();
             if ($instantiation !== false) {
                 Log::displayTabContentForItem($instantiation, $tabnum, $withtemplate);

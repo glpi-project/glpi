@@ -110,6 +110,7 @@ class QueuedNotification extends CommonDBTM
         switch ($ma->getAction()) {
             case 'send':
                 foreach ($ids as $id) {
+                    /** @var QueuedNotification $item */
                     if ($item->canEdit($id)) {
                         if ($item->fields['mode'] === Notification_NotificationTemplate::MODE_AJAX) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
@@ -576,7 +577,7 @@ class QueuedNotification extends CommonDBTM
     /**
      * Cron action on notification queue: send notifications in queue
      *
-     * @param CommonDBTM $task for log (default NULL)
+     * @param CronTask $task for log (default NULL)
      *
      * @return integer either 0 or 1
      **/
@@ -620,7 +621,7 @@ class QueuedNotification extends CommonDBTM
     /**
      * Cron action on queued notification: clean notification queue
      *
-     * @param CommonDBTM $task for log (default NULL)
+     * @param CronTask $task for log (default NULL)
      *
      * @return integer either 0 or 1
      **/

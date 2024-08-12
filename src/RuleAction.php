@@ -51,6 +51,7 @@ class RuleAction extends CommonDBChild
         $forbidden[] = 'update';
 
         if (isset($_POST['rule_class_name']) && is_subclass_of(\Rule::class, $_POST['rule_class_name'])) {
+            /** @var Rule $rule */
             $rule = getItemForItemtype($_POST['rule_class_name']);
             if ($rule->maxActionsCount() == 1) {
                 $forbidden[] = 'clone';
@@ -104,6 +105,7 @@ class RuleAction extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
+            /** @var Rule $rule */
             $action_row = $rule->getMinimalActionText($this->fields);
             $action_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $action_row));
             return $action_text;
@@ -224,6 +226,7 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                        /** @var Rule $rule */
                         return $rule->getAction($values[$field]);
                     }
                 }
@@ -243,6 +246,7 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                        /** @var Rule $rule */
                         return $rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
@@ -279,6 +283,7 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                        /** @var Rule $rule */
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
                         return $rule->dropdownActions($options);
@@ -313,7 +318,8 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                       /// TODO review it : need to pass display param and others...
+                        /** @var RuleAction $rule */
+                        // TODO review it: need to pass display param and others...
                         return $rule->displayActionSelectPattern($values);
                     }
                 }
@@ -402,6 +408,7 @@ class RuleAction extends CommonDBChild
         }
 
         if ($rule = getItemForItemtype($p['subtype'])) {
+            /** @var Rule $rule */
             $actions_options = $rule->getAllActions();
             $actions         = ["assign"];
            // Manage permit several.
@@ -499,6 +506,7 @@ class RuleAction extends CommonDBChild
         global $DB;
 
         if ($rule = getItemForItemtype($sub_type)) {
+            /** @var Rule $rule */
             $actions_options = $rule->getAllActions();
 
             $actions = [];
@@ -632,6 +640,7 @@ class RuleAction extends CommonDBChild
                         case "dropdown_users_validate":
                             $used = [];
                             if ($item = getItemForItemtype($options["sub_type"])) {
+                                /** @var Rule $item */
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
@@ -655,6 +664,7 @@ class RuleAction extends CommonDBChild
                         case "dropdown_groups_validate":
                             $used = [];
                             if ($item = getItemForItemtype($options["sub_type"])) {
+                                /** @var Rule $item */
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
@@ -697,6 +707,7 @@ class RuleAction extends CommonDBChild
 
                         default:
                             if ($rule = getItemForItemtype($options["sub_type"])) {
+                                /** @var Rule $rule */
                                 $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
                             }
                             break;

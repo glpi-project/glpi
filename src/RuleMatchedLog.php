@@ -65,7 +65,7 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * Count number of elements
      *
-     * @param object $item
+     * @param CommonDBTM $item
      *
      * @return integer
      */
@@ -84,13 +84,13 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * Get the tab name used for item
      *
-     * @param object $item the item object
+     * @param CommonGLPI $item the item object
      * @param integer $withtemplate 1 if is a template form
      * @return string|array name of the tab
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         $array_ret = [];
 
         if ($item->getType() == 'Agent') {
@@ -133,14 +133,14 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * Display the content of the tab
      *
-     * @param object $item
+     * @param CommonGLPI $item
      * @param integer $tabnum number of the tab to display
      * @param integer $withtemplate 1 if is a template form
      * @return boolean
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         $rulematched = new self();
         if ($tabnum == '0') {
             if ($item->getID() > 0) {

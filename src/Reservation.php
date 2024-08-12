@@ -730,7 +730,7 @@ JAVASCRIPT;
      * Change dates of a selected reservation.
      * Called from a drag&drop in planning
      *
-     * @param array $options: must contains this keys :
+     * @param array $event: must contain keys:
      *  - id : integer to identify reservation
      *  - begin : planning start .
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)

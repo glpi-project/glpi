@@ -184,6 +184,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
 
         parent::getInstantiationHTMLTable($netport, $row, $father, $options);
         Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
+        return null;
     }
 
 

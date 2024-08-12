@@ -1203,8 +1203,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
 
         $nb = 0;
-        switch ($item->getType()) {
-            case 'Project':
+        switch (get_class($item)) {
+            case Project::class:
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = countElementsInTable(
                         $this->getTable(),

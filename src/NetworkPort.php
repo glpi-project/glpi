@@ -1814,7 +1814,7 @@ class NetworkPort extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Can exists on template
+        // Can exist on template
         $nb = 0;
         if (NetworkEquipment::canView()) {
             if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
@@ -1825,7 +1825,7 @@ class NetworkPort extends CommonDBChild
             }
         }
 
-        if ($item->getType() == 'NetworkPort') {
+        if (get_class($item) == NetworkPort::class) {
             $nbAlias = countElementsInTable(
                 'glpi_networkportaliases',
                 ['networkports_id_alias' => $item->getField('id')]
