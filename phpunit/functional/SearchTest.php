@@ -4641,36 +4641,43 @@ class SearchTest extends DbTestCase
 
     public function testCommonITILSatisfactionEndDate()
     {
-        global $DB, $GLPI_CACHE;
+        $this->login('glpi', 'glpi');
+
         $entity_root_id = getItemByTypeName('Entity', '_test_root_entity', true);
         $entity_child_1_id = getItemByTypeName('Entity', '_test_child_1', true);
         $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
-        $user_id = getItemByTypeName('User', TU_USER, true);
+        $user_id = $_SESSION['glpiID'];
 
-        $this->login();
+        $entity = new \Entity();
+        $this->assertTrue(
+            $entity->update([
+                'id' => $entity_root_id,
+                'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'inquest_rate' => 100,
+                'inquest_delay' => 0,
+                'inquest_duration' => 10,
+            ])
+        );
+        $this->assertTrue($entity->getFromDB($entity_root_id));
+        $this->assertEquals(10, $entity->fields['inquest_duration']);
 
-        $DB->update(
-            \Entity::getTable(),
-            [
-                'inquest_duration' => '0',
-            ],
-            ['id' => $entity_root_id]
+        $this->assertTrue(
+            $entity->update([
+                'id' => $entity_child_1_id,
+                'inquest_duration' => 2,
+            ])
         );
-        $DB->update(
-            \Entity::getTable(),
-            [
-                'inquest_duration' => '2',
-            ],
-            ['id' => $entity_child_1_id]
+        $this->assertTrue($entity->getFromDB($entity_child_1_id));
+        $this->assertEquals(2, $entity->fields['inquest_duration']);
+
+        $this->assertTrue(
+            $entity->update([
+                'id' => $entity_child_2_id,
+                'inquest_duration' => 4,
+            ])
         );
-        $DB->update(
-            \Entity::getTable(),
-            [
-                'inquest_duration' => '4',
-            ],
-            ['id' => $entity_child_2_id]
-        );
-        $GLPI_CACHE->clear();
+        $this->assertTrue($entity->getFromDB($entity_child_2_id));
+        $this->assertEquals(4, $entity->fields['inquest_duration']);
 
         // Create a closed ticket
         $ticket = new \Ticket();
@@ -4682,6 +4689,11 @@ class SearchTest extends DbTestCase
             'status' => \CommonITILObject::CLOSED,
             'users_id_recipient' => $user_id,
         ]);
+
+        $this->assertTrue($ticket->update([
+            'id' => $ticket1_id,
+            'status' => \CommonITILObject::CLOSED
+        ]));
         $this->assertTrue($ticket->getFromDB($ticket1_id));
         $this->assertTrue($ticket->isClosed());
 
@@ -4712,18 +4724,21 @@ class SearchTest extends DbTestCase
         $satisfaction->add([
             'tickets_id' => $ticket1_id,
             'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin' => $_SESSION['glpi_currenttime'],
         ]);
         $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
 
         $satisfaction->add([
             'tickets_id' => $ticket2_id,
             'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin' => $_SESSION['glpi_currenttime'],
         ]);
         $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
 
         $satisfaction->add([
             'tickets_id' => $ticket3_id,
             'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin' => $_SESSION['glpi_currenttime'],
         ]);
         $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
 
@@ -4761,11 +4776,11 @@ class SearchTest extends DbTestCase
             ],
             [
                 $ticket2_id,
-                date('Y-m-d H:i', strtotime('+2 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+2 days', strtotime($_SESSION['glpi_currenttime']))),
             ],
             [
                 $ticket3_id,
-                date('Y-m-d H:i', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
             ],
         ];
         $this->assertEquals($expected, $items);
