@@ -4652,14 +4652,11 @@ class SearchTest extends DbTestCase
         $this->assertTrue(
             $entity->update([
                 'id' => $entity_root_id,
-                'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
-                'inquest_rate' => 100,
-                'inquest_delay' => 0,
-                'inquest_duration' => 10,
+                'inquest_duration' => 0,
             ])
         );
         $this->assertTrue($entity->getFromDB($entity_root_id));
-        $this->assertEquals(10, $entity->fields['inquest_duration']);
+        $this->assertEquals(0, $entity->fields['inquest_duration']);
 
         $this->assertTrue(
             $entity->update([
@@ -4682,7 +4679,7 @@ class SearchTest extends DbTestCase
         // Create a closed ticket
         $ticket = new \Ticket();
         $ticket1_id = (int) $ticket->add([
-            'entity_id' => $entity_root_id,
+            'entities_id' => $entity_root_id,
             'name' => __FUNCTION__ . ' 1',
             'content' => __FUNCTION__ . ' 1 content',
             'solvedate' => $_SESSION['glpi_currenttime'],
@@ -4690,15 +4687,11 @@ class SearchTest extends DbTestCase
             'users_id_recipient' => $user_id,
         ]);
 
-        $this->assertTrue($ticket->update([
-            'id' => $ticket1_id,
-            'status' => \CommonITILObject::CLOSED
-        ]));
         $this->assertTrue($ticket->getFromDB($ticket1_id));
         $this->assertTrue($ticket->isClosed());
 
         $ticket2_id = (int) $ticket->add([
-            'entity_id' => $entity_child_1_id,
+            'entities_id' => $entity_child_1_id,
             'name' => __FUNCTION__ . ' 2',
             'content' => __FUNCTION__ . ' 2 content',
             'solvedate' => $_SESSION['glpi_currenttime'],
@@ -4709,7 +4702,7 @@ class SearchTest extends DbTestCase
         $this->assertTrue($ticket->isClosed());
 
         $ticket3_id = (int) $ticket->add([
-            'entity_id' => $entity_child_2_id,
+            'entities_id' => $entity_child_2_id,
             'name' => __FUNCTION__ . ' 3',
             'content' => __FUNCTION__ . ' 3 content',
             'solvedate' => $_SESSION['glpi_currenttime'],
