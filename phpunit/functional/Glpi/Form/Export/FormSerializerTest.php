@@ -165,6 +165,8 @@ final class FormSerializerTest extends \DbTestCase
     public function testExportAndImportFormBasicProperties(): void
     {
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
+
+        $this->login();
         $form_copy = $this->exportAndImportForm($form);
 
         // Validate each fields
@@ -242,6 +244,7 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createForm($builder);
 
         // Act: export and import the form
+        $this->login();
         $form_copy = $this->exportAndImportForm($form);
 
         // Assert: validate sections fields
@@ -309,6 +312,53 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: the form should be invalid
         $this->assertEquals([], $preview->getValidForms());
         $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
+    }
+
+    public function testImportRequirementsAreCheckedInVisibleEntities(): void
+    {
+        $test_root_entity_id = $this->getTestRootEntity(true);
+
+        // Arrange: create a form in a sub entity
+        $this->login(); // Need an active session to create entities
+        $sub_entity = $this->createItem(Entity::class, [
+            'name' => 'My sub entity',
+            'entities_id' => $test_root_entity_id,
+        ]);
+        $builder = new FormBuilder("My test form");
+        $builder->setEntitiesId($sub_entity->getID());
+        $form = $this->createForm($builder);
+
+        // Act: enable sub entities; export and import form
+        $this->setEntity($test_root_entity_id, subtree: true);
+        $result = self::$serializer->exportFormsToJson([$form]);
+        $import_result = self::$serializer->importFormsFromJson($result->getJsonContent());
+
+        // Assert: import should have succeeded
+        $this->assertCount(1, $import_result->getImportedForms());
+        $this->assertCount(0, $import_result->getFailedFormImports());
+    }
+
+    public function testImportRequirementsAreNotCheckedInHiddenEntities(): void
+    {
+        // Arrange: create a form in a sub entity
+        $this->login(); // Need an active session to create entities
+        $test_root_entity_id = $this->getTestRootEntity(true);
+        $sub_entity = $this->createItem(Entity::class, [
+            'name' => 'My sub entity',
+            'entities_id' => $test_root_entity_id,
+        ]);
+        $builder = new FormBuilder("My test form");
+        $builder->setEntitiesId($sub_entity->getID());
+        $form = $this->createForm($builder);
+
+        // Act: disable sub entities; export and import form
+        $this->setEntity($test_root_entity_id, subtree: false);
+        $result = self::$serializer->exportFormsToJson([$form]);
+        $import_result = self::$serializer->importFormsFromJson($result->getJsonContent());
+
+        // Assert: import should have failed
+        $this->assertCount(0, $import_result->getImportedForms());
+        $this->assertCount(1, $import_result->getFailedFormImports());
     }
 
     // TODO: add a test later to make sure that requirements for each forms do

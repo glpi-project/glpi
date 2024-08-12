@@ -36,7 +36,10 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use InvalidArgumentException;
+use Search;
 
 final class DatabaseMapper
 {
@@ -102,13 +105,11 @@ final class DatabaseMapper
             }
 
             // Try to find exactly one item
-            $item = new $itemtype();
-            $items = $item->find(['name' => $name]);
-            if (count($items) !== 1) {
+            $item = $this->tryTofindOneRowByName($itemtype, $name);
+            if ($item === null) {
                 continue;
             }
 
-            $item = current($items);
             $this->addMappedItem($itemtype, $name, $item['id']);
         }
 
@@ -123,5 +124,55 @@ final class DatabaseMapper
     private function contextExist(string $itemtype, string $name): bool
     {
         return isset($this->values[$itemtype][$name]);
+    }
+
+    private function tryTofindOneRowByName(string $itemtype, string $name): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (!$this->isValidItemtype($itemtype)) {
+            throw new InvalidArgumentException();
+        }
+
+        /** @var CommonDBTM $item */
+        $item = new $itemtype();
+        $query = [
+            'FROM' => $item::getTable(),
+        ];
+        $condition = [
+            'name' => $name
+        ];
+
+        // Compute default where (visibility restrictions)
+        $default_where = Search::addDefaultWhere($itemtype);
+        if ($default_where !== '') {
+            $condition[] = new QueryExpression($default_where);
+        }
+
+        // Entities restrictions are not always included in addDefaultWhere,
+        // it is safer to add them manually (they might be checked twice tho).
+        $entities_restrictions = getEntitiesRestrictCriteria($item::getTable());
+        $condition[] = $entities_restrictions;
+        $query['WHERE'] = $condition;
+
+        // Compute default join (might be used by the default where)
+        $already_joined = [];
+        $default_join = Search::addDefaultJoin(
+            $itemtype,
+            $itemtype::getTable(),
+            $already_joined,
+        );
+        if ($default_join !== '') {
+            $query['JOIN'] = [new QueryExpression($default_join)];
+        }
+
+        // Find item
+        $rows = $DB->request($query);
+        $rows = iterator_to_array($rows);
+        if (count($rows) !== 1) {
+            return null;
+        }
+        return current($rows);
     }
 }
