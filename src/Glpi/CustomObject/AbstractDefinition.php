@@ -40,6 +40,7 @@ use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinition;
 use Profile;
 use ProfileRight;
 use Session;
@@ -210,10 +211,14 @@ abstract class AbstractDefinition extends CommonDBTM
         global $DB;
 
         $possible_rights = $this->getPossibleCustomObjectRights();
+        $profile_fields_to_select = ['id', 'name'];
+        if (static::class === AssetDefinition::class) {
+            $profile_fields_to_select[] = 'helpdesk_item_type';
+        }
 
         $profiles_data = iterator_to_array(
             $DB->request([
-                'SELECT' => ['id', 'name'],
+                'SELECT' => $profile_fields_to_select,
                 'FROM'   => Profile::getTable(),
                 'WHERE'  => [
                     ['NOT' => ['interface' => 'helpdesk']],
@@ -244,7 +249,8 @@ abstract class AbstractDefinition extends CommonDBTM
 
             $row = [
                 'label' => $profile_data['name'],
-                'columns' => []
+                'columns' => [],
+                'extra_rows' => $this->getExtraProfileFields($profile_data),
             ];
             foreach (array_keys($possible_rights) as $right_value) {
                 $checked = $profile_rights & $right_value;
@@ -442,7 +448,11 @@ abstract class AbstractDefinition extends CommonDBTM
             unset($_SESSION['menu']);
         }
 
-        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
+        if (
+            in_array('is_active', $this->updates, true)
+            || in_array('profiles', $this->updates, true)
+            || array_key_exists('profiles_extra', $this->input)
+        ) {
             $this->syncProfilesRights();
         }
     }
@@ -513,6 +523,43 @@ abstract class AbstractDefinition extends CommonDBTM
                     : $this->getRightsForProfile($profile_id);
 
                 ProfileRight::updateProfileRights($profile_id, [$rightname => $rights]);
+            }
+        }
+
+        if (!isset($this->input['profiles_extra'])) {
+            return;
+        }
+        $it = $DB->request([
+            'SELECT' => ['id', 'helpdesk_item_type'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => [
+                ['id', array_keys($this->input['profiles_extra'])],
+            ],
+        ]);
+        $old_values = [];
+        foreach ($it as $data) {
+            $old_values[$data['id']] = json_decode($data['helpdesk_item_type'], associative: true);
+            if (!is_array($old_values[$data['id']])) {
+                $old_values[$data['id']] = [];
+            }
+        }
+        foreach ($this->input['profiles_extra'] as $profile_id => $extra_data) {
+            $changes = [];
+            if (isset($extra_data['helpdesk_item_type'])) {
+                $itemtype_allowed = (bool) $extra_data['helpdesk_item_type'];
+                if ($itemtype_allowed && !in_array($this->getCustomObjectClassName(), $old_values[$profile_id], true)) {
+                    $changes['helpdesk_item_type'] = [...$old_values[$profile_id], ...[$this->getCustomObjectClassName()]];
+                } else if (!$itemtype_allowed && in_array($this->getCustomObjectClassName(), $old_values[$profile_id], true)) {
+                    $changes['helpdesk_item_type'] = array_diff($old_values[$profile_id], [$this->getCustomObjectClassName()]);
+                }
+                if (count($changes) > 0) {
+                    $changes = array_map(static fn ($v) => is_array($v) ? json_encode($v) : $v, $changes);
+                    $DB->update(
+                        Profile::getTable(),
+                        $changes,
+                        ['id' => $profile_id]
+                    );
+                }
             }
         }
     }
@@ -700,6 +747,39 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $profiles_entries = $this->getDecodedProfilesField();
         return $profiles_entries[$profile_id] ?? 0;
+    }
+
+    /**
+     * @param array{id: int, name: string, helpdesk_item_type: string} $profile_data
+     * @return string HTML string of extra fields for the profile.
+     *              Top level elements must be table rows with a 'data-extra-fields-row' attribute.
+     */
+    private function getExtraProfileFields(array $profile_data): string
+    {
+        if (!$this->fields['is_active']) {
+            return '';
+        }
+        $helpdesk_item_types = json_decode($profile_data['helpdesk_item_type'] ?? '[]', associative: true);
+        if (!is_array($helpdesk_item_types)) {
+            $helpdesk_item_types = [];
+        }
+
+        $twig_params = [
+            'value' => in_array($this->getCustomObjectClassName(), $helpdesk_item_types, true),
+            'label' => __('Associable items to tickets, changes and problems'),
+            'profiles_id' => $profile_data['id'],
+        ];
+        // language=Twig
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            <tr data-extra-fields-row>
+                <td colspan="100%">
+                    {{ fields.dropdownYesNo('profiles_extra[' ~ profiles_id ~ '][helpdesk_item_type]', value, label, {
+                        full_width: true,
+                    }) }}
+                </td>
+            </tr>
+TWIG, $twig_params);
     }
 
     /**

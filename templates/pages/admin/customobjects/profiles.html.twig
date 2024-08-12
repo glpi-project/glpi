@@ -31,7 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "generic_show_form.html.twig" %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set params = {} %}
 {# do not display delete button #}
@@ -39,17 +40,31 @@
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
 
-{% block form_fields %}
-    {{ include('components/checkbox_matrix.html.twig', {
-        'title': '',
-        'param': {
-            'rand': random(),
-            'col_check_all': true,
-            'row_check_all': true,
-        },
-        'columns': matrix_columns,
-        'rows': matrix_rows,
-        'nb_cb_per_col': nb_cb_per_col,
-        'nb_cb_per_row': nb_cb_per_row,
-    }, with_context = false) }}
-{% endblock %}
+<div class="p-2">
+    <form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+        {% if not item.fields['is_active'] %}
+            {{ alerts.alert_warning(__('Some fields may not be available because the asset definition is inactive.')) }}
+        {% endif %}
+
+        <div>
+            {{ fields.sliderField('_show_extra_fields', true, __('Show extra fields')) }}
+            <script>
+                $(`#main-form input[name="_show_extra_fields"]`).on('change', () => $(`#main-form tr[data-extra-fields-row]`).toggle());
+            </script>
+        </div>
+
+        {{ include('components/checkbox_matrix.html.twig', {
+            'title': '',
+            'param': {
+                'rand': random(),
+                'col_check_all': 'top',
+                'row_check_all': true,
+            },
+            'columns': matrix_columns,
+            'rows': matrix_rows,
+            'nb_cb_per_col': nb_cb_per_col,
+            'nb_cb_per_row': nb_cb_per_row,
+        }, with_context = false) }}
+        {{ include('components/form/buttons.html.twig') }}
+    </form>
+</div>
