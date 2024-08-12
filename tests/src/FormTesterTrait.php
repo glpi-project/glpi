@@ -73,12 +73,14 @@ trait FormTesterTrait
             '_do_not_init_sections' => true, // We will handle sections ourselves
         ]);
 
+        $section_rank = 0;
         foreach ($builder->getSections() as $section_data) {
             // Create section
             $section = $this->createItem(Section::class, [
                 'forms_forms_id' => $form->getID(),
                 'name'           => $section_data['name'],
                 'description'    => $section_data['description'],
+                'rank'           => $section_rank++,
             ]);
 
             // Create questions

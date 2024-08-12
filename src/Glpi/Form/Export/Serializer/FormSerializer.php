@@ -41,7 +41,10 @@ use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
+use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Section;
+use RuntimeException;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -100,8 +103,9 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function exportFormToSpec(Form $form): FormContentSpecification
     {
-        // TODO: questions, sections, ...
+        // TODO: questions, ...
         $form_spec = $this->exportBasicFormProperties($form);
+        $form_spec = $this->exportSections($form, $form_spec);
 
         return $form_spec;
     }
@@ -130,8 +134,9 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper = new DatabaseMapper(),
     ): Form {
-        // TODO: questions, sections, ...
+        // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);
+        $form = $this->importSections($form, $form_spec);
 
         return $form;
     }
@@ -153,24 +158,63 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importBasicFormProperties(
         FormContentSpecification $spec,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): Form {
-        if (!($spec instanceof FormContentSpecification)) {
-            throw new \InvalidArgumentException("Unsupported version");
-        }
-
         // Get ids from mapper
         $entities_id = $mapper->getItemId(Entity::class, $spec->entity_name);
 
         $form = new Form();
         $id = $form->add([
-            'name'         => $spec->name,
-            'header'       => $spec->header,
-            'entities_id'  => $entities_id,
-            'is_recursive' => $spec->is_recursive,
+            'name'                  => $spec->name,
+            'header'                => $spec->header,
+            'entities_id'           => $entities_id,
+            'is_recursive'          => $spec->is_recursive,
+            '_do_not_init_sections' => true,
         ]);
-        $form->getFromDB($id);
+        if (!$form->getFromDB($id)) {
+            throw new RuntimeException("Failed to create form");
+        }
 
+        return $form;
+    }
+
+    private function exportSections(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getSections() as $section) {
+            $section_spec = new SectionContentSpecification();
+            $section_spec->name = $section->fields['name'];
+            $section_spec->rank = $section->fields['rank'];
+            $section_spec->description = $section->fields['description'];
+
+            $form_spec->sections[] = $section_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importSections(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): Form {
+        /** @var SectionContentSpecification $section_spec */
+        foreach ($form_spec->sections as $section_spec) {
+            $section = new Section();
+            $id = $section->add([
+                'name'        => $section_spec->name,
+                'description' => $section_spec->description,
+                'rank'        => $section_spec->rank,
+                Form::getForeignKeyField() => $form->fields['id'],
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create section");
+            }
+        };
+
+        // Reload to clear lazy loaded data
+        $form->getFromDB($form->getId());
         return $form;
     }
 }
