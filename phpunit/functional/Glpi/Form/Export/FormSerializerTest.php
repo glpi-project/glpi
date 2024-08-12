@@ -40,6 +40,7 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -123,6 +124,46 @@ final class FormSerializerTest extends \DbTestCase
 
         $form_copy = $this->importForm($json, $mapper);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
+    }
+
+    public function testExportAndImportSections(): void
+    {
+        // Arrange: create a form with multiple sections
+        $builder = new FormBuilder();
+        $builder->addSection("My first section", "My first section content");
+        $builder->addSection("My second section", "My second section content");
+        $builder->addSection("My third section", "My third section content");
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate sections fields
+        $sections = array_values($form_copy->getSections());
+        $sections_data = array_map(function (Section $section) {
+            return [
+                'name'        => $section->fields['name'],
+                'description' => $section->fields['description'],
+                'rank'        => $section->fields['rank'],
+            ];
+        }, $sections);
+        $this->assertEquals([
+            [
+                'name'        => 'My first section',
+                'description' => 'My first section content',
+                'rank'        => 0,
+            ],
+            [
+                'name'        => 'My second section',
+                'description' => 'My second section content',
+                'rank'        => 1,
+            ],
+            [
+                'name'        => 'My third section',
+                'description' => 'My third section content',
+                'rank'        => 2,
+            ],
+        ], $sections_data);
     }
 
     // TODO: add a test later to make sure that requirements for each forms do
