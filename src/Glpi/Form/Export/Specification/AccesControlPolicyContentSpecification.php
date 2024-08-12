@@ -35,11 +35,9 @@
 
 namespace Glpi\Form\Export\Specification;
 
-final class DataRequirementSpecification
+final class AccesControlPolicyContentSpecification
 {
-    public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
-    ) {
-    }
+    public string $strategy;
+    public array $config_data;
+    public bool $is_active;
 }

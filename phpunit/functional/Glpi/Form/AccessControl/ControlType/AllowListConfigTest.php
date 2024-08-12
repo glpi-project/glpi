@@ -35,9 +35,16 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
+use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Tests\FormBuilder;
+use Group;
+use Profile;
+use User;
 
-final class AllowListConfigTest extends \GLPITestCase
+final class AllowListConfigTest extends \DbTestCase
 {
     public function testJsonDeserialize(): void
     {
@@ -73,5 +80,44 @@ final class AllowListConfigTest extends \GLPITestCase
             profile_ids: [7, 8, 9],
         );
         $this->assertEquals([7, 8, 9], $allow_list_config->getProfileIds());
+    }
+
+    public function testDeserializeWithoutDatabaseIdsRequirements(): void
+    {
+        $all_users = AbstractRightsDropdown::ALL_USERS;
+
+        // Arrange: create a config with references to multiple users, groups
+        // and profiles.
+        list($user_1, $user_2) = $this->createItemsWithNames(
+            User::class,
+            ["User 1", "User 2"]
+        );
+        list($group_1, $group_2) = $this->createItemsWithNames(
+            Group::class,
+            ["Group 1",  "Group 2"]
+        );
+        list($profile_1, $profile_2) = $this->createItemsWithNames(
+            Profile::class,
+            ["Profile 1", "Profile 2"]
+        );
+
+        $config = new AllowListConfig(
+            user_ids: [$user_1->getID(), $user_2->getID(), $all_users],
+            group_ids: [$group_1->getID(), $group_2->getID()],
+            profile_ids: [$profile_1->getID(), $profile_2->getID()],
+        );
+
+        // Act: get deserialize requirements
+        $requirements = $config->getJsonDeserializeWithoutDatabaseIdsRequirements();
+
+        // Assert: validate that all referenced items are required
+        $this->assertEquals([
+            new DataRequirementSpecification(User::class, "User 1"),
+            new DataRequirementSpecification(User::class, "User 2"),
+            new DataRequirementSpecification(Group::class, "Group 1"),
+            new DataRequirementSpecification(Group::class, "Group 2"),
+            new DataRequirementSpecification(Profile::class, "Profile 1"),
+            new DataRequirementSpecification(Profile::class, "Profile 2"),
+        ], $requirements);
     }
 }

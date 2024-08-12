@@ -277,6 +277,22 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Delete multiple items of the given class
+     *
+     * @param string $itemtype
+     * @param int[] $ids
+     * @param bool $purge
+     *
+     * @return void
+     */
+    protected function deleteItems(string $itemtype, array $ids, bool $purge = false): void
+    {
+        foreach ($ids as $id) {
+            $this->deleteItem($itemtype, $id, $purge);
+        }
+    }
+
+    /**
      * Helper method to avoid writting the same boilerplate code for rule creation
      *
      * @param RuleBuilder $builder RuleConfiguration
@@ -476,5 +492,27 @@ class DbTestCase extends \GLPITestCase
         );
 
         return $definition;
+    }
+
+    /**
+     * Helper methods to quickly create many items by names.
+     */
+    protected function createItemsWithNames(string $itemtype, array $names): array
+    {
+        return array_map(
+            fn($name) => $this->createItem($itemtype, ['name' => $name]),
+            $names,
+        );
+    }
+
+    /**
+     * Helper methods to quickly get the names of multiple items ids.
+     */
+    protected function getItemsNames(string $itemtype, array $ids): array
+    {
+        return array_map(
+            fn($id) => $itemtype::getById($id)->fields['name'],
+            $ids,
+        );
     }
 }

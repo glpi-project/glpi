@@ -115,6 +115,11 @@ final class DatabaseMapper
         return true;
     }
 
+    public function getReadonlyMapper(): ReadonlyDatabaseMapper
+    {
+        return new ReadonlyDatabaseMapper($this);
+    }
+
     private function isValidItemtype(string $itemtype): bool
     {
         return is_a($itemtype, CommonDBTM::class, true);

@@ -316,7 +316,7 @@ final class FormAccessControl extends CommonDBChild
      *
      * @return bool
      */
-    protected function isValidStrategy(string $strategy): bool
+    public function isValidStrategy(string $strategy): bool
     {
         return
             is_a($strategy, ControlTypeInterface::class, true)

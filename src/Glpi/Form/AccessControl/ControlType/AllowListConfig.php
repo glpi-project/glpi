@@ -35,10 +35,19 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\JsonFieldReferencingDatabaseIdsInterface;
+use Glpi\Form\Export\Context\ReadonlyDatabaseMapper;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Group;
 use Override;
+use Profile;
+use User;
 
-final class AllowListConfig implements JsonFieldInterface
+final class AllowListConfig implements
+    JsonFieldInterface,
+    JsonFieldReferencingDatabaseIdsInterface
 {
     public function __construct(
         private array $user_ids = [],
@@ -67,6 +76,86 @@ final class AllowListConfig implements JsonFieldInterface
         ];
     }
 
+    #[Override]
+    public function getJsonDeserializeWithoutDatabaseIdsRequirements(): array
+    {
+        $requirements = [];
+        $to_map = [
+            User::class => $this->user_ids,
+            Group::class => $this->group_ids,
+            Profile::class => $this->profile_ids,
+        ];
+
+        foreach ($to_map as $itemtype => $ids) {
+            foreach ($ids as $id) {
+                // Skip special values
+                if (in_array($id, $this->getSpecialValues())) {
+                    continue;
+                }
+
+                $item = $itemtype::getById($id);
+                if (!$item) {
+                    continue;
+                }
+
+                $requirements[] = new DataRequirementSpecification(
+                    itemtype: $itemtype,
+                    name: $item->fields['name'],
+                );
+            }
+        }
+
+        return $requirements;
+    }
+
+    #[Override]
+    public static function jsonDeserializeWithoutDatabaseIds(
+        ReadonlyDatabaseMapper $mapper,
+        array $data,
+    ): self {
+        $config_with_names = self::jsonDeserialize($data);
+        $config_with_ids = new self(
+            user_ids: $config_with_names->convertNamesToIds(
+                User::class,
+                $config_with_names->getUserIds(),
+                $mapper,
+            ),
+            group_ids: $config_with_names->convertNamesToIds(
+                Group::class,
+                $config_with_names->getGroupIds(),
+                $mapper,
+            ),
+            profile_ids: $config_with_names->convertNamesToIds(
+                Profile::class,
+                $config_with_names->getProfileIds(),
+                $mapper,
+            ),
+        );
+
+        return $config_with_ids;
+    }
+
+    #[Override]
+    public function jsonSerializeWithoutDatabaseIds(): array
+    {
+        $data = $this->jsonSerialize();
+
+        $data['user_ids'] = $this->convertIdsToNames(
+            User::class,
+            $data['user_ids']
+        );
+        $data['group_ids'] = $this->convertIdsToNames(
+            Group::class,
+            $data['group_ids']
+        );
+        $data['profile_ids'] = $this->convertIdsToNames(
+            Profile::class,
+            $data['profile_ids']
+        );
+
+        return $data;
+    }
+
     public function getUserIds(): array
     {
         return $this->user_ids;
@@ -80,5 +169,52 @@ final class AllowListConfig implements JsonFieldInterface
     public function getProfileIds(): array
     {
         return $this->profile_ids;
+    }
+
+    private function getSpecialValues(): array
+    {
+        return [AbstractRightsDropdown::ALL_USERS];
+    }
+
+    private function convertIdsToNames(string $itemtype, array $ids): array
+    {
+        $names = [];
+        foreach ($ids as $id) {
+            // Special value that must not be converted
+            if (in_array($id, $this->getSpecialValues())) {
+                $names[] = $id;
+                continue;
+            }
+
+            // Load item
+            $item = $itemtype::getById($id);
+            if (!$item) {
+                continue;
+            }
+
+            $names[] = $item->fields['name'];
+        }
+
+        return $names;
+    }
+
+    private function convertNamesToIds(
+        string $itemtype,
+        array $names,
+        ReadonlyDatabaseMapper $mapper,
+    ): array {
+        $ids = [];
+        foreach ($names as $name) {
+            // Special value that must not be converted
+            if (in_array($name, $this->getSpecialValues())) {
+                $ids[] = $name;
+                continue;
+            }
+
+            // Get id from mapper
+            $ids[] = $mapper->getItemId($itemtype, $name);
+        }
+
+        return $ids;
     }
 }

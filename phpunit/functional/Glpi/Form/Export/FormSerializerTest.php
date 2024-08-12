@@ -173,37 +173,6 @@ final class FormSerializerTest extends \DbTestCase
     // Can't be done now as we have only one requirement (form entity) so it
     // we it is impossible to have duplicates.
 
-    private function exportForm(Form $form): string
-    {
-        return self::$serializer->exportFormsToJson([$form]);
-    }
-
-    private function importForm(
-        string $json,
-        DatabaseMapper $mapper = new DatabaseMapper(),
-    ): Form {
-        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
-        $imported_forms = $import_result->getImportedForms();
-        $this->assertCount(1, $imported_forms);
-        $form_copy = current($imported_forms);
-        return $form_copy;
-    }
-
-    private function exportAndImportForm(Form $form): Form
-    {
-        // Export and import process
-        $json = $this->exportForm($form);
-        $form_copy = $this->importForm($json);
-
-        // Make sure it was not the same form object that was returned.
-        $this->assertNotEquals($form_copy->getId(), $form->getId());
-
-        // Make sure the new form really exist in the database.
-        $this->assertNotFalse($form_copy->getFromDB($form_copy->getId()));
-
-        return $form_copy;
-    }
-
     private function createAndGetFormWithBasicPropertiesFilled(): Form
     {
         $form_name = "Form with basic properties fully filled " . mt_rand();

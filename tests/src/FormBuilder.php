@@ -384,9 +384,13 @@ class FormBuilder
      */
     public function addAccessControl(
         string $strategy,
-        JsonFieldInterface $config
+        JsonFieldInterface $config,
+        bool $is_active = true,
     ): self {
-        $this->access_control[$strategy] = $config;
+        $this->access_control[$strategy] = [
+            'config'    => $config,
+            'is_active' => $is_active,
+        ];
         return $this;
     }
 }

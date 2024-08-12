@@ -36,15 +36,19 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Context\JsonFieldReferencingDatabaseIdsInterface;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Section;
 use RuntimeException;
+use InvalidArgumentException;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -106,6 +110,7 @@ final class FormSerializer extends AbstractFormSerializer
         // TODO: questions, ...
         $form_spec = $this->exportBasicFormProperties($form);
         $form_spec = $this->exportSections($form, $form_spec);
+        $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
 
         return $form_spec;
     }
@@ -137,6 +142,7 @@ final class FormSerializer extends AbstractFormSerializer
         // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);
         $form = $this->importSections($form, $form_spec);
+        $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
 
         return $form;
     }
@@ -215,6 +221,82 @@ final class FormSerializer extends AbstractFormSerializer
 
         // Reload to clear lazy loaded data
         $form->getFromDB($form->getId());
+        return $form;
+    }
+
+    private function exportAccesControlPolicies(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getAccessControls() as $policy) {
+            $strategy = $policy->getStrategy()::class;
+            $config = $policy->getConfig();
+
+            // Read simple fields
+            $policy_spec = new AccesControlPolicyContentSpecification();
+            $policy_spec->strategy = $strategy;
+            $policy_spec->is_active = $policy->fields['is_active'];
+
+            if ($config instanceof JsonFieldReferencingDatabaseIdsInterface) {
+                // Config with references to database ids
+                $policy_spec->config_data = $config->jsonSerializeWithoutDatabaseIds();
+                $requirements = $config->getJsonDeserializeWithoutDatabaseIdsRequirements();
+                array_push($form_spec->data_requirements, ...$requirements);
+            } else {
+                // Config without references to database ids
+                $policy_spec->config_data = $config->jsonSerialize();
+            }
+
+            $form_spec->policies[] = $policy_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importAccessControlPolicices(
+        Form $form,
+        FormContentSpecification $spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($spec->policies as $policy_spec) {
+            $policy = new FormAccessControl();
+
+            // Load strategy
+            $strategy_class = $policy_spec->strategy;
+            if (!$policy->isValidStrategy($strategy_class)) {
+                throw new InvalidArgumentException();
+            }
+            $strategy = new $strategy_class();
+
+            $config_class = $strategy->getConfigClass();
+            if (is_a($config_class, JsonFieldReferencingDatabaseIdsInterface::class, true)) {
+                // Config with references to database ids
+                $config = $config_class::jsonDeserializeWithoutDatabaseIds(
+                    $mapper->getReadonlyMapper(),
+                    $policy_spec->config_data
+                );
+            } else {
+                // Config without references to database ids
+                $config = $config_class::jsonDeserialize(
+                    $policy_spec->config_data
+                );
+            }
+
+            // Insert data
+            $id = $policy->add([
+                'strategy'  => $strategy_class,
+                'is_active' => $policy_spec->is_active,
+                '_config'   => $config,
+                Form::getForeignKeyField() => $form->getID(),
+            ]);
+
+            if (!$id) {
+                throw new RunTimeException("Failed to create access control");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
         return $form;
     }
 }

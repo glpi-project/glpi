@@ -33,13 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\Export\Context;
 
-final class DataRequirementSpecification
+use Glpi\Form\Export\Context\DatabaseMapper;
+
+/**
+ * Wrapper class used to only expose the minimal needed methods to
+ * JsonFieldReferencingDatabaseIdsInterface items.
+ */
+final class ReadonlyDatabaseMapper
 {
     public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
+        private DatabaseMapper $mapper,
     ) {
+    }
+
+    public function getItemId(string $itemtype, string $name): int
+    {
+        return $this->mapper->getItemId($itemtype, $name);
     }
 }

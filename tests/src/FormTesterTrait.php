@@ -39,6 +39,7 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
@@ -120,12 +121,12 @@ trait FormTesterTrait
         }
 
         // Create access controls
-        foreach ($builder->getAccessControls() as $strategy_class => $config) {
+        foreach ($builder->getAccessControls() as $strategy_class => $params) {
             $this->createItem(FormAccessControl::class, [
                 'forms_forms_id' => $form->getID(),
                 'strategy'       => $strategy_class,
-                '_config'        => $config,
-                'is_active'      => true,
+                '_config'        => $params['config'],
+                'is_active'      => $params['is_active'],
             ]);
         }
 
@@ -367,5 +368,36 @@ trait FormTesterTrait
         $ticket = current($created_items);
         $this->assertInstanceOf(Ticket::class, $ticket);
         return $ticket;
+    }
+
+    private function exportForm(Form $form): string
+    {
+        return self::$serializer->exportFormsToJson([$form]);
+    }
+
+    private function importForm(
+        string $json,
+        DatabaseMapper $mapper = new DatabaseMapper(),
+    ): Form {
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $imported_forms = $import_result->getImportedForms();
+        $this->assertCount(1, $imported_forms);
+        $form_copy = current($imported_forms);
+        return $form_copy;
+    }
+
+    private function exportAndImportForm(Form $form): Form
+    {
+        // Export and import process
+        $json = $this->exportForm($form);
+        $form_copy = $this->importForm($json);
+
+        // Make sure it was not the same form object that was returned.
+        $this->assertNotEquals($form_copy->getId(), $form->getId());
+
+        // Make sure the new form really exist in the database.
+        $this->assertNotFalse($form_copy->getFromDB($form_copy->getId()));
+
+        return $form_copy;
     }
 }
