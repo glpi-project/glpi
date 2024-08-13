@@ -1330,14 +1330,11 @@ class Problem extends CommonITILObject
      * @param CommonDBTM $item
      * @param integer    $withtemplate
      *
-     * @return void
+     * @return void|false
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (!Session::haveRight(self::$rightname, self::READALL)) {
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL])) {
             return false;
         }
 
@@ -1345,50 +1342,28 @@ class Problem extends CommonITILObject
             return false;
         }
 
-        $restrict = [];
-        $options  = [
-            'criteria' => [],
-            'reset'    => 'reset',
+        $restrict = self::getListForItemRestrict($item);
+        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+        $criteria['WHERE']['glpi_problems.is_deleted'] = 0;
+        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+
+        $options = [
+            'metacriteria' => [],
+            'restrict' => $restrict,
+            'criteria' => $criteria,
+            'reset'    => 'reset'
         ];
 
-        switch ($item->getType()) {
-            case 'User':
-                $restrict['glpi_problems_users.users_id'] = $item->getID();
-
-                $options['criteria'][0]['field']      = 4; // status
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-
-                $options['criteria'][1]['field']      = 66; // status
-                $options['criteria'][1]['searchtype'] = 'equals';
-                $options['criteria'][1]['value']      = $item->getID();
-                $options['criteria'][1]['link']       = 'OR';
-
-                $options['criteria'][5]['field']      = 5; // status
-                $options['criteria'][5]['searchtype'] = 'equals';
-                $options['criteria'][5]['value']      = $item->getID();
-                $options['criteria'][5]['link']       = 'OR';
-
-                break;
-
-            case 'Supplier':
-                $restrict['glpi_problems_suppliers.suppliers_id'] = $item->getID();
-
-                $options['criteria'][0]['field']      = 6;
-                $options['criteria'][0]['searchtype'] = 'equals';
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
-                break;
-
-            case 'Group':
-               // Mini search engine
+        switch (get_class($item)) {
+            case Group::class:
+                // Mini search engine
+                /** @var Group $item */
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                     echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last problems') . "</th></tr>";
+                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
                     echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups');
+                    echo __('Child groups') . "&nbsp;";
                     Dropdown::showYesNo(
                         'tree',
                         $tree,
@@ -1399,130 +1374,61 @@ class Problem extends CommonITILObject
                     $tree = 0;
                 }
                 echo "</td></tr></table>";
+                break;
+        }
+        Item_Problem::showListForItem($item, $withtemplate, $options);
+    }
 
+    public static function getListForItemRestrict(CommonDBTM $item)
+    {
+        $restrict = [];
+
+        switch (get_class($item)) {
+            case User::class:
+                $restrict['glpi_problems_users.users_id'] = $item->getID();
+                $restrict['glpi_problems_users.type'] = CommonITILActor::REQUESTER;
+                break;
+
+            case Supplier::class:
+                $restrict['glpi_problems_suppliers.suppliers_id'] = $item->getID();
+                $restrict['glpi_problems_suppliers.type'] = CommonITILActor::ASSIGN;
+                break;
+
+            case Group::class:
+                /** @var Group $item */
+                if ($item->haveChildren()) {
+                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                } else {
+                    $tree = 0;
+                }
                 $restrict['glpi_groups_problems.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-
-                $options['criteria'][0]['field']      = 71;
-                $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
-                $options['criteria'][0]['value']      = $item->getID();
-                $options['criteria'][0]['link']       = 'AND';
+                $restrict['glpi_groups_problems.type'] = CommonITILActor::REQUESTER;
+                /** @var CommonDBTM $item */
                 break;
 
             default:
-                $restrict['items_id'] = $item->getID();
-                $restrict['itemtype'] = $item->getType();
-                break;
-        }
-
-       // Link to open a new problem
-        if (
-            $item->getID()
-            && Problem::isPossibleToAssignType($item->getType())
-            && self::canCreate()
-            && !(!empty($withtemplate) && $withtemplate == 2)
-            && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)
-        ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                Problem::getFormURL(),
-                '_add_fromitem',
-                __('New problem for this item...'),
-                [
-                    'itemtype'    => $item::class,
-                    'items_id'    => $item->getID(),
-                    'entities_id' => $item->fields['entities_id']
-                ]
-            );
-            echo "</div>";
-        }
-
-        $criteria = self::getCommonCriteria();
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
-        $iterator = $DB->request($criteria);
-        $number = count($iterator);
-
-       // Ticket for the item
-        echo "<div class='table-responsive'><table class='tab_cadre_fixe'>";
-
-        $colspan = 11;
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $colspan++;
-        }
-        if ($number > 0) {
-            Session::initNavigateListItems(
-                'Problem',
-                //TRANS : %1$s is the itemtype name,
-                //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
-            );
-
-            echo "<tr><th colspan='$colspan'>";
-
-           //TRANS : %d is the number of problems
-            echo sprintf(_n('Last %d problem', 'Last %d problems', $number), $number);
-           // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-           //         Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
-
-            echo "</th></tr>";
-        } else {
-            echo "<tr><th>" . __('No problem found.') . "</th></tr>";
-        }
-       // Ticket list
-        if ($number > 0) {
-            self::commonListHeader(Search::HTML_OUTPUT);
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('Problem', $data["id"]);
-                self::showShort($data["id"]);
-            }
-            self::commonListHeader(Search::HTML_OUTPUT);
-        }
-
-        echo "</table></div>";
-
-       // Tickets for linked items
-        $linkeditems = $item->getLinkedItems();
-        $restrict = [];
-        if (count($linkeditems)) {
-            foreach ($linkeditems as $ltype => $tab) {
-                foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                $restrict['glpi_items_problems.items_id'] = $item->getID();
+                $restrict['glpi_items_problems.itemtype'] = $item->getType();
+                // you can only see your tickets
+                if (!Session::haveRight(self::$rightname, self::READALL)) {
+                    $or = [
+                        'glpi_problems.users_id_recipient'   => Session::getLoginUserID(),
+                        [
+                            'AND' => [
+                                'glpi_problems_users.problems_id'  => 'glpi_problems.id',
+                                'glpi_problems_users.users_id'    => Session::getLoginUserID()
+                            ]
+                        ]
+                    ];
+                    if (count($_SESSION['glpigroups'])) {
+                        $or['glpi_groups_problems.groups_id'] = $_SESSION['glpigroups'];
+                    }
+                    $restrict[] = ['OR' => $or];
                 }
-            }
         }
 
-        if (count($restrict)) {
-            $criteria = self::getCommonCriteria();
-            $criteria['WHERE'] = ['OR' => $restrict]
-            + getEntitiesRestrictCriteria(self::getTable());
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='$colspan'>";
-            echo __('Problems on linked items');
-
-            echo "</th></tr>";
-            if ($number > 0) {
-                self::commonListHeader(Search::HTML_OUTPUT);
-
-                foreach ($iterator as $data) {
-                    // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-                    self::showShort($data["id"]);
-                }
-                self::commonListHeader(Search::HTML_OUTPUT);
-            } else {
-                echo "<tr><th>" . __('No problem found.') . "</th></tr>";
-            }
-            echo "</table></div>";
-        }
+        return $restrict;
     }
-
 
     /**
      * @since 0.85

@@ -576,9 +576,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $criteria = static::$itemtype_1::getCommonCriteria();
         $params  = [
-            'criteria' => [],
+            'criteria' => $options['criteria'] ?? [],
             'reset'    => 'reset',
-            'restrict' => [],
+            'restrict' => $options['restrict'] ?? [],
         ];
         foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -609,7 +609,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
-        $colspan = 11;
+        $colspan = 12;
         if (count($_SESSION["glpiactiveentities"]) > 1) {
             $colspan++;
         }
@@ -658,8 +658,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     __("You don't have right to see all") . "</th></tr>";
             }
         } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . static::$itemtype_1::getTypeName(0) . ": " . __('None found.') . "</th></tr>";
+            echo "<table class='tab_cadre_fixehov'>";
+            echo "<tr class='noHover'><th colspan='$colspan'>";
+            printf('No %s on this item', static::$itemtype_1::getTypeName($number));
         }
 
         // object list
@@ -696,19 +697,19 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $iterator = $DB->request($criteria);
             $number = count($iterator);
 
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='12'>";
+            echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+            echo "<tr class='noHover'><th colspan='$colspan'>";
             printf('%s on linked items', static::$itemtype_1::getTypeName($number));
             echo "</th></tr>";
             if ($number > 0) {
                 static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
                 foreach ($iterator as $data) {
-                    // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+                    Session::addToNavigateListItems(static::$itemtype_1, $data["id"]);
                     static::$itemtype_1::showShort($data["id"]);
                 }
                 static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
             } else {
-                echo "<tr><th>" . static::$itemtype_1::getTypeName(0) . ": " . __('None found.') . "</th></tr>";
+                echo "<tr><td>" . __('None found.') . "</td></tr>";
             }
             echo "</table></div>";
         } // Subquery for linked item
