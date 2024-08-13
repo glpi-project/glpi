@@ -61,7 +61,7 @@ class NetworkPortConnectionLog extends CommonDBChild
     /**
      * Get the tab name used for item
      *
-     * @param object $item the item object
+     * @param CommonGLPI $item the item object
      * @param integer $withtemplate 1 if is a template form
      * @return string|array name of the tab
      */
@@ -90,14 +90,14 @@ class NetworkPortConnectionLog extends CommonDBChild
     /**
      * Display the content of the tab
      *
-     * @param object $item
+     * @param CommonGLPI $item
      * @param integer $tabnum number of the tab to display
      * @param integer $withtemplate 1 if is a template form
      * @return boolean
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {
+        if (get_class($item) == NetworkPort::class && $item->getID() > 0) {
             $connectionlog = new self();
             $connectionlog->showForItem($item);
             return true;

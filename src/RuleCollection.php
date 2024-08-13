@@ -256,8 +256,8 @@ class RuleCollection extends CommonDBTM
     /**
      * Get Collection Data: retrieve descriptions and rules
      *
-     * @param boolean $retrieve_criteria  Retrieve the criteria of the rules ? (default 0)
-     * @param boolean $retrieve_action    Retrieve the action of the rules ? (default 0)
+     * @param integer $retrieve_criteria  Retrieve the criteria of the rules ? (default false)
+     * @param integer $retrieve_action    Retrieve the action of the rules ? (default 0)
      * @param integer $condition          Retrieve with a specific condition
      **/
     public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
@@ -297,7 +297,7 @@ class RuleCollection extends CommonDBTM
                     ) {
                         $tempRule->can_sort = $can_sort;
 
-                      //Add the object to the list of rules
+                        //Add the object to the list of rules
                         $this->RuleList->list[] = $tempRule;
                     }
                 }
@@ -1157,7 +1157,7 @@ JAVASCRIPT;
      *
      * @param array   $available_criteria available criteria for this rule
      * @param integer $condition          the rulecriteria condition
-     * @param stirng  $criterion          the criterion
+     * @param string  $criterion          the criterion
      *
      * @return boolean true if a criterion is a dropdown, false otherwise
      **/

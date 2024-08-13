@@ -67,7 +67,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         if (!$withtemplate && Notification::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch (get_class($item)) {
                 case Notification::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -76,7 +76,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
                         );
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
-                break;
                 case NotificationTemplate::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -85,7 +84,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
                         );
                     }
                     return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb);
-                break;
             }
         }
         return '';
@@ -93,7 +91,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch (get_class($item)) {
             case Notification::class:
                 self::showForNotification($item, $withtemplate);
                 break;
@@ -375,7 +373,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @param string $mode the mode to use
      *
-     * @return array
+     * @return string
      **/
     public static function getMode($mode)
     {

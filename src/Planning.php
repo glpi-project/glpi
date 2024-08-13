@@ -2398,7 +2398,7 @@ JAVASCRIPT;
      *
      * @since 9.1
      *
-     * @param array $options: must contains this keys :
+     * @param array $params must contains this keys :
      *  - items_id : integer to identify items
      *  - itemtype : string to identify items
      *  - begin : planning start .

@@ -509,15 +509,15 @@ class NetworkAlias extends FQDNLabel
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item->getType()) {
-                    case 'NetworkName':
+                switch (get_class($item)) {
+                    case NetworkName::class:
                         $nb = countElementsInTable(
                             $this->getTable(),
                             ['networknames_id' => $item->getID() ]
                         );
                         break;
 
-                    case 'FQDN':
+                    case FQDN::class:
                         $nb = countElementsInTable(
                             $this->getTable(),
                             ['fqdns_id' => $item->getID() ]

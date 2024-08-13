@@ -88,8 +88,8 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!$withtemplate && static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'ProjectTask':
+            switch (get_class($item)) {
+                case ProjectTask::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
@@ -103,8 +103,8 @@ class ProjectTaskTeam extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'ProjectTask':
+        switch (get_class($item)) {
+            case ProjectTask::class:
                 $item->showTeam($item);
                 break;
         }

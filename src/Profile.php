@@ -149,7 +149,7 @@ class Profile extends CommonDBTM
     {
 
         if (!$withtemplate) {
-            switch ($item->getType()) {
+            switch (get_class($item)) {
                 case __CLASS__:
                     if ($item->fields['interface'] == 'helpdesk') {
                         $ong[3] = __('Assistance'); // Helpdesk
@@ -175,7 +175,7 @@ class Profile extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if (get_class($item) == __CLASS__) {
             $item->cleanProfile();
             switch ($tabnum) {
                 case 2:
@@ -820,7 +820,7 @@ class Profile extends CommonDBTM
      * @param string $form The tab/form name
      * @phpstan-param non-empty-string $form
      * @param string $interface The interface name
-     * @phpstan-param 'central'|'helpdesk' $interface
+     * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @return array
      * @phpstan-type RightDefinition = array{rights: array{}, label: string, field: string, scope: string}
      * @phpstan-return $interface == 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form == 'all' ? array<string, array<string, RightDefinition[]>> : ($group == 'all' ? array<string, RightDefinition[]> : RightDefinition[]))

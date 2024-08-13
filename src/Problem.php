@@ -192,7 +192,7 @@ class Problem extends CommonITILObject
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
+        switch (get_class($item)) {
             case __CLASS__:
                 switch ($tabnum) {
                     case 1:
@@ -990,7 +990,7 @@ class Problem extends CommonITILObject
                         'values' => []
                     ];
 
-                    if ($problem->getFromDBwithData($data['id'], 0)) {
+                    if ($problem->getFromDBwithData($data['id'])) {
                         $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
                         $row['values'][] = [
@@ -1326,8 +1326,8 @@ class Problem extends CommonITILObject
             'reset'    => 'reset',
         ];
 
-        switch ($item->getType()) {
-            case 'User':
+        switch (get_class($item)) {
+            case User::class:
                 $restrict['glpi_problems_users.users_id'] = $item->getID();
 
                 $options['criteria'][0]['field']      = 4; // status
@@ -1347,7 +1347,7 @@ class Problem extends CommonITILObject
 
                 break;
 
-            case 'Supplier':
+            case Supplier::class:
                 $restrict['glpi_problems_suppliers.suppliers_id'] = $item->getID();
 
                 $options['criteria'][0]['field']      = 6;
@@ -1356,7 +1356,7 @@ class Problem extends CommonITILObject
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Group':
+            case Group::class:
                // Mini search engine
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);

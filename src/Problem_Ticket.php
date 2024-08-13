@@ -71,15 +71,15 @@ class Problem_Ticket extends CommonDBRelation
 
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Ticket':
+            switch (get_class($item)) {
+                case Ticket::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $problems = self::getTicketProblemsData($item->getID());
                         $nb = count($problems);
                     }
                     return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
-                case 'Problem':
+                case Problem::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $tickets = self::getProblemTicketsData($item->getID());
                         $nb = count($tickets);
@@ -161,12 +161,9 @@ class Problem_Ticket extends CommonDBRelation
     {
         switch ($ma->getAction()) {
             case 'add_task':
-                $tasktype = 'TicketTask';
-                if ($ttype = getItemForItemtype($tasktype)) {
-                    $ttype->showMassiveActionAddTaskForm();
-                    return true;
-                }
-                return false;
+                $ttype = new TicketTask();
+                $ttype->showMassiveActionAddTaskForm();
+                return true;
 
             case "solveticket":
                 $problem = new Problem();
