@@ -4648,92 +4648,56 @@ class SearchTest extends DbTestCase
         $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
         $user_id = $_SESSION['glpiID'];
 
-        $entity = new \Entity();
-        $this->assertTrue(
-            $entity->update([
-                'id' => $entity_root_id,
-                'inquest_duration' => 0,
-            ])
-        );
-        $this->assertTrue($entity->getFromDB($entity_root_id));
-        $this->assertEquals(0, $entity->fields['inquest_duration']);
+        $this->updateItem(\Entity::class, $entity_root_id, ['inquest_duration' => 0]);
+        $this->updateItem(\Entity::class, $entity_child_1_id, ['inquest_duration' => 2]);
+        $this->updateItem(\Entity::class, $entity_child_2_id, ['inquest_duration' => 4]);
 
-        $this->assertTrue(
-            $entity->update([
-                'id' => $entity_child_1_id,
-                'inquest_duration' => 2,
-            ])
-        );
-        $this->assertTrue($entity->getFromDB($entity_child_1_id));
-        $this->assertEquals(2, $entity->fields['inquest_duration']);
-
-        $this->assertTrue(
-            $entity->update([
-                'id' => $entity_child_2_id,
-                'inquest_duration' => 4,
-            ])
-        );
-        $this->assertTrue($entity->getFromDB($entity_child_2_id));
-        $this->assertEquals(4, $entity->fields['inquest_duration']);
-
-        // Create a closed ticket
-        $ticket = new \Ticket();
-        $ticket1_id = (int) $ticket->add([
-            'entities_id' => $entity_root_id,
-            'name' => __FUNCTION__ . ' 1',
-            'content' => __FUNCTION__ . ' 1 content',
-            'solvedate' => $_SESSION['glpi_currenttime'],
-            'status' => \CommonITILObject::CLOSED,
-            'users_id_recipient' => $user_id,
+        // Create closed tickets
+        $tickets = $this->createItems(\Ticket::class, [
+            [
+                'entities_id' => $entity_root_id,
+                'name' => __FUNCTION__ . ' 1',
+                'content' => __FUNCTION__ . ' 1 content',
+                'solvedate' => $_SESSION['glpi_currenttime'],
+                'status' => \CommonITILObject::CLOSED,
+                'users_id_recipient' => $user_id,
+            ],
+            [
+                'entities_id' => $entity_child_1_id,
+                'name' => __FUNCTION__ . ' 2',
+                'content' => __FUNCTION__ . ' 2 content',
+                'solvedate' => $_SESSION['glpi_currenttime'],
+                'status' => \CommonITILObject::CLOSED,
+                'users_id_recipient' => $user_id,
+            ],
+            [
+                'entities_id' => $entity_child_2_id,
+                'name' => __FUNCTION__ . ' 3',
+                'content' => __FUNCTION__ . ' 3 content',
+                'solvedate' => $_SESSION['glpi_currenttime'],
+                'status' => \CommonITILObject::CLOSED,
+                'users_id_recipient' => $user_id,
+            ]
         ]);
 
-        $this->assertTrue($ticket->getFromDB($ticket1_id));
-        $this->assertTrue($ticket->isClosed());
-
-        $ticket2_id = (int) $ticket->add([
-            'entities_id' => $entity_child_1_id,
-            'name' => __FUNCTION__ . ' 2',
-            'content' => __FUNCTION__ . ' 2 content',
-            'solvedate' => $_SESSION['glpi_currenttime'],
-            'status' => \CommonITILObject::CLOSED,
-            'users_id_recipient' => $user_id,
+        // Add satisfactions
+        $this->createItems(\TicketSatisfaction::class, [
+            [
+                'tickets_id' => $tickets[0]->getID(),
+                'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'tickets_id' => $tickets[1]->getID(),
+                'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'tickets_id' => $tickets[2]->getID(),
+                'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ],
         ]);
-        $this->assertTrue($ticket->getFromDB($ticket2_id));
-        $this->assertTrue($ticket->isClosed());
-
-        $ticket3_id = (int) $ticket->add([
-            'entities_id' => $entity_child_2_id,
-            'name' => __FUNCTION__ . ' 3',
-            'content' => __FUNCTION__ . ' 3 content',
-            'solvedate' => $_SESSION['glpi_currenttime'],
-            'status' => \CommonITILObject::CLOSED,
-            'users_id_recipient' => $user_id,
-        ]);
-        $this->assertTrue($ticket->getFromDB($ticket3_id));
-        $this->assertTrue($ticket->isClosed());
-
-        // Create satisfaction
-        $satisfaction = new \TicketSatisfaction();
-        $satisfaction->add([
-            'tickets_id' => $ticket1_id,
-            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date_begin' => $_SESSION['glpi_currenttime'],
-        ]);
-        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
-
-        $satisfaction->add([
-            'tickets_id' => $ticket2_id,
-            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date_begin' => $_SESSION['glpi_currenttime'],
-        ]);
-        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
-
-        $satisfaction->add([
-            'tickets_id' => $ticket3_id,
-            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
-            'date_begin' => $_SESSION['glpi_currenttime'],
-        ]);
-        $this->assertTrue($satisfaction->getFromDB($satisfaction->getID()));
 
         $search_params = [
             'is_deleted' => 0,
@@ -4764,15 +4728,15 @@ class SearchTest extends DbTestCase
         }
         $expected = [
             [
-                $ticket1_id,
+                $tickets[0]->getID(),
                 '',
             ],
             [
-                $ticket2_id,
+                $tickets[1]->getID(),
                 date('Y-m-d H:i:s', strtotime('+2 days', strtotime($_SESSION['glpi_currenttime']))),
             ],
             [
-                $ticket3_id,
+                $tickets[2]->getID(),
                 date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
             ],
         ];
