@@ -424,7 +424,7 @@ HTML;
         $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
-    protected function getTextFromHtmlProvider(): iterable
+    public static function getTextFromHtmlProvider(): iterable
     {
         // Handling of sanitized content
         yield [

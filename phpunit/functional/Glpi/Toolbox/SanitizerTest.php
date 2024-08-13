@@ -378,7 +378,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertEquals($unsanitized_value, $sanitizer->decodeHtmlSpecialCharsRecursive($unsanitized_value));
     }
 
-    protected function isHtmlEncodedValueProvider(): iterable
+    public static function isHtmlEncodedValueProvider(): iterable
     {
         yield [
             'value'      => 'mystring',
@@ -419,7 +419,7 @@ class SanitizerTest extends \GLPITestCase
         $this->assertSame($is_encoded, $sanitizer->isHtmlEncoded($value));
     }
 
-    protected function isDbEscapedValueProvider(): iterable
+    public static function isDbEscapedValueProvider(): iterable
     {
         global $DB;
 
@@ -600,7 +600,7 @@ TXT;
         $this->assertEquals($sanitized_value, $sanitizer->sanitize($sanitizer->unsanitize($value)));
     }
 
-    protected function isNsClassOrCallableIdentifierProvider(): iterable
+    public static function isNsClassOrCallableIdentifierProvider(): iterable
     {
         yield [
             'value'    => 'mystring',

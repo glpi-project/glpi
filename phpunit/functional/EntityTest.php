@@ -718,7 +718,7 @@ class EntityTest extends DbTestCase
         $this->assertSame($expected, $entity->getCustomCssTag());
     }
 
-    protected function testAnonymizeSettingProvider(): array
+    public static function testAnonymizeSettingProvider(): array
     {
         return [
             [

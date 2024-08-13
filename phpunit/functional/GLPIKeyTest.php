@@ -325,7 +325,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEquals($string, $decrypted);
     }
 
-    protected function encryptDecryptProvider()
+    public static function encryptDecryptProvider()
     {
         $key = hex2bin('a72f621a029175008055f103fb977fe185fecdb248e42c18751afb391278d4b6');
 

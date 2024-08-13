@@ -358,7 +358,7 @@ class DocumentTest extends DbTestCase
         $this->assertSame('#datag#', \Document::getImageTag('datag'));
     }
 
-    protected function isImageProvider()
+    public static function isImageProvider()
     {
         return [
             [__FILE__, false],
