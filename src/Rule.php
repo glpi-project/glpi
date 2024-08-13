@@ -598,7 +598,6 @@ class Rule extends CommonDBTM
         }
         $collectiontype = $this->getCollectionClassName();
         if ($collection = getItemForItemtype($collectiontype)) {
-            /** @var RuleCollection $collection */
             if (
                 $isadmin
                 && ($collection->orderby == "ranking")
@@ -1045,7 +1044,6 @@ class Rule extends CommonDBTM
                 $withactions
                 && ($RuleAction = getItemForItemtype($this->ruleactionclass))
             ) {
-                /** @var RuleAction $RuleAction */
                 $this->actions = $RuleAction->getRuleActions($ID);
             }
 
@@ -1053,7 +1051,6 @@ class Rule extends CommonDBTM
                 $withcriterias
                 && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))
             ) {
-                /** @var RuleCriteria $RuleCriterias */
                 $this->criterias = $RuleCriterias->getRuleCriterias($ID);
             }
 
@@ -2047,7 +2044,6 @@ class Rule extends CommonDBTM
             $display_criterias
             && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))
         ) {
-            /** @var RuleCriteria $RuleCriterias */
             echo "<td>";
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
@@ -2059,7 +2055,6 @@ class Rule extends CommonDBTM
             $display_actions
             && ($RuleAction = getItemForItemtype($this->ruleactionclass))
         ) {
-            /** @var RuleAction $RuleAction */
             echo "<td>";
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
@@ -3074,7 +3069,6 @@ class Rule extends CommonDBTM
     {
 
         if ($rule = getItemForItemtype($sub_type)) {
-            /** @var Rule $rule */
             return $rule->getAllActions();
         }
         return [];
@@ -3447,7 +3441,7 @@ class Rule extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
+
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
@@ -3483,7 +3477,6 @@ class Rule extends CommonDBTM
                 case 'SLA':
                 case 'OLA':
                     if ($_SESSION['glpishow_count_on_tabs']) {
-                        /** @var LevelAgreement $item */
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],

@@ -93,8 +93,8 @@ class RuleCriteria extends CommonDBChild
 
     protected function computeFriendlyName()
     {
+
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            /** @var Rule $rule */
             $criteria_row = $rule->getMinimalCriteriaText($this->fields);
             $criteria_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $criteria_row));
             return $criteria_text;
@@ -195,7 +195,6 @@ class RuleCriteria extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        /** @var Rule $rule */
                         return $rule->getCriteriaName($values[$field]);
                     }
                 }
@@ -227,7 +226,6 @@ class RuleCriteria extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        /** @var Rule $rule */
                         return $rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
@@ -256,7 +254,6 @@ class RuleCriteria extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        /** @var Rule $rule */
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
                         return $rule->dropdownCriteria($options);
@@ -272,7 +269,6 @@ class RuleCriteria extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        /** @var Rule $rule */
                         if (isset($values['criteria']) && !empty($values['criteria'])) {
                             $options['criterion'] = $values['criteria'];
                         }
@@ -294,8 +290,7 @@ class RuleCriteria extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        /** @var Rule $rule */
-                        /// TODO : manage display param to this function : need to send ot to all under functions
+                       /// TODO : manage display param to this function : need to send ot to all under functions
                         $rule->displayCriteriaSelectPattern(
                             $name,
                             $values["criteria"],
@@ -596,7 +591,6 @@ class RuleCriteria extends CommonDBChild
 
        /// Add Under criteria if tree dropdown table used
         if ($item = getItemForItemtype($itemtype)) {
-            /** @var Rule $item */
             $crit = $item->getCriteria($criterion);
 
             if (isset($crit['type']) && ($crit['type'] == 'dropdown')) {

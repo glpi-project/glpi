@@ -399,7 +399,6 @@ class NetworkAlias extends FQDNLabel
 
         $alias   = new self();
         $address = new NetworkName();
-        /** @var CommonDBTM $item */
         $item->check($item->getID(), READ);
 
         if (isset($_GET["start"])) {
@@ -503,7 +502,7 @@ class NetworkAlias extends FQDNLabel
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
+
         if (
             $item->getID()
             && $item->can($item->getField('id'), READ)

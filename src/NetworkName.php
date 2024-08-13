@@ -953,7 +953,7 @@ class NetworkName extends FQDNLabel
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
+
         if (
             $item->getID()
             && $item->can($item->getField('id'), READ)

@@ -90,7 +90,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
+
         $array_ret = [];
 
         if ($item->getType() == 'Agent') {
@@ -140,7 +140,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
+
         $rulematched = new self();
         if ($tabnum == '0') {
             if ($item->getID() > 0) {

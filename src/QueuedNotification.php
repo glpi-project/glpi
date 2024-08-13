@@ -110,7 +110,6 @@ class QueuedNotification extends CommonDBTM
         switch ($ma->getAction()) {
             case 'send':
                 foreach ($ids as $id) {
-                    /** @var QueuedNotification $item */
                     if ($item->canEdit($id)) {
                         if ($item->fields['mode'] === Notification_NotificationTemplate::MODE_AJAX) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
