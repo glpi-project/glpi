@@ -1121,7 +1121,7 @@ HTML;
 
        // Create a document to emulate a document upload
         $filename = 'foo.png';
-        copy(__DIR__ . '/../../tests/fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
         $input = [
             'filename' => 'foo.png',

@@ -899,7 +899,7 @@ class Provider extends DbTestCase
     }
 
     /**
-     * @dataprovider testGetArticleListReminderProvider
+     * @dataProvider testGetArticleListReminderProvider
      */
     public function testGetArticleListReminder(int $expected): void
     {

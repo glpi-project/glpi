@@ -160,7 +160,7 @@ class PendingReason extends DbTestCase
     }
 
     /**
-     * @dataprovider testGetNextFollowupDateProvider
+     * @dataProvider testGetNextFollowupDateProvider
      */
     public function testGetNextFollowupDate(array $fields, $expected)
     {
@@ -349,7 +349,7 @@ class PendingReason extends DbTestCase
     }
 
     /**
-     * @dataprovider testGetAutoResolvedateProvider
+     * @dataProvider testGetAutoResolvedateProvider
      */
     public function testGetAutoResolvedate(array $fields, $expected)
     {
@@ -416,7 +416,7 @@ class PendingReason extends DbTestCase
      * Test that a PendingReason_Item object is created when an item is marked as
      * pending
      *
-     * @dataprovider itemtypeAndActionProvider
+     * @dataProvider itemtypeAndActionProvider
      */
     public function testPendingItemCreation($itemtype, $action_itemtype)
     {
@@ -456,7 +456,7 @@ class PendingReason extends DbTestCase
      * A status change from pending to any other should delete any linked
      * PendingReason_Item objects
      *
-     * @dataprovider itemtypeProvider
+     * @dataProvider itemtypeProvider
      */
     public function testStatusChangeNoLongerPending($itemtype)
     {

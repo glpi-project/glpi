@@ -387,7 +387,7 @@ class NotificationTarget extends DbTestCase
     /**
      * Functionals tests for the getSender method
      *
-     * @dataprovider getSenderProvider
+     * @dataProvider getSenderProvider
      *
      * @param bool        $allow_response Use reply to or admin email ?
      * @param string|null $email          Expected email

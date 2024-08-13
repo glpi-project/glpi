@@ -136,7 +136,7 @@ class Reservation extends DbTestCase
     }
 
     /**
-     * @dataprovider dataAddReservationTest
+     * @dataProvider dataAddReservationTest
      */
     public function testAddJustOneReservation($begin, $end): void
     {

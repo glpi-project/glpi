@@ -1428,7 +1428,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         );
 
         // Import the linked network equipment into GLPI
-        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
@@ -1462,7 +1462,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(0, $unmanaged->find());
 
         // Import the network equipment
-        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
@@ -1512,7 +1512,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(0, $unmanaged->find());
 
         // Import the network equipment again
-        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/connected_switch.xml');
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
