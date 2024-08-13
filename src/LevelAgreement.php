@@ -1151,6 +1151,18 @@ abstract class LevelAgreement extends CommonDBChild
         Rule::cleanForItemAction($this);
     }
 
+    public function post_clone($source, $history)
+    {
+        // Clone levels
+        $classname = get_called_class();
+        $fk        = getForeignKeyFieldForItemType($classname);
+        $level     = new static::$levelclass();
+        foreach ($level->find([$fk => $source->getID()]) as $data) {
+            $level->getFromDB($data['id']);
+            $level->clone([$fk => $this->getID()]);
+        }
+    }
+
     /**
      * Getter for the protected $levelclass static property
      *

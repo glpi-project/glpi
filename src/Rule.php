@@ -102,8 +102,8 @@ class Rule extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            RuleAction::class,
-            RuleCriteria::class
+            $this->ruleactionclass,
+            $this->rulecriteriaclass
         ];
     }
 

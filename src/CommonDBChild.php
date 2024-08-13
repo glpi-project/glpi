@@ -997,7 +997,7 @@ abstract class CommonDBChild extends CommonDBConnexity
 
     final public static function getItemField($itemtype): string
     {
-        if (is_subclass_of($itemtype, 'Rule')) {
+        if (is_subclass_of($itemtype, 'Rule') && !is_subclass_of($itemtype, 'LevelAgreementLevel')) {
             $itemtype = 'Rule';
         }
 
