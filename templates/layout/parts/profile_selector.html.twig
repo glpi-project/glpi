@@ -66,7 +66,7 @@
     </span>
 {% else %}
     <div class="dropdown dropstart" id="entity-tree-dropdown-{{ rand }}">
-        <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
+        <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}" aria-label="{{ __('Select the desired entity') }}">
             <i class="fa-fw ti ti-stack"></i>
             {{ current_entity_short|u.truncate(35, '...') }}
         </a>
@@ -110,7 +110,7 @@
             </form>
 
             <div class="fancytree-grid-container flexbox-item-grow entity_tree">
-                <table id="tree_entity{{ rand }}">
+                <table id="tree_entity{{ rand }}" aria-label="{{ __('Entity tree') }}">
                 <colgroup>
                     <col></col>
                 </colgroup>

@@ -3088,7 +3088,7 @@ class Entity extends CommonTreeDropdown
                     if (isset($entity['tree']) && count($entity['tree']) > 0) {
                         $entity['folder'] = true;
 
-                        $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
+                        $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1' aria-label='" . __s('+ sub-entities') . "'>
             <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __s('+ sub-entities') . "'></i>
             </a>";
 

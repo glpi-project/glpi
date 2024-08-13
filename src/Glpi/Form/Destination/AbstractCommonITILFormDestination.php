@@ -42,6 +42,7 @@ use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
+use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
@@ -86,8 +87,6 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         $input = [
             'name'    => '',
             'content' => '',
-            // Temporary as entity configuration is not yet available
-            'entities_id' => $form->fields['entities_id']
         ];
 
         // Template field must be computed before applying predefined fields
@@ -180,6 +179,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new TemplateField($template_class),
             new UrgencyField(),
             new ITILCategoryField(),
+            new EntityField(),
             new LocationField(),
             new AssociatedItemsField(),
         ];

@@ -217,10 +217,11 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'         => $question,
-            'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id' => $this->getDefaultValueItemId($question),
-            'aria_label'       => $this->items_id_aria_label,
+            'question'            => $question,
+            'itemtype'            => $this->getDefaultValueItemtype($question) ?? '0',
+            'default_items_id'    => $this->getDefaultValueItemId($question),
+            'aria_label'          => $this->items_id_aria_label,
+            'items_id_aria_label' => $this->items_id_aria_label,
         ]);
     }
 
