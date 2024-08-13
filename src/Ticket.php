@@ -4945,7 +4945,7 @@ JAVASCRIPT;
      * @param CommonDBTM $item         CommonDBTM object
      * @param integer    $withtemplate (default 0)
      *
-     * @return void (display a table)
+     * @return void|false (display a table)
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
@@ -4970,8 +4970,8 @@ JAVASCRIPT;
 
         $options = [
             'metacriteria' => [],
-            'restrict' => [],
-            'criteria' => [],
+            'restrict' => $restrict,
+            'criteria' => $criteria,
             'reset'    => 'reset'
         ];
 
