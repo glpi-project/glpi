@@ -37,6 +37,7 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
+use MassiveAction;
 use OlaLevel;
 use OlaLevel_Ticket;
 use Rule;
@@ -1827,5 +1828,40 @@ class SLM extends DbTestCase
         $this->array(
             array_unique(array_column($sa_levels_ticket, 'date'))
         )->isEqualTo(['2034-08-16 18:10:00']);
+    }
+
+    public function testCannotExportSLALevel()
+    {
+        $this->login();
+
+        // Create an SLM
+        $slm = $this->createItem(\SLM::class, [
+            'name' => 'SLM',
+        ]);
+
+        // Create an SLA
+        /** @var \SLA $sla */
+        $sla = $this->createItem(\SLA::class, [
+            'name'            => 'SLA',
+            'slms_id'         => $slm->getID(),
+            'definition_time' => 'hour',
+            'number_time'     => 4,
+        ]);
+
+        // Create an escalation level
+        $sla_level = $this->createItem(\SlaLevel::class, [
+            'name'                          => 'SLA level',
+            'slas_id'                       => $sla->getID(),
+            'execution_time'                => -HOUR_TIMESTAMP,
+            'is_active'                     => true,
+            'is_recursive'                  => true,
+            'match'                         => 'AND',
+        ]);
+
+        // Retrieve available actions
+        $actions = $sla_level->getSpecificMassiveActions();
+
+        // Check that the export action is not available
+        $this->array($actions)->notHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export');
     }
 }
