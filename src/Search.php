@@ -9067,8 +9067,10 @@ HTML;
                 break;
 
             case self::NAMES_OUTPUT:
-                header("Content-disposition: filename=glpi.txt");
-                header('Content-type: file/txt');
+                if (!defined('TU_USER')) {
+                    header("Content-disposition: filename=glpi.txt");
+                    header('Content-type: file/txt');
+                }
                 break;
 
             default:
