@@ -477,9 +477,43 @@ describe ('Form editor', () => {
             .findAllByRole('region', {'name': 'Question details'})
             .should('have.length', 1) // Contains the third question
         ;
-
     });
 
     // The "can insert a section in the end of another section" scenario is already
     // covered by the "can create and delete a section" test.
+
+    it('can collapse sections', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(0).as('question');
+
+        // Create a second section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // The first question should be visible
+        cy.findByRole('region', {'name': 'Question details'}).should('exist');
+
+        // Collaspse the first section
+        cy.get('@sections')
+            .eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click()
+        ;
+        cy.findByRole('region', {'name': 'Question details'}).should('not.exist');
+
+        // Uncollapse
+        cy.get('@sections')
+            .eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click()
+        ;
+        cy.findByRole('region', {'name': 'Question details'}).should('exist');
+    });
+
 });
