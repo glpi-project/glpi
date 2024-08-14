@@ -200,4 +200,66 @@ describe ('Form editor', () => {
         cy.saveFormEditorAndReload();
         cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
     });
+
+    it('can duplicate a section', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // Create section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add two questions in the section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Duplicate second section
+        cy.get('@sections').eq(1).as('second_section');
+        cy.get('@second_section')
+            .findByRole('button', {'name': "Section actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Duplicate section"}).click();
+        cy.saveFormEditorAndReload();
+
+        // There should now be 3 sections
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections_containers');
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections_details');
+        cy.get('@sections_details').should('have.length', 3);
+
+        // Section 2 and 3 should be identical
+        [1, 2].forEach((section_index) => {
+            cy.get('@sections_containers').eq(section_index).as('section_container');
+            cy.get('@sections_details').eq(section_index).as('section_detail');
+
+            // Validate section name
+            cy.get('@section_detail')
+                .findByRole('textbox', {'name': 'Section name'})
+                .should('have.value', "Second section")
+            ;
+
+            // Validate questions
+            cy.get('@section_container')
+                .findAllByRole('region', {'name': 'Question details'})
+                .as('questions')
+            ;
+            cy.get('@questions')
+                .eq(0)
+                .findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', "Second question")
+            ;
+            cy.get('@questions')
+                .eq(1)
+                .findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', "Third question")
+            ;
+        });
+    });
 });
