@@ -516,4 +516,67 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Question details'}).should('exist');
     });
 
+    it('can reorder sections', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // Create a second section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add two questions to our section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Open "reorder sections" modal and move the second section at the end
+        cy.get('@sections')
+            .eq(0)
+            .findByRole('button', {'name': "Section actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Move section"}).click();
+        cy.getDraggable("First section").dragAfter("Second section");
+        // eslint-disable-next-line
+        cy.wait(300); // bootstrap modal events needs to be ready, we have no control on that
+        cy.findByRole("dialog").findByRole('button', {'name': "Save"}).click();
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+
+        // The "Second section" is now displayed first
+        cy.get('@sections')
+            .eq(0)
+            .as("first_displayed_section")
+        ;
+        cy.get('@first_displayed_section')
+            .findByRole('textbox', {'name': 'Section name'})
+            .should('have.value', "Second section")
+        ;
+        cy.get('@first_displayed_section')
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 2) // Second + Third question
+        ;
+
+        // The "First section" is now displayed last
+        cy.get('@sections')
+            .eq(1)
+            .as("second_displayed_section")
+        ;
+        cy.get('@second_displayed_section')
+            .findByRole('textbox', {'name': 'Section name'})
+            .should('have.value', "First section")
+        ;
+        cy.get('@second_displayed_section')
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 1) // First question
+        ;
+    });
 });

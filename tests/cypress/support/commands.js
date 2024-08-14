@@ -396,3 +396,22 @@ Cypress.Commands.add('disableDebugMode', () => {
         cy.reload();
     });
 });
+
+// The getDraggable and dragAfter commands are not perfect as they simulate
+// dragging by moving the DOM node using jquery.
+// It would be better to trigger real events like mousedown/mousemove/moveup or
+// drag/dragstart/drop but I was no able to get it working with the html5sortable lib.
+Cypress.Commands.add('getDraggable', (findByText) => {
+    return cy.get(`[draggable=true]:contains(${findByText})`);
+});
+Cypress.Commands.add('dragAfter', {prevSubject: true}, (subject, findByText) => {
+    cy.wrap(subject).as("source");
+    cy.get(`[draggable=true]:contains(${findByText})`).as("destination");
+
+    cy.getMany(["@source", "@destination"]).then(([$source, $destination]) => {
+        // move manually
+        $source.closest('[aria-grabbed]').detach().appendTo(
+            $destination.closest('[aria-grabbed]').parent()
+        );
+    });
+});
