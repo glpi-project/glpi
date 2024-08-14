@@ -44,7 +44,7 @@ class RuleSoftwareCategory extends DbTestCase
     public function testMaxActionsCount()
     {
         $category = new \RuleSoftwareCategory();
-        $this->integer($category->maxActionsCount())->isIdenticalTo(1);
+        $this->integer($category->maxActionsCount())->isIdenticalTo(3);
     }
 
     public function testGetCriteria()

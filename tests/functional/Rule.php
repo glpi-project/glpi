@@ -261,7 +261,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(36);
 
         $rule = new \RuleDictionnarySoftware();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(7);
     }
 
     public function testMaybeRecursive()
