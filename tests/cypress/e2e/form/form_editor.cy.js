@@ -369,4 +369,113 @@ describe ('Form editor', () => {
             .should('have.value', "Third question")
         ;
     });
+
+    it('can insert a section at the start of another section', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // Create a second section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add two questions in the new section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Move focus to the second section details
+        cy.get('@sections')
+            .eq(1)
+            .findByRole('region', {'name': 'Section details'})
+            .click();
+
+        // Create a third section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Third section");
+        cy.get('@sections').should('have.length', 3);
+
+        // Save and reload before checking the values
+        cy.saveFormEditorAndReload();
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+
+        // The third section should "steal" the questions of the second section,
+        // which should now be empty.
+        cy.get('@sections')
+            .eq(0)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 1) // First section is unchanged
+        ;
+        cy.get('@sections')
+            .eq(1)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 0) // Second section is empty
+        ;
+        cy.get('@sections')
+            .eq(2)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 2)
+        ;
+    });
+
+    it('can insert a section in the middle of another section', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // Create a second section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add two questions in the new section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Move focus to the second question
+        cy.findAllByRole('region', {'name': 'Question details'})
+            .eq(1)
+            .click()
+        ;
+
+        // Create a third section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Third section");
+        cy.get('@sections').should('have.length', 3);
+
+        // Save and reload before checking the values
+        cy.saveFormEditorAndReload();
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+
+        // The third section should "steal" the third questions of the second section
+        cy.get('@sections')
+            .eq(0)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 1) // First section is unchanged
+        ;
+        cy.get('@sections')
+            .eq(1)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 1) // Contains the second question
+        ;
+        cy.get('@sections')
+            .eq(2)
+            .findAllByRole('region', {'name': 'Question details'})
+            .should('have.length', 1) // Contains the third question
+        ;
+
+    });
+
+    // The "can insert a section in the end of another section" scenario is already
+    // covered by the "can create and delete a section" test.
 });
