@@ -338,9 +338,9 @@ TWIG, $twig_params);
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification_notificationtemplate.html.twig', [
-            'item' => $this,
+            'item'              => $this,
+            'notification'      => $notif,
             'notification_link' => $notif->getLink(),
-            'itemtype' => $notif->fields['itemtype']
         ]);
 
         return true;
