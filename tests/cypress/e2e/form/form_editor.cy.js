@@ -148,6 +148,58 @@ describe ('Form editor', () => {
         });
     });
 
+    it.only('can duplicate a question', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Create a question
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("My question");
+        cy.findAllByRole('region', {'name': 'Question details'}).as('questions');
+        cy.get('@questions').eq(0).as('question');
+
+        // Set all general questions properties
+        // Type specific properties should have their own tests
+        cy.get('@question')
+            .findByRole('checkbox', {'name': 'Mandatory'})
+            .should('not.be.checked')
+            .check()
+        ;
+        cy.get('@question')
+            .findByLabelText("Question description")
+            .awaitTinyMCE()
+            .type("My question description")
+        ;
+
+        // Duplicate question
+        cy.get('@question')
+            .findByRole('button', {'name': "Duplicate question"})
+            .click()
+        ;
+        cy.saveFormEditorAndReload();
+
+        // Question 1 and 2 should be identical
+        cy.findAllByRole('region', {'name': 'Question details'}).as('questions');
+        [0, 1].forEach((question_index) => {
+            cy.get('@questions').eq(question_index).as('question');
+            cy.get('@question').click(); // Set as actice to show more data
+
+            // Validate question fieldse
+            cy.get('@question')
+                .findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', "My question")
+            ;
+            cy.get('@question')
+                .findByRole('checkbox', {'name': 'Mandatory'})
+                .should('be.checked')
+            ;
+            cy.get('@question')
+                .findByLabelText("Question description")
+                .awaitTinyMCE()
+                .should('have.text', "My question description")
+            ;
+        });
+    });
+
     it('can create and delete a section', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
