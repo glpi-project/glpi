@@ -148,7 +148,7 @@ describe ('Form editor', () => {
         });
     });
 
-    it.only('can duplicate a question', () => {
+    it('can duplicate a question', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Create a question
@@ -313,5 +313,60 @@ describe ('Form editor', () => {
                 .should('have.value', "Third question")
             ;
         });
+    });
+
+    it('can merge sections', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // Create section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add two questions in the new section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Merge the two sections
+        cy.get('@sections')
+            .eq(1)
+            .findByRole('button', {'name': "Section actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Merge with previous section"}).click();
+        cy.saveFormEditorAndReload();
+
+        // There should be only one hidden section
+        cy.findByRole('region', {'name': 'Form section'}).as('section');
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist'); // Only one hidden section
+
+        // There should be 3 questions
+        cy.get('@section')
+            .findAllByRole('region', {'name': 'Question details'})
+            .as("questions")
+        ;
+        cy.get("@questions").should('have.length', 3);
+        cy.get("@questions")
+            .eq(0)
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', "First question")
+        ;
+        cy.get("@questions")
+            .eq(1)
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', "Second question")
+        ;
+        cy.get("@questions")
+            .eq(2)
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', "Third question")
+        ;
     });
 });
