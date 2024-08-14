@@ -35,5 +35,6 @@ declare namespace Cypress {
     interface Chainable<Subject> {
         getDropdownByLabelText(value: string): Chainable<any>
         selectDropdownValue(new_value: string): Chainable<any>
+        saveFormEditorAndReload(): Chainable<any>
     }
 }

@@ -53,3 +53,11 @@ Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
 
     return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 });
+
+Cypress.Commands.add('saveFormEditorAndReload', () => {
+    cy.findByRole('button', {'name': 'Save'}).click();
+    cy.findByRole('alert')
+        .should('contain.text', 'Item successfully updated')
+    ;
+    cy.reload();
+});

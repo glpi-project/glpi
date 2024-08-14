@@ -61,9 +61,7 @@ describe ('Form editor', () => {
         });
 
         // Save form and reload page to force new data to be displayed.
-        cy.findByRole('button', {'name': 'Add'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
-        cy.reload();
+        cy.saveFormEditorAndReload();
 
         // Validate that the new values are displayed
         cy.findByRole('region', {'name': 'Form details'}).within(() => {
@@ -112,11 +110,7 @@ describe ('Form editor', () => {
             });
 
             // Save form and reload page to force new data to be displayed.
-            cy.findByRole('button', {'name': 'Save'}).click();
-            cy.findByRole('alert')
-                .should('contain.text', 'Item successfully updated')
-            ;
-            cy.reload();
+            cy.saveFormEditorAndReload();
         });
 
         describe('validate question content', () => {
@@ -149,12 +143,61 @@ describe ('Form editor', () => {
             cy.get("@question_details").should('not.exist');
 
             // Save form and reload page to force latest state to be displayed.
-            cy.findByRole('button', {'name': 'Save'}).click();
-            cy.findByRole('alert')
-                .should('contain.text', 'Item successfully updated')
-            ;
-            cy.reload();
+            cy.saveFormEditorAndReload();
             cy.get("@question_details").should('not.exist');
         });
+    });
+
+    it('can create and delete a section', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+
+        // There is always one section when a form is create but it is hidden
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
+
+        // Create section
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.focused().type("Second section");
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+
+        // Add description to our section
+        cy.get('@sections')
+            .eq(1)
+            .findByLabelText("Section description")
+            .awaitTinyMCE()
+            .type("Second section description")
+        ;
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Validate values
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.get('@sections').should('have.length', 2);
+        cy.get('@sections').eq(1).as('second_section');
+        cy.get('@second_section')
+            .findByRole('textbox', {'name': 'Section name'})
+            .should('have.value', "Second section")
+        ;
+        cy.get('@second_section')
+            .findByLabelText("Section description")
+            .awaitTinyMCE()
+            .should('have.text', "Second section description")
+        ;
+
+        // Delete question
+        cy.get('@second_section')
+            .findByRole('button', {'name': "Section actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Delete section"}).click();
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
     });
 });
