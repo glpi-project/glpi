@@ -61,7 +61,11 @@ describe ('Form editor', () => {
         });
 
         // Save form and reload page to force new data to be displayed.
-        cy.saveFormEditorAndReload();
+        cy.findByRole('button', {'name': 'Add'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully updated')
+        ;
+        cy.reload();
 
         // Validate that the new values are displayed
         cy.findByRole('region', {'name': 'Form details'}).within(() => {
