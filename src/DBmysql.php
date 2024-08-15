@@ -338,10 +338,6 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 10.0.11
@@ -356,10 +352,6 @@ class DBmysql
      * Execute a MySQL query
      *
      * @param string $query Query to execute
-     *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
      *
      * @return mysqli_result|boolean Query result handler
      */
@@ -1573,7 +1565,6 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
      * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
      * @param array  $joins  JOINS criteria array
      *

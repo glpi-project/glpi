@@ -998,7 +998,7 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filter_names
+     * @param array $filters
      *
      * @return string the html
      */

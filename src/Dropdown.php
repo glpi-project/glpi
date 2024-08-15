@@ -2375,7 +2375,7 @@ JAVASCRIPT;
      * Dropdown for global item management
      *
      * @param integer $ID           item ID
-     * @param array   attrs   array which contains the extra paramters
+     * @param array   $attrs   array which contains the extra paramters
      *
      * Parameters can be :
      * - target target for actions
@@ -2500,7 +2500,7 @@ JAVASCRIPT;
     /**
      * Get the label associated with a management type
      *
-     * @param integer value the type of management (default 0)
+     * @param integer $value the type of management (default 0)
      *
      * @return string the label corresponding to it, or ""
      **/

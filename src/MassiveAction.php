@@ -535,7 +535,7 @@ class MassiveAction
     /**
      * Get current action name.
      *
-     * @return
+     * @return string|null
      */
     public function getActionName(): ?string
     {
@@ -545,7 +545,7 @@ class MassiveAction
     /**
      * Get current action processor classname.
      *
-     * @return
+     * @return string|null
      */
     public function getProcessor(): ?string
     {

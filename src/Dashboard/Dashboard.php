@@ -351,7 +351,7 @@ class Dashboard extends \CommonDBTM
     /**
      * Save filter in DB for the  curent dashboard
      *
-     * @param string $filter filter parameters in JSON format
+     * @param string $filters filter parameters in JSON format
      *
      * @return void
      */
@@ -365,8 +365,6 @@ class Dashboard extends \CommonDBTM
 
     /**
      * Save filter in DB for the  curent dashboard
-     *
-     * @param string $filter filter parameters in JSON format
      *
      * @return string
      */

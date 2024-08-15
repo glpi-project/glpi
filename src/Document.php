@@ -1958,8 +1958,8 @@ class Document extends CommonDBTM
     /**
      * find and load a document which is a duplicate of a file, with respect of blacklisting
      *
-     * @param integer $entity    entity of the document
-     * @param string  $path      path of the searched file
+     * @param integer $entities_id  entity of the document
+     * @param string  $filename     filename of the searched file
      *
      * @return boolean
      */
@@ -1980,7 +1980,7 @@ class Document extends CommonDBTM
     /**
      * It checks if a file exists and is readable
      *
-     * @param string filename The name of the file to check.
+     * @param string $filename The name of the file to check.
      *
      * @return boolean
      */

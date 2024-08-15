@@ -2001,8 +2001,8 @@ class Rule extends CommonDBTM
      * @param boolean$last               is it the last rule ? (false by default)
      * @param boolean $display_entities   display entities / make it read only display (false by default)
      * @param boolean $active_condition   active condition used (default 0)
-     * @param boolean $display_criterias  display rule criterias (false by default)
-     * @param boolean $display_actions    display rule actions(false by default)
+     *  param boolean $display_criterias  display rule criterias (false by default)
+     *  param boolean $display_actions    display rule actions(false by default)
      **/
     public function showMinimalForm(
         $target,

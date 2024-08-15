@@ -239,7 +239,10 @@ class Impact extends CommonGLPI
      * Display the impact analysis as a list
      *
      * @param CommonDBTM $item   starting point of the graph
-     * @param string     $graph  array containing the graph nodes and egdes
+     * @param array     $graph  array containing the graph nodes and egdes
+     * @param bool      $scripts
+     * 
+     * @return void
      */
     public static function displayListView(
         CommonDBTM $item,

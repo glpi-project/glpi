@@ -2274,8 +2274,10 @@ class MailCollector extends CommonDBTM
      * Headers mays contains `uuid`, `itemtype`, `items_id` and `event` values.
      *
      * @see NotificationTarget::getMessageIdForEvent()
+     * 
+     * @param string $header
      *
-     * @return string
+     * @return array|null
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {

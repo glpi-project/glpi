@@ -249,7 +249,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Get possibles keys and labels for the definition_time field
      *
-     * @return string
+     * @return array
      *
      * @since 10.0.0
      */

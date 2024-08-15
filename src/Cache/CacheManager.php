@@ -175,7 +175,7 @@ class CacheManager
      * @param string|string[] $dsn
      * @param array           $options
      *
-     * @return array
+     * @return void
      */
     public function testConnection($dsn, array $options = []): void
     {

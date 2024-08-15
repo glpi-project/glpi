@@ -139,7 +139,6 @@ final class ProxyRouter
     /**
      * Determine whether the requested path is allowed.
      *
-     * @param string $file_relative_path
      * @return bool
      */
     public function isPathAllowed(): bool

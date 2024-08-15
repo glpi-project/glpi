@@ -66,7 +66,7 @@ class Browser extends Plugin
      */
     private function canDisplayDebugInterface()
     {
-        /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
+        /** @var \Sabre\DAV\Auth\Plugin $authPlugin */
         $authPlugin = $this->server->getPlugin('auth');
         if (!$authPlugin) {
             return false;

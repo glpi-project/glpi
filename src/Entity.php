@@ -3503,9 +3503,7 @@ class Entity extends CommonTreeDropdown
      *
      * @since 10.0.0
      *
-     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
-     *
-     * @return string|array
+     * @return array
      **/
     public static function getDisplayUsersInitialsValues()
     {
@@ -3523,9 +3521,7 @@ class Entity extends CommonTreeDropdown
      *
      * @since 9.5
      *
-     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
-     *
-     * @return string|array
+     * @return array
      **/
     public static function getSuppliersAsPrivateValues()
     {
@@ -4028,7 +4024,7 @@ class Entity extends CommonTreeDropdown
      *
      * @param string $entity_string
      *
-     * @return string|null
+     * @return string
      */
     public static function badgeCompletename(string $entity_string = "", ?string $title = null): string
     {
@@ -4080,7 +4076,7 @@ class Entity extends CommonTreeDropdown
      *
      * @param object $entity
      *
-     * @return string|null
+     * @return string
      */
     public static function badgeCompletenameLink(object $entity): string
     {

@@ -997,7 +997,7 @@ class Item_Ticket extends CommonItilObject_Item
     /**
      * Return used items for a ticket
      *
-     * @param integer type $tickets_id
+     * @param integer $tickets_id
      *
      * @return array
      */

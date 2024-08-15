@@ -70,7 +70,7 @@ class Provider
     /**
      * Retrieve the number of element for a given item
      *
-     * @param CommonDBTM|null object to count
+     * @param CommonDBTM|null $item object to count
      *
      * @param array $params default values for
      * - 'apply_filters' values from dashboard filters
@@ -155,8 +155,8 @@ class Provider
 
 
     /**
-     * @method self::bigNumberItem
-     * @method self::nbItemByFk
+     * @method array bigNumberItem(CommonDBTM $item, array $params = [])
+     * @method array nbItemByFk(CommonDBTM $item, array $params = [])
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
