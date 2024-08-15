@@ -275,7 +275,7 @@ class ITILSolution extends CommonDBChild
             );
 
            // Invalid template
-            if (!$html) {
+            if ($html === null) {
                 return false;
             }
 
