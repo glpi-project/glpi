@@ -12,6 +12,8 @@ services:
       - db
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      GLPI_ENVIRONMENT_TYPE: development
 
   db:
     container_name: "glpi-db"
