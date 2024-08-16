@@ -35,5 +35,8 @@ declare namespace Cypress {
     interface Chainable<Subject> {
         createFormWithAPI(fields: Object): Chainable<any>
         visitFormTab(tab_name: string): Chainable<any>
+        saveFormEditorAndReload(): Chainable<any>
+        addQuestion(name: string): Chainable<any>
+        addSection(name: string): Chainable<any>
     }
 }

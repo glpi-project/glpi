@@ -98,10 +98,7 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         describe('create question', () => {
-            cy.findByRole('button', {'name': 'Add a new question'}).click();
-
-            // Edit form details
-            cy.focused().type("My question"); // Question name is focused by default
+            cy.addQuestion("My question");
             cy.findByRole('region', {'name': 'Question details'}).within(() => {
                 cy.findByRole('checkbox', {'name': 'Mandatory'})
                     .should('not.be.checked')
@@ -156,8 +153,7 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Create a question
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("My question");
+        cy.addQuestion("My question");
         cy.findAllByRole('region', {'name': 'Question details'}).as('questions');
         cy.get('@questions').eq(0).as('question');
 
@@ -208,12 +204,9 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Create a few questions
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("First question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Move the second question
         cy.findAllByRole('region', {'name': "Question details"}).eq(0).as("first_question");
@@ -243,15 +236,13 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // There is always one section when a form is create but it is hidden
         cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
 
         // Create section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
@@ -296,20 +287,16 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // Create section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions in the section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Duplicate second section
         cy.get('@sections').eq(1).as('second_section');
@@ -358,20 +345,16 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // Create section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions in the new section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Merge the two sections
         cy.get('@sections')
@@ -413,20 +396,16 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // Create a second section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions in the new section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Move focus to the second section details
         cy.get('@sections')
@@ -435,8 +414,7 @@ describe ('Form editor', () => {
             .click();
 
         // Create a third section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Third section");
+        cy.addSection("Third section");
         cy.get('@sections').should('have.length', 3);
 
         // Save and reload before checking the values
@@ -466,20 +444,16 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // Create a second section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions in the new section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Move focus to the second question
         cy.findAllByRole('region', {'name': 'Question details'})
@@ -488,8 +462,7 @@ describe ('Form editor', () => {
         ;
 
         // Create a third section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Third section");
+        cy.addSection("Third section");
         cy.get('@sections').should('have.length', 3);
 
         // Save and reload before checking the values
@@ -521,13 +494,11 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
         cy.findAllByRole('region', {'name': 'Question details'}).eq(0).as('question');
 
         // Create a second section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
@@ -555,20 +526,16 @@ describe ('Form editor', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // We must create at least one question before we can add a section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("First question");
+        cy.addQuestion("First question");
 
         // Create a second section
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
-        cy.focused().type("Second section");
+        cy.addSection("Second section");
         cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions to our section
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Second question");
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
-        cy.focused().type("Third question");
+        cy.addQuestion("Second question");
+        cy.addQuestion("Third question");
 
         // Open "reorder sections" modal
         cy.get('@sections')
