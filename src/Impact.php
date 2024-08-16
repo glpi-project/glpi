@@ -241,7 +241,7 @@ class Impact extends CommonGLPI
      * @param CommonDBTM $item   starting point of the graph
      * @param array     $graph  array containing the graph nodes and egdes
      * @param bool      $scripts
-     * 
+     *
      * @return void
      */
     public static function displayListView(

@@ -500,7 +500,7 @@ final class DbUtils
      * Count the number of elements in a table.
      *
      * @param string|array   $table     table name(s)
-     * @param array          $condition array of criteria
+     * @param string|array   $condition array of criteria
      *
      * @return integer Number of elements in table
      */

@@ -1083,7 +1083,7 @@ class ITILFollowup extends CommonDBChild
      *
      * TODO 10.1 move method and `item` property into parent class
      *
-     * @param CommonITILObject $parent item
+     * @param CommonITILObject $parent Parent item
      *
      * @return void
      */
