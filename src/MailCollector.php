@@ -692,7 +692,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string|void
      **/
-    public function collect($mailgateID, $display = 0)
+    public function collect($mailgateID, $display = false)
     {
         /**
          * @var array $CFG_GLPI

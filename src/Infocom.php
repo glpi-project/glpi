@@ -819,11 +819,11 @@ class Infocom extends CommonDBChild
     /**
      * Calculate amortization values
      *
-     * @param number $value       Purchase value
-     * @param number $duration    Amortise duration
-     * @param string $fiscaldate  Begin of fiscal excercise
-     * @param number $buydate     Buy date
-     * @param number $usedate     Date of use
+     * @param number        $value       Purchase value
+     * @param number        $duration    Amortise duration
+     * @param string        $fiscaldate  Begin of fiscal excercise
+     * @param number|string $buydate     Buy date
+     * @param number|string $usedate     Date of use
      *
      * @return array|boolean
      */

@@ -2000,7 +2000,7 @@ class Rule extends CommonDBTM
      * @param boolean $first              is it the first rule ?(false by default)
      * @param boolean$last               is it the last rule ? (false by default)
      * @param boolean $display_entities   display entities / make it read only display (false by default)
-     * @param boolean $active_condition   active condition used (default 0)
+     * @param boolean $active_condition   active condition used (default false)
      *  param boolean $display_criterias  display rule criterias (false by default)
      *  param boolean $display_actions    display rule actions(false by default)
      **/
@@ -2009,7 +2009,7 @@ class Rule extends CommonDBTM
         $first = false,
         $last = false,
         $display_entities = false,
-        $active_condition = 0
+        $active_condition = false
         // FIXME Uncomment this in GLPI 10.1
         // bool $display_criterias = false,
         // bool $display_actions = false

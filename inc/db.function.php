@@ -227,7 +227,7 @@ function countElementsInTableForMyEntities($table, $condition = [])
  *
  * @param string  $table     table name
  * @param integer $entity    the entity ID
- * @param string  $condition additional condition (default [])
+ * @param array   $condition additional condition (default [])
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
