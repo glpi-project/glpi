@@ -199,7 +199,6 @@ parameters:
         - '/Cannot call static method getTypeName\(\) on TKey of int\|string\./'
         - '/Cannot call static method getTypeName\(\) on \(int\|string\)\./'
         - '/Cannot call static method showSubForm\(\) on CommonDBTM\|false\./'
-        - '/Class DBmysql referenced with incorrect case: DBMysql\./'
         - '/Closure invoked with 2 parameters, 1 required\./'
         - '/Comparison operation ">" between \(array\|float\|int\) and \(float\|int\) results in an error\./'
         - '/Method AuthLDAP::connectToServer\(\) has invalid return type LDAP\\Connection\./'
