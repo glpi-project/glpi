@@ -545,6 +545,7 @@ final class DbUtils
 
         if (!is_array($condition)) {
             Toolbox::Deprecated('Condition must be an array!');
+            /** @var mixed $condition */
             if (empty($condition)) {
                 $condition = [];
             }
@@ -629,6 +630,7 @@ final class DbUtils
 
         if (!is_array($criteria)) {
             Toolbox::Deprecated('Criteria must be an array!');
+            /** @var mixed $criteria */
             if (empty($criteria)) {
                 $criteria = [];
             }
