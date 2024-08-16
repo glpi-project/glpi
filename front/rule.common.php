@@ -84,6 +84,7 @@ if (isset($_POST["action"])) {
     $start = $start[0] + $start[1];
 
    // Limit computed from current time
+    /** @var number $max */
     $max = get_cfg_var("max_execution_time");
     $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
 

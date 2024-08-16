@@ -199,7 +199,6 @@ parameters:
         - '/Cannot call static method getTypeName\(\) on TKey of int\|string\./'
         - '/Cannot call static method getTypeName\(\) on \(int\|string\)\./'
         - '/Cannot call static method showSubForm\(\) on CommonDBTM\|false\./'
-        - '/Comparison operation ">" between \(array\|float\|int\) and \(float\|int\) results in an error\./'
         - '/Static call to instance method stdClass::displayPlanningItem\(\)\./'
         - '/Static call to instance method stdClass::getDcBreadcrumbSpecificValueToDisplay\(\)\./'
         - '/Static call to instance method stdClass::getIcon\(\)\./'
