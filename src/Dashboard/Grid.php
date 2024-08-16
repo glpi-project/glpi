@@ -953,7 +953,7 @@ HTML;
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
-                                    $unset_url($value, 'url');
+                                    $unset_url($value);
                                 }
                             }
                         };
