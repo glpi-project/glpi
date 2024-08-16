@@ -133,7 +133,7 @@ class Itil_Project extends CommonDBRelation
 
         $canedit = $project->canEdit($ID);
 
-        /** @var CommonITILObject $itemtype */
+        /** @var CommonITILObject|string $itemtype */
         foreach ([Change::class, Problem::class, Ticket::class] as $itemtype) {
             $rand    = mt_rand();
 

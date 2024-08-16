@@ -145,7 +145,7 @@ class GLPINetwork extends CommonGLPI
         $comments = sprintf('installation-mode:%s', GLPI_INSTALL_MODE);
         if (!empty(GLPI_USER_AGENT_EXTRA_COMMENTS)) {
            // append extra comments (remove '(' and ')' chars to not break UA string)
-            $comments .= '; ' . preg_replace('/\(\)/', ' ', GLPI_USER_AGENT_EXTRA_COMMENTS);
+            $comments .= '; ' . preg_replace('/\(\)/', ' ', GLPI_USER_AGENT_EXTRA_COMMENTS)[0];
         }
         return sprintf('GLPI/%s (%s)', $version, $comments);
     }

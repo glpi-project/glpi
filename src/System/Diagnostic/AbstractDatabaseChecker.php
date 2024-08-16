@@ -148,7 +148,7 @@ abstract class AbstractDatabaseChecker
                 if (!array_key_exists($key_name, $index)) {
                     $index[$key_name] = [];
                 }
-                $index[$key_name][$key_specs['Seq_in_index'] - 1] = $key_specs['Column_name'];
+                $index[$key_name][(int) $key_specs['Seq_in_index'] - 1] = $key_specs['Column_name'];
             }
 
             $this->indexes[$table_name] = $index;

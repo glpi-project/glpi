@@ -889,7 +889,7 @@ class Infocom extends CommonDBChild
                     $fiscal_end->modify('+1 year');
                 }
                 $days = $fiscal_end->diff($usedate);
-                $days = $days->format('%m') * 30 + $days->format('%d');
+                $days = (int) $days->format('%m') * 30 + (int) $days->format('%d');
                 $current_annuity = $annuity * $days / 360;
             } else if ($i == $duration) {
                 $current_annuity = $value;

@@ -80,6 +80,7 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
 
    // Current time
+    /** @var array|number $start */
     $start = explode(" ", microtime());
     $start = $start[0] + $start[1];
 
@@ -133,6 +134,7 @@ if (isset($_POST["action"])) {
 
     if ($offset < 0) {
        // Work ended
+        /** @var array|number $end */
         $end   = explode(" ", microtime());
         $duree = round($end[0] + $end[1] - $start);
         Html::changeProgressBarMessage(sprintf(

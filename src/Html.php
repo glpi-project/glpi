@@ -6781,9 +6781,9 @@ HTML;
         }
        // convert 3-digit hex to 6-digits.
         if (strlen($hexcolor) == 3) {
-            $hexcolor = $hexcolor[0] + $hexcolor[0]
-                   + $hexcolor[1] + $hexcolor[1]
-                   + $hexcolor[2] + $hexcolor[2];
+            $hexcolor = $hexcolor[0] . $hexcolor[0]
+                   . $hexcolor[1] . $hexcolor[1]
+                   . $hexcolor[2] . $hexcolor[2];
         }
         if (strlen($hexcolor) != 6) {
             throw new \Exception('Invalid HEX color.');
@@ -6809,9 +6809,9 @@ HTML;
 
        // pad each with zeros and return
         return "#"
-         + str_pad($r, 2, '0', STR_PAD_LEFT)
-         + str_pad($g, 2, '0', STR_PAD_LEFT)
-         + str_pad($b, 2, '0', STR_PAD_LEFT);
+         . str_pad($r, 2, '0', STR_PAD_LEFT)
+         . str_pad($g, 2, '0', STR_PAD_LEFT)
+         . str_pad($b, 2, '0', STR_PAD_LEFT);
     }
 
     /**

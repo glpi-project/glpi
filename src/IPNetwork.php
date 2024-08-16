@@ -752,7 +752,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         if (!empty($condition["where"])) {
-            $WHERE .= " AND " . $condition["where"];
+            $WHERE[] = new \QueryExpression($condition["where"]);
         }
 
         $iterator = $DB->request([

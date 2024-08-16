@@ -403,7 +403,7 @@ class DBmysql
         }
 
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME = $TIMER->getTime();
+            $TIME = (float) $TIMER->getTime();
             $debug_data['time'] = (int) ($TIME * 1000);
             $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
