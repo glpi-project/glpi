@@ -217,7 +217,6 @@ parameters:
         - '/Unsafe access to private property Glpi\\Application\\View\\Extension\\DocumentExtension::\$extensionIcon through static::\./'
         - '/Variable \$condition in empty\(\) is never defined\./'
         - '/Variable \$criteria in empty\(\) is never defined\./'
-        - '/Variable \$matches in PHPDoc tag @var does not exist\./'
         - '/Call to static method \w+\(\) on an unknown class phpCAS/'
         - '/Class phpCAS not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
