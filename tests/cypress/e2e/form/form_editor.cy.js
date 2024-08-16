@@ -204,6 +204,41 @@ describe ('Form editor', () => {
         });
     });
 
+    it('can move question', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Create a few questions
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("First question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Second question");
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type("Third question");
+
+        // Move the second question
+        cy.findAllByRole('region', {'name': "Question details"}).eq(0).as("first_question");
+        cy.findAllByRole('region', {'name': "Question details"}).eq(1).as("second_question");
+        cy.get("@first_question").startToDrag();
+        cy.get("@second_question").dropDraggedItemAfter();
+
+        // Relaod page
+        cy.saveFormEditorAndReload();
+        cy.findAllByRole('region', {'name': "Question details"}).eq(0).as("first_displayed_question");
+        cy.findAllByRole('region', {'name': "Question details"}).eq(1).as("second_displayed_question");
+
+        // First displayed question is "Second question"
+        cy.get("@first_displayed_question")
+            .findByRole('textbox', {'name': "Question name"})
+            .should('have.value', "Second question")
+        ;
+
+        // Second displayed question is "First question"
+        cy.get("@second_displayed_question")
+            .findByRole('textbox', {'name': "Question name"})
+            .should('have.value', "First question")
+        ;
+    });
+
     it('can create and delete a section', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
@@ -535,17 +570,22 @@ describe ('Form editor', () => {
         cy.findByRole('button', {'name': 'Add a new question'}).click();
         cy.focused().type("Third question");
 
-        // Open "reorder sections" modal and move the second section at the end
+        // Open "reorder sections" modal
         cy.get('@sections')
             .eq(0)
             .findByRole('button', {'name': "Section actions"})
             .click()
         ;
         cy.findByRole('button', {'name': "Move section"}).click();
-        cy.getDraggable("First section").dragAfter("Second section");
+        cy.findByRole('dialog').as("modal");
+
+        // Move the second section at the end
+        cy.get("@modal").findByText("First section").closest("section").startToDrag();
+        cy.get("@modal").findByText("Second section").closest("section").dropDraggedItemAfter();
+
         // eslint-disable-next-line
         cy.wait(300); // bootstrap modal events needs to be ready, we have no control on that
-        cy.findByRole("dialog").findByRole('button', {'name': "Save"}).click();
+        cy.get("@modal").findByRole('button', {'name': "Save"}).click();
 
         // Save and reload
         cy.saveFormEditorAndReload();

@@ -33,7 +33,7 @@
 
 declare namespace Cypress {
     interface Chainable<Subject> {
-        getDraggable(findByText: string): Chainable<any>
-        dragAfter(findByText: string): Chainable<any>
+        startToDrag(): Chainable<any>
+        dropDraggedItemAfter(): Chainable<any>
     }
 }
