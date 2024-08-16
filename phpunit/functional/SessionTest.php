@@ -37,9 +37,11 @@ namespace tests\units;
 
 /* Test for inc/session.class.php */
 
-class Session extends \DbTestCase
+use Psr\Log\LogLevel;
+
+class SessionTest extends \DbTestCase
 {
-    protected function testUniqueSessionNameProvider(): iterable
+    public static function testUniqueSessionNameProvider(): iterable
     {
         // Same host, different path
         yield [
@@ -72,7 +74,7 @@ class Session extends \DbTestCase
         ...$cookie_names
     ): void {
         // Each cookie name must be unique
-        $this->array($cookie_names)->isEqualTo(array_unique($cookie_names));
+        $this->assertEquals(array_unique($cookie_names), $cookie_names);
     }
     public function testAddMessageAfterRedirect()
     {
@@ -80,18 +82,18 @@ class Session extends \DbTestCase
         $warn_msg = 'There was a warning. Be carefull.';
         $info_msg = 'All goes well. Or not... Who knows ;)';
 
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->assertArrayNotHasKey('MESSAGE_AFTER_REDIRECT', $_SESSION);
 
-       //test add message in cron mode
+        //test add message in cron mode
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
-       //adding a message in "cron mode" does not add anything in the session
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        //adding a message in "cron mode" does not add anything in the session
+        $this->assertArrayNotHasKey('MESSAGE_AFTER_REDIRECT', $_SESSION);
 
-       //set not running from cron
+        //set not running from cron
         unset($_SESSION['glpicronuserrunning']);
 
-       //test all messages types
+        //test all messages types
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
         \Session::addMessageAfterRedirect($warn_msg, false, WARNING);
         \Session::addMessageAfterRedirect($info_msg, false, INFO);
@@ -101,20 +103,27 @@ class Session extends \DbTestCase
             WARNING => [$warn_msg],
             INFO    => [$info_msg]
         ];
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
+        $this->assertSame($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-        $this->output(
-            function () {
-                \Html::displayMessageAfterRedirect();
-            }
-        )
-         ->matches('/' . str_replace('.', '\.', $err_msg)  . '/')
-         ->matches('/' . str_replace('.', '\.', $warn_msg)  . '/')
-         ->matches('/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/');
+        ob_start();
+        \Html::displayMessageAfterRedirect();
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace('.', '\.', $err_msg)  . '/',
+            $output
+        );
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace('.', '\.', $warn_msg)  . '/',
+            $output
+        );
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/',
+            $output
+        );
 
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+        $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-       //test multiple messages of same type
+        //test multiple messages of same type
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
@@ -122,17 +131,19 @@ class Session extends \DbTestCase
         $expected = [
             ERROR   => [$err_msg, $err_msg, $err_msg]
         ];
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
+        $this->assertSame($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-        $this->output(
-            function () {
-                \Html::displayMessageAfterRedirect();
-            }
-        )->matches('/' . str_replace('.', '\.', $err_msg)  . '/');
+        ob_start();
+        \Html::displayMessageAfterRedirect();
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace('.', '\.', $err_msg)  . '/',
+            $output
+        );
 
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+        $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-       //test message deduplication
+        //test message deduplication
         $err_msg_bis = $err_msg . ' not the same';
         \Session::addMessageAfterRedirect($err_msg, true, ERROR);
         \Session::addMessageAfterRedirect($err_msg_bis, true, ERROR);
@@ -142,19 +153,23 @@ class Session extends \DbTestCase
         $expected = [
             ERROR   => [$err_msg, $err_msg_bis]
         ];
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
+        $this->assertSame($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-        $this->output(
-            function () {
-                \Html::displayMessageAfterRedirect();
-            }
-        )
-         ->matches('/' . str_replace('.', '\.', $err_msg)  . '/')
-         ->matches('/' . str_replace('.', '\.', $err_msg_bis)  . '/');
+        ob_start();
+        \Html::displayMessageAfterRedirect();
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace('.', '\.', $err_msg)  . '/',
+            $output
+        );
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace('.', '\.', $err_msg_bis)  . '/',
+            $output
+        );
 
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+        $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-       //test with reset
+        //test with reset
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
         \Session::addMessageAfterRedirect($warn_msg, false, WARNING);
         \Session::addMessageAfterRedirect($info_msg, false, INFO, true);
@@ -162,15 +177,17 @@ class Session extends \DbTestCase
         $expected = [
             INFO   => [$info_msg]
         ];
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expected);
+        $this->assertSame($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
-        $this->output(
-            function () {
-                \Html::displayMessageAfterRedirect();
-            }
-        )->matches('/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/');
+        ob_start();
+        \Html::displayMessageAfterRedirect();
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression(
+            '/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/',
+            $output
+        );
 
-        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+        $this->assertEmpty($_SESSION['MESSAGE_AFTER_REDIRECT']);
     }
 
     public function testLoadGroups()
@@ -196,8 +213,8 @@ class Session extends \DbTestCase
                 'is_recursive' => 0,
             ];
             $gid_1 = (int)$group->add($group_1);
-            $this->integer($gid_1)->isGreaterThan(0);
-            $this->integer((int)$group_user->add(['groups_id' => $gid_1, 'users_id'  => $uid]))->isGreaterThan(0);
+            $this->assertGreaterThan(0, $gid_1);
+            $this->assertGreaterThan(0, (int)$group_user->add(['groups_id' => $gid_1, 'users_id'  => $uid]));
             $group_1['id'] = $gid_1;
             $user_groups[] = $group_1;
 
@@ -207,8 +224,8 @@ class Session extends \DbTestCase
                 'is_recursive' => 1,
             ];
             $gid_2 = (int)$group->add($group_2);
-            $this->integer($gid_2)->isGreaterThan(0);
-            $this->integer((int)$group_user->add(['groups_id' => $gid_2, 'users_id'  => $uid]))->isGreaterThan(0);
+            $this->assertGreaterThan(0, $gid_2);
+            $this->assertGreaterThan(0, (int)$group_user->add(['groups_id' => $gid_2, 'users_id'  => $uid]));
             $group_2['id'] = $gid_2;
             $user_groups[] = $group_2;
 
@@ -218,12 +235,12 @@ class Session extends \DbTestCase
                 'is_recursive' => 1,
             ];
             $gid_3 = (int)$group->add($group_3);
-            $this->integer($gid_3)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $gid_3);
         }
 
         $this->login('normal', 'normal');
 
-       // Test groups from whole entity tree
+        // Test groups from whole entity tree
         $session_backup = $_SESSION;
         $_SESSION['glpiactiveentities'] = $entities_ids;
         \Session::loadGroups();
@@ -235,10 +252,10 @@ class Session extends \DbTestCase
             },
             $user_groups
         );
-        $this->array($groups)->isEqualTo($expected_groups);
+        $this->assertEquals($expected_groups, $groups);
 
         foreach ($entities_ids as $entid) {
-           // Test groups from a given entity
+            // Test groups from a given entity
             $expected_groups = [];
             foreach ($user_groups as $user_group) {
                 if (
@@ -254,42 +271,42 @@ class Session extends \DbTestCase
             \Session::loadGroups();
             $groups = $_SESSION['glpigroups'];
             $_SESSION = $session_backup;
-            $this->array($groups)->isEqualTo($expected_groups);
+            $this->assertEquals($expected_groups, $groups);
         }
     }
 
     public function testLocalI18n()
     {
-       //load locales
+        //load locales
         \Session::loadLanguage('en_GB');
-        $this->string(__('Login'))->isIdenticalTo('Login');
+        $this->assertSame('Login', __('Login'));
 
-       //create directory for local i18n
+        //create directory for local i18n
         if (!file_exists(GLPI_LOCAL_I18N_DIR . '/core')) {
             mkdir(GLPI_LOCAL_I18N_DIR . '/core');
         }
 
-       //write local MO file with i18n override
+        //write local MO file with i18n override
         copy(
             __DIR__ . '/../local_en_GB.mo',
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
         );
         \Session::loadLanguage('en_GB');
 
-        $this->string(__('Login'))->isIdenticalTo('Login from local gettext');
-        $this->string(__('Password'))->isIdenticalTo('Password');
+        $this->assertSame('Login from local gettext', __('Login'));
+        $this->assertSame('Password', __('Password'));
 
-       //write local PHP file with i18n override
+        //write local PHP file with i18n override
         file_put_contents(
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
             "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
         );
         \Session::loadLanguage('en_GB');
 
-        $this->string(__('Login'))->isIdenticalTo('Login from local gettext');
-        $this->string(__('Password'))->isIdenticalTo('Password from local PHP');
+        $this->assertSame('Login from local gettext', __('Login'));
+        $this->assertSame('Password from local PHP', __('Password'));
 
-       //cleanup -- keep at the end
+        //cleanup -- keep at the end
         unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.php');
         unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo');
     }
@@ -298,14 +315,14 @@ class Session extends \DbTestCase
     {
         $tests = [];
 
-       // test with no password expiration
+        // test with no password expiration
         $tests[] = [
             'last_update'      => date('Y-m-d H:i:s', strtotime('-10 years')),
             'expiration_delay' => -1,
             'expected_result'  => false,
         ];
 
-       // tests with password expiration
+        // tests with password expiration
         $cases = [
             '-5 days'  => false,
             '-30 days' => true,
@@ -321,39 +338,43 @@ class Session extends \DbTestCase
         return $tests;
     }
 
-    /**
-     * @dataProvider mustChangePasswordProvider
-     */
-    public function testMustChangePassword(string $last_update, int $expiration_delay, bool $expected_result)
+    public function testMustChangePassword()
     {
         global $CFG_GLPI;
 
-        $this->login();
-        $user = new \User();
-        $username = 'test_must_change_pass_' . mt_rand();
-        $user_id = (int)$user->add([
-            'name'         => $username,
-            'password'     => 'test',
-            'password2'    => 'test',
-            '_profiles_id' => 1,
-        ]);
-        $this->integer($user_id)->isGreaterThan(0);
-        $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
+        $provider = $this->mustChangePasswordProvider();
+        foreach ($provider as $row) {
+            $last_update = $row['last_update'];
+            $expiration_delay = $row['expiration_delay'];
+            $expected_result = $row['expected_result'];
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
-        $CFG_GLPI['password_expiration_lock_delay'] = -1;
-        \Session::destroy();
-        \Session::start();
-        $auth = new \Auth();
-        $is_logged = $auth->login($username, 'test', true);
-        $CFG_GLPI = $cfg_backup;
+            $this->login();
+            $user = new \User();
+            $username = 'test_must_change_pass_' . mt_rand();
+            $user_id = (int)$user->add([
+                'name' => $username,
+                'password' => 'test',
+                'password2' => 'test',
+                '_profiles_id' => 1,
+            ]);
+            $this->assertGreaterThan(0, $user_id);
+            $this->assertTrue($user->update(['id' => $user_id, 'password_last_update' => $last_update]));
 
-        $this->boolean($is_logged)->isEqualTo(true);
-        $this->boolean(\Session::mustChangePassword())->isEqualTo($expected_result);
+            $cfg_backup = $CFG_GLPI;
+            $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
+            $CFG_GLPI['password_expiration_lock_delay'] = -1;
+            \Session::destroy();
+            \Session::start();
+            $auth = new \Auth();
+            $is_logged = $auth->login($username, 'test', true);
+            $CFG_GLPI = $cfg_backup;
+
+            $this->assertTrue($is_logged);
+            $this->assertSame($expected_result, \Session::mustChangePassword());
+        }
     }
 
-    protected function preferredLanguageProvider()
+    public static function preferredLanguageProvider()
     {
         return [
             [
@@ -412,10 +433,10 @@ class Session extends \DbTestCase
         }
         $CFG_GLPI = $cfg_backup;
 
-        $this->string($result)->isEqualTo($expected);
+        $this->assertEquals($expected, $result);
     }
 
-    protected function newIdorParamsProvider()
+    public static function newIdorParamsProvider()
     {
         // No extra params
         foreach (['Computer', 'Ticket', 'Glpi\\Dashboard\\Item'] as $itemtype) {
@@ -450,24 +471,27 @@ class Session extends \DbTestCase
 
         // generate token
         $token = \Session::getNewIDORToken($itemtype, $add_params);
-        $this->string($token)->hasLength(64);
+        $this->assertSame(64, strlen($token));
 
         // token exists in session and is valid
-        $this->array($token_data = $_SESSION['glpiidortokens'][$token]);
+        $this->assertIsArray($token_data = $_SESSION['glpiidortokens'][$token]);
         if ($itemtype !== '') {
-            $this->array($token_data)->size->isEqualTo(2 + count($add_params));
-            $this->array($token_data)->string['itemtype']->isEqualTo($itemtype);
+            $this->assertCount(2 + count($add_params), $token_data);
+            $this->assertEquals($itemtype, $token_data['itemtype']);
         } else {
-            $this->array($token_data)->size->isEqualTo(1 + count($add_params));
+            $this->assertCount(1 + count($add_params), $token_data);
         }
-        $this->array($token_data)->integer['expires']->isGreaterThanOrEqualTo($initial_time + GLPI_IDOR_EXPIRES);
+        $this->assertGreaterThanOrEqual(
+            $initial_time + GLPI_IDOR_EXPIRES,
+            $token_data['expires']
+        );
 
         // validate token
         $data = [
             '_idor_token' => $token,
             'itemtype'    => $itemtype,
         ] + $add_params;
-        $this->boolean(\Session::validateIDOR($data))->isTrue();
+        $this->assertTrue(\Session::validateIDOR($data));
     }
 
     protected function idorDataProvider()
@@ -596,51 +620,55 @@ class Session extends \DbTestCase
      */
     public function testValidateIDOR(array $data, bool $is_valid)
     {
-        $this->boolean(\Session::validateIDOR($data))->isEqualTo($is_valid);
+        $provider = $this->idorDataProvider();
+        foreach ($provider as $row) {
+            $data = $row['data'];
+            $is_valid = $row['is_valid'];
+
+            $this->assertSame($is_valid, \Session::validateIDOR($data));
+        }
     }
 
     public function testGetNewIDORTokenWithEmptyParams()
     {
-        $this->when(
-            function () {
-                \Session::getNewIDORToken();
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('IDOR token cannot be generated with empty criteria.')
-         ->exists();
+        \Session::getNewIDORToken();
+        $this->hasPhpLogRecordThatContains(
+            'IDOR token cannot be generated with empty criteria.',
+            LogLevel::WARNING
+        );
     }
 
     public function testDORInvalid()
     {
-       //  random token
+        //  random token
         $result = \Session::validateIDOR([
             '_idor_token' => bin2hex(random_bytes(32)),
             'itemtype'    => 'Computer',
         ]);
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($result);
 
-       // bad itemtype
+        // bad itemtype
         $token_bad_itt = \Session::getNewIDORToken('Ticket');
         $result = \Session::validateIDOR([
             '_idor_token' => $token_bad_itt,
             'itemtype'    => 'Computer',
         ]);
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($result);
 
-       // missing add params
+        // missing add params
         $token_miss_param = \Session::getNewIDORToken('User', ['right' => 'all']);
         $result = \Session::validateIDOR([
             '_idor_token' => $token_miss_param,
             'itemtype'    => 'User',
         ]);
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($result);
+
         $result = \Session::validateIDOR([
             '_idor_token' => $token_miss_param,
             'itemtype'    => 'User',
             'right'       => 'all'
         ]);
-        $this->boolean($result)->isTrue();
+        $this->assertTrue($result);
     }
 
     protected function getRightNameForErrorProvider()
@@ -656,18 +684,23 @@ class Session extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getRightNameForErrorProvider
-     */
-    public function testGetRightNameForError($module, $right, $expected)
+    public function testGetRightNameForError()
     {
         $this->login();
-        // Set language to French to ensure we always get names back as en_GB regardless of the user's language
-        \Session::loadLanguage('fr_FR');
-        $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
+
+        $provider = $this->getRightNameForErrorProvider();
+        foreach ($provider as $row) {
+            $module = $row[0];
+            $right = $row[1];
+            $expected = $row[2];
+
+            // Set language to French to ensure we always get names back as en_GB regardless of the user's language
+            \Session::loadLanguage('fr_FR');
+            $this->assertEquals($expected, \Session::getRightNameForError($module, $right));
+        }
     }
 
-    protected function entitiesRestrictProvider(): iterable
+    public static function entitiesRestrictProvider(): iterable
     {
         // Special case for -1
         foreach ([-1, "-1", [-1], ["-1"]] as $value) {
@@ -749,7 +782,7 @@ class Session extends \DbTestCase
         ];
 
         // Active entity may contain a string value
-        // do not know why, but is is the case when only one entity is selected
+        // do not know why, but is the case when only one entity is selected
         foreach ([2, '2', [2], ['2']] as $entity_restrict) {
             yield [
                 'entity_restrict' => $entity_restrict,
@@ -777,24 +810,21 @@ class Session extends \DbTestCase
     public function testGetMatchingActiveEntities(/*mixed*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
     {
         $_SESSION['glpiactiveentities'] = $active_entities;
-        $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
+        $this->assertSame($result, \Session::getMatchingActiveEntities($entity_restrict));
     }
 
     public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
     {
         $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', null, 3];
 
-        $this->when(
-            function () {
-                $this->variable(\Session::getMatchingActiveEntities([2, 3]))->isIdenticalTo([2, 3]);
-            }
-        )->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.')
-         ->exists()
-         ->error
-         ->withType(E_USER_WARNING)
-         ->withMessage('Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.')
-         ->exists();
+        $this->assertSame([2, 3], \Session::getMatchingActiveEntities([2, 3]));
+        $this->hasPhpLogRecordThatContains(
+            'Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.',
+            LogLevel::WARNING
+        );
+        $this->hasPhpLogRecordThatContains(
+            'Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.',
+            LogLevel::WARNING
+        );
     }
 }

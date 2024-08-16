@@ -43,11 +43,11 @@ use ImpactRelation;
 use Item_Ticket;
 use Ticket;
 
-class Impact extends \DbTestCase
+class ImpactTest extends \DbTestCase
 {
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
-        parent::beforeTestMethod($method);
+        parent::setUp();
 
         foreach ($this->nodes as $node) {
             $id = $node['id'];
@@ -87,7 +87,7 @@ class Impact extends \DbTestCase
             'color' => $color,
         ]);
 
-        $this->integer($id);
+        $this->assertGreaterThan(0, $id);
         return $id;
     }
 
@@ -100,7 +100,7 @@ class Impact extends \DbTestCase
             'parent_id' => $parent,
         ]);
 
-        $this->integer($id);
+        $this->assertGreaterThan(0, $id);
         return $id;
     }
 
@@ -114,7 +114,7 @@ class Impact extends \DbTestCase
             'items_id_impacted' => $impacted->fields['id'],
         ]);
 
-        $this->integer($id);
+        $this->assertGreaterThan(0, $id);
         return $id;
     }
 
@@ -122,20 +122,18 @@ class Impact extends \DbTestCase
     {
         $impact = new \Impact();
 
-        $this->exception(function () use ($impact) {
-            $notCommonDBTM = new \Impact();
-            $impact->getTabNameForItem($notCommonDBTM);
-        })->isInstanceOf(\InvalidArgumentException::class);
+        $notCommonDBTM = new \Impact();
+        $this->expectException(\InvalidArgumentException::class);
+        $impact->getTabNameForItem($notCommonDBTM);
     }
 
     public function testGetTabNameForItem_notEnabledOrITIL()
     {
         $impact = new \Impact();
 
-        $this->exception(function () use ($impact) {
-            $not_enabled_or_itil = new ImpactCompound();
-            $impact->getTabNameForItem($not_enabled_or_itil);
-        })->isInstanceOf(\InvalidArgumentException::class);
+        $not_enabled_or_itil = new ImpactCompound();
+        $this->expectException(\InvalidArgumentException::class);
+        $impact->getTabNameForItem($not_enabled_or_itil);
     }
 
     public function testGetTabNameForItem_tabCountDisabled()
@@ -148,7 +146,7 @@ class Impact extends \DbTestCase
         $tab_name = $impact->getTabNameForItem($computer);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis");
+        $this->assertEquals("Impact analysis", $tab_name);
     }
 
     public function testGetTabNameForItem_enabledAsset()
@@ -158,18 +156,18 @@ class Impact extends \DbTestCase
 
         $impact = new \Impact();
 
-       // Get computers
+        // Get computers
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
         $computer3 = getItemByTypeName('Computer', '_test_pc03');
 
-       // Create an impact graph
+        // Create an impact graph
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
         $tab_name = $impact->getTabNameForItem($computer2);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis <span class='badge'>2</span>");
+        $this->assertEquals("Impact analysis <span class='badge'>2</span>", $tab_name);
     }
 
     public function testGetTabNameForItem_ITILObject()
@@ -181,31 +179,35 @@ class Impact extends \DbTestCase
         $ticket_em = new Ticket();
         $item_ticket_em = new Item_Ticket();
 
-       // Get computers
+        // Get computers
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
         $computer3 = getItemByTypeName('Computer', '_test_pc03');
 
-       // Create an impact graph
+        // Create an impact graph
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
 
-       // Create a ticket and link it to the computer
+        // Create a ticket and link it to the computer
         $ticket_id = $ticket_em->add(['name' => "test", 'content' => "test"]);
-        $item_ticket_em->add([
-            'itemtype'   => "Computer",
-            'items_id'   => $computer2->fields['id'],
-            'tickets_id' => $ticket_id,
-        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $this->assertGreaterThan(
+            0,
+            $item_ticket_em->add([
+                'itemtype'   => "Computer",
+                'items_id'   => $computer2->fields['id'],
+                'tickets_id' => $ticket_id,
+            ])
+        );
 
-       // Get the actual ticket
+        // Get the actual ticket
         $ticket = new Ticket();
-        $ticket->getFromDB($ticket_id);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
 
         $tab_name = $impact->getTabNameForItem($ticket);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("Impact analysis");
+        $this->assertEquals("Impact analysis", $tab_name);
     }
 
     public function testBuildGraph_empty()
@@ -213,15 +215,19 @@ class Impact extends \DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $graph = \Impact::buildGraph($computer);
 
-        $this->array($graph)->hasKeys(["nodes", "edges"]);
+        $this->assertArrayHasKey("nodes", $graph);
+        $this->assertArrayHasKey("edges", $graph);
 
-       // Nodes should contain only _test_pc01
+        // Nodes should contain only _test_pc01
         $id = $computer->fields['id'];
-        $this->array($graph["nodes"])->hasSize(1);
-        $this->string($graph["nodes"]["Computer::$id"]['label'])->isEqualTo("_test_pc01");
+        $this->assertCount(1, $graph["nodes"]);
+        $this->assertEquals(
+            "_test_pc01",
+            $graph["nodes"]["Computer::$id"]['label']
+        );
 
-       // Edges should be empty
-        $this->array($graph["edges"])->hasSize(0);
+        // Edges should be empty
+        $this->assertCount(0, $graph["edges"]);
     }
 
     public function testBuildGraph_complex()
@@ -233,11 +239,11 @@ class Impact extends \DbTestCase
         $computer5 = getItemByTypeName('Computer', '_test_pc12');
         $computer6 = getItemByTypeName('Computer', '_test_pc13');
 
-       // Set compounds
+        // Set compounds
         $compound01_id = $this->addDbCompound("_test_compound01", "#000011");
         $compound02_id = $this->addDbCompound("_test_compound02", "#110000");
 
-       // Set impact items
+        // Set impact items
         $this->addDbNode($computer1);
         $this->addDbNode($computer2, $compound01_id);
         $this->addDbNode($computer3, $compound01_id);
@@ -245,7 +251,7 @@ class Impact extends \DbTestCase
         $this->addDbNode($computer5, $compound02_id);
         $this->addDbNode($computer6, $compound02_id);
 
-       // Set relations
+        // Set relations
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
         $this->addDbEdge($computer3, $computer4);
@@ -253,37 +259,38 @@ class Impact extends \DbTestCase
         $this->addDbEdge($computer2, $computer6);
         $this->addDbEdge($computer6, $computer2);
 
-       // Build graph from pc02
+        // Build graph from pc02
         $computer = getItemByTypeName('Computer', '_test_pc02');
         $graph = \Impact::buildGraph($computer);
-       // var_dump(array_keys($graph['nodes']));
-        $this->array($graph)->hasKeys(["nodes", "edges"]);
 
-       // Nodes should contain 8 elements (6 nodes + 2 compounds)
-        $this->array($graph["nodes"])->hasSize(8);
+        $this->assertArrayHasKey("nodes", $graph);
+        $this->assertArrayHasKey("edges", $graph);
+
+        // Nodes should contain 8 elements (6 nodes + 2 compounds)
+        $this->assertCount(8, $graph["nodes"]);
         $nodes = array_filter($graph["nodes"], function ($elem) {
             return !isset($elem['color']);
         });
-        $this->array($nodes)->hasSize(6);
+        $this->assertCount(6, $nodes);
         $compounds = array_filter($graph["nodes"], function ($elem) {
             return isset($elem['color']);
         });
-        $this->array($compounds)->hasSize(2);
+        $this->assertCount(2, $compounds);
 
-       // Edges should contain 6 elements (3 forward, 1 backward, 2 both)
-        $this->array($graph["edges"])->hasSize(6);
+        // Edges should contain 6 elements (3 forward, 1 backward, 2 both)
+        $this->assertCount(6, $graph["edges"]);
         $backward = array_filter($graph["edges"], function ($elem) {
             return $elem["flag"] == \Impact::DIRECTION_BACKWARD;
         });
-        $this->array($backward)->hasSize(1);
+        $this->assertCount(1, $backward);
         $forward = array_filter($graph["edges"], function ($elem) {
             return $elem["flag"] == \Impact::DIRECTION_FORWARD;
         });
-        $this->array($forward)->hasSize(3);
+        $this->assertCount(3, $forward);
         $both = array_filter($graph["edges"], function ($elem) {
             return $elem["flag"] == (\Impact::DIRECTION_FORWARD | \Impact::DIRECTION_BACKWARD);
         });
-        $this->array($both)->hasSize(2);
+        $this->assertCount(2, $both);
     }
 
     public function testClean()
@@ -299,11 +306,11 @@ class Impact extends \DbTestCase
         $computer5 = getItemByTypeName('Computer', '_test_pc12');
         $computer6 = getItemByTypeName('Computer', '_test_pc13');
 
-       // Set compounds
+        // Set compounds
         $compound01_id = $this->addDbCompound("_test_compound01", "#000011");
         $compound02_id = $this->addDbCompound("_test_compound02", "#110000");
 
-       // Set impact items
+        // Set impact items
         $this->addDbNode($computer1);
         $this->addDbNode($computer2, $compound01_id);
         $this->addDbNode($computer3, $compound01_id);
@@ -311,7 +318,7 @@ class Impact extends \DbTestCase
         $this->addDbNode($computer5, $compound02_id);
         $this->addDbNode($computer6, $compound02_id);
 
-       // Set relations
+        // Set relations
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
         $this->addDbEdge($computer3, $computer4);
@@ -319,7 +326,7 @@ class Impact extends \DbTestCase
         $this->addDbEdge($computer2, $computer6);
         $this->addDbEdge($computer6, $computer2);
 
-       // Test queries to evaluate before and after clean
+        // Test queries to evaluate before and after clean
         $relations_to_computer2_query = [
             'FROM'   => \ImpactRelation::getTable(),
             'WHERE' => [
@@ -347,28 +354,22 @@ class Impact extends \DbTestCase
             'WHERE' => ["parent_id" => $compound01_id]
         ];
 
-       // Before deletion
-        $this->integer(count($DB->request($relations_to_computer2_query)))
-         ->isEqualTo(4);
-        $this->integer(count($DB->request($impact_item_computer2_query)))
-         ->isEqualTo(1);
-        $this->integer(count($DB->request($compound01_members_query)))
-         ->isEqualTo(2);
-        $this->boolean($compound_em->getFromDB($compound01_id))
-         ->isEqualTo(true);
+        // Before deletion
+        $this->assertEquals(4, count($DB->request($relations_to_computer2_query)));
+        $this->assertEquals(1, count($DB->request($impact_item_computer2_query)));
+        $this->assertEquals(2, count($DB->request($compound01_members_query)));
+        $this->assertTrue($compound_em->getFromDB($compound01_id));
 
-       // Delete pc02
-        $computer2->delete($computer2->fields, true);
+        // Delete pc02
+        $this->assertTrue(
+            $computer2->delete($computer2->fields, true)
+        );
 
-       // After deletion
-        $this->integer(count($DB->request($relations_to_computer2_query)))
-         ->isEqualTo(0);
-        $this->integer(count($DB->request($impact_item_computer2_query)))
-         ->isEqualTo(0);
-        $this->integer(count($DB->request($compound01_members_query)))
-         ->isEqualTo(0);
-        $this->boolean($compound_em->getFromDB($compound01_id))
-         ->isEqualTo(false);
+        // After deletion
+        $this->assertEquals(0, count($DB->request($relations_to_computer2_query)));
+        $this->assertEquals(0, count($DB->request($impact_item_computer2_query)));
+        $this->assertEquals(0, count($DB->request($compound01_members_query)));
+        $this->assertFalse($compound_em->getFromDB($compound01_id));
     }
 
     private $nodes = [
@@ -402,7 +403,7 @@ class Impact extends \DbTestCase
         'edges' => []
     ];
 
-    public function bfsProvider()
+    protected function bfsProvider()
     {
         return [
             [
@@ -491,28 +492,47 @@ class Impact extends \DbTestCase
      */
     public function testBfs($a, $b, $direction, $result)
     {
-        $path = \Impact::bfs($this->graph, $a, $b, $direction);
-        $this->array($path);
+        $provider = $this->bfsProvider();
+        foreach ($provider as $row) {
+            $a = $row['a'];
+            $b = $row['b'];
+            $direction = $row['direction'];
+            $result = $row['result'];
 
-        for ($i = 0; $i < count($path); $i++) {
-            $this->string($path[$i]['id'])->isEqualTo($result[$i]['id']);
+            $path = \Impact::bfs($this->graph, $a, $b, $direction);
+            $this->assertIsArray($path);
+
+            for ($i = 0; $i < count($path); $i++) {
+                $this->assertEquals(
+                    $result[$i]['id'],
+                    $path[$i]['id']
+                );
+            }
         }
     }
 
     public function testFilterGraph()
     {
         $forward = \Impact::filterGraph($this->graph, \Impact::DIRECTION_FORWARD);
-        $this->array($forward)->hasKey('nodes')->hasKey('edges');
+        $this->assertArrayHasKey('nodes', $forward);
+        $this->assertArrayHasKey('edges', $forward);
 
         foreach ($forward['edges'] as $edge) {
-            $this->integer(\Impact::DIRECTION_FORWARD & $edge['flag'])->isEqualTo(\Impact::DIRECTION_FORWARD);
+            $this->assertEquals(
+                \Impact::DIRECTION_FORWARD,
+                \Impact::DIRECTION_FORWARD & $edge['flag']
+            );
         }
 
         $backward = \Impact::filterGraph($this->graph, \Impact::DIRECTION_BACKWARD);
-        $this->array($forward)->hasKey('nodes')->hasKey('edges');
+        $this->assertArrayHasKey('nodes', $backward);
+        $this->assertArrayHasKey('edges', $backward);
 
         foreach ($backward['edges'] as $edge) {
-            $this->integer(\Impact::DIRECTION_BACKWARD & $edge['flag'])->isEqualTo(\Impact::DIRECTION_BACKWARD);
+            $this->assertEquals(
+                \Impact::DIRECTION_BACKWARD,
+                \Impact::DIRECTION_BACKWARD & $edge['flag']
+            );
         }
     }
 }

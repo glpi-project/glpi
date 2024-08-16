@@ -37,13 +37,15 @@ namespace tests\units\Glpi;
 
 abstract class AbstractITILChildTemplate extends \DbTestCase
 {
+    abstract protected function getInstance(): \AbstractITILChildTemplate;
+
     public function testGetRenderedContent()
     {
         global $CFG_GLPI;
 
         $this->login();
 
-        $template = $this->newTestedInstance;
+        $template = $this->getInstance();
         $template->fields['content'] = <<<TPL
 Itemtype: {{ itemtype }}
 {%if itemtype == 'Ticket' %}{{ ticket.link|raw }}{% endif %}
@@ -56,11 +58,12 @@ TPL;
             'content'      => '<p>test content</p>',
             'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
-        $this->string($template->getRenderedContent($change))
-         ->isEqualTo(<<<HTML
+        $this->assertEquals(
+            <<<HTML
 Itemtype: Change
 <a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id={$change->fields['id']}" title="test change">test change</a>
-HTML
+HTML,
+            $template->getRenderedContent($change)
         );
 
         $problem = $this->createItem('Problem', [
@@ -68,11 +71,12 @@ HTML
             'content'      => '<p>test content</p>',
             'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
-        $this->string($template->getRenderedContent($problem))
-         ->isEqualTo(<<<HTML
+        $this->assertEquals(
+            <<<HTML
 Itemtype: Problem
 <a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id={$problem->fields['id']}" title="test problem">test problem</a>
-HTML
+HTML,
+            $template->getRenderedContent($problem)
         );
 
         $ticket = $this->createItem('Ticket', [
@@ -80,15 +84,16 @@ HTML
             'content'      => '<p>test content</p>',
             'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
         ]);
-        $this->string($template->getRenderedContent($ticket))
-         ->isEqualTo(<<<HTML
+        $this->assertEquals(
+            <<<HTML
 Itemtype: Ticket
 <a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id={$ticket->fields['id']}" title="test ticket">test ticket</a>
-HTML
+HTML,
+            $template->getRenderedContent($ticket)
         );
     }
 
-    protected function prepareInputProvider(): iterable
+    public static function prepareInputProvider(): iterable
     {
         yield [
             'content'  => '{{ itemtype }}',
@@ -115,13 +120,13 @@ HTML
     {
         $this->login();
 
-        $template = $this->newTestedInstance;
+        $template = $this->getInstance();
 
         $result = $template->add(['content' => $content]);
         if ($is_valid) {
-            $this->integer($result)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $result);
         } else {
-            $this->boolean($result)->isFalse();
+            $this->assertFalse($result);
             $this->hasSessionMessages(ERROR, [$error]);
         }
     }
@@ -133,13 +138,13 @@ HTML
     {
         $this->login();
 
-        $template = $this->newTestedInstance;
+        $template = $this->getInstance();
 
         $template_id = $template->add(['content' => 'test']);
-        $this->integer($template_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $template_id);
 
         $result = $template->update(['id' => $template_id, 'content' => $content]);
-        $this->boolean($result)->isEqualTo($is_valid);
+        $this->assertEquals($is_valid, $result);
         if (!$is_valid) {
             $this->hasSessionMessages(ERROR, [$error]);
         }

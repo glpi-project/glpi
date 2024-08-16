@@ -42,7 +42,7 @@ use Session;
 
 /* Test for inc/commonitilrecurrent.class.php */
 
-abstract class CommonITILRecurrent extends DbTestCase
+abstract class CommonITILRecurrentTest extends DbTestCase
 {
     abstract protected function getChildClass();
 
@@ -64,7 +64,7 @@ abstract class CommonITILRecurrent extends DbTestCase
        // Create a calendar where every day except today is a working day.
        // Used to test cases with periodicity smaller than one day.
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         for ($day = 0; $day <= 6; $day++) {
             if ($day == date('w')) {
@@ -79,7 +79,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                     'end'          => '19:00:00'
                 ]
             );
-            $this->integer($cal_segment_id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $cal_segment_id);
         }
 
         $data = [
@@ -195,7 +195,7 @@ abstract class CommonITILRecurrent extends DbTestCase
        // Create a calendar where every day are working days, from 9am to 7pm, but with today as a day off.
        // Used to test cases with periodicity periodicity of at least one day.
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         $working_days = [1, 2, 3, 4, 5];
         foreach ($working_days as $day) {
@@ -207,7 +207,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                     'end'          => '19:00:00',
                 ]
             );
-            $this->integer($cal_segment_id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $cal_segment_id);
         }
 
         $holiday_id = $holiday->add(
@@ -217,7 +217,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                 'end_date'   => date('Y-m-d'),
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
 
         $cal_holiday_id = $cal_holiday->add(
             [
@@ -225,9 +225,9 @@ abstract class CommonITILRecurrent extends DbTestCase
                 'holidays_id'  => $holiday_id,
             ]
         );
-        $this->integer($cal_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cal_holiday_id);
 
-       // Item created every day with no anticipation and no calendar, but no end date
+        // Item created every day with no anticipation and no calendar, but no end date
         $data[] = [
             'begin_date'     => $start_of_previous_month,
             'end_date'       => null,
@@ -237,9 +237,9 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day')),
         ];
 
-       // Item created every day with no anticipation and with calendar
-       // Begin hour is outside working hours (today is a day off),
-       // so creation will be done on next working day at opening hour.
+        // Item created every day with no anticipation and with calendar
+        // Begin hour is outside working hours (today is a day off),
+        // so creation will be done on next working day at opening hour.
         $data[] = [
             'begin_date'     => $start_of_previous_month,
             'end_date'       => $end_of_next_year,
@@ -249,9 +249,9 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
         ];
 
-       // Item created every day with anticipation and with calendar, but no end date
-       // Begin hour is outside working hours (today is a day off),
-       // so creation will be done on next day at opening hour - anticipation.
+        // Item created every day with anticipation and with calendar, but no end date
+        // Begin hour is outside working hours (today is a day off),
+        // so creation will be done on next day at opening hour - anticipation.
         $data[] = [
             'begin_date'     => $start_of_previous_month,
             'end_date'       => null,
@@ -261,8 +261,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 07:00:00'),
         ];
 
-       // Item created every day with no anticipation and with calendar and having a begin date in the future
-       // As begin date is inside working hours, first occurence should be on begin date.
+        // Item created every day with no anticipation and with calendar and having a begin date in the future
+        // As begin date is inside working hours, first occurence should be on begin date.
         $data[] = [
             'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
             'end_date'       => $end_of_next_year,
@@ -272,8 +272,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
         ];
 
-       // Item created every day with anticipation and with calendar and having a begin date in the future
-       // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
+        // Item created every day with anticipation and with calendar and having a begin date in the future
+        // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
         $data[] = [
             'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
             'end_date'       => $end_of_next_year,
@@ -283,8 +283,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 05:00:00'),
         ];
 
-       // Item created every 7 days with no anticipation and with calendar.
-       // We expect the item to be created every monday at 12:00.
+        // Item created every 7 days with no anticipation and with calendar.
+        // We expect the item to be created every monday at 12:00.
         $data[] = [
             'begin_date'     => date('Y-m-d 12:00:00', strtotime('last monday')),
             'end_date'       => $end_of_next_year,
@@ -300,7 +300,7 @@ abstract class CommonITILRecurrent extends DbTestCase
             ),
         ];
 
-       // Item created every 2 month with no anticipation and no calendar
+        // Item created every 2 month with no anticipation and no calendar
         $data[] = [
             'begin_date'     => $start_of_previous_month,
             'end_date'       => $end_of_next_year,
@@ -310,8 +310,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 2 month')),
         ];
 
-       // Item created every 3 month with no anticipation and with calendar.
-       // Next occurence day will be on a day off, so creation will be done on next working day.
+        // Item created every 3 month with no anticipation and with calendar.
+        // Next occurrence day will be on a day off, so creation will be done on next working day.
         $next_occurence_date = date('Y-m-d', strtotime($start_of_previous_month . ' + 3 month'));
         $week_off_begin = $next_occurence_date;
         $week_off_end   = date('Y-m-d', strtotime($week_off_begin . ' + 7 days'));
@@ -322,7 +322,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                 'end_date'   => $week_off_end,
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
 
         $cal_holiday_id = $cal_holiday->add(
             [
@@ -330,7 +330,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                 'holidays_id'  => $holiday_id,
             ]
         );
-        $this->integer($cal_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cal_holiday_id);
 
         $data[] = [
             'begin_date'     => $start_of_previous_month,
@@ -345,7 +345,7 @@ abstract class CommonITILRecurrent extends DbTestCase
             ),
         ];
 
-       // Item created every year with no anticipation and no calendar
+        // Item created every year with no anticipation and no calendar
         $data[] = [
             'begin_date'     => $start_of_previous_month,
             'end_date'       => $end_of_next_year,
@@ -355,8 +355,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-01 00:00:00', strtotime($start_of_previous_month . ' + 1 year')),
         ];
 
-       // Item created every hour with anticipation and no calendar
-       // Next time is "2 hours before tomorrow 00:00:00" ...
+        // Item created every hour with anticipation and no calendar
+        // Next time is "2 hours before tomorrow 00:00:00" ...
         $next_time = strtotime(date('Y-m-d 22:00:00')); // 2 hours anticipation
         if ($next_time < time()) {
            // ... unless "2 hours before tomorrow 00:00:00" is already passed
@@ -371,8 +371,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-d H:i:s', $next_time),
         ];
 
-       // Item created every month with anticipation and no calendar
-       // Next time is "5 days before begin of next month" ...
+        // Item created every month with anticipation and no calendar
+        // Next time is "5 days before begin of next month" ...
         $next_time = strtotime('+ 2 month', strtotime($start_of_previous_month . ' - 5 days')); // 5 days anticipation
         if ($next_time < time()) {
            // ... unless "5 days before begin of next month" is already passed
@@ -387,8 +387,8 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-d H:i:s', $next_time),
         ];
 
-       // Item created every year with anticipation and no calendar
-       // Next time is "4 days before 'now + 1 year'" ...
+        // Item created every year with anticipation and no calendar
+        // Next time is "4 days before 'now + 1 year'" ...
         $next_time = strtotime('+ 1 year', strtotime($start_of_previous_month . ' - 4 days')); // 4 days anticipation
         if ($next_time < time()) {
            // ... unless "4 days before 'now + 1 year'" is already passed
@@ -403,9 +403,9 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-d H:i:s', $next_time),
         ];
 
-       // Special case: calendar where monday to friday are full working days
+        // Special case: calendar where monday to friday are full working days
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar 2']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         for ($day = 1; $day <= 5; $day++) {
             $cal_segment_id = $cal_segment->add(
@@ -416,7 +416,7 @@ abstract class CommonITILRecurrent extends DbTestCase
                     'end'          => '24:00:00'
                 ]
             );
-            $this->integer($cal_segment_id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $cal_segment_id);
         }
 
         $next_time = strtotime('+1 hour');
@@ -491,54 +491,46 @@ abstract class CommonITILRecurrent extends DbTestCase
         return $data;
     }
 
-    /**
-     * @param string         $begin_date
-     * @param string         $end_date
-     * @param string|integer $periodicity
-     * @param integer        $create_before
-     * @param integer        $calendars_id
-     * @param string         $expected_value
-     * @param array          $messages
-     * @param string|null    $current_date             Override the current date
-     *
-     * @dataProvider computeNextCreationDateProvider
-     */
-    public function testComputeNextCreationDate(
-        $begin_date,
-        $end_date,
-        $periodicity,
-        $create_before,
-        $calendars_id,
-        $expected_value,
-        $messages = null,
-        $current_date = null
-    ) {
-        // Handle dynamic date
-        $date_to_restore = null;
-        if (!is_null($current_date)) {
-            $date_to_restore = Session::getCurrentTime();
-            $_SESSION['glpi_currenttime'] = $current_date;
-        }
+    public function testComputeNextCreationDate()
+    {
+        $provider = $this->computeNextCreationDateProvider();
+        foreach ($provider as $row) {
+            $begin_date = $row['begin_date'];
+            $end_date = $row['end_date'];
+            $periodicity = $row['periodicity'];
+            $create_before = $row['create_before'];
+            $calendars_id = $row['calendars_id'];
+            $expected_value = $row['expected_value'];
+            $messages = $row['messages'] ?? null;
+            $current_date = $row['current_date'] ?? null;
 
-        $child_class = $this->getChildClass();
-        $recurrent = new $child_class();
-        $value = $recurrent->computeNextCreationDate(
-            $begin_date,
-            $end_date,
-            $periodicity,
-            $create_before,
-            $calendars_id
-        );
+            // Handle dynamic date
+            $date_to_restore = null;
+            if (!is_null($current_date)) {
+                $date_to_restore = Session::getCurrentTime();
+                $_SESSION['glpi_currenttime'] = $current_date;
+            }
 
-        $this->string($value)->isIdenticalTo($expected_value);
-        if ($messages === null) {
-            $this->hasNoSessionMessage(ERROR);
-        } else {
-            $this->hasSessionMessages(ERROR, $messages);
-        }
+            $child_class = $this->getChildClass();
+            $recurrent = new $child_class();
+            $value = $recurrent->computeNextCreationDate(
+                $begin_date,
+                $end_date,
+                $periodicity,
+                $create_before,
+                $calendars_id
+            );
 
-        if (!is_null($date_to_restore)) {
-            $_SESSION['glpi_currenttime'] = $date_to_restore;
+            $this->assertSame($expected_value, $value);
+            if ($messages === null) {
+                $this->hasNoSessionMessage(ERROR);
+            } else {
+                $this->hasSessionMessages(ERROR, $messages);
+            }
+
+            if (!is_null($date_to_restore)) {
+                $_SESSION['glpi_currenttime'] = $date_to_restore;
+            }
         }
     }
 
@@ -619,59 +611,59 @@ abstract class CommonITILRecurrent extends DbTestCase
         ];
     }
 
-    /**
-     * @param array $predefined_fields
-     * @param array $expected_fields
-     *
-     * @dataProvider createItemProvider
-     */
-    public function testCreateItem(array $predefined_fields, array $expected_fields)
+    public function testCreateItem()
     {
-        $child_class = $this->getChildClass();
-        $template_class = $child_class::getTemplateClass();
-        $predefined_fields_class = $child_class::getPredefinedFieldsClass();
+        $provider = $this->createItemProvider();
+        foreach ($provider as $row) {
+            $predefined_fields = $row['predefined_fields'];
+            $expected_fields = $row['expected_fields'];
 
-        $calendar = getItemByTypeName(\Calendar::class, 'testCreateItem calendar');
+            $child_class = $this->getChildClass();
+            $template_class = $child_class::getTemplateClass();
+            $predefined_fields_class = $child_class::getPredefinedFieldsClass();
 
-        // Create template and its predefined fields
-        $template = $this->createItem(
-            $template_class,
-            [
-                'name' => __METHOD__
-            ]
-        );
-        foreach ($predefined_fields as $num => $value) {
-            $this->createItem(
-                $predefined_fields_class,
+            $calendar = getItemByTypeName(\Calendar::class, 'testCreateItem calendar');
+
+            // Create template and its predefined fields
+            $template = $this->createItem(
+                $template_class,
                 [
-                    $template->getForeignKeyField() => $template->getID(),
-                    'num' => $num,
-                    'value' => $value,
+                    'name' => __METHOD__
                 ]
             );
-        }
+            foreach ($predefined_fields as $num => $value) {
+                $this->createItem(
+                    $predefined_fields_class,
+                    [
+                        $template->getForeignKeyField() => $template->getID(),
+                        'num' => $num,
+                        'value' => $value,
+                    ]
+                );
+            }
 
-        // Create item
-        $instance = $this->createItem(
-            $child_class,
-            [
-                'name'          => __METHOD__,
-                'begin_date'    => date('Y-m-d H:i:s', strtotime('-7 days')),
-                'end_date'      => null,
-                'periodicity'   => 3600,
-                'create_before' => 0,
-                'calendars_id'  => $calendar->getID(),
-                $template->getForeignKeyField() => $template->getID(),
-            ]
-        );
-        $created_item = null;
-        $this->boolean($instance->createItem($created_item))->isTrue();
+            // Create item
+            $instance = $this->createItem(
+                $child_class,
+                [
+                    'name' => __METHOD__,
+                    'begin_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+                    'end_date' => null,
+                    'periodicity' => 3600,
+                    'create_before' => 0,
+                    'calendars_id' => $calendar->getID(),
+                    $template->getForeignKeyField() => $template->getID(),
+                ]
+            );
+            $created_item = null;
+            $this->assertTrue($instance->createItem($created_item));
 
-        // Validates created item fields
-        $this->object($created_item)->isInstanceOf(\CommonITILObject::class);
-        foreach ($expected_fields as $field_name => $field_value) {
-            $this->array($created_item->fields)->hasKey($field_name);
-            $this->variable($created_item->fields[$field_name])->isEqualTo($field_value);
+            // Validates created item fields
+            $this->assertInstanceOf(\CommonITILObject::class, $created_item);
+            foreach ($expected_fields as $field_name => $field_value) {
+                $this->assertArrayHasKey($field_name, $created_item->fields);
+                $this->assertEquals($field_value, $created_item->fields[$field_name]);
+            }
         }
     }
 }

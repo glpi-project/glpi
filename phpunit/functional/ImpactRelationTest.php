@@ -35,14 +35,14 @@
 
 namespace tests\units;
 
-class ImpactRelation extends \DbTestCase
+class ImpactRelationTest extends \DbTestCase
 {
     public function testPrepareInputForAdd_requiredFields()
     {
         $impactRelationManager = new \ImpactRelation();
         $res = $impactRelationManager->add([]);
 
-        $this->boolean($res)->isFalse();
+        $this->assertFalse($res);
     }
 
     public function testPrepareInputForAdd_differentItems()
@@ -56,7 +56,7 @@ class ImpactRelation extends \DbTestCase
             'items_id_impacted' => $computer->fields['id'],
         ]);
 
-        $this->boolean($res)->isFalse();
+        $this->assertFalse($res);
     }
 
     public function testPrepareInputForAdd_duplicate()
@@ -79,7 +79,7 @@ class ImpactRelation extends \DbTestCase
             'items_id_impacted' => $computer2->fields['id'],
         ]);
 
-        $this->boolean($res)->isFalse();
+        $this->assertFalse($res);
     }
 
     public function testPrepareInputForAdd_assetExist()
@@ -93,7 +93,7 @@ class ImpactRelation extends \DbTestCase
             'items_id_impacted' => -78,
         ]);
 
-        $this->boolean($res)->isFalse();
+        $this->assertFalse($res);
     }
 
     public function testPrepareInputForAdd_valid()
@@ -109,7 +109,7 @@ class ImpactRelation extends \DbTestCase
             'items_id_impacted' => $computer2->fields['id'],
         ]);
 
-        $this->integer($res);
+        $this->assertGreaterThan(0, $res);
     }
 
     public function testGetIDFromInput_invalid()
@@ -125,7 +125,7 @@ class ImpactRelation extends \DbTestCase
         ];
 
         $id = \ImpactRelation::getIDFromInput($input);
-        $this->boolean($id)->isFalse();
+        $this->assertFalse($id);
     }
 
     public function testGetIDFromInput_valid()
@@ -149,6 +149,6 @@ class ImpactRelation extends \DbTestCase
         ];
 
         $id2 = \ImpactRelation::getIDFromInput($input);
-        $this->integer($id1)->isEqualTo($id2);
+        $this->assertEquals($id2, $id1);
     }
 }

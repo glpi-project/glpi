@@ -42,7 +42,7 @@ use Ticket;
 
 /* Test for inc/itilsolution.class.php */
 
-class ITILSolution extends DbTestCase
+class ITILSolutionTest extends DbTestCase
 {
     /**
      * Create a new ITILObject and return its id or the object
@@ -51,19 +51,22 @@ class ITILSolution extends DbTestCase
      * @param bool   $as_object
      * @return integer|\CommonDBTM
      */
-    private function getNewITILObject($itemtype, bool $as_object = false)
+    private function getNewITILObject(string $itemtype, bool $as_object = false)
     {
         //create reference ITILObject
         $itilobject = new $itemtype();
-        $this->integer((int)$itilobject->add([
-            'name'         => "$itemtype title",
-            'description'  => 'a description',
-            'content'      => '',
-            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$itilobject->add([
+                'name'         => "$itemtype title",
+                'description'  => 'a description',
+                'content'      => '',
+                'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
 
-        $this->boolean($itilobject->isNewItem())->isFalse();
-        $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
+        $this->assertFalse($itilobject->isNewItem());
+        $this->assertTrue($itilobject->can($itilobject->getID(), \READ));
         return $as_object ? $itilobject : (int)$itilobject->getID();
     }
 
@@ -73,101 +76,110 @@ class ITILSolution extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         $ticket = new Ticket();
-        $this->integer((int)$ticket->add([
-            'name'               => 'ticket title',
-            'description'        => 'a description',
-            'content'            => '',
-            '_users_id_assign'   => $uid
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$ticket->add([
+                'name'               => 'ticket title',
+                'description'        => 'a description',
+                'content'            => '',
+                '_users_id_assign'   => $uid
+            ])
+        );
 
-        $this->boolean($ticket->isNewItem())->isFalse();
-        $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
+        $this->assertFalse($ticket->isNewItem());
+        $this->assertSame($ticket::ASSIGNED, $ticket->getField('status'));
 
         $solution = new \ITILSolution();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
                 'content'   => 'Current friendly ticket\r\nis solved!'
             ])
         );
-       //reload from DB
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+        //reload from DB
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
-        $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
-        $this->string($solution->getField('content'))->isIdenticalTo("Current friendly ticket\r\nis solved!");
+        $this->assertEquals($ticket::SOLVED, $ticket->getField('status'));
+        $this->assertSame("Current friendly ticket\r\nis solved!", $solution->getField('content'));
 
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(\CommonITILValidation::WAITING, (int)$solution->fields['status']);
 
-       //approve solution
+        //approve solution
         $follow = new \ITILFollowup();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$follow->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'   => $ticket->getID(),
                 'add_close'    => '1'
             ])
-        )->isGreaterThan(0);
-        $this->boolean($follow->getFromDB($follow->getID()))->isTrue();
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
-        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::CLOSED);
+        );
+        $this->assertTrue($follow->getFromDB($follow->getID()));
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertSame(\CommonITILValidation::ACCEPTED, (int)$solution->fields['status']);
+        $this->assertSame($ticket::CLOSED, (int)$ticket->fields['status']);
 
-       //reopen ticket
-        $this->integer(
+        //reopen ticket
+        $this->assertGreaterThan(
+            0,
             (int)$follow->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
                 'add_reopen'   => '1',
                 'content'      => 'This is required'
             ])
-        )->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+        );
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($solution->getFromDB($solution->getID()));
 
-        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::ASSIGNED);
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::REFUSED);
+        $this->assertSame($ticket::ASSIGNED, (int)$ticket->fields['status']);
+        $this->assertSame(\CommonITILValidation::REFUSED, (int)$solution->fields['status']);
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
                 'content'   => 'Another solution proposed!'
             ])
         );
-       //reload from DB
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+        //reload from DB
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($solution->getFromDB($solution->getID()));
 
-        $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
+        $this->assertEquals($ticket::SOLVED, $ticket->getField('status'));
+        $this->assertSame(\CommonITILValidation::WAITING, (int)$solution->fields['status']);
 
-       //refuse
+        //refuse
         $follow = new \ITILFollowup();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$follow->add([
                 'itemtype'   => 'Ticket',
                 'items_id'   => $ticket->getID(),
                 'add_reopen'   => '1',
                 'content'      => 'This is required'
             ])
-        )->isGreaterThan(0);
+        );
 
-       //reload from DB
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+        //reload from DB
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($solution->getFromDB($solution->getID()));
 
-        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::ASSIGNED);
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::REFUSED);
+        $this->assertSame($ticket::ASSIGNED, (int)$ticket->fields['status']);
+        $this->assertSame(\CommonITILValidation::REFUSED, (int)$solution->fields['status']);
 
-        $this->integer(
+        $this->assertSame(
+            2,
             $solution::countFor(
                 'Ticket',
                 $ticket->getID()
             )
-        )->isIdenticalTo(2);
+        );
     }
 
     public function testProblemSolution()
@@ -176,32 +188,36 @@ class ITILSolution extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
 
         $problem = new \Problem();
-        $this->integer((int)$problem->add([
-            'name'               => 'problem title',
-            'description'        => 'a description',
-            'content'            => 'a content',
-            '_users_id_assign'   => $uid
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$problem->add([
+                'name'               => 'problem title',
+                'description'        => 'a description',
+                'content'            => 'a content',
+                '_users_id_assign'   => $uid
+            ])
+        );
 
-        $this->boolean($problem->isNewItem())->isFalse();
-        $this->variable($problem->getField('status'))->isIdenticalTo($problem::ASSIGNED);
+        $this->assertFalse($problem->isNewItem());
+        $this->assertSame($problem::ASSIGNED, $problem->getField('status'));
 
         $solution = new \ITILSolution();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem->getID(),
                 'content'   => 'Current friendly problem\r\nis solved!'
             ])
         );
-       //reload from DB
-        $this->boolean($problem->getFromDB($problem->getID()))->isTrue();
+        //reload from DB
+        $this->assertTrue($problem->getFromDB($problem->getID()));
 
-        $this->variable($problem->getField('status'))->isEqualTo($problem::SOLVED);
-        $this->string($solution->getField('content'))->isIdenticalTo("Current friendly problem\r\nis solved!");
+        $this->assertEquals($problem::SOLVED, $problem->getField('status'));
+        $this->assertSame("Current friendly problem\r\nis solved!", $solution->getField('content'));
 
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(\CommonITILValidation::ACCEPTED, (int)$solution->fields['status']);
     }
 
     public function testChangeSolution()
@@ -210,32 +226,36 @@ class ITILSolution extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
 
         $change = new \Change();
-        $this->integer((int)$change->add([
-            'name'               => 'change title',
-            'description'        => 'a description',
-            'content'            => 'a content',
-            '_users_id_assign'   => $uid
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$change->add([
+                'name'               => 'change title',
+                'description'        => 'a description',
+                'content'            => 'a content',
+                '_users_id_assign'   => $uid
+            ])
+        );
 
-        $this->boolean($change->isNewItem())->isFalse();
-        $this->variable($change->getField('status'))->isIdenticalTo($change::INCOMING);
+        $this->assertFalse($change->isNewItem());
+        $this->assertSame($change::INCOMING, $change->getField('status'));
 
         $solution = new \ITILSolution();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change->getID(),
                 'content'   => 'Current friendly change\r\nis solved!'
             ])
         );
-       //reload from DB
-        $this->boolean($change->getFromDB($change->getID()))->isTrue();
+        //reload from DB
+        $this->assertTrue($change->getFromDB($change->getID()));
 
-        $this->variable($change->getField('status'))->isEqualTo($change::SOLVED);
-        $this->string($solution->getField('content'))->isIdenticalTo("Current friendly change\r\nis solved!");
+        $this->assertEquals($change::SOLVED, $change->getField('status'));
+        $this->assertSame("Current friendly change\r\nis solved!", $solution->getField('content'));
 
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(\CommonITILValidation::ACCEPTED, (int)$solution->fields['status']);
     }
 
 
@@ -252,7 +272,7 @@ class ITILSolution extends DbTestCase
             'content'            => 'a content',
             '_users_id_assign'   => $uid
         ]);
-        $this->integer($duplicated)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $duplicated);
 
         $duplicate = (int)$ticket->add([
             'name'               => 'Duplicate ticket',
@@ -260,33 +280,35 @@ class ITILSolution extends DbTestCase
             'content'            => 'a content',
             '_users_id_assign'   => $uid
         ]);
-        $this->integer($duplicate)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $duplicate);
 
         $link = new \Ticket_Ticket();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$link->add([
                 'tickets_id_1' => $duplicated,
                 'tickets_id_2' => $duplicate,
                 'link'         => \Ticket_Ticket::DUPLICATE_WITH
             ])
-        )->isGreaterThan(0);
+        );
 
-       //we got one ticketg, and another that duplicates it.
-       //let's manage solutions on them
+        //we got one ticket, and another that duplicates it.
+        //let's manage solutions on them
         $solution = new \ITILSolution();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $duplicate,
                 'content'   => 'Solve from main ticket'
             ])
         );
-       //reload from DB
-        $this->boolean($ticket->getFromDB($duplicate))->isTrue();
-        $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
+        //reload from DB
+        $this->assertTrue($ticket->getFromDB($duplicate));
+        $this->assertEquals($ticket::SOLVED, $ticket->getField('status'));
 
-        $this->boolean($ticket->getFromDB($duplicated))->isTrue();
-        $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
+        $this->assertTrue($ticket->getFromDB($duplicated));
+        $this->assertEquals($ticket::SOLVED, $ticket->getField('status'));
     }
 
     public function testMultipleSolution()
@@ -295,20 +317,24 @@ class ITILSolution extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         $ticket = new Ticket();
-        $this->integer((int)$ticket->add([
-            'name'               => 'ticket title',
-            'description'        => 'a description',
-            'content'            => 'a content',
-            '_users_id_assign'   => $uid
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$ticket->add([
+                'name'               => 'ticket title',
+                'description'        => 'a description',
+                'content'            => 'a content',
+                '_users_id_assign'   => $uid
+            ])
+        );
 
-        $this->boolean($ticket->isNewItem())->isFalse();
-        $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
+        $this->assertFalse($ticket->isNewItem());
+        $this->assertSame($ticket::ASSIGNED, $ticket->getField('status'));
 
         $solution = new \ITILSolution();
 
-       // 1st solution, it should be accepted
-        $this->integer(
+        // 1st solution, it should be accepted
+        $this->assertGreaterThan(
+            0,
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
@@ -316,34 +342,33 @@ class ITILSolution extends DbTestCase
             ])
         );
 
-        $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(\CommonITILValidation::WAITING, (int)$solution->fields['status']);
 
-       // try to add directly another solution, it should be refused
-        $this->boolean(
+        // try to add directly another solution, it should be refused
+        $this->assertFalse(
             $solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
                 'content'   => '2nd solution, should be refused!'
             ])
-        )->isFalse();
+        );
         $this->hasSessionMessages(ERROR, ['The item is already solved, did anyone pushed a solution before you?']);
     }
 
     public function testScreenshotConvertedIntoDocument()
     {
-
         $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
 
-       // Test uploads for item creation
+        // Test uploads for item creation
         $ticket = new Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
         ]);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertFalse($ticket->isNewItem());
 
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/foo.png'));
         $user = getItemByTypeName('User', TU_USER, true);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $instance = new \ITILSolution();
@@ -367,18 +392,18 @@ HTML
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
-        copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
 
         $instance->add($input);
-        $this->boolean($instance->isNewItem())->isFalse();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $this->assertFalse($instance->isNewItem());
+        $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['content'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['content']);
 
-       // Test uploads for item update
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+        // Test uploads for item update
+        $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/bar.png'));
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => Sanitizer::sanitize(<<<HTML
@@ -396,10 +421,10 @@ HTML
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
-        $this->boolean($success)->isTrue();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $this->assertTrue($success);
+        $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['content'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['content']);
     }
 
     public function testAddMultipleSolution()
@@ -412,30 +437,30 @@ HTML
 
         $tickets = [];
 
-       // Create 10 tickets
+        // Create 10 tickets
         for ($i = 0; $i < 10; $i++) {
             $id = $em_ticket->add([
                 'name'    => "test",
                 'content' => "test",
             ]);
-            $this->integer($id);
+            $this->assertGreaterThan(0, $id);
 
             $ticket = new Ticket();
-            $ticket->getFromDB($id);
+            $this->assertTrue($ticket->getFromDB($id));
             $tickets[] = $ticket;
         }
 
-       // Solve all created tickets
+        // Solve all created tickets
         foreach ($tickets as $ticket) {
             $id = $em_solution->add([
                 'itemtype' => $ticket::getType(),
                 'items_id' => $ticket->fields['id'],
                 'content'  => 'test'
             ]);
-            $this->integer($id);
+            $this->assertGreaterThan(0, $id);
 
-            $ticket->getFromDB($ticket->fields['id']);
-            $this->integer($ticket->fields['status'])->isEqualTo(Ticket::SOLVED);
+            $this->assertTrue($ticket->getFromDB($ticket->fields['id']));
+            $this->assertEquals(\Ticket::SOLVED, $ticket->fields['status']);
         }
     }
 
@@ -449,31 +474,33 @@ HTML
             'name'               => 'test template',
             'content'            => 'test template',
         ]);
-        $this->integer($templates_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $templates_id);
         $solution = new \ITILSolution();
         $solutions_id = $solution->add([
             '_templates_id'      => $templates_id,
             'itemtype'           => 'Ticket',
             'items_id'           => $ticket->fields['id'],
         ]);
-        $this->integer($solutions_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solutions_id);
 
-        $this->string($solution->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->assertEquals('&#60;p&#62;test template&#60;/p&#62;', $solution->fields['content']);
 
         //Reset ticket status
-        $ticket->update([
-            'id'    => $ticket->fields['id'],
-            'status' => \CommonITILObject::INCOMING,
-        ]);
+        $this->assertTrue(
+            $ticket->update([
+                'id'    => $ticket->fields['id'],
+                'status' => \CommonITILObject::INCOMING,
+            ])
+        );
         $solutions_id = $solution->add([
             '_templates_id'      => $templates_id,
             'itemtype'           => 'Ticket',
             'items_id'           => $ticket->fields['id'],
             'content'            => 'test template2',
         ]);
-        $this->integer($solutions_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solutions_id);
 
-        $this->string($solution->fields['content'])->isEqualTo('test template2');
+        $this->assertEquals('test template2', $solution->fields['content']);
     }
 
     public function testAddOnClosedTicket()
@@ -482,10 +509,12 @@ HTML
         // Create new ticket
         $ticket = $this->getNewITILObject('Ticket', true);
         // Close ticket
-        $this->boolean($ticket->update([
-            'id'    => $ticket->fields['id'],
-            'status' => \CommonITILObject::CLOSED,
-        ]))->isTrue();
+        $this->assertTrue(
+            $ticket->update([
+                'id'    => $ticket->fields['id'],
+                'status' => \CommonITILObject::CLOSED,
+            ])
+        );
         // Create solution
         $solution = new \ITILSolution();
         $solutions_id = $solution->add([
@@ -493,12 +522,12 @@ HTML
             'items_id'           => $ticket->fields['id'],
             'content'            => 'test solution',
         ]);
-        $this->integer($solutions_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solutions_id);
         // Verify solution is not waiting for approval. Should default to being approved.
-        $this->integer($solution->fields['status'])->isEqualTo(\CommonITILValidation::ACCEPTED);
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, $solution->fields['status']);
         // Verify the ticket status is still closed.
-        $this->boolean($ticket->getFromDB($ticket->fields['id']))->isTrue();
-        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+        $this->assertTrue($ticket->getFromDB($ticket->fields['id']));
+        $this->assertEquals(\CommonITILObject::CLOSED, $ticket->fields['status']);
     }
 
     public function testTicketSolutionValidation()
@@ -516,10 +545,10 @@ HTML
             '_users_id_requester' => $postonly_id,
             '_users_id_assign'    => $tech_id,
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
-        $this->boolean($ticket->isNewItem())->isFalse();
-        $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
+        $this->assertFalse($ticket->isNewItem());
+        $this->assertSame($ticket::ASSIGNED, $ticket->getField('status'));
 
         // add solution
         $this->login('tech', 'tech');
@@ -529,11 +558,11 @@ HTML
             'items_id'           => $ticket->getID(),
             'content'            => 'a solution',
         ]);
-        $this->integer($solution_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solution_id);
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->variable((int)$solution->getField('status'))->isIdenticalTo(\CommonITILValidation::WAITING);
-        $this->variable((int)$ticket->getField('status'))->isIdenticalTo($ticket::SOLVED);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame(\CommonITILValidation::WAITING, (int)$solution->getField('status'));
+        $this->assertSame($ticket::SOLVED, (int)$ticket->getField('status'));
 
         //refuse solution
         $this->login('post-only', 'postonly');
@@ -544,13 +573,13 @@ HTML
             'add_reopen'   => '1',
             'content'      => 'This is required'
         ]);
-        $this->integer($follow_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $follow_id);
 
-        $this->boolean($follow->getFromDB($follow_id))->isTrue();
-        $this->boolean($solution->getFromDB($solution_id))->isTrue();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::REFUSED);
-        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::ASSIGNED);
+        $this->assertTrue($follow->getFromDB($follow_id));
+        $this->assertTrue($solution->getFromDB($solution_id));
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame(\CommonITILValidation::REFUSED, (int)$solution->fields['status']);
+        $this->assertSame($ticket::ASSIGNED, (int)$ticket->fields['status']);
 
         // add solution
         $this->login('tech', 'tech');
@@ -560,29 +589,29 @@ HTML
             'items_id'           => $ticket->getID(),
             'content'            => 'a solution',
         ]);
-        $this->integer($solution_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solution_id);
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->variable((int)$solution->getField('status'))->isIdenticalTo(\CommonITILValidation::WAITING);
-        $this->variable((int)$ticket->getField('status'))->isIdenticalTo($ticket::SOLVED);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame(\CommonITILValidation::WAITING, (int)$solution->getField('status'));
+        $this->assertSame($ticket::SOLVED, (int)$ticket->getField('status'));
 
         //approve solution
         $this->login('post-only', 'postonly');
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->boolean((bool)$ticket->needReopen())->isTrue();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertTrue($ticket->needReopen());
         $follow = new \ITILFollowup();
         $follow_id = (int)$follow->add([
             'itemtype'  => $ticket::getType(),
             'items_id'   => $ticket->getID(),
             'add_close'    => '1'
         ]);
-        $this->integer($follow_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $follow_id);
 
-        $this->boolean($follow->getFromDB($follow_id))->isTrue();
-        $this->boolean($solution->getFromDB($solution_id))->isTrue();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
-        $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::CLOSED);
+        $this->assertTrue($follow->getFromDB($follow_id));
+        $this->assertTrue($solution->getFromDB($solution_id));
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame(\CommonITILValidation::ACCEPTED, (int)$solution->fields['status']);
+        $this->assertSame($ticket::CLOSED, (int)$ticket->fields['status']);
     }
 
     public function testAddEmptyContent()
@@ -595,7 +624,7 @@ HTML
             'description'        => 'a description',
             'content'            => 'test',
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
         $solution = new \ITILSolution();
         $solution_id = $solution->add([
@@ -603,6 +632,6 @@ HTML
             'items_id'           => $ticket->getID(),
             'content'            => '',
         ]);
-        $this->integer($solution_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solution_id);
     }
 }

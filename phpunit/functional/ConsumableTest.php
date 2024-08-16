@@ -37,7 +37,7 @@ namespace tests\units;
 
 /* Test for inc/consumable.class.php */
 
-class Consumable extends \DbTestCase
+class ConsumableTest extends \DbTestCase
 {
     /**
      * Test "out" and "back to stock" functions.
@@ -52,23 +52,23 @@ class Consumable extends \DbTestCase
         $cu_id = (int)$consumable_item->add([
             'name' => 'Test consumable item'
         ]);
-        $this->integer($cu_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cu_id);
 
         $group = new \Group();
         $gid1 = (int)$group->add([
             'name' => 'Test group 1'
         ]);
-        $this->integer($gid1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid1);
         $gid2 = (int)$group->add([
             'name' => 'Test group 2'
         ]);
-        $this->integer($gid2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid2);
 
         $user = new \User();
         $uid = (int)$user->add([
             'name' => 'User group'
         ]);
-        $this->integer($uid)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $uid);
 
         $c_ids = [];
         for ($i = 0; $i < 20; $i++) {
@@ -76,39 +76,40 @@ class Consumable extends \DbTestCase
                 'name'               => 'Test consumable',
                 'consumableitems_id' => $cu_id,
             ]);
-            $this->integer($c_id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, $c_id);
 
             $c_ids[] = $c_id;
 
-           // Give 1/4 of consumable pool to test group 1
+            // Give 1/4 of consumable pool to test group 1
             if ($i % 4 === 0) {
                  $consumable->out($c_id, 'Group', $gid1);
             }
-           // Give 1/4 of consumable pool to test group 2
+            // Give 1/4 of consumable pool to test group 2
             if ($i % 4 === 1) {
                 $consumable->out($c_id, 'Group', $gid2);
             }
-           // Give 1/4 of consumable pool to test user
+            // Give 1/4 of consumable pool to test user
             if ($i % 4 === 2) {
                 $consumable->out($c_id, 'User', $uid);
             }
         }
 
-       // Test counters
-        $this->integer($consumable->getTotalNumber($cu_id))->isEqualTo(20);
-        $this->integer($consumable->getUnusedNumber($cu_id))->isEqualTo(5);
-        $this->integer($consumable->getOldNumber($cu_id))->isEqualTo(15);
+        // Test counters
+        $this->assertEquals(20, $consumable->getTotalNumber($cu_id));
+        $this->assertEquals(5, $consumable->getUnusedNumber($cu_id));
+        $this->assertEquals(15, $consumable->getOldNumber($cu_id));
 
-       // Test back to stock
-        $this->boolean($consumable->backToStock(['id' => $c_ids[0]]))->isTrue();
-        $this->integer($consumable->getUnusedNumber($cu_id))->isEqualTo(6);
-        $this->integer($consumable->getOldNumber($cu_id))->isEqualTo(14);
+        // Test back to stock
+        $this->assertTrue($consumable->backToStock(['id' => $c_ids[0]]));
+        $this->assertEquals(6, $consumable->getUnusedNumber($cu_id));
+        $this->assertEquals(14, $consumable->getOldNumber($cu_id));
 
-       // Test forced back to stock by removal of group (not replaced)
-        $this->boolean($group->delete(['id' => $gid1, true]))->isTrue();
-        $this->integer($consumable->getUnusedNumber($cu_id))->isEqualTo(10);
-        $this->integer($consumable->getOldNumber($cu_id))->isEqualTo(10);
-        $this->integer(
+        // Test forced back to stock by removal of group (not replaced)
+        $this->assertTrue($group->delete(['id' => $gid1, true]));
+        $this->assertEquals(10, $consumable->getUnusedNumber($cu_id));
+        $this->assertEquals(10, $consumable->getOldNumber($cu_id));
+        $this->assertEquals(
+            0,
             countElementsInTable(
                 $consumable->getTable(),
                 [
@@ -117,13 +118,14 @@ class Consumable extends \DbTestCase
                     'items_id'           => $gid1,
                 ]
             )
-        )->isEqualTo(0);
+        );
 
-       // Test replacement of a group (no back to stock)
-        $this->boolean($group->delete(['id' => $gid2, '_replace_by' => $gid1], true))->isTrue();
-        $this->integer($consumable->getUnusedNumber($cu_id))->isEqualTo(10);
-        $this->integer($consumable->getOldNumber($cu_id))->isEqualTo(10);
-        $this->integer(
+        // Test replacement of a group (no back to stock)
+        $this->assertTrue($group->delete(['id' => $gid2, '_replace_by' => $gid1], true));
+        $this->assertEquals(10, $consumable->getUnusedNumber($cu_id));
+        $this->assertEquals(10, $consumable->getOldNumber($cu_id));
+        $this->assertEquals(
+            0,
             countElementsInTable(
                 $consumable->getTable(),
                 [
@@ -132,8 +134,9 @@ class Consumable extends \DbTestCase
                     'items_id'           => $gid2,
                 ]
             )
-        )->isEqualTo(0);
-        $this->integer(
+        );
+        $this->assertEquals(
+            5,
             countElementsInTable(
                 $consumable->getTable(),
                 [
@@ -142,13 +145,14 @@ class Consumable extends \DbTestCase
                     'items_id'           => $gid1,
                 ]
             )
-        )->isEqualTo(5);
+        );
 
-       // Test forced back to stock by removal of user (not replaced)
-        $this->boolean($user->delete(['id' => $uid], true))->isTrue();
-        $this->integer($consumable->getUnusedNumber($cu_id))->isEqualTo(15);
-        $this->integer($consumable->getOldNumber($cu_id))->isEqualTo(5);
-        $this->integer(
+        // Test forced back to stock by removal of user (not replaced)
+        $this->assertTrue($user->delete(['id' => $uid], true));
+        $this->assertEquals(15, $consumable->getUnusedNumber($cu_id));
+        $this->assertEquals(5, $consumable->getOldNumber($cu_id));
+        $this->assertEquals(
+            0,
             countElementsInTable(
                 $consumable->getTable(),
                 [
@@ -157,7 +161,7 @@ class Consumable extends \DbTestCase
                     'items_id'           => $uid,
                 ]
             )
-        )->isEqualTo(0);
+        );
     }
 
     public function testInfocomInheritance()
@@ -165,10 +169,10 @@ class Consumable extends \DbTestCase
         $consumable = new \Consumable();
 
         $consumable_item = new \ConsumableItem();
-        $cu_id = (int) $consumable_item->add([
+        $cu_id = (int)$consumable_item->add([
             'name' => 'Test consumable item'
         ]);
-        $this->integer($cu_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cu_id);
 
         $infocom = new \Infocom();
         $infocom_id = (int) $infocom->add([
@@ -177,20 +181,26 @@ class Consumable extends \DbTestCase
             'buy_date'  => '2020-10-21',
             'value'     => '500'
         ]);
-        $this->integer($infocom_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $infocom_id);
 
         $consumable_id = $consumable->add([
             'consumableitems_id' => $cu_id
         ]);
-        $this->integer($consumable_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $consumable_id);
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
             'itemtype'  => \Consumable::getType(),
             'items_id'  => $consumable_id
         ]);
-        $this->integer($infocom2_id)->isGreaterThan(0);
-        $this->string($infocom2->fields['buy_date'])->isEqualTo($infocom->fields['buy_date']);
-        $this->string($infocom2->fields['value'])->isEqualTo($infocom->fields['value']);
+        $this->assertGreaterThan(0, $infocom2_id);
+        $this->assertEquals(
+            $infocom->fields['buy_date'],
+            $infocom2->fields['buy_date']
+        );
+        $this->assertEquals(
+            $infocom->fields['value'],
+            $infocom2->fields['value']
+        );
     }
 }

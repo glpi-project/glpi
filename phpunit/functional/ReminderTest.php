@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/reminder.class.php */
 
-class Reminder extends DbTestCase
+class ReminderTest extends DbTestCase
 {
     public function testAddVisibilityRestrict()
     {
@@ -55,8 +55,10 @@ class Reminder extends DbTestCase
                OR ((`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3')
                          OR (`glpi_entities_reminders`.`is_recursive` = '1'
                               AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
-         $this->string(\Reminder::addVisibilityRestrict())
-              ->isIdenticalTo($expected);
+         $this->assertSame(
+             $expected,
+             \Reminder::addVisibilityRestrict()
+         );
 
          $this->login('normal', 'normal');
          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
@@ -65,8 +67,10 @@ class Reminder extends DbTestCase
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-              ->isIdenticalTo($expected);
+         $this->assertSame(
+             $expected,
+             trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
+         );
 
          $this->login('tech', 'tech');
          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
@@ -75,8 +79,10 @@ class Reminder extends DbTestCase
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-              ->isIdenticalTo($expected);
+         $this->assertSame(
+             $expected,
+             trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
+         );
 
          $bkp_groups = $_SESSION['glpigroups'];
          $_SESSION['glpigroups'] = [42, 1337];
@@ -91,7 +97,9 @@ class Reminder extends DbTestCase
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-         $this->string(trim(preg_replace('/\s+/', ' ', $str)))
-              ->isIdenticalTo($expected);
+         $this->assertSame(
+             $expected,
+             trim(preg_replace('/\s+/', ' ', $str))
+         );
     }
 }

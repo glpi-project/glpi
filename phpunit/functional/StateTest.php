@@ -35,12 +35,55 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+use DbTestCase;
+use Generator;
 
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/solutiontemplate.class.php */
-
-class SolutionTemplate extends AbstractITILChildTemplate
+class StateTest extends DbTestCase
 {
+    protected function testIsUniqueProvider(): Generator
+    {
+        // Insert test data
+        $this->createItems("State", [
+            ['name' => "Test"],
+            ['name' => "Tést 2"],
+            ['name' => "abcdefg"],
+        ]);
+
+        yield [
+            'input'  => ['name' => 'Test'],
+            'expected' => false,
+        ];
+
+        yield [
+            'input'  => ['name' => "Test'"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Tést"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Test 2"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Tést 2"],
+            'expected' => false,
+        ];
+    }
+
+    public function testIsUnique()
+    {
+        $provider = $this->testIsUniqueProvider();
+        foreach ($provider as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+
+            $state = new \State();
+            $this->assertSame($expected, $state->isUnique($input));
+        }
+    }
 }
