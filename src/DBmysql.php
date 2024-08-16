@@ -997,7 +997,8 @@ class DBmysql
      */
     public function freeResult($result)
     {
-        return $result->free();
+        $result->free();
+        return true;
     }
 
     /**

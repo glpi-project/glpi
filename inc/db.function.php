@@ -416,7 +416,7 @@ function contructListFromTree($tree, $parent = 0)
 function regenerateTreeCompleteName($table)
 {
     $dbu = new DbUtils();
-    return $dbu->regenerateTreeCompleteName($table);
+    $dbu->regenerateTreeCompleteName($table);
 }
 
 
@@ -513,7 +513,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 function closeDBConnections()
 {
     $dbu = new DbUtils();
-    return $dbu->closeDBConnections();
+    $dbu->closeDBConnections();
 }
 
 /**
