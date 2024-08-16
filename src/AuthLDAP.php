@@ -3074,7 +3074,7 @@ class AuthLDAP extends CommonDBTM
      * @param boolean $use_bind             do we need to do an ldap_bind? (true by default)
      * @param bool    $silent_bind_errors   Indicates whether bind errors must be silented
      *
-     * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
+     * @return resource|false link to the LDAP server : false if connection failed
      */
     public static function connectToServer(
         $host,

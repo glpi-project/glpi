@@ -200,7 +200,6 @@ parameters:
         - '/Cannot call static method getTypeName\(\) on \(int\|string\)\./'
         - '/Cannot call static method showSubForm\(\) on CommonDBTM\|false\./'
         - '/Comparison operation ">" between \(array\|float\|int\) and \(float\|int\) results in an error\./'
-        - '/Method AuthLDAP::connectToServer\(\) has invalid return type LDAP\\Connection\./'
         - '/Result of method DbUtils::closeDBConnections\(\) \(void\) is used\./'
         - '/Result of method DbUtils::regenerateTreeCompleteName\(\) \(void\) is used\./'
         - '/Result of method Glpi\\Dashboard\\Grid::embed\(\) \(void\) is used\./'
