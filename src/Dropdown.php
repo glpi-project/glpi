@@ -3169,10 +3169,9 @@ JAVASCRIPT;
                 ];
 
                 if (
-                    $_SESSION['glpiis_ids_visible']
-                    && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']
+                    $_SESSION['glpiis_ids_visible'] && (int) $post['searchText'] === $post['searchText']
                 ) {
-                    $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
+                    $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
 
                 if ($item instanceof CommonDCModelDropdown) {
