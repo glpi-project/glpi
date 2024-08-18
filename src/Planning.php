@@ -2401,7 +2401,7 @@ JAVASCRIPT;
      * @param array $params must contains this keys :
      *  - items_id : integer to identify items
      *  - itemtype : string to identify items
-     *  - begin : planning start .
+     *  - start : planning start .
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      *  - end : planning end .
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
@@ -2415,24 +2415,12 @@ JAVASCRIPT;
             if (
                 $item->getFromDB($params['items_id'])
                 && empty($item->fields['is_deleted'])
+                && $item::canUpdate()
+                && $item->canUpdateItem()
             ) {
                 // item exists and is not in bin
 
                 $abort = false;
-
-                // we should not edit events from closed parent
-                if (!empty($item->fields['tickets_id'])) {
-                  // todo: to same checks for changes, problems, projects and maybe reminders and others depending on incoming itemtypes
-                    $ticket = new Ticket();
-
-                    if (
-                        !$ticket->getFromDB($item->fields['tickets_id'])
-                        || $ticket->fields['is_deleted']
-                        || $ticket->fields['status'] == CommonITILObject::CLOSED
-                    ) {
-                         $abort = true;
-                    }
-                }
 
                 // if event has rrule property, check if we need to create a clone instance
                 if (
