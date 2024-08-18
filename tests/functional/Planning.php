@@ -212,4 +212,73 @@ class Planning extends \DbTestCase
         $color = \Planning::getPaletteColor($palette_name, $index);
         $this->string($color)->matches('/#[0-9A-F]{6}/');
     }
+
+    public function testUpdateEventTimesAllowed()
+    {
+        $this->login();
+
+        // Shouldn't be allowed to update item of invalid type
+        $this->boolean(\Planning::updateEventTimes([
+            'itemtype' => 'InvalidType',
+            'items_id' => 1,
+            'start'    => '2020-01-01 00:00:00',
+            'end'      => '2020-01-01 01:00:00'
+        ]))->isFalse();
+
+        // Shouldn't be allowed to update item that doesn't exist
+        $this->boolean(\Planning::updateEventTimes([
+            'itemtype' => 'TicketTask',
+            'items_id' => 99999999,
+            'start'    => '2020-01-01 00:00:00',
+            'end'      => '2020-01-01 01:00:00'
+        ]))->isFalse();
+
+        // Shouldn't be allowed to update task from closed ticket
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test ticket',
+            'content' => 'Test ticket',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_assign' => $_SESSION['glpiID'],
+        ]);
+        $task = $this->createItem('TicketTask', [
+            'tickets_id' => $ticket->getID(),
+            'content' => 'Test task',
+            'begin' => '2020-01-01 00:00:00',
+            'end' => '2020-01-01 01:00:00'
+        ]);
+        $ticket->update([
+            'id' => $ticket->getID(),
+            'status' => \Ticket::CLOSED
+        ]);
+        $this->boolean(\Planning::updateEventTimes([
+            'itemtype' => 'TicketTask',
+            'items_id' => $task->getID(),
+            'start'    => '2020-01-02 00:00:00',
+            'end'      => '2020-01-02 01:00:00'
+        ]))->isFalse();
+
+        $ticket->update([
+            'id' => $ticket->getID(),
+            'status' => \Ticket::INCOMING
+        ]);
+
+        // General update test
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = READ;
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] &= ~\Ticket::OWN;
+        $this->boolean(\Planning::updateEventTimes([
+            'itemtype' => 'TicketTask',
+            'items_id' => $task->getID(),
+            'start'    => '2020-01-02 00:00:00',
+            'end'      => '2020-01-02 01:00:00'
+        ]))->isFalse();
+
+        // Allowed test
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = ALLSTANDARDRIGHT | \CommonITILTask::UPDATEALL;
+        $this->boolean(\Planning::updateEventTimes([
+            'itemtype' => 'TicketTask',
+            'items_id' => $task->getID(),
+            'start'    => '2020-01-02 00:00:00',
+            'end'      => '2020-01-02 01:00:00'
+        ]))->isTrue();
+    }
 }
