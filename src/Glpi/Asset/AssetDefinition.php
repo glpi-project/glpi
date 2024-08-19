@@ -492,16 +492,14 @@ final class AssetDefinition extends CommonDBTM
         // Status, Manufacturer, Serial, Type, Model, Location, Last Update
         $prefs = [31, 23, 5, 4, 40, 3, 19];
         $rank = 1;
+        $pref = new \DisplayPreference();
         foreach ($prefs as $field) {
-            $DB->insert(
-                'glpi_displaypreferences',
-                [
-                    'itemtype' => $this->getAssetClassName(),
-                    'num'    => $field,
-                    'rank'     => $rank++,
-                    'users_id' => 0,
-                ]
-            );
+            $pref->add([
+                'itemtype' => $this->getAssetClassName(),
+                'num'      => $field,
+                'rank'     => $rank++,
+                'users_id' => 0,
+            ]);
         }
     }
 
