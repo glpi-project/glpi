@@ -356,7 +356,7 @@ class CommonDBTM extends CommonGLPI
         $item = new static();
 
         foreach ($iter as $row) {
-            if (!isset($row["id"])) {
+            if (!isset($row[static::getIndexName()])) {
                 continue;
             }
             if ($item->getFromDB($row[static::getIndexName()])) {
@@ -380,7 +380,7 @@ class CommonDBTM extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = ['SELECT' => 'id',
+        $crit = ['SELECT' => static::getIndexName(),
             'FROM'   => $this->getTable(),
             'WHERE'  => $crit
         ];
