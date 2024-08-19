@@ -225,7 +225,7 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Return the number of translations for an item
      *
-     * @param CommonDBTM item
+     * @param CommonDBTM $item
      *
      * @return integer the number of translations for this item
      **/

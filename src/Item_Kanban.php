@@ -54,14 +54,19 @@ class Item_Kanban extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $force_global = $item->forceGlobalState();
+        $force_global = false;
+        if (method_exists($item, 'forceGlobalState')) {
+            $force_global = $item->forceGlobalState();
+        }
 
         $oldstate = self::loadStateForItem($itemtype, $items_id);
         $users_id = $force_global ? 0 : Session::getLoginUserID();
-        $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
+        if (method_exists($item, 'prepareKanbanStateForUpdate')) {
+            $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
+        }
 
         if ($state === null || $state === 'null' || $state === false) {
            // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
@@ -107,10 +112,13 @@ class Item_Kanban extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $force_global = $item->forceGlobalState();
+        $force_global = false;
+        if (method_exists($item, 'forceGlobalState')) {
+            $force_global = $item->forceGlobalState();
+        }
 
         $iterator = $DB->request([
             'SELECT' => ['date_mod', 'state'],
@@ -160,10 +168,13 @@ class Item_Kanban extends CommonDBRelation
             }
         }
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $all_columns = $item->getAllKanbanColumns();
+        $all_columns = [];
+        if (method_exists($item, 'getAllKanbanColumns')) {
+            $all_columns = $item->getAllKanbanColumns();
+        }
         $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
             return $c['column'] === $column;
         }, ARRAY_FILTER_USE_BOTH));

@@ -80,11 +80,10 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
 
    // Current time
-    $start = explode(" ", microtime());
-    $start = $start[0] + $start[1];
+    $start = microtime(true);
 
    // Limit computed from current time
-    $max = get_cfg_var("max_execution_time");
+    $max = (int) get_cfg_var("max_execution_time");
     $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
 
     Html::header(
@@ -132,8 +131,7 @@ if (isset($_POST["action"])) {
 
     if ($offset < 0) {
        // Work ended
-        $end   = explode(" ", microtime());
-        $duree = round($end[0] + $end[1] - $start);
+        $duree = round(microtime(true) - $start);
         Html::changeProgressBarMessage(sprintf(
             __('Task completed in %s'),
             Html::timestampToString($duree)

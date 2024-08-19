@@ -414,8 +414,9 @@ class MassiveAction
             $this->timer->start();
             $this->fields_to_remove_when_reload[] = 'timer';
 
-            $max_time = (get_cfg_var("max_execution_time") == 0) ? 60
-                                                              : get_cfg_var("max_execution_time");
+            /** @var number $max_time */
+            $max_time = get_cfg_var("max_execution_time");
+            $max_time = ($max_time == 0) ? 60 : $max_time;
 
             $this->timeout_delay                  = ($max_time - 3);
             $this->fields_to_remove_when_reload[] = 'timeout_delay';
@@ -535,7 +536,7 @@ class MassiveAction
     /**
      * Get current action name.
      *
-     * @return
+     * @return string|null
      */
     public function getActionName(): ?string
     {
@@ -545,7 +546,7 @@ class MassiveAction
     /**
      * Get current action processor classname.
      *
-     * @return
+     * @return string|null
      */
     public function getProcessor(): ?string
     {

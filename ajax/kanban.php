@@ -190,9 +190,11 @@ if (($_POST['action'] ?? null) === 'update') {
     }
 } else if (($_POST['action'] ?? null) === 'move_item') {
     $checkParams(['card', 'column', 'position', 'kanban']);
-    /** @var Kanban|CommonDBTM $kanban */
     $kanban = getItemForItemtype($_POST['kanban']['itemtype']);
-    $can_move = $kanban->canOrderKanbanCard($_POST['kanban']['items_id']);
+    $can_move = false;
+    if (method_exists($kanban, 'canOrderKanbanCard')) {
+        $can_move = $kanban->canOrderKanbanCard($_POST['kanban']['items_id']);
+    }
     if ($can_move) {
         Item_Kanban::moveCard(
             $_POST['kanban']['itemtype'],

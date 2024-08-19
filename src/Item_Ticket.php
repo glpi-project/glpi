@@ -582,7 +582,7 @@ class Item_Ticket extends CommonItilObject_Item
      *
      * @return void
      **/
-    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
+    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
     {
         /**
          * @var array $CFG_GLPI
@@ -997,7 +997,7 @@ class Item_Ticket extends CommonItilObject_Item
     /**
      * Return used items for a ticket
      *
-     * @param integer type $tickets_id
+     * @param integer $tickets_id
      *
      * @return array
      */

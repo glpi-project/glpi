@@ -177,7 +177,7 @@ trait Clonable
      * @param array   $override_input Custom input to override
      * @param boolean $history        Do history log ? (true by default)
      *
-     * @return int|bool the new ID of the clone (or false if fail)
+     * @return bool the new ID of the clone (or false if fail)
      */
     public function cloneMultiple(
         int $n,
@@ -301,7 +301,7 @@ trait Clonable
      * The goal is to set the copy name as "{name} (copy {i})" unless it's
      * the first copy: in this case just "{name} (copy)" is acceptable
      *
-     * @param string $current_item The item being copied
+     * @param string $current_name The name of the current item
      * @param int    $copy_index   The index to append to the copy's name
      *
      * @return string The computed name of the new item to be created

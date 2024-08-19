@@ -819,11 +819,11 @@ class Infocom extends CommonDBChild
     /**
      * Calculate amortization values
      *
-     * @param number $value       Purchase value
-     * @param number $duration    Amortise duration
-     * @param string $fiscaldate  Begin of fiscal excercise
-     * @param number $buydate     Buy date
-     * @param number $usedate     Date of use
+     * @param number        $value       Purchase value
+     * @param number        $duration    Amortise duration
+     * @param string        $fiscaldate  Begin of fiscal excercise
+     * @param string $buydate     Buy date
+     * @param string $usedate     Date of use
      *
      * @return array|boolean
      */
@@ -889,7 +889,7 @@ class Infocom extends CommonDBChild
                     $fiscal_end->modify('+1 year');
                 }
                 $days = $fiscal_end->diff($usedate);
-                $days = $days->format('%m') * 30 + $days->format('%d');
+                $days = (int) $days->format('%m') * 30 + (int) $days->format('%d');
                 $current_annuity = $annuity * $days / 360;
             } else if ($i == $duration) {
                 $current_annuity = $value;
