@@ -359,7 +359,7 @@ class CommonDBTM extends CommonGLPI
             if (!isset($row["id"])) {
                 continue;
             }
-            if ($item->getFromDB($row["id"])) {
+            if ($item->getFromDB($row[static::getIndexName()])) {
                 yield $item;
             }
         }
@@ -388,7 +388,7 @@ class CommonDBTM extends CommonGLPI
         $iter = $DB->request($crit);
         if (count($iter) == 1) {
             $row = $iter->current();
-            return $this->getFromDB($row['id']);
+            return $this->getFromDB($row[static::getIndexName()]);
         } else if (count($iter) > 1) {
             trigger_error(
                 sprintf(
