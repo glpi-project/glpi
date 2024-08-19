@@ -106,6 +106,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Validate that the subject does not have the contract tab, as the
@@ -139,6 +140,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create some contracts that are ready to be assigned to our item
@@ -204,6 +206,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create a contract
@@ -281,6 +284,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Set display preferences
