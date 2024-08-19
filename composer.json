@@ -179,7 +179,7 @@
         "testimap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
         "csp": "phpcs --parallel=500 --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
         "cs": "phpcs -d memory_limit=512M --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
-        "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
+        "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor --exclude tests/fixtures/example_error_files/ .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
