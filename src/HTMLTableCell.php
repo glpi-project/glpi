@@ -60,8 +60,8 @@ class HTMLTableCell extends HTMLTableEntity
         $row,
         $header,
         $content,
-        HTMLTableCell $father = null,
-        CommonDBTM $item = null
+        ?HTMLTableCell $father = null,
+        ?CommonDBTM $item = null
     ) {
 
         parent::__construct($content);

@@ -715,7 +715,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function outputImportError($message, ProgressBar $progress_bar = null)
+    private function outputImportError($message, ?ProgressBar $progress_bar = null)
     {
 
         $skip_errors = $this->input->getOption('skip-errors');

@@ -90,7 +90,7 @@ abstract class InventoryAsset
      * @param CommonDBTM $item Item instance
      * @param array|null $data Data part, optional
      */
-    public function __construct(CommonDBTM $item, array $data = null)
+    public function __construct(CommonDBTM $item, ?array $data = null)
     {
         $this->item = $item;
         if ($data !== null) {

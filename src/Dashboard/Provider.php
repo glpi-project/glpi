@@ -81,7 +81,7 @@ class Provider
      * - 'label'
      * - 'icon'
      */
-    public static function bigNumberItem(CommonDBTM $item = null, array $params = []): array
+    public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
 
@@ -772,8 +772,8 @@ class Provider
      * - 'icon'
      */
     public static function nbItemByFk(
-        CommonDBTM $item = null,
-        CommonDBTM $fk_item = null,
+        ?CommonDBTM $item = null,
+        ?CommonDBTM $fk_item = null,
         array $params = []
     ): array {
         $DB = DBConnection::getReadConnection();
@@ -891,7 +891,7 @@ class Provider
      *
      * @return array
      */
-    public static function articleListItem(CommonDBTM $item = null, array $params = []): array
+    public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
 

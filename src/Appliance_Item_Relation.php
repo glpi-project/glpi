@@ -244,7 +244,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      * @return string the javascript
      */
     public static function getListJSForApplianceItem(
-        CommonDBTM $item = null,
+        ?CommonDBTM $item = null,
         bool $canedit = true
     ) {
         if ($canedit) {

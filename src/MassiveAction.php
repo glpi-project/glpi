@@ -717,7 +717,7 @@ class MassiveAction
      *
      * @return array|false Array of massive actions or false if $item is not valid
      **/
-    public static function getAllMassiveActions($item, $is_deleted = false, CommonDBTM $checkitem = null, ?int $items_id = null)
+    public static function getAllMassiveActions($item, $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
