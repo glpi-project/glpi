@@ -2821,8 +2821,7 @@ abstract class CommonITILObject extends CommonDBTM
             if (
                 !isset($input["solvedate"])
                 || $input["solvedate"] < $input["date"]
-            )
-            {
+            ) {
                 $input["solvedate"] = $input["date"];
             }
         }
@@ -2831,8 +2830,7 @@ abstract class CommonITILObject extends CommonDBTM
             if (
                 !isset($input["closedate"])
                 || $input["closedate"] < $input["date"]
-            )
-            {
+            ) {
                 $input["closedate"] = $input["date"];
             }
             if (
