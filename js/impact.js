@@ -1366,6 +1366,13 @@ var GLPIImpact = {
     getContextMenuItems: function(){
         return [
             {
+                id             : 'info',
+                content        : '<i class="fas fa-info-circle me-2"></i>' + __("Informations"),
+                tooltipText    : _.unescape(__("See informations of this object")),
+                selector       : 'node',
+                onClickFunction: this.menuOnInfo
+            },
+            {
                 id             : 'goTo',
                 content        : '<i class="fas fa-link me-2"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
@@ -1631,6 +1638,17 @@ var GLPIImpact = {
 
 
     /**
+     * Clean popper
+     */
+    cleanPopper: function() {
+        var elms = document.querySelectorAll("[id^='popper-target']");
+
+        for (var i = 0; i < elms.length; i++) {
+            elms[i].style.display = 'none';
+        }
+    },
+
+    /**
      *
      * @param target node or edge
      */
@@ -1655,56 +1673,32 @@ var GLPIImpact = {
                     // adding class for easier CSS control
                     tooltip.classList.add('target-popper');
 
-                    // create actual table
-                    let table = document.createElement('table');
-
-                    // append table to div container
-                    tooltip.append(table);
                     let targetData = target.data();
-                    let propname = '';
-                    let fields = ['label', 'type', 'criticity', 'status', 'comment'];
+                    let fields = ['tooltip'];
                     // loop through target data
                     for (let prop in targetData) {
                         if (!fields.includes(prop) || !Object.hasOwn(targetData, 'itemtype')) {
                             continue;
                         }
+                        if (typeof targetData[prop] === "object") {
+                            let targetArray = targetData[prop];
+                            Object.keys(targetArray).forEach(function (key) {
+                                let propname = key;
+                                let targetValue = targetArray[key];
 
-                        let targetValue = targetData[prop];
-
-                        // no recursive or reduce support
-                        if (typeof targetValue === "object") {
-                            continue;
-                        }
-
-                        let tr = table.insertRow();
-
-                        let tdTitle = tr.insertCell();
-                        let tdValue = tr.insertCell();
-                        if (prop == 'label') {
-                            propname = __("Name");
-                        }
-                        if (prop == 'criticity') {
-                            propname = _n("Business criticity", "Business criticities", 1);
-                        }
-                        if (prop == 'type') {
-                            propname = _n("Type", "Types", 1);
-                        }
-                        if (prop == 'status') {
-                            propname = __("Status");
-                        }
-                        if (prop == 'comment') {
-                            propname = __("Comments");
-                        }
-                        if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
-                            tdTitle.innerText = _.escape(propname);
-                            tdValue.innerText = $('<textarea />').html(targetValue).text();
+                                if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
+                                    let d = document.createElement("div");
+                                    tooltip.append($("<h2 />").html(_.escape(propname)).text(), d);
+                                    tooltip.append(": ", d);
+                                    tooltip.append($('<textarea />').html(targetValue).text(), d);
+                                }
+                            });
                         }
                     }
-
                     document.body.appendChild(tooltip);
                 }
                 return tooltip;
-            }
+            },
         });
 
         target.on('position', () => {
@@ -1767,11 +1761,6 @@ var GLPIImpact = {
             style    : this.getNetworkStyle(),
             layout   : layout,
             wheelSensitivity: 0.25,
-        });
-
-
-        this.cy.filter('node', 'edge').forEach(t => {
-            this.bindPopper(t);
         });
 
         // If we used the preset layout, some nodes might lack positions
@@ -2960,6 +2949,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     nodeOnClick: function (event) {
+
         switch (GLPIImpact.editionMode) {
             case GLPIImpact.EDITION_DEFAULT:
                 if (GLPIImpact.eventData.lastClicktimestamp != null) {
@@ -3048,6 +3038,9 @@ var GLPIImpact = {
     * @param {Jquery.event} event
     */
     onGrabOn: function(event) {
+
+        GLPIImpact.cleanPopper();
+
         // Store original position (shallow copy)
         GLPIImpact.eventData.grabNodePosition = {
             x: event.target.position().x,
@@ -3655,6 +3648,19 @@ var GLPIImpact = {
                 }
                 break;
         }
+    },
+
+
+    /**
+     * Handle "Info" menu event
+     *
+     * @param {JQuery.Event} event
+     */
+    menuOnInfo: function(event) {
+
+        GLPIImpact.cleanPopper();
+
+        GLPIImpact.bindPopper(event.target);
     },
 
     /**
