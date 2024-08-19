@@ -190,7 +190,6 @@ if (($_POST['action'] ?? null) === 'update') {
     }
 } else if (($_POST['action'] ?? null) === 'move_item') {
     $checkParams(['card', 'column', 'position', 'kanban']);
-    /** @var CommonDBTM $kanban */
     $kanban = getItemForItemtype($_POST['kanban']['itemtype']);
     $can_move = false;
     if (method_exists($kanban, 'canOrderKanbanCard')) {

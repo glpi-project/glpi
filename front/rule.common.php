@@ -80,9 +80,7 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
 
    // Current time
-    /** @var array|number $start */
-    $start = explode(" ", microtime());
-    $start = $start[0] + $start[1];
+    $start = microtime(true);
 
    // Limit computed from current time
     /** @var number $max */
@@ -134,9 +132,7 @@ if (isset($_POST["action"])) {
 
     if ($offset < 0) {
        // Work ended
-        /** @var array|number $end */
-        $end   = explode(" ", microtime());
-        $duree = round($end[0] + $end[1] - $start);
+        $duree = round(microtime(true) - $start);
         Html::changeProgressBarMessage(sprintf(
             __('Task completed in %s'),
             Html::timestampToString($duree)

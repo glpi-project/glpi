@@ -536,7 +536,7 @@ final class DbUtils
      *
      * @param string|array   $table     table name(s)
      * @param string         $field     field name
-     * @param array          $condition array of criteria
+     * @param array|string|null          $condition array of criteria
      *
      * @return int nb of elements in table
      */
@@ -545,7 +545,6 @@ final class DbUtils
 
         if (!is_array($condition)) {
             Toolbox::Deprecated('Condition must be an array!');
-            /** @var mixed $condition */
             if (empty($condition)) {
                 $condition = [];
             }
@@ -609,7 +608,7 @@ final class DbUtils
      * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
      *
      * @param string         $table    Table name
-     * @param array          $criteria Request criteria
+     * @param array|string|null          $criteria Request criteria
      * @param boolean        $usecache Use cache (false by default)
      * @param string         $order    Result order (default '')
      *
@@ -630,7 +629,6 @@ final class DbUtils
 
         if (!is_array($criteria)) {
             Toolbox::Deprecated('Criteria must be an array!');
-            /** @var mixed $criteria */
             if (empty($criteria)) {
                 $criteria = [];
             }
