@@ -266,7 +266,7 @@ jobs:
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
