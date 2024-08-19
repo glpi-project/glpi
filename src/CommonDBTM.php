@@ -303,7 +303,7 @@ class CommonDBTM extends CommonGLPI
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                $this->getTable() . '.' . $this->getIndexName() => Toolbox::cleanInteger($ID)
+                $this->getTable() . '.' . static::getIndexName() => Toolbox::cleanInteger($ID)
             ],
             'LIMIT'  => 1
         ]);
@@ -356,10 +356,10 @@ class CommonDBTM extends CommonGLPI
         $item = new static();
 
         foreach ($iter as $row) {
-            if (!isset($row["id"])) {
+            if (!isset($row[static::getIndexName()])) {
                 continue;
             }
-            if ($item->getFromDB($row["id"])) {
+            if ($item->getFromDB($row[static::getIndexName()])) {
                 yield $item;
             }
         }
@@ -380,7 +380,7 @@ class CommonDBTM extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = ['SELECT' => 'id',
+        $crit = ['SELECT' => static::getIndexName(),
             'FROM'   => $this->getTable(),
             'WHERE'  => $crit
         ];
@@ -388,7 +388,7 @@ class CommonDBTM extends CommonGLPI
         $iter = $DB->request($crit);
         if (count($iter) == 1) {
             $row = $iter->current();
-            return $this->getFromDB($row['id']);
+            return $this->getFromDB($row[static::getIndexName()]);
         } else if (count($iter) > 1) {
             trigger_error(
                 sprintf(
@@ -698,7 +698,7 @@ class CommonDBTM extends CommonGLPI
 
         if (count($oldvalues) && $affected_rows > 0) {
             Log::constructHistory($this, $oldvalues, $this->fields);
-            $this->getFromDB($this->fields[$this->getIndexName()]);
+            $this->getFromDB($this->fields[static::getIndexName()]);
         }
 
         return ($affected_rows >= 0);
@@ -736,7 +736,7 @@ class CommonDBTM extends CommonGLPI
                     $this->fields['id'] = $DB->insertId();
                 }
 
-                $this->getFromDB($this->fields[$this->getIndexName()]);
+                $this->getFromDB($this->fields[static::getIndexName()]);
 
                 return $this->fields['id'];
             }
