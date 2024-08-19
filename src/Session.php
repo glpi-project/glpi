@@ -1408,7 +1408,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory()) {
+        if (Session::isInventory() || Session::isCron()) {
             return true;
         }
 
