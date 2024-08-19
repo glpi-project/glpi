@@ -303,7 +303,7 @@ class CommonDBTM extends CommonGLPI
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                $this->getTable() . '.' . $this->getIndexName() => Toolbox::cleanInteger($ID)
+                $this->getTable() . '.' . static::getIndexName() => Toolbox::cleanInteger($ID)
             ],
             'LIMIT'  => 1
         ]);
@@ -698,7 +698,7 @@ class CommonDBTM extends CommonGLPI
 
         if (count($oldvalues) && $affected_rows > 0) {
             Log::constructHistory($this, $oldvalues, $this->fields);
-            $this->getFromDB($this->fields[$this->getIndexName()]);
+            $this->getFromDB($this->fields[static::getIndexName()]);
         }
 
         return ($affected_rows >= 0);
@@ -736,7 +736,7 @@ class CommonDBTM extends CommonGLPI
                     $this->fields['id'] = $DB->insertId();
                 }
 
-                $this->getFromDB($this->fields[$this->getIndexName()]);
+                $this->getFromDB($this->fields[static::getIndexName()]);
 
                 return $this->fields['id'];
             }
