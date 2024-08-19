@@ -2817,25 +2817,35 @@ abstract class CommonITILObject extends CommonDBTM
             $input["date"] = $_SESSION["glpi_currenttime"];
         }
 
-        if (isset($input["status"]) && in_array($input["status"], $this->getSolvedStatusArray())) {
-            if (isset($input["date"])) {
+        if (in_array($input["status"], $this->getSolvedStatusArray())) {
+            if (
+                !isset($input["solvedate"])
+                || $input["solvedate"] < $input["date"]
+            )
+            {
                 $input["solvedate"] = $input["date"];
-            } else {
-                $input["solvedate"] = $_SESSION["glpi_currenttime"];
             }
         }
 
-        if (isset($input["status"]) && in_array($input["status"], $this->getClosedStatusArray())) {
-            if (isset($input["date"])) {
+        if (in_array($input["status"], $this->getClosedStatusArray())) {
+            if (
+                !isset($input["closedate"])
+                || $input["closedate"] < $input["date"]
+            )
+            {
                 $input["closedate"] = $input["date"];
-            } else {
-                $input["closedate"] = $_SESSION["glpi_currenttime"];
             }
-            $input['solvedate'] = $input["closedate"];
+            if (
+                !isset($input["solvedate"])
+                || $input["solvedate"] < $input["date"]
+                || $input["solvedate"] > $input["closedate"]
+            ) {
+                $input['solvedate'] = $input["closedate"];
+            }
         }
 
-       // Set begin waiting time if status is waiting
-        if (isset($input["status"]) && ($input["status"] == self::WAITING)) {
+        // Set begin waiting time if status is waiting
+        if ($input["status"] == self::WAITING) {
             $input['begin_waiting_date'] = $input['date'];
         }
 
