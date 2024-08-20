@@ -48,7 +48,7 @@ class CsvResponse
     {
         $csv = Writer::createFromString('');
 
-        // Using a non empty string for `$escape` to is deprecated in PHP 8.4.
+        // Using a non empty string for `$escape` is deprecated in PHP 8.4.
         // According to https://www.php.net/manual/fr/function.fgetcsv.php, using an empty value for `$escape`
         // will result in the same than using `\`.
         $csv->setEscape('');
