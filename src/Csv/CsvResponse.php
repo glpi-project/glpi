@@ -47,6 +47,12 @@ class CsvResponse
     public static function output(ExportToCsvInterface $export): void
     {
         $csv = Writer::createFromString('');
+
+        // Using a non empty string for `$escape` is deprecated in PHP 8.4.
+        // According to https://www.php.net/manual/fr/function.fgetcsv.php, using an empty value for `$escape`
+        // will result in the same than using `\`.
+        $csv->setEscape('');
+
         $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
         $csv->insertOne($export->getFileHeader());
         $csv->insertAll($export->getFileContent());
