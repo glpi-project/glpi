@@ -100,10 +100,12 @@ class RuleMatchedLog extends CommonDBTM
 
             switch ($item->getType()) {
                 case 'Agent':
+                    /** @var Agent $item */
                     $array_ret[0] = self::createTabEntry(__('Import information'));
                     break;
 
                 case 'Unmanaged':
+                    /** @var Unmanaged $item */
                     $cnt = self::countForItem($item);
                     $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
                     break;
@@ -114,6 +116,7 @@ class RuleMatchedLog extends CommonDBTM
                 case 'Peripheral':
                 case 'Phone':
                 case 'Printer':
+                    /** @var Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer $item */
                     $continue = $item->isDynamic();
                     break;
                 default:

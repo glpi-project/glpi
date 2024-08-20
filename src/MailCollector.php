@@ -218,6 +218,7 @@ class MailCollector extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            /** @var MailCollector $item */
             $item->showGetMessageForm($item->getID());
         }
         return true;

@@ -145,6 +145,7 @@ class Infocom extends CommonDBChild
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':
+                    /** @var Supplier $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
@@ -176,6 +177,7 @@ class Infocom extends CommonDBChild
 
         switch ($item->getType()) {
             case 'Supplier':
+                /** @var Supplier $item */
                 $item->showInfocoms();
                 break;
 

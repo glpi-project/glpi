@@ -127,6 +127,7 @@ class Group extends CommonTreeDropdown
             $nb = 0;
             switch ($item->getType()) {
                 case 'Group':
+                    /** @var Group $item */
                     $ong = [];
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -162,6 +163,7 @@ class Group extends CommonTreeDropdown
 
         switch ($item->getType()) {
             case 'Group':
+                /** @var Group $item */
                 switch ($tabnum) {
                     case 1:
                         $item->showItems(false);

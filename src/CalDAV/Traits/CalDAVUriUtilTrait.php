@@ -116,9 +116,11 @@ trait CalDAVUriUtilTrait
         $found = false;
         switch ($principal_itemtype) {
             case \Group::class:
+                /** @var \Group $item */
                 $found = $item->getFromDB($this->getGroupIdFromPrincipalUri($uri));
                 break;
             case \User::class:
+                /** @var \User $item */
                 $found = $item->getFromDBbyName($this->getUsernameFromPrincipalUri($uri));
                 break;
         }

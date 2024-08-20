@@ -1609,6 +1609,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $nb = 0;
         switch ($item->getType()) {
             case 'Software':
+                /** @var Software $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSoftware($item->getID());
@@ -1618,6 +1619,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 break;
 
             case 'SoftwareVersion':
+                /** @var SoftwareVersion $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForVersion($item->getID());

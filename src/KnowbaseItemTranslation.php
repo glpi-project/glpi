@@ -86,6 +86,7 @@ class KnowbaseItemTranslation extends CommonDBChild
             $nb = 0;
             switch ($item->getType()) {
                 case __CLASS__:
+                    /** @var KnowbaseItemTranslation $item */
                     $ong[1] = $this->getTypeName(1);
                     if ($item->canUpdateItem()) {
                         $ong[3] = __('Edit');
@@ -115,6 +116,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var KnowbaseItemTranslation $item */
             switch ($tabnum) {
                 case 1:
                     $item->showFull();

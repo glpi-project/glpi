@@ -79,6 +79,7 @@ class Knowbase extends CommonGLPI
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var Knowbase $item */
             switch ($tabnum) {
                 case 1: // all
                     $item->showSearchView();
