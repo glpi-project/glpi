@@ -288,7 +288,7 @@ class SessionTest extends \DbTestCase
 
         //write local MO file with i18n override
         copy(
-            __DIR__ . '/../local_en_GB.mo',
+            FIXTURE_DIR . '/../local_en_GB.mo',
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
         );
         \Session::loadLanguage('en_GB');
@@ -342,13 +342,13 @@ class SessionTest extends \DbTestCase
     {
         global $CFG_GLPI;
 
+        $this->login();
         $provider = $this->mustChangePasswordProvider();
         foreach ($provider as $row) {
             $last_update = $row['last_update'];
             $expiration_delay = $row['expiration_delay'];
             $expected_result = $row['expected_result'];
 
-            $this->login();
             $user = new \User();
             $username = 'test_must_change_pass_' . mt_rand();
             $user_id = (int)$user->add([
@@ -615,10 +615,7 @@ class SessionTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider idorDataProvider
-     */
-    public function testValidateIDOR(array $data, bool $is_valid)
+    public function testValidateIDOR()
     {
         $provider = $this->idorDataProvider();
         foreach ($provider as $row) {
