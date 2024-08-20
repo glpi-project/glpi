@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,7 +48,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TagListController implements Controller
 {
     #[Route(
-        "/ajax/Form/TagList",
+        "/Form/TagList",
         name: "glpi_form_tags_list",
         methods: "GET"
     )]
@@ -70,14 +69,12 @@ final class TagListController implements Controller
     {
         $forms_id = $request->query->getInt("form_id");
         if (!$forms_id) {
-            throw new BadRequestHttpException(
-                "The 'forms_id' parameter is mandatory."
-            );
+            throw new BadRequestHttpException();
         }
 
         $form = Form::getById($forms_id);
         if (!$form) {
-            throw new NotFoundHttpException("Form not found.");
+            throw new NotFoundHttpException();
         }
 
         return $form;
