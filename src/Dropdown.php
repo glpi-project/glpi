@@ -1601,7 +1601,7 @@ JAVASCRIPT;
         if (!is_array($types)) {
             $types = $CFG_GLPI["state_types"];
         }
-        $options = self::buildDropdownOptions($types, $params['checkright']);
+        $options = self::buildItemtypesDropdownOptions($types, $params['checkright']);
 
         if (!$params['no_sort']) {
             asort($options);
@@ -1631,36 +1631,29 @@ JAVASCRIPT;
      * This method dynamically builds dropdown options based on the provided types.
      * It supports both single and multiple types (nested) and checks access rights if required.
      *
-     * @param array|string $types The types for which to build dropdown options. Can be a single type or an array of types.
-     * @param bool         $checkright Whether to check access rights for the type(s).
-     * @return array|string|null The built dropdown options, or null if access is denied or type is invalid.
+     * @param array       $types The types for which to build dropdown options. Can be a single type or an array of types.
+     * @param bool        $checkright Whether to check access rights for the type(s).
+     * @return array|null The built dropdown options, or null if access is denied or type is invalid.
      */
-    public static function buildDropdownOptions($types, $checkright = false): array|string|null
-    {
+    public static function buildItemtypesDropdownOptions(
+        array $types,
+        bool $checkright = false
+    ): array|null {
         $options = []; // Initialize the options array to accumulate results.
 
-        // Handle the case where $types is not an array, implying a single type.
-        if (!is_array($types)) {
-            if ($item = getItemForItemtype($types)) {
-                if ($checkright && !$item->canView()) {
-                    return null; // Access denied, return null.
-                }
-                // Access granted, return the type name.
-                return $item->getTypeName();
-            }
-
-            return null; // Item not found or invalid type, return null.
-        }
-
-        // Handle the case where $types is an array, potentially containing nested types.
         foreach ($types as $label => $type) {
-            // If the type is not an array, use it directly as the label.
             if (!is_array($type)) {
-                $label = $type;
+                if (
+                    ($item = getItemForItemtype($type)) !== false
+                    && (!$checkright || $item->canView())
+                ) {
+                    $options[$type] = $item->getTypeName();
+                }
+                continue;
             }
 
             // Recursively build dropdown options for the current type.
-            $opts = self::buildDropdownOptions($type, $checkright);
+            $opts = self::buildItemtypesDropdownOptions($type, $checkright);
             if ($opts !== null) {
                 $options[$label] = $opts;
             }

@@ -53,6 +53,13 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
     public function getAllowedItemtypes(): array
     {
         $dropdown_itemtypes = Dropdown::getStandardDropdownItemTypes();
+
+        /**
+         * It is necessary to replace the values with their corresponding keys
+         * because the values returned by getStandardDropdownItemTypes() are
+         * translations and not item type keys.
+         * The array_keys() function is not used because it does not work for nested arrays.
+         */
         array_walk_recursive($dropdown_itemtypes, function (&$value, $key) {
             $value = $key;
         });

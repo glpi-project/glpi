@@ -49,8 +49,8 @@ use TicketRecurrent;
 
 class QuestionTypeItem extends AbstractQuestionType
 {
-    protected $itemtype_aria_label;
-    protected $items_id_aria_label;
+    protected string $itemtype_aria_label;
+    protected string $items_id_aria_label;
 
     #[Override]
     public function __construct()
