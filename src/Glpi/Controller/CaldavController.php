@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class CaldavController implements Controller
+final class CaldavController extends AbstractController
 {
     #[Route(
         "/caldav.php{request_parameters}",

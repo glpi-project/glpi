@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class ApiRestController implements Controller
+final class ApiRestController extends AbstractController
 {
     #[Route(
         "/apirest.php{request_parameters}",

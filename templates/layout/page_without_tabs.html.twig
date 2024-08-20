@@ -31,21 +31,21 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "layout/page.html.twig" %}
+{% extends "layout/page_skeleton.html.twig" %}
 
 {% block content %}
     <div class="page-header mt-0">
-        <div class="container container-{{ tabler_container_size ?? "xl" }}">
+        <div class="container container-{{ container_size ?? "xl" }}">
             <h2 class="page title mb-0">
-                {% block tabler_title %}
-                {% endblock tabler_title %}
+                {% block content_title %}
+                {% endblock content_title %}
             </h2>
         </div>
     </div>
     <div class="page-body mt-3">
-        <div class="container container-{{ tabler_container_size ?? "xl" }}">
-            {% block tabler_content %}
-            {% endblock tabler_content %}
+        <div class="container container-{{ container_size ?? "xl" }}">
+            {% block content_body %}
+            {% endblock content_body %}
         </div>
     </div>
 {% endblock content %}

@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class StatusController implements Controller
+final class StatusController extends AbstractController
 {
     #[Route(
         "/status.php",

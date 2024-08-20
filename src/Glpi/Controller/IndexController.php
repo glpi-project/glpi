@@ -48,7 +48,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class IndexController implements Controller
+final class IndexController extends AbstractController
 {
     #[Route(
         [

@@ -34,11 +34,30 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DependencyInjection\PublicService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-interface Controller extends PublicService
+abstract class AbstractController implements PublicService
 {
-    public function __invoke(Request $request): Response;
+    abstract public function __invoke(Request $request): Response;
+
+    final public function render(
+        string $view,
+        array $parameters = [],
+        ?Response $response = null
+    ): Response {
+        $twig = TemplateRenderer::getInstance();
+
+        // We must use output buffering here as Html::header() and Html::footer()
+        // output content directly.
+        // TODO: fix header() and footer() methods and remove output buffering
+        ob_start();
+        $twig->display($view, $parameters);
+        $content = ob_get_clean();
+
+        $response->setContent($content);
+        return $response;
+    }
 }
