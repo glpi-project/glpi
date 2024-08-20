@@ -199,7 +199,7 @@ class ProfileRight extends CommonDBChild
 
         $profiles = [];
         $ok       = true;
-        foreach ($DB->request('glpi_profilerights', $condition) as $data) {
+        foreach ($DB->request(self::getTable(), $condition) as $data) {
             $profiles[] = $data['profiles_id'];
         }
         if (count($profiles)) {

@@ -3759,7 +3759,7 @@ class Profile extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        foreach ($DB->request('glpi_profiles', ['is_default' => 1]) as $data) {
+        foreach ($DB->request(self::getTable(), ['is_default' => 1]) as $data) {
             return $data['id'];
         }
         return 0;

@@ -5938,7 +5938,7 @@ JAVASCRIPT;
             $tabentities[0] = $rate;
         }
 
-        foreach ($DB->request('glpi_entities') as $entity) {
+        foreach ($DB->request(Entity::getTable()) as $entity) {
             $rate   = Entity::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
 
             if ($rate > 0) {
