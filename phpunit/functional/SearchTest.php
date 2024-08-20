@@ -2715,8 +2715,7 @@ class SearchTest extends DbTestCase
         // Run search and capture results
         ob_start();
         \Search::showList($params['item_type'], $params);
-        $names = ob_get_contents();
-        ob_end_clean();
+        $names = ob_get_clean();
 
         // Convert results to array and remove last row (always empty)
         $names = explode("\n", $names);
@@ -2839,8 +2838,7 @@ class SearchTest extends DbTestCase
                 'is_deleted' => 0,
                 'as_map' => 0,
             ]);
-            $names = ob_get_contents();
-            ob_end_clean();
+            $names = ob_get_clean();
 
             // Convert results to array and remove last row (always empty for NAMES_OUTPUT)
             $names = explode("\n", $names);
