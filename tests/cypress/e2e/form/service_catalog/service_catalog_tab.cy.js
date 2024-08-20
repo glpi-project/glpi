@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -33,36 +31,29 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
+describe('Service catalog tab', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
 
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
+        cy.createFormWithAPI({
+            'name': "Test form for service_catalog_tab.cy.js"
+        }).visitFormTab('ServiceCatalog');
+    });
 
-if (($_REQUEST['id'] ?? 0) == 0) {
-    Session::checkRight(Form::$rightname, CREATE);
+    it('can configure service catalog', () => {
+        // Make sure the values we are about to apply are are not already set to
+        // prevent false negative.
+        cy.getDropdownByLabelText("Icon").should('not.contain.text', 'ti-dog');
 
-    // Add as draft and redirect to the creation page
-    // This allow to seamlessly skip the creation step and get straight to the
-    // edit page which will contains more fields
-    $form = new Form();
-    $id = $form->add([
-        'name'        => __("Untitled form"),
-        'entities_id' => $_SESSION['glpiactive_entity'],
-        'is_draft'    => true,
-    ]);
-    Html::redirect($form->getLinkURL());
-    // Code stop here due to exit() in the Html::redirect() method
-} elseif (isset($_POST['update'])) {
-    $id = $_POST['id'] ?? 0;
+        // Set values
+        cy.getDropdownByLabelText("Icon").selectDropdownValue('ti-dog');
 
-    $form = new Form();
-    $form->getFromDB($id);
-    $form->check($id, UPDATE);
-    $form->update($_POST);
+        // Save changes
+        cy.findByRole('button', {'name': "Save changes"}).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
-    Html::redirect($form->getLinkURL());
-} else {
-    // Show requested form
-    Session::checkRight(Form::$rightname, READ);
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
-}
+        // Validate values
+        cy.getDropdownByLabelText("Icon").should('contain.text', 'ti-dog');
+    });
+});

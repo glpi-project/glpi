@@ -43,6 +43,7 @@ use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
@@ -89,6 +90,7 @@ final class Form extends CommonDBTM
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
+        $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
         $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
         $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
