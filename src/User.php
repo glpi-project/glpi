@@ -5976,7 +5976,7 @@ HTML;
             'name'       => array_keys($passwords)
         ];
 
-        foreach ($DB->request('glpi_users', $crit) as $data) {
+        foreach ($DB->request(self::getTable(), $crit) as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }

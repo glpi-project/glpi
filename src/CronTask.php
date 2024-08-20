@@ -1995,7 +1995,7 @@ class CronTask extends CommonDBTM
             $vol += Event::cleanOld($task->fields['param']);
         }
 
-        foreach ($DB->request('glpi_crontasks') as $data) {
+        foreach ($DB->request(self::getTable()) as $data) {
             if ($data['logs_lifetime'] > 0) {
                 $vol += CronTaskLog::cleanOld($data['id'], $data['logs_lifetime']);
             }

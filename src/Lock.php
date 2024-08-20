@@ -343,7 +343,7 @@ class Lock extends CommonGLPI
                 ];
                 $params['FIELDS'] = ['id', 'items_id'];
                 $first  = true;
-                foreach ($DB->request('glpi_computers_items', $params) as $line) {
+                foreach ($DB->request(Computer_Item::getTable(), $params) as $line) {
                     /** @var CommonDBTM $asset */
                     $asset = new $type();
                     $asset->getFromDB($line['items_id']);
