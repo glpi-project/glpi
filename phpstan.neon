@@ -1,7 +1,7 @@
 parameters:
     parallel:
         maximumNumberOfProcesses: 2
-    level: 2
+    level: 1
     bootstrapFiles:
         - inc/based_config.php
     paths:
@@ -20,5 +20,3 @@ parameters:
         - '/\w+ has been replaced by \w+/'
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
-includes:
-    - phpstan-baseline.neon
