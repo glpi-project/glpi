@@ -1987,6 +1987,7 @@ class SLMTest extends DbTestCase
         // Check that SLA levels have been cloned
         $sla_clone_levels = (new \SlaLevel())->find(['slas_id' => $sla_clone_id]);
         $this->assertCount(2, $sla_clone_levels);
+        $current = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[0]->fields,
@@ -1998,8 +1999,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            \SlaLevel::getById(current($sla_clone_levels)['id'])->fields
+            $current
         );
+        $current = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[1]->fields,
@@ -2011,12 +2013,13 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            \SlaLevel::getById(next($sla_clone_levels)['id'])->fields
+            $current
         );
 
         // Check that SLA levels criteria have been cloned
         $sla_clone_criteria = (new \SlaLevelCriteria())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_criteria);
+        $current = \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[0]->fields,
@@ -2025,8 +2028,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields
+            $current
         );
+        $current = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[1]->fields,
@@ -2035,12 +2039,13 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields
+            $current
         );
 
         // Check that SLA levels actions have been cloned
         $sla_clone_actions = (new \SlaLevelAction())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_actions);
+        $current = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[0]->fields,
@@ -2049,8 +2054,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields
+            $current
         );
+        $current = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[1]->fields,
@@ -2059,7 +2065,7 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields
+            $current
         );
     }
 
@@ -2152,6 +2158,7 @@ class SLMTest extends DbTestCase
         // Check that OLA levels have been cloned
         $ola_clone_levels = (new \OlaLevel())->find(['olas_id' => $ola_clone_id]);
         $this->assertCount(2, $ola_clone_levels);
+        $current = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[0]->fields,
@@ -2163,8 +2170,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            \OlaLevel::getById(current($ola_clone_levels)['id'])->fields
+            $current
         );
+        $current = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[1]->fields,
@@ -2176,12 +2184,13 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            \OlaLevel::getById(next($ola_clone_levels)['id'])->fields
+            $current
         );
 
         // Check that OLA levels criteria have been cloned
         $ola_clone_criteria = (new \OlaLevelCriteria())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
-        $this->assertCount(2, $ola_clone_criteria)->hasSize(2);
+        $this->assertCount(2, $ola_clone_criteria);
+        $current = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[0]->fields,
@@ -2190,8 +2199,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields
+            $current
         );
+        $current = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[1]->fields,
@@ -2200,12 +2210,13 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields
+            $current
         );
 
         // Check that OLA levels actions have been cloned
         $ola_clone_actions = (new \OlaLevelAction())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
         $this->assertCount(2, $ola_clone_actions);
+        $current = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[0]->fields,
@@ -2214,8 +2225,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields
+            $current
         );
+        $current = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[1]->fields,
@@ -2224,7 +2236,7 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields
+            $current
         );
     }
 }
