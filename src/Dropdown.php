@@ -158,6 +158,12 @@ class Dropdown
             $params['value'] = 0;
         }
 
+        if ($params['multiple'] && $params['values'] === '') {
+            // Prevent issues when the value corresponds to the empty string default value send by the form
+            // when no value is selected and is used when form is redisplayed due, for instance, to unicity check fails.
+            $params['values'] = [];
+        }
+
         // Remove selected value from used to prevent current selected value from being hidden from available values
         if ($params['multiple']) {
             $params['used'] = array_diff($params['used'], $params['values']);
