@@ -159,7 +159,7 @@ class Dropdown
         }
 
         if ($params['multiple'] && $params['values'] === '') {
-            // Prevent issues when the value corresponds to the empty string default value send by the form
+            // Prevent issues when the value corresponds to the empty string default value sent by the form
             // when no value is selected and is used when form is redisplayed due, for instance, to unicity check fails.
             $params['values'] = [];
         }
