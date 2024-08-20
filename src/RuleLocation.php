@@ -44,12 +44,6 @@ class RuleLocation extends Rule
         return __('Location rules');
     }
 
-
-    public function maxActionsCount()
-    {
-        return 2;
-    }
-
     public function executeActions($output, $params, array $input = [])
     {
         foreach ($this->actions as $action) {

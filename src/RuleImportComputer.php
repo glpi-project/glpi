@@ -53,17 +53,6 @@ class RuleImportComputer extends Rule
         return __('Rules for import and link computers');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-       // Unlimited
-        return 1;
-    }
-
-
     public function getCriterias()
     {
 

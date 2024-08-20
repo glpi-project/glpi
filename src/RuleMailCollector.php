@@ -41,16 +41,6 @@ class RuleMailCollector extends Rule
     public $orderby   = "name";
     public $can_sort  = true;
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 1;
-    }
-
-
     /**
      * @see Rule::getTitle()
      **/

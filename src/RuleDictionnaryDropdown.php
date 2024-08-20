@@ -39,12 +39,4 @@ class RuleDictionnaryDropdown extends Rule
     public $can_sort      = true;
 
     public static $rightname     = 'rule_dictionnary_dropdown';
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 1;
-    }
 }

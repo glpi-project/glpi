@@ -1007,7 +1007,7 @@ class RuleImportAsset extends DbTestCase
          ->if($this->newTestedInstance)
          ->then
             ->integer($this->testedInstance->maxActionsCount())
-            ->isIdenticalTo(1);
+            ->isIdenticalTo(2);
     }
 
     public function testGetCriteria()

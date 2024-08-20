@@ -52,16 +52,6 @@ class RuleSoftwareCategory extends Rule
         return __('Rules for assigning a category to software');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 1;
-    }
-
-
     public function getCriterias()
     {
 
