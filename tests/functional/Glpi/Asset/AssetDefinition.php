@@ -430,6 +430,7 @@ class AssetDefinition extends DbTestCase
             $definition->getAssetClassName(),
             [
                 'name' => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
             ]
         );
 

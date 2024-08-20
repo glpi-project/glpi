@@ -101,6 +101,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Validate that the subject does not have the operating system tab,
@@ -143,6 +144,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $base_search_options_count = count($subject->rawSearchOptions());
 
@@ -182,6 +184,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create an Item_OperatingSystem linked to our asset
@@ -230,6 +233,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create and update the linked OS in order to generate history entries
@@ -291,6 +295,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Set display preferences

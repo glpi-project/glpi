@@ -288,9 +288,11 @@ class IsRackableCapacity extends DbTestCase
         // Create assets
         $asset1 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $asset2 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset 2',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Check that the capacity usage description is correct

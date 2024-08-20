@@ -91,6 +91,7 @@ class AssetDefinitionManager extends DbTestCase
         // Create a test subject without any linked ITIL items
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         yield [
             $definition,
@@ -154,6 +155,7 @@ class AssetDefinitionManager extends DbTestCase
         // Create a test subject without any linked ITIL items
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         yield [
             $definition,

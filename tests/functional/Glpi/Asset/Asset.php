@@ -52,6 +52,7 @@ class Asset extends DbTestCase
         for ($i = 0; $i < 2; $i++) {
             $fields = [
                 'name' => 'Foo asset ' . $i,
+                'entities_id' => $this->getTestRootEntity(true),
             ];
             $asset = $this->createItem($foo_classname, $fields);
             yield [
@@ -62,6 +63,7 @@ class Asset extends DbTestCase
 
             $fields = [
                 'name' => 'Bar asset ' . $i,
+                'entities_id' => $this->getTestRootEntity(true),
             ];
             $asset = $this->createItem($bar_classname, $fields);
             yield [
@@ -114,7 +116,10 @@ class Asset extends DbTestCase
         $definition_2 = $this->initAssetDefinition();
         $classname_2  = $definition_2->getAssetClassName();
 
-        $asset = $this->createItem($classname_1, ['name' => 'new asset']);
+        $asset = $this->createItem($classname_1, [
+            'name' => 'new asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
 
         $this->exception(
             function () use ($asset, $classname_2) {
@@ -131,7 +136,10 @@ class Asset extends DbTestCase
             capacities: array_keys($capacities)
         );
 
-        $asset = $this->createItem($definition->getAssetClassName(), ['name' => 'test asset']);
+        $asset = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'test asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
 
         $this->when(
             function () use ($asset) {
