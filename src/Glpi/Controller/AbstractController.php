@@ -43,7 +43,7 @@ abstract class AbstractController implements PublicService
 {
     abstract public function __invoke(Request $request): Response;
 
-    final public function render(
+    final protected function render(
         string $view,
         array $parameters = [],
         ?Response $response = null
