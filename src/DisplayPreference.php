@@ -783,6 +783,7 @@ class DisplayPreference extends CommonDBTM
                 return true;
 
             case __CLASS__:
+                /** @var DisplayPreference $item */
                 switch ($tabnum) {
                     case 1:
                         $item->showFormGlobal(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);

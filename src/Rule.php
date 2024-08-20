@@ -3446,6 +3446,7 @@ class Rule extends CommonDBTM
             $nb = 0;
             switch ($item->getType()) {
                 case 'Entity':
+                    /** @var Entity $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $types      = [];
                         $collection = new RuleRightCollection();
@@ -3476,6 +3477,7 @@ class Rule extends CommonDBTM
 
                 case 'SLA':
                 case 'OLA':
+                    /** @var SLA|OLA $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',

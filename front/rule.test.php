@@ -55,6 +55,7 @@ if (isset($_POST["rules_id"])) {
     $rules_id = 0;
 }
 
+/** @var Rule $rule */
 if (!$rule = getItemForItemtype($sub_type)) {
     exit;
 }

@@ -64,6 +64,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
     }
 
     if (!count($result)) {
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {

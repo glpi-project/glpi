@@ -403,6 +403,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
 
         if ($item->getType() == static::$parentclass) {
+            /** @var OlaLevel|SlaLevel $level */
             $level = new static();
             $level->showForParent($item);
         }

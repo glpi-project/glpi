@@ -70,6 +70,7 @@ class Itil_Project extends CommonDBRelation
                 case Change::class:
                 case Problem::class:
                 case Ticket::class:
+                    /** @var Change|Problem|Ticket $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
@@ -83,6 +84,7 @@ class Itil_Project extends CommonDBRelation
                     break;
 
                 case Project::class:
+                    /** @var Project $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(self::getTable(), ['projects_id' => $item->getID()]);
                     }

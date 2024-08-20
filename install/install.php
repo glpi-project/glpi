@@ -426,6 +426,7 @@ function step8()
 {
     include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    /** @var DBmysql $DB */
     $DB = new DB();
 
     if (isset($_POST['send_stats'])) {

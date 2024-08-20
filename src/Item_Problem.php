@@ -227,6 +227,7 @@ class Item_Problem extends CommonItilObject_Item
             $nb = 0;
             switch ($item->getType()) {
                 case 'Problem':
+                    /** @var Problem $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
@@ -235,6 +236,7 @@ class Item_Problem extends CommonItilObject_Item
                 case 'User':
                 case 'Group':
                 case 'Supplier':
+                    /** @var User|Group|Supplier $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $from = $item->getType() == 'Group' ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item->getType() . 's');
                         $result = $DB->request([

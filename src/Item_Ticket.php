@@ -537,6 +537,7 @@ class Item_Ticket extends CommonItilObject_Item
             $nb = 0;
             switch ($item->getType()) {
                 case 'Ticket':
+                    /** @var Ticket $item */
                     if (
                         ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
                         && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)

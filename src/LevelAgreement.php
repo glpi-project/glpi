@@ -570,6 +570,7 @@ abstract class LevelAgreement extends CommonDBChild
             $nb = 0;
             switch ($item->getType()) {
                 case 'SLM':
+                    /** @var \SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),

@@ -349,6 +349,7 @@ class Dropdown
 
            // Supplier Links
             if ($itemtype == "Supplier") {
+                /** @var Supplier $item */
                 if ($item->getFromDB($params['value'])) {
                     $link_icon = '<div>';
                     $link_icon .= $item->getLinks();

@@ -505,6 +505,7 @@ class Entity extends CommonTreeDropdown
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var Entity $item */
             switch ($tabnum) {
                 case 1:
                     $item->showChildren();

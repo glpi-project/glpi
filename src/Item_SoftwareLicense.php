@@ -1013,6 +1013,7 @@ JAVASCRIPT;
         $nb = 0;
         switch ($item->getType()) {
             case 'SoftwareLicense':
+                /** @var \Item_SoftwareLicense $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());

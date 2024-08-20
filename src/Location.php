@@ -387,6 +387,7 @@ class Location extends CommonTreeDropdown
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var Location $item */
             switch ($tabnum) {
                 case 1:
                     $item->showChildren();
