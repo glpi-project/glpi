@@ -9413,6 +9413,7 @@ CREATE TABLE `glpi_forms_forms` (
     `is_draft` tinyint NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `header` longtext,
+    `icon` varchar(255) NOT NULL DEFAULT '',
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),

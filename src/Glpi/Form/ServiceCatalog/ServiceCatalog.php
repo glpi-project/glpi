@@ -33,36 +33,54 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Form\ServiceCatalog;
+
+use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
+use Override;
 
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
+final class ServiceCatalog extends CommonGLPI
+{
+    #[Override]
+    public static function getTypeName($nb = 0)
+    {
+        return __("Service catalog");
+    }
 
-if (($_REQUEST['id'] ?? 0) == 0) {
-    Session::checkRight(Form::$rightname, CREATE);
+    public static function getIcon()
+    {
+        return "ti ti-notes";
+    }
 
-    // Add as draft and redirect to the creation page
-    // This allow to seamlessly skip the creation step and get straight to the
-    // edit page which will contains more fields
-    $form = new Form();
-    $id = $form->add([
-        'name'        => __("Untitled form"),
-        'entities_id' => $_SESSION['glpiactive_entity'],
-        'is_draft'    => true,
-    ]);
-    Html::redirect($form->getLinkURL());
-    // Code stop here due to exit() in the Html::redirect() method
-} elseif (isset($_POST['update'])) {
-    $id = $_POST['id'] ?? 0;
+    #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        // This tab is only available for forms
+        if (!($item instanceof Form)) {
+            return "";
+        }
 
-    $form = new Form();
-    $form->getFromDB($id);
-    $form->check($id, UPDATE);
-    $form->update($_POST);
+        return self::createTabEntry(self::getTypeName());
+    }
 
-    Html::redirect($form->getLinkURL());
-} else {
-    // Show requested form
-    Session::checkRight(Form::$rightname, READ);
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
+    #[Override]
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ) {
+        // This tab is only available for forms
+        if (!($item instanceof Form)) {
+            return false;
+        }
+
+        $twig = TemplateRenderer::getInstance();
+        echo $twig->render('pages/admin/form/service_catalog_tab.html.twig', [
+            'form' => $item,
+            'icon' => self::getIcon(),
+        ]);
+
+        return true;
+    }
 }
