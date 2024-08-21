@@ -34,7 +34,7 @@
 
 namespace Glpi\Controller\Form;
 
-use Glpi\Controller\Controller;
+use Glpi\Controller\AbstractController;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\FormTagsManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class TagListController implements Controller
+final class TagListController extends AbstractController
 {
     #[Route(
         "/Form/TagList",
