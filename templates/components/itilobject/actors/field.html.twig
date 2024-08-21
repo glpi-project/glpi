@@ -174,6 +174,23 @@
               });
           }
 
+         if (is_selection && itemtype == "Group") {
+            const unique_id = "group_opt_" + actor_select.attr('data-actor-type') + "Group" + items_id;
+            $.ajax({
+               url: '{{ path('/ajax/comments.php') }}',
+               type: 'POST',
+               data: {
+                  'itemtype': 'Group',
+                  'value': items_id,
+               }
+            }).then((result) => {
+               if (result) {
+                  actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                  option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+               }
+            });
+         }
+
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
             var label = '';
@@ -291,11 +308,22 @@
             if ($('.user-info-card:hover').length > 0) {
                return false;
             }
+            // prevent closing popover when group card is hover
+            if ($('.group-info-card:hover').length > 0) {
+               return false;
+            }
          });
       });
 
         // when the mouse leave the user card in the popover, close it
         $(document).on('mouseleave', '.user-info-card', function() {
+            setTimeout(() => {
+                $('.popover').popover('hide');
+            }, 300);
+        });
+
+        // when the mouse leave the group card in the popover, close it
+        $(document).on('mouseleave', '.group-info-card', function() {
             setTimeout(() => {
                 $('.popover').popover('hide');
             }, 300);
