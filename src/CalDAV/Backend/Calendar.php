@@ -299,11 +299,11 @@ class Calendar extends AbstractBackend
      *
      * @param string                             $calendarId    Calendar identifier
      * @param string                             $calendarData  Seialized VCalendar object
-     * @param \PlanningExternalEvent|null        $item          Item on which input will be stored
+     * @param CalDAVCompatibleItemInterface|null $item          Item on which input will be stored
      *
      * @return boolean
      */
-    private function storeCalendarObject($calendarId, $calendarData, ?\PlanningExternalEvent $item = null)
+    private function storeCalendarObject($calendarId, $calendarData, ?CalDAVCompatibleItemInterface $item = null)
     {
 
         /** @var array $CFG_GLPI */
