@@ -40,6 +40,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController implements PublicService
 {
+    /**
+     * Helper method to get a response containing the content of a rendered
+     * twig template.
+     *
+     * @param string $view Path to a twig template, which will be looked for in
+     * the "templates" folder.
+     * For example, "my_template.html.twig" will be resolved to `templates/my_template.html.twig`.
+     * @param array $parameters The expected parameters of the twig template.
+     * @param Response $response Optional parameter which serves as the "base"
+     * response into which the renderer twig content will be inserted.
+     * You should only use it if you need to set some specific headers into the
+     * response or to set an http return code different than 200.
+     *
+     * @return Response
+     */
     final protected function render(
         string $view,
         array $parameters = [],
