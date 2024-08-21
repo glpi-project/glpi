@@ -258,7 +258,10 @@ abstract class FQDNLabel extends CommonDBChild
         foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search) as $class => $IDs) {
             if ($FQDNlabel = getItemForItemtype($class)) {
                 foreach ($IDs as $ID) {
-                    if ($FQDNlabel->getFromDB($ID)) {
+                    if (
+                        $FQDNlabel->getFromDB($ID)
+                        && ($FQDNlabel instanceof CommonDBChild)
+                    ) {
                         $FQNDs_with_Items[] = array_merge(
                             array_reverse($FQDNlabel->recursivelyGetItems()),
                             [clone $FQDNlabel]

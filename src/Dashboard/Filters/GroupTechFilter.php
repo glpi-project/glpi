@@ -82,6 +82,7 @@ class GroupTechFilter extends AbstractFilter
                 ];
             } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $itemtype  = getItemTypeForTable($table);
+                /** @var \CommonITILObject $main_item */
                 $main_item = getItemForItemtype($itemtype);
                 $grouplink = $main_item->grouplinkclass;
                 $gl_table  = $grouplink::getTable();

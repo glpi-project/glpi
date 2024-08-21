@@ -216,7 +216,10 @@ class Calendar extends AbstractBackend
             return null;
         }
 
-        $vcalendar = $item->getAsVCalendar();
+        $vcalendar = null;
+        if (method_exists($item, 'getAsVCalendar')) {
+            $vcalendar = $item->getAsVCalendar();
+        }
 
         return null !== $vcalendar ? $this->convertVCalendarToCalendarObject($vcalendar) : null;
     }
@@ -296,11 +299,11 @@ class Calendar extends AbstractBackend
      *
      * @param string                             $calendarId    Calendar identifier
      * @param string                             $calendarData  Seialized VCalendar object
-     * @param CalDAVCompatibleItemInterface|null $item          Item on which input will be stored
+     * @param \PlanningExternalEvent|null        $item          Item on which input will be stored
      *
      * @return boolean
      */
-    private function storeCalendarObject($calendarId, $calendarData, ?CalDAVCompatibleItemInterface $item = null)
+    private function storeCalendarObject($calendarId, $calendarData, ?\PlanningExternalEvent $item = null)
     {
 
         /** @var array $CFG_GLPI */

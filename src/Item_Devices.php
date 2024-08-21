@@ -254,9 +254,10 @@ class Item_Devices extends CommonDBRelation
                 $itemtypes = $CFG_GLPI[$cfg_key];
                 if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                     if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
+                        $static = new $device_type();
                         $options = array_merge(
                             $options,
-                            $device_type::rawSearchOptionsToAdd(
+                            $static::rawSearchOptionsToAdd(
                                 $itemtype,
                                 $main_joinparams
                             )
@@ -552,7 +553,7 @@ class Item_Devices extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
             if (in_array($item->getType(), self::getConcernedItems())) {
@@ -607,6 +608,7 @@ class Item_Devices extends CommonDBRelation
 
         $is_device = ($item instanceof CommonDevice);
 
+        /** @var CommonDBTM $item */
         $ID = $item->getField('id');
 
         if (!$item->can($ID, READ)) {
@@ -684,16 +686,18 @@ class Item_Devices extends CommonDBRelation
                 $table_options['itemtype'] = $itemtype;
                 $link                      = getItemForItemtype(static::getType());
 
-                $link->getTableGroup(
-                    $item,
-                    $table,
-                    $table_options,
-                    $delete_all_column,
-                    $common_column,
-                    $specific_column,
-                    $delete_column,
-                    $dynamic_column
-                );
+                if ($link instanceof Item_Devices) {
+                    $link->getTableGroup(
+                        $item,
+                        $table,
+                        $table_options,
+                        $delete_all_column,
+                        $common_column,
+                        $specific_column,
+                        $delete_column,
+                        $dynamic_column
+                    );
+                }
             }
         } else {
             $devtypes = [];
@@ -709,16 +713,18 @@ class Item_Devices extends CommonDBRelation
                         $item->getName()
                     )
                 );
-                $link->getTableGroup(
-                    $item,
-                    $table,
-                    $table_options,
-                    $delete_all_column,
-                    $common_column,
-                    $specific_column,
-                    $delete_column,
-                    $dynamic_column
-                );
+                if ($link instanceof Item_Devices) {
+                    $link->getTableGroup(
+                        $item,
+                        $table,
+                        $table_options,
+                        $delete_all_column,
+                        $common_column,
+                        $specific_column,
+                        $delete_column,
+                        $dynamic_column
+                    );
+                }
             }
         }
 
@@ -1230,7 +1236,10 @@ class Item_Devices extends CommonDBRelation
                         $link->update($update_input);
                     }
                 }
-                if (isset($input['new_devices'])) {
+                if (
+                    isset($input['new_devices'])
+                    && ($link instanceof Item_Devices)
+                ) {
                     $link->addDevices(
                         $input['new_devices'],
                         $input['itemtype'],
@@ -1244,7 +1253,10 @@ class Item_Devices extends CommonDBRelation
                 Html::displayNotFoundError();
             }
             if ($item instanceof CommonDevice) {
-                if ($link = getItemForItemtype($item->getItem_DeviceType())) {
+                if (
+                    ($link = getItemForItemtype($item->getItem_DeviceType()))
+                    && ($link instanceof Item_Devices)
+                ) {
                     $link->addDevices($input['number_devices_to_add'], '', 0, $input['items_id']);
                 }
             }
@@ -1328,7 +1340,9 @@ class Item_Devices extends CommonDBRelation
         foreach ($links as $type => $commands) {
             if ($link = getItemForItemtype($type)) {
                 foreach ($commands['add'] as $link_to_add => $number) {
-                    $link->addDevices($number, $itemtype, $items_id, $link_to_add);
+                    if ($link instanceof Item_Devices) {
+                        $link->addDevices($number, $itemtype, $items_id, $link_to_add);
+                    }
                 }
                 foreach ($commands['update'] as $link_to_update => $input) {
                     $input['id'] = $link_to_update;
@@ -1385,7 +1399,7 @@ class Item_Devices extends CommonDBRelation
                             'itemtype'  => $itemtype
                         ]
                     );
-                } else {
+                } elseif (method_exists($link, 'cleanDBOnItemDelete')) {
                     $link->cleanDBOnItemDelete($itemtype, $items_id);
                 }
             }

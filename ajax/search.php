@@ -64,19 +64,24 @@ switch ($_REQUEST['action']) {
             die;
         }
 
-        /** @var CommonDBTM $itemtype */
+        /** @var CommonDBTM $itemtype_class */
         $itemtype = $_REQUEST['itemtype'];
-        if (!$itemtype::canView()) {
+        $itemtype_class = new $itemtype();
+        if (!$itemtype_class::canView()) {
             http_response_code(403);
             die;
         }
 
         $search_params = Search::manageParams($itemtype, $_REQUEST);
 
-        if (isset($search_params['browse']) && $search_params['browse'] == 1) {
-            $itemtype::showBrowseView($itemtype, $search_params, true);
+        if (
+            isset($search_params['browse'])
+            && $search_params['browse'] == 1
+            && method_exists($itemtype, 'showBrowseView')
+        ) {
+            $itemtype_class::showBrowseView($itemtype, $search_params, true);
         } else {
-            $results = Search::getDatas($itemtype, $search_params);
+            $results = Search::getDatas($itemtype_class::getType(), $search_params);
             $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
             Search::displayData($results);
         }

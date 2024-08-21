@@ -43,6 +43,7 @@ include('../inc/includes.php');
 Session::checkLoginUser();
 
 $solution = new ITILSolution();
+/** @var CommonITILObject $track */
 $track = getItemForItemtype($_POST['itemtype']);
 $track->getFromDB($_POST['items_id']);
 

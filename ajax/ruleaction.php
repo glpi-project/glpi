@@ -64,6 +64,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     if ($_POST['ruleactions_id'] > 0) {
         $already_used = false;
     } else { // New action
+        /** @var RuleAction $ra */
         $ra           = getItemForItemtype($item->getRuleActionClass());
         $used         = $ra->getAlreadyUsedForRuleID(
             $_POST[$item->getRuleIdField()],

@@ -149,7 +149,10 @@ if (
                     echo "<script type='text/javascript' >\n";
 
                     //if item have a DC position (reload url to it's rack)
-                    if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
+                    if (
+                        method_exists($item, 'isRackPart')
+                        && ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true))
+                    ) {
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
                   html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";
                     } else {

@@ -369,7 +369,10 @@ class Dropdown
             }
 
             if ($params['display_dc_position']) {
-                if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+                if (
+                    method_exists($item, 'isRackPart')
+                    && ($rack = $item->isRackPart($itemtype, $params['value'], true))
+                ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
@@ -2462,7 +2465,10 @@ JAVASCRIPT;
     public static function import($itemtype, $input)
     {
 
-        if (!($item = getItemForItemtype($itemtype))) {
+        if (
+            !($item = getItemForItemtype($itemtype))
+            || !method_exists($item, 'import')
+        ) {
             return false;
         }
         return $item->import($input);
@@ -2492,10 +2498,13 @@ JAVASCRIPT;
         $add = true
     ) {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && method_exists($item, 'importExternal')
+        ) {
+            return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
-        return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+        return false;
     }
 
     /**

@@ -43,6 +43,7 @@ Session::checkRight("dropdown", UPDATE);
 $matching_field = null;
 
 if (isset($_POST['itemtype'], $_POST['field']) && is_a($_POST['itemtype'], CommonDropdown::class, true)) {
+    /** @var CommonDropdown $itemtype */
     $itemtype = getItemForItemtype($_POST['itemtype']);
     $matching_field = $itemtype->getAdditionalField($_POST['field']);
 }

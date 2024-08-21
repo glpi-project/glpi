@@ -381,7 +381,8 @@ class Cable extends CommonDBTM
                 $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
 
                 if (method_exists($itemtype, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    return $itemtype::getDcBreadcrumbSpecificValueToDisplay($items_id);
+                    $static = new $itemtype();
+                    return $static::getDcBreadcrumbSpecificValueToDisplay($items_id);
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

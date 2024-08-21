@@ -265,7 +265,7 @@ trait CalDAVUriUtilTrait
      *
      * @param string  $path
      *
-     * @return CalDAVCompatibleItemInterface|null
+     * @return \CommonDBTM|null
      */
     protected function getCalendarItemForPath($path)
     {

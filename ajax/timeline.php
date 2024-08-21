@@ -116,6 +116,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         }
         $foreignKey = $parent->getForeignKeyField();
         $params[$foreignKey] = $_REQUEST[$foreignKey];
+        /** @var CommonITILObject $parent */
         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
         Html::ajaxFooter();
         exit();

@@ -587,7 +587,10 @@ JAVASCRIPT
         echo "<td>" . __('Value') . "</td>";
         echo "<td>";
         echo "<span id='span_value'>";
-        if ($ID > 0) {
+        if (
+            ($ID > 0)
+            && ($item instanceof CommonDropdown)
+        ) {
             $matching_field = $item->getAdditionalField($this->fields['field']);
             if (($matching_field['type'] ?? null) === 'tinymce') {
                 Html::textarea([

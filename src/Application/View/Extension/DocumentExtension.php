@@ -72,7 +72,7 @@ class DocumentExtension extends AbstractExtension
 
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        if (static::$extensionIcon === null) {
+        if ($this->extensionIcon === null) {
             $iterator = $DB->request([
                 'SELECT' => [
                     'ext',
@@ -84,15 +84,15 @@ class DocumentExtension extends AbstractExtension
                 ]
             ]);
             foreach ($iterator as $result) {
-                static::$extensionIcon[$result['ext']] = $result['icon'];
+                $this->extensionIcon[$result['ext']] = $result['icon'];
             }
         }
 
         $defaultIcon = '/pics/timeline/file.png';
         $icon = $defaultIcon;
 
-        if (isset(static::$extensionIcon[$extension])) {
-            $icon = '/pics/icones/' . static::$extensionIcon[$extension];
+        if (isset($this->extensionIcon[$extension])) {
+            $icon = '/pics/icones/' . $this->extensionIcon[$extension];
         }
 
         return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : $defaultIcon);
