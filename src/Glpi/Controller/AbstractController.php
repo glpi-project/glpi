@@ -47,6 +47,9 @@ abstract class AbstractController implements PublicService
      * @param string $view Path to a twig template, which will be looked for in
      * the "templates" folder.
      * For example, "my_template.html.twig" will be resolved to `templates/my_template.html.twig`.
+     * For plugins, you must use the "@my_plugin_name" prefix.
+     * For example, "@formcreator/my_template.html.twig will resolve to
+     * `(plugins|marketplace)/formcreator/templates/my_template.html.twig`.
      * @param array $parameters The expected parameters of the twig template.
      * @param Response $response Optional parameter which serves as the "base"
      * response into which the renderer twig content will be inserted.
