@@ -36,10 +36,21 @@ namespace Glpi\Controller;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DependencyInjection\PublicService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractController implements PublicService
 {
+    private UrlGeneratorInterface $url_generator;
+
+    #[Required]
+    public function setUrlGenerator(UrlGeneratorInterface $url_generator)
+    {
+        $this->url_generator = $url_generator;
+    }
+
     /**
      * Helper method to get a response containing the content of a rendered
      * twig template.
@@ -74,5 +85,32 @@ abstract class AbstractController implements PublicService
 
         $response->setContent($content);
         return $response;
+    }
+
+   /**
+     * Generates a URL from the given parameters.
+     *
+     * @see UrlGeneratorInterface
+     */
+    final protected function generateUrl(
+        string $route,
+        array $parameters = [],
+        int $reference_type = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): string {
+        return $this->url_generator->generate($route, $parameters, $reference_type);
+    }
+
+    /**
+     * Returns a RedirectResponse to the given route with the given parameters.
+     *
+     * @param int $status The HTTP status code (302 "Found" by default)
+     */
+    final protected function redirectToRoute(
+        string $route,
+        array $parameters = [],
+        int $status = 302
+    ): RedirectResponse {
+        $url = $this->generateUrl($route, $parameters);
+        return new RedirectResponse($url, $status);
     }
 }
