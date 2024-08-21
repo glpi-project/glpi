@@ -36,17 +36,14 @@ namespace Glpi\Controller;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController implements PublicService
 {
-    abstract public function __invoke(Request $request): Response;
-
     final protected function render(
         string $view,
         array $parameters = [],
-        ?Response $response = null
+        Response $response = new Response(),
     ): Response {
         $twig = TemplateRenderer::getInstance();
 
