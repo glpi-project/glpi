@@ -686,18 +686,16 @@ class Item_Devices extends CommonDBRelation
                 $table_options['itemtype'] = $itemtype;
                 $link                      = getItemForItemtype(static::class);
 
-                if ($link instanceof Item_Devices) {
-                    $link->getTableGroup(
-                        $item,
-                        $table,
-                        $table_options,
-                        $delete_all_column,
-                        $common_column,
-                        $specific_column,
-                        $delete_column,
-                        $dynamic_column
-                    );
-                }
+                $link->getTableGroup(
+                    $item,
+                    $table,
+                    $table_options,
+                    $delete_all_column,
+                    $common_column,
+                    $specific_column,
+                    $delete_column,
+                    $dynamic_column
+                );
             }
         } else {
             $devtypes = [];
@@ -713,18 +711,16 @@ class Item_Devices extends CommonDBRelation
                         $item->getName()
                     )
                 );
-                if ($link instanceof Item_Devices) {
-                    $link->getTableGroup(
-                        $item,
-                        $table,
-                        $table_options,
-                        $delete_all_column,
-                        $common_column,
-                        $specific_column,
-                        $delete_column,
-                        $dynamic_column
-                    );
-                }
+                $link->getTableGroup(
+                    $item,
+                    $table,
+                    $table_options,
+                    $delete_all_column,
+                    $common_column,
+                    $specific_column,
+                    $delete_column,
+                    $dynamic_column
+                );
             }
         }
 
@@ -1236,10 +1232,7 @@ class Item_Devices extends CommonDBRelation
                         $link->update($update_input);
                     }
                 }
-                if (
-                    isset($input['new_devices'])
-                    && ($link instanceof Item_Devices)
-                ) {
+                if (isset($input['new_devices'])) {
                     $link->addDevices(
                         $input['new_devices'],
                         $input['itemtype'],
@@ -1253,10 +1246,7 @@ class Item_Devices extends CommonDBRelation
                 Html::displayNotFoundError();
             }
             if ($item instanceof CommonDevice) {
-                if (
-                    ($link = getItemForItemtype($item->getItem_DeviceType()))
-                    && ($link instanceof Item_Devices)
-                ) {
+                if ($link = getItemForItemtype($item->getItem_DeviceType())) {
                     $link->addDevices($input['number_devices_to_add'], '', 0, $input['items_id']);
                 }
             }
@@ -1340,9 +1330,7 @@ class Item_Devices extends CommonDBRelation
         foreach ($links as $type => $commands) {
             if ($link = getItemForItemtype($type)) {
                 foreach ($commands['add'] as $link_to_add => $number) {
-                    if ($link instanceof Item_Devices) {
-                        $link->addDevices($number, $itemtype, $items_id, $link_to_add);
-                    }
+                    $link->addDevices($number, $itemtype, $items_id, $link_to_add);
                 }
                 foreach ($commands['update'] as $link_to_update => $input) {
                     $input['id'] = $link_to_update;
