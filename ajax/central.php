@@ -63,22 +63,21 @@ if (
     die();
 }
 
+/** @var class-string $itemtype */
 $itemtype = $_REQUEST['itemtype'];
 $params = $_REQUEST['params'];
 
 switch ($_REQUEST['widget']) {
     case 'central_count':
         if (method_exists($itemtype, 'showCentralCount')) {
-            $itemtype_class = new $itemtype();
-            $itemtype_class::showCentralCount($params['foruser'] ?? false);
+            $itemtype::showCentralCount($params['foruser'] ?? false);
         }
         break;
     case 'central_list':
         if (method_exists($itemtype, 'showCentralList')) {
             if (is_subclass_of($itemtype, CommonITILObject::class) || is_subclass_of($itemtype, CommonITILTask::class)) {
                 $showgrouptickets = isset($params['showgrouptickets']) ? ($params['showgrouptickets'] !== 'false') : false;
-                $itemtype_class = new $itemtype();
-                $itemtype_class::showCentralList($params['start'], $params['status'] ?? 'process', $showgrouptickets);
+                $itemtype::showCentralList($params['start'], $params['status'] ?? 'process', $showgrouptickets);
             }
         } else if ($itemtype === RSSFeed::class) {
             $personal = $params['personal'] !== 'false';
