@@ -49,8 +49,8 @@ final class ListenersPriority
         // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
 
-        // Dropdowns are sometimes checked from the database, therefore config must be already set.
-        LegacyDropdownListener::class => 300,
+        // Plugins dropdowns requires plugins to be initialized, therefore config must be already set.
+        LegacyDropdownRouteListener::class => 300,
     ];
 
     private function __construct()

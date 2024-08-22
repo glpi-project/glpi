@@ -53,6 +53,7 @@ function plugin_version_tester()
 function plugin_tester_getDropdown(): array
 {
     return [
+        PluginTesterMyLegacyClass::class => PluginTesterMyLegacyClass::getTypeName(),
         PluginTesterMyPseudoPsr4Class::class => PluginTesterMyPseudoPsr4Class::getTypeName(),
         MyPsr4Class::class => MyPsr4Class::getTypeName(),
     ];

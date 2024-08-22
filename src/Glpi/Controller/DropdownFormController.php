@@ -38,18 +38,18 @@ use CommonDevice;
 use CommonDropdown;
 use Html;
 use Glpi\Event;
-use Session;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Toolbox;
 
-final readonly class DropdownFormController implements Controller
+final class DropdownFormController extends AbstractController
 {
-    public const OPTIONS_KEY = 'dropdown_options';
-
-    #[Route("/dropdown/form/{class}", name: "glpi_dropdown_form", options: ["is_form" => true])]
+    #[Route("/dropdown/form/{class}", name: "glpi_dropdown_form")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
@@ -62,23 +62,20 @@ final readonly class DropdownFormController implements Controller
             throw new BadRequestException('The "class" attribute must be a valid dropdown class.');
         }
 
-        $options = $request->attributes->get(self::OPTIONS_KEY, []) ?: [];
-        if ($options && !\is_array($options)) {
-            throw new BadRequestException('Invalid dropdown options');
-        }
-
-        return new StreamedResponse(function () use ($class, $options, $request) {
+        return new StreamedResponse(function () use ($class, $request) {
             $dropdown = new $class();
-            $this->loadDropdownForm($request, $dropdown, $options);
+            $this->loadDropdownForm($request, $dropdown);
         });
     }
 
-    public static function loadDropdownForm(Request $request, CommonDropdown $dropdown, array $options): void
+    public static function loadDropdownForm(Request $request, CommonDropdown $dropdown, ?array $options = null): void
     {
+        if ($options !== null) {
+            Toolbox::deprecated('Usage of `$options` parameter in DropdownFormController is deprecated.');
+        }
+
         if (!$dropdown->canView()) {
-            // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            throw new AccessDeniedHttpException();
         }
 
         if (isset($_POST["id"])) {
@@ -184,7 +181,7 @@ final readonly class DropdownFormController implements Controller
                 \call_user_func([&$dropdown, $method], $_POST);
                 Html::back();
             } else {
-                Html::displayErrorAndDie(\__('No selected element or badly defined operation'));
+                throw new BadRequestHttpException();
             }
         } else if (isset($_GET['_in_modal'])) {
             Html::popHeader(
@@ -198,7 +195,7 @@ final readonly class DropdownFormController implements Controller
             $dropdown->showForm($_GET["id"]);
             Html::popFooter();
         } else {
-            if (!$options) {
+            if ($options === null) {
                 $options = [];
             }
             $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
@@ -206,5 +203,7 @@ final readonly class DropdownFormController implements Controller
 
             $dropdown::displayFullPageForItem($_GET['id'], null, $options);
         }
+
+        throw new BadRequestHttpException();
     }
 }

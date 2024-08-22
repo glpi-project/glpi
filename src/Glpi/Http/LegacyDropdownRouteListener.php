@@ -38,14 +38,13 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
 use Glpi\Controller\DropdownController;
-use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Glpi\Controller\DropdownFormController;
 
-final readonly class LegacyDropdownListener implements EventSubscriberInterface
+final readonly class LegacyDropdownRouteListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -62,9 +61,10 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if ($class = $this->findDropdownClass($request)) {
-            $request->attributes->set('_controller', DropdownController::class);
+            $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
+
+            $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
             $request->attributes->set('class', $class);
-            $request->attributes->set('is_form', \str_ends_with($request->getPathInfo(), '.form.php'));
         }
     }
 
@@ -76,10 +76,6 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
             return $this->normalizeClass($model_class);
         }
 
-        if ($edge_case_class = $this->findEdgeCaseClass($request)) {
-            return $this->normalizeClass($edge_case_class);
-        }
-
         if ($model_class = $this->findGenericClass($path_info)) {
             return $this->normalizeClass($model_class);
         }
@@ -88,8 +84,12 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
             return $this->normalizeClass($device_class);
         }
 
-        if ($asset_class = $this->findAssetclass($request)) {
-            return $this->normalizeClass($asset_class);
+        if ($asset_model_class = $this->findAssetModelclass($request)) {
+            return $this->normalizeClass($asset_model_class);
+        }
+
+        if ($asset_type_class = $this->findAssetTypeclass($request)) {
+            return $this->normalizeClass($asset_type_class);
         }
 
         return null;
@@ -97,8 +97,9 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
 
     private function findGenericClass(string $path_info): ?string
     {
-        $path_regex = '~^/front/(asset/)?(?<basename>.+)(?<form>\.form)?.php~isUu';
+        $path_regex = '~^/front/(?<basename>.+)(?<form>\.form)?\.php~isUu';
 
+        $matches = [];
         if (!\preg_match($path_regex, $path_info, $matches)) {
             return null;
         }
@@ -163,59 +164,51 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
         return \get_class($class);
     }
 
-    private function findAssetclass(Request $request): ?string
+    private function findAssetModelclass(Request $request): ?string
     {
-        if (!\preg_match('~^/front/asset/asset(?<param>model|type)(?<is_form>\.form)?.php$~i', $request->getPathInfo(), $matches)) {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/assetmodel(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
             return null;
         }
 
-        $param = $matches['param'];
-
         $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
 
-        return $is_form
-            ? $this->findAssetFormClass($request, $param === 'model')
-            : $this->findModelFormClass($request, $param === 'model');
-    }
-
-    private function findAssetFormClass(Request $request, bool $is_model): string
-    {
         $classname = null;
 
-        if ($id = $request->query->get('id') ?: $request->request->get('id')) {
-            $asset = $is_model ? AssetModel::getById($id) : AssetType::getById($id);
-            $classname = \get_class($asset);
+        if ($is_form && $id !== null) {
+            $asset = AssetModel::getById($id);
+            $classname = $asset::class;
         } else {
             $definition = new AssetDefinition();
-            if ($request->query->has('class')  && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
-                $classname = $is_model
-                    ? $definition->getAssetModelClassName()
-                    : $definition->getAssetTypeClassName();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getAssetModelClassName();
             }
-        }
-
-        if (!$classname) {
-            throw new BadRequestException('Bad request');
         }
 
         return $classname;
     }
 
-    private function findModelFormClass(Request $request, bool $is_model): ?string
+    private function findAssetTypeclass(Request $request): ?string
     {
-        $definition = new AssetDefinition();
-        $classname = null;
-        if (
-            array_key_exists('class', $request->query->all())
-            && $definition->getFromDBBySystemName($request->query->getString('class'))
-        ) {
-            $classname = $is_model
-                ? $definition->getAssetModelClassName()
-                : $definition->getAssetTypeClassName();
+        $matches = [];
+        if (!\preg_match('~^/front/asset/assettype(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
         }
 
-        if (!$classname) {
-            throw new BadRequestException('Bad request');
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+
+        if ($is_form && $id !== null) {
+            $asset = AssetType::getById($id);
+            $classname = $asset::class;
+        } else {
+            $definition = new AssetDefinition();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getAssetTypeClassName();
+            }
         }
 
         return $classname;
@@ -230,28 +223,12 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
         return (new \ReflectionClass($class))->getName();
     }
 
-    private function findEdgeCaseClass(Request $request): ?string
-    {
-        if ($request->getPathInfo() === '/front/entity.form.php') {
-            // Root entity : no delete
-            if ($request->query->getString('id') === '0') {
-                $request->attributes->set(DropdownController::OPTIONS_KEY, [
-                    'canedit' => true,
-                    'candel'  => false
-                ]);
-            }
-
-            return \Entity::class;
-        }
-
-        return null;
-    }
-
     private function findPluginClass(string $path_info): ?string
     {
-        $path_regex = '~^/(?<type>plugins|marketplace)/(?<plugin>[^/]+)/front/(?<basename>.+)(?<form>\.form)?.php~isUu';
+        $path_regex = '~^/(plugins|marketplace)/(?<plugin>[^/]+)/front/(?<basename>.+)(?<form>\.form)?.php~isUu';
 
-        if (!\preg_match($path_regex, $path_info, $matches)) {
+        $matches = [];
+        if (\preg_match($path_regex, $path_info, $matches) !== 1) {
             return null;
         }
 
@@ -260,37 +237,21 @@ final readonly class LegacyDropdownListener implements EventSubscriberInterface
         }
 
         $basename = $matches['basename'];
-        $type = $matches['type'];
         $plugin = $matches['plugin'];
         if (!$this->isPluginActive($plugin)) {
             return null;
         }
 
-        $class = (new \DbUtils())->fixItemtypeCase($basename);
-
-        if (\class_exists($basename)) {
-            return $class;
+        // PluginMyPluginDropdown -> /plugins/myplugin/front/dropdown.php
+        $legacy_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($basename)));
+        if (is_a($legacy_classname, \CommonDropdown::class, true)) {
+            return $legacy_classname;
         }
 
-        $raw_namespaced_class = \sprintf(
-            'Glpi%s\%s\%s',
-            ucfirst(preg_replace('~s$~i', '', $type)),
-            $plugin,
-            \str_replace('/', '\\', $class),
-        );
-        $psr4_namespaced_class = \preg_replace_callback('~\\\([a-z])~Uu', static fn($i) => '\\' . \ucfirst($i[1]), $raw_namespaced_class);
-
-        if (
-            \class_exists($raw_namespaced_class)
-            && \is_subclass_of($raw_namespaced_class, \CommonDropdown::class)
-        ) {
-            return $raw_namespaced_class;
-        }
-        if (
-            \class_exists($psr4_namespaced_class)
-            && \is_subclass_of($psr4_namespaced_class, \CommonDropdown::class)
-        ) {
-            return $psr4_namespaced_class;
+        // GlpiPlugin\MyPlugin\Dropdown -> /plugins/myplugin/front/dropdown.php
+        $namespaced_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('GlpiPlugin\%s\%s', ucfirst($plugin), ucfirst($basename)));
+        if (is_a($namespaced_classname, \CommonDropdown::class, true)) {
+            return $namespaced_classname;
         }
 
         return null;

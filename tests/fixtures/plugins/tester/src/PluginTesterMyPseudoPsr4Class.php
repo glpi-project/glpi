@@ -36,6 +36,6 @@ final class PluginTesterMyPseudoPsr4Class extends CommonDropdown
 {
     public static function getTypeName($nb = 0): string
     {
-        return 'Tester plugin psuedo-PSR4 dropdown';
+        return 'Tester plugin pseudo-PSR4 dropdown';
     }
 }

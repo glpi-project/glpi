@@ -42,18 +42,14 @@
 use Glpi\Controller\DropdownFormController;
 use Glpi\Controller\LegacyFileLoadController;
 
-if (!($dropdown instanceof CommonDropdown)) {
-    Html::displayErrorAndDie('');
-}
-if (!($this instanceof LegacyFileLoadController)) {
-    die('Dropdown was not executed in the right context. Are you running GLPI 11.0 or above?');
+if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
+    throw new LogicException();
 }
 
-\Toolbox::deprecated(message: \sprintf(
-    "Requiring legacy dropdown files is deprecated and will be removed in the future.\n" .
-    "You can safely remove the %s file and use the new \"%s\" route, dedicated for dropdowns.",
+\Toolbox::deprecated(\sprintf(
+    'Requiring legacy dropdown files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for dropdowns.',
     debug_backtrace()[0]['file'] ?? 'including',
     'glpi_dropdown_form',
-), version: '11.0');
+));
 
 DropdownFormController::loadDropdownForm($this->request, $dropdown, $options ?? []);

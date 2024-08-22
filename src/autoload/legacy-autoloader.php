@@ -40,7 +40,7 @@
  *
  * @return void|boolean
  */
-function glpi_autoload(string $classname): void
+function glpi_autoload($classname)
 {
     $plug = isPluginItemType($classname);
     if (!$plug) {
@@ -57,7 +57,7 @@ function glpi_autoload(string $classname): void
     $plugin_class = $plug['class'];
 
     if (!Plugin::isPluginLoaded($plugin_key)) {
-        return;
+        return false;
     }
 
     $plugin_path = null;
@@ -69,25 +69,14 @@ function glpi_autoload(string $classname): void
         }
     }
 
-
     // Legacy class path, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/inc/foo.class.php`
     $legacy_path          = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
-    if (file_exists($legacy_path)) {
-        include_once($legacy_path);
-        return;
-    }
-
     // PSR-4 styled path for class without namespace, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/src/PluginMyPluginFoo.php`
     $psr4_styled_path     = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
-    if (!str_starts_with($classname, NS_PLUG) && file_exists($psr4_styled_path)) {
+    if (file_exists($legacy_path)) {
+        include_once($legacy_path);
+    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
         include_once($psr4_styled_path);
-        return;
-    }
-
-    $psr4_nonprefixed_path = \str_replace(\str_replace('\\', '/', NS_PLUG), '', $psr4_styled_path);
-    if (\file_exists($psr4_nonprefixed_path)) {
-        include_once($psr4_nonprefixed_path);
-        return;
     }
 }
 

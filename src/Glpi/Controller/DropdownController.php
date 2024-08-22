@@ -37,17 +37,15 @@ namespace Glpi\Controller;
 use CommonDropdown;
 use Html;
 use Search;
-use Session;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class DropdownController implements Controller
+final class DropdownController extends AbstractController
 {
-    public const OPTIONS_KEY = 'dropdown_options';
-
     #[Route("/dropdown/{class}", name: "glpi_dropdown")]
     public function __invoke(Request $request): Response
     {
@@ -70,14 +68,12 @@ final readonly class DropdownController implements Controller
     public static function loadDropdown(Request $request, CommonDropdown $dropdown): void
     {
         if (!$dropdown->canView()) {
-            // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            throw new AccessDeniedHttpException();
         }
 
         $dropdown::displayCentralHeader();
 
-        Search::show(\get_class($dropdown));
+        Search::show($dropdown::class);
 
         Html::footer();
     }
