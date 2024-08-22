@@ -3805,7 +3805,7 @@ class CommonDBTM extends CommonGLPI
 
         $type = $this->getType();
 
-        if (isset($options[$type])) {
+        if (isset($options[$type]) && !defined('TU_USER')) {
             return $options[$type];
         }
 
