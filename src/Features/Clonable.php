@@ -139,6 +139,14 @@ trait Clonable
                     $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
                     $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
                     $relation_newitems[] = $relation_item;
+                } else {
+                    Toolbox::logInFile(
+                        'php-errors',
+                        sprintf(
+                            'Unable to clone %s',
+                            $itemtype
+                        ),
+                    );
                 }
             }
             // Update relations between cloned items
