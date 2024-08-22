@@ -256,18 +256,23 @@ abstract class FQDNLabel extends CommonDBChild
         }
 
         foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search) as $class => $IDs) {
-            if ($FQDNlabel = getItemForItemtype($class)) {
+            if (
+                ($FQDNlabel = getItemForItemtype($class))
+                && ($FQDNlabel instanceof CommonDBChild)
+            ) {
                 foreach ($IDs as $ID) {
-                    if (
-                        $FQDNlabel->getFromDB($ID)
-                        && ($FQDNlabel instanceof CommonDBChild)
-                    ) {
+                    if ($FQDNlabel->getFromDB($ID)) {
                         $FQNDs_with_Items[] = array_merge(
                             array_reverse($FQDNlabel->recursivelyGetItems()),
                             [clone $FQDNlabel]
                         );
                     }
                 }
+            } else {
+                Toolbox::logInFile(
+                    'php-errors',
+                    sprintf('%s is not a valid item type', $class),
+                );
             }
         }
 
