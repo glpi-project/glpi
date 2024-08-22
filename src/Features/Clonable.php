@@ -140,12 +140,9 @@ trait Clonable
                     $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
                     $relation_newitems[] = $relation_item;
                 } else {
-                    Toolbox::logInFile(
-                        'php-errors',
-                        sprintf(
-                            'Unable to clone %s',
-                            $itemtype
-                        ),
+                    trigger_error(
+                        sprintf('Unable to clone %s', $itemtype),
+                        E_USER_WARNING
                     );
                 }
             }

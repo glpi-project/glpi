@@ -2471,6 +2471,10 @@ JAVASCRIPT;
         ) {
             return $item->import($input);
         }
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
         return false;
     }
 
@@ -2504,6 +2508,10 @@ JAVASCRIPT;
         ) {
             return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
         return false;
     }
 

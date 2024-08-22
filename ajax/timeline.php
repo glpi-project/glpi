@@ -86,6 +86,10 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
     if (!$parent instanceof CommonITILObject) {
+        trigger_error(
+            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
+            E_USER_WARNING
+        );
         exit();
     }
 
