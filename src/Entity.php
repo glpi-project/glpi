@@ -559,6 +559,16 @@ class Entity extends CommonTreeDropdown
         return true;
     }
 
+    public function showForm($ID, array $options = [])
+    {
+        if ((int)$ID === 0) {
+            // Root entity: can edit but cannot delete
+            $options['candel'] = false;
+        }
+
+        return parent::showForm($ID, $options);
+    }
+
     /**
      * Get the ID of entity assigned to the object
      *

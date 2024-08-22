@@ -1578,23 +1578,21 @@ class DbUtilsTest extends DbTestCase
                 'plugins' => [
                     'foo' => [
                         'src' => [
-                            'Foo' => [
-                                'Models' => [
-                                    'Foo' => [
-                                        'Bar_Item.php' => '',
-                                    ],
+                            'Models' => [
+                                'Foo' => [
+                                    'Bar_Item.php' => '',
                                 ],
-                                'NamespacedBar.php' => '',
-                                'Relation_Item.php' => '',
                             ],
+                            'NamespacedBar.php' => '',
                             'PluginFooBarItem.php' => '',
+                            'Relation_Item.php' => '',
                         ],
                     ],
                 ],
             ]
         );
         $instance = new \DbUtils();
-        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'));
+        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'), [vfsStream::url('glpi/plugins')]);
         $this->assertEquals($expected, $result);
     }
 }

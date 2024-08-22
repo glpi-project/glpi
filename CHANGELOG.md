@@ -181,6 +181,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `verbatim_value` Twig filter.
 - `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 - `linkuser_types`, `linkgroup_types`, `linkuser_tech_types`, `linkgroup_tech_types` configuration entries have been merged in a unique `assignable_types` configuration entry.
+- Usage of the `front/dropdown.common.php` and the `dropdown.common.form.php` files. There is now a generic controller that will serve the search and form pages of any `Dropdown` class.
 - `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`

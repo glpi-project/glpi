@@ -367,7 +367,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
+    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
@@ -397,8 +397,8 @@ final class DbUtils
 
         $replacements = [];
         if ($context !== 'glpi-core') {
-            // Strip the `GlpiPlugin\\` prefix that is not present in plugins classes path
-            $replacements[NS_PLUG] = '';
+            // Strip the `GlpiPlugin\\MyPlugin` prefix that is not present in plugins classes path
+            $replacements[$namespace] = '';
         }
         $replacements['\\'] = DIRECTORY_SEPARATOR;
         $expected_lc_path = str_ireplace(array_keys($replacements), array_values($replacements), strtolower($itemtype) . '.php');
@@ -412,7 +412,7 @@ final class DbUtils
 
         if ($mapping[$context] !== null && array_key_exists($expected_lc_path, $mapping[$context])) {
             // Return known value, if any
-            return ($context !== 'glpi-core' && $uses_namespace ? NS_PLUG : '') . $mapping[$context][$expected_lc_path];
+            return ($context !== 'glpi-core' && $uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path];
         }
 
         if (
@@ -438,27 +438,31 @@ final class DbUtils
 
         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
         $mapping[$context] = [];
-        $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
-        if (is_dir($srcdir)) {
-            $files_iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($srcdir),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-            /** @var SplFileInfo $file */
-            foreach ($files_iterator as $file) {
-                if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
-                    continue;
-                }
-                $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
-
-                // Store entry into mapping:
-                // - key is the lowercased filepath;
-                // - value is the classname with correct case.
-                $mapping[$context][strtolower($relative_path)] = str_replace(
-                    [DIRECTORY_SEPARATOR, '.php'],
-                    ['\\',                ''],
-                    $relative_path
+        foreach ($plugins_dirs as $plugins_dir) {
+            $srcdir = $context === 'glpi-core'
+                ? $root_dir . '/src'
+                : $plugins_dir . '/' . $context . '/src';
+            if (is_dir($srcdir)) {
+                $files_iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($srcdir),
+                    RecursiveIteratorIterator::SELF_FIRST
                 );
+                /** @var SplFileInfo $file */
+                foreach ($files_iterator as $file) {
+                    if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
+                        continue;
+                    }
+                    $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+
+                    // Store entry into mapping:
+                    // - key is the lowercased filepath;
+                    // - value is the classname with correct case.
+                    $mapping[$context][strtolower($relative_path)] = str_replace(
+                        [DIRECTORY_SEPARATOR, '.php'],
+                        ['\\',                ''],
+                        $relative_path
+                    );
+                }
             }
         }
 
@@ -467,7 +471,7 @@ final class DbUtils
         $GLPI_CACHE->set($cache_key, $mapping[$context]);
 
         return array_key_exists($expected_lc_path, $mapping[$context])
-            ? ($context !== 'glpi-core' && $uses_namespace ? NS_PLUG : '') . $mapping[$context][$expected_lc_path]
+            ? ($context !== 'glpi-core' && $uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path]
             : $itemtype;
     }
 

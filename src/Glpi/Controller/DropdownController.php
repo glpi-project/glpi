@@ -34,51 +34,47 @@
 
 namespace Glpi\Controller;
 
-use Glpi\DependencyInjection\PublicService;
+use CommonDropdown;
+use Html;
+use Search;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class LegacyFileLoadController implements PublicService
+final class DropdownController extends AbstractController
 {
-    public const REQUEST_FILE_KEY = '_glpi_file_to_load';
-
-    protected ?Request $request = null;
-
-    public function __invoke(Request $request): StreamedResponse
+    #[Route("/Dropdown/{class}", name: "glpi_dropdown")]
+    public function __invoke(Request $request): Response
     {
-        $this->request = $request;
+        $class = $request->attributes->getString('class');
 
-        $target_file = $request->attributes->getString(self::REQUEST_FILE_KEY);
-
-        if (!$target_file) {
-            throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
+        if (!$class) {
+            throw new BadRequestException('The "class" attribute is mandatory for dropdown routes.');
         }
 
-        $callback = function () use ($target_file) {
-            require $target_file;
-        };
-
-        return new StreamedResponse($callback->bindTo($this, self::class));
-    }
-
-    protected function setAjax(): void
-    {
-        $this->getRequest()->attributes->set('_glpi_ajax', true);
-
-        \Session::setAjax();
-        \Html::setAjax();
-    }
-
-    private function getRequest(): ?Request
-    {
-        if (!$this->request) {
-            throw new \RuntimeException(\sprintf(
-                'Could not find Request in "%s" controller. Did you forget to call "%s"?',
-                self::class,
-                '__invoke',
-            ));
+        if (!\is_subclass_of($class, CommonDropdown::class)) {
+            throw new BadRequestException('The "class" attribute is mandatory for dropdown routes.');
         }
 
-        return $this->request;
+        return new StreamedResponse(function () use ($class, $request) {
+            $dropdown = new $class();
+            $this->loadDropdown($request, $dropdown);
+        });
+    }
+
+    public static function loadDropdown(Request $request, CommonDropdown $dropdown): void
+    {
+        if (!$dropdown->canView()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $dropdown::displayCentralHeader();
+
+        Search::show($dropdown::class);
+
+        Html::footer();
     }
 }
