@@ -41,6 +41,7 @@ use Glpi\Api\HL\GraphQLGenerator;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -49,6 +50,7 @@ use Glpi\Http\Response;
 final class GraphQLController extends AbstractController
 {
     #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'GraphQL API',
     )]
@@ -58,12 +60,13 @@ final class GraphQLController extends AbstractController
     }
 
     #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'GraphQL API Schema',
     )]
     public function getSchema(Request $request): Response
     {
-        $graphql_generator = new GraphQLGenerator();
+        $graphql_generator = new GraphQLGenerator($this->getAPIVersion($request));
         return new Response(200, [], $graphql_generator->getSchema());
     }
 }

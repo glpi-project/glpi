@@ -73,14 +73,17 @@ final class OpenAPIGenerator
 
     private Router $router;
 
-    public function __construct(Router $router)
+    private string $api_version;
+
+    public function __construct(Router $router, string $api_version)
     {
         $this->router = $router;
+        $this->api_version = $api_version;
     }
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-writeonly', 'x-readonly', 'x-full-schema'];
+        return ['x-writeonly', 'x-readonly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
@@ -132,7 +135,7 @@ EOT;
         ];
     }
 
-    public static function getComponentSchemas(): array
+    public static function getComponentSchemas(string $api_version): array
     {
         static $schemas = null;
 
@@ -141,7 +144,7 @@ EOT;
 
             $controllers = Router::getInstance()->getControllers();
             foreach ($controllers as $controller) {
-                $known_schemas = $controller::getKnownSchemas();
+                $known_schemas = $controller::getKnownSchemas($api_version);
                 $short_name = (new \ReflectionClass($controller))->getShortName();
                 $controller_name = str_replace('Controller', '', $short_name);
                 foreach ($known_schemas as $schema_name => $known_schema) {
@@ -175,7 +178,7 @@ EOT;
 
     private function getComponentReference(string $name, string $controller): ?array
     {
-        $components = self::getComponentSchemas();
+        $components = self::getComponentSchemas($this->api_version);
         // Try matching by name and controller first
         $match = null;
         $is_ref_array = str_ends_with($name, '[]');
@@ -227,7 +230,7 @@ EOT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $component_schemas = self::getComponentSchemas();
+        $component_schemas = self::getComponentSchemas($this->api_version);
         ksort($component_schemas);
         $schema = [
             'openapi' => self::OPENAPI_VERSION,

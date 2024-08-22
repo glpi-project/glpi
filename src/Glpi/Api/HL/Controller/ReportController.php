@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -49,6 +50,7 @@ class ReportController extends AbstractController
     {
         return [
             'StatReport' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'assistance_type' => [
@@ -73,6 +75,7 @@ class ReportController extends AbstractController
                 ]
             ],
             'GlobalStats' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'sample_dates' => [
@@ -157,6 +160,7 @@ class ReportController extends AbstractController
                 ]
             ],
             'ITILStats' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
@@ -224,6 +228,7 @@ class ReportController extends AbstractController
                 ]
             ],
             'AssetStats' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
@@ -257,6 +262,7 @@ class ReportController extends AbstractController
                 ]
             ],
             'AssetCharacteristicsStats' => [
+                'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'characteristic' => [
@@ -318,6 +324,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat', methods: ['GET'], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List available assistance statistics',
         responses: [
@@ -384,6 +391,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/Global', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get global assistance statistics',
         parameters: [
@@ -448,6 +456,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics',
         parameters: [
@@ -568,6 +577,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics/Export', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics',
         parameters: [
@@ -661,6 +671,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics by asset',
         parameters: [
@@ -726,6 +737,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset/Export', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics by asset',
         parameters: [
@@ -809,6 +821,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics by asset characteristics',
         parameters: [
@@ -940,6 +953,7 @@ class ReportController extends AbstractController
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics/Export', methods: ['GET'], requirements: [
         'assistance_type' => 'Ticket|Change|Problem'
     ], tags: ['Statistics', 'Assistance'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics by asset characteristics',
         parameters: [

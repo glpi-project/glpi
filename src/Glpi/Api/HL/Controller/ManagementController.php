@@ -51,6 +51,7 @@ use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -82,55 +83,68 @@ final class ManagementController extends AbstractController
             $management_types = [
                 Appliance::class => [
                     'schema_name' => 'Appliance',
-                    'label' => Appliance::getTypeName(1)
+                    'label' => Appliance::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Budget::class => [
                     'schema_name' => 'Budget',
-                    'label' => Budget::getTypeName(1)
+                    'label' => Budget::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Certificate::class => [
                     'schema_name' => 'Certificate',
-                    'label' => Certificate::getTypeName(1)
+                    'label' => Certificate::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Cluster::class => [
                     'schema_name' => 'Cluster',
-                    'label' => Cluster::getTypeName(1)
+                    'label' => Cluster::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Contact::class => [
                     'schema_name' => 'Contact',
-                    'label' => Contact::getTypeName(1)
+                    'label' => Contact::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Contract::class => [
                     'schema_name' => 'Contract',
-                    'label' => Contract::getTypeName(1)
+                    'label' => Contract::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Database::class => [
                     'schema_name' => 'Database',
-                    'label' => Database::getTypeName(1)
+                    'label' => Database::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Datacenter::class => [
                     'schema_name' => 'DataCenter',
-                    'label' => Datacenter::getTypeName(1)
+                    'label' => Datacenter::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Document::class => [
                     'schema_name' => 'Document',
-                    'label' => Document::getTypeName(1)
+                    'label' => Document::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Domain::class => [
                     'schema_name' => 'Domain',
-                    'label' => Domain::getTypeName(1)
+                    'label' => Domain::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 SoftwareLicense::class => [
                     'schema_name' => 'License',
-                    'label' => SoftwareLicense::getTypeName(1)
+                    'label' => SoftwareLicense::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Line::class => [
                     'schema_name' => 'Line',
-                    'label' => Line::getTypeName(1)
+                    'label' => Line::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
                 Supplier::class => [
                     'schema_name' => 'Supplier',
-                    'label' => Supplier::getTypeName(1)
+                    'label' => Supplier::getTypeName(1),
+                    'version_introduced' => '2.0'
                 ],
             ];
         }
@@ -148,6 +162,7 @@ final class ManagementController extends AbstractController
         foreach ($management_types as $m_class => $m_data) {
             $m_name = $m_data['schema_name'];
             $schemas[$m_name] = [
+                'x-version-introduced' => $m_data['version_introduced'],
                 'x-itemtype' => $m_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -316,6 +331,7 @@ final class ManagementController extends AbstractController
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document_Item'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Document_Item::class,
             'properties' => [
@@ -349,6 +365,7 @@ final class ManagementController extends AbstractController
         ];
 
         $schemas['Infocom'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => 'Infocom',
             'properties' => [
@@ -443,6 +460,7 @@ final class ManagementController extends AbstractController
     }
 
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all available management types',
         methods: ['GET'],
@@ -480,6 +498,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes']
     ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search management items',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -490,13 +509,14 @@ final class ManagementController extends AbstractController
     public function searchItems(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
         'id' => '\d+'
     ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a management item by ID',
         responses: [
@@ -506,10 +526,11 @@ final class ManagementController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Download a document by ID',
         parameters: [
@@ -541,6 +562,7 @@ final class ManagementController extends AbstractController
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes']
     ])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Create a new management item', parameters: [
         [
             'name' => '_',
@@ -551,13 +573,14 @@ final class ManagementController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
         'id' => '\d+'
     ])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a management item by ID',
         parameters: [
@@ -574,17 +597,18 @@ final class ManagementController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
         'id' => '\d+'
     ])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Delete a management item by ID')]
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

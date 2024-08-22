@@ -42,6 +42,13 @@ final class GraphQLGenerator
 {
     private array $types = [];
 
+    private string $api_version;
+
+    public function __construct(string $api_version)
+    {
+        $this->api_version = $api_version;
+    }
+
     private function normalizeTypeName(string $type_name): string
     {
         return str_replace(array(' ', '-'), array('', '_'), $type_name);
@@ -91,7 +98,7 @@ final class GraphQLGenerator
 
     private function loadTypes()
     {
-        $component_schemas = OpenAPIGenerator::getComponentSchemas();
+        $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
         foreach ($component_schemas as $schema_name => $schema) {
             $new_types = $this->getTypesForSchema($schema_name, $schema);
             foreach ($new_types as $type_name => $type) {
@@ -107,8 +114,8 @@ final class GraphQLGenerator
             return [];
         }
         //Names cannot have spaces or dashes
-        $schema_name = self::normalizeTypeName($schema_name);
-        $types[$schema_name] = self::convertRESTSchemaToGraphQLSchema($schema_name, $schema);
+        $schema_name = $this->normalizeTypeName($schema_name);
+        $types[$schema_name] = $this->convertRESTSchemaToGraphQLSchema($schema_name, $schema);
 
         // Handle "internal" types that are used for object properties
         foreach ($schema['properties'] as $prop_name => $prop) {

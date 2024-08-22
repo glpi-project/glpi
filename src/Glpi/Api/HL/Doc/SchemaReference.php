@@ -54,11 +54,12 @@ final class SchemaReference implements \ArrayAccess
      * @param string $controller The controller that is calling this method
      * @param array $attributes Attributes from the request, if we know them to help resolve placeholders in the ref.
      *                          For example: /Assets/{itemtype} when the ref is "{itemtype}". The attributes array should contain an "itemtype" key.
+     * @param string $api_version The API version
      * @return array|null
      */
-    public static function resolveRef($ref, string $controller, array $attributes = []): ?array
+    public static function resolveRef($ref, string $controller, array $attributes, string $api_version): ?array
     {
-        $known_schemas = OpenAPIGenerator::getComponentSchemas();
+        $known_schemas = OpenAPIGenerator::getComponentSchemas($api_version);
         if (!is_string($ref) && $ref !== null) {
             $ref = $ref['ref'];
         }
