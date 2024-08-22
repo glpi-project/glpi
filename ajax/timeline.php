@@ -85,6 +85,10 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
+    if (!$parent instanceof CommonITILObject) {
+        exit();
+    }
+
     $twig = TemplateRenderer::getInstance();
     $template = null;
     if (isset($_REQUEST[$parent::getForeignKeyField()])) {
@@ -116,7 +120,6 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         }
         $foreignKey = $parent->getForeignKeyField();
         $params[$foreignKey] = $_REQUEST[$foreignKey];
-        /** @var CommonITILObject $parent */
         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
         Html::ajaxFooter();
         exit();
