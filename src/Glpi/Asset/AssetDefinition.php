@@ -489,8 +489,15 @@ final class AssetDefinition extends CommonDBTM
         }
 
         // Add default display preferences for the new asset definition
-        // Status, Manufacturer, Serial, Type, Model, Location, Last Update
-        $prefs = [31, 23, 5, 4, 40, 3, 19];
+        $prefs = [
+            4, // Name
+            40, // Model
+            5, // Serial
+            23, // Manufacturer
+            31, // Status
+            3, // Location
+            19, // Last Update
+        ];
         $pref = new \DisplayPreference();
         foreach ($prefs as $field) {
             $pref->add([
