@@ -2239,6 +2239,7 @@ $empty_data_builder = new class
                 'autofill_decommission_date' => 0,
                 'suppliers_as_private' => 0,
                 'enable_custom_css' => 0,
+                'custom_css_code' => '',
                 'anonymize_support_agents' => 0,
                 'display_users_initials' => 1,
                 'contracts_strategy_default' => 0,
