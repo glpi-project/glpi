@@ -269,9 +269,9 @@ abstract class FQDNLabel extends CommonDBChild
                     }
                 }
             } else {
-                Toolbox::logInFile(
-                    'php-errors',
+                trigger_error(
                     sprintf('%s is not a valid item type', $class),
+                    E_USER_WARNING
                 );
             }
         }
