@@ -478,9 +478,6 @@ final class AssetDefinition extends CommonDBTM
 
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if ($this->isActive()) {
             $this->syncProfilesRights();
 
