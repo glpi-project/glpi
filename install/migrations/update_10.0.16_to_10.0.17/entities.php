@@ -46,7 +46,6 @@ $migration->addPostQuery(
             'custom_css_code' => '',
         ],
         [
-            'id' => 0,
             'custom_css_code' => null,
         ]
     )
