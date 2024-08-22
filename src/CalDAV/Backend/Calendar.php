@@ -212,14 +212,11 @@ class Calendar extends AbstractBackend
     {
 
         $item = $this->getCalendarItemForPath($objectPath);
-        if (null === $item) {
+        if (!($item instanceof CalDAVCompatibleItemInterface)) {
             return null;
         }
 
-        $vcalendar = null;
-        if (method_exists($item, 'getAsVCalendar')) {
-            $vcalendar = $item->getAsVCalendar();
-        }
+        $vcalendar = $item->getAsVCalendar();
 
         return null !== $vcalendar ? $this->convertVCalendarToCalendarObject($vcalendar) : null;
     }
