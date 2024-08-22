@@ -78,66 +78,64 @@ final class DropdownFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        if (isset($_POST["id"])) {
-            $_GET["id"] = $_POST["id"];
-        } else if (!isset($_GET["id"])) {
-            $_GET["id"] = -1;
-        }
+        $input = $request->request->all();
+        $id = (int) ($request->get('id') ?? -1);
+        $in_modal = (bool) $request->get('_in_modal');
 
-        if (isset($_POST["add"])) {
-            $dropdown->check(-1, CREATE, $_POST);
+        if (isset($input["add"])) {
+            $dropdown->check(-1, CREATE, $input);
 
-            if ($newID = $dropdown->add($_POST)) {
+            if ($newID = $dropdown->add($input)) {
                 if ($dropdown instanceof CommonDevice) {
                     Event::log(
                         $newID,
-                        \get_class($dropdown),
+                        $dropdown::class,
                         4,
                         "inventory",
                         \sprintf(
                             \__('%1$s adds the item %2$s'),
                             $_SESSION["glpiname"],
-                            $_POST["designation"]
+                            $input["designation"]
                         )
                     );
                 } else {
                     Event::log(
                         $newID,
-                        \get_class($dropdown),
+                        $dropdown::class,
                         4,
                         "setup",
-                        \sprintf(\__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+                        \sprintf(\__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $input["name"])
                     );
                 }
                 if ($_SESSION['glpibackcreated']) {
                     $url = $dropdown->getLinkURL();
-                    if (isset($_REQUEST['_in_modal'])) {
+                    if ($in_modal) {
                         $url .= "&_in_modal=1";
                     }
                     Html::redirect($url);
                 }
             }
             Html::back();
-        } else if (isset($_POST["purge"])) {
-            $dropdown->check($_POST["id"], PURGE);
+        } else if (isset($input["purge"])) {
+            $dropdown->check($input["id"], PURGE);
             if (
                 $dropdown->isUsed()
-                && empty($_POST["forcepurge"])
+                && empty($input["forcepurge"])
             ) {
                 Html::header(
                     $dropdown->getTypeName(1),
-                    $_SERVER['PHP_SELF'],
+                    '',
                     "config",
                     $dropdown->second_level_menu,
                     \str_replace('glpi_', '', $dropdown->getTable())
                 );
-                $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+                $dropdown->showDeleteConfirmForm($request->getPathInfo());
                 Html::footer();
             } else {
-                $dropdown->delete($_POST, 1);
+                $dropdown->delete($input, 1);
 
                 Event::log(
-                    $_POST["id"],
+                    $input["id"],
                     \get_class($dropdown),
                     4,
                     "setup",
@@ -146,12 +144,12 @@ final class DropdownFormController extends AbstractController
                 );
                 $dropdown->redirectToList();
             }
-        } else if (isset($_POST["replace"])) {
-            $dropdown->check($_POST["id"], PURGE);
-            $dropdown->delete($_POST, 1);
+        } else if (isset($input["replace"])) {
+            $dropdown->check($input["id"], PURGE);
+            $dropdown->delete($input, 1);
 
             Event::log(
-                $_POST["id"],
+                $input["id"],
                 \get_class($dropdown),
                 4,
                 "setup",
@@ -159,12 +157,12 @@ final class DropdownFormController extends AbstractController
                 \sprintf(\__('%s replaces an item'), $_SESSION["glpiname"])
             );
             $dropdown->redirectToList();
-        } else if (isset($_POST["update"])) {
-            $dropdown->check($_POST["id"], UPDATE);
-            $dropdown->update($_POST);
+        } else if (isset($input["update"])) {
+            $dropdown->check($input["id"], UPDATE);
+            $dropdown->update($input);
 
             Event::log(
-                $_POST["id"],
+                $input["id"],
                 \get_class($dropdown),
                 4,
                 "setup",
@@ -173,35 +171,35 @@ final class DropdownFormController extends AbstractController
             );
             Html::back();
         } else if (
-            isset($_POST['execute'])
-            && isset($_POST['_method'])
+            isset($input['execute'])
+            && isset($input['_method'])
         ) {
-            $method = 'execute' . $_POST['_method'];
+            $method = 'execute' . $input['_method'];
             if (method_exists($dropdown, $method)) {
-                \call_user_func([&$dropdown, $method], $_POST);
+                \call_user_func([&$dropdown, $method], $input);
                 Html::back();
             } else {
                 throw new BadRequestHttpException();
             }
-        } else if (isset($_GET['_in_modal'])) {
+        } else if ($in_modal) {
             Html::popHeader(
                 $dropdown->getTypeName(1),
-                $_SERVER['PHP_SELF'],
+                '',
                 true,
                 $dropdown->first_level_menu,
                 $dropdown->second_level_menu,
                 $dropdown->getType()
             );
-            $dropdown->showForm($_GET["id"]);
+            $dropdown->showForm($id);
             Html::popFooter();
         } else {
             if ($options === null) {
                 $options = [];
             }
             $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
-            $options['id'] = $_GET['id'];
+            $options['id'] = $id;
 
-            $dropdown::displayFullPageForItem($_GET['id'], null, $options);
+            $dropdown::displayFullPageForItem($id, null, $options);
         }
 
         throw new BadRequestHttpException();
