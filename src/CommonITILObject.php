@@ -4767,6 +4767,30 @@ abstract class CommonITILObject extends CommonDBTM
         }
         $tab[] = $newtab;
 
+        $tab[] = [
+            'id'                 => '500',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Requester category', 'Requester categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
         $newtab = [
             'id'                 => '71',  // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
             'table'              => 'glpi_groups',
@@ -4842,6 +4866,30 @@ abstract class CommonITILObject extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '501',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Observer category', 'Observer categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => '65', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
             'table'              => 'glpi_groups',
             'field'              => 'completename',
@@ -4900,6 +4948,30 @@ abstract class CommonITILObject extends CommonDBTM
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '502',
+            'table'              => 'glpi_usercategories',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => _n('Technician category', 'Technician categories', 1),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_users',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => getTableForItemType($this->userlinkclass),
+                            'joinparams'         => [
+                                'jointype'           => 'child',
+                                'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
+                            ]
+                        ],
                     ]
                 ]
             ]
