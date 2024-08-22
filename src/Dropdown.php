@@ -2466,12 +2466,12 @@ JAVASCRIPT;
     {
 
         if (
-            !($item = getItemForItemtype($itemtype))
-            || !method_exists($item, 'import')
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
         ) {
-            return false;
+            return $item->import($input);
         }
-        return $item->import($input);
+        return false;
     }
 
 
@@ -2500,7 +2500,7 @@ JAVASCRIPT;
 
         if (
             ($item = getItemForItemtype($itemtype))
-            && method_exists($item, 'importExternal')
+            && ($item instanceof CommonDropdown)
         ) {
             return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
