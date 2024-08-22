@@ -64,7 +64,7 @@ switch ($_REQUEST['action']) {
             die;
         }
 
-        /** @var class-string $itemtype */
+        /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $_REQUEST['itemtype'];
         if (!$itemtype::canView()) {
             http_response_code(403);
@@ -80,7 +80,7 @@ switch ($_REQUEST['action']) {
         ) {
             $itemtype::showBrowseView($itemtype, $search_params, true);
         } else {
-            $results = Search::getDatas($itemtype::getType(), $search_params);
+            $results = Search::getDatas($itemtype, $search_params);
             $results['searchform_id'] = $_REQUEST['searchform_id'] ?? null;
             Search::displayData($results);
         }
