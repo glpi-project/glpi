@@ -367,7 +367,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
+    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
@@ -438,7 +438,7 @@ final class DbUtils
 
         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
         $mapping[$context] = [];
-        foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+        foreach ($plugins_dirs as $plugins_dir) {
             $srcdir = $context === 'glpi-core'
                 ? $root_dir . '/src'
                 : $plugins_dir . '/' . $context . '/src';
