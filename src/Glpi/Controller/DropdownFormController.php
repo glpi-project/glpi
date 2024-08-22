@@ -49,7 +49,7 @@ use Toolbox;
 
 final class DropdownFormController extends AbstractController
 {
-    #[Route("/dropdown/form/{class}", name: "glpi_dropdown_form")]
+    #[Route("/Dropdown/Form/{class}", name: "glpi_dropdown_form")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');

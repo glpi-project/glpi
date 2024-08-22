@@ -46,7 +46,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DropdownController extends AbstractController
 {
-    #[Route("/dropdown/{class}", name: "glpi_dropdown")]
+    #[Route("/Dropdown/{class}", name: "glpi_dropdown")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
