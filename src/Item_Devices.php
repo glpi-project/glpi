@@ -684,7 +684,7 @@ class Item_Devices extends CommonDBRelation
             );
             foreach (array_merge([''], self::getConcernedItems()) as $itemtype) {
                 $table_options['itemtype'] = $itemtype;
-                $link                      = getItemForItemtype(static::getType());
+                $link                      = getItemForItemtype(static::class);
 
                 if ($link instanceof Item_Devices) {
                     $link->getTableGroup(
