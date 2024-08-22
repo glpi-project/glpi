@@ -254,10 +254,10 @@ class Item_Devices extends CommonDBRelation
                 $itemtypes = $CFG_GLPI[$cfg_key];
                 if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                     if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
-                        $static = new $device_type();
+                        $device_type_class = new $device_type();
                         $options = array_merge(
                             $options,
-                            $static::rawSearchOptionsToAdd(
+                            $device_type_class::rawSearchOptionsToAdd(
                                 $itemtype,
                                 $main_joinparams
                             )

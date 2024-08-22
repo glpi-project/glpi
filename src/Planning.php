@@ -603,8 +603,8 @@ JAVASCRIPT;
                 foreach ($CFG_GLPI['planning_types'] as $itemtype) {
                     $interv = array_merge($interv, $itemtype::populatePlanning($params));
                     if (method_exists($itemtype, 'populateNotPlanned')) {
-                        $static = new $itemtype();
-                        $interv = array_merge($interv, $static::populateNotPlanned($params));
+                        $itemtype_class = new $itemtype();
+                        $interv = array_merge($interv, $itemtype_class::populateNotPlanned($params));
                     }
                 }
 
@@ -2280,8 +2280,8 @@ JAVASCRIPT;
                     $_SESSION['glpi_plannings']['filters']['NotPlanned']['display']
                     && method_exists($params['planning_type'], 'populateNotPlanned')
                 ) {
-                    $static = new $params['planning_type']();
-                    $not_planned = array_merge($not_planned, $static::populateNotPlanned($params));
+                    $planning_type_class = new $params['planning_type']();
+                    $not_planned = array_merge($not_planned, $planning_type_class::populateNotPlanned($params));
                 }
             }
         }
@@ -2594,8 +2594,8 @@ JAVASCRIPT;
             && $val['itemtype'] != 'NotPlanned'
             && method_exists($val['itemtype'], "displayPlanningItem")
         ) {
-            $static = new $val['itemtype']();
-            $html .= $static::displayPlanningItem($val, $who, $type, $complete);
+            $itemtype_class = new $val['itemtype']();
+            $html .= $itemtype_class::displayPlanningItem($val, $who, $type, $complete);
         }
 
         return $html;

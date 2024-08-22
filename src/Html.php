@@ -1473,8 +1473,8 @@ HTML;
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
                                     if (empty($menu[$key]['icon']) && method_exists($object, 'getIcon')) {
-                                        $object = new $object();
-                                        $menu[$key]['icon']    = $object::getIcon();
+                                        $object_class = new $object();
+                                        $menu[$key]['icon']    = $object_class::getIcon();
                                     }
                                 }
                             } else {
