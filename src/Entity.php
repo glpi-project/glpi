@@ -563,7 +563,6 @@ class Entity extends CommonTreeDropdown
     {
         if ((int)$ID === 0) {
             // Root entity: can edit but cannot delete
-            $options['canedit'] = true;
             $options['candel'] = false;
         }
 
