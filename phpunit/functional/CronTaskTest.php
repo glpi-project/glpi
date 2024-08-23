@@ -232,9 +232,12 @@ class CronTaskTest extends DbTestCase
     {
         global $DB;
 
+        $plugins = new \Plugin();
+        $plugins->init();
+
         // Deactivate all registered tasks
         $crontask = new \CronTask();
-        $DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]);
+        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
         $this->assertFalse($crontask->getNeedToRun());
 
         // Register task for active plugin.
