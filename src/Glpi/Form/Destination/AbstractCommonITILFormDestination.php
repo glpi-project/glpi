@@ -186,14 +186,15 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
 
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();
-        $template = $itil->getITILTemplateToUse(
-            entities_id: $_SESSION["glpiactive_entity"]
-        );
-        $template_foreign_key = $template::getForeignKeyField();
+        $template_class = $itil::getTemplateClass();
+        $template_foreign_key = $template_class::getForeignKeyField();
 
         if (isset($input[$template_foreign_key])) {
-            $template->getFromDB($input[$template_foreign_key]);
+            $template = $template_class::getById($input[$template_foreign_key]);
         } else {
+            $template = $itil->getITILTemplateToUse(
+                entities_id: $_SESSION["glpiactive_entity"]
+            );
             $input[$template_foreign_key] = $template->getID();
         }
 
