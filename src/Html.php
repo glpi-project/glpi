@@ -1473,6 +1473,7 @@ HTML;
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
                                     if (empty($menu[$key]['icon']) && method_exists($object, 'getIcon')) {
+                                        /** @var class-string $object */
                                         $menu[$key]['icon']    = $object::getIcon();
                                     }
                                 }

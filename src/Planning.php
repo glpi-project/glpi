@@ -603,6 +603,7 @@ JAVASCRIPT;
                 foreach ($CFG_GLPI['planning_types'] as $itemtype) {
                     $interv = array_merge($interv, $itemtype::populatePlanning($params));
                     if (method_exists($itemtype, 'populateNotPlanned')) {
+                        /** @var class-string $itemtype */
                         $interv = array_merge($interv, $itemtype::populateNotPlanned($params));
                     }
                 }
@@ -2189,7 +2190,7 @@ JAVASCRIPT;
                // For list view, only display only the next occurence
                // to avoid issues performances (range in list view can be 10 years long)
                 if ($param['view_name'] == "listFull") {
-                     $next_date = $rset->getNthOccurrenceAfter(new DateTime(), 1);
+                    $next_date = $rset->getNthOccurrenceAfter(new DateTime(), 1);
                     if ($next_date) {
                         $new_event = array_merge($new_event, [
                             'start'    => $next_date->format('c'),
@@ -2279,6 +2280,7 @@ JAVASCRIPT;
                     $_SESSION['glpi_plannings']['filters']['NotPlanned']['display']
                     && method_exists($params['planning_type'], 'populateNotPlanned')
                 ) {
+                    /** @var class-string $params['planning_type'] */
                     $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
                 }
             }
@@ -2430,11 +2432,12 @@ JAVASCRIPT;
                     if (
                         isset($params['move_instance'])
                         && filter_var($params['move_instance'], FILTER_VALIDATE_BOOLEAN)
+                        && method_exists($item, 'createInstanceClone')
                     ) {
-                         $item = $item->createInstanceClone(
-                             $item->fields['id'],
-                             $params['old_start']
-                         );
+                        $item = $item->createInstanceClone(
+                            $item->fields['id'],
+                            $params['old_start']
+                        );
                             $params['items_id'] = $item->fields['id'];
                     }
                 }
@@ -2591,6 +2594,7 @@ JAVASCRIPT;
             && $val['itemtype'] != 'NotPlanned'
             && method_exists($val['itemtype'], "displayPlanningItem")
         ) {
+            /** @var class-string $val['itemtype'] */
             $html .= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
         }
 

@@ -135,9 +135,16 @@ trait Clonable
                 }
                 $origin_id = $relation_item->getID();
                 $itemtype = $relation_item->getType();
-                $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
-                $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
-                $relation_newitems[] = $relation_item;
+                if (method_exists($relation_item, 'clone')) {
+                    $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
+                    $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
+                    $relation_newitems[] = $relation_item;
+                } else {
+                    trigger_error(
+                        sprintf('Unable to clone %s', $itemtype),
+                        E_USER_WARNING
+                    );
+                }
             }
             // Update relations between cloned items
             foreach ($relation_newitems as $relation_newitem) {

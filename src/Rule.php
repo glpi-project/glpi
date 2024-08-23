@@ -527,12 +527,18 @@ class Rule extends CommonDBTM
     }
 
 
+    /**
+     * @phpstan-return class-string<RuleAction>
+     */
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
 
 
+    /**
+     * @phpstan-return class-string<RuleCriteria>
+     */
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;

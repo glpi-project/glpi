@@ -142,6 +142,9 @@ function getTableForItemType($itemtype)
  * @param $itemtype   string   itemtype
  *
  * @return CommonDBTM|false itemtype object or false if class does not exists
+ * @template T
+ * @phpstan-param class-string<T> $itemtype
+ * @phpstan-return T|false
  **/
 function getItemForItemtype($itemtype)
 {

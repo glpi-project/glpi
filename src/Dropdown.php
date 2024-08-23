@@ -369,7 +369,10 @@ class Dropdown
             }
 
             if ($params['display_dc_position']) {
-                if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+                if (
+                    method_exists($item, 'isRackPart')
+                    && ($rack = $item->isRackPart($itemtype, $params['value'], true))
+                ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
@@ -2462,10 +2465,17 @@ JAVASCRIPT;
     public static function import($itemtype, $input)
     {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->import($input);
         }
-        return $item->import($input);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
 
@@ -2492,10 +2502,17 @@ JAVASCRIPT;
         $add = true
     ) {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
-        return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
     /**

@@ -254,6 +254,7 @@ class Item_Devices extends CommonDBRelation
                 $itemtypes = $CFG_GLPI[$cfg_key];
                 if ($itemtypes == '*' || in_array($itemtype, $itemtypes)) {
                     if (method_exists($device_type, 'rawSearchOptionsToAdd')) {
+                        /** @var class-string $device_type */
                         $options = array_merge(
                             $options,
                             $device_type::rawSearchOptionsToAdd(
@@ -552,7 +553,7 @@ class Item_Devices extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
             if (in_array($item->getType(), self::getConcernedItems())) {
@@ -607,6 +608,7 @@ class Item_Devices extends CommonDBRelation
 
         $is_device = ($item instanceof CommonDevice);
 
+        /** @var CommonDBTM $item */
         $ID = $item->getField('id');
 
         if (!$item->can($ID, READ)) {
@@ -682,7 +684,7 @@ class Item_Devices extends CommonDBRelation
             );
             foreach (array_merge([''], self::getConcernedItems()) as $itemtype) {
                 $table_options['itemtype'] = $itemtype;
-                $link                      = getItemForItemtype(static::getType());
+                $link                      = getItemForItemtype(static::class);
 
                 $link->getTableGroup(
                     $item,
@@ -1385,7 +1387,7 @@ class Item_Devices extends CommonDBRelation
                             'itemtype'  => $itemtype
                         ]
                     );
-                } else {
+                } elseif (method_exists($link, 'cleanDBOnItemDelete')) {
                     $link->cleanDBOnItemDelete($itemtype, $items_id);
                 }
             }
