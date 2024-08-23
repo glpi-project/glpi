@@ -35,12 +35,11 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
-
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/itilfollowuptemplate.class.php */
-
-class ITILFollowupTemplate extends AbstractITILChildTemplate
+/* Test for inc/recurrentchange.class.php */
+class RecurrentChangeTest extends CommonITILRecurrentTest
 {
+    protected function getChildClass()
+    {
+        return \RecurrentChange::class;
+    }
 }

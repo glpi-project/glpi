@@ -46,9 +46,9 @@ use ProblemTask;
 use Ticket;
 use TicketTask;
 
-class PendingReason extends DbTestCase
+class PendingReasonTest extends DbTestCase
 {
-    protected function testGetNextFollowupDateProvider()
+    public static function testGetNextFollowupDateProvider(): array
     {
         return [
             [
@@ -174,10 +174,10 @@ class PendingReason extends DbTestCase
         $pending_reason_item = new \PendingReason_Item();
         $pending_reason_item->fields = $fields['pendingreason_item'];
 
-        $this->variable($expected)->isEqualTo($pending_reason_item->getNextFollowupDate());
+        $this->assertEquals($expected, $pending_reason_item->getNextFollowupDate());
     }
 
-    protected function testGetAutoResolvedateProvider()
+    public static function testGetAutoResolvedateProvider(): array
     {
         return [
             [
@@ -363,11 +363,11 @@ class PendingReason extends DbTestCase
         $pending_reason_item = new \PendingReason_Item();
         $pending_reason_item->fields = $fields['pendingreason_item'];
 
-        $this->variable($expected)->isEqualTo($pending_reason_item->getAutoResolvedate());
+        $this->assertEquals($expected, $pending_reason_item->getAutoResolvedate());
     }
 
 
-    protected function itemtypeProvider(): array
+    public static function itemtypeProvider(): array
     {
         return [
             ['itemtype' => Ticket::class],
@@ -376,7 +376,7 @@ class PendingReason extends DbTestCase
         ];
     }
 
-    protected function itemtypeAndActionProvider(): array
+    public static function itemtypeAndActionProvider(): array
     {
         $array = [];
         $itemtypes = [Ticket::class, Change::class, Problem::class];
@@ -425,16 +425,16 @@ class PendingReason extends DbTestCase
         $item = new $itemtype();
         $action_item = new $action_itemtype();
 
-       // Create test item
+        // Create test item
         $items_id = $item->add([
             'name'    => 'test',
             'content' => 'test',
         ]);
-        $this->integer($items_id)->isGreaterThan(0);
-        $this->boolean($item->getFromDB($items_id))->isTrue();
+        $this->assertGreaterThan(0, $items_id);
+        $this->assertTrue($item->getFromDB($items_id));
 
-       // Check that no pending item exist
-        $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
+        // Check that no pending item exist
+        $this->assertFalse(PendingReason_Item::getForItem($item));
 
        // Add a new action with the "pending" flag set
         $actions_id = $action_item->add([
@@ -442,14 +442,14 @@ class PendingReason extends DbTestCase
             'pending' => true,
             'pendingreasons_id' => 0,
         ] + self::getBaseActionAddInput($action_item, $item));
-        $this->integer($actions_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $actions_id);
 
-       // Check that pending item have been created
-        $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
+        // Check that pending item have been created
+        $this->assertNotFalse(PendingReason_Item::getForItem($item));
 
-       // Check that parent item status was set to pending
-        $this->boolean($item->getFromDB($items_id))->isTrue();
-        $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
+        // Check that parent item status was set to pending
+        $this->assertTrue($item->getFromDB($items_id));
+        $this->assertEquals(CommonITILObject::WAITING, $item->fields['status']);
     }
 
     /**
@@ -464,33 +464,34 @@ class PendingReason extends DbTestCase
 
         $item = new $itemtype();
 
-       // Create test item
+        // Create test item
         $items_id = $item->add([
             'name'    => 'test',
             'content' => 'test',
             'status'  => CommonITILObject::WAITING,
         ]);
-        $this->integer($items_id)->isGreaterThan(0);
-        $this->boolean($item->getFromDB($items_id))->isTrue();
+        $this->assertGreaterThan(0, $items_id);
+        $this->assertTrue($item->getFromDB($items_id));
 
-       // Check item is pending
-        $this->integer($item->fields['status'])->isEqualTo(CommonITILObject::WAITING);
+        // Check item is pending
+        $this->assertEquals(CommonITILObject::WAITING, $item->fields['status']);
 
-       // Attach pending item
-        $this->boolean(PendingReason_Item::createForItem($item, []))->isTrue();
+        // Attach pending item
+        $this->assertTrue(PendingReason_Item::createForItem($item, []));
 
-       // Check pending item
-        $this->variable(PendingReason_Item::getForItem($item))->isNotFalse();
+        // Check pending item
+        $this->assertNotFalse(PendingReason_Item::getForItem($item));
 
-       // Change ticket status
-        $success = $item->update([
-            'id' => $items_id,
-            'status' => CommonITILObject::ASSIGNED,
-        ]);
-        $this->boolean($success)->isTrue();
+        // Change ticket status
+        $this->assertTrue(
+            $item->update([
+                'id' => $items_id,
+                'status' => CommonITILObject::ASSIGNED,
+            ])
+        );
 
-       // Check pending item again
-        $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
+        // Check pending item again
+        $this->assertFalse(PendingReason_Item::getForItem($item));
     }
 
     public function testAddPendingFollowupOnAlreadyPending(): void
@@ -526,9 +527,9 @@ class PendingReason extends DbTestCase
 
         // Check that pending reason is applied to parent ticket
         $p_item = PendingReason_Item::getForItem($ticket);
-        $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
-        $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
-        $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+        $this->assertEquals($pending_reason->getID(), $p_item->fields['pendingreasons_id']);
+        $this->assertEquals(604800, $p_item->fields['followup_frequency']);
+        $this->assertEquals(3, $p_item->fields['followups_before_resolution']);
 
         // Add a new followup, keeping the pending state
         $this->createItem('ITILFollowup', [
@@ -540,9 +541,9 @@ class PendingReason extends DbTestCase
 
         // Check that pending reason is still active
         $p_item = PendingReason_Item::getForItem($ticket);
-        $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
-        $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
-        $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+        $this->assertEquals($pending_reason->getID(), $p_item->fields['pendingreasons_id']);
+        $this->assertEquals(604800, $p_item->fields['followup_frequency']);
+        $this->assertEquals(3, $p_item->fields['followups_before_resolution']);
 
         // Add a new followup, removing the pending state
         $this->createItem('ITILFollowup', [
@@ -552,7 +553,7 @@ class PendingReason extends DbTestCase
             'pending'                    => false,
         ], ['pending']);
         $p_item = PendingReason_Item::getForItem($ticket);
-        $this->boolean($p_item)->isFalse();
+        $this->assertFalse($p_item);
     }
 
     /**
@@ -601,25 +602,27 @@ class PendingReason extends DbTestCase
 
             // Check that pending reason is applied to parent item
             $p_item = PendingReason_Item::getForItem($item);
-            $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
-            $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
-            $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
-            $this->integer($p_item->fields['previous_status'])->isEqualTo($status);
+            $this->assertEquals($pending_reason->getID(), $p_item->fields['pendingreasons_id']);
+            $this->assertEquals(604800, $p_item->fields['followup_frequency']);
+            $this->assertEquals(3, $p_item->fields['followups_before_resolution']);
+            $this->assertEquals($status, $p_item->fields['previous_status']);
 
             // Update followup and unset pending
-            $this->boolean($followup->update([
-                'id' => $followup->getID(),
-                'content'                    => $followup->fields['content'],
-                'pending'                    => false,
-            ]))->isTrue();
+            $this->assertTrue(
+                $followup->update([
+                    'id' => $followup->getID(),
+                    'content'                    => $followup->fields['content'],
+                    'pending'                    => false,
+                ])
+            );
 
             // Check that pending reason no longer exist
             $p_item = PendingReason_Item::getForItem($item);
-            $this->boolean($p_item)->isFalse();
+            $this->assertFalse($p_item);
 
             // Reload / Check that original status is set
-            $item->getFromDB($item->getID());
-            $this->integer($item->fields['status'])->isEqualTo($status);
+            $this->assertTrue($item->getFromDB($item->getID()));
+            $this->assertEquals($status, $item->fields['status']);
         }
     }
 
@@ -820,82 +823,80 @@ class PendingReason extends DbTestCase
      * This validate the "testHandlePendingReasonUpdateFromNewTimelineItem" method
      * and its references in ITILFollowup's and CommonITILTask's post_addItem() method
      *
-     * @dataProvider testUpdatesFromNewTimelineItemProvider
-     *
-     * @param array $timeline A simple description of the timeline items to create
-     *                        and their impact on pending reason data
-     * @param array $expected The expected state after all timeline items have been
-     *                        created
      * @return void
      */
-    public function testHandlePendingReasonUpdateFromNewTimelineItem(
-        array $timeline,
-        array $expected
-    ): void {
-        // Create test ticket
-        $ticket = $this->createItem(Ticket::class, [
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name'        => 'test',
-            'content'     => 'test',
-        ]);
+    public function testHandlePendingReasonUpdateFromNewTimelineItem(): void
+    {
+        $provider = $this->testUpdatesFromNewTimelineItemProvider();
+        foreach ($provider as $row) {
+            $timeline = $row['timeline'];
+            $expected = $row['expected'];
 
-        // Insert timeline
-        $items = [];
-        foreach ($timeline as $timeline_item) {
-            // Insert fake content
-            $timeline_item['content'] = 'test';
-
-            // Read and prepare itemtype (task or followup)
-            $itemtype = $timeline_item['type'];
-            unset($timeline_item['type']);
-
-            if ($itemtype == ITILFollowup::class) {
-                $timeline_item['itemtype'] = Ticket::class;
-                $timeline_item['items_id'] = $ticket->getID();
-            } else {
-                $timeline_item['tickets_id'] = $ticket->getID();
-            }
-            $items[] = $this->createItem($itemtype, $timeline_item, [
-                'pending',
-                'pendingreasons_id',
-                'followup_frequency',
-                'followups_before_resolution'
+            // Create test ticket
+            $ticket = $this->createItem(Ticket::class, [
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'name' => 'test',
+                'content' => 'test',
             ]);
-        }
 
-        // Reload ticket
-        $ticket->getFromDB($ticket->getID());
+            // Insert timeline
+            $items = [];
+            foreach ($timeline as $timeline_item) {
+                // Insert fake content
+                $timeline_item['content'] = 'test';
 
-        // Compare final ticket state with expected state
-        $this->integer($ticket->fields['status'])->isEqualTo($expected['status']);
-        if ($ticket->fields['status'] == CommonITILObject::WAITING) {
-            // Compute ticket pending data
-            $last_timeline_item_pending_data = PendingReason_Item::getLastPendingTimelineItemDataForItem($ticket);
-            $ticket_pending_data = PendingReason_Item::getForItem($ticket);
+                // Read and prepare itemtype (task or followup)
+                $itemtype = $timeline_item['type'];
+                unset($timeline_item['type']);
 
-            // Validate pending data
-            $keys = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
-            foreach ($keys as $key) {
-                $this
-                    ->integer($last_timeline_item_pending_data->fields[$key])
-                    ->isEqualTo($expected[$key])
-                ;
-                $this
-                    ->integer($ticket_pending_data->fields[$key])
-                    ->isEqualTo($expected[$key])
-                ;
+                if ($itemtype == ITILFollowup::class) {
+                    $timeline_item['itemtype'] = Ticket::class;
+                    $timeline_item['items_id'] = $ticket->getID();
+                } else {
+                    $timeline_item['tickets_id'] = $ticket->getID();
+                }
+                $items[] = $this->createItem($itemtype, $timeline_item, [
+                    'pending',
+                    'pendingreasons_id',
+                    'followup_frequency',
+                    'followups_before_resolution'
+                ]);
             }
 
-            // Check that pending data is attached to the correct followup
-            $correct_timeline_item = $items[$expected['pending_timeline_index']];
-            $this
-                ->string($last_timeline_item_pending_data->fields['itemtype'])
-                ->isEqualTo($correct_timeline_item::getType())
-            ;
-            $this
-                ->integer($last_timeline_item_pending_data->fields['items_id'])
-                ->isEqualTo($correct_timeline_item->getID())
-            ;
+            // Reload ticket
+            $this->assertTrue($ticket->getFromDB($ticket->getID()));
+
+            // Compare final ticket state with expected state
+            $this->assertEquals($expected['status'], $ticket->fields['status']);
+            if ($ticket->fields['status'] == CommonITILObject::WAITING) {
+                // Compute ticket pending data
+                $last_timeline_item_pending_data = PendingReason_Item::getLastPendingTimelineItemDataForItem($ticket);
+                $ticket_pending_data = PendingReason_Item::getForItem($ticket);
+
+                // Validate pending data
+                $keys = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
+                foreach ($keys as $key) {
+                    $this->assertEquals(
+                        $expected[$key],
+                        $last_timeline_item_pending_data->fields[$key]
+                    );
+                    $this->assertEquals(
+                        $expected[$key],
+                        $ticket_pending_data->fields[$key]
+                    );
+                }
+
+                // Check that pending data is attached to the correct followup
+                $correct_timeline_item = $items[$expected['pending_timeline_index']];
+                $this->assertEquals(
+                    $correct_timeline_item::getType(),
+                    $last_timeline_item_pending_data->fields['itemtype']
+                );
+                $this->assertEquals(
+                    $correct_timeline_item->getID(),
+                    $last_timeline_item_pending_data->fields['items_id']
+                );
+            }
         }
     }
 }

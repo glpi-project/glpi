@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/contract.class.php */
 
-class Contract extends DbTestCase
+class ContractTest extends DbTestCase
 {
     public function testClone()
     {
@@ -52,28 +52,28 @@ class Contract extends DbTestCase
             'entities_id'  => 0
         ];
         $cid = $contract->add($input);
-        $this->integer($cid)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cid);
 
         $cost = new \ContractCost();
         $cost_id = $cost->add([
             'contracts_id' => $cid,
             'name'         => 'Test cost'
         ]);
-        $this->integer($cost_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cost_id);
 
         $suppliers_id = getItemByTypeName('Supplier', '_suplier01_name', true);
-        $this->integer($suppliers_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $suppliers_id);
 
         $link_supplier = new \Contract_Supplier();
         $link_id = $link_supplier->add([
             'suppliers_id' => $suppliers_id,
             'contracts_id' => $cid
         ]);
-        $this->integer($link_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $link_id);
 
-        $this->boolean($link_supplier->getFromDB($link_id))->isTrue();
+        $this->assertTrue($link_supplier->getFromDB($link_id));
         $relation_items = $link_supplier->getItemsAssociatedTo($contract->getType(), $cid);
-        $this->array($relation_items)->hasSize(1, 'Original Contract_Supplier not found!');
+        $this->assertCount(1, $relation_items, 'Original Contract_Supplier not found!');
 
         $citem = new \Contract_Item();
         $citems_id = $citem->add([
@@ -81,29 +81,29 @@ class Contract extends DbTestCase
             'itemtype'     => 'Computer',
             'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
         ]);
-        $this->integer($citems_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $citems_id);
 
-        $this->boolean($citem->getFromDB($citems_id))->isTrue();
+        $this->assertTrue($citem->getFromDB($citems_id));
         $relation_items = $citem->getItemsAssociatedTo($contract->getType(), $cid);
-        $this->array($relation_items)->hasSize(1, 'Original Contract_Item not found!');
+        $this->assertCount(1, $relation_items, 'Original Contract_Item not found!');
 
         $cloned = $contract->clone();
-        $this->integer($cloned)->isGreaterThan($cid);
+        $this->assertGreaterThan($cid, $cloned);
 
         foreach ($contract->getCloneRelations() as $rel_class) {
-            $this->integer(
+            $this->assertSame(
+                1,
                 countElementsInTable(
                     $rel_class::getTable(),
                     ['contracts_id' => $cloned]
-                )
-            )->isIdenticalTo(1, 'Missing relation with ' . $rel_class);
+                ),
+                'Missing relation with ' . $rel_class
+            );
         }
     }
 
-    public function getSpecificValueToDisplayProvider()
+    public static function getSpecificValueToDisplayProvider()
     {
-        $this->login();
-        $_SESSION['glpi_currenttime'] = '2024-04-22 10:00:00';
         return [
             [
                 'field' => '_virtual_expiration',
@@ -183,8 +183,10 @@ class Contract extends DbTestCase
      */
     public function testGetSpecificValueToDisplay($field, $values, $expected)
     {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2024-04-22 10:00:00';
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
-        $this->string($contract->getSpecificValueToDisplay($field, $values))->isEqualTo($expected);
+        $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
     }
 }

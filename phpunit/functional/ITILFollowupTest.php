@@ -49,7 +49,7 @@ use User;
 
 /* Test for inc/itilfollowup.class.php */
 
-class ITILFollowup extends DbTestCase
+class ITILFollowupTest extends DbTestCase
 {
     /**
      * Create a new ITILObject and return its id or the object
@@ -62,15 +62,18 @@ class ITILFollowup extends DbTestCase
     {
        //create reference ITILObject
         $itilobject = new $itemtype();
-        $this->integer((int)$itilobject->add([
-            'name'         => "$itemtype title",
-            'description'  => 'a description',
-            'content'      => '',
-            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$itilobject->add([
+                'name'         => "$itemtype title",
+                'description'  => 'a description',
+                'content'      => '',
+                'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
 
-        $this->boolean($itilobject->isNewItem())->isFalse();
-        $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
+        $this->assertFalse($itilobject->isNewItem());
+        $this->assertTrue($itilobject->can($itilobject->getID(), \READ));
         return $as_object ? $itilobject : (int)$itilobject->getID();
     }
 
@@ -81,47 +84,47 @@ class ITILFollowup extends DbTestCase
         $ticketId = $this->getNewITILObject('Ticket');
         $fup      = new \ITILFollowup();
         $tmp      = ['itemtype' => 'Ticket', 'items_id' => $ticketId];
-        $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
+        $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Ticket',
             'items_id'   => $ticketId
         ]);
-        $this->integer($fup_id)->isGreaterThan(0);
-        $this->boolean((bool) $fup->canViewItem())->isTrue();
-        $this->boolean((bool) $fup->canUpdateItem())->isTrue();
-        $this->boolean((bool) $fup->canPurgeItem())->isTrue();
+        $this->assertGreaterThan(0, $fup_id);
+        $this->assertTrue($fup->canViewItem());
+        $this->assertTrue($fup->canUpdateItem());
+        $this->assertTrue($fup->canPurgeItem());
 
         $changeId = $this->getNewITILObject('Change');
         $fup      = new \ITILFollowup();
         $tmp      = ['itemtype' => 'Change', 'items_id' => $changeId];
-        $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
+        $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Change',
             'items_id'   => $changeId
         ]);
-        $this->integer($fup_id)->isGreaterThan(0);
-        $this->boolean((bool) $fup->canViewItem())->isTrue();
-        $this->boolean((bool) $fup->canUpdateItem())->isTrue();
-        $this->boolean((bool) $fup->canPurgeItem())->isTrue();
+        $this->assertGreaterThan(0, $fup_id);
+        $this->assertTrue($fup->canViewItem());
+        $this->assertTrue($fup->canUpdateItem());
+        $this->assertTrue($fup->canPurgeItem());
 
         $problemId = $this->getNewITILObject('Problem');
         $fup      = new \ITILFollowup();
         $tmp      = ['itemtype' => 'Problem', 'items_id' => $problemId];
-        $this->boolean((bool) $fup->can(-1, \CREATE, $tmp))->isTrue();
+        $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Problem',
             'items_id'   => $problemId
         ]);
-        $this->integer($fup_id)->isGreaterThan(0);
-        $this->boolean((bool) $fup->canViewItem())->isTrue();
-        $this->boolean((bool) $fup->canUpdateItem())->isTrue();
-        $this->boolean((bool) $fup->canPurgeItem())->isTrue();
+        $this->assertGreaterThan(0, $fup_id);
+        $this->assertTrue($fup->canViewItem());
+        $this->assertTrue($fup->canUpdateItem());
+        $this->assertTrue($fup->canPurgeItem());
     }
 
     public function testUpdateAndDelete()
@@ -130,99 +133,96 @@ class ITILFollowup extends DbTestCase
 
         $ticketId = $this->getNewITILObject('Ticket');
         $fup      = new \ITILFollowup();
-        $tmp      = ['itemtype' => 'Ticket', 'items_id' => $ticketId];
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Ticket',
             'items_id'   => $ticketId
         ]);
-        $this->integer((int)$fup_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$fup_id);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Ticket',
                 'items_id'   => $ticketId
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->getFromDB($fup_id)
-        )->isTrue();
-        $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+        );
+        $this->assertEquals('my followup updated', $fup->fields['content']);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->delete([
                 'id'  => $fup_id
             ])
-        )->isTrue();
-        $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
+        );
+        $this->assertFalse($fup->getFromDB($fup_id));
 
         $changeId = $this->getNewITILObject('Change');
         $fup      = new \ITILFollowup();
-        $tmp      = ['itemtype' => 'Change', 'items_id' => $changeId];
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Change',
             'items_id'   => $changeId
         ]);
-        $this->integer((int)$fup_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$fup_id);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Change',
                 'items_id'   => $changeId
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->getFromDB($fup_id)
-        )->isTrue();
-        $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+        );
+        $this->assertEquals('my followup updated', $fup->fields['content']);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->delete([
                 'id'  => $fup_id
             ])
-        )->isTrue();
-        $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
+        );
+        $this->assertFalse($fup->getFromDB($fup_id));
 
         $problemId = $this->getNewITILObject('Problem');
         $fup      = new \ITILFollowup();
-        $tmp      = ['itemtype' => 'Problem', 'items_id' => $problemId];
 
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Problem',
             'items_id'   => $problemId
         ]);
-        $this->integer((int)$fup_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$fup_id);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Problem',
                 'items_id'   => $problemId
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->getFromDB($fup_id)
-        )->isTrue();
-        $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+        );
+        $this->assertEquals('my followup updated', $fup->fields['content']);
 
-        $this->boolean(
+        $this->assertTrue(
             $fup->delete([
                 'id'  => $fup_id
             ])
-        )->isTrue();
-        $this->boolean((bool) $fup->getFromDB($fup_id))->isFalse();
+        );
+        $this->assertFalse($fup->getFromDB($fup_id));
     }
 
     /**
@@ -241,47 +241,53 @@ class ITILFollowup extends DbTestCase
         $_SESSION['glpiset_default_tech'] = 0;
         $_SESSION['glpiset_default_requester'] = 0;
 
-       // Normal behaviior, no flag specified
+        // Normal behavior, no flag specified
         $ticketID = $this->getNewITILObject('Ticket');
-        $this->integer($ticketID);
+        $this->assertGreaterThan(0, $ticketID);
 
         $ITILFollowUp = new \ITILFollowup();
-        $this->integer($ITILFollowUp->add([
-            'date'                            => $_SESSION['glpi_currenttime'],
-            'users_id'                        => \Session::getLoginUserID(),
-            'content'                         => "Functional test",
-            'items_id'                        => $ticketID,
-            'itemtype'                        => \Ticket::class,
-        ]));
+        $this->assertGreaterThan(
+            0,
+            $ITILFollowUp->add([
+                'date'                            => $_SESSION['glpi_currenttime'],
+                'users_id'                        => \Session::getLoginUserID(),
+                'content'                         => "Functional test",
+                'items_id'                        => $ticketID,
+                'itemtype'                        => \Ticket::class,
+            ])
+        );
 
-        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
-        $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
+        $this->assertTrue($ticket->getFromDB($ticketID));
+        $this->assertGreaterThan(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
+        $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
 
-       // Now using the _do_not_compute_takeintoaccount flag
+        // Now using the _do_not_compute_takeintoaccount flag
         $ticketID = $this->getNewITILObject('Ticket');
-        $this->integer($ticketID);
+        $this->assertGreaterThan(0, $ticketID);
 
         $ITILFollowUp = new \ITILFollowup();
-        $this->integer($ITILFollowUp->add([
-            'date'                            => $_SESSION['glpi_currenttime'],
-            'users_id'                        => \Session::getLoginUserID(),
-            'content'                         => "Functional test",
-            '_do_not_compute_takeintoaccount' => true,
-            'items_id'                        => $ticketID,
-            'itemtype'                        => \Ticket::class,
-        ]));
+        $this->assertGreaterThan(
+            0,
+            $ITILFollowUp->add([
+                'date'                            => $_SESSION['glpi_currenttime'],
+                'users_id'                        => \Session::getLoginUserID(),
+                'content'                         => "Functional test",
+                '_do_not_compute_takeintoaccount' => true,
+                'items_id'                        => $ticketID,
+                'itemtype'                        => \Ticket::class,
+            ])
+        );
 
-        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
-        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
+        $this->assertTrue($ticket->getFromDB($ticketID));
+        $this->assertEquals(0, (int) $ticket->fields['takeintoaccount_delay_stat']);
+        $this->assertNull($ticket->fields['takeintoaccountdate']);
 
-       // Reset conf
+        // Reset conf
         $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];
         $_SESSION['glpiset_default_requester'] = $oldConf['glpiset_default_requester'];
     }
 
-    protected function testIsFromSupportAgentProvider()
+    public static function testIsFromSupportAgentProvider()
     {
         return [
             [
@@ -336,21 +342,21 @@ class ITILFollowup extends DbTestCase
     ) {
         global $CFG_GLPI, $DB;
 
-       // Disable notifications
+        // Disable notifications
         $old_conf = $CFG_GLPI['use_notifications'];
         $CFG_GLPI['use_notifications'] = false;
 
         $this->login();
 
-       // Insert a ticket;
+        // Insert a ticket;
         $ticket = new Ticket();
         $ticket_id = $ticket->add([
             "name"    => "testIsFromSupportAgent",
             "content" => "testIsFromSupportAgent",
         ]);
-        $this->integer($ticket_id);
+        $this->assertGreaterThan(0, $ticket_id);
 
-       // Create test user
+        // Create test user
         $rand = mt_rand();
         $user = new User();
         $users_id = $user->add([
@@ -360,9 +366,9 @@ class ITILFollowup extends DbTestCase
             '_profiles_id' => getItemByTypeName('Profile', $profile, true),
             '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->integer($users_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $users_id);
 
-       // Insert a followup
+        // Insert a followup
         $fup = new CoreITILFollowup();
         $fup_id = $fup->add([
             'content'  => "testIsFromSupportAgent",
@@ -370,28 +376,31 @@ class ITILFollowup extends DbTestCase
             'items_id' => $ticket_id,
             'itemtype' => "Ticket",
         ]);
-        $this->integer($fup_id);
-        $this->boolean($fup->getFromDB($fup_id))->isTrue();
+        $this->assertGreaterThan(0, $fup_id);
+        $this->assertTrue($fup->getFromDB($fup_id));
 
-       // Remove any roles that may have been set after insert
-        $DB->delete(Ticket_User::getTable(), ['tickets_id' => $ticket_id]);
-        $this->array($ticket->getITILActors())->hasSize(0);
+        // Remove any roles that may have been set after insert
+        $this->assertTrue($DB->delete(Ticket_User::getTable(), ['tickets_id' => $ticket_id]));
+        $this->assertCount(0, $ticket->getITILActors());
 
-       // Insert roles
+        // Insert roles
         $tuser = new Ticket_User();
         foreach ($roles as $role) {
-            $this->integer($tuser->add([
-                'tickets_id' => $ticket_id,
-                'users_id'   => $users_id,
-                'type'       => $role,
-            ]));
+            $this->assertGreaterThan(
+                0,
+                $tuser->add([
+                    'tickets_id' => $ticket_id,
+                    'users_id'   => $users_id,
+                    'type'       => $role,
+                ])
+            );
         }
 
-       // Execute test
+        // Execute test
         $result = $fup->isFromSupportAgent();
-        $this->boolean($result)->isEqualTo($expected);
+        $this->assertEquals($expected, $result);
 
-       // Reset conf
+        // Reset conf
         $CFG_GLPI['use_notifications'] = $old_conf;
     }
 
@@ -400,15 +409,15 @@ class ITILFollowup extends DbTestCase
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-       // Test uploads for item creation
+        // Test uploads for item creation
         $ticket = new \Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
         ]);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertFalse($ticket->isNewItem());
 
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
+        $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/foo.png'));
         $user = getItemByTypeName('User', TU_USER, true);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $instance = new \ITILFollowup();
@@ -431,18 +440,18 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
-        copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
 
-        $instance->add($input);
-        $this->boolean($instance->isNewItem())->isFalse();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $this->assertGreaterThan(0, $instance->add($input));
+        $this->assertFalse($instance->isNewItem());
+        $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['content'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['content']);
 
-       // Test uploads for item update
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/bar.png'));
+        // Test uploads for item update
+        $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/bar.png'));
         $filename = '5e5e92ffd9bd91.44444444image_paste55555555.png';
-        copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => <<<HTML
@@ -459,10 +468,10 @@ HTML,
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
-        $this->boolean($success)->isTrue();
-        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $this->assertTrue($success);
+        $this->assertTrue($instance->getFromDB($instance->getId()));
         $expected = 'a href="/front/document.send.php?docid=';
-        $this->string($instance->fields['content'])->contains($expected);
+        $this->assertStringContainsString($expected, $instance->fields['content']);
     }
 
     public function testUploadDocuments()
@@ -470,16 +479,16 @@ HTML,
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-       // Test uploads for item creation
+        // Test uploads for item creation
         $ticket = new \Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
         ]);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertFalse($ticket->isNewItem());
 
         $user = getItemByTypeName('User', TU_USER, true);
-       // Test uploads for item creation
+        // Test uploads for item creation
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         $instance = new \ITILFollowup();
         $input = [
@@ -498,19 +507,19 @@ HTML,
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
-        copy(__DIR__ . '/../fixtures/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
-        $this->boolean($instance->isNewItem())->isFalse();
-        $this->string($instance->fields['content'])->contains('testUploadDocuments');
+        $this->assertFalse($instance->isNewItem());
+        $this->assertStringContainsString('testUploadDocuments', $instance->fields['content']);
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
             'itemtype' => 'ITILFollowup',
             'items_id' => $instance->getID(),
         ]);
-        $this->integer($count)->isEqualTo(1);
+        $this->assertEquals(1, $count);
 
-       // Test uploads for item update (adds a 2nd document)
+        // Test uploads for item update (adds a 2nd document)
         $filename = '5e5e92ffd9bd91.44444444bar.txt';
-        copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
             'content' => 'update testUploadDocuments',
@@ -524,13 +533,13 @@ HTML,
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
-        $this->boolean($success)->isTrue();
-        $this->string($instance->fields['content'])->contains('update testUploadDocuments');
+        $this->assertTrue($success);
+        $this->assertStringContainsString('update testUploadDocuments', $instance->fields['content']);
         $count = (new \DBUtils())->countElementsInTable(\Document_Item::getTable(), [
             'itemtype' => 'ITILFollowup',
             'items_id' => $instance->getID(),
         ]);
-        $this->integer($count)->isEqualTo(2);
+        $this->assertEquals(2, $count);
     }
 
     public function testAddFromTemplate()
@@ -544,17 +553,17 @@ HTML,
             'content'            => 'test template',
             'is_private'         => 1,
         ]);
-        $this->integer($templates_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $templates_id);
         $fup = new \ITILFollowup();
         $fups_id = $fup->add([
             '_itilfollowuptemplates_id' => $templates_id,
             'itemtype'                  => 'Ticket',
             'items_id'                  => $ticket->fields['id'],
         ]);
-        $this->integer($fups_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $fups_id);
 
-        $this->string($fup->fields['content'])->isEqualTo('<p>test template</p>');
-        $this->integer($fup->fields['is_private'])->isEqualTo(1);
+        $this->assertEquals('<p>test template</p>', $fup->fields['content']);
+        $this->assertEquals(1, $fup->fields['is_private']);
 
         $fups_id = $fup->add([
             '_itilfollowuptemplates_id' => $templates_id,
@@ -563,10 +572,10 @@ HTML,
             'content'                   => 'test template2',
             'is_private'                => 0,
         ]);
-        $this->integer($fups_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $fups_id);
 
-        $this->string($fup->fields['content'])->isEqualTo('test template2');
-        $this->integer($fup->fields['is_private'])->isEqualTo(0);
+        $this->assertEquals('test template2', $fup->fields['content']);
+        $this->assertEquals(0, $fup->fields['is_private']);
     }
 
     /**
@@ -621,21 +630,18 @@ HTML,
     /**
      * Tests for the isParentAlreadyLoaded method
      *
-     * @dataProvider testIsParentAlreadyLoadedProvider
-     *
-     * @param CoreITILFollowup $followup
-     * @param bool $is_parent_loaded
-     *
      * @return void
      */
-    public function testIsParentAlreadyLoaded(
-        CoreITILFollowup $followup,
-        bool $is_parent_loaded
-    ): void {
-        $this->boolean(
-            $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
-        )->isEqualTo($is_parent_loaded);
-    }
+    public function testIsParentAlreadyLoaded(): void
+    {
+        $provider = $this->testIsParentAlreadyLoadedProvider();
+        foreach ($provider as $row) {
+            [$followup, $is_parent_loaded] = $row;
+            $this->assertEquals(
+                $is_parent_loaded,
+                $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
+            );
+        }
 
     public function testParentMetaSearchOptions()
     {
@@ -697,18 +703,20 @@ HTML,
         $this->createFollowupInEntityForType('_test_child_2', Ticket::class);
         $this->createFollowupInEntityForType('_test_child_2', Problem::class);
         $this->createFollowupInEntityForType('_test_child_2', Change::class);
-        $this->integer(
+        $this->assertEquals(
+            $number_of_visible_followups + 3, // 3 new followup found
             $this->countVisibleFollowupsForLoggedInUser()
-        )->isEqualTo($number_of_visible_followups + 3); // 3 new followup found
+        );
 
         // Add followups in a visible that our user can't see
         $number_of_visible_followups = $this->countVisibleFollowupsForLoggedInUser();
         $this->createFollowupInEntityForType('_test_root_entity', Ticket::class);
         $this->createFollowupInEntityForType('_test_root_entity', Problem::class);
         $this->createFollowupInEntityForType('_test_root_entity', Change::class);
-        $this->integer(
+        $this->assertEquals(
+            $number_of_visible_followups, // No new followups found
             $this->countVisibleFollowupsForLoggedInUser()
-        )->isEqualTo($number_of_visible_followups); // No new followups found
+        );
     }
 
     private function countVisibleFollowupsForLoggedInUser(): int

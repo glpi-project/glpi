@@ -40,7 +40,7 @@ use DbTestCase;
 
 /* Test for inc/calendar.class.php */
 
-class Calendar extends DbTestCase
+class CalendarTest extends DbTestCase
 {
     /**
      * Data provider for the testComputeEndDate function
@@ -89,25 +89,27 @@ class Calendar extends DbTestCase
     /**
      * Test cases for the computeEndDate function
      *
-     * @dataProvider testComputeEndDateProvider
-     *
-     * @param \Calendar $calendar                    Test calendar
-     * @param array     $compute_end_date_parameters Arguments for the computeEndDate function
-     * @param string    $expected_date               Expected date
-     *
      * @return void
      */
-    public function testComputeEndDate(
-        \Calendar $calendar,
-        array $compute_end_date_parameters,
-        string $expected_date
-    ): void {
-        $this->string($expected_date)->isEqualTo(
-            $calendar->computeEndDate(...$compute_end_date_parameters)
-        );
+    public function testComputeEndDate(): void
+    {
+        $provider = $this->testComputeEndDateProvider();
+        foreach ($provider as $row) {
+            /** @var \Calendar $calendar */
+            $calendar = $row[0];
+            /** @var array $compute_end_date_parameters */
+            $compute_end_date_parameters = $row[1];
+            /** @var string $expected_date */
+            $expected_date = $row[2];
+
+            $this->assertEquals(
+                $expected_date,
+                $calendar->computeEndDate(...$compute_end_date_parameters)
+            );
+        }
     }
 
-    protected function activeProvider()
+    public static function activeProvider()
     {
         return [
             [
@@ -146,18 +148,19 @@ class Calendar extends DbTestCase
     public function testGetActiveTimeBetween($start, $end, $value, $days = false)
     {
         $calendar = new \Calendar();
-        $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+        $this->assertTrue($calendar->getFromDB(1)); //get default calendar
 
-        $this->variable(
+        $this->assertEquals(
+            $value,
             $calendar->getActiveTimeBetween(
                 $start,
                 $end,
                 $days
             )
-        )->isEqualTo($value);
+        );
     }
 
-    protected function workingdayProvider()
+    public static function workingdayProvider()
     {
         return [
             ['2019-01-01 00:00:00', true],
@@ -175,26 +178,26 @@ class Calendar extends DbTestCase
     public function testIsAWorkingDay($date, $expected)
     {
         $calendar = new \Calendar();
-        $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+        $this->assertTrue($calendar->getFromDB(1)); //get default calendar
 
-        $this->boolean($calendar->isAWorkingDay(strtotime($date)))->isIdenticalTo($expected);
+        $this->assertSame($expected, $calendar->isAWorkingDay(strtotime($date)));
     }
 
     public function testHasAWorkingDay()
     {
         $calendar = new \Calendar();
-        $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
-        $this->boolean($calendar->hasAWorkingDay())->isTrue();
+        $this->assertTrue($calendar->getFromDB(1)); //get default calendar
+        $this->assertTrue($calendar->hasAWorkingDay());
 
         $cid = $calendar->add([
             'name'   => 'Test'
         ]);
-        $this->integer($cid)->isGreaterThan(0);
-        $this->boolean($calendar->getFromDB($cid));
-        $this->boolean($calendar->hasAWorkingDay())->isFalse();
+        $this->assertGreaterThan(0, $cid);
+        $this->assertTrue($calendar->getFromDB($cid));
+        $this->assertFalse($calendar->hasAWorkingDay());
     }
 
-    protected function workinghourProvider()
+    public static function workinghourProvider()
     {
         return [
             ['2019-01-01 00:00:00', false],
@@ -212,40 +215,41 @@ class Calendar extends DbTestCase
     public function testIsAWorkingHour($date, $expected)
     {
         $calendar = new \Calendar();
-        $this->boolean($calendar->getFromDB(1))->isTrue(); //get default calendar
+        $this->assertTrue($calendar->getFromDB(1)); //get default calendar
 
-        $this->boolean($calendar->isAWorkingHour(strtotime($date)))->isIdenticalTo($expected);
+        $this->assertSame($expected, $calendar->isAWorkingHour(strtotime($date)));
     }
 
     private function addXmas(\Calendar $calendar)
     {
         $calendar_holiday = new \Calendar_Holiday();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$calendar_holiday->add([
                 'calendars_id' => $calendar->fields['id'],
                 'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
             ])
-        )->isGreaterThan(0);
+        );
 
         $this->checkXmas($calendar);
     }
 
     private function checkXmas(\Calendar $calendar)
     {
-        $this->boolean(
+        $this->assertFalse(
             $calendar->isHoliday('2018-01-01')
-        )->isFalse();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $calendar->isHoliday('2019-01-01')
-        )->isTrue();
+        );
     }
 
     public function testIsHoliday()
     {
         $calendar = new \Calendar();
-       // get Default calendar
-        $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
+        // get Default calendar
+        $this->assertTrue($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)));
 
         $this->addXmas($calendar);
 
@@ -256,12 +260,12 @@ class Calendar extends DbTestCase
             '2019-07-12'   => true
         ];
 
-       //no holiday by default
+        //no holiday by default
         foreach (array_keys($dates) as $date) {
-            $this->boolean($calendar->isHoliday($date))->isFalse;
+            $this->assertFalse($calendar->isHoliday($date));
         }
 
-       //Add holidays
+        //Add holidays
         $calendar_holiday = new \Calendar_Holiday();
         $holiday = new \Holiday();
         $hid = (int)$holiday->add([
@@ -272,13 +276,14 @@ class Calendar extends DbTestCase
             'end_date'     => '2019-05-01',
             'is_perpetual' => 1
         ]);
-        $this->integer($hid)->isGreaterThan(0);
-        $this->integer(
+        $this->assertGreaterThan(0, $hid);
+        $this->assertGreaterThan(
+            0,
             (int)$calendar_holiday->add([
                 'holidays_id'  => $hid,
                 'calendars_id' => $calendar->fields['id']
             ])
-        )->isGreaterThan(0);
+        );
 
         $hid = (int)$holiday->add([
             'name'   => 'Summer vacations',
@@ -288,16 +293,17 @@ class Calendar extends DbTestCase
             'end_date'     => '2019-09-01',
             'is_perpetual' => 0
         ]);
-        $this->integer($hid)->isGreaterThan(0);
-        $this->integer(
+        $this->assertGreaterThan(0, $hid);
+        $this->assertGreaterThan(
+            0,
             (int)$calendar_holiday->add([
                 'holidays_id'  => $hid,
                 'calendars_id' => $calendar->fields['id']
             ])
-        )->isGreaterThan(0);
+        );
 
         foreach ($dates as $date => $expected) {
-            $this->boolean($calendar->isHoliday($date))->isIdenticalTo($expected);
+            $this->assertSame($expected, $calendar->isHoliday($date));
         }
     }
 
@@ -306,12 +312,12 @@ class Calendar extends DbTestCase
         $calendar = new \Calendar();
         $default_id = getItemByTypeName('Calendar', 'Default', true);
         // get Default calendar
-        $this->boolean($calendar->getFromDB($default_id))->isTrue();
+        $this->assertTrue($calendar->getFromDB($default_id));
         $this->addXmas($calendar);
 
         $id = $calendar->clone();
-        $this->integer($id)->isGreaterThan($default_id);
-        $this->boolean($calendar->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($calendar->getFromDB($id));
         //should have been duplicated too.
         $this->checkXmas($calendar);
 
@@ -319,13 +325,16 @@ class Calendar extends DbTestCase
         $this->updateItem('Calendar', $id, ['name' => "Je s'apelle Groot"]);
 
         $calendar = new \Calendar();
-        $this->boolean($calendar->getFromDB($id))->isTrue();
+        $this->assertTrue($calendar->getFromDB($id));
 
         $id = $calendar->clone();
-        $this->integer($id)->isGreaterThan($default_id);
-        $this->boolean($calendar->getFromDB($id))->isTrue();
-        $this->string($calendar->fields['name'])->isEqualTo("Je s'apelle Groot (copy)");
-       //should have been duplicated too.
+        $this->assertGreaterThan($default_id, $id);
+        $this->assertTrue($calendar->getFromDB($id));
+        $this->assertEquals(
+            "Je s'apelle Groot (copy)",
+            $calendar->fields['name']
+        );
+        //should have been duplicated too.
         $this->checkXmas($calendar);
     }
 }

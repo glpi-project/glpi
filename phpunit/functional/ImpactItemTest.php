@@ -35,13 +35,13 @@
 
 namespace tests\units;
 
-class ImpactItem extends \DbTestCase
+class ImpactItemTest extends \DbTestCase
 {
     public function testFindForItem_inexistent()
     {
         $computer = getItemByTypeName('Computer', '_test_pc02');
 
-        $this->boolean(\ImpactItem::findForItem($computer, false))->isFalse();
+        $this->assertFalse(\ImpactItem::findForItem($computer, false));
     }
 
     public function testFindForItem_exist()
@@ -56,10 +56,10 @@ class ImpactItem extends \DbTestCase
         ]);
 
         $impactItem = \ImpactItem::findForItem($computer);
-        $this->integer((int) $impactItem->fields['id'])->isEqualTo($id);
+        $this->assertEquals($id, (int)$impactItem->fields['id']);
     }
 
-    public function prepareInputForUpdateProvider()
+    public static function prepareInputForUpdateProvider()
     {
         return [
             [
@@ -100,7 +100,7 @@ class ImpactItem extends \DbTestCase
     {
         $impact_item = new \ImpactItem();
         $input = $impact_item->prepareInputForUpdate($input);
-        $this->array($input)->hasKey('max_depth');
-        $this->integer($input['max_depth'])->isEqualTo($result);
+        $this->assertArrayHasKey('max_depth', $input);
+        $this->assertEquals($result, $input['max_depth']);
     }
 }

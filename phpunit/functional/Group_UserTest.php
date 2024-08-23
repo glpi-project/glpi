@@ -37,7 +37,7 @@ namespace tests\units;
 
 /* Test for inc/group_user.class.php */
 
-class Group_User extends \DbTestCase
+class Group_UserTest extends \DbTestCase
 {
     public function testGetGroupUsers()
     {
@@ -46,20 +46,22 @@ class Group_User extends \DbTestCase
         $gid = (int)$group->add([
             'name' => 'Test group'
         ]);
-        $this->integer($gid)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid);
 
         $uid1 = (int)getItemByTypeName('User', 'normal', true);
         $uid2 = (int)getItemByTypeName('User', 'tech', true);
 
-        $group_user = $this->newTestedInstance();
-        $this->integer(
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $gid,
                 'users_id'  => $uid1
             ])
         );
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id'    => $gid,
                 'users_id'     => $uid2,
@@ -68,17 +70,17 @@ class Group_User extends \DbTestCase
         );
 
         $group_users = \Group_User::getGroupUsers($gid);
-        $this->array($group_users)->hasSize(2);
+        $this->assertCount(2, $group_users);
 
         $group_users = \Group_User::getGroupUsers($gid, ['is_manager' => 1]);
-        $this->array($group_users)->hasSize(1);
-        $this->integer((int)$group_users[0]['id'])->isIdenticalTo($uid2);
+        $this->assertCount(1, $group_users);
+        $this->assertSame($uid2, (int)$group_users[0]['id']);
 
-       //cleanup
-        $this->boolean($group->delete(['id' => $gid], true))->isTrue();
+        //cleanup
+        $this->assertTrue($group->delete(['id' => $gid], true));
 
         $group_users = \Group_User::getGroupUsers($gid);
-        $this->array($group_users)->hasSize(0);
+        $this->assertCount(0, $group_users);
     }
 
     public function testGetUserGroups()
@@ -90,22 +92,24 @@ class Group_User extends \DbTestCase
         $gid1 = (int)$group->add([
             'name' => 'Test group'
         ]);
-        $this->integer($gid1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid1);
 
         $gid2 = (int)$group->add([
             'name' => 'Test group 2'
         ]);
-        $this->integer($gid2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid2);
 
-        $group_user = $this->newTestedInstance();
-        $this->integer(
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $gid1,
                 'users_id'  => $uid
             ])
         );
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id'    => $gid2,
                 'users_id'     => $uid,
@@ -114,48 +118,49 @@ class Group_User extends \DbTestCase
         );
 
         $group_users = \Group_User::getUserGroups($uid);
-        $this->array($group_users)->hasSize(2);
+        $this->assertCount(2, $group_users);
 
         $group_users = \Group_User::getUserGroups($uid, ['glpi_groups_users.is_manager' => 1]);
-        $this->array($group_users)->hasSize(1);
-        $this->integer((int)$group_users[0]['id'])->isIdenticalTo($gid2);
+        $this->assertCount(1, $group_users);
+        $this->assertSame($gid2, (int)$group_users[0]['id']);
 
-       //cleanup
-        $this->boolean($group_user->deleteByCriteria(['users_id' => $uid]))->isTrue();
+        //cleanup
+        $this->assertTrue($group_user->deleteByCriteria(['users_id' => $uid]));
 
         $group_users = \Group_User::getUserGroups($uid);
-        $this->array($group_users)->hasSize(0);
+        $this->assertCount(0, $group_users);
     }
 
     public function testgetListForItemParams()
     {
-        $this->newTestedInstance();
         $user = getItemByTypeName('User', TU_USER);
+        $group_user = new \Group_User();
 
         $expected = [];
-        $this->array(iterator_to_array($this->testedInstance->getListForItem($user)))->isIdenticalTo($expected);
+        $this->assertSame($expected, iterator_to_array($group_user->getListForItem($user)));
 
-       //Now, add groups to user
+        //Now, add groups to user
         $group = new \Group();
         $gid1 = (int)$group->add([
             'name' => 'Test group'
         ]);
-        $this->integer($gid1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid1);
 
         $gid2 = (int)$group->add([
             'name' => 'Test group 2'
         ]);
-        $this->integer($gid2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $gid2);
 
-        $group_user = $this->newTestedInstance();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $gid1,
                 'users_id'  => $user->getID()
             ])
         );
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id'    => $gid2,
                 'users_id'     => $user->getID(),
@@ -163,43 +168,41 @@ class Group_User extends \DbTestCase
             ])
         );
 
-        $list_items = iterator_to_array($this->testedInstance->getListForItem($user));
-        $this->array($list_items)
-         ->hasSize(2)
-         ->hasKeys([$gid1, $gid2]);
+        $list_items = iterator_to_array($group_user->getListForItem($user));
+        $this->assertCount(2, $list_items);
+        $this->assertArrayHasKey($gid1, $list_items);
+        $this->assertArrayHasKey($gid2, $list_items);
 
-        $this->array($list_items[$gid1])
-         ->hasKey('linkid')
-         ->string['name']->isIdenticalTo('Test group');
+        $this->assertArrayHasKey('linkid', $list_items[$gid1]);
+        $this->assertSame('Test group', $list_items[$gid1]['name']);
 
-        $this->array($list_items[$gid2])
-         ->hasKey('linkid')
-         ->string['name']->isIdenticalTo('Test group 2');
+        $this->assertArrayHasKey('linkid', $list_items[$gid2]);
+        $this->assertSame('Test group 2', $list_items[$gid2]['name']);
 
-        $group->getFromDB($gid2);
-        $list_items = iterator_to_array($this->testedInstance->getListForItem($group));
-        $this->array($list_items)
-         ->hasSize(1)
-         ->hasKey($user->getID());
+        $this->assertTrue($group->getFromDB($gid2));
+        $list_items = iterator_to_array($group_user->getListForItem($group));
+        $this->assertCount(1, $list_items);
+        $this->assertArrayHasKey($user->getID(), $list_items);
 
-        $this->array($list_items[$user->getID()])
-         ->hasKeys(['linkid', 'is_manager', 'is_userdelegate'])
-         ->string['name']->isIdenticalTo('_test_user');
+        $this->assertArrayHasKey('linkid', $list_items[$user->getID()]);
+        $this->assertArrayHasKey('is_manager', $list_items[$user->getID()]);
+        $this->assertArrayHasKey('is_userdelegate', $list_items[$user->getID()]);
+        $this->assertSame(TU_USER, $list_items[$user->getID()]['name']);
 
-        $this->integer($this->testedInstance->countForItem($user))->isIdenticalTo(2);
-        $this->integer($this->testedInstance->countForItem($group))->isIdenticalTo(1);
+        $this->assertSame(2, $group_user->countForItem($user));
+        $this->assertSame(1, $group_user->countForItem($group));
     }
 
     public function testIsUserInGroup()
     {
         $group = new \Group();
-       // Add a group
+        // Add a group
         $groups_id = $group->add([
             'name' => __METHOD__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
-        $this->integer((int)$groups_id)->isGreaterThan(0);
-        $this->boolean($group->getFromDB($groups_id))->isTrue();
+        $this->assertGreaterThan(0, (int)$groups_id);
+        $this->assertTrue($group->getFromDB($groups_id));
 
         $group_user = new \Group_User();
         $group_users_id = $group_user->add([
@@ -207,9 +210,9 @@ class Group_User extends \DbTestCase
             'users_id'   => getItemByTypeName('User', 'tech', true),
             'is_dynamic' => 0
         ]);
-        $this->integer((int)$group_users_id)->isGreaterThan(0);
-        $this->boolean($group_user->getFromDB($group_users_id))->isTrue();
-        $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'tech', true), $groups_id))->isTrue();
-        $this->boolean(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id))->isFalse();
+        $this->assertGreaterThan(0, (int)$group_users_id);
+        $this->assertTrue($group_user->getFromDB($group_users_id));
+        $this->assertTrue(\Group_User::isUserInGroup(getItemByTypeName('User', 'tech', true), $groups_id));
+        $this->assertFalse(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id));
     }
 }

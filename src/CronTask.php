@@ -970,7 +970,7 @@ class CronTask extends CommonDBTM
             && ($input['allowmode'] & self::MODE_EXTERNAL)
             && !isset($input['mode'])
         ) {
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $input['mode'] = self::MODE_EXTERNAL;
         }
         return $temp->add($input);

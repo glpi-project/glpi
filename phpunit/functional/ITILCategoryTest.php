@@ -37,7 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class ITILCategory extends DbTestCase
+class ITILCategoryTest extends DbTestCase
 {
     public function testPrepareInputForAdd()
     {
@@ -56,7 +56,7 @@ class ITILCategory extends DbTestCase
             'completename' => '_test_itilcategory_1',
             'code' => '',
         ];
-        $this->array($category->prepareInputForAdd($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $category->prepareInputForAdd($input));
 
         $input = [
             'name' => '_test_itilcategory_2',
@@ -71,7 +71,7 @@ class ITILCategory extends DbTestCase
             'level' => 1,
             'completename' => '_test_itilcategory_2',
         ];
-        $this->array($category->prepareInputForAdd($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $category->prepareInputForAdd($input));
 
         $input = [
             'name' => '_test_itilcategory_3',
@@ -86,7 +86,7 @@ class ITILCategory extends DbTestCase
             'level' => 1,
             'completename' => '_test_itilcategory_3',
         ];
-        $this->array($category->prepareInputForAdd($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $category->prepareInputForAdd($input));
     }
 
     public function testPrepareInputForUpdate()
@@ -99,42 +99,42 @@ class ITILCategory extends DbTestCase
             'name' => '_test_itilcategory_1',
             'comment' => '_test_itilcategory_1',
         ]);
-        $this->integer($category_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $category_id);
 
         $input = [
             'id' => $category_id,
             'code' => ' code 1 ',
         ];
 
-        $this->boolean($category->update($input))->isTrue();
-        $this->boolean($category->getFromDB($category_id))->isTrue();
+        $this->assertTrue($category->update($input));
+        $this->assertTrue($category->getFromDB($category_id));
 
-        $this->string($category->fields['name'])->isIdenticalTo('_test_itilcategory_1');
-        $this->string($category->fields['comment'])->isIdenticalTo('_test_itilcategory_1');
-        $this->string($category->fields['code'])->isIdenticalTo('code 1');
+        $this->assertSame('_test_itilcategory_1', $category->fields['name']);
+        $this->assertSame('_test_itilcategory_1', $category->fields['comment']);
+        $this->assertSame('code 1', $category->fields['code']);
 
         $input = [
             'id' => $category_id,
             'comment' => 'new comment',
         ];
 
-        $this->boolean($category->update($input))->isTrue();
-        $this->boolean($category->getFromDB($category_id))->isTrue();
+        $this->assertTrue($category->update($input));
+        $this->assertTrue($category->getFromDB($category_id));
 
-        $this->string($category->fields['name'])->isIdenticalTo('_test_itilcategory_1');
-        $this->string($category->fields['comment'])->isIdenticalTo('new comment');
-        $this->string($category->fields['code'])->isIdenticalTo('code 1');
+        $this->assertSame('_test_itilcategory_1', $category->fields['name']);
+        $this->assertSame('new comment', $category->fields['comment']);
+        $this->assertSame('code 1', $category->fields['code']);
 
         $input = [
             'id' => $category_id,
             'code' => '',
         ];
 
-        $this->boolean($category->update($input))->isTrue();
-        $this->boolean($category->getFromDB($category_id))->isTrue();
+        $this->assertTrue($category->update($input));
+        $this->assertTrue($category->getFromDB($category_id));
 
-        $this->string($category->fields['name'])->isIdenticalTo('_test_itilcategory_1');
-        $this->string($category->fields['comment'])->isIdenticalTo('new comment');
-        $this->string($category->fields['code'])->isIdenticalTo('');
+        $this->assertSame('_test_itilcategory_1', $category->fields['name']);
+        $this->assertSame('new comment', $category->fields['comment']);
+        $this->assertSame('', $category->fields['code']);
     }
 }

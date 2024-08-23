@@ -44,7 +44,7 @@ use Printer;
 use ReflectionClass;
 use Toolbox;
 
-class State extends DbTestCase
+class StateTest extends DbTestCase
 {
     protected function testIsUniqueProvider(): iterable
     {
@@ -81,14 +81,16 @@ class State extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testIsUniqueProvider
-     */
-    public function testIsUnique(array $input, bool $expected): void
+    public function testIsUnique()
     {
-        $state = new \State();
-        $this->boolean($state->isUnique($input))->isEqualTo($expected);
-    }
+        $provider = $this->testIsUniqueProvider();
+        foreach ($provider as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+
+            $state = new \State();
+            $this->assertSame($expected, $state->isUnique($input));
+        }
 
     public function testVisibility(): void
     {
