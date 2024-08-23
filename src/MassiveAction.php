@@ -664,6 +664,7 @@ class MassiveAction
         ) {
             $itemtypes = [-1 => Dropdown::EMPTY_VALUE];
             foreach ($keys as $itemtype) {
+                /** @var class-string $itemtype */
                 $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
             }
             echo __('Select the type of the item on which applying this action') . "<br>\n";
@@ -945,6 +946,7 @@ class MassiveAction
                     $options_per_type = [];
                     $options_count   = [];
                     foreach ($itemtypes as $itemtype) {
+                        /** @var class-string $itemtype */
                         $options_per_type[$itemtype] = [];
                         $group                       = '';
                         $show_all                    = true;
@@ -1034,7 +1036,8 @@ class MassiveAction
                         $choose_itemtype  = true;
                         $itemtype_choices = [-1 => Dropdown::EMPTY_VALUE];
                         foreach ($itemtypes as $itemtype) {
-                             $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
+                            /** @var class-string $itemtype */
+                            $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                         }
                     } else {
                         $options        = $options_per_type[$itemtypes[0]];
@@ -1671,8 +1674,10 @@ class MassiveAction
                     if ($item->can($id, CREATE)) {
                         // recovers the item from DB
                         if ($item->getFromDB($id)) {
-                            $succeed = $item->cloneMultiple($input["nb_copy"]);
-                            if ($succeed) {
+                            if (
+                                method_exists($item, "cloneMultiple")
+                                && $item->cloneMultiple($input["nb_copy"])
+                            ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

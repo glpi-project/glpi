@@ -221,7 +221,7 @@ class IPAddress extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if ($item->getType() == 'IPNetwork') {
+        if ($item instanceof IPNetwork) {
             if (isset($_GET["start"])) {
                 $start = $_GET["start"];
             } else {

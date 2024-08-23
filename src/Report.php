@@ -275,6 +275,7 @@ class Report extends CommonGLPI
         $items = array_flip($val);
 
         foreach ($items as $itemtype) {
+            /** @var class-string $itemtype */
             echo "<tr class='tab_bg_1'><td colspan='2' class='b'>" . $itemtype::getTypeName(Session::getPluralNumber()) .
               "</td></tr>";
 

@@ -573,6 +573,7 @@ JAVASCRIPT;
         } else {
             $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
             foreach ($types as $type => &$text) {
+                /** @var class-string $type */
                 $text = $type::getTypeName(1);
             }
             Dropdown::showFromArray(
