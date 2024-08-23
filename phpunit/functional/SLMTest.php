@@ -46,33 +46,19 @@ use RuleTicket;
 use SlaLevel_Ticket;
 use Ticket;
 
-class SLM extends DbTestCase
+class SLMTest extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
-
     /**
-     * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
+     * Create a full SLM with all level filled (slm/sla/ola/levels/action/criteria)
      * And Delete IT to check clean os sons objects
      */
     public function testLifecyle()
     {
         $this->login();
 
-       // ## 1 - test adding sla and sub objects
+        // ## 1 - test adding sla and sub objects
 
-       // prepare a calendar with limited time ranges [8:00 -> 20:00]
+        // prepare a calendar with limited time ranges [8:00 -> 20:00]
         $cal    = new \Calendar();
         $calseg = new \CalendarSegment();
         $cal_id = $cal->add(['name' => "test calendar"]);
@@ -89,13 +75,13 @@ class SLM extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => $this->getUniqueString(),
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
         $this->checkInput($slm, $slm_id, $slm_in);
 
-       // prepare sla/ola inputs
+        // prepare sla/ola inputs
         $sla1_in = $sla2_in = [
             'slms_id'         => $slm_id,
             'name'            => "SLA TTO",
@@ -107,14 +93,14 @@ class SLM extends DbTestCase
         $sla2_in['type'] = \SLM::TTR;
         $sla2_in['name'] = "SLA TTR";
 
-       // add two sla (TTO & TTR)
+        // add two sla (TTO & TTR)
         $sla    = new \SLA();
         $sla1_id = $sla->add($sla1_in);
         $this->checkInput($sla, $sla1_id, $sla1_in);
         $sla2_id = $sla->add($sla2_in);
         $this->checkInput($sla, $sla2_id, $sla2_in);
 
-       // add two ola (TTO & TTR), we re-use the same inputs as sla
+        // add two ola (TTO & TTR), we re-use the same inputs as sla
         $ola  = new \OLA();
         $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
         $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
@@ -123,9 +109,9 @@ class SLM extends DbTestCase
         $ola2_id = $ola->add($sla2_in);
         $this->checkInput($ola, $ola2_id, $sla2_in);
 
-       // prepare levels input for each ola/sla
+        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => $this->getUniqueString(),
             'execution_time' => -DAY_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -136,7 +122,7 @@ class SLM extends DbTestCase
         $olal1_in['olas_id'] = $ola1_id;
         $olal2_in['olas_id'] = $ola2_id;
 
-       // add levels
+        // add levels
         $slal = new \SlaLevel();
         $slal1_id = $slal->add($slal1_in);
         $this->checkInput($slal, $slal1_id, $slal1_in);
@@ -149,7 +135,7 @@ class SLM extends DbTestCase
         $olal2_id = $olal->add($olal2_in);
         $this->checkInput($olal, $olal2_id, $olal2_in);
 
-       // add criteria/actions
+        // add criteria/actions
         $scrit_in = $ocrit_in = [
             'slalevels_id' => $slal1_id,
             'criteria'     => 'status',
@@ -181,15 +167,15 @@ class SLM extends DbTestCase
         $this->checkInput($saction, $saction_id, $saction_in);
         $this->checkInput($oaction, $oaction_id, $oaction_in);
 
-       // ## 2 - test using sla in tickets
+        // ## 2 - test using sla in tickets
 
-       // add rules for using sla
+        // add rules for using sla
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => $this->getUniqueString(),
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -201,7 +187,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => $this->getUniqueString()
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -210,18 +196,21 @@ class SLM extends DbTestCase
             'field'       => 'slas_id_tto',
             'value'       => $sla1_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'slas_id_ttr',
             'value'       => $sla2_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'olas_id_tto',
             'value'       => $ola1_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
@@ -230,61 +219,64 @@ class SLM extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
-       // test create ticket
+        // test create ticket
         $ticket = new \Ticket();
         $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => $this->getUniqueString(),
+            'content' => $this->getUniqueString()
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
+        $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
+        $this->assertEquals($ola1_id, (int)$ticket->getField('olas_id_tto'));
+        $this->assertEquals($ola2_id, (int)$ticket->getField('olas_id_ttr'));
+        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
 
-       // test update ticket
+        // test update ticket
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => $this->getUniqueString()
         ]);
-        $ticket->update([
-            'id'   => $tickets_id_2,
-            'name' => $this->method
-        ]);
-        $ticket_input_2['name'] = $this->method;
+        $this->assertGreaterThan(0, $tickets_id_2);
+        $newname = $this->getUniqueString();
+        $this->assertTrue(
+            $ticket->update([
+                'id'   => $tickets_id_2,
+                'name' => $newname
+            ])
+        );
+        $ticket_input_2['name'] = $newname;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
+        $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
+        $this->assertEquals($ola1_id, (int)$ticket->getField('olas_id_tto'));
+        $this->assertEquals($ola2_id, (int)$ticket->getField('olas_id_ttr'));
+        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
 
-       // ## 3 - test purge of slm and check if we don't find any sub objects
-        $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
-       //sla
-        $this->boolean($sla->getFromDB($sla1_id))->isFalse();
-        $this->boolean($sla->getFromDB($sla2_id))->isFalse();
-       //ola
-        $this->boolean($ola->getFromDB($ola1_id))->isFalse();
-        $this->boolean($ola->getFromDB($ola2_id))->isFalse();
-       //slalevel
-        $this->boolean($slal->getFromDB($slal1_id))->isFalse();
-        $this->boolean($slal->getFromDB($slal2_id))->isFalse();
-       //olalevel
-        $this->boolean($olal->getFromDB($olal1_id))->isFalse();
-        $this->boolean($olal->getFromDB($olal2_id))->isFalse();
-       //crit
-        $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
-        $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
-       //action
-        $this->boolean($saction->getFromDB($saction_id))->isFalse();
-        $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
+        // ## 3 - test purge of slm and check if we don't find any sub objects
+        $this->assertTrue($slm->delete(['id' => $slm_id], true));
+        //sla
+        $this->assertFalse($sla->getFromDB($sla1_id));
+        $this->assertFalse($sla->getFromDB($sla2_id));
+        //ola
+        $this->assertFalse($ola->getFromDB($ola1_id));
+        $this->assertFalse($ola->getFromDB($ola2_id));
+        //slalevel
+        $this->assertFalse($slal->getFromDB($slal1_id));
+        $this->assertFalse($slal->getFromDB($slal2_id));
+        //olalevel
+        $this->assertFalse($olal->getFromDB($olal1_id));
+        $this->assertFalse($olal->getFromDB($olal2_id));
+        //crit
+        $this->assertFalse($scrit->getFromDB($scrit_id));
+        $this->assertFalse($ocrit->getFromDB($ocrit_id));
+        //action
+        $this->assertFalse($saction->getFromDB($saction_id));
+        $this->assertFalse($oaction->getFromDB($oaction_id));
     }
-
 
     /**
      * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
@@ -294,22 +286,20 @@ class SLM extends DbTestCase
     {
         $this->login();
 
-       // ## 1 - test adding sla and sub objects
+        // ## 1 - test adding sla and sub objects
 
-       // prepare a calendar with limited time ranges [8:00 -> 20:00]
-        $cal    = new \Calendar();
-        $calseg = new \CalendarSegment();
+        // prepare a calendar with limited time ranges [8:00 -> 20:00]
         $cal_id = getItemByTypeName('Calendar', 'Default', true);
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => $this->getUniqueString(),
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
         $this->checkInput($slm, $slm_id, $slm_in);
 
-       // prepare sla/ola inputs
+        // prepare sla/ola inputs
         $sla1_in = $sla2_in = [
             'slms_id'         => $slm_id,
             'name'            => "SLA TTO",
@@ -321,14 +311,14 @@ class SLM extends DbTestCase
         $sla2_in['type'] = \SLM::TTR;
         $sla2_in['name'] = "SLA TTR";
 
-       // add two sla (TTO & TTR)
+        // add two sla (TTO & TTR)
         $sla    = new \SLA();
         $sla1_id = $sla->add($sla1_in);
         $this->checkInput($sla, $sla1_id, $sla1_in);
         $sla2_id = $sla->add($sla2_in);
         $this->checkInput($sla, $sla2_id, $sla2_in);
 
-       // add two ola (TTO & TTR), we re-use the same inputs as sla
+        // add two ola (TTO & TTR), we re-use the same inputs as sla
         $ola  = new \OLA();
         $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
         $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
@@ -337,9 +327,9 @@ class SLM extends DbTestCase
         $ola2_id = $ola->add($sla2_in);
         $this->checkInput($ola, $ola2_id, $sla2_in);
 
-       // prepare levels input for each ola/sla
+        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => $this->getUniqueString(),
             'execution_time' => -MONTH_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -363,7 +353,7 @@ class SLM extends DbTestCase
         $olal2_id = $olal->add($olal2_in);
         $this->checkInput($olal, $olal2_id, $olal2_in);
 
-       // add criteria/actions
+        // add criteria/actions
         $scrit_in = $ocrit_in = [
             'slalevels_id' => $slal1_id,
             'criteria'     => 'status',
@@ -395,15 +385,15 @@ class SLM extends DbTestCase
         $this->checkInput($saction, $saction_id, $saction_in);
         $this->checkInput($oaction, $oaction_id, $oaction_in);
 
-       // ## 2 - test using sla in tickets
+        // ## 2 - test using sla in tickets
 
-       // add rules for using sla
+        // add rules for using sla
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => $this->getUniqueString(),
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -415,7 +405,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => $this->getUniqueString()
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -424,18 +414,21 @@ class SLM extends DbTestCase
             'field'       => 'slas_id_tto',
             'value'       => $sla1_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'slas_id_ttr',
             'value'       => $sla2_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'olas_id_tto',
             'value'       => $ola1_id
         ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
@@ -444,65 +437,69 @@ class SLM extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
-       // test create ticket
+        // test create ticket
         $ticket = new \Ticket();
         $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => $this->getUniqueString(),
+            'content' => $this->getUniqueString()
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
+        $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
+        $this->assertEquals($ola1_id, (int)$ticket->getField('olas_id_tto'));
+        $this->assertEquals($ola2_id, (int)$ticket->getField('olas_id_ttr'));
+        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
 
-       // test update ticket
+        // test update ticket
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => $this->getUniqueString()
         ]);
-       //SLA/OLA  TTR/TTO not already set
-        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
-        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo(0);
-        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo(0);
-        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo(0);
-
-        $ticket->update([
-            'id'   => $tickets_id_2,
-            'name' => $this->method
-        ]);
-        $ticket_input_2['name'] = $this->method;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+        //SLA/OLA  TTR/TTO not already set
+        $this->assertEquals(0, (int)$ticket->getField('slas_id_tto'));
+        $this->assertEquals(0, (int)$ticket->getField('slas_id_ttr'));
+        $this->assertEquals(0, (int)$ticket->getField('olas_id_tto'));
+        $this->assertEquals(0, (int)$ticket->getField('olas_id_ttr'));
 
-       // ## 3 - test purge of slm and check if we don't find any sub objects
-        $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
-       //sla
-        $this->boolean($sla->getFromDB($sla1_id))->isFalse();
-        $this->boolean($sla->getFromDB($sla2_id))->isFalse();
-       //ola
-        $this->boolean($ola->getFromDB($ola1_id))->isFalse();
-        $this->boolean($ola->getFromDB($ola2_id))->isFalse();
-       //slalevel
-        $this->boolean($slal->getFromDB($slal1_id))->isFalse();
-        $this->boolean($slal->getFromDB($slal2_id))->isFalse();
-       //olalevel
-        $this->boolean($olal->getFromDB($olal1_id))->isFalse();
-        $this->boolean($olal->getFromDB($olal2_id))->isFalse();
-       //crit
-        $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
-        $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
-       //action
-        $this->boolean($saction->getFromDB($saction_id))->isFalse();
-        $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
+        $newname = $this->getUniqueString();
+        $this->assertTrue(
+            $ticket->update([
+                'id'   => $tickets_id_2,
+                'name' => $newname
+            ])
+        );
+        $ticket_input_2['name'] = $newname;
+        $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
+        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
+        $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
+        $this->assertEquals($ola1_id, (int)$ticket->getField('olas_id_tto'));
+        $this->assertEquals($ola2_id, (int)$ticket->getField('olas_id_ttr'));
+        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
+
+        // ## 3 - test purge of slm and check if we don't find any sub objects
+        $this->assertTrue($slm->delete(['id' => $slm_id], true));
+        //sla
+        $this->assertFalse($sla->getFromDB($sla1_id));
+        $this->assertFalse($sla->getFromDB($sla2_id));
+        //ola
+        $this->assertFalse($ola->getFromDB($ola1_id));
+        $this->assertFalse($ola->getFromDB($ola2_id));
+        //slalevel
+        $this->assertFalse($slal->getFromDB($slal1_id));
+        $this->assertFalse($slal->getFromDB($slal2_id));
+        //olalevel
+        $this->assertFalse($olal->getFromDB($olal1_id));
+        $this->assertFalse($olal->getFromDB($olal2_id));
+        //crit
+        $this->assertFalse($scrit->getFromDB($scrit_id));
+        $this->assertFalse($ocrit->getFromDB($ocrit_id));
+        //action
+        $this->assertFalse($saction->getFromDB($saction_id));
+        $this->assertFalse($oaction->getFromDB($oaction_id));
     }
 
     /**
@@ -516,11 +513,11 @@ class SLM extends DbTestCase
         $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
         $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
 
-       // Create a calendar having tommorow as working day
+        // Create a calendar having tomorrow as working day
         $calendar = new \Calendar();
         $segment  = new \CalendarSegment();
         $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         $segment_id = $segment->add(
             [
@@ -530,9 +527,9 @@ class SLM extends DbTestCase
                 'end'          => '19:00:00'
             ]
         );
-        $this->integer($segment_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $segment_id);
 
-       // Create SLM with TTR OLA
+        // Create SLM with TTR OLA
         $slm = new \SLM();
         $slm_id = $slm->add(
             [
@@ -540,7 +537,7 @@ class SLM extends DbTestCase
                 'calendars_id' => $calendar_id,
             ]
         );
-        $this->integer($slm_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $slm_id);
 
         $ola = new \OLA();
         $ola_id = $ola->add(
@@ -552,9 +549,9 @@ class SLM extends DbTestCase
                 'definition_time' => 'hour',
             ]
         );
-        $this->integer($ola_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ola_id);
 
-       // Create ticket to test computation based on OLA
+        // Create ticket to test computation based on OLA
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
@@ -562,40 +559,40 @@ class SLM extends DbTestCase
                 'content' => 'Ticket for TTR OLA test',
             ]
         );
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals(0, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertNull($ticket->fields['ola_ttr_begin_date']);
+        $this->assertNull($ticket->fields['internal_time_to_resolve']);
 
-       // Assign TTR OLA
+        // Assign TTR OLA
         $update_time = strtotime('+10s');
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
         $updated = $ticket->update(['id' => $ticket_id, 'olas_id_ttr' => $ola_id]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
-        $this->boolean($updated)->isTrue();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_id);
-        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))->isEqualTo($update_time);
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
+        $this->assertTrue($updated);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($ola_id, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertEquals($update_time, strtotime($ticket->fields['ola_ttr_begin_date']));
+        $this->assertEquals($tomorrow_1pm, $ticket->fields['internal_time_to_resolve']);
 
-       // Simulate waiting to first working hour +1
-        $this->boolean(
+        // Simulate waiting to first working hour +1
+        $this->assertTrue(
             $ticket->update(
                 [
                     'id' => $ticket_id,
                     'status' => \CommonITILObject::WAITING,
                 ]
             )
-        )->isTrue();
+        );
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
         $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
-        $this->boolean($updated)->isTrue();
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+        $this->assertTrue($updated);
+        $this->assertEquals($tomorrow_2pm, $ticket->fields['internal_time_to_resolve']);
 
-       // Create ticket to test computation based on manual date
+        // Create ticket to test computation based on manual date
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
@@ -603,34 +600,34 @@ class SLM extends DbTestCase
                 'content' => 'Ticket for TTR manual test',
             ]
         );
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals(0, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertNull($ticket->fields['ola_ttr_begin_date']);
+        $this->assertNull($ticket->fields['internal_time_to_resolve']);
 
-       // Assign manual TTR
-        $this->boolean($ticket->update(['id' => $ticket_id, 'internal_time_to_resolve' => $tomorrow_1pm]))->isTrue();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
+        // Assign manual TTR
+        $this->assertTrue($ticket->update(['id' => $ticket_id, 'internal_time_to_resolve' => $tomorrow_1pm]));
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals(0, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertNull($ticket->fields['ola_ttr_begin_date']);
+        $this->assertEquals($tomorrow_1pm, $ticket->fields['internal_time_to_resolve']);
 
-       // Simulate 1 hour of waiting time
-        $this->boolean(
+        // Simulate 1 hour of waiting time
+        $this->assertTrue(
             $ticket->update(
                 [
                     'id' => $ticket_id,
                     'status' => \CommonITILObject::WAITING,
                 ]
             )
-        )->isTrue();
+        );
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
         $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
-        $this->boolean($updated)->isTrue();
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+        $this->assertTrue($updated);
+        $this->assertEquals($tomorrow_2pm, $ticket->fields['internal_time_to_resolve']);
     }
 
     /**
@@ -642,7 +639,7 @@ class SLM extends DbTestCase
 
         $currenttime_bak = $_SESSION['glpi_currenttime'];
 
-       // Create SLM with TTR/TTO OLA/SLA
+        // Create SLM with TTR/TTO OLA/SLA
         $slm = new \SLM();
         $slm_id = $slm->add(
             [
@@ -650,7 +647,7 @@ class SLM extends DbTestCase
                 'calendars_id' => 0, //24/24 7/7
             ]
         );
-        $this->integer($slm_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $slm_id);
 
         $ola_ttr = new \OLA();
         $ola_ttr_id = $ola_ttr->add(
@@ -663,7 +660,7 @@ class SLM extends DbTestCase
                 'end_of_working_day' => false,
             ]
         );
-        $this->integer($ola_ttr_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ola_ttr_id);
 
         $ola_tto = new \OLA();
         $ola_tto_id = $ola_tto->add(
@@ -676,7 +673,7 @@ class SLM extends DbTestCase
                 'end_of_working_day' => false,
             ]
         );
-        $this->integer($ola_tto_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ola_tto_id);
 
         $sla_ttr = new \SLA();
         $sla_ttr_id = $sla_ttr->add(
@@ -689,7 +686,7 @@ class SLM extends DbTestCase
                 'end_of_working_day' => false,
             ]
         );
-        $this->integer($sla_ttr_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $sla_ttr_id);
 
         $sla_tto = new \SLA();
         $sla_tto_id = $sla_tto->add(
@@ -702,9 +699,9 @@ class SLM extends DbTestCase
                 'end_of_working_day' => false,
             ]
         );
-        $this->integer($sla_tto_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $sla_tto_id);
 
-       // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
+        // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
@@ -716,32 +713,42 @@ class SLM extends DbTestCase
                 'slas_id_tto' => $sla_tto_id,
             ]
         );
-        $this->integer($ticket_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->assertGreaterThan(0, $ticket_id);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-       //check computed data from SLA / OLA
-        $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)));
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        //check computed data from SLA / OLA
+        $this->assertEquals($sla_tto_id, (int)$ticket->fields['slas_id_tto']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own']))
+        );
 
-        $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-       // date + delay
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)));
+        $this->assertEquals($sla_ttr_id, (int)$ticket->fields['slas_id_ttr']);
+        // date + delay
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve']))
+        );
 
-        $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (3 * MONTH_TIMESTAMP)));
+        $this->assertEquals($ola_tto_id, (int)$ticket->fields['olas_id_tto']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (3 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own']))
+        );
 
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)));
+        $this->assertEquals($ola_ttr_id, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve']))
+        );
 
-        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
-         ->isEqualTo(strtotime($ticket->fields['date']));
+        $this->assertEquals(
+            strtotime($ticket->fields['date']),
+            strtotime($ticket->fields['ola_ttr_begin_date'])
+        );
 
-       // Create ticket to test computation based on OLA / SLA on update
+        // Create ticket to test computation based on OLA / SLA on update
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
@@ -749,13 +756,13 @@ class SLM extends DbTestCase
                 'content' => 'Ticket for TTR OLA test on update',
             ]
         );
-        $this->integer($ticket_id)->isGreaterThan(0);
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+        $this->assertGreaterThan(0, $ticket_id);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals(0, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertNull($ticket->fields['ola_ttr_begin_date']);
+        $this->assertNull($ticket->fields['internal_time_to_resolve']);
 
-       // Assign TTR/TTO OLA/SLA
+        // Assign TTR/TTO OLA/SLA
 
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
         $updated = $ticket->update(
@@ -770,30 +777,40 @@ class SLM extends DbTestCase
         );
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
 
-        $this->boolean($updated)->isTrue();
+        $this->assertTrue($updated);
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
 
-       //check computed data from SLA / OLA
-        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)));
+        //check computed data from SLA / OLA
+        $this->assertEquals($ola_ttr_id, (int)$ticket->fields['olas_id_ttr']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve']))
+        );
 
-        $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (3 * MONTH_TIMESTAMP)));
+        $this->assertEquals($ola_tto_id, (int)$ticket->fields['olas_id_tto']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (3 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own']))
+        );
 
-        $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-       // date + delay
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)));
+        $this->assertEquals($sla_ttr_id, (int)$ticket->fields['slas_id_ttr']);
+        // date + delay
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve']))
+        );
 
-        $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
-        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)));
+        $this->assertEquals($sla_tto_id, (int)$ticket->fields['slas_id_tto']);
+        $this->assertEquals(
+            date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)),
+            date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own']))
+        );
 
-        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
-         ->isEqualTo(strtotime($ticket->fields['date_mod']));
+        $this->assertEquals(
+            strtotime($ticket->fields['date_mod']),
+            strtotime($ticket->fields['ola_ttr_begin_date'])
+        );
     }
 
     /**
@@ -901,46 +918,46 @@ class SLM extends DbTestCase
             "olas_id_tto" => $ola_tto->getID(),
             "olas_id_ttr" => $ola_ttr->getID(),
         ]);
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check SLA, must be calculated from the ticket start date
         $tto_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 4); // 4 hours TTO
         $ttr_expected_date = date('Y-m-d H:i:s', strtotime($date_1_hour_ago) + 3600 * 12); // 12 hours TTR
-        $this->string($ticket->fields['time_to_own'])->isEqualTo($tto_expected_date);
-        $this->string($ticket->fields['time_to_resolve'])->isEqualTo($ttr_expected_date);
+        $this->assertEquals($tto_expected_date, $ticket->fields['time_to_own']);
+        $this->assertEquals($ttr_expected_date, $ticket->fields['time_to_resolve']);
 
         // Check escalation levels
         $sla_levels = (new SlaLevel_Ticket())->find([
             'tickets_id' => $ticket->getID(),
         ]);
-        $this->array($sla_levels)->hasSize(2);
+        $this->assertCount(2, $sla_levels);
         $tto_level = array_shift($sla_levels);
         $ttr_level = array_shift($sla_levels);
         $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 900); // 15 minutes escalation level
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 1800); // 30 minutes escalation level
-        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
-        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+        $this->assertEquals($tto_level_expected_date, $tto_level['date']);
+        $this->assertEquals($ttr_level_expected_date, $ttr_level['date']);
 
         // Check OLA, must be calculated from the date at which it was added to the ticket
         $tto_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 2); // 2 hours TTO
         $ttr_expected_date = date('Y-m-d H:i:s', strtotime($now) + 3600 * 8); // 8 hours TTR
-        $this->string($ticket->fields['internal_time_to_own'])->isEqualTo($tto_expected_date);
-        $this->string($ticket->fields['internal_time_to_resolve'])->isEqualTo($ttr_expected_date);
+        $this->assertEquals($tto_expected_date, $ticket->fields['internal_time_to_own']);
+        $this->assertEquals($ttr_expected_date, $ticket->fields['internal_time_to_resolve']);
 
         // Check escalation levels
         $ola_levels = (new OlaLevel_Ticket())->find([
             'tickets_id' => $ticket->getID(),
         ]);
-        $this->array($ola_levels)->hasSize(2);
+        $this->assertCount(2, $ola_levels);
         $tto_level = array_shift($ola_levels);
         $ttr_level = array_shift($ola_levels);
         $tto_level_expected_date = date('Y-m-d H:i:s', strtotime($tto_expected_date) - 2700); // 45 minutes escalation level
         $ttr_level_expected_date = date('Y-m-d H:i:s', strtotime($ttr_expected_date) - 3600); // 60 minutes escalation level
-        $this->string($tto_level['date'])->isEqualTo($tto_level_expected_date);
-        $this->string($ttr_level['date'])->isEqualTo($ttr_level_expected_date);
+        $this->assertEquals($tto_level_expected_date, $tto_level['date']);
+        $this->assertEquals($ttr_level_expected_date, $ttr_level['date']);
     }
 
-    protected function laProvider(): iterable
+    public static function laProvider(): iterable
     {
         // WARNING: dates must be in the future or escalation levels will be
         // computed immediately and removed from the database (and thus wont be able
@@ -1339,19 +1356,20 @@ class SLM extends DbTestCase
         }
 
         // Reload ticket
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
-        $this->integer($ticket->fields[$la_class::getWaitingFieldName()])->isEqualTo($waiting_duration);
-        $this->string($ticket->fields[$la_date_field])->isEqualTo($target_date);
+        $this->assertEquals($waiting_duration, $ticket->fields[$la_class::getWaitingFieldName()]);
+        $this->assertEquals($target_date, $ticket->fields[$la_date_field])
+        ;
 
         // Check escalation date
         $la_level_class = $la->getLevelTicketClass();
         $la_level_ticket = (new $la_level_class())->find([
             'tickets_id' => $ticket->getID(),
         ]);
-        $this->array($la_level_ticket)->hasSize(1);
+        $this->assertCount(1, $la_level_ticket);
         $escalation_data = array_pop($la_level_ticket)["date"];
-        $this->string($escalation_data)->isEqualTo($target_escalation_date);
+        $this->assertEquals($target_escalation_date, $escalation_data);
     }
 
     /**
@@ -1472,26 +1490,28 @@ class SLM extends DbTestCase
                 // Check that the correct LA is assigned to the ticket
                 $expected_la = getItemByTypeName($la_class, "$la_class $la_type 1", true);
                 $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 1 level", true);
-                $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+                $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
                 // Check that the target date is correct (+ 4 hours)
-                $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:00:00');
+                $this->assertEquals('2034-08-16 17:00:00', $ticket->fields[$la_date_field]);
             }
 
             // Check that all escalations levels are sets
             $level_ticket_class = $la->getLevelTicketClass();
             $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()]);
-            $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+            $this->assertCount(2, $sa_levels_ticket); // One TTO and one TTR
 
             // Check that they match the expected la levels
-            $this->array(
+            $this->assertEquals(
+                $expected_la_levels,
                 array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-            )->isEqualTo($expected_la_levels);
+            );
 
             // Check that they match the expected date (- 1 hour)
-            $this->array(
+            $this->assertEquals(
+                ['2034-08-16 16:00:00'],
                 array_unique(array_column($sa_levels_ticket, 'date'))
-            )->isEqualTo(['2034-08-16 16:00:00']);
+            );
         }
 
         // Update ticket, triggering an LA change
@@ -1499,7 +1519,7 @@ class SLM extends DbTestCase
             'urgency' => 5,
             'name' => $test_ticket_name, // Name is not updated but we need to be in the input for the rule
         ]);
-        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that each LA TTO and TTR have been modified as expected
         foreach ([\OLA::class, \SLA::class] as $la_class) {
@@ -1513,26 +1533,28 @@ class SLM extends DbTestCase
                 // Check that the correct LA is assigned to the ticket
                 $expected_la = getItemByTypeName($la_class, "$la_class $la_type 2", true);
                 $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 2 level", true);
-                $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+                $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
                 // Check that the target date is correct (+ 2 hours)
-                $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 15:00:00');
+                $this->assertEquals('2034-08-16 15:00:00', $ticket->fields[$la_date_field]);
             }
 
-            // Check that all escalations levels have been modifieds
+            // Check that all escalations levels have been modified
             $level_ticket_class = $la->getLevelTicketClass();
             $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
-            $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+            $this->assertCount(2, $sa_levels_ticket); // One TTO and one TTR
 
             // Check that they match the expected la levels
-            $this->array(
+            $this->assertEquals(
+                $expected_la_levels,
                 array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-            )->isEqualTo($expected_la_levels);
+            );
 
             // Check that they match the expected date (- 1 hour)
-            $this->array(
+            $this->assertEquals(
+                ['2034-08-16 14:00:00'],
                 array_unique(array_column($sa_levels_ticket, 'date'))
-            )->isEqualTo(['2034-08-16 14:00:00']);
+            );
         }
 
         // Check that the control ticket LA and escalation levels are valid
@@ -1549,26 +1571,28 @@ class SLM extends DbTestCase
                 // Check that the correct LA is assigned to the ticket
                 $expected_la = getItemByTypeName($la_class, "$la_class $la_type 1", true);
                 $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 1 level", true);
-                $this->integer($control_ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+                $this->assertEquals($expected_la, $control_ticket->fields[$la_fk_field]);
 
                 // Check that the target date is correct (+ 4 hours)
-                $this->string($control_ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:00:00');
+                $this->assertEquals('2034-08-16 17:00:00', $control_ticket->fields[$la_date_field]);
             }
 
             // Check that all escalations levels are sets
             $level_ticket_class = $la->getLevelTicketClass();
             $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $control_ticket->getID()], [$level_class::getForeignKeyField()]);
-            $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+            $this->assertCount(2, $sa_levels_ticket); // One TTO and one TTR
 
             // Check that they match the expected la levels
-            $this->array(
+            $this->assertEquals(
+                $expected_la_levels,
                 array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-            )->isEqualTo($expected_la_levels);
+            );
 
             // Check that they match the expected date (- 1 hour)
-            $this->array(
+            $this->assertEquals(
+                ['2034-08-16 16:00:00'],
                 array_unique(array_column($sa_levels_ticket, 'date'))
-            )->isEqualTo(['2034-08-16 16:00:00']);
+            );
         }
     }
 
@@ -1667,26 +1691,28 @@ class SLM extends DbTestCase
             // Check that the correct LA is assigned to the ticket
             $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
             $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
-            $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+            $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
             // Check that the target date is correct (+ 4 hours)
-            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:00:00');
+            $this->assertEquals('2034-08-16 17:00:00', $ticket->fields[$la_date_field]);
         }
 
         // Check that all escalations levels are sets
         $level_ticket_class = $la->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()]);
-        $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+        $this->assertCount(2, $sa_levels_ticket); // One TTO and one TTR
 
         // Check that they match the expected la levels
-        $this->array(
+        $this->assertEquals(
+            $expected_la_levels,
             array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-        )->isEqualTo($expected_la_levels);
+        );
 
         // Check that they match the expected date (- 1 hour)
-        $this->array(
+        $this->assertEquals(
+            ['2034-08-16 16:00:00'],
             array_unique(array_column($sa_levels_ticket, 'date'))
-        )->isEqualTo(['2034-08-16 16:00:00']);
+        );
 
         // Put ticket on waiting for 10 minutes
         $this->updateItem(Ticket::class, $ticket->getID(), [
@@ -1696,7 +1722,7 @@ class SLM extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => \Ticket::INCOMING,
         ]);
-        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that TTO and TTR have been modified as expected
         $la = new $la_class();
@@ -1709,25 +1735,27 @@ class SLM extends DbTestCase
         // Check that the correct LA is assigned to the ticket
         $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
         $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
-        $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+        $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
         // Check that the target date is correct (+ 4 hours)
-        $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:10:00');
+        $this->assertEquals('2034-08-16 17:10:00', $ticket->fields[$la_date_field]);
 
         // Check that all escalations levels are sets
         $level_ticket_class = $la->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
-        $this->array($sa_levels_ticket)->hasSize(1);
+        $this->assertCount(1, $sa_levels_ticket);
 
         // Check that they match the expected la levels
-        $this->array(
+        $this->assertEquals(
+            $expected_la_levels,
             array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-        )->isEqualTo($expected_la_levels);
+        );
 
         // Check that they match the expected date (- 1 hour)
-        $this->array(
+        $this->assertEquals(
+            ['2034-08-16 16:10:00'],
             array_unique(array_column($sa_levels_ticket, 'date'))
-        )->isEqualTo(['2034-08-16 16:10:00']);
+        );
 
         // Create a second calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar2 = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 2']);
@@ -1795,7 +1823,7 @@ class SLM extends DbTestCase
             'urgency' => 5,
             'name' => $test_ticket_name, // Name is not updated but we need to be in the input for the rule
         ]);
-        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that TTO and TTR have been modified as expected
         $la = new $la_class();
@@ -1808,26 +1836,28 @@ class SLM extends DbTestCase
             // Check that the correct LA is assigned to the ticket
             $expected_la = getItemByTypeName($la_class, "$la_class $la_type 2", true);
             $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 2 level", true);
-            $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+            $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
             // Check that the target date is correct (+ 6 hours)
-            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-17 08:10:00');
+            $this->assertEquals('2034-08-17 08:10:00', $ticket->fields[$la_date_field]);
         }
 
         // Check that all escalations levels are sets
         $level_ticket_class = $la->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
-        $this->array($sa_levels_ticket)->hasSize(2);
+        $this->assertCount(2, $sa_levels_ticket);
 
         // Check that they match the expected la levels
-        $this->array(
+        $this->assertEquals(
+            $expected_la_levels,
             array_column($sa_levels_ticket, $level_class::getForeignKeyField())
-        )->isEqualTo($expected_la_levels);
+        );
 
         // Check that they match the expected date (- 1 hour)1
-        $this->array(
+        $this->assertEquals(
+            ['2034-08-16 18:10:00'],
             array_unique(array_column($sa_levels_ticket, 'date'))
-        )->isEqualTo(['2034-08-16 18:10:00']);
+        );
     }
 
     public function testCannotExportSLALevel()
@@ -1862,7 +1892,10 @@ class SLM extends DbTestCase
         $actions = $sla_level->getSpecificMassiveActions();
 
         // Check that the export action is not available
-        $this->array($actions)->notHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export');
+        $this->assertArrayNotHasKey(
+            Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export',
+            $actions
+        );
     }
 
     public function testCloneSLA()
@@ -1940,18 +1973,22 @@ class SLM extends DbTestCase
         $sla_clone = \SLA::getById($sla_clone_id);
 
         // Check that the clone has the same fields as the original
-        $this->array($sla_clone->fields)->isEqualTo(array_merge(
-            $sla->fields,
-            [
-                'id' => $sla_clone_id,
-                'name' => 'SLA (copy)',
-            ]
-        ));
+        $this->assertEquals(
+            array_merge(
+                $sla->fields,
+                [
+                    'id' => $sla_clone_id,
+                    'name' => 'SLA (copy)',
+                ]
+            ),
+            $sla_clone->fields
+        );
 
         // Check that SLA levels have been cloned
         $sla_clone_levels = (new \SlaLevel())->find(['slas_id' => $sla_clone_id]);
-        $this->array($sla_clone_levels)->hasSize(2);
-        $this->array(\SlaLevel::getById(current($sla_clone_levels)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $sla_clone_levels);
+        $current = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels[0]->fields,
                 [
@@ -1961,9 +1998,11 @@ class SLM extends DbTestCase
                     'slas_id'   => $sla_clone_id,
                     'is_active' => 0,
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\SlaLevel::getById(next($sla_clone_levels)['id'])->fields)->isEqualTo(
+        $current = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels[1]->fields,
                 [
@@ -1973,51 +2012,60 @@ class SLM extends DbTestCase
                     'slas_id'   => $sla_clone_id,
                     'is_active' => 0,
                 ]
-            )
+            ),
+            $current
         );
 
         // Check that SLA levels criteria have been cloned
         $sla_clone_criteria = (new \SlaLevelCriteria())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
-        $this->array($sla_clone_criteria)->hasSize(2);
-        $this->array(\SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $sla_clone_criteria);
+        $current = \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[0]->fields,
                 [
                     'id'           => current($sla_clone_criteria)['id'],
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields)->isEqualTo(
+        $current = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[1]->fields,
                 [
                     'id'           => current($sla_clone_criteria)['id'],
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
 
         // Check that SLA levels actions have been cloned
         $sla_clone_actions = (new \SlaLevelAction())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
-        $this->array($sla_clone_actions)->hasSize(2);
-        $this->array(\SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $sla_clone_actions);
+        $current = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels_actions[0]->fields,
                 [
                     'id'           => current($sla_clone_actions)['id'],
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields)->isEqualTo(
+        $current = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $sla_levels_actions[1]->fields,
                 [
                     'id'           => current($sla_clone_actions)['id'],
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
     }
 
@@ -2096,18 +2144,22 @@ class SLM extends DbTestCase
         $ola_clone = \OLA::getById($ola_clone_id);
 
         // Check that the clone has the same fields as the original
-        $this->array($ola_clone->fields)->isEqualTo(array_merge(
-            $ola->fields,
-            [
-                'id' => $ola_clone_id,
-                'name' => 'OLA (copy)',
-            ]
-        ));
+        $this->assertEquals(
+            array_merge(
+                $ola->fields,
+                [
+                    'id' => $ola_clone_id,
+                    'name' => 'OLA (copy)',
+                ]
+            ),
+            $ola_clone->fields
+        );
 
         // Check that OLA levels have been cloned
         $ola_clone_levels = (new \OlaLevel())->find(['olas_id' => $ola_clone_id]);
-        $this->array($ola_clone_levels)->hasSize(2);
-        $this->array(\OlaLevel::getById(current($ola_clone_levels)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $ola_clone_levels);
+        $current = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels[0]->fields,
                 [
@@ -2117,9 +2169,11 @@ class SLM extends DbTestCase
                     'olas_id'   => $ola_clone_id,
                     'is_active' => 0,
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\OlaLevel::getById(next($ola_clone_levels)['id'])->fields)->isEqualTo(
+        $current = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels[1]->fields,
                 [
@@ -2129,51 +2183,60 @@ class SLM extends DbTestCase
                     'olas_id'   => $ola_clone_id,
                     'is_active' => 0,
                 ]
-            )
+            ),
+            $current
         );
 
         // Check that OLA levels criteria have been cloned
         $ola_clone_criteria = (new \OlaLevelCriteria())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
-        $this->array($ola_clone_criteria)->hasSize(2);
-        $this->array(\OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $ola_clone_criteria);
+        $current = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[0]->fields,
                 [
                     'id'           => current($ola_clone_criteria)['id'],
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields)->isEqualTo(
+        $current = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[1]->fields,
                 [
                     'id'           => current($ola_clone_criteria)['id'],
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
 
         // Check that OLA levels actions have been cloned
         $ola_clone_actions = (new \OlaLevelAction())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
-        $this->array($ola_clone_actions)->hasSize(2);
-        $this->array(\OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields)->isEqualTo(
+        $this->assertCount(2, $ola_clone_actions);
+        $current = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels_actions[0]->fields,
                 [
                     'id'           => current($ola_clone_actions)['id'],
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
-        $this->array(\OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields)->isEqualTo(
+        $current = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
+        $this->assertEquals(
             array_merge(
                 $ola_levels_actions[1]->fields,
                 [
                     'id'           => current($ola_clone_actions)['id'],
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
-            )
+            ),
+            $current
         );
     }
 }

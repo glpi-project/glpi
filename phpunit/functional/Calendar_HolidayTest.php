@@ -41,7 +41,7 @@ use Holiday;
 
 /* Test for inc/calendar_holiday.class.php */
 
-class Calendar_Holiday extends DbTestCase
+class Calendar_HolidayTest extends DbTestCase
 {
     public function testGetHolidaysForCalendar()
     {
@@ -52,28 +52,29 @@ class Calendar_Holiday extends DbTestCase
 
        // No default holidays
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
-        $this->array($holidays)->isEqualTo([]);
+        $this->assertEquals([], $holidays);
 
        // Add holidays
         $this->addHolidaysToCalendar($default_calendar_id);
 
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
-        $this->array($holidays)->isEqualTo(
+        $this->assertEquals(
             [
                 ['begin_date' => '2000-01-01', 'end_date' => '2000-01-01', 'is_perpetual' => 1],
                 ['begin_date' => '2020-04-06', 'end_date' => '2020-04-17', 'is_perpetual' => 0],
                 ['begin_date' => '2020-08-03', 'end_date' => '2020-08-21', 'is_perpetual' => 0],
                 ['begin_date' => '2020-12-21', 'end_date' => '2020-12-25', 'is_perpetual' => 0],
-            ]
+            ],
+            $holidays
         );
 
        // Check that calendar filtering is not buggy
         $calendar = new Calendar();
         $calendar_id = $calendar->add(['name' => 'Test']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         $holidays = $calendar_holiday->getHolidaysForCalendar($calendar_id);
-        $this->array($holidays)->isEqualTo([]);
+        $this->assertEquals([], $holidays);
     }
 
     /**
@@ -89,67 +90,67 @@ class Calendar_Holiday extends DbTestCase
         $default_calendar_id = getItemByTypeName('Calendar', 'Default', true);
         $cache_key = sprintf('calendar-%s-holidays', $default_calendar_id);
 
-       // No default cache (cache is set on reading operations)
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse();
+        // No default cache (cache is set on reading operations)
+        $this->assertFalse($GLPI_CACHE->has($cache_key));
 
-       // Validate that cache is set on reading
+        // Validate that cache is set on reading
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
-       // Validate that there is no DB operation when cache is set
+        // Validate that there is no DB operation when cache is set
         global $DB;
         $db_back = $DB;
         $DB = null; // Setting $DB to null will result in an error if something tries to request DB
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
         $DB = $db_back;
-        $this->array($GLPI_CACHE->get($cache_key))->isEqualTo($holidays);
+        $this->assertEquals($holidays, $GLPI_CACHE->get($cache_key));
 
-       // Validate that cache is invalidated when holidays are added
-        $this->boolean($GLPI_CACHE->has($cache_key))->isTrue();
+        // Validate that cache is invalidated when holidays are added
+        $this->assertTrue($GLPI_CACHE->has($cache_key));
         $this->addHolidaysToCalendar($default_calendar_id);
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse();
+        $this->assertFalse($GLPI_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
-       // Validate that cache is invalidated when holidays are updated
+        // Validate that cache is invalidated when holidays are updated
         $holiday_id = getItemByTypeName('Holiday', 'Spring holidays', true);
-        $this->boolean($GLPI_CACHE->has($cache_key))->isTrue();
+        $this->assertTrue($GLPI_CACHE->has($cache_key));
         $holiday->update(['id' => $holiday_id, 'begin_date' => '2020-03-01']);
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse();
+        $this->assertFalse($GLPI_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
-       // Validate that cache is invalidated when calendar_holiday is deleted
+        // Validate that cache is invalidated when calendar_holiday is deleted
         $holiday_id = getItemByTypeName('Holiday', 'Spring holidays', true);
-        $this->boolean($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]))->isTrue();
-        $this->boolean($GLPI_CACHE->has($cache_key))->isTrue();
-        $this->boolean($calendar_holiday->delete(['id' => $calendar_holiday->fields['id']]))->isTrue();
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse();
+        $this->assertTrue($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]));
+        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($calendar_holiday->delete(['id' => $calendar_holiday->fields['id']]));
+        $this->assertFalse($GLPI_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
-       // Validate that cache is invalidated when holiday is deleted
+        // Validate that cache is invalidated when holiday is deleted
         $holiday_id = getItemByTypeName('Holiday', 'Summer holidays', true);
-        $this->boolean($GLPI_CACHE->has($cache_key))->isTrue();
-        $this->boolean($holiday->delete(['id' => $holiday_id, true]))->isTrue();
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse();
+        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertTrue($holiday->delete(['id' => $holiday_id, true]));
+        $this->assertFalse($GLPI_CACHE->has($cache_key));
         $this->validateHolidayCacheMatchesMethodResult($default_calendar_id);
 
-       // Validate that cache is invalidated when calendar_holiday is updated
-       // Cannot be tested as `CommonDBRelation::prepareInputForUpdate()` refuses the update.
-       // I choosed to keep invalidation code in `Calendar_Holiday::post_updateItem()` to be sure to handle this case
-       // if update becomes possible in the future.
-       /*
-       $calendar = new Calendar();
-       $calendar_id = $calendar->add(['name' => 'Test']);
-       $this->integer($calendar_id)->isGreaterThan(0);
+        // Validate that cache is invalidated when calendar_holiday is updated
+        // Cannot be tested as `CommonDBRelation::prepareInputForUpdate()` refuses the update.
+        // I choosed to keep invalidation code in `Calendar_Holiday::post_updateItem()` to be sure to handle this case
+        // if update becomes possible in the future.
+        /*
+        $calendar = new Calendar();
+        $calendar_id = $calendar->add(['name' => 'Test']);
+        $this->integer($calendar_id)->isGreaterThan(0);
 
-       $this->validateHolidayCacheMatchesMethodResult($calendar_id);
+        $this->validateHolidayCacheMatchesMethodResult($calendar_id);
 
-       $holiday_id = getItemByTypeName('Holiday', 'Winter holidays', true);
-       $this->boolean($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]))->isTrue();
-       $this->boolean(
-         $calendar_holiday->update(['id' => $calendar_holiday->fields['id'], 'calendars_id' => $calendar_id])
-       )->isTrue();
-       $this->boolean($GLPI_CACHE->has($cache_key))->isFalse(); // Previously associated calendar cache is invalidated
-       $this->boolean($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)))->isFalse();
-       */
+        $holiday_id = getItemByTypeName('Holiday', 'Winter holidays', true);
+        $this->boolean($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]))->isTrue();
+        $this->boolean(
+          $calendar_holiday->update(['id' => $calendar_holiday->fields['id'], 'calendars_id' => $calendar_id])
+        )->isTrue();
+        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse(); // Previously associated calendar cache is invalidated
+        $this->boolean($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)))->isFalse();
+        */
     }
 
     /**
@@ -174,14 +175,14 @@ class Calendar_Holiday extends DbTestCase
                 'is_perpetual' => 1,
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
             ]
         );
-        $this->integer($calendar_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_holiday_id);
 
         $holiday_id = (int)$holiday->add(
             [
@@ -193,14 +194,14 @@ class Calendar_Holiday extends DbTestCase
                 'is_perpetual' => 0,
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
             ]
         );
-        $this->integer($calendar_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_holiday_id);
 
         $holiday_id = (int)$holiday->add(
             [
@@ -212,14 +213,14 @@ class Calendar_Holiday extends DbTestCase
                 'is_perpetual' => 0,
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
             ]
         );
-        $this->integer($calendar_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_holiday_id);
 
         $holiday_id = (int)$holiday->add(
             [
@@ -231,14 +232,14 @@ class Calendar_Holiday extends DbTestCase
                 'is_perpetual' => 0,
             ]
         );
-        $this->integer($holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $holiday_id);
         $calendar_holiday_id = (int)$calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
             ]
         );
-        $this->integer($calendar_holiday_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_holiday_id);
     }
 
     /**
@@ -256,7 +257,7 @@ class Calendar_Holiday extends DbTestCase
         $cache_key = sprintf('calendar-%s-holidays', $calendar_id);
 
         $holidays = $calendar_holiday->getHolidaysForCalendar($calendar_id);
-        $this->boolean($GLPI_CACHE->has($cache_key))->isTrue();
-        $this->array($GLPI_CACHE->get($cache_key))->isEqualTo($holidays);
+        $this->assertTrue($GLPI_CACHE->has($cache_key));
+        $this->assertEquals($holidays, $GLPI_CACHE->get($cache_key));
     }
 }

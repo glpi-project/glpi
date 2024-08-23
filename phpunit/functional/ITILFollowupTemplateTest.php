@@ -39,8 +39,12 @@ include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
 
 use tests\units\Glpi\AbstractITILChildTemplate;
 
-/* Test for inc/tasktemplate.class.php */
+/* Test for inc/itilfollowuptemplate.class.php */
 
-class TaskTemplate extends AbstractITILChildTemplate
+class ITILFollowupTemplateTest extends AbstractITILChildTemplate
 {
+    protected function getInstance(): \AbstractITILChildTemplate
+    {
+        return new \ITILFollowupTemplate();
+    }
 }

@@ -41,7 +41,7 @@ use RecursiveIteratorIterator;
 
 /* Test for inc/crontask.class.php */
 
-class CronTask extends DbTestCase
+class CronTaskTest extends DbTestCase
 {
     public function testCronTemp()
     {
@@ -54,12 +54,12 @@ class CronTask extends DbTestCase
             'file4.txt',
         ];
         foreach ($filenames as $filename) {
-            $this->variable(file_put_contents(GLPI_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))))->isNotFalse();
+            $this->assertNotFalse(file_put_contents(GLPI_TMP_DIR . '/' . $filename, bin2hex(random_bytes(20))));
         }
 
         //create auto_orient directory
         if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
-            $this->boolean(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true))->isTrue();
+            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true));
         }
 
         $tmp_dir_iterator = new RecursiveIteratorIterator(
@@ -69,7 +69,7 @@ class CronTask extends DbTestCase
         foreach ($tmp_dir_iterator as $path) {
             if (basename($path) !== 'recent_file.txt') {
                 // change the modification date of the file to make it considered as "not recent"
-                $this->boolean(touch($path, time() - (HOUR_TIMESTAMP * 2)))->isTrue();
+                $this->assertTrue(touch($path, time() - (HOUR_TIMESTAMP * 2)));
             }
         }
 
@@ -78,7 +78,7 @@ class CronTask extends DbTestCase
         \CronTask::launch($mode, 5, 'temp');
 
         $nb_file = $this->getFileCountRecursively(GLPI_TMP_DIR);
-        $this->variable($nb_file)->isEqualTo(1); // only recent_file.txt should be preserved
+        $this->assertEquals(1, $nb_file); // only recent_file.txt should be preserved
     }
 
 
@@ -93,7 +93,7 @@ class CronTask extends DbTestCase
         return iterator_count($files);
     }
 
-    protected function registerProvider()
+    public static function registerProvider()
     {
         return [
             [
@@ -131,13 +131,13 @@ class CronTask extends DbTestCase
     {
         $result = \CronTask::register($itemtype, $name, 30);
         if ($should_register) {
-            $this->variable($result)->isNotEqualTo(false);
+            $this->assertNotFalse($result);
         } else {
-            $this->variable($result)->isEqualTo(false);
+            $this->assertFalse($result);
         }
     }
 
-    protected function unregisterProvider()
+    public static function unregisterProvider()
     {
        // Only plugins are supported with the unregister method.
         return [
@@ -169,32 +169,32 @@ class CronTask extends DbTestCase
     {
         global $DB;
 
-       // Register task .
+        // Register task .
         $plugin_task = \CronTask::register($itemtype, $name, 30, []);
-        $this->variable($plugin_task)->isNotEqualTo(false);
+        $this->assertNotFalse($plugin_task);
 
-       // Check the task has been created in DB
+        // Check the task has been created in DB
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
             'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
         ]);
-        $this->integer($iterator->count())->isEqualTo(1);
+        $this->assertEquals(1, $iterator->count());
 
-       // Try un-registering the task
+        // Try un-registering the task
         $result = \CronTask::unregister($plugin_name);
-        $this->boolean($result)->isTrue();
+        $this->assertTrue($result);
 
-       // Check the delete actually worked
+        // Check delete actually worked
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
             'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
         ]);
-        $this->integer($iterator->count())->isEqualTo($should_unregister ? 0 : 1);
+        $this->assertEquals($should_unregister ? 0 : 1, $iterator->count());
     }
 
-    protected function getNeedToRunProvider()
+    public static function getNeedToRunProvider()
     {
         return [
             [
@@ -232,12 +232,15 @@ class CronTask extends DbTestCase
     {
         global $DB;
 
-       // Deactivate all registered tasks
-        $crontask = new \CronTask();
-        $DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]);
-        $this->boolean($crontask->getNeedToRun())->isFalse();
+        $plugins = new \Plugin();
+        $plugins->init();
 
-       // Register task for active plugin.
+        // Deactivate all registered tasks
+        $crontask = new \CronTask();
+        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
+        $this->assertFalse($crontask->getNeedToRun());
+
+        // Register task for active plugin.
         $plugin_task = \CronTask::register(
             $itemtype,
             $name,
@@ -248,11 +251,11 @@ class CronTask extends DbTestCase
                 'hourmax' => 24,
             ]
         );
-        $this->variable($plugin_task)->isNotEqualTo(false);
-        $this->boolean($crontask->getNeedToRun())->isEqualTo($should_run);
+        $this->assertNotFalse($plugin_task);
+        $this->assertEquals($should_run, $crontask->getNeedToRun());
         if ($should_run) {
-            $this->variable($crontask->fields['itemtype'])->isEqualTo($itemtype);
-            $this->variable($crontask->fields['name'])->isEqualTo($name);
+            $this->assertEquals($itemtype, $crontask->fields['itemtype']);
+            $this->assertEquals($name, $crontask->fields['name']);
         }
     }
 
@@ -264,7 +267,8 @@ class CronTask extends DbTestCase
 
         foreach ($iterator as $row) {
             $itemtype = $row['itemtype'];
-            $this->boolean(class_exists($itemtype))->isTrue(
+            $this->assertTrue(
+                class_exists($itemtype),
                 sprintf(
                     'Class %1$s from crontask table does not exists.',
                     $itemtype
@@ -272,7 +276,8 @@ class CronTask extends DbTestCase
             );
 
             $method = 'cron' . ucfirst($row['name']);
-            $this->boolean(method_exists($itemtype, $method))->isTrue(
+            $this->assertTrue(
+                method_exists($itemtype, $method),
                 sprintf(
                     'Method %1$s::%2$s does not exists!',
                     $itemtype,

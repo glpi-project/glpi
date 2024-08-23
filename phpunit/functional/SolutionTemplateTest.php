@@ -35,11 +35,16 @@
 
 namespace tests\units;
 
-/* Test for inc/recurrentchange.class.php */
-class RecurrentChange extends CommonITILRecurrent
+include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+
+use tests\units\Glpi\AbstractITILChildTemplate;
+
+/* Test for inc/solutiontemplate.class.php */
+
+class SolutionTemplateTest extends AbstractITILChildTemplate
 {
-    protected function getChildClass()
+    protected function getInstance(): \AbstractITILChildTemplate
     {
-        return \RecurrentChange::class;
+        return new \SolutionTemplate();
     }
 }

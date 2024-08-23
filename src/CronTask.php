@@ -1098,16 +1098,16 @@ class CronTask extends CommonDBTM
     public static function register($itemtype, $name, $frequency, $options = [])
     {
 
-       // Check that hook exists
+        // Check that hook exists
         if (!isPluginItemType($itemtype) && !class_exists($itemtype)) {
             return false;
         }
 
-       // manage NS class
+        // manage NS class
         $itemtype = addslashes($itemtype);
 
         $temp = new self();
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if ($temp->getFromDBbyName($itemtype, $name)) {
             return false;
         }
@@ -1132,7 +1132,7 @@ class CronTask extends CommonDBTM
             && ($input['allowmode'] & self::MODE_EXTERNAL)
             && !isset($input['mode'])
         ) {
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $input['mode'] = self::MODE_EXTERNAL;
         }
         return $temp->add($input);

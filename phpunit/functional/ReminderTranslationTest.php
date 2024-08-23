@@ -42,7 +42,7 @@ use DbTestCase;
 /**
  * @engine isolate
  */
-class ReminderTranslation extends DbTestCase
+class ReminderTranslationTest extends DbTestCase
 {
     public function testGetTranslationForReminder()
     {
@@ -60,11 +60,11 @@ class ReminderTranslation extends DbTestCase
 
         $reminder = new \Reminder();
         $added = $reminder->add($data);
-        $this->integer((int)$added)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$added);
 
         $reminder1 = getItemByTypeName(\Reminder::getType(), '_test_reminder01');
 
-       //first, set data
+        //first, set data
         $text_orig = 'Translation 1 for Reminder1';
         $text_fr = 'Traduction 1 pour Note1';
         $this->addTranslation($reminder1, $text_orig);
@@ -73,14 +73,14 @@ class ReminderTranslation extends DbTestCase
         $nb = countElementsInTable(
             'glpi_remindertranslations'
         );
-        $this->integer((int)$nb)->isIdenticalTo(2);
+        $this->assertSame(2, $nb);
 
-       // second, test what we retrieve
+        // second, test what we retrieve
         $current_lang = $_SESSION['glpilanguage'];
         $_SESSION['glpilanguage'] = 'fr_FR';
         $text = \ReminderTranslation::getTranslatedValue($reminder1, "text");
         $_SESSION['glpilanguage'] = $current_lang;
-        $this->string($text)->isIdenticalTo($text_fr);
+        $this->assertSame($text_fr, $text);
     }
 
     /**
@@ -103,7 +103,6 @@ class ReminderTranslation extends DbTestCase
             'text'         => $text,
             'language'     => $lang
         ];
-        $transID1 = $trans->add($input);
-        $this->boolean($transID1 > 0)->isTrue();
+        $this->assertGreaterThan(0, (int)$trans->add($input));
     }
 }

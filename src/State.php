@@ -576,7 +576,7 @@ class State extends CommonTreeDropdown
             'WHERE'  => $where
         ];
         $row = $DB->request($query)->current();
-        return (int)$row['cpt'] == 0;
+        return ((int)$row['cpt'] === 0);
     }
 
     /**

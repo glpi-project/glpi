@@ -103,7 +103,6 @@ include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/RuleBuilder.php';
-include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes

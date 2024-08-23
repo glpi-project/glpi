@@ -37,9 +37,9 @@ namespace tests\units;
 
 use DbTestCase;
 
-class CommonTreeDropdown extends DbTestCase
+class CommonTreeDropdownTest extends DbTestCase
 {
-    protected function completenameProvider(): iterable
+    public static function completenameProvider(): iterable
     {
         yield [
             'raw'       => 'Root > Child 1 > Child 2', // "Root" > "Child 1" > "Child 2"
@@ -68,7 +68,7 @@ class CommonTreeDropdown extends DbTestCase
      */
     public function testSanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
-        $this->variable(\CommonTreeDropdown::sanitizeSeparatorInCompletename($raw))->isIdenticalTo($sanitized);
+        $this->assertSame($sanitized, \CommonTreeDropdown::sanitizeSeparatorInCompletename($raw));
     }
 
     /**
@@ -76,6 +76,6 @@ class CommonTreeDropdown extends DbTestCase
      */
     public function testUnsanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
-        $this->variable(\CommonTreeDropdown::unsanitizeSeparatorInCompletename($sanitized))->isIdenticalTo($raw);
+        $this->assertSame($raw, \CommonTreeDropdown::unsanitizeSeparatorInCompletename($sanitized));
     }
 }
