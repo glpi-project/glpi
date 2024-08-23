@@ -43,6 +43,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Session;
 
 final class FormSerializerTest extends \DbTestCase
 {
@@ -202,7 +203,10 @@ final class FormSerializerTest extends \DbTestCase
         $this->deleteItem(Entity::class, $entity->getID());
 
         // Import should fail as the entity can't be found
-        $import_result = self::$serializer->importFormsFromJson($json);
+        $import_result = self::$serializer->importFormsFromJson(
+            $json,
+            new DatabaseMapper(Session::getActiveEntities())
+        );
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertEquals([
             $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
@@ -227,7 +231,7 @@ final class FormSerializerTest extends \DbTestCase
 
         // Import into another entity
         $another_entity_id = getItemByTypeName(Entity::class, "_test_child_1", true);
-        $mapper = new DatabaseMapper();
+        $mapper = new DatabaseMapper(Session::getActiveEntities());
         $mapper->addMappedItem(Entity::class, 'My entity', $another_entity_id);
 
         $form_copy = $this->importForm($json, $mapper);
@@ -331,7 +335,10 @@ final class FormSerializerTest extends \DbTestCase
         // Act: enable sub entities; export and import form
         $this->setEntity($test_root_entity_id, subtree: true);
         $result = self::$serializer->exportFormsToJson([$form]);
-        $import_result = self::$serializer->importFormsFromJson($result->getJsonContent());
+        $import_result = self::$serializer->importFormsFromJson(
+            $result->getJsonContent(),
+            new DatabaseMapper(Session::getActiveEntities())
+        );
 
         // Assert: import should have succeeded
         $this->assertCount(1, $import_result->getImportedForms());
@@ -354,7 +361,10 @@ final class FormSerializerTest extends \DbTestCase
         // Act: disable sub entities; export and import form
         $this->setEntity($test_root_entity_id, subtree: false);
         $result = self::$serializer->exportFormsToJson([$form]);
-        $import_result = self::$serializer->importFormsFromJson($result->getJsonContent());
+        $import_result = self::$serializer->importFormsFromJson(
+            $result->getJsonContent(),
+            new DatabaseMapper(Session::getActiveEntities())
+        );
 
         // Assert: import should have failed
         $this->assertCount(0, $import_result->getImportedForms());
@@ -375,7 +385,7 @@ final class FormSerializerTest extends \DbTestCase
 
     private function importForm(
         string $json,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): Form {
         $import_result = self::$serializer->importFormsFromJson($json, $mapper);
         $imported_forms = $import_result->getImportedForms();
@@ -386,9 +396,16 @@ final class FormSerializerTest extends \DbTestCase
 
     private function exportAndImportForm(Form $form): Form
     {
+        if (!Session::isAuthenticated()) {
+            $this->fail("Need an active session to export and import forms");
+        }
+
         // Export and import process
         $json = $this->exportForm($form);
-        $form_copy = $this->importForm($json);
+        $form_copy = $this->importForm(
+            $json,
+            new DatabaseMapper(Session::getActiveEntities())
+        );
 
         // Make sure it was not the same form object that was returned.
         $this->assertNotEquals($form_copy->getId(), $form->getId());

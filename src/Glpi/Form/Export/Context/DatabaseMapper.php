@@ -44,7 +44,20 @@ use Search;
 final class DatabaseMapper
 {
     // Store itemtype => [name => id] relations.
+    /** @var array<string, array<string, int>> $values */
     private array $values = [];
+
+    /** @var array<int> $entities_restrictions */
+    private array $entities_restrictions;
+
+    public function __construct(array $entities_restrictions)
+    {
+        if (empty($entities_restrictions)) {
+            throw new InvalidArgumentException("Must specify at least one entity");
+        }
+
+        $this->entities_restrictions = $entities_restrictions;
+    }
 
     public function addMappedItem(string $itemtype, string $name, int $id): void
     {
@@ -152,7 +165,10 @@ final class DatabaseMapper
 
         // Entities restrictions are not always included in addDefaultWhere,
         // it is safer to add them manually (they might be checked twice tho).
-        $entities_restrictions = getEntitiesRestrictCriteria($item::getTable());
+        $entities_restrictions = getEntitiesRestrictCriteria(
+            $item::getTable(),
+            value: $this->entities_restrictions
+        );
         $condition[] = $entities_restrictions;
         $query['WHERE'] = $condition;
 
