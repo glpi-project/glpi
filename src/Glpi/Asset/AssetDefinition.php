@@ -484,6 +484,25 @@ final class AssetDefinition extends CommonDBTM
             // Force menu refresh when active state change
             unset($_SESSION['menu']);
         }
+
+        // Add default display preferences for the new asset definition
+        $prefs = [
+            4, // Name
+            40, // Model
+            5, // Serial
+            23, // Manufacturer
+            31, // Status
+            3, // Location
+            19, // Last Update
+        ];
+        $pref = new \DisplayPreference();
+        foreach ($prefs as $field) {
+            $pref->add([
+                'itemtype' => $this->getAssetClassName(),
+                'num'      => $field,
+                'users_id' => 0,
+            ]);
+        }
     }
 
     public function post_updateItem($history = true)
@@ -589,6 +608,7 @@ final class AssetDefinition extends CommonDBTM
                 force: true,
                 history: false
             );
+            (new \DisplayPreference())->deleteByCriteria(['itemtype' => $classname]);
         }
     }
 
