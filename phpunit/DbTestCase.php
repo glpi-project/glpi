@@ -86,9 +86,8 @@ class DbTestCase extends \GLPITestCase
      */
     protected function logOut()
     {
-        $ctime = $_SESSION['glpi_currenttime'];
         \Session::destroy();
-        $_SESSION['glpi_currenttime'] = $ctime;
+        \Session::start();
     }
 
     /**
@@ -119,7 +118,7 @@ class DbTestCase extends \GLPITestCase
     {
         $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
 
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getField('id'));
 

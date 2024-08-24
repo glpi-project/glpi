@@ -245,9 +245,9 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function addVisibilityRestrict()
     {
-       //not deprecated because used in Search
+        //not deprecated because used in Search
 
-       //get and clean criteria
+        //get and clean criteria
         $criteria = self::getVisibilityCriteria();
         unset($criteria['LEFT JOIN']);
         $criteria['FROM'] = self::getTable();
@@ -280,7 +280,7 @@ class Reminder extends CommonDBVisible implements
         $join = [];
         $where = [];
 
-       // Users
+        // Users
         $join['glpi_reminders_users'] = [
             'FKEY' => [
                 'glpi_reminders_users'  => 'reminders_id',
@@ -299,7 +299,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Groups
+        // Groups
         if (
             $forceall
             || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))
@@ -329,7 +329,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Profiles
+        // Profiles
         if (
             $forceall
             || (isset($_SESSION["glpiactiveprofile"])
@@ -358,7 +358,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Entities
+        // Entities
         if (
             $forceall
             || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))

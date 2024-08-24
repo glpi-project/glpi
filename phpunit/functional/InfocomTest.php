@@ -39,7 +39,7 @@ namespace tests\units;
 
 class InfocomTest extends \GLPITestCase
 {
-    public function dataLinearAmortise()
+    public static function dataLinearAmortise()
     {
         return [
             [
