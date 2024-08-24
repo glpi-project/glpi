@@ -213,7 +213,7 @@ class Reminder extends CommonDBVisible implements
         $join = [];
         $where = [];
 
-       // Users
+        // Users
         $join['glpi_reminders_users'] = [
             'FKEY' => [
                 'glpi_reminders_users'  => 'reminders_id',
@@ -232,7 +232,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Groups
+        // Groups
         if (
             $forceall
             || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))
@@ -262,7 +262,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Profiles
+        // Profiles
         if (
             $forceall
             || (isset($_SESSION["glpiactiveprofile"])
@@ -291,7 +291,7 @@ class Reminder extends CommonDBVisible implements
             ];
         }
 
-       // Entities
+        // Entities
         if (
             $forceall
             || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))

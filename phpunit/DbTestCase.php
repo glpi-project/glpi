@@ -117,7 +117,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getField('id'));
 
