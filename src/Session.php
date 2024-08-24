@@ -1301,7 +1301,7 @@ class Session
      * @param string  $module Module to check
      * @param integer $right  Right to check
      *
-     * @return boolean
+     * @return boolean|int
      **/
     public static function haveRight($module, $right)
     {

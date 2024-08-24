@@ -883,8 +883,8 @@ class Profile_User extends CommonDBRelation
     /**
      * Get entities for which a user have a right
      *
-     * @param $user_ID         user ID
-     * @param $only_dynamic    get only recursive rights (false by default)
+     * @param int  $user_ID      user ID
+     * @param bool $only_dynamic get only recursive rights (false by default)
      *
      * @return array of entities ID
      **/
