@@ -392,7 +392,7 @@ class NetworkAlias extends FQDNLabel
      * @param FQDN       $item          the FQDN owning the aliases
      * @param integer    $withtemplate  withtemplate param
      **/
-    public static function showForFQDN(FQDN $item, $withtemplate)
+    public static function showForFQDN(CommonGLPI $item, $withtemplate)
     {
         /** @var \DBmysql $DB */
         global $DB;
