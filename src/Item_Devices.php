@@ -372,6 +372,7 @@ class Item_Devices extends CommonDBRelation
             case 'locations_id':
                 return ['long name'  => Location::getTypeName(1),
                     'short name' => Location::getTypeName(1),
+                    'field'      => 'completename',
                     'size'       => 20,
                     'id'         => 13,
                     'datatype'   => 'dropdown'
