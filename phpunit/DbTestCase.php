@@ -347,8 +347,14 @@ class DbTestCase extends \GLPITestCase
             ],
             skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
         );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
-        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
+        $this->assertEquals(
+            $capacities,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        );
+        $this->assertEquals(
+            $profiles,
+            $this->callPrivateMethod($definition, 'getDecodedProfilesField')
+        );
 
         $manager = AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
@@ -374,7 +380,7 @@ class DbTestCase extends \GLPITestCase
         $contents = random_bytes(1024);
 
         $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
-        $this->integer($written_bytes)->isEqualTo(strlen($contents));
+        $this->assertEquals(strlen($contents), $written_bytes);
 
         return $this->createItem(
             Document::class,

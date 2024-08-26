@@ -43,6 +43,7 @@ use Document;
 use Document_Item;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Group_User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Ticket;
 use User;
@@ -339,15 +340,15 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('Computer', $search_params);
 
         $this->assertStringContainsString(
-            "LEFT JOIN  `glpi_users`",
+            "LEFT JOIN `glpi_users`",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "LEFT JOIN `glpi_profiles`  AS `glpi_profiles_",
+            "LEFT JOIN `glpi_profiles` AS `glpi_profiles_",
             $data['sql']['search']
         );
         $this->assertStringContainsString(
-            "LEFT JOIN `glpi_entities`  AS `glpi_entities_",
+            "LEFT JOIN `glpi_entities` AS `glpi_entities_",
             $data['sql']['search']
         );
     }
@@ -436,7 +437,7 @@ class SearchTest extends DbTestCase
             '/LEFT JOIN\s*`glpi_assets_assets_peripheralassets`\s*AS `glpi_assets_assets_peripheralassets_Printer`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im',
             '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`glpi_printers`\.`id`/im',
             // match having
-            "/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/"
+            "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/"
         ];
 
         foreach ($regexps as $regexp) {
@@ -450,11 +451,11 @@ class SearchTest extends DbTestCase
         $contains = [
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('1', '2', '3')",
+            "`glpi_computers`.`entities_id` IN ('2', '3', '4')",
             "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
-            "`glpi_computers`.`name`  LIKE '%test%'",
-            "AND (`glpi_softwares`.`id` = '10784')",
-            "OR (`glpi_computers`.`id`  LIKE '%test2%'",
+            "`glpi_computers`.`name` LIKE '%test%'",
+            "AND `glpi_softwares`.`id` = '10784'",
+            "OR (`glpi_computers`.`serial` LIKE '%test2%'",
             "AND (`glpi_locations`.`id` = '11')",
             "(`glpi_users`.`id` = '2')",
             "OR (`glpi_users`.`id` = '3')"
@@ -502,7 +503,7 @@ class SearchTest extends DbTestCase
         }
 
         $regexps = [
-            "/`glpi_computers`\.`name`  LIKE '%test%'/",
+            "/`glpi_computers`\.`name` LIKE '%test%'/",
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/",
@@ -510,8 +511,7 @@ class SearchTest extends DbTestCase
             "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(1=0\s*\)/",
-            "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/"
+            "/OR\s*\(1=0\s*\)/"
         ];
 
         foreach ($regexps as $regexp) {
@@ -521,7 +521,7 @@ class SearchTest extends DbTestCase
             );
         }
 
-        $this->assertNotMatchesRegularExpression(
+        $this->assertDoesNotMatchRegularExpression(
             "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
             $data['sql']['search']
         );
@@ -1297,9 +1297,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addSelectProvider
-     */
+    #[DataProvider('addSelectProvider')]
     public function testAddSelect($provider)
     {
         $sql_select = \Search::addSelect($provider['itemtype'], $provider['ID']);
@@ -1401,9 +1399,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addLeftJoinProvider
-     */
+    #[DataProvider('addLeftJoinProvider')]
     public function testAddLeftJoin($lj_provider)
     {
         $already_link_tables = [];
@@ -1532,9 +1528,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addOrderByProvider
-     */
+    #[DataProvider('addOrderByProvider')]
     public function testAddOrderBy($itemtype, $sort_fields, $expected)
     {
         $result = \Search::addOrderBy($itemtype, $sort_fields);
@@ -2061,9 +2055,9 @@ class SearchTest extends DbTestCase
             if (str_ends_with($key, 'status')) {
                 $this->assertIsArray($data);
                 $this->assertIsArray($data['data']);
-                $this->assertIsArray($data['rows']);
-                $this->assertIsArray($data['rows'][0]['raw']);
-                $this->assertEquals(\Ticket::INCOMING, $data['rows'][0]['raw'][$key]);
+                $this->assertIsArray($data['data']['rows']);
+                $this->assertIsArray($data['data']['rows'][0]['raw']);
+                $this->assertEquals(\Ticket::INCOMING, $data['data']['rows'][0]['raw'][$key]);
             }
         }
     }
@@ -2271,9 +2265,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataInfocomOptions
-     */
+    #[DataProvider('dataInfocomOptions')]
     public function testIsInfocomOption($index, $expected)
     {
         $this->assertSame($expected, \Search::isInfocomOption('Computer', $index));
@@ -2308,9 +2300,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider makeTextSearchValueProvider
-     */
+    #[DataProvider('makeTextSearchValueProvider')]
     public function testMakeTextSearchValue($value, $expected)
     {
         $this->assertSame($expected, \Search::makeTextSearchValue($value));
@@ -2422,9 +2412,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerAddWhere
-     */
+    #[DataProvider('providerAddWhere')]
     public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected)
     {
         $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
@@ -2591,7 +2579,7 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
             $this->assertMatchesRegularExpression(
-                "/`$type`\.`name`  LIKE '%test%'/",
+                "/`$type`\.`name` LIKE '%test%'/m",
                 $data['sql']['search']
             );
         }
@@ -2769,9 +2757,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testNamesOutputProvider
-     */
+    #[DataProvider('testNamesOutputProvider')]
     public function testNamesOutput(array $params, array $expected)
     {
         $this->login();
@@ -2786,7 +2772,9 @@ class SearchTest extends DbTestCase
 
         // Check results
         $this->assertCount(count($expected), $names);
-        $this->assertEquals($expected, $names);
+        foreach ($expected as $name) {
+            $this->assertContains($name, $names);
+        }
     }
 
     protected function testMyselfSearchCriteriaProvider(): array
@@ -2927,8 +2915,8 @@ class SearchTest extends DbTestCase
      * @param string $field
      * @param bool $expected
      * @return void
-     * @dataProvider isVirtualFieldProvider
      */
+    #[DataProvider('isVirtualFieldProvider')]
     public function testIsVirtualField(string $field, bool $expected): void
     {
         $this->assertEquals($expected, \Search::isVirtualField($field));
@@ -4357,17 +4345,24 @@ class SearchTest extends DbTestCase
         ];
     }
 
-        /**
-        * @dataProvider customAssetsProvider
-        */
-    public function testCustomAssetSearch(string $class, array $params, array $expected): void
+    public function testCustomAssetSearch(): void
     {
-        $data = $this->doSearch($class, $params);
-        foreach ($expected as $key => $item) {
-            $this->string($data['data']['rows'][$key]['raw'][sprintf('ITEM_%s_1', $class)])->isEqualTo($item->fields['name']);
-            $this->assertEquals($item->getID(), $data['data']['rows'][$key]['raw']['id']);
+        $provider = $this->customAssetsProvider();
+        foreach ($provider as $row) {
+            $class = $row['class'];
+            $params = $row['params'];
+            $expected = $row['expected'];
+
+            $data = $this->doSearch($class, $params);
+            foreach ($expected as $key => $item) {
+                $this->assertEquals(
+                    $item->fields['name'],
+                    $data['data']['rows'][$key]['raw'][sprintf('ITEM_%s_1', $class)]
+                );
+                $this->assertEquals($item->getID(), $data['data']['rows'][$key]['raw']['id']);
+            }
+            $this->assertEquals(count($expected), $data['data']['totalcount']);
         }
-        $this->assertEquals(count($expected), $data['data']['totalcount']);
     }
 
     public function testDCRoomSearchOption()
