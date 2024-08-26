@@ -245,8 +245,9 @@ class SLMTest extends DbTestCase
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
-            'name' => __METHOD__
+                'name' => __METHOD__
             ])
+        );
         $ticket_input_2['name'] = __METHOD__;
         $ticket_input_2['name'] = $newname;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
@@ -469,8 +470,9 @@ class SLMTest extends DbTestCase
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
-            'name' => __METHOD__
+                'name' => __METHOD__
             ])
+        );
         $ticket_input_2['name'] = __METHOD__;
         $ticket_input_2['name'] = $newname;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
@@ -2206,8 +2208,8 @@ class SLMTest extends DbTestCase
             )
         );
     }
-/* FIXME/ feature has not yet been merged on main -_-
 
+    /** FIXME feature has not yet been merged on main -_-
     public function testCannotExportSLALevel()
     {
         $this->login();
@@ -2218,7 +2220,6 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create an SLA
-        /** @var \SLA $sla */
         $sla = $this->createItem(\SLA::class, [
             'name'            => 'SLA',
             'slms_id'         => $slm->getID(),
@@ -2256,7 +2257,6 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create an SLA
-        /** @var \SLA $sla */
         $sla = $this->createItem(\SLA::class, [
             'name'            => 'SLA',
             'slms_id'         => $slm->getID(),
@@ -2427,7 +2427,6 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create an OLA
-        /** @var \OLA $ola */
         $ola = $this->createItem(\OLA::class, [
             'name'            => 'OLA',
             'slms_id'         => $slm->getID(),
@@ -2587,5 +2586,5 @@ class SLMTest extends DbTestCase
             $current
         );
     }
-*/
+    */
 }

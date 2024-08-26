@@ -1009,6 +1009,8 @@ class Search
         $output = SearchEngine::getOutputForLegacyKey($type);
         if (!defined('TU_USER')) {
             return $output::showHeader($rows, $cols, $fixed);
+        } else {
+            return '';
         }
     }
 

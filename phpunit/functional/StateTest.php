@@ -91,6 +91,7 @@ class StateTest extends DbTestCase
             $state = new \State();
             $this->assertSame($expected, $state->isUnique($input));
         }
+    }
 
     public function testVisibility(): void
     {

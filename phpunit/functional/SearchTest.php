@@ -115,7 +115,7 @@ class SearchTest extends DbTestCase
             . "LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
             . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
             . "AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
-            . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+            . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*'0'\s*\)\s*"
             . "LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
             . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
             . "/im",
@@ -459,18 +459,6 @@ class SearchTest extends DbTestCase
             "(`glpi_users`.`id` = '2')",
             "OR (`glpi_users`.`id` = '3')"
         ];
-        
-                 ->contains("`glpi_computers`.`is_deleted` = 0")
-         ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
-         ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
-                    " AND `glpi_computers`.`entities_id` IN (0))")
-         ->contains("`glpi_computers`.`name`  LIKE '%test%'")
-         ->contains("AND (`glpi_softwares`.`id` = '10784')")
-         ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
-         ->contains("AND (`glpi_locations`.`id` = '11')")
-         ->contains("(`glpi_users`.`id` = '2')")
-         ->contains("OR (`glpi_users`.`id` = '3')")
 
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
@@ -522,18 +510,9 @@ class SearchTest extends DbTestCase
             "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
+            "/OR\s*\(1=0\s*\)/",
             "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/"
         ];
-
-         ->matches("/`glpi_computers`\.`name` LIKE '%test%'/")
-         ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computers`\.`serial`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
-         ->matches("/OR\s*\(1=0\s*\)/")->notmatches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/");
 
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
@@ -541,6 +520,11 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
         }
+
+        $this->assertNotMatchesRegularExpression(
+            "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
+            $data['sql']['search']
+        );
     }
 
     public function testSearchOnRelationTable()
@@ -1013,7 +997,7 @@ class SearchTest extends DbTestCase
             'comment' => 'This is a test comment',
             'last_inventory_update' => date('Y-m-d H:i:00'),
         ]);
-        $this->integer($computer_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computer_id);
 
         $cvm = new \ItemVirtualMachine();
         $cvm_id = $cvm->add([
@@ -1022,7 +1006,7 @@ class SearchTest extends DbTestCase
             'name'         => $fname,
             'vcpu'         => 1,
         ]);
-        $this->integer($cvm_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cvm_id);
 
         // Create 2 computers with empty data
         $computer_id = $computer->add([
@@ -1030,20 +1014,20 @@ class SearchTest extends DbTestCase
             'entities_id' => 0,
             'is_recursive' => 1,
         ]);
-        $this->integer($computer_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computer_id);
         $cvm_id = $cvm->add([
             'itemtype' => 'Computer',
             'items_id' => $computer_id,
             'name'         => $fname,
         ]);
-        $this->integer($cvm_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $cvm_id);
 
         $computer_id = $computer->add([
             'name' => $fname,
             'entities_id' => 0,
             'is_recursive' => 1,
         ]);
-        $this->integer($computer_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computer_id);
 
         // Create 1 monitor with data not empty
         $monitor = new \Monitor();
@@ -1053,7 +1037,7 @@ class SearchTest extends DbTestCase
             'is_recursive' => 1,
             'size' => 54.4,
         ]);
-        $this->integer($monitor_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $monitor_id);
 
         // Create 2 monitors with empty data
         $monitor = new \Monitor();
@@ -1062,7 +1046,7 @@ class SearchTest extends DbTestCase
             'entities_id' => 0,
             'is_recursive' => 1,
         ]);
-        $this->integer($monitor_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $monitor_id);
 
         $monitor = new \Monitor();
         $monitor_id = $monitor->add([
@@ -1070,7 +1054,7 @@ class SearchTest extends DbTestCase
             'entities_id' => 0,
             'is_recursive' => 1,
         ]);
-        $this->integer($monitor_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $monitor_id);
 
         $expected_counters = [
             [
@@ -1129,12 +1113,12 @@ class SearchTest extends DbTestCase
                 ]
             ];
             $data = $this->doSearch($expected['itemtype'], $search_params);
-            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['empty']);
+            $this->assertSame($expected['empty'], $data['data']['totalcount']);
 
             //negate previous search
             $search_params['criteria'][1]['link'] = 'AND NOT';
             $data = $this->doSearch($expected['itemtype'], $search_params);
-            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['notempty']);
+            $this->assertSame($expected['notempty'], $data['data']['totalcount']);
         }
     }
 
@@ -1220,25 +1204,25 @@ class SearchTest extends DbTestCase
         $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
         $this->assertEquals(
             [
-            'reset'      => 1,
-            'start'      => 0,
-            'order'      => 'ASC',
-            'sort'       => 0,
-            'is_deleted' => 0,
-            'criteria'   => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 'view',
-                    'searchtype' => 'contains',
-                    'value'      => '',
-                ]
+                'reset'      => 1,
+                'start'      => 0,
+                'order'      => 'ASC',
+                'sort'       => 0,
+                'is_deleted' => 0,
+                'criteria'   => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '',
+                    ]
+                ],
+                'metacriteria'              => [],
+                'as_map'                    => 0,
+                'browse'                    => 0,
+                'disable_order_by_fallback' => true,
+                'unpublished'               => true,
             ],
-            'metacriteria'              => [],
-            'as_map'                    => 0,
-            'browse'                    => 0,
-            'disable_order_by_fallback' => true,
-            'unpublished'               => true,
-        ],
             $search
         );
 
@@ -1549,10 +1533,6 @@ class SearchTest extends DbTestCase
     }
 
     /**
-
-
-
-
      * @dataProvider addOrderByProvider
      */
     public function testAddOrderBy($itemtype, $sort_fields, $expected)
@@ -1582,7 +1562,7 @@ class SearchTest extends DbTestCase
                                     IFNULL(`$table_addtable`.`realname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC");
+                                ) ASC",
             $user_order_1
         );
         $user_order_2 = \Search::addOrderBy('Ticket', [
@@ -1602,7 +1582,7 @@ class SearchTest extends DbTestCase
                                     IFNULL(`$table_addtable`.`realname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC");
+                                ) DESC",
             $user_order_2
         );
 
@@ -1624,7 +1604,7 @@ class SearchTest extends DbTestCase
                                     IFNULL(`$table_addtable`.`firstname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC");
+                                ) ASC",
             $user_order_3
         );
         $user_order_4 = \Search::addOrderBy('Ticket', [
@@ -1644,7 +1624,7 @@ class SearchTest extends DbTestCase
                                     IFNULL(`$table_addtable`.`firstname`, ''),
                                     IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC");
+                                ) DESC",
             $user_order_4
         );
     }
@@ -1660,7 +1640,7 @@ class SearchTest extends DbTestCase
         $user_2 = getItemByTypeName('User', 'glpi')->getID();
         $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
 
-        $this->boolean($DB->delete(Change::getTable(), [1]))->isTrue();
+        $this->assertTrue($DB->delete(Change::getTable(), [1]));
 
         // Creates Changes with different requesters
         $this->createItems('Change', [
@@ -2022,42 +2002,46 @@ class SearchTest extends DbTestCase
     {
         $tech_users_id = getItemByTypeName('User', "tech", true);
 
-       // reduce the right of tech profile
-       // to have only the right of display their own tickets
+        // reduce the right of tech profile
+        // to have only the right of display their own tickets
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
             'Ticket' => (\Ticket::READMY)
         ]);
 
-       // add a group for tech user
+        // add a group for tech user
         $group = new \Group();
         $groups_id = $group->add([
             'name' => "test group for tech user"
         ]);
-        $this->integer((int)$groups_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$groups_id);
         $group_user = new \Group_User();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $groups_id,
                 'users_id'  => $tech_users_id
             ])
-        )->isGreaterThan(0);
+        );
 
-       // create a ticket
+        // create a ticket
         $ticket = new \Ticket();
-        $this->integer((int)$ticket->add([
-            'name'         => "test ticket visibility for tech user with READNEWTICKET right",
-            'content'      => "test ticket visibility for tech user with READNEWTICKET right",
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$ticket->add([
+             'name'         => "test ticket visibility for tech user with READNEWTICKET right",
+                'content'      => "test ticket visibility for tech user with READNEWTICKET right",
+            ])
+        );
 
-       // let's use tech user
+        // let's use tech user
         $this->login('tech', 'tech');
 
-       // do search and check presence of the created problem
+        // do search and check presence of the created problem
         $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);
         \Search::constructSQL($data);
         \Search::constructData($data);
 
-        $this->integer($data['data']['totalcount'])->isEqualTo(0);
+        $this->assertEquals(0, $data['data']['totalcount']);
 
        // update the right of tech profile
        // to have only the right of display their own tickets and tickets with incoming status
@@ -2075,12 +2059,11 @@ class SearchTest extends DbTestCase
 
         foreach ($data['data']['rows'][0]['raw'] as $key => $value) {
             if (str_ends_with($key, 'status')) {
-                $this->array($data)
-                 ->array['data']
-                 ->array['rows']
-                 ->array[0]
-                 ->array['raw']
-                 ->integer[$key]->isEqualTo(\Ticket::INCOMING);
+                $this->assertIsArray($data);
+                $this->assertIsArray($data['data']);
+                $this->assertIsArray($data['rows']);
+                $this->assertIsArray($data['rows'][0]['raw']);
+                $this->assertEquals(\Ticket::INCOMING, $data['rows'][0]['raw'][$key]);
             }
         }
     }
@@ -2802,8 +2785,8 @@ class SearchTest extends DbTestCase
         $names = explode("\n", trim($names));
 
         // Check results
-        $this->array($names)->size->isEqualTo(count($expected));
-        $this->array($names)->containsValues($expected);
+        $this->assertCount(count($expected), $names);
+        $this->assertEquals($expected, $names);
     }
 
     protected function testMyselfSearchCriteriaProvider(): array
@@ -2930,7 +2913,7 @@ class SearchTest extends DbTestCase
         }
     }
 
-    protected function isVirtualFieldProvider(): array
+    public static function isVirtualFieldProvider(): array
     {
         return [
             ['name', false],
@@ -2948,12 +2931,7 @@ class SearchTest extends DbTestCase
      */
     public function testIsVirtualField(string $field, bool $expected): void
     {
-        $this->boolean(\Search::isVirtualField($field))->isEqualTo($expected);
-    }
-
-
-
-        }
+        $this->assertEquals($expected, \Search::isVirtualField($field));
     }
 
     protected function containsCriterionProvider(): iterable
@@ -4379,17 +4357,17 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider customAssetsProvider
-     */
+        /**
+        * @dataProvider customAssetsProvider
+        */
     public function testCustomAssetSearch(string $class, array $params, array $expected): void
     {
         $data = $this->doSearch($class, $params);
         foreach ($expected as $key => $item) {
             $this->string($data['data']['rows'][$key]['raw'][sprintf('ITEM_%s_1', $class)])->isEqualTo($item->fields['name']);
-            $this->integer($data['data']['rows'][$key]['raw']['id'])->isEqualTo($item->getID());
+            $this->assertEquals($item->getID(), $data['data']['rows'][$key]['raw']['id']);
         }
-        $this->integer($data['data']['totalcount'])->isIdenticalTo(count($expected));
+        $this->assertEquals(count($expected), $data['data']['totalcount']);
     }
 
     public function testDCRoomSearchOption()

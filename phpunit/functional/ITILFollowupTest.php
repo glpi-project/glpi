@@ -642,6 +642,7 @@ HTML,
                 $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
             );
         }
+    }
 
     public function testParentMetaSearchOptions()
     {
