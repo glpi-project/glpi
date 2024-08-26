@@ -502,6 +502,11 @@ class Group_User extends CommonDBRelation
         $used    = [];
         $ids     = [];
 
+        self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
+        $all_groups = count($used);
+        $used    = [];
+        $ids     = [];
+
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
         $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, true);
@@ -543,6 +548,18 @@ class Group_User extends CommonDBRelation
         if ($start >= $number) {
             $start = 0;
         }
+
+        if ($number != $all_groups) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
+            echo "<i class='fas fa-info-circle fa-xl'></i>";
+            echo "<span class='ms-2'>";
+            echo __("Some people are not visible in this list because of your clearance (restriction by entity).");
+            echo "</span>";
+            echo "</div>";
+            echo "</tr>";
+        }
+
 
        // Display results
         if ($number) {
@@ -821,9 +838,7 @@ class Group_User extends CommonDBRelation
                 case 'Group':
                     if (User::canView()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $members = $ids = [];
-                            self::getDataForGroup($item, $members, $ids, '', true);
-                            $nb = count($members);
+                              $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                     }
