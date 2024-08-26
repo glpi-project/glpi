@@ -487,10 +487,7 @@ class ImpactTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider bfsProvider
-     */
-    public function testBfs($a, $b, $direction, $result)
+    public function testBfs()
     {
         $provider = $this->bfsProvider();
         foreach ($provider as $row) {
