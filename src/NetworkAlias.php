@@ -389,7 +389,7 @@ class NetworkAlias extends FQDNLabel
     /**
      * Show the aliases contained by the alias
      *
-     * @param CommonGLPI $item          the FQDN owning the aliases
+     * @param FQDN       $item          the FQDN owning the aliases
      * @param integer    $withtemplate  withtemplate param
      **/
     public static function showForFQDN(CommonGLPI $item, $withtemplate)
@@ -489,10 +489,12 @@ class NetworkAlias extends FQDNLabel
 
         switch ($item->getType()) {
             case 'NetworkName':
+                /** @var NetworkName $item */
                 self::showForNetworkName($item, $withtemplate);
                 break;
 
             case 'FQDN':
+                /** @var FQDN $item */
                 self::showForFQDN($item, $withtemplate);
                 break;
         }

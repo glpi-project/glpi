@@ -299,6 +299,7 @@ class Impact extends CommonGLPI
             echo '</thead>';
 
             foreach ($data as $itemtype => $items) {
+                /** @var class-string $itemtype */
                 echo '<tbody>';
 
                // Subheader
@@ -1013,10 +1014,13 @@ class Impact extends CommonGLPI
         $itemtypes = $CFG_GLPI["impact_asset_types"];
        // Sort by translated itemtypes
         uksort($itemtypes, function ($a, $b) {
+            /** @var class-string $a
+             *  @var class-string $b */
             return strcasecmp($a::getTypeName(), $b::getTypeName());
         });
         foreach ($itemtypes as $itemtype => $icon) {
-           // Do not display this itemtype if the user doesn't have READ rights
+            /** @var class-string $itemtype */
+            // Do not display this itemtype if the user doesn't have READ rights
             if (!Session::haveRight($itemtype::$rightname, READ)) {
                 continue;
             }

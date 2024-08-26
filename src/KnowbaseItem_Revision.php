@@ -53,7 +53,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             $where = [];
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item instanceof KnowbaseItem) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
                     'language'         => ''

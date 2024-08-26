@@ -4723,7 +4723,7 @@ class CommonDBTM extends CommonGLPI
             case '_virtual_datacenter_position':
                 $static = new static();
                 if (method_exists($static, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    //FIXME phpstan-ignore-next-line
+                    /** @var class-string $static */
                     return $static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
                 }
         }

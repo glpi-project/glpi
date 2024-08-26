@@ -388,6 +388,7 @@ class Dropdown
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
                 //  as the profile does not have rights to ITILCategory to initialise it before.
+                /** @var ITILCategory $item */
                 if ($item->isNewItem()) {
                     $item->getFromDB($params['value']);
                 }
