@@ -1096,7 +1096,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return array
      **/
-    public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
+    public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         /**
          * @var array $CFG_GLPI
