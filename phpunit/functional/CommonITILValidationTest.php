@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/commonitilvalidation.class.php */
 
@@ -411,9 +412,7 @@ class CommonITILValidationTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testComputeValidationProvider
-     */
+    #[DataProvider('testComputeValidationProvider')]
     public function testComputeValidation(
         int $accepted,
         int $refused,

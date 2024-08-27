@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/contract.class.php */
 
@@ -178,9 +179,7 @@ class ContractTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getSpecificValueToDisplayProvider
-     */
+    #[DataProvider('getSpecificValueToDisplayProvider')]
     public function testGetSpecificValueToDisplay($field, $values, $expected)
     {
         $this->login();

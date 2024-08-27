@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 abstract class AbstractITILChildTemplate extends \DbTestCase
 {
     abstract protected function getInstance(): \AbstractITILChildTemplate;
@@ -113,9 +115,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider prepareInputProvider
-     */
+    #[DataProvider('prepareInputProvider')]
     public function testPrepareInputForAdd(string $content, bool $is_valid, ?string $error = null)
     {
         $this->login();
@@ -131,9 +131,7 @@ HTML,
         }
     }
 
-    /**
-     * @dataProvider prepareInputProvider
-     */
+    #[DataProvider('prepareInputProvider')]
     public function testPrepareInputForUpdate(string $content, bool $is_valid, ?string $error = null)
     {
         $this->login();

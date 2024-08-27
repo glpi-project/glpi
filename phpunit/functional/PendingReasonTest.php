@@ -41,6 +41,7 @@ use CommonITILObject;
 use DbTestCase;
 use ITILFollowup;
 use PendingReason_Item;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use ProblemTask;
 use Ticket;
@@ -159,9 +160,7 @@ class PendingReasonTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testGetNextFollowupDateProvider
-     */
+    #[DataProvider('testGetNextFollowupDateProvider')]
     public function testGetNextFollowupDate(array $fields, $expected)
     {
         if (isset($fields['calendar_holiday'])) {
@@ -348,9 +347,7 @@ class PendingReasonTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testGetAutoResolvedateProvider
-     */
+    #[DataProvider('testGetAutoResolvedateProvider')]
     public function testGetAutoResolvedate(array $fields, $expected)
     {
         if (isset($fields['calendar_holiday'])) {
@@ -415,9 +412,8 @@ class PendingReasonTest extends DbTestCase
     /**
      * Test that a PendingReason_Item object is created when an item is marked as
      * pending
-     *
-     * @dataProvider itemtypeAndActionProvider
      */
+    #[DataProvider('itemtypeAndActionProvider')]
     public function testPendingItemCreation($itemtype, $action_itemtype)
     {
         $this->login();
@@ -455,9 +451,8 @@ class PendingReasonTest extends DbTestCase
     /**
      * A status change from pending to any other should delete any linked
      * PendingReason_Item objects
-     *
-     * @dataProvider itemtypeProvider
      */
+    #[DataProvider('itemtypeProvider')]
     public function testStatusChangeNoLongerPending($itemtype)
     {
         $this->login();

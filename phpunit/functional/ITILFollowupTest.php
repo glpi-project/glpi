@@ -41,6 +41,7 @@ use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\SearchEngine;
 use ITILFollowup as CoreITILFollowup;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Search;
 use Ticket;
@@ -332,9 +333,7 @@ class ITILFollowupTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testIsFromSupportAgentProvider
-     */
+    #[DataProvider('testIsFromSupportAgentProvider')]
     public function testIsFromSupportAgent(
         array $roles,
         string $profile,

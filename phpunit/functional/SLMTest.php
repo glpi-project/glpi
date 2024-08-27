@@ -40,6 +40,7 @@ use DbTestCase;
 use MassiveAction;
 use OlaLevel;
 use OlaLevel_Ticket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleBuilder;
 use RuleTicket;
@@ -1278,9 +1279,7 @@ class SLMTest extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider laProvider
-     */
+    #[DataProvider('laProvider')]
     public function testComputation(
         string $la_class,
         array $la_params,

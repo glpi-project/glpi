@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -124,9 +125,7 @@ class CronTaskTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider registerProvider
-     */
+    #[DataProvider('registerProvider')]
     public function testRegister(string $itemtype, string $name, bool $should_register)
     {
         $result = \CronTask::register($itemtype, $name, 30);
@@ -162,9 +161,7 @@ class CronTaskTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider unregisterProvider
-     */
+    #[DataProvider('unregisterProvider')]
     public function testUnregister(string $plugin_name, string $itemtype, string $name, bool $should_unregister)
     {
         global $DB;
@@ -225,9 +222,7 @@ class CronTaskTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getNeedToRunProvider
-     */
+    #[DataProvider('getNeedToRunProvider')]
     public function testGetNeedToRun(string $itemtype, string $name, bool $should_run)
     {
         global $DB;

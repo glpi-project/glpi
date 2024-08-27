@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class CommonTreeDropdownTest extends DbTestCase
 {
@@ -63,17 +64,13 @@ class CommonTreeDropdownTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider completenameProvider
-     */
+    #[DataProvider('completenameProvider')]
     public function testSanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
         $this->assertSame($sanitized, \CommonTreeDropdown::sanitizeSeparatorInCompletename($raw));
     }
 
-    /**
-     * @dataProvider completenameProvider
-     */
+    #[DataProvider('completenameProvider')]
     public function testUnsanitizeSeparatorInCompletename(?string $raw, ?string $sanitized)
     {
         $this->assertSame($raw, \CommonTreeDropdown::unsanitizeSeparatorInCompletename($sanitized));
