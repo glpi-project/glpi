@@ -242,7 +242,6 @@ class SLMTest extends DbTestCase
             'content' => __METHOD__
         ]);
         $this->assertGreaterThan(0, $tickets_id_2);
-        $newname = $this->getUniqueString();
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
@@ -250,7 +249,6 @@ class SLMTest extends DbTestCase
             ])
         );
         $ticket_input_2['name'] = __METHOD__;
-        $ticket_input_2['name'] = $newname;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
         $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
@@ -467,7 +465,6 @@ class SLMTest extends DbTestCase
         $this->assertEquals(0, (int)$ticket->getField('olas_id_tto'));
         $this->assertEquals(0, (int)$ticket->getField('olas_id_ttr'));
 
-        $newname = $this->getUniqueString();
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
@@ -475,7 +472,6 @@ class SLMTest extends DbTestCase
             ])
         );
         $ticket_input_2['name'] = __METHOD__;
-        $ticket_input_2['name'] = $newname;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
         $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
@@ -1095,7 +1091,7 @@ class SLMTest extends DbTestCase
                         : '2034-06-12 14:16:12'
                 ];
 
-                // 4 hours LA with pauses accross multiple days
+                // 4 hours LA with pauses across multiple days
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1142,7 +1138,7 @@ class SLMTest extends DbTestCase
                          : '2034-06-08 14:30:00'
                 ];
 
-                // 5 days LA over a week-end without pauses
+                // 5 days LA over a weekend without pauses
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1164,7 +1160,7 @@ class SLMTest extends DbTestCase
                     'target_escalation_date' =>  '2034-06-15 11:16:12'
                 ];
 
-                // 5 days LA over a week-end without pauses
+                // 5 days LA over a weekend without pauses
                 // + `end_of_working_day`
                 yield [
                     'la_class'          => $la_class,
@@ -1184,7 +1180,7 @@ class SLMTest extends DbTestCase
                     'target_escalation_date' =>  '2034-06-14 19:00:00'
                 ];
 
-                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // 5 days LA with multiple pauses, including a pause of multiple days over a weekend
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1228,7 +1224,7 @@ class SLMTest extends DbTestCase
                         : '2034-07-05 10:00:00'
                 ];
 
-                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // 5 days LA with multiple pauses, including a pause of multiple days over a weekend
                 // + `end_of_working_day`
                 yield [
                     'la_class'          => $la_class,
@@ -1271,7 +1267,7 @@ class SLMTest extends DbTestCase
                     // Positive 2 hours escalation level
                     'escalation_time'   => 2 * HOUR_TIMESTAMP,
                     'target_escalation_date' => $la_type == \SLM::TTR
-                        // Must be two hours after their respetive target date
+                        // Must be two hours after their respective target date
                         ? '2034-06-22 09:30:00'
                         : '2034-06-15 10:30:00'
                 ];
