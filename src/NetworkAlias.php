@@ -502,6 +502,14 @@ class NetworkAlias extends FQDNLabel
     }
 
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 

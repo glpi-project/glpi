@@ -101,16 +101,6 @@ parameters:
 			path: src/CalDAV/Plugin/CalDAV.php
 
 		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getForeignKeyField\\(\\)\\.$#"
-			count: 1
-			path: src/CommonITILCost.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/CommonITILCost.php
-
-		-
 			message: "#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#"
 			count: 1
 			path: src/CommonITILTask.php
@@ -266,16 +256,6 @@ parameters:
 			path: src/Dashboard/Provider.php
 
 		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Database.php
-
-		-
-			message: "#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#"
-			count: 1
-			path: src/DatabaseInstance.php
-
-		-
 			message: "#^Cannot cast array\\<int, string\\>\\|null to string\\.$#"
 			count: 1
 			path: src/GLPINetwork.php
@@ -304,51 +284,6 @@ parameters:
 			message: "#^Call to an undefined method HTMLTableHeader\\:\\:getCompositeName\\(\\)\\.$#"
 			count: 1
 			path: src/HTMLTableRow.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getField\\(\\)\\.$#"
-			count: 1
-			path: src/IPAddress.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/IPAddress.php
-
-		-
-			message: "#^Unary operation \"~\" on mixed results in an error\\.$#"
-			count: 1
-			path: src/IPNetwork.php
-
-		-
-			message: "#^Call to an undefined method CommonDBTM\\:\\:getClosedStatusArray\\(\\)\\.$#"
-			count: 1
-			path: src/ITILFollowup.php
-
-		-
-			message: "#^Call to an undefined method CommonDBTM\\:\\:getSolvedStatusArray\\(\\)\\.$#"
-			count: 1
-			path: src/ITILFollowup.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/ITILSolution.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:maySolve\\(\\)\\.$#"
-			count: 1
-			path: src/ITILSolution.php
-
-		-
-			message: "#^Call to an undefined method CommonDBTM\\:\\:import\\(\\)\\.$#"
-			count: 1
-			path: src/ITILTemplate.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Infocom.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$instantiation_type\\.$#"
@@ -381,79 +316,9 @@ parameters:
 			path: src/Inventory/Conf.php
 
 		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Item_DeviceCamera_ImageFormat.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Item_DeviceCamera_ImageResolution.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Item_Disk.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getLinkedItems\\(\\)\\.$#"
-			count: 1
-			path: src/Item_Problem.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getLinkedItems\\(\\)\\.$#"
-			count: 1
-			path: src/Item_Project.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 2
-			path: src/Item_Rack.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Item_RemoteManagement.php
-
-		-
 			message: "#^Call to an undefined method KnowbaseItemTranslation\\:\\:showVisibility\\(\\)\\.$#"
 			count: 1
 			path: src/KnowbaseItemTranslation.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/KnowbaseItem_KnowbaseItemCategory.php
-
-		-
-			message: "#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#"
-			count: 2
-			path: src/KnowbaseItem_Revision.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:canUpdateItem\\(\\)\\.$#"
-			count: 1
-			path: src/KnowbaseItem_Revision.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/LevelAgreementLevel.php
-
-		-
-			message: "#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#"
-			count: 2
-			path: src/Lock.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:isDynamic\\(\\)\\.$#"
-			count: 2
-			path: src/Lock.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Log.php
 
 		-
 			message: "#^Access to an undefined property Laminas\\\\Mail\\\\Storage\\\\Message\\:\\:\\$date\\.$#"
@@ -476,44 +341,9 @@ parameters:
 			path: src/MailCollector.php
 
 		-
-			message: "#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#"
-			count: 1
-			path: src/ManualLink.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getIndexName\\(\\)\\.$#"
-			count: 1
-			path: src/ManualLink.php
-
-		-
 			message: "#^Cannot call method getTime\\(\\) on int\\.$#"
 			count: 2
 			path: src/MassiveAction.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getField\\(\\)\\.$#"
-			count: 1
-			path: src/NetworkAlias.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/NetworkAlias.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getField\\(\\)\\.$#"
-			count: 1
-			path: src/NetworkName.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/NetworkName.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 1
-			path: src/Pdu_Plug.php
 
 		-
 			message: "#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DESCRIPTION\\.$#"
@@ -542,16 +372,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#"
-			count: 1
-			path: src/Planning.php
-
-		-
-			message: "#^Call to method add\\(\\) on an unknown class RRule\\\\DateTimeInterface\\.$#"
-			count: 1
-			path: src/Planning.php
-
-		-
-			message: "#^Call to method format\\(\\) on an unknown class RRule\\\\DateTimeInterface\\.$#"
 			count: 1
 			path: src/Planning.php
 
@@ -796,11 +616,6 @@ parameters:
 			path: src/ProjectTask.php
 
 		-
-			message: "#^Call to an undefined method CommonDBTM\\:\\:sendById\\(\\)\\.$#"
-			count: 1
-			path: src/QueuedNotification.php
-
-		-
 			message: "#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#"
 			count: 1
 			path: src/Reminder.php
@@ -909,16 +724,6 @@ parameters:
 			message: "#^Call to an undefined method Sabre\\\\VObject\\\\Node\\:\\:add\\(\\)\\.$#"
 			count: 1
 			path: src/Reminder.php
-
-		-
-			message: "#^Call to an undefined method CommonDBTM\\:\\:getItem\\(\\)\\.$#"
-			count: 1
-			path: src/Reservation.php
-
-		-
-			message: "#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#"
-			count: 4
-			path: src/RuleMatchedLog.php
 
 		-
 			message: "#^Call to method save_run\\(\\) on an unknown class XHProfRuns_Default\\.$#"

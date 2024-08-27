@@ -218,6 +218,14 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */

@@ -136,7 +136,7 @@ class RuleMatchedLog extends CommonDBTM
     /**
      * Display the content of the tab
      *
-     * @param CommonGLPI $item
+     * @param CommonDBTM $item
      * @param integer $tabnum number of the tab to display
      * @param integer $withtemplate 1 if is a template form
      * @return boolean

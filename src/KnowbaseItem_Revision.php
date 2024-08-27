@@ -44,6 +44,14 @@ class KnowbaseItem_Revision extends CommonDBTM
         return _n('Revision', 'Revisions', $nb);
     }
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$item->canUpdateItem()) {

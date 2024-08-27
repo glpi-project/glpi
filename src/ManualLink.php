@@ -57,6 +57,14 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 

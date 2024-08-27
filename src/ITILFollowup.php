@@ -890,6 +890,13 @@ class ITILFollowup extends CommonDBChild
         return parent::showMassiveActionsSubForm($ma);
     }
 
+    /**
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     *
+     * @param MassiveAction $ma
+     * @param CommonITILObject $item
+     * @param array $ids
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,

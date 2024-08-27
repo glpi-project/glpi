@@ -558,6 +558,13 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
+    /**
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     *
+     * @param MassiveAction $ma
+     * @param self $item
+     * @param array $ids
+     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,

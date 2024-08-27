@@ -346,8 +346,10 @@ class IPAddress extends CommonDBChild
 
 
     /**
-     * @param $item           CommonGLPI object
-     * @param $withtemplate   (default 0)
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
      *
      * @return string
      **/

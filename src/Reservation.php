@@ -463,6 +463,7 @@ class Reservation extends CommonDBChild
             return false;
         }
 
+        /** @var ReservationItem $ri */
         $ri = $this->getItem();
         if ($ri === false) {
             return false;

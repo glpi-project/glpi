@@ -69,6 +69,14 @@ class Item_Disk extends CommonDBChild
     }
 
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 

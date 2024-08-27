@@ -934,8 +934,10 @@ class Lock extends CommonGLPI
     /**
      * @see CommonGLPI::getTabNameForItem()
      *
-     * @param $item               CommonGLPI object
-     * @param $withtemplate       (default 0)
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
      **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -948,7 +950,7 @@ class Lock extends CommonGLPI
 
 
     /**
-     * @param $item            CommonGLPI object
+     * @param CommonDBTM $item CommonDBTM object
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/

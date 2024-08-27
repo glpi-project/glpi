@@ -46,6 +46,14 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
         return _nx('camera', 'Format', 'Formats', $nb);
     }
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;

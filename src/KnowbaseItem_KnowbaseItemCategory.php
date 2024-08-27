@@ -122,6 +122,14 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return $linked_items;
     }
 
+    /**
+     * @see CommonGLPI::getTabNameForItem()
+     *
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
+     *
+     * @return string
+     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
