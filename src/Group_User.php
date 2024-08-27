@@ -554,7 +554,7 @@ class Group_User extends CommonDBRelation
             echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
             echo "<i class='fas fa-info-circle fa-xl'></i>";
             echo "<span class='ms-2'>";
-            echo __("Some people are not visible in this list because of your clearance (restriction by entity).");
+            echo __("Some users are not listed as they are not visible from your current entity.");
             echo "</span>";
             echo "</div>";
             echo "</tr>";
