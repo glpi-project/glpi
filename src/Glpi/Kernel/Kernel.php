@@ -39,6 +39,7 @@ use Glpi\Application\ConfigurationConstants;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Glpi\Http\PluginsRouterListener;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -53,6 +54,13 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
+        if ($env === null) {
+            $env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? $_SERVER['GLPI_ENVIRONMENT_TYPE'] ?? null;
+        }
+        if ($env !== null && !\defined('GLPI_ENVIRONMENT_TYPE')) {
+            \define('GLPI_ENVIRONMENT_TYPE', $env);
+        }
+
         // Initialize configuration constants.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
@@ -63,7 +71,7 @@ final class Kernel extends BaseKernel
         $glpi->initLogger();
         $glpi->initErrorHandler();
 
-        $env = GLPI_ENVIRONMENT_TYPE;
+        $env ??= GLPI_ENVIRONMENT_TYPE;
         parent::__construct(
             $env,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
@@ -152,6 +160,14 @@ final class Kernel extends BaseKernel
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
         }
+
+        // Plugin-specific routes
+        $routes->add(PluginsRouterListener::ROUTE_NAME, '/{plugins_or_marketplace}/{plugin_name}{path_rest}')
+            ->requirements([
+                'plugins_or_marketplace' => '^(plugins|marketplace)$',
+                'plugin_name' => '^[a-zA-Z0-9_-]+$',
+                'path_rest' => '.*',
+            ]);
     }
 
     private function triggerGlobalsDeprecation(): void
