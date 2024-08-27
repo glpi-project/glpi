@@ -422,9 +422,10 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was added
-        $this->array(
+        $this->assertContains(
+            $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->contains($capacity);
+        );
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();
@@ -469,9 +470,10 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was deleted
-        $this->array(
+        $this->assertNotContains(
+            $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->notContains($capacity);
+        );
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();

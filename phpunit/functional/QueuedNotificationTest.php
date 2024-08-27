@@ -89,7 +89,7 @@ class QueuedNotificationTest extends DbTestCase
         $this->assertGreaterThan(0, $queued_id_2);
         $this->assertTrue($queued_notification->getFromDB($queued_id_2));
         // Previous notifications have not been removed
-        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
+        $this->assertTrue($queued_notification->getFromDB($queued_id_1));
 
         // Notification with different recipient, should not trigger previous notification deletion
         $queued_id_3 = $queued_notification->add(
@@ -109,7 +109,7 @@ class QueuedNotificationTest extends DbTestCase
         $this->assertTrue($queued_notification->getFromDB($queued_id_3));
         // Previous notifications have not been removed
         $this->assertTrue($queued_notification->getFromDB($queued_id_2));
-        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
+        $this->assertTrue($queued_notification->getFromDB($queued_id_1));
 
         // Notification with different item, should not trigger previous notification deletion
         $this->assertGreaterThan(0, $project_id_1);
@@ -131,7 +131,7 @@ class QueuedNotificationTest extends DbTestCase
         // Previous notifications have not been removed
         $this->assertTrue($queued_notification->getFromDB($queued_id_3));
         $this->assertTrue($queued_notification->getFromDB($queued_id_2));
-        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
+        $this->assertTrue($queued_notification->getFromDB($queued_id_1));
     }
 
     public function testAddTicketNotification()

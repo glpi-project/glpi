@@ -649,16 +649,21 @@ HTML,
         $ticket = $this->getNewITILObject('Ticket', true);
         $change = $this->getNewITILObject('Change', true);
         $followup = new CoreITILFollowup();
-        $this->integer($ticket_followups_id = $followup->add([
-            'itemtype' => 'Ticket',
-            'items_id' => $ticket->fields['id'],
-            'content'  => 'Test followup',
-        ]))->isGreaterThan(0);
-        $this->integer($change_followups_id = $followup->add([
-            'itemtype' => 'Change',
-            'items_id' => $change->fields['id'],
-            'content'  => 'Test followup',
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket->fields['id'],
+                'content'  => 'Test followup',
+            ])
+        );
+        $this->assertGreaterThan(0,
+            $followup->add([
+                'itemtype' => 'Change',
+                'items_id' => $change->fields['id'],
+                'content'  => 'Test followup',
+            ])
+        );
 
         $criteria = [
             [
@@ -673,8 +678,8 @@ HTML,
         $data = SearchEngine::getData('ITILFollowup', [
             'criteria' => $criteria,
         ]);
-        $this->integer($data['data']['totalcount'])->isEqualTo(1);
-        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('Ticket title');
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals('Ticket title', $data['data']['rows'][0]['Ticket_1'][0]['name']);
 
         $criteria = [
             [
@@ -689,8 +694,8 @@ HTML,
         $data = SearchEngine::getData('ITILFollowup', [
             'criteria' => $criteria,
         ]);
-        $this->integer($data['data']['totalcount'])->isEqualTo(1);
-        $this->string($data['data']['rows'][0]['Change_1'][0]['name'])->isEqualTo('Change title');
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals('Change title', $data['data']['rows'][0]['Change_1'][0]['name']);
     }
 
     public function testAddDefaultWhereTakeEntitiesIntoAccount(): void

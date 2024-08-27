@@ -767,7 +767,7 @@ class ComputerTest extends DbTestCase
 
         // Check that there is no saveInput already
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+            $this->assertArrayNotHasKey(\Computer::class, $_SESSION['saveInput']);
         }
         $computer = $this->getNewComputer();
         $cid = $computer->fields['id'];
@@ -780,7 +780,7 @@ class ComputerTest extends DbTestCase
 
         // Check that there is no savedInput after update
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+            $this->assertArrayNotHasKey(\Computer::class, $_SESSION['saveInput']);
         }
     }
 

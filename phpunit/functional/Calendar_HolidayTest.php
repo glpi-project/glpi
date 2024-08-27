@@ -139,17 +139,17 @@ class Calendar_HolidayTest extends DbTestCase
         /*
         $calendar = new Calendar();
         $calendar_id = $calendar->add(['name' => 'Test']);
-        $this->integer($calendar_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $calendar_id);
 
         $this->validateHolidayCacheMatchesMethodResult($calendar_id);
 
         $holiday_id = getItemByTypeName('Holiday', 'Winter holidays', true);
-        $this->boolean($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]))->isTrue();
-        $this->boolean(
+        $this->assertTrue($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]));
+        $this->assertTrue(
           $calendar_holiday->update(['id' => $calendar_holiday->fields['id'], 'calendars_id' => $calendar_id])
-        )->isTrue();
-        $this->boolean($GLPI_CACHE->has($cache_key))->isFalse(); // Previously associated calendar cache is invalidated
-        $this->boolean($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)))->isFalse();
+        );
+        $this->assertFalse($GLPI_CACHE->has($cache_key)); // Previously associated calendar cache is invalidated
+        $this->assertFalse($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)));
         */
     }
 

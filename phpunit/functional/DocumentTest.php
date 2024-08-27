@@ -182,9 +182,8 @@ class DocumentTest extends DbTestCase
      * $doc_item = new \Document_Item();
      * $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
      *
-     * $this->array($doc_item->fields)
-     * ->string['itemtype']->isIdenticalTo('Computer')
-     * ->variable['items_id']->isEqualTo($cid);
+     * $this->assertSame(Computer::class, $doc_item->fields['itemtype']);
+     * $this->assertEquals($cid, $doc_item->fields['items_id']);
      * }*/
 
 

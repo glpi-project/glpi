@@ -41,6 +41,7 @@ use DbTestCase;
 use DropdownVisibility;
 use Phone;
 use Printer;
+use Psr\Log\LogLevel;
 use ReflectionClass;
 use Toolbox;
 
@@ -106,30 +107,74 @@ class StateTest extends DbTestCase
             'is_visible_phone' => '1',
         ]);
 
-        $this->integer($states_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $states_id);
 
         $statevisibility = new DropdownVisibility();
         $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
-        $this->array($visibilities)->hasSize(2);
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Computer::getType(), 'is_visible' => 1]))->isTrue();
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Phone::getType(), 'is_visible' => 1]))->isTrue();
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Printer::getType(), 'is_visible' => 0]))->isFalse();
+        $this->assertCount(2, $visibilities);
+        $this->assertTrue(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Computer::getType(),
+                'is_visible' => 1
+            ])
+        );
+        $this->assertTrue(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Phone::getType(),
+                'is_visible' => 1
+            ])
+        );
+        $this->assertFalse(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Printer::getType(),
+                'is_visible' => 0
+            ])
+        );
 
-        $state->update([
-            'id' => $states_id,
-            'is_visible_computer' => '0',
-            'is_visible_printer' => '1',
-        ]);
+        $this->assertTrue(
+            $state->update([
+                'id' => $states_id,
+                'is_visible_computer' => '0',
+                'is_visible_printer' => '1',
+            ])
+        );
         $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
-        $this->array($visibilities)->hasSize(3);
+        $this->assertCount(3, $visibilities);
         $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id, 'is_visible' => 1]);
-        $this->array($visibilities)->hasSize(2);
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Computer::getType(), 'is_visible' => 0]))->isTrue();
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Phone::getType(), 'is_visible' => 1]))->isTrue();
-        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => Printer::getType(), 'is_visible' => 1]))->isTrue();
+        $this->assertCount(2, $visibilities);
+        $this->assertTrue(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Computer::getType(),
+                'is_visible' => 0
+            ])
+        );
+        $this->assertTrue(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Phone::getType(),
+                'is_visible' => 1
+            ])
+        );
+        $this->assertTrue(
+            $statevisibility->getFromDBByCrit([
+                'itemtype' => \State::getType(),
+                'items_id' => $states_id,
+                'visible_itemtype' => Printer::getType(),
+                'is_visible' => 1
+            ])
+        );
 
-        $this->boolean($state->getFromDB($states_id))->isTrue();
-        $this->string($state->fields['name'])->isEqualTo('Test computer and phone');
+        $this->assertTrue($state->getFromDB($states_id));
+        $this->assertEquals('Test computer and phone', $state->fields['name']);
 
         $expected_values = [];
         // Default values
@@ -140,7 +185,7 @@ class StateTest extends DbTestCase
         $expected_values['is_visible_phone']    = 1;
         $expected_values['is_visible_printer']  = 1;
         foreach ($expected_values as $field => $expected_value) {
-            $this->integer($state->fields[$field])->isIdenticalTo($expected_value);
+            $this->assertSame($expected_value, $state->fields[$field]);
         }
     }
 
@@ -150,7 +195,8 @@ class StateTest extends DbTestCase
         global $CFG_GLPI;
 
         foreach ($CFG_GLPI['state_types'] as $itemtype) {
-            $this->boolean(Toolbox::hasTrait($itemtype, \Glpi\Features\State::class))->isTrue(
+            $this->assertTrue(
+                Toolbox::hasTrait($itemtype, \Glpi\Features\State::class),
                 $itemtype . ' misses ' . \Glpi\Features\State::class . ' trait!'
             );
         }
@@ -165,7 +211,8 @@ class StateTest extends DbTestCase
         global $CFG_GLPI, $DB;
 
         foreach ($CFG_GLPI['state_types'] as $itemtype) {
-            $this->boolean($DB->fieldExists($itemtype::getTable(), 'states_id'))->isTrue(
+            $this->assertTrue(
+                $DB->fieldExists($itemtype::getTable(), 'states_id'),
                 $itemtype . ' should have a `states_id` field.'
             );
         }
@@ -183,10 +230,19 @@ class StateTest extends DbTestCase
             }
 
             $has_field  = $DB->fieldExists($table_name, 'states_id');
-            $this->array($CFG_GLPI['state_types'])->{$has_field ? 'contains' : 'notContains'}(
-                $classname,
-                $classname . ' should be declared in `$CFG_GLPI[\'state_types\']`.'
-            );
+            if ($has_field) {
+                $this->assertContains(
+                    $classname,
+                    $CFG_GLPI['state_types'],
+                    $classname . ' should be declared in `$CFG_GLPI[\'state_types\']`.'
+                );
+            } else {
+                $this->assertNotContains(
+                    $classname,
+                    $CFG_GLPI['state_types'],
+                    $classname . ' should not be declared in `$CFG_GLPI[\'state_types\']`.'
+                );
+            }
         }
     }
 
@@ -202,24 +258,20 @@ class StateTest extends DbTestCase
             'name' => 'Test computer and phone',
             'is_visible_' . strtolower($itemtype) => '1'
         ]);
-        $this->integer($states_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $states_id);
 
         $item = new $itemtype();
-        $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
-        $this->boolean($item->isStateVisible($states_id))->isTrue();
+        $this->assertTrue(method_exists($itemtype, 'isStateVisible'), $itemtype . ' misses isStateVisible() method!');
+        $this->assertTrue($item->isStateVisible($states_id));
 
         unset($CFG_GLPI['state_types'][0]);
-        $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
+        $this->assertTrue(method_exists($itemtype, 'isStateVisible'), $itemtype . ' misses isStateVisible() method!');
 
-        $this->when(
-            function () use ($item, $states_id) {
-                $this->boolean($item->isStateVisible($states_id))->isTrue();
-            }
-        )
-            ->error()
-            ->withType(E_USER_ERROR)
-            ->withMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype))
-            ->exists();
+        $this->assertTrue($item->isStateVisible($states_id));
+        $this->hasPhpLogRecordThatContains(
+            sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype),
+            LogLevel::WARNING
+        );
     }
 
     public function testGetStateVisibilityCriteria(): void
@@ -230,24 +282,27 @@ class StateTest extends DbTestCase
         $itemtype = $CFG_GLPI['state_types'][0];
 
         $item = new $itemtype();
-        $this->array($item->getStateVisibilityCriteria())->isIdenticalTo([
-            'LEFT JOIN' => [
-                DropdownVisibility::getTable() => [
-                    'ON' => [
-                        DropdownVisibility::getTable() => 'items_id',
-                        \State::getTable() => 'id', [
-                            'AND' => [
-                                DropdownVisibility::getTable() . '.itemtype' => \State::getType()
+        $this->assertSame(
+            [
+                'LEFT JOIN' => [
+                    DropdownVisibility::getTable() => [
+                        'ON' => [
+                            DropdownVisibility::getTable() => 'items_id',
+                            \State::getTable() => 'id', [
+                                'AND' => [
+                                    DropdownVisibility::getTable() . '.itemtype' => \State::getType()
+                                ]
                             ]
                         ]
                     ]
+                ],
+                'WHERE' => [
+                    DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                    DropdownVisibility::getTable() . '.visible_itemtype' => $itemtype,
+                    DropdownVisibility::getTable() . '.is_visible' => 1
                 ]
             ],
-            'WHERE' => [
-                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
-                DropdownVisibility::getTable() . '.visible_itemtype' => $itemtype,
-                DropdownVisibility::getTable() . '.is_visible' => 1
-            ]
-        ]);
+            $item->getStateVisibilityCriteria()
+        );
     }
 }
