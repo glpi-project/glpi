@@ -51,7 +51,8 @@
             item.fields['duration'],
             0,
             true,
-            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
+            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'),
+            item.fields['periodicity']
          ])|raw }}
       {% endset %}
    {% endif %}
@@ -72,7 +73,8 @@
             item.fields['begin_date'],
             item.fields['duration'],
             item.fields['notice'],
-            true
+            true,
+            item.fields['periodicity']
          ])|raw }}
       {% endset %}
    {% endif %}
