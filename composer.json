@@ -55,6 +55,7 @@
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpoffice/phpspreadsheet": "^3.3",
         "psr/cache": "^3.0",
+        "psr/container": "^1.1",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
         "ralouphie/getallheaders": "^3.0",

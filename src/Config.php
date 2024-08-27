@@ -1069,6 +1069,9 @@ class Config extends CommonDBTM
             [ 'name'    => 'psr/cache',
                 'check'   => 'Psr\\Cache\\CacheItemPoolInterface'
             ],
+            [ 'name'    => 'psr/container',
+                'check'   => 'Psr\\Container\\ContainerInterface'
+            ],
             [ 'name'    => 'league/csv',
                 'check'   => 'League\\Csv\\Writer'
             ],
