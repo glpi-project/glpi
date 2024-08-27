@@ -41,16 +41,19 @@ use ITILValidationTemplate as GlobalITILValidationTemplate;
 use ITILValidationTemplate_Target;
 use tests\units\Glpi\AbstractITILChildTemplate;
 
-class ITILValidationTemplate extends AbstractITILChildTemplate
+class ITILValidationTemplateTest extends AbstractITILChildTemplate
 {
     public function testPostTargets()
     {
         $validationTemplate = new GlobalITILValidationTemplate();
-        $this->integer((int)$validationTemplate->add([
-            'name'         => 'Validation template',
-            'description'  => 'a description',
-            'content'      => '',
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            (int)$validationTemplate->add([
+                'name'         => 'Validation template',
+                'description'  => 'a description',
+                'content'      => '',
+            ])
+        );
 
         // Add a user target
         $validationTemplate->input = [
@@ -60,12 +63,12 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
-        $this->array($targets)->hasSize(1);
+        $this->assertCount(1, $targets);
 
         $target = current($targets);
-        $this->string($target['itemtype'])->isEqualTo('User');
-        $this->integer($target['items_id'])->isEqualTo(1);
-        $this->variable($target['groups_id'])->isNull();
+        $this->assertEquals(\User::class, $target['itemtype']);
+        $this->assertEquals(1, $target['items_id']);
+        $this->assertNull($target['groups_id']);
 
         // Add a group target
         $validationTemplate->input = [
@@ -75,12 +78,12 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
-        $this->array($targets)->hasSize(1);
+        $this->assertCount(1, $targets);
 
         $target = current($targets);
-        $this->string($target['itemtype'])->isEqualTo('Group');
-        $this->integer($target['items_id'])->isEqualTo(1);
-        $this->variable($target['groups_id'])->isNull();
+        $this->assertEquals(\Group::class, $target['itemtype']);
+        $this->assertEquals(1, $target['items_id']);
+        $this->assertNull($target['groups_id']);
 
         // Add a group user target
         $validationTemplate->input = [
@@ -91,12 +94,17 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         $validationTemplate->post_addItem();
         $targets = ITILValidationTemplate_Target::getTargets($validationTemplate->getID());
-        $this->array($targets)->hasSize(4);
+        $this->assertCount(4, $targets);
 
         foreach ($targets as $target) {
-            $this->string($target['itemtype'])->isEqualTo('User');
-            $this->array([1, 2, 3, 4])->contains($target['items_id']);
-            $this->integer($target['groups_id'])->isEqualTo(1);
+            $this->assertEquals(\User::class, $target['itemtype']);
+            $this->assertContains($target['items_id'], [1, 2, 3, 4]);
+            $this->assertEquals(1, $target['groups_id']);
         }
+    }
+
+    protected function getInstance(): \AbstractITILChildTemplate
+    {
+        return new \ITILValidationTemplate();
     }
 }
