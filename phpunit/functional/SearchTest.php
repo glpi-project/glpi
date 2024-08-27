@@ -2022,7 +2022,7 @@ class SearchTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int)$ticket->add([
-             'name'         => "test ticket visibility for tech user with READNEWTICKET right",
+                'name'         => "test ticket visibility for tech user with READNEWTICKET right",
                 'content'      => "test ticket visibility for tech user with READNEWTICKET right",
             ])
         );
