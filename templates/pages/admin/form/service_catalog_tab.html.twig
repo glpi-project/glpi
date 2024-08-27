@@ -54,6 +54,18 @@
             }
         ) }}
 
+        {{ fields.textareaField(
+            'description',
+            form.fields.description,
+            __('Description'),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+                'enable_richtext': true,
+                'enable_images': false,
+            }
+        ) }}
+
         {# Hidden values #}
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <input type="hidden" name="id" value="{{ form.getID() }}" />

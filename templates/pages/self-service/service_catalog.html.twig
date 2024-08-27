@@ -60,10 +60,7 @@
                                 <h2 id="form-{{ form.fields.id }}" class="card-title">
                                     {{ form.fields.name }}
                                 </h2>
-                                {# TODO: showing description instead of header (description does not yet
-                                exist and header is meant to be displated above the form in its own
-                                page). We use header for now to "fill" the space. #}
-                                <div class="text-secondary">{{ form.fields.header|safe_html }}</div>
+                                <div class="text-secondary">{{ form.fields.description|safe_html }}</div>
                             </div>
                         </div>
                     </section>
