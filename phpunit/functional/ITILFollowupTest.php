@@ -657,7 +657,8 @@ HTML,
                 'content'  => 'Test followup',
             ])
         );
-        $this->assertGreaterThan(0,
+        $this->assertGreaterThan(
+            0,
             $followup->add([
                 'itemtype' => 'Change',
                 'items_id' => $change->fields['id'],
