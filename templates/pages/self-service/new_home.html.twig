@@ -1,0 +1,158 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_skeleton.html.twig" %}
+
+{% block content %}
+    <div class="d-flex flex-column" style="height: 100vh">
+        <div style="
+            background:
+                url('/pics/serfservice-portal-header-1.svg') no-repeat bottom right,
+                url('/pics/serfservice-portal-header-2.svg') no-repeat bottom left
+            ;
+            background-color: var(--glpi-helpdesk-header);
+            padding-top:150px;
+            padding-bottom:100px;
+        ">
+            <div class="container-narrow">
+                <h1
+                    class="text-dark text-center"
+                    style="font-size:3.7rem;"
+                >
+                    {{ __("How can we help you?") }}
+                </h1>
+
+                <div class="input-icon" style="padding: 3rem 0">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        value=""
+                        class="form-control home-search"
+                        placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                    >
+                </div>
+            </div>
+        </div>
+        <div style="
+            background: #f6f8fb;
+            padding-top:70px;
+            padding-bottom:70px;
+        ">
+            <div class="container-xl">
+                <div class="row">
+                    {% for card in cards %}
+                        <div class="col-12 col-sm-6 col-md-4 d-flex">
+                            <a
+                                class="card mx-1 my-2 flex-grow-1"
+                                href=" {{ "/Form/Render/" }}"
+                            >
+                                <section class="card-body">
+                                    <div class="d-flex">
+                                        <img
+                                            data-ujs-name="{{ card.illustration }}"
+                                            data-ujs-color="#fec901"
+                                            width="80px"
+                                        />
+                                        <div class="ms-4">
+                                            <h2 class="card-title mb-2">
+                                                {{ card.name }}
+                                            </h2>
+                                            <div class="text-secondary">
+                                                {{ card.description }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div style="
+            background: #fff;
+            padding-top:70px;
+            padding-bottom:70px;
+            flex-grow: 1;
+        ">
+            <div class="container-xl">
+                <ul class="nav nav-tabs home-tickets-tabs" role="tablist">
+                    {% for tab in tabs %}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
+                                aria-current="page"
+                                id="{{ tab.id }}-tab"
+                                href="#"
+                                data-bs-toggle="tab"
+                                data-bs-target="#{{ tab.id }}-pane"
+                                type="button"
+                                role="tab"
+                                aria-controls="{{ tab.id }}-pane"
+                                aria-selected="{{ loop.index0 == 0 ? 'true' : 'false' }}"
+                            >{{ tab.label }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content">
+                    {% for tab in tabs %}
+                        <div
+                            id="{{ tab.id }}-pane"
+                            class="tab-pane fade home-tickets-list {{ loop.index0 == 0 ? 'show active' : '' }}"
+                            role="tabpanel"
+                            aria-labelledby="{{ tab.id }}-tab"
+                            tabindex="{{ loop.index0 }}"
+                        >
+                            {% do call('Search::showList', [
+                                'Ticket',
+                                {
+                                    'criteria' : tab.criteria,
+                                    'showmassiveactions' : false,
+                                    'hide_controls'      : true,
+                                    'as_map'             : false,
+                                    'push_history'       : false,
+                                }
+                            ]) %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script> UndrawJS.init(); </script>
+{% endblock content %}

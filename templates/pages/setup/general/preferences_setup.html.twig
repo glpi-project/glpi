@@ -154,13 +154,16 @@
         escapeMarkup: 'function(m) { return m; }'
     })) }}
 
-   {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
-      'horizontal': __('Horizontal (menu in header'),
-      'vertical': __('Vertical (menu in sidebar)')
-   }, __('Page layout'), field_options|merge({
-      templateResult: 'formatGlobalLayout',
-      templateSelection: 'formatGlobalLayout',
-   })) }}
+   {# Only display the page layout setting for central users #}
+   {% if get_current_interface() == 'central' %}
+      {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
+         'horizontal': __('Horizontal (menu in header'),
+         'vertical': __('Vertical (menu in sidebar)')
+      }, __('Page layout'), field_options|merge({
+         templateResult: 'formatGlobalLayout',
+         templateSelection: 'formatGlobalLayout',
+      })) }}
+   {% endif %}
 
    {{ fields.dropdownArrayField('richtext_layout', config['richtext_layout'], {
       'inline': __('Inline (no toolbars)'),

@@ -1262,6 +1262,12 @@ HTML;
             $tpl_vars['glpi_request_id'] = \Glpi\Debug\Profile::getCurrent()->getID();
         }
 
+        // Hack as we have no proper way to load a special scss file for a given page...
+        $extra_css_files = $_ENV['extra_css_files'] ?? [];
+        foreach ($extra_css_files as $path) {
+            $tpl_vars['css_files'][] = ['path' => $path];
+        }
+
         if ($display) {
             TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
         } else {

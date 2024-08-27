@@ -67,6 +67,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.3.0",
         "tinymce-i18n": "^24.8.26",
+        "undraw-js": "^1.0.6",
         "vue": "^3.3.13"
     },
     "scripts": {
