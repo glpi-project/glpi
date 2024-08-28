@@ -133,7 +133,7 @@ final class SearchOption implements \ArrayAccess
 
         static $search = [];
 
-        if (!isset($search[$itemtype]) || defined('TU_USER')) {
+        if (!isset($search[$itemtype])) {
             $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
                 // Check duplicate keys between new options and existing options
                 $duplicate_keys = array_intersect(array_keys($search[$itemtype]), array_keys($new_options));
