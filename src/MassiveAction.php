@@ -700,6 +700,7 @@ class MassiveAction
         if (
             Session::haveRight('transfer', READ)
             && Session::isMultiEntitiesMode()
+            && !isAPI()
         ) {
             $actions[__CLASS__ . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
                   = "<i class='fa-fw fas fa-level-up-alt'></i>" .
