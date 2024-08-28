@@ -46,3 +46,4 @@ phpstan.neon
 /phpunit/files/
 /phpunit/config
 *.phar
+.env
