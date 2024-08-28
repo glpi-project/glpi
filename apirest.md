@@ -1301,10 +1301,6 @@ $ curl -X GET \
     "label": "Put in trashbin"
   },
   {
-    "key": "MassiveAction:add_transfer_list",
-    "label": "Add to transfer list"
-  },
-  {
     "key": "Appliance:add_item",
     "label": "Associate to an appliance"
   },
@@ -1421,10 +1417,6 @@ $ curl -X GET \
   {
     "key": "MassiveAction:delete",
     "label": "Put in trashbin"
-  },
-  {
-    "key": "MassiveAction:add_transfer_list",
-    "label": "Add to transfer list"
   },
   {
     "key": "Appliance:add_item",
