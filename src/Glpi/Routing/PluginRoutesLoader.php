@@ -38,6 +38,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
+use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class PluginRoutesLoader extends Loader
@@ -77,12 +78,12 @@ class PluginRoutesLoader extends Loader
                 continue;
             }
 
-            preg_match('~^/(?<type>plugins|marketplace)/.*$~isUu', \str_replace($this->projectDir, '', $plugin_path), $matches);
-            $type = $matches['type'] ?? null;
-            if ($type !== 'plugins' && $type !== 'marketplace') {
-                throw new \RuntimeException(\sprintf('Plugin "%s" does not seem to have a path located in either "plugins" or "marketplace" directory.', $plugin_name));
+            foreach ($plugin_routes as $route) {
+                /** @var Route $route */
+                if (!\str_starts_with($route->getPath(), '/plugin/')) {
+                    $route->setPath('/plugin/'. \ltrim($route->getPath(), '/'));
+                }
             }
-            $plugin_routes->addPrefix(\sprintf('/%s/%s/', $type, $plugin_name));
 
             $routes->addCollection($plugin_routes);
         }

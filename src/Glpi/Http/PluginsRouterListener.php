@@ -80,7 +80,6 @@ class PluginsRouterListener implements EventSubscriberInterface
         [
             'plugins_or_marketplace' => $plugins_or_marketplace,
             'plugin_name' => $plugin_name,
-            'path_rest' => $path_rest,
         ] = $route_params;
 
         if (!\Plugin::isPluginActive($plugin_name)) {
@@ -95,13 +94,11 @@ class PluginsRouterListener implements EventSubscriberInterface
             throw new NotFoundHttpException('No route found.');
         }
 
-
         $router = $this->plugin_container->get('glpi_plugins_router');
         if (!$router instanceof Router) {
             throw new \RuntimeException('Incorrectly set Router in GLPI\'s Plugin container.');
         }
 
-        $matches = [];
         try {
             $matches = $router->matchRequest($request);
         } catch (ResourceNotFoundException) {
