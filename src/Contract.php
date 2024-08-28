@@ -471,7 +471,8 @@ class Contract extends CommonDBTM
                     $values['duration'],
                     0,
                     true,
-                    ($values['renewal'] == self::RENEWAL_TACIT)
+                    ($values['renewal'] == self::RENEWAL_TACIT),
+                    $values['periodicity']
                 );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -667,7 +668,8 @@ class Contract extends CommonDBTM
             'additionalfields'   => [
                 'begin_date',
                 'duration',
-                'renewal'
+                'renewal',
+                'periodicity'
             ],
             'name'               => __('Expiration'),
             'datatype'           => 'specific',
