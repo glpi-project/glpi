@@ -80,8 +80,9 @@ class PluginRoutesLoader extends Loader
 
             foreach ($plugin_routes as $route) {
                 /** @var Route $route */
-                if (!\str_starts_with($route->getPath(), '/plugin/')) {
-                    $route->setPath('/plugin/'. \ltrim($route->getPath(), '/'));
+                $prefix = '/plugin/' . $plugin_name . '/';
+                if (!\str_starts_with($route->getPath(), $prefix)) {
+                    $route->setPath($prefix . \ltrim($route->getPath(), '/'));
                 }
             }
 
