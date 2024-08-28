@@ -136,8 +136,7 @@ class PluginContainer implements ContainerInterface
             ->setBindings([
                 '$env' => $this->kernel->getEnvironment(),
                 '$projectDir' => $this->kernel->getProjectDir(),
-            ])
-        );
+            ]));
 
         $container->setDefinition('glpi_plugins_router', (new Definition())
             ->setClass(Router::class)
@@ -146,8 +145,7 @@ class PluginContainer implements ContainerInterface
                 '$loader' => new Reference('routing.loader'),
                 '$resource' => 'glpi_routes',
                 '$options' => ['cache_dir' => $this->kernel->getCacheDir() . '/glpi_routes/'],
-            ])
-        );
+            ]));
     }
 
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container): void
@@ -171,14 +169,14 @@ class PluginContainer implements ContainerInterface
         ]);
 
         $rootCode = array_pop($content);
-        $dir = \dirname($cache->getPath()).'/';
+        $dir = \dirname($cache->getPath()) . '/';
         $fs = new Filesystem();
 
         foreach ($content as $file => $code) {
-            $fs->dumpFile($dir.$file, $code);
-            @chmod($dir.$file, 0666 & ~umask());
+            $fs->dumpFile($dir . $file, $code);
+            @chmod($dir . $file, 0666 & ~umask());
         }
-        $legacyFile = \dirname($dir.key($content)).'.legacy';
+        $legacyFile = \dirname($dir . key($content)) . '.legacy';
         if (is_file($legacyFile)) {
             @unlink($legacyFile);
         }
