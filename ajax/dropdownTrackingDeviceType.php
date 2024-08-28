@@ -79,7 +79,7 @@ if ($isValidItemtype) {
         'multiple'            => (int) ($_POST["multiple"] ?? 0) !== 0,
         'myname'              => $_POST["myname"],
         'rand'                => $_POST["rand"],
-        'width'               => 'calc(100% - 25px)',
+        'width'               => $_POST["width"] ?? 'calc(100% - 25px)',
         '_idor_token'         => Session::getNewIDORToken($itemtype, [
             'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         ]),

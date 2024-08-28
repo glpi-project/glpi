@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
@@ -180,6 +181,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new UrgencyField(),
             new ITILCategoryField(),
             new LocationField(),
+            new AssociatedItemsField(),
         ];
     }
 

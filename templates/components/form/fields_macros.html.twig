@@ -786,6 +786,7 @@
       'full_width': false,
       'mb': 'mb-3',
       'add_field_class': '',
+      'add_field_attribs': {},
    }|merge(options) %}
 
    {% set class = options.field_class ?? 'col-12 col-sm-6' %}
@@ -794,7 +795,13 @@
    {% endif %}
    {% set class = class ~ ' ' ~ options.add_field_class %}
 
-   <div class="{{ class }} {{ options.mb }}">
+   {% if options.add_field_attribs is not empty %}
+      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+   {% else %}
+      {% set extra_attribs = '' %}
+   {% endif %}
+
+   <div class="{{ class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>

@@ -1,0 +1,179 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+
+{{ fields.dropdownArrayField(
+    main_config_field.input_name,
+    main_config_field.value,
+    main_config_field.possible_values,
+    main_config_field.label,
+    options
+) }}
+
+<div
+    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_VALUES }}"
+    data-glpi-specific-values-extra-field
+    class="form-field col-12 col-sm-6 mb-2 {% if main_config_field.value != CONFIG_SPECIFIC_VALUES %}d-none{% endif %}"
+>
+    {% set remove_button %}
+        <button type="button" class="btn btn-outline" data-glpi-remove-associated-item-button aria-label="{{ __('Remove item') }}">
+            <i class="fas fa-times"></i>
+        </button>
+    {% endset %}
+
+    <section data-glpi-specific-values-extra-field-container>
+        {% if specific_values_extra_field.associated_items is empty %}
+            {{ fields.dropdownItemsFromItemtypes(
+                specific_values_extra_field.input_name,
+                '',
+                {
+                    'init'               : true,
+                    'itemtypes'          : specific_values_extra_field.itemtypes,
+                    'no_label'           : true,
+                    'display_emptychoice': false,
+                    'itemtype_name'      : specific_values_extra_field.input_name ~ '[itemtype][]',
+                    'items_id_name'      : specific_values_extra_field.input_name ~ '[items_id][]',
+                    'default_itemtype'   : specific_values_extra_field.itemtypes|first,
+                    'width'              : '30%',
+                    'add_field_class'    : 'd-flex input-group flex-nowrap',
+                    'mb'                 : 'mb-2',
+                    'add_field_html'     : remove_button,
+                    'add_field_attribs'  : {
+                        'data-glpi-specific-values-extra-field-item': ''
+                    },
+                    'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                    'specific_tags_items_id_dropdown': {
+                        'aria-label': specific_values_extra_field.items_id_aria_label,
+                    }
+                }
+            ) }}
+        {% endif %}
+
+        {% for itemtype, items_ids in specific_values_extra_field.associated_items %}
+            {% for items_id in items_ids %}
+                {{ fields.dropdownItemsFromItemtypes(
+                    specific_values_extra_field.input_name,
+                    '',
+                    {
+                        'init'               : true,
+                        'itemtypes'          : specific_values_extra_field.itemtypes,
+                        'no_label'           : true,
+                        'display_emptychoice': false,
+                        'itemtype_name'      : specific_values_extra_field.input_name ~ '[itemtype][]',
+                        'items_id_name'      : specific_values_extra_field.input_name ~ '[items_id][]',
+                        'default_itemtype'   : itemtype,
+                        'default_items_id'   : items_id,
+                        'width'              : '30%',
+                        'add_field_class'    : 'd-flex input-group flex-nowrap',
+                        'mb'                 : 'mb-2',
+                        'add_field_html'     : remove_button,
+                        'add_field_attribs'  : {
+                            'data-glpi-specific-values-extra-field-item': ''
+                        },
+                        'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                        'specific_tags_items_id_dropdown': {
+                            'aria-label': specific_values_extra_field.items_id_aria_label,
+                        }
+                    }
+                ) }}
+            {% endfor %}
+        {% endfor %}
+    </section>
+
+    <button type="button" class="btn btn-outline" data-glpi-add-associated-item-button aria-label="{{ __('Add item') }}">
+        <i class="ti ti-plus me-2"></i>
+        {{ __('Add item') }}
+    </button>
+
+    <template class="d-none" data-glpi-specific-values-extra-field-template>
+        {{ fields.dropdownItemsFromItemtypes(
+            specific_values_extra_field.input_name,
+            '',
+            {
+                'init'                           : false,
+                'itemtypes'                      : specific_values_extra_field.itemtypes,
+                'no_label'                       : true,
+                'display_emptychoice'            : false,
+                'itemtype_name'                  : specific_values_extra_field.input_name ~ '[itemtype][]',
+                'items_id_name'                  : specific_values_extra_field.input_name ~ '[items_id][]',
+                'default_itemtype'               : 'Computer',
+                'width'                          : '30%',
+                'add_field_class'                : 'd-flex input-group flex-nowrap',
+                'mb'                             : 'mb-2',
+                'add_field_html'                 : remove_button,
+                'add_field_attribs'              : {
+                    'data-glpi-specific-values-extra-field-item': ''
+                },
+                'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                'specific_tags_items_id_dropdown': {
+                    'aria-label': specific_values_extra_field.items_id_aria_label,
+                }
+            }
+        ) }}
+    </template>
+</div>
+
+<div
+    {% if main_config_field.value != CONFIG_SPECIFIC_ANSWERS %} class="d-none" {% endif %}
+    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+>
+	{{ fields.dropdownArrayField(
+        specific_answer_extra_field.input_name,
+        '',
+        specific_answer_extra_field.possible_values,
+        "",
+        options|merge({
+            no_label: true,
+            display_emptychoice: true,
+            values: specific_answer_extra_field.values ?? [],
+            multiple: true,
+            aria_label: specific_answer_extra_field.aria_label,
+            mb: 'mb-2'
+        })
+    ) }}
+</div>
+
+<script>
+    import("{{ js_path('js/modules/Forms/FieldDestinationAssociatedItem.js') }}").then((m) => {
+        new m.GlpiFormFieldDestinationAssociatedItem(
+            $('[data-glpi-specific-values-extra-field]'),
+            '{{ specific_values_extra_field.input_name ~ "[itemtype][]" }}',
+            '{{ specific_values_extra_field.input_name ~ "[items_id][]" }}'
+        );
+    });
+</script>
