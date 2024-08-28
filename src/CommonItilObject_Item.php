@@ -1549,9 +1549,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 Dropdown::showItemTypes(
                     $myname,
                     array_keys($types),
-                    ['emptylabel' => $emptylabel,
-                        'value'      => $itemtype,
-                        'rand'       => $rand,
+                    [
+                        'emptylabel'          => $emptylabel,
+                        'value'               => $itemtype,
+                        'rand'                => $rand,
                         'display_emptychoice' => true
                     ]
                 );
@@ -1568,13 +1569,17 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'myname'          => "add_items_id"
                 ];
 
+                if (isset($params['width'])) {
+                    $p['width'] = $params['width'];
+                }
+
                 Ajax::updateItemOnSelectEvent(
-                    "dropdown_$myname$rand",
-                    "results_$myname$rand",
+                    Html::cleanId("dropdown_$myname$rand"),
+                    Html::cleanId("results_$myname$rand"),
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
-                echo "<span id='results_" . htmlspecialchars($myname) . "$rand'>\n";
+                echo "<span id='" . Html::cleanId("results_" . htmlspecialchars($myname) . "$rand") . "'>\n";
 
                // Display default value if itemtype is displayed
                 if (

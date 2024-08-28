@@ -210,6 +210,7 @@ TWIG;
                     'no_label'           : true,
                     'display_emptychoice': true,
                     'right'              : 'all',
+                    'aria_label'         : aria_label,
                 }
             ) }}
 TWIG;
@@ -219,6 +220,7 @@ TWIG;
             'question'         => $question,
             'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
             'default_items_id' => $this->getDefaultValueItemId($question),
+            'aria_label'       => $this->items_id_aria_label,
         ]);
     }
 

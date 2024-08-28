@@ -76,7 +76,7 @@ final class AnswerTagProviderTest extends DbTestCase
     {
         $tagProvider = new AnswerTagProvider();
         $tags = $tagProvider->getTags($form);
-        $this->assertEquals($expected_tags, $tags);
+        $this->assertEqualsCanonicalizing($expected_tags, $tags);
     }
 
     public function testGetTagContentForValueWithInvalidValue(): void
