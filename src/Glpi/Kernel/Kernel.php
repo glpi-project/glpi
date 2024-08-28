@@ -162,7 +162,7 @@ final class Kernel extends BaseKernel
         }
 
         // Plugin-specific routes
-        $routes->add(PluginsRouterListener::ROUTE_NAME, '/plugin/{plugin_name}/{path_rest}')
+        $routes->add(PluginsRouterListener::ROUTE_NAME, '/plugin/{plugin_name}{path_rest}')
             ->requirements([
                 'plugin_name' => '^[a-zA-Z0-9_-]+$',
                 'path_rest' => '.*',
