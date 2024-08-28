@@ -48,7 +48,6 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 
 class PluginContainer implements ContainerInterface
@@ -57,18 +56,15 @@ class PluginContainer implements ContainerInterface
     private Container $symfony_container;
     private ParameterBag $container_parameters;
     private Kernel $kernel;
-    private RequestContext $request_context;
 
     public function __construct(
         #[Autowire(service: 'service_container')] Container $symfony_container,
         #[Autowire(service: 'parameter_bag')] ParameterBag $container_parameters,
         #[Autowire(service: 'kernel')] Kernel $kernel,
-        #[Autowire(service: 'router.request_context')] RequestContext $request_context,
     ) {
         $this->symfony_container = $symfony_container;
         $this->container_parameters = $container_parameters;
         $this->kernel = $kernel;
-        $this->request_context = $request_context;
     }
 
     public function get(string $id)
