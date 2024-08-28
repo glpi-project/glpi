@@ -24,6 +24,10 @@ install: .env build start vendor db test-db ## Install the project
 
 .env:
 	@\
+	if [ ! -f ".devcontainer/docker-compose.override.yaml" ]; then \
+		printf $(_TITLE) "Project" "Creating \".devcontainer/docker-compose.override.yaml\" file for Docker Compose" ; \
+		touch .devcontainer/docker-compose.override.yaml ; \
+	fi ; \
 	if [ ! -f ".env" ]; then \
 		printf $(_TITLE) "Project" "Creating \".env\" file for Docker Compose" ; \
 		touch .env ; \
