@@ -558,13 +558,6 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    /**
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     *
-     * @param MassiveAction $ma
-     * @param self $item
-     * @param array $ids
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -574,7 +567,10 @@ abstract class ITILTemplate extends CommonDropdown
         switch ($ma->getAction()) {
             case 'merge':
                 foreach ($ids as $key) {
-                    if ($item->can($key, UPDATE)) {
+                    if (
+                        ($item instanceof ITILTemplate)
+                        && $item->can($key, UPDATE)
+                    ) {
                         if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,

@@ -46,30 +46,21 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return _nx('camera', 'Resolution', 'Resolutions', $nb);
     }
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        [
-                            'items_devicecameras_id' => $item->getID()
-                        ]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        if (
+            ($item instanceof CommonDBTM)
+            && $_SESSION['glpishow_count_on_tabs']
+        ) {
+            $nb = countElementsInTable(
+                self::getTable(),
+                [
+                    'items_devicecameras_id' => $item->getID()
+                ]
+            );
         }
-        return '';
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

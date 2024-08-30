@@ -49,19 +49,14 @@ class Pdu_Plug extends CommonDBRelation
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
         $field = get_class($item) == PDU::class ? 'pdus_id' : 'plugs_id';
-        if ($_SESSION['glpishow_count_on_tabs']) {
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = countElementsInTable(
                 self::getTable(),
                 [$field  => $item->getID()]

@@ -57,19 +57,15 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+            && !$item->isNewItem()
+        ) {
             $count += countElementsInTable(
                 'glpi_manuallinks',
                 [

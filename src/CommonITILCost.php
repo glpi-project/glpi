@@ -55,20 +55,12 @@ abstract class CommonITILCost extends CommonDBChild
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
         if (
-            (get_class($item) == static::$itemtype)
+            ($item instanceof static::$itemtype)
             && static::canView()
         ) {
             $nb = 0;

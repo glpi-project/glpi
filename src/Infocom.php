@@ -137,19 +137,14 @@ class Infocom extends CommonDBChild
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // Can exists on template
-        if (Session::haveRight(self::$rightname, READ)) {
+        if (
+            Session::haveRight(self::$rightname, READ)
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':

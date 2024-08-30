@@ -59,20 +59,15 @@ class ITILSolution extends CommonDBChild
         return _n('Solution', 'Solutions', $nb);
     }
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonITILObject $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
             return '';
         }
-        if ($item->maySolve()) {
+        if (
+            ($item instanceof CommonITILObject)
+            && $item->maySolve()
+        ) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {

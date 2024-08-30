@@ -218,14 +218,6 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
@@ -259,7 +251,10 @@ class Item_Problem extends CommonItilObject_Item
                     return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
                 default:
-                    if (Session::haveRight("problem", Problem::READALL)) {
+                    if (
+                        Session::haveRight("problem", Problem::READALL)
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
                               $nb = self::countForItem($item);

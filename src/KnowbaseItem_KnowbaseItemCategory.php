@@ -122,18 +122,13 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return $linked_items;
     }
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (static::canView()) {
+        if (
+            ($item instanceof CommonDBTM)
+            && static::canView()
+        ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(

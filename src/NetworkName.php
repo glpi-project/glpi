@@ -951,19 +951,12 @@ class NetworkName extends FQDNLabel
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;

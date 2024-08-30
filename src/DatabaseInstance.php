@@ -537,22 +537,14 @@ class DatabaseInstance extends CommonDBTM
         return true;
     }
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param CommonDBTM $item
-     * @param integer    $withtemplate
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!self::canView()) {
-            return '';
-        }
-
-        $nb = 0;
-        if (in_array($item->getType(), self::getTypes(true))) {
+        if (
+            ($item instanceof CommonDBTM)
+            && self::canView()
+            && in_array($item->getType(), self::getTypes(true))
+        ) {
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
             }
