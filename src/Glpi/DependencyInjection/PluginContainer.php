@@ -110,12 +110,13 @@ class PluginContainer implements ContainerInterface
             ) {
                 $this->internal_container->set('kernel', $this->kernel);
                 $this->internal_container->set('service_container', $this);
-                \error_reporting($errorLevel);
 
                 return;
             }
         } catch (\Throwable $e) {
             // rebuild the container if any error occurs
+        } finally {
+            \error_reporting($errorLevel);
         }
 
         $container = new ContainerBuilder(new ParameterBag($this->container_parameters->all()));
