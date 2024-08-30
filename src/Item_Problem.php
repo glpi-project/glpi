@@ -251,7 +251,10 @@ class Item_Problem extends CommonItilObject_Item
                     return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
                 default:
-                    if (Session::haveRight("problem", Problem::READALL)) {
+                    if (
+                        Session::haveRight("problem", Problem::READALL)
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
                               $nb = self::countForItem($item);

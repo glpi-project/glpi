@@ -133,27 +133,21 @@ class RuleMatchedLog extends CommonDBTM
     }
 
 
-    /**
-     * Display the content of the tab
-     *
-     * @param CommonGLPI $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        $rulematched = new self();
-        if ($tabnum == '0') {
-            if ($item->getID() > 0) {
-                $rulematched->showFormAgent($item->getID());
-                return true;
-            }
-        } else if ($tabnum == '1') {
-            if ($item->getID() > 0) {
-                $rulematched->showItemForm($item->getID(), $item->getType());
-                return true;
+        if ($item instanceof CommonDBTM) {
+            $rulematched = new self();
+            if ($tabnum == '0') {
+                if ($item->getID() > 0) {
+                    $rulematched->showFormAgent($item->getID());
+                    return true;
+                }
+            } else if ($tabnum == '1') {
+                if ($item->getID() > 0) {
+                    $rulematched->showItemForm($item->getID(), $item->getType());
+                    return true;
+                }
             }
         }
         return false;

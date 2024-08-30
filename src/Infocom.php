@@ -141,7 +141,10 @@ class Infocom extends CommonDBChild
     {
 
        // Can exists on template
-        if (Session::haveRight(self::$rightname, READ)) {
+        if (
+            Session::haveRight(self::$rightname, READ)
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':

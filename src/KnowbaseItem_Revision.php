@@ -46,7 +46,10 @@ class KnowbaseItem_Revision extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!$item->canUpdateItem()) {
+        if (
+            !($item instanceof CommonDBTM)
+            || !$item->canUpdateItem()
+        ) {
             return '';
         }
 

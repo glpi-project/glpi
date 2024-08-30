@@ -506,7 +506,8 @@ class NetworkAlias extends FQDNLabel
     {
 
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;

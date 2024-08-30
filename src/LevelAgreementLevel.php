@@ -389,7 +389,10 @@ abstract class LevelAgreementLevel extends RuleTicket
             $nb = 0;
             switch ($item->getType()) {
                 case static::$parentclass:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if (
+                        $_SESSION['glpishow_count_on_tabs']
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
                     }
                     return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb);

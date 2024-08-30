@@ -1006,7 +1006,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $end   = [];
         for ($i = 0; $i < 4; ++$i) {
             $start[$i] = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] & $netmask[$i]);
-            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~$netmask[$i]);
+            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~(int)$netmask[$i]);
         }
 
         if ($excludeBroadcastAndNetwork) {
