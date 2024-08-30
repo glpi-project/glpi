@@ -167,7 +167,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                     'projecttasks_id' => $this->obj->fields['projecttasks_id']
                 ]
             ]);
-        } elseif (array_key_exists('projects_id', $this->obj->fields)) {
+        } else {
             $iterator = $DB->request([
                 'SELECT' => 'items_id',
                 'FROM'   => 'glpi_projectteams',
