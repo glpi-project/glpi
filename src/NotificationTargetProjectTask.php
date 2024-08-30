@@ -155,14 +155,28 @@ class NotificationTargetProjectTask extends NotificationTarget
         /** @var \DBmysql $DB */
         global $DB;
 
-        $iterator = $DB->request([
-            'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
-            'WHERE'  => [
-                'itemtype'        => 'Group',
-                'projecttasks_id' => $this->obj->fields['id']
-            ]
-        ]);
+        if (
+            array_key_exists('projecttasks_id', $this->obj->fields)
+            && $this->obj->fields['projecttasks_id'] > 0
+        ) {
+            $iterator = $DB->request([
+                'SELECT' => 'items_id',
+                'FROM'   => 'glpi_projecttaskteams',
+                'WHERE'  => [
+                    'itemtype'        => 'Group',
+                    'projecttasks_id' => $this->obj->fields['projecttasks_id']
+                ]
+            ]);
+        } elseif (array_key_exists('projects_id', $this->obj->fields)) {
+            $iterator = $DB->request([
+                'SELECT' => 'items_id',
+                'FROM'   => 'glpi_projectteams',
+                'WHERE'  => [
+                    'itemtype'        => 'Group',
+                    'projects_id' => $this->obj->fields['projects_id']
+                ]
+            ]);
+        }
 
         foreach ($iterator as $data) {
             $this->addForGroup($manager, $data['items_id']);
