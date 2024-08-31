@@ -51,6 +51,7 @@ class CommonGLPI implements CommonGLPIInterface
     * GLPI Item type cache : set dynamically calling getType
     *
     * @var integer
+    * @deprecated 11.0 Has no use. Left-over from ancient int-based item types.
     */
     protected $type                 = -1;
 
@@ -137,6 +138,9 @@ class CommonGLPI implements CommonGLPIInterface
      * Return the type of the object : class name
      *
      * @return string
+     * @phpstan-return class-string<static>
+     * @deprecated 11.0 (Soft-deprecation) Use any of the native PHP methods to get the class name.
+     * For the runtime class (the result from this function), use `static::class` or `$item::class`. This function is redundant.
      **/
     public static function getType()
     {

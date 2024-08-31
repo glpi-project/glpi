@@ -184,6 +184,8 @@ The present file will list all changes made to the project; according to the
 - `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
+- `CommonGLPI::$type` property. This is a left-over from ancient versions of GLPI when 'types' were integers instead of class names.
+- `CommonGLPI::getType()` has been deprecated. This is a PHPDoc change only, but it will be hard-deprecated in the future. Use any native PHP method to get the static class name instead.
 - `CommonITILObject::isValidator()`
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
 - `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
