@@ -578,6 +578,26 @@ class Group extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => 'glpi_users',
+            'field'              => 'id',
+            'name'               => __('Number of users'),
+            'forcegroupby'       => false,
+            'usehaving'          => false,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_users',
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
