@@ -40,6 +40,7 @@ use Entity;
 use Generator;
 use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use Session;
 
 /* Test for inc/notificationtarget.class.php */
@@ -260,52 +261,52 @@ class NotificationTargetTest extends DbTestCase
         $ntarget_child_2 = new \NotificationTarget($child_2);
 
        // test global settings
-        $CFG_GLPI['url_base'] = 'global.tld';
+         $CFG_GLPI['url_base'] = 'global.tld';
 
-        $this->string($ntarget_parent->getUrlBase())->isEqualTo('global.tld');
-        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('global.tld');
-        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('global.tld');
+        $this->assertEquals('global.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('global.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('global.tld', $ntarget_child_2->getUrlBase());
 
-       // test root entity settings
+        // test root entity settings
         $entity  = new \Entity();
-        $this->boolean($entity->update([
+        $this->assertTrue($entity->update([
             'id'       => $root,
             'url_base' => "root.tld",
-        ]))->isTrue();
+        ]));
 
-        $this->string($ntarget_parent->getUrlBase())->isEqualTo('root.tld');
-        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('root.tld');
-        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('root.tld');
+        $this->assertEquals('root.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('root.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('root.tld', $ntarget_child_2->getUrlBase());
 
-       // test parent entity settings
-        $this->boolean($entity->update([
+        // test parent entity settings
+        $this->assertTrue($entity->update([
             'id'       => $parent,
             'url_base' => "parent.tld",
-        ]))->isTrue();
+        ]));
 
-        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
-        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('parent.tld');
-        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('parent.tld');
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_2->getUrlBase());
 
-       // test child_1 entity settings
-        $this->boolean($entity->update([
+        // test child_1 entity settings
+        $this->assertTrue($entity->update([
             'id'       => $child_1,
             'url_base' => "child1.tld",
-        ]))->isTrue();
+        ]));
 
-        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
-        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('child1.tld');
-        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('parent.tld');
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('child1.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_2->getUrlBase());
 
-       // test child_2 entity settings
-        $this->boolean($entity->update([
+        // test child_2 entity settings
+        $this->assertTrue($entity->update([
             'id'       => $child_2,
             'url_base' => "child2.tld",
-        ]))->isTrue();
+        ]));
 
-        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
-        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('child1.tld');
-        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('child2.tld');
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('child1.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('child2.tld', $ntarget_child_2->getUrlBase());
     }
 
     /**
@@ -414,7 +415,7 @@ class NotificationTargetTest extends DbTestCase
             if (!is_null($warning)) {
                 $this->hasPhpLogRecordThatContains(
                     $warning,
-                    Logger::WARNING
+                    LogLevel::WARNING
                 );
             }
         }

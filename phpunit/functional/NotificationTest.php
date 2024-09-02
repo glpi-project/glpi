@@ -117,7 +117,7 @@ class NotificationTest extends DbTestCase
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         $this->login();
-        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(0);
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable()));
 
         // Enable notifications
         $CFG_GLPI['use_notifications'] = true;
@@ -128,12 +128,13 @@ class NotificationTest extends DbTestCase
             'name' => ['<>', $target_notification]
         ]);
         $this->assertTrue($success);
-        $this->integer(
+        $this->assertEquals(
+            1,
             countElementsInTable(
                 \Notification::getTable(),
                 ['is_active' => true]
             )
-        )->isEqualTo(1);
+        );
 
         // Create categories
         $cat_A = $this->createItem("ITILCategory", ["name" => "cat A"]);
@@ -159,7 +160,7 @@ class NotificationTest extends DbTestCase
             "itilcategories_id" => $cat_A->fields['id'],
             "entities_id"       => $entity,
         ]);
-        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(0);
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable()));
 
         $this->createItem("Ticket", [
             "name"              => "Test",
@@ -167,7 +168,7 @@ class NotificationTest extends DbTestCase
             "itilcategories_id" => $cat_B->fields['id'],
             "entities_id"       => $entity,
         ]);
-        $this->integer(countElementsInTable(QueuedNotification::getTable()))->isEqualTo(1);
+        $this->assertEquals(1, countElementsInTable(QueuedNotification::getTable()));
     }
 
     protected function attachedDocumentsProvider(): iterable
@@ -424,15 +425,8 @@ HTML,
         }
     }
 
-    #[DataProvider('attachedDocumentsProvider')]
-    public function testAttachedDocuments(
-        int $global_config,
-        int $notif_config,
-        \Notification $notification,
-        bool $send_html,
-        \CommonDBTM $item_to_update,
-        array $expected_attachments,
-    ): void {
+    public function testAttachedDocuments(): void
+    {
         global $CFG_GLPI, $DB;
 
         $this->login();
@@ -455,77 +449,87 @@ HTML,
             }
         };
 
-        // Enable notifications
-        $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
+        $provider = $this->attachedDocumentsProvider();
+        foreach ($provider as $row) {
+            $global_config = $row['global_config'];
+            $notif_config = $row['notif_config'];
+            $notification = $row['notification'];
+            $send_html = $row['send_html'];
+            $item_to_update = $row['item_to_update'];
+            $expected_attachments = $row['expected_attachments'];
 
-        // Ensure only tested notification is active
-        $deactivated = $DB->update(
-            \Notification::getTable(),
-            ['is_active' => false],
-            ['id' => ['<>', $notification->getID()]]
-        );
-        $this->assertTrue($deactivated);
-        $this->assertTrue($notification->update(['id' => $notification->getID(), 'is_active' => 1]));
+            // Enable notifications
+            $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
 
-        // Update global/notification configuration
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = $global_config;
-        $this->assertTrue($notification->update(['id' => $notification->getID(), 'attach_documents' => $notif_config]));
+            // Ensure only tested notification is active
+            $deactivated = $DB->update(
+                \Notification::getTable(),
+                ['is_active' => false],
+                ['id' => ['<>', $notification->getID()]]
+            );
+            $this->assertTrue($deactivated);
+            $this->assertTrue($notification->update(['id' => $notification->getID(), 'is_active' => 1]));
 
-        // Adapt notification template to send expected content format (HTML or plain text)
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM'  => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $notification->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM'  => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
+            // Update global/notification configuration
+            $CFG_GLPI['attach_ticket_documents_to_mail'] = $global_config;
+            $this->assertTrue($notification->update(['id' => $notification->getID(), 'attach_documents' => $notif_config]));
+
+            // Adapt notification template to send expected content format (HTML or plain text)
+            $notification_notificationtemplate_it = $DB->request([
+                'FROM' => 'glpi_notifications_notificationtemplates',
+                'WHERE' => ['notifications_id' => $notification->getID()],
             ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => $send_html ? '<p>HTML</p>' : null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
+            foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
+                $notificationtemplate_it = $DB->request([
+                    'FROM' => 'glpi_notificationtemplates',
+                    'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
+                ]);
+                foreach ($notificationtemplate_it as $notificationtemplate_data) {
+                    $template_updated = $DB->update(
+                        'glpi_notificationtemplatetranslations',
+                        ['content_html' => $send_html ? '<p>HTML</p>' : null],
+                        ['notificationtemplates_id' => $notificationtemplate_data['id']]
+                    );
+                    $this->assertTrue($template_updated);
+                }
             }
+
+            // Ensure that there is no notification queued
+            $this->assertEmpty(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
+
+            // Update item
+            $updated = $item_to_update->update([
+                'id' => $item_to_update->getID(),
+                'content' => $item_to_update->fields['content'] . '<p>updated</p>',
+            ]);
+            $this->assertTrue($updated);
+
+            // Check documents attached to notification
+            $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
+            $this->assertCount(1, $queued_notifications);
+
+            \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+            \NotificationEventMailing::send($queued_notifications);
+            \NotificationEventMailing::setMailer(null);
+
+            $attachments = $transport->sent_email->getAttachments();
+            $this->assertCount(count($expected_attachments), $attachments);
+
+            $attachement_filenames = [];
+            foreach ($attachments as $attachment) {
+                $this->assertInstanceOf(\Symfony\Component\Mime\Part\DataPart::class, $attachment);
+                $attachement_filenames[] = $attachment->getFilename();
+            }
+            sort($attachement_filenames);
+
+            $expected_filenames = [];
+            foreach ($expected_attachments as $document) {
+                $expected_filenames[] = $document->fields['filename'];
+            }
+            sort($expected_filenames);
+
+            $this->assertEquals($expected_filenames, $attachement_filenames);
         }
-
-        // Ensure that there is no notification queued
-        $this->integer(countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]))->isEqualTo(0);
-
-        // Update item
-        $updated = $item_to_update->update([
-            'id' => $item_to_update->getID(),
-            'content' => $item_to_update->fields['content'] . '<p>updated</p>',
-        ]);
-        $this->assertTrue($updated);
-
-        // Check documents attached to notification
-        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
-        $this->assertCount(1, $queued_notifications);
-
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        $attachments = $transport->sent_email->getAttachments();
-        $this->assertCount(count($expected_attachments), $attachments);
-
-        $attachement_filenames = [];
-        foreach ($attachments as $attachment) {
-            $this->object($attachment)->isInstanceOf(\Symfony\Component\Mime\Part\DataPart::class);
-            $attachement_filenames[] = $attachment->getFilename();
-        }
-        sort($attachement_filenames);
-
-        $expected_filenames    = [];
-        foreach ($expected_attachments as $document) {
-            $expected_filenames[] = $document->fields['filename'];
-        }
-        sort($expected_filenames);
-
-        $this->assertEquals($expected_filenames, $attachement_filenames);
     }
 
     /**
@@ -536,8 +540,8 @@ HTML,
         $filename = $prefix . uniqid('glpitest_', true) . '.png';
 
         $image = imagecreate(100, 100);
-        $this->object($image)->isInstanceOf(\GdImage::class);
-        $this->integer(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
+        $this->assertInstanceOf(\GdImage::class, $image);
+        $this->assertIsInt(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
         $this->assertTrue(imagepng($image, GLPI_TMP_DIR . '/' . $filename));
 
         return $filename;

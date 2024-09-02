@@ -641,9 +641,12 @@ class MassiveActionTest extends DbTestCase
         $users_ids = [$user1, $user2, $user3];
 
         // Check that no email exist for our tests users
-        $this->array((new UserEmail())->find([
-            'users_id' => $users_ids
-        ]))->hasSize(0);
+        $this->assertCount(
+            0,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
 
         // Create set of emails to be deleted
         $this->createItems('UserEmail', [
@@ -656,51 +659,56 @@ class MassiveActionTest extends DbTestCase
         ]);
 
         // Check that emails have been created as expected
-        $this->array((new UserEmail())->find([
-            'users_id' => $users_ids
-        ]))->hasSize(3);
+        $this->assertCount(
+            3,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
 
         // First, login as someone who shouldn't be able to run this action
         $this->login('post-only', 'postonly');
         $current_right = Session::haveRight(User::$rightname, UPDATE);
-        $this->boolean(boolval($current_right))->isEqualTo(false);
+        $this->assertFalse(boolval($current_right));
         yield [$users_ids, 0, 3]; // All failed
 
         // Now login to someone that can run this action
         $this->login('glpi', 'glpi');
         $current_right = Session::haveRight(User::$rightname, UPDATE);
-        $this->boolean(boolval($current_right))->isEqualTo(true);
+        $this->assertTrue(boolval($current_right));
         yield [$users_ids, 3, 0]; // Success
 
         // Verify that emails have been cleaned
-        $this->array((new UserEmail())->find([
-            'users_id' => $users_ids
-        ]))->hasSize(0);
+        $this->assertCount(
+            0,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
     }
 
     /**
      * Test the "delete_email" massive action for User
-     *
-     * @param array $items Arrays of users' ids
-     * @param int   $ok    Number of items that should be marked as OK
-     * @param int   $ko    Number of items that should be marked as KO
      */
-    #[DataProvider('deleteEmailsProvider')]
-    public function testProcessMassiveActionsForOneItemtype_deleteEmail(
-        array $items,
-        int $ok,
-        int $ko,
-    ) {
-        // Execute action
-        $this->processMassiveActionsForOneItemtype(
-            "delete_emails",
-            new User(),
-            $items,
-            [],
-            $ok,
-            $ko,
-            User::class
-        );
+    public function testProcessMassiveActionsForOneItemtype_deleteEmail()
+    {
+        $provider = $this->deleteEmailsProvider();
+        foreach ($provider as $row) {
+            $items = $row[0];
+            $ok = $row[1];
+            $ko = $row[2];
+
+            // Execute action
+            $this->processMassiveActionsForOneItemtype(
+                "delete_emails",
+                new User(),
+                $items,
+                [],
+                $ok,
+                $ko,
+                User::class
+            );
+        }
     }
 
 
@@ -713,22 +721,26 @@ class MassiveActionTest extends DbTestCase
 
         //create computer
         $computer = new \Computer();
-        $this->integer($computer->add([
-            'name' => 'test',
-            'entities_id' => 1,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $computer->add([
+                'name' => 'test',
+                'entities_id' => 1,
+            ])
+        );
 
         //create manual domain
         $manual_domain = new \Domain();
-        $this->integer($manual_domain->add([
-            'name' => 'manual_domain',
-            'entities_id' => 1,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $manual_domain->add([
+                'name' => 'manual_domain',
+                'entities_id' => 1,
+            ])
+        );
 
 
-        $this
-        ->boolean(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)))
-        ->isIdenticalTo(true);
+        $this->assertTrue(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)));
 
         // Execute action to link Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(
@@ -749,24 +761,30 @@ class MassiveActionTest extends DbTestCase
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => false,
         ]);
-        $this->integer(count($rows))->isEqualTo(1);
+        $this->assertCount(1, $rows);
 
 
         //create new domain (for is_dynamic test)
         $dynamic_domain = new \Domain();
-        $this->integer($dynamic_domain->add([
-            'name' => 'dynamic_domain',
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $dynamic_domain->add([
+                'name' => 'dynamic_domain',
+            ])
+        );
 
         //add relation (with is_dynamic = 1)
-        $this->integer($domain_item->add([
-            'domains_id'            => $dynamic_domain->fields['id'],
-            'is_dynamic'            => 1,
-            'items_id'              => $computer->fields['id'],
-            'itemtype'              => $computer->getType(),
-            'domainrelations_id'    => \DomainRelation::BELONGS,
-            'is_deleted'            => false,
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $domain_item->add([
+                'domains_id'            => $dynamic_domain->fields['id'],
+                'is_dynamic'            => 1,
+                'items_id'              => $computer->fields['id'],
+                'itemtype'              => $computer->getType(),
+                'domainrelations_id'    => \DomainRelation::BELONGS,
+                'is_deleted'            => false,
+            ])
+        );
 
 
         // Execute action to remove link between Computer and Manual Domain
@@ -787,7 +805,7 @@ class MassiveActionTest extends DbTestCase
             'itemtype'              => $computer->getType(),
             'domainrelations_id'    => \DomainRelation::BELONGS,
         ]);
-        $this->integer(count($rows))->isEqualTo(0);
+        $this->assertCount(0, $rows);
 
         //dynamic domain still exist
         $rows = $domain_item->find([
@@ -798,7 +816,7 @@ class MassiveActionTest extends DbTestCase
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => false,
         ]);
-        $this->integer(count($rows))->isEqualTo(1);
+        $this->assertCount(1, $rows);
 
         // Execute action to remove link between Computer and Dynamic Domain
         $this->processMassiveActionsForOneItemtype(
@@ -820,6 +838,6 @@ class MassiveActionTest extends DbTestCase
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => true,
         ]);
-        $this->integer(count($rows))->isEqualTo(1);
+        $this->assertCount(1, $rows);
     }
 }

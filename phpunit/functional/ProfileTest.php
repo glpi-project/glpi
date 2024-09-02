@@ -218,7 +218,10 @@ class ProfileTest extends DbTestCase
         $core_fields = ['interface', 'helpdesk_hardware', 'helpdesk_item_type'];
         foreach ($core_fields as $field) {
             if ($field === 'helpdesk_item_type') {
-                $this->array(importArrayFromDB($cloned_profile->fields[$field]))->isEqualTo(importArrayFromDB($profile->fields[$field]));
+                $this->assertEquals(
+                    importArrayFromDB($profile->fields[$field]),
+                    importArrayFromDB($cloned_profile->fields[$field])
+                );
             } else {
                 $this->assertEquals($profile->fields[$field], $cloned_profile->fields[$field]);
             }
@@ -237,7 +240,10 @@ class ProfileTest extends DbTestCase
         foreach ($rights_iterator as $right) {
             $rights[$right['profiles_id']][$right['name']] = $right['rights'];
         }
-        $this->integer(count($rights[$clone_profiles_id]))->isEqualTo(count($rights[3]));
+        $this->assertEquals(
+            count($rights[3]),
+            count($rights[$clone_profiles_id])
+        );
 
         foreach ($rights[3] as $right => $value) {
             $this->assertEquals($value, $rights[$clone_profiles_id][$right]);

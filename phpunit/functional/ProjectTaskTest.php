@@ -484,14 +484,17 @@ class ProjectTaskTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataprovider testAutochangeStateProvider
-     */
-    public function testAutochangeState($input, $result)
+    public function testAutochangeState()
     {
-        $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
-        $this->assertEquals($result['percent_done'], $projecttask->fields['percent_done']);
-        $this->assertEquals($result['projectstates_id'], $projecttask->fields['projectstates_id']);
+        $provider = $this->testAutochangeStateProvider();
+        foreach ($provider as $row) {
+            $input = $row['input'];
+            $result = $row['result'];
+
+            $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
+            $this->assertEquals($result['percent_done'], $projecttask->fields['percent_done']);
+            $this->assertEquals($result['projectstates_id'], $projecttask->fields['projectstates_id']);
+        }
     }
 
     protected function testAutoSetDateForAddProvider()
@@ -610,24 +613,27 @@ class ProjectTaskTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataprovider testAutoSetDateForAddProvider
-     */
-    public function testAutoSetDateForAdd($input, $result)
+    public function testAutoSetDateForAdd()
     {
-        // Some logic can change the fields values, so we need to skip them
-        // if the values are different between the input and the result
-        $skip_fields = array_filter(
-            array_intersect(array_keys($input), array_keys($result)),
-            fn ($key) => $input[$key] !== $result[$key],
-        );
+        $provider = $this->testAutoSetDateForAddProvider();
+        foreach ($provider as $row) {
+            $input = $row['input'];
+            $result = $row['result'];
 
-        // Create a project task with percent_done < 100 and > 0
-        $task = $this->createItem('ProjectTask', $input, $skip_fields);
+            // Some logic can change the fields values, so we need to skip them
+            // if the values are different between the input and the result
+            $skip_fields = array_filter(
+                array_intersect(array_keys($input), array_keys($result)),
+                fn($key) => $input[$key] !== $result[$key],
+            );
 
-        // Check if the task has been added with the current date
-        $this->assertEquals($result['real_start_date'], $task->fields['real_start_date']);
-        $this->assertEquals($result['real_end_date'], $task->fields['real_end_date']);
+            // Create a project task with percent_done < 100 and > 0
+            $task = $this->createItem('ProjectTask', $input, $skip_fields);
+
+            // Check if the task has been added with the current date
+            $this->assertEquals($result['real_start_date'], $task->fields['real_start_date']);
+            $this->assertEquals($result['real_end_date'], $task->fields['real_end_date']);
+        }
     }
 
     protected function testAutoSetDateForUpdateProvider()
@@ -744,31 +750,35 @@ class ProjectTaskTest extends DbTestCase
         }
     }
 
-    /**
-     * @dataprovider testAutoSetDateForUpdateProvider
-     */
-    public function testAutoSetDateForUpdate($fields, $input, $result)
+    public function testAutoSetDateForUpdate()
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        // Create a project
-        $project = $this->createItem(Project::class, [
-            'name' => 'Project 1',
-        ]);
+        $provider = $this->testAutoSetDateForUpdateProvider();
+        foreach ($provider as $row) {
+            $fields = $row['fields'];
+            $input = $row['input'];
+            $result = $row['result'];
 
-        $task = $this->createItem(\ProjectTask::class, ['projects_id' => $project->getId()]);
+            // Create a project
+            $project = $this->createItem(Project::class, [
+                'name' => 'Project 1',
+            ]);
 
-        // Force initial fields (bypass prepareInputForAdd)
-        $DB->update(\ProjectTask::getTable(), $fields, ['id' => $task->getID()]);
+            $task = $this->createItem(\ProjectTask::class, ['projects_id' => $project->getId()]);
 
-        $this->updateItem(\ProjectTask::class, $task->getID(), $input);
+            // Force initial fields (bypass prepareInputForAdd)
+            $DB->update(\ProjectTask::getTable(), $fields, ['id' => $task->getID()]);
 
-        $ptask = new \ProjectTask();
-        $this->assertTrue($ptask->getFromDB($task->getID()));
+            $this->updateItem(\ProjectTask::class, $task->getID(), $input);
 
-        foreach ($result as $field => $value) {
-            $this->assertEquals($value, $ptask->fields[$field]);
+            $ptask = new \ProjectTask();
+            $this->assertTrue($ptask->getFromDB($task->getID()));
+
+            foreach ($result as $field => $value) {
+                $this->assertEquals($value, $ptask->fields[$field]);
+            }
         }
     }
 
@@ -781,8 +791,7 @@ class ProjectTaskTest extends DbTestCase
         $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
 
         // Check if a user with no project returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project
         $project = $this->createItem(\Project::getType(), [
@@ -791,8 +800,7 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a user with a project with no tasks returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project task
         $project_task = $this->createItem(\ProjectTask::getType(), [
@@ -801,8 +809,7 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a user with a project with tasks, where the user is not a member of the team, returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create user team
         $user_team = $this->createItem(\ProjectTaskTeam::getType(), [
@@ -812,8 +819,10 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a user with a project with tasks, where the user is a member of the team, returns an array with the task ID
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]))
-            ->isEqualTo([['id' => $project_task->getID()]]);
+        $this->assertEquals(
+            [['id' => $project_task->getID()]],
+            \ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
+        );
 
         // Create group
         $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
@@ -832,12 +841,13 @@ class ProjectTaskTest extends DbTestCase
         $this->deleteItem(\ProjectTaskTeam::getType(), $user_team->getID());
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an array with the task ID if $search_in_groups is true
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]))
-            ->isEqualTo([['id' => $project_task->getID()]]);
+        $this->assertEquals(
+            [['id' => $project_task->getID()]],
+            \ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
+        );
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an empty array if $search_in_groups is false
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], false))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], false));
     }
 
     public function testGetActiveProjectTaskIDsForGroup(): void
@@ -849,8 +859,7 @@ class ProjectTaskTest extends DbTestCase
         $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
 
         // Check if a group with no project returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project
         $project = $this->createItem(\Project::getType(), [
@@ -860,8 +869,7 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a group with a project with no tasks returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project task
         $project_task = $this->createItem(\ProjectTask::getType(), [
@@ -870,8 +878,7 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a group with a project with tasks, where the group is not a member of the team, returns an empty array
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
-            ->isEmpty();
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create group team
         $this->createItem(\ProjectTaskTeam::getType(), [
@@ -881,7 +888,9 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a group with a project with tasks, where the group is a member of the team, returns an array with the task ID
-        $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
-            ->isEqualTo([['id' => $project_task->getID()]]);
+        $this->assertEquals(
+            [['id' => $project_task->getID()]],
+            \ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()])
+        );
     }
 }

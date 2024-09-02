@@ -60,8 +60,10 @@ class NotificationTargetTicketTest extends DbTestCase
             'lang'            => true,
             'allowed_values'  => [],
         ];
-        $this->array($notiftargetticket->tag_descriptions['lang']['##lang.ticket.externalid##'])
-         ->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            $notiftargetticket->tag_descriptions['lang']['##lang.ticket.externalid##']
+        );
 
         // basic test for ##task.categorycomment## tag
         $expected = [
@@ -97,7 +99,7 @@ class NotificationTargetTicketTest extends DbTestCase
             ]
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
-        $this->string($ret['##ticket.externalid##'])->isIdenticalTo("external_id");
+        $this->assertSame('external_id', $ret['##ticket.externalid##']);
 
         // advanced test for ##task.categorycomment## and ##task.categoryid## tags
         // test of the getDataForObject for default language en_GB
@@ -138,13 +140,14 @@ class NotificationTargetTicketTest extends DbTestCase
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+        $this->assertEquals(
             sprintf(
                 '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
                 $CFG_GLPI['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
-            )
+            ),
+            $ret['##ticket.urlvalidation##']
         );
 
         //add another validation for jsmith123
@@ -160,13 +163,14 @@ class NotificationTargetTicketTest extends DbTestCase
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
-        $this->string($ret['##ticket.urlvalidation##'])->isEqualTo(
+        $this->assertEquals(
             sprintf(
                 '%s/index.php?redirect=ticket_%d_Ticket%%24main%%23TicketValidation_%d',
                 $CFG_GLPI['url_base'],
                 $tkt->getID(),
                 $ticket_validation_id
-            )
+            ),
+            $ret['##ticket.urlvalidation##']
         );
 
         // test of the getDataForObject for default language fr_FR
@@ -519,11 +523,11 @@ class NotificationTargetTicketTest extends DbTestCase
 
         // test sub entity with changed url
         $entity  = new \Entity();
-        $this->boolean($entity->update([
+        $this->assertTrue($entity->update([
             'id'       => $parent,
             'url_base' => "parent.tld",
             'mailing_signature' => 'test',
-        ]))->isTrue();
+        ]));
         $entity->getFromDB($parent);
 
         $parent_tickets_id = $ticket->add([

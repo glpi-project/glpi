@@ -512,7 +512,7 @@ class ProjectTest extends DbTestCase
         $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
 
         // Check if a user with no projects returns an empty array
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()]))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Create a project
         $project = $this->createItem(\Project::getType(), [
@@ -522,7 +522,7 @@ class ProjectTest extends DbTestCase
         ]);
 
         // Check if a user with a project, assigned to him, returns the project id
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()]))->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Create a group
         $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
@@ -540,12 +540,14 @@ class ProjectTest extends DbTestCase
         ]);
 
         // Check if a user with a project, assigned to a group he is in, returns the project id when $search_in_groups is true
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()]))
-            ->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForUser([$user->getID()])
+        );
 
 
         // Check if a user with a project, assigned to a group he is in, returns an empty array when $search_in_groups is false
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()], false))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false));
 
         // Create a user team
         $user_team = $this->createItem(\ProjectTeam::getType(), [
@@ -555,10 +557,10 @@ class ProjectTest extends DbTestCase
         ]);
 
         // Check if a user with a project, assigned to a user project team, returns the project id when $search_in_team is true
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()]))->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Check if a user with a project, assigned to a user project team, returns an empty array when $search_in_team is false
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()], false, false))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
 
         // Create a group team
         $group_team = $this->createItem(\ProjectTeam::getType(), [
@@ -571,10 +573,10 @@ class ProjectTest extends DbTestCase
         $this->deleteItem(\ProjectTeam::getType(), $user_team->getID());
 
         // Check if a user with a project, assigned to a group project team, returns the project id when $search_in_team and $search_in_groups are true
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()]))->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Check if a user with a project, assigned to a group project team, returns an empty array when $search_in_team or $search_in_groups are false
-        $this->array(\Project::getActiveProjectIDsForUser([$user->getID()], false, false))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
     }
 
     public function testGetActiveProjectIDsForGroup(): void
@@ -586,7 +588,7 @@ class ProjectTest extends DbTestCase
         $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
 
         // Check if a group with no projects returns an empty array
-        $this->array(\Project::getActiveProjectIDsForGroup([$group->getID()]))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()]));
 
         // Create a project
         $project = $this->createItem(\Project::getType(), [
@@ -596,8 +598,10 @@ class ProjectTest extends DbTestCase
         ]);
 
         // Check if a group with a project, assigned to him, returns the project id
-        $this->array(\Project::getActiveProjectIDsForGroup([$group->getID()]))
-            ->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForGroup([$group->getID()])
+        );
 
         // Create a group team
         $group_team = $this->createItem(\ProjectTeam::getType(), [
@@ -612,10 +616,12 @@ class ProjectTest extends DbTestCase
         ]);
 
         // Check if a group with a project, assigned to a group project team, returns the project id when $search_in_team is true
-        $this->array(\Project::getActiveProjectIDsForGroup([$group->getID()]))
-            ->isEqualTo([['id' => $project->getID()]]);
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForGroup([$group->getID()])
+        );
 
         // Check if a group with a project, assigned to a group project team, returns an empty array when $search_in_team is false
-        $this->array(\Project::getActiveProjectIDsForGroup([$group->getID()], false))->isEmpty();
+        $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()], false));
     }
 }

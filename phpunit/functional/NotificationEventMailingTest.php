@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */
 
@@ -96,7 +97,7 @@ class NotificationEventMailingTest extends DbTestCase
         $this->assertSame([], \NotificationEventMailing::getAdminData());
         $this->hasPhpLogRecordThatContains(
             'Invalid email address "adminlocalhost" configured in "admin_email".',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -145,7 +146,7 @@ class NotificationEventMailingTest extends DbTestCase
         $this->assertEquals($entity0_result, \NotificationEventMailing::getEntityAdminsData($entity2->getID()));
         $this->hasPhpLogRecordThatContains(
             'Invalid email address "entadmin2localhost" configured for entity "' . $entity2->getID() . '". Default administrator email will be used.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 }
