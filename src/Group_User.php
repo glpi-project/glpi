@@ -502,9 +502,14 @@ class Group_User extends CommonDBRelation
         $used    = [];
         $ids     = [];
 
+        self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
+        $all_groups = count($used);
+        $used    = [];
+        $ids     = [];
+
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, true);
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict, $crit);
@@ -543,6 +548,18 @@ class Group_User extends CommonDBRelation
         if ($start >= $number) {
             $start = 0;
         }
+
+        if ($number != $all_groups) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
+            echo "<i class='ti ti-info-circle fa-xl'></i>";
+            echo "<span class='ms-2'>";
+            echo __("Some users are not listed as they are not visible from your current entity.");
+            echo "</span>";
+            echo "</div>";
+            echo "</tr>";
+        }
+
 
        // Display results
         if ($number) {
