@@ -38,7 +38,7 @@ use CronTask;
 use DbTestCase;
 use Webhook;
 
-class QueuedWebhook extends DbTestCase
+class QueuedWebhookTest extends DbTestCase
 {
     public function testQueuedWebhookClean()
     {
