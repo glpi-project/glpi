@@ -44,7 +44,6 @@ $validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
 
 $needed_migration = false;
 
-/** @var CommonITILValidation $validation_type */
 foreach ($validation_tables as $validation_table) {
     if (!$DB->fieldExists($validation_table, 'itemtype_target')) {
         $migration->addField($validation_table, 'itemtype_target', 'varchar(255) NOT NULL', [

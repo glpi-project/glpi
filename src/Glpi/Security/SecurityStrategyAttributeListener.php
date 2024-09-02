@@ -50,7 +50,8 @@ final class SecurityStrategyAttributeListener implements EventSubscriberInterfac
     public function onKernelControllerArguments(ControllerArgumentsEvent $event): void
     {
         /** @var SecurityStrategy[] $attributes */
-        if (!\is_array($attributes = $event->getAttributes()[SecurityStrategy::class] ?? null)) {
+        $attributes = $event->getAttributes()[SecurityStrategy::class] ?? null;
+        if (!\is_array($attributes)) {
             return;
         }
 

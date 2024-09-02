@@ -281,7 +281,6 @@ final class RoutePath
 
     public function getControllerInstance(): AbstractController
     {
-        /** @var ?AbstractController $instance */
         if ($this->controller_instance === null) {
             $this->hydrate();
             $this->controller_instance = $this->controller->newInstance();
