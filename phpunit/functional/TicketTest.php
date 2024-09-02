@@ -7160,4 +7160,53 @@ HTML
         $result = $DB->request($request);
         $this->assertEquals($existing_tickets + 1, $result->count());
     }
+
+    public function testComputeDefaultValuesForAdd(): void
+    {
+        // OK : Inputs dates are good (no modification expected)
+        $this->createItem('Ticket', [
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'status'        => \CommonITILObject::CLOSED,
+            'date_creation' => '2024-01-11 09:00:00',
+            'date'          => '2024-01-12 09:00:00',
+            'solvedate'     => '2024-01-13 09:00:00',
+            'date_mod'      => '2024-01-14 09:00:00',
+            'closedate'     => '2024-01-15 09:00:00',
+        ]);
+
+        // OK : All inputs dates are equal (no modification expected)
+        $this->createItem('Ticket', [
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'status'        => \CommonITILObject::CLOSED,
+            'date_creation' => '2024-01-11 09:00:00',
+            'date'          => '2024-01-11 09:00:00',
+            'solvedate'     => '2024-01-11 09:00:00',
+            'date_mod'      => '2024-01-11 09:00:00',
+            'closedate'     => '2024-01-11 09:00:00',
+        ]);
+
+        // NOK : Bad inputs dates -> fixed durring add
+        $input = [
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'status'        => \CommonITILObject::CLOSED,
+            'date_creation' => '2024-01-11 09:00:00',
+            'date'          => '2024-01-12 09:00:00',
+            'solvedate'     => '2024-01-11 09:00:00',
+            'date_mod'      => '2024-01-11 09:00:00',
+            'closedate'     => '2024-01-11 09:00:00',
+        ];
+        $expected = $input;
+        $expected['solvedate'] = $input['date'];
+        $expected['closedate'] = $input['date'];
+
+        $ticket = new \Ticket();
+        $input = Sanitizer::sanitize($input);
+        $id = $ticket->add($input);
+        $this->assertIsInt($id);
+        $this->assertGreaterThan(0, $id);
+        $this->checkInput($ticket, $id, $expected);
+    }
 }
