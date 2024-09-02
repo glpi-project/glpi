@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 // Send UTF8 Headers

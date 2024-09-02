@@ -42,7 +42,7 @@ global $CFG_GLPI;
 
 // avoid reloading js libs
 if (isset($_GET['ajax']) && $_GET['ajax']) {
-    /** @var $this \Glpi\Controller\LegacyFileLoadController */
+    /** @var \Glpi\Controller\LegacyFileLoadController $this */
     $this->setAjax();
 }
 

@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {

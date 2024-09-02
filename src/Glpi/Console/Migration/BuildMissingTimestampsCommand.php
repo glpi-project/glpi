@@ -81,7 +81,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue; // getItemTypeForTable() may not return a class name ("UNKNOWN" for example)
             }
-           /* @var $item CommonDBTM */
+           /* @var CommonDBTM $item */
             $item = new $itemtype();
 
             if (!$item->dohistory) {
