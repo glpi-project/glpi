@@ -166,6 +166,39 @@ The present file will list all changes made to the project; according to the
   If reading directly from the DB, you need to query the new linking table `glpi_groups_items`.
 - `Group::getDataItems()` signature changed. The two first parameters `$types` and `$field` were replaced
   by a unique boolean `$tech` parameter that is used to compute the `$types` and `$field` values automatically.
+- `CartridgeItem::addCompatibleType()` method is now static.
+- `Transfer` class is now final.
+- `Transfer::addNotToBeTransfer()` method is now private.
+- `Transfer::addToAlreadyTransfer()` method is now private.
+- `Transfer::addToBeTransfer()` method is now private.
+- `Transfer::cleanSoftwareVersions()` method is now private.
+- `Transfer::copySingleSoftware()` method is now private.
+- `Transfer::copySingleVersion()` method is now private.
+- `Transfer::simulateTransfer()` method is now private.
+- `Transfer::transferAffectedLicense()` method is now private.
+- `Transfer::transferCertificates()` method is now private.
+- `Transfer::transferCompatiblePrinters()` method is now private.
+- `Transfer::transferContracts()` method is now private.
+- `Transfer::transferDevices()` method is now private.
+- `Transfer::transferDirectConnection()` method is now private.
+- `Transfer::transferDocuments()` method is now private.
+- `Transfer::transferDropdownLocation()` method is now private.
+- `Transfer::transferDropdownSocket()` method is now private.
+- `Transfer::transferHelpdeskAdditionalInformations()` method is now private.
+- `Transfer::transferHistory()` method is now private.
+- `Transfer::transferInfocoms()` method is now private.
+- `Transfer::transferItem()` method is now private.
+- `Transfer::transferItem_Disks()` method is now private.
+- `Transfer::transferItemSoftwares()` method is now private.
+- `Transfer::transferLinkedSuppliers()` method is now private.
+- `Transfer::transferNetworkLink()` method is now private.
+- `Transfer::transferPrinterCartridges()` method is now private.
+- `Transfer::transferReservations()` method is now private.
+- `Transfer::transferSingleSupplier()` method is now private.
+- `Transfer::transferSoftwareLicensesAndVersions()` method is now private.
+- `Transfer::transferSupplierContacts()` method is now private.
+- `Transfer::transferTaskCategory()` method is now private.
+- `Transfer::transferTickets()` method is now private.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
@@ -421,6 +454,7 @@ The present file will list all changes made to the project; according to the
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
 - `SoftwareLicense::showDebug()`
+- `Transfer::$inittype` property.
 - `Ticket::showDebug()`
 - `Ticket_Ticket::checkParentSon()`
 - `Ticket_Ticket::countOpenChildren()`
