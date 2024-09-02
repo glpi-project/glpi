@@ -76,7 +76,10 @@ class Item_Disk extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         // can exists for template
-        if ($item::canView()) {
+        if (
+            ($item instanceof CommonDBTM)
+            && $item::canView()
+        ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(

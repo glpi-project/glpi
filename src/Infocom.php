@@ -143,7 +143,10 @@ class Infocom extends CommonDBChild
     {
 
        // Can exists on template
-        if (Session::haveRight(self::$rightname, READ)) {
+        if (
+            Session::haveRight(self::$rightname, READ)
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':
@@ -1937,13 +1940,14 @@ JS;
      * @param integer $deletenotice  period in months of notice (default 0)
      * @param boolean $color         if show expire date in red color (false by default)
      * @param boolean $auto_renew
+     * @param integer $periodicity   renewal periodicity in month if different from addwarranty
      *
      * @return string expiration date automatically converted to the user's preferred date format
      **/
-    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false)
+    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
 
-       // Life warranty
+        // Life warranty
         if (
             ($addwarranty == -1)
             && ($deletenotice == 0)
@@ -1957,11 +1961,13 @@ JS;
 
         $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
 
-        if ($auto_renew && $addwarranty > 0) {
+        $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
+
+        if ($auto_renew && $periodicity > 0) {
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
-                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$addwarranty month");
+                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$periodicity month");
             }
         }
 

@@ -1049,7 +1049,11 @@ TWIG);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
         }
         return '';
@@ -1057,7 +1061,12 @@ TWIG);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             self::showForItem($item);
         }
         return true;

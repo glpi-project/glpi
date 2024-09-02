@@ -474,7 +474,8 @@ class NetworkAlias extends FQDNLabel
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;

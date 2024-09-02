@@ -110,7 +110,8 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_NEVER
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 0
                 ],
                 'expected' => "<span class='red'>2020-07-01</span>"
             ],
@@ -119,7 +120,8 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_TACIT
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 0
                 ],
                 'expected' => "2024-07-01"
             ],
@@ -128,7 +130,8 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_EXPRESS
+                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'periodicity' => 0
                 ],
                 'expected' => "<span class='red'>2020-07-01</span>"
             ],
@@ -137,7 +140,8 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_NEVER
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 0
                 ],
                 'expected' => '2025-07-01'
             ],
@@ -146,7 +150,8 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_TACIT
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 0
                 ],
                 'expected' => '2025-07-01'
             ],
@@ -155,9 +160,20 @@ class Contract extends DbTestCase
                 'values' => [
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_EXPRESS
+                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'periodicity' => 0
                 ],
                 'expected' => '2025-07-01'
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2019-01-01',
+                    'duration' => 60,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12
+                ],
+                'expected' => '2025-01-01'
             ],
         ];
     }
