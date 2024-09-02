@@ -119,48 +119,63 @@ class Group extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_groups_id%');
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        if (!$withtemplate && self::canView()) {
+        if ($withtemplate || !self::canView()) {
+            return '';
+        }
+
+        $ong = [];
+        if ($item instanceof Group) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Group':
-                    /** @var Group $item */
-                    $ong = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['groups_id' => $item->getID()]
-                        );
-                    }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = countElementsInTable($this->getTable(), ['groups_id' => $item->getID()]);
+            }
+            $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
-                    if ($item->getField('is_itemgroup')) {
-                        $ong[1] = __('Used items');
-                    }
-                    if ($item->getField('is_assign')) {
-                        $ong[2] = __('Managed items');
-                    }
-                    if (
-                        $item->getField('is_usergroup')
-                        && Group::canUpdate()
-                        && Session::haveRight("user", User::UPDATEAUTHENT)
-                        && AuthLDAP::useAuthLdap()
-                    ) {
-                        $ong[3] = __('LDAP directory link');
-                    }
-                    return $ong;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                $user = Session::getSavedOption(__CLASS__, 'user', 0);
+                $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
+                if ($item->getField('is_itemgroup')) {
+                    $ong[1] = $this->createTabEntryForGroup($item, $CFG_GLPI['linkgroup_types'], 'groups_id', $tree, $user, $type, __('Used items'));
+                }
+                if ($item->getField('is_assign')) {
+                    $ong[2] = $this->createTabEntryForGroup($item, $CFG_GLPI['linkgroup_tech_types'], 'groups_id_tech', $tree, $user, $type, __('Managed items'));
+                }
+            } else {
+                if ($item->getField('is_itemgroup')) {
+                    $ong[1] = __('Used items');
+                }
+                if ($item->getField('is_assign')) {
+                    $ong[2] = __('Managed items');
+                }
+            }
+
+            if ($item->getField('is_usergroup') && Group::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT) && AuthLDAP::useAuthLdap()) {
+                $ong[3] = __('LDAP directory link');
             }
         }
-        return '';
+
+        return $ong;
+    }
+
+    private function createTabEntryForGroup($item, $types, $field, $tree, $user, $type, $label)
+    {
+        if (!in_array($type, $types)) {
+            $type = '';
+        }
+        $datas = [];
+        $nb = $item->getDataItems($types, $field, $tree, $user, 0, $datas);
+        return self::createTabEntry($label, $nb);
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         switch ($item->getType()) {
             case 'Group':
                 /** @var Group $item */
