@@ -1358,8 +1358,9 @@ class CommonDBTM extends CommonGLPI
                     if (
                         Infocom::canApplyOn($this)
                         && isset($this->input['states_id'])
-                            && (!isset($this->input['is_template'])
-                                || !$this->input['is_template'])
+                        && (!isset($this->input['is_template'])
+                            || !$this->input['is_template'])
+                        && !($this->input['clone'] ?? false)
                     ) {
                         //Check if we have to automatically fill dates
                         Infocom::manageDateOnStatusChange($this);

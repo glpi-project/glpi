@@ -497,7 +497,7 @@ class Infocom extends CommonDBChild
     public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
     {
 
-        if (isset($infocoms[$field])) {
+        if (isset($infocoms[$field]) || is_null($infocoms[$field])) {
             switch ($action) {
                 default:
                 case 0:
@@ -552,15 +552,18 @@ class Infocom extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-       //Check if one or more dates needs to be updated
+        //Check if one or more dates needs to be updated
         foreach (self::getAutoManagemendDatesFields() as $key => $field) {
             $result = Entity::getUsedConfig($key, $this->fields['entities_id']);
 
-           //Only update date if it's empty in DB. Otherwise do nothing
+            //Only update date if it's empty in DB. Otherwise do nothing
             if (
                 ($result > 0)
                 && !isset($this->fields[$field])
             ) {
+                if (!isset($input[$field])) {
+                    $input[$field] = null;
+                }
                 self::autofillDates($input, $field, $result);
             }
         }

@@ -180,13 +180,14 @@ class NetworkName extends FQDNLabel
     public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
     {
         $tab[] = [
-            'id'                 => '126',
-            'table'              => 'glpi_ipaddresses',
-            'field'              => 'name',
-            'name'               => __('IP'),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
+            'id'                  => '126',
+            'table'               => 'glpi_ipaddresses',
+            'field'               => 'name',
+            'name'                => __('IP'),
+            'forcegroupby'        => true,
+            'searchequalsonfield' => true,
+            'massiveaction'       => false,
+            'joinparams'          => [
                 'jointype'  => 'mainitemtype_mainitem',
                 'condition' => ['NEWTABLE.is_deleted' => 0,
                     'NOT' => ['NEWTABLE.name' => '']
@@ -195,23 +196,23 @@ class NetworkName extends FQDNLabel
         ];
 
         $tab[] = [
-            'id'                 => '127',
-            'table'              => 'glpi_networknames',
-            'field'              => 'name',
-            'name'               => self::getTypeName(Session::getPluralNumber()),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'id'                  => '127',
+            'table'               => 'glpi_networknames',
+            'field'               => 'name',
+            'name'                => self::getTypeName(Session::getPluralNumber()),
+            'forcegroupby'        => true,
+            'massiveaction'       => false,
+            'joinparams'          => $joinparams
         ];
 
         $tab[] = [
-            'id'                 => '128',
-            'table'              => 'glpi_networkaliases',
-            'field'              => 'name',
-            'name'               => NetworkAlias::getTypeName(Session::getPluralNumber()),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
+            'id'                  => '128',
+            'table'               => 'glpi_networkaliases',
+            'field'               => 'name',
+            'name'                => NetworkAlias::getTypeName(Session::getPluralNumber()),
+            'forcegroupby'        => true,
+            'massiveaction'       => false,
+            'joinparams'          => [
                 'jointype'   => 'child',
                 'beforejoin' => [
                     'table'      => 'glpi_networknames',
