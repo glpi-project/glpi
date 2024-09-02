@@ -343,7 +343,7 @@ class Lock extends CommonGLPI
                 ];
                 $params['FIELDS'] = ['id', 'items_id'];
                 $first  = true;
-                foreach ($DB->request('glpi_computers_items', $params) as $line) {
+                foreach ($DB->request(Computer_Item::getTable(), $params) as $line) {
                     /** @var CommonDBTM $asset */
                     $asset = new $type();
                     $asset->getFromDB($line['items_id']);
@@ -931,31 +931,28 @@ class Lock extends CommonGLPI
     }
 
 
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @param $item               CommonGLPI object
-     * @param $withtemplate       (default 0)
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             return Lock::getTypeName(Session::getPluralNumber());
         }
         return '';
     }
 
 
-    /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             self::showForItem($item);
         }
         return true;
@@ -1093,7 +1090,7 @@ class Lock extends CommonGLPI
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

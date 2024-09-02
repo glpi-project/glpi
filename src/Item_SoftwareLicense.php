@@ -282,7 +282,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      * Get number of installed licenses of a license
      *
      * @param integer $softwarelicenses_id license ID
-     * @param integer $entity              to search for item in (default = all entities)
+     * @param integer|string $entity       to search for item in (default = all entities)
      *                                     (default '') -1 means no entity restriction
      * @param string $itemtype             Item type to filter on. Use null for all itemtypes
      *
@@ -1013,6 +1013,7 @@ JAVASCRIPT;
         $nb = 0;
         switch ($item->getType()) {
             case 'SoftwareLicense':
+                /** @var \Item_SoftwareLicense $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());

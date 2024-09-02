@@ -414,8 +414,9 @@ class MassiveAction
             $this->timer->start();
             $this->fields_to_remove_when_reload[] = 'timer';
 
-            $max_time = (get_cfg_var("max_execution_time") == 0) ? 60
-                                                              : get_cfg_var("max_execution_time");
+            /** @var number $max_time */
+            $max_time = get_cfg_var("max_execution_time");
+            $max_time = ($max_time == 0) ? 60 : $max_time;
 
             $this->timeout_delay                  = ($max_time - 3);
             $this->fields_to_remove_when_reload[] = 'timeout_delay';
@@ -535,7 +536,7 @@ class MassiveAction
     /**
      * Get current action name.
      *
-     * @return
+     * @return string|null
      */
     public function getActionName(): ?string
     {
@@ -545,7 +546,7 @@ class MassiveAction
     /**
      * Get current action processor classname.
      *
-     * @return
+     * @return string|null
      */
     public function getProcessor(): ?string
     {
@@ -663,6 +664,7 @@ class MassiveAction
         ) {
             $itemtypes = [-1 => Dropdown::EMPTY_VALUE];
             foreach ($keys as $itemtype) {
+                /** @var class-string $itemtype */
                 $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
             }
             echo __('Select the type of the item on which applying this action') . "<br>\n";
@@ -698,6 +700,7 @@ class MassiveAction
         if (
             Session::haveRight('transfer', READ)
             && Session::isMultiEntitiesMode()
+            && !isAPI()
         ) {
             $actions[__CLASS__ . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
                   = "<i class='fa-fw fas fa-level-up-alt'></i>" .
@@ -716,7 +719,7 @@ class MassiveAction
      *
      * @return array|false Array of massive actions or false if $item is not valid
      **/
-    public static function getAllMassiveActions($item, $is_deleted = false, CommonDBTM $checkitem = null, ?int $items_id = null)
+    public static function getAllMassiveActions($item, $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
@@ -944,6 +947,7 @@ class MassiveAction
                     $options_per_type = [];
                     $options_count   = [];
                     foreach ($itemtypes as $itemtype) {
+                        /** @var class-string $itemtype */
                         $options_per_type[$itemtype] = [];
                         $group                       = '';
                         $show_all                    = true;
@@ -1033,7 +1037,8 @@ class MassiveAction
                         $choose_itemtype  = true;
                         $itemtype_choices = [-1 => Dropdown::EMPTY_VALUE];
                         foreach ($itemtypes as $itemtype) {
-                             $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
+                            /** @var class-string $itemtype */
+                            $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                         }
                     } else {
                         $options        = $options_per_type[$itemtypes[0]];
@@ -1670,8 +1675,10 @@ class MassiveAction
                     if ($item->can($id, CREATE)) {
                         // recovers the item from DB
                         if ($item->getFromDB($id)) {
-                            $succeed = $item->cloneMultiple($input["nb_copy"]);
-                            if ($succeed) {
+                            if (
+                                method_exists($item, "cloneMultiple")
+                                && $item->cloneMultiple($input["nb_copy"])
+                            ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

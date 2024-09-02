@@ -704,7 +704,7 @@ class Document extends CommonDBTM
     public function canViewFile(array $options = [])
     {
 
-       // Check if it is my doc
+        // Check if it is my doc
         if (
             Session::getLoginUserID()
             && ($this->can($this->fields["id"], READ)
@@ -1751,7 +1751,7 @@ class Document extends CommonDBTM
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         $action_prefix = 'Document_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
 
@@ -1958,8 +1958,8 @@ class Document extends CommonDBTM
     /**
      * find and load a document which is a duplicate of a file, with respect of blacklisting
      *
-     * @param integer $entity    entity of the document
-     * @param string  $path      path of the searched file
+     * @param integer $entities_id  entity of the document
+     * @param string  $filename     filename of the searched file
      *
      * @return boolean
      */
@@ -1980,7 +1980,7 @@ class Document extends CommonDBTM
     /**
      * It checks if a file exists and is readable
      *
-     * @param string filename The name of the file to check.
+     * @param string $filename The name of the file to check.
      *
      * @return boolean
      */

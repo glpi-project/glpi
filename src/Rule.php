@@ -102,8 +102,8 @@ class Rule extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            RuleAction::class,
-            RuleCriteria::class
+            $this->ruleactionclass,
+            $this->rulecriteriaclass
         ];
     }
 
@@ -239,8 +239,6 @@ class Rule extends CommonDBTM
                     $menu['rule']['options'][$rulecollection->menu_option]['title']
                               = $rulecollection->getRuleClass()->getTitle();
                     $menu['rule']['options'][$rulecollection->menu_option]['page']
-                              = $ruleclassname::getSearchURL(false);
-                    $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
                               = $ruleclassname::getSearchURL(false);
                     if ($rulecollection->canCreate()) {
                         $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
@@ -529,12 +527,18 @@ class Rule extends CommonDBTM
     }
 
 
+    /**
+     * @phpstan-return class-string<RuleAction>
+     */
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
 
 
+    /**
+     * @phpstan-return class-string<RuleCriteria>
+     */
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;
@@ -1035,7 +1039,7 @@ class Rule extends CommonDBTM
      *
      * @return boolean
      **/
-    public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
+    public function getRuleWithCriteriasAndActions($ID, $withcriterias = false, $withactions = false)
     {
 
         if ($ID == "") {
@@ -1511,10 +1515,10 @@ class Rule extends CommonDBTM
     /**
      * Process the rule
      *
-     * @param array &$input the input data used to check criterias
-     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$input the input data used to check criteria
+     * @param array &$output the initial output array used to be manipulated by actions
      * @param array &$params parameters for all internal functions
-     * @param array &options array options:
+     * @param array &$options array options:
      *                     - only_criteria : only react on specific criteria
      *
      * @return void
@@ -1701,12 +1705,12 @@ class Rule extends CommonDBTM
     /**
      * Process a criteria of a rule
      *
-     * @param array &$criteria  criteria to check
+     * @param RuleCriteria $criteria  criteria to check
      * @param array &$input     the input data used to check criteria
      *
      * @return boolean
      **/
-    public function checkCriteria(&$criteria, &$input)
+    public function checkCriteria($criteria, &$input)
     {
 
         $partial_regex_result = [];
@@ -2002,16 +2006,16 @@ class Rule extends CommonDBTM
      * @param boolean $first              is it the first rule ?(false by default)
      * @param boolean$last               is it the last rule ? (false by default)
      * @param boolean $display_entities   display entities / make it read only display (false by default)
-     * @param boolean $active_condition   active condition used (default 0)
-     * @param boolean $display_criterias  display rule criterias (false by default)
-     * @param boolean $display_actions    display rule actions(false by default)
+     * @param boolean $active_condition   active condition used (default false)
+     *  param boolean $display_criterias  display rule criterias (false by default)
+     *  param boolean $display_actions    display rule actions(false by default)
      **/
     public function showMinimalForm(
         $target,
         $first = false,
         $last = false,
         $display_entities = false,
-        $active_condition = 0
+        $active_condition = false
         // FIXME Uncomment this in GLPI 10.1
         // bool $display_criterias = false,
         // bool $display_actions = false
@@ -3063,7 +3067,7 @@ class Rule extends CommonDBTM
 
 
     /**
-     * @param sgtring $sub_type
+     * @param string $sub_type
      *
      * @return array
      **/
@@ -3322,12 +3326,12 @@ class Rule extends CommonDBTM
     /**
      * Clean Rule with Action or Criteria linked to an item
      *
-     * @param $item                  Object
-     * @param $field        string   name (default is FK to item)
-     * @param $ruleitem              object (instance of Rules of SlaLevel)
-     * @param $table        string   (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-     * @param $valfield     string   (value or pattern)
-     * @param $fieldfield   string   (criteria of field)
+     * @param CommonDBTM $item
+     * @param string     $field      name (default is FK to item)
+     * @param Rule       $ruleitem   instance of Rules of SlaLevel
+     * @param string     $table      glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias
+     * @param string     $valfield   value or pattern
+     * @param string     $fieldfield criteria of field
      **/
     private static function cleanForItemActionOrCriteria(
         $item,
@@ -3448,6 +3452,7 @@ class Rule extends CommonDBTM
             $nb = 0;
             switch ($item->getType()) {
                 case 'Entity':
+                    /** @var Entity $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $types      = [];
                         $collection = new RuleRightCollection();
@@ -3478,6 +3483,7 @@ class Rule extends CommonDBTM
 
                 case 'SLA':
                 case 'OLA':
+                    /** @var SLA|OLA $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',

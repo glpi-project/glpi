@@ -162,8 +162,8 @@ class NetworkAlias extends FQDNLabel
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -194,9 +194,9 @@ class NetworkAlias extends FQDNLabel
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         /** @var \DBmysql $DB */
@@ -389,7 +389,7 @@ class NetworkAlias extends FQDNLabel
     /**
      * Show the aliases contained by the alias
      *
-     * @param CommonGLPI $item          the FQDN owning the aliases
+     * @param FQDN       $item          the FQDN owning the aliases
      * @param integer    $withtemplate  withtemplate param
      **/
     public static function showForFQDN(CommonGLPI $item, $withtemplate)
@@ -489,10 +489,12 @@ class NetworkAlias extends FQDNLabel
 
         switch ($item->getType()) {
             case 'NetworkName':
+                /** @var NetworkName $item */
                 self::showForNetworkName($item, $withtemplate);
                 break;
 
             case 'FQDN':
+                /** @var FQDN $item */
                 self::showForFQDN($item, $withtemplate);
                 break;
         }
@@ -504,20 +506,21 @@ class NetworkAlias extends FQDNLabel
     {
 
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item->getType()) {
-                    case 'NetworkName':
+                switch (get_class($item)) {
+                    case NetworkName::class:
                         $nb = countElementsInTable(
                             $this->getTable(),
                             ['networknames_id' => $item->getID() ]
                         );
                         break;
 
-                    case 'FQDN':
+                    case FQDN::class:
                         $nb = countElementsInTable(
                             $this->getTable(),
                             ['fqdns_id' => $item->getID() ]

@@ -471,7 +471,8 @@ class Contract extends CommonDBTM
                     $values['duration'],
                     0,
                     true,
-                    ($values['renewal'] == self::RENEWAL_TACIT)
+                    ($values['renewal'] == self::RENEWAL_TACIT),
+                    $values['periodicity']
                 );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -667,7 +668,8 @@ class Contract extends CommonDBTM
             'additionalfields'   => [
                 'begin_date',
                 'duration',
-                'renewal'
+                'renewal',
+                'periodicity'
             ],
             'name'               => __('Expiration'),
             'datatype'           => 'specific',
@@ -1017,17 +1019,19 @@ class Contract extends CommonDBTM
         ];
 
         $options['criteria'][0]['field'] = 13;
-        $options['criteria'][0]['value'] = '>0';
+        $options['criteria'][0]['searchtype'] = 'morethan';
+        $options['criteria'][0]['value'] = 'NOW';
         $options['criteria'][1]['field'] = 13;
-        $options['criteria'][1]['value'] = '<7';
+        $options['criteria'][1]['searchtype'] = 'lessthan';
+        $options['criteria'][1]['value'] = '7DAY';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 7 days'),
             'count'  => $contractpre7
         ];
 
-        $options['criteria'][0]['value'] = '>6';
-        $options['criteria'][1]['value'] = '<30';
+        $options['criteria'][0]['value'] = '6DAY';
+        $options['criteria'][1]['value'] = '1MONTH';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 30 days'),
@@ -1087,7 +1091,7 @@ class Contract extends CommonDBTM
      *
      * @return integer
      **/
-    public static function cronContract(CronTask $task = null)
+    public static function cronContract(?CronTask $task = null)
     {
         /**
          * @var array $CFG_GLPI
@@ -1711,7 +1715,7 @@ class Contract extends CommonDBTM
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

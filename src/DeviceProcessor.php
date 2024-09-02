@@ -171,8 +171,8 @@ class DeviceProcessor extends CommonDevice
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -191,9 +191,9 @@ class DeviceProcessor extends CommonDevice
 
 
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -273,6 +273,20 @@ class DeviceProcessor extends CommonDevice
             'computation'        =>
             'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
             $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'nometa'             => true, // cannot GROUP_CONCAT a SUM
+        ];
+
+        $tab[] = [
+            'id'                 => '35',
+            'table'              => 'glpi_items_deviceprocessors',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Processors number'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+            'computation'        => 'COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

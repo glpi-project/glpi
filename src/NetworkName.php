@@ -186,13 +186,14 @@ class NetworkName extends FQDNLabel
     public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
     {
         $tab[] = [
-            'id'                 => '126',
-            'table'              => 'glpi_ipaddresses',
-            'field'              => 'name',
-            'name'               => __('IP'),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
+            'id'                  => '126',
+            'table'               => 'glpi_ipaddresses',
+            'field'               => 'name',
+            'name'                => __('IP'),
+            'forcegroupby'        => true,
+            'searchequalsonfield' => true,
+            'massiveaction'       => false,
+            'joinparams'          => [
                 'jointype'  => 'mainitemtype_mainitem',
                 'condition' => ['NEWTABLE.is_deleted' => 0,
                     'NOT' => ['NEWTABLE.name' => '']
@@ -201,23 +202,23 @@ class NetworkName extends FQDNLabel
         ];
 
         $tab[] = [
-            'id'                 => '127',
-            'table'              => 'glpi_networknames',
-            'field'              => 'name',
-            'name'               => self::getTypeName(Session::getPluralNumber()),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'id'                  => '127',
+            'table'               => 'glpi_networknames',
+            'field'               => 'name',
+            'name'                => self::getTypeName(Session::getPluralNumber()),
+            'forcegroupby'        => true,
+            'massiveaction'       => false,
+            'joinparams'          => $joinparams
         ];
 
         $tab[] = [
-            'id'                 => '128',
-            'table'              => 'glpi_networkaliases',
-            'field'              => 'name',
-            'name'               => NetworkAlias::getTypeName(Session::getPluralNumber()),
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
+            'id'                  => '128',
+            'table'               => 'glpi_networkaliases',
+            'field'               => 'name',
+            'name'                => NetworkAlias::getTypeName(Session::getPluralNumber()),
+            'forcegroupby'        => true,
+            'massiveaction'       => false,
+            'joinparams'          => [
                 'jointype'   => 'child',
                 'beforejoin' => [
                     'table'      => 'glpi_networknames',
@@ -509,8 +510,8 @@ class NetworkName extends FQDNLabel
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -560,9 +561,9 @@ class NetworkName extends FQDNLabel
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         /** @var \DBmysql $DB */
@@ -841,11 +842,8 @@ class NetworkName extends FQDNLabel
         self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
         if ($table->getNumberOfRows() > 0) {
-            $number = $table->getNumberOfRows();
-            if ($item->getType() == 'FQDN') {
-                $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
@@ -876,9 +874,7 @@ class NetworkName extends FQDNLabel
                  Html::closeForm();
             }
 
-            if ($item->getType() == 'FQDN') {
-                Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
-            }
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
         } else {
             echo "<table class='tab_cadre_fixe'><tr><th>" . __('No network name found') . "</th></tr>";
             echo "</table>";
@@ -959,7 +955,8 @@ class NetworkName extends FQDNLabel
     {
 
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;

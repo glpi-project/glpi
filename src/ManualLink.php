@@ -61,7 +61,11 @@ class ManualLink extends CommonDBChild
     {
 
         $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+            && !$item->isNewItem()
+        ) {
             $count += countElementsInTable(
                 'glpi_manuallinks',
                 [

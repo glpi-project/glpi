@@ -127,6 +127,7 @@ class Group extends CommonTreeDropdown
             $nb = 0;
             switch ($item->getType()) {
                 case 'Group':
+                    /** @var Group $item */
                     $ong = [];
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -162,6 +163,7 @@ class Group extends CommonTreeDropdown
 
         switch ($item->getType()) {
             case 'Group':
+                /** @var Group $item */
                 switch ($tabnum) {
                     case 1:
                         $item->showItems(false);
@@ -870,7 +872,7 @@ class Group extends CommonTreeDropdown
                     if (!($item = getItemForItemtype($data['itemtype']))) {
                         continue;
                     }
-                    if ($item->canUpdate($data['items_id']) || $item->canView($data['items_id'])) {
+                    if ($item->canUpdate() || $item->canView()) {
                         // Show massive actions if there is at least one viewable/updatable item.
                         $show_massive_actions = true;
                         break;
@@ -926,8 +928,8 @@ class Group extends CommonTreeDropdown
                 $item->getFromDB($data['items_id']);
                 echo "<tr class='tab_bg_1'><td>";
                 if (
-                    $item->canUpdate($data['items_id'])
-                    || ($item->canView($data['items_id'])
+                    $item->canUpdate()
+                    || ($item->canView()
                     && self::canUpdate())
                 ) {
                     Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);

@@ -80,8 +80,13 @@ class DataExport
             $value = RichText::getTextFromHtml($value, true, true);
 
             // Remove extra spacing
-            $nbsp = chr(0xC2) . chr(0xA0); // unicode value of decoded &nbsp;
-            $value = trim($value, " \n\r\t" . $nbsp);
+            $spacing_chars = [
+                '\s', // any basic spacing char
+                '\x{C2A0}', // unicode value of decoded &nbsp;
+            ];
+            $spacing_chars_pattern = '(' . implode('|', $spacing_chars) . ')+';
+            $value = preg_replace('/^' . $spacing_chars_pattern . '/u', '', $value);
+            $value = preg_replace('/' . $spacing_chars_pattern . '$/u', '', $value);
         }
 
         return $value;

@@ -63,6 +63,7 @@ if (
     die();
 }
 
+/** @var class-string<CommonDBTM> $itemtype */
 $itemtype = $_REQUEST['itemtype'];
 $params = $_REQUEST['params'];
 

@@ -52,21 +52,20 @@ class Item_Rack extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                    $nb += countElementsInTable(
-                        PDU_Rack::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+        ) {
+            $nb = countElementsInTable(
+                self::getTable(),
+                ['racks_id'  => $item->getID()]
+            );
+            $nb += countElementsInTable(
+                PDU_Rack::getTable(),
+                ['racks_id'  => $item->getID()]
+            );
         }
-        return '';
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -573,6 +572,7 @@ JAVASCRIPT;
         } else {
             $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
             foreach ($types as $type => &$text) {
+                /** @var class-string $type */
                 $text = $type::getTypeName(1);
             }
             Dropdown::showFromArray(
@@ -1038,6 +1038,10 @@ JAVASCRIPT;
                 }
             }
 
+            /**
+             * @var int $position
+             * @var int $required_units
+             */
             if (
                 $position > $rack->fields['number_units'] ||
                 $position + $required_units  > $rack->fields['number_units'] + 1

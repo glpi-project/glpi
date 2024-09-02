@@ -43,23 +43,26 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
     if (
-        !isset($_POST['tasks_id'])
-        || !isset($_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
     ) {
         exit();
     }
 
-    $taskClass = $parent->getType() . "Task";
+    $taskClass = $parent::getType() . "Task";
+    /** @var CommonITILTask $task */
     $task = new $taskClass();
-    $task->getFromDB(intval($_POST['tasks_id']));
+    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
+        http_response_code(403);
+        die();
+    }
     if (!in_array($task->fields['state'], [0, Planning::INFO])) {
         $new_state = ($task->fields['state'] == Planning::DONE)
                         ? Planning::TODO
                         : Planning::DONE;
-        $foreignKey = $parent->getForeignKeyField();
+        $foreignKey = $parent::getForeignKeyField();
         $task->update([
-            'id'        => intval($_POST['tasks_id']),
-            $foreignKey => intval($_POST[$foreignKey]),
+            'id'        => (int) $_POST['tasks_id'],
+            $foreignKey => (int) $_POST[$foreignKey],
             'state'     => $new_state,
             'users_id_editor' => Session::getLoginUserID()
         ]);
@@ -81,6 +84,14 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
 
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
+
+    if (!$parent instanceof CommonITILObject) {
+        trigger_error(
+            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
+            E_USER_WARNING
+        );
+        exit();
+    }
 
     $twig = TemplateRenderer::getInstance();
     $template = null;

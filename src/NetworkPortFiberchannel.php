@@ -136,8 +136,8 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     public function getInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $internet_super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -164,7 +164,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
     protected function getPeerInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -184,13 +184,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
 
         parent::getInstantiationHTMLTable($netport, $row, $father, $options);
         Socket::getHTMLTableCellsForItem($row, $this, $father, $options);
+        return null;
     }
 
 
     public function getInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 

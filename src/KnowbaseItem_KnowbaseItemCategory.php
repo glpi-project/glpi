@@ -125,7 +125,10 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (static::canView()) {
+        if (
+            ($item instanceof CommonDBTM)
+            && static::canView()
+        ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(
@@ -280,7 +283,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
 
         $kb_item = new KnowbaseItem();

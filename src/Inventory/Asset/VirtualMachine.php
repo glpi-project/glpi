@@ -111,11 +111,11 @@ class VirtualMachine extends InventoryAsset
                 if (strstr($vm_val->ram, 'MB')) {
                     $vm_val = str_replace('MB', '', $vm_val->ram);
                 } else if (strstr($vm_val->ram, 'KB')) {
-                    $vm_val = str_replace('KB', '', $vm_val->ram) / 1000;
+                    $vm_val = (float) str_replace('KB', '', $vm_val->ram) / 1000;
                 } else if (strstr($vm_val->ram, 'GB')) {
-                    $vm_val->ram = str_replace('GB', '', $vm_val->ram) * 1000;
+                    $vm_val->ram = (float) str_replace('GB', '', $vm_val->ram) * 1000;
                 } else if (strstr($vm_val->ram, 'B')) {
-                    $vm_val->ram = str_replace('B', '', $vm_val->ram) / 1000000;
+                    $vm_val->ram = (float) str_replace('B', '', $vm_val->ram) / 1000000;
                 }
             }
 
@@ -243,7 +243,7 @@ class VirtualMachine extends InventoryAsset
                             'is_dynamic'   => 1
                         ];
 
-                        foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                        foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id', 'comment'] as $prop) {
                             if (property_exists($val, $prop)) {
                                 $input[$prop] = $handled_input[$prop];
                             }

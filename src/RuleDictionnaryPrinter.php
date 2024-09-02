@@ -52,15 +52,6 @@ class RuleDictionnaryPrinter extends Rule
         return __('Dictionary of printers');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 4;
-    }
-
     /**
      * @see Rule::getCriterias()
      **/

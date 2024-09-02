@@ -177,7 +177,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Disconnect a port
      *
-     * @param integer $id Hub id
+     * @param integer $ports_id Port id
      *
      * @return boolean
      */
@@ -296,7 +296,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Store connection log.
      *
-     * @param string action Either add or remove
+     * @param string $action Either add or remove
      *
      * @return void
      */

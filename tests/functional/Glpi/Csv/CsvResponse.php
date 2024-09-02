@@ -65,6 +65,7 @@ class CsvResponse extends DbTestCase
         $csv = Reader::createFromString(ob_get_clean());
         $csv->setHeaderOffset(0);
         $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
+        $csv->setEscape('');
         $header = $csv->getHeader();
         $records = iterator_to_array($csv->getRecords());
 

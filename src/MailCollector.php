@@ -218,6 +218,7 @@ class MailCollector extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            /** @var MailCollector $item */
             $item->showGetMessageForm($item->getID());
         }
         return true;
@@ -692,7 +693,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string|void
      **/
-    public function collect($mailgateID, $display = 0)
+    public function collect($mailgateID, $display = false)
     {
         /**
          * @var array $CFG_GLPI
@@ -1337,7 +1338,7 @@ class MailCollector extends CommonDBTM
        // Wrap content for blacklisted items
         $cleaned_count = 0;
         $itemstoclean = [];
-        foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
+        foreach ($DB->request(BlacklistedMailContent::getTable()) as $data) {
             $toclean = trim($data['content']);
             if (!empty($toclean)) {
                 $itemstoclean[] = str_replace(["\r\n", "\n", "\r"], $br_marker, $toclean);
@@ -2049,7 +2050,7 @@ class MailCollector extends CommonDBTM
         echo "<tr class='tab_bg_2'><th>Mails receivers</th></tr>\n";
         echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-        foreach ($DB->request('glpi_mailcollectors') as $mc) {
+        foreach ($DB->request(self::getTable()) as $mc) {
             $msg  = "Name: '" . $mc['name'] . "'";
             $msg .= " Active: " . ($mc['is_active'] ? "Yes" : "No");
             echo wordwrap($msg . "\n", $width, "\n\t\t");
@@ -2275,7 +2276,9 @@ class MailCollector extends CommonDBTM
      *
      * @see NotificationTarget::getMessageIdForEvent()
      *
-     * @return string
+     * @param string $header
+     *
+     * @return array|null
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {

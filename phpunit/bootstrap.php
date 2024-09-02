@@ -48,11 +48,12 @@ define('GLPI_VAR_DIR', getenv('GLPI_VAR_DIR') ?: __DIR__ . '/files');
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
+define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 define(
     'PLUGINS_DIRECTORIES',
     [
         GLPI_ROOT . '/plugins',
-        GLPI_ROOT . '/tests/fixtures/plugins',
+        FIXTURE_DIR . '/plugins',
     ]
 );
 
@@ -95,8 +96,9 @@ include_once __DIR__ . '/CommonDropdown.php';
 //include_once __DIR__ . '/CsvTestCase.php';
 //include_once __DIR__ . '/APIBaseClass.php';
 //include_once __DIR__ . '/FrontBaseClass.php';
+include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/InventoryTestCase.php';
-//include_once __DIR__ . '/functional/CommonITILRecurrent.php';
+include_once __DIR__ . '/abstracts/CommonITILRecurrentTest.php';
 //include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 include_once __DIR__ . '/AbstractRightsDropdown.php';
 

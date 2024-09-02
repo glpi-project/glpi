@@ -52,6 +52,7 @@ if (
     $rand = mt_rand();
     $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
 
+    /** @var CommonITILObject $item */
     if ($item = getItemForItemtype($_POST["itemtype"])) {
         switch ($_POST["type"]) {
             case "user":

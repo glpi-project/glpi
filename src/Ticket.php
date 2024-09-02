@@ -416,10 +416,10 @@ class Ticket extends CommonITILObject
     /**
      * Get Datas to be added for SLA add
      *
-     * @param $slas_id      SLA id
-     * @param $entities_id  entity ID of the ticket
-     * @param $date         begin date of the ticket
-     * @param $type         type of SLA
+     * @param int    $slas_id      SLA id
+     * @param int    $entities_id  entity ID of the ticket
+     * @param string $date         begin date of the ticket
+     * @param int    $type         type of SLA
      *
      * @since 9.1 (before getDatasToAddSla without type parameter)
      *
@@ -458,10 +458,10 @@ class Ticket extends CommonITILObject
     /**
      * Get Datas to be added for OLA add
      *
-     * @param $olas_id      OLA id
-     * @param $entities_id  entity ID of the ticket
-     * @param $date         begin date of the ticket
-     * @param $type         type of OLA
+     * @param int    $olas_id      OLA id
+     * @param int    $entities_id  entity ID of the ticket
+     * @param string $date         begin date of the ticket
+     * @param int    $type         type of OLA
      *
      * @since 9.2 (before getDatasToAddOla without type parameter)
      *
@@ -2457,7 +2457,7 @@ class Ticket extends CommonITILObject
      *
      * @since 0.83
      *
-     * @param $type itemtype of object to add
+     * @param string $type itemtype of object to add
      *
      * @return boolean
      **/
@@ -5938,7 +5938,7 @@ JAVASCRIPT;
             $tabentities[0] = $rate;
         }
 
-        foreach ($DB->request('glpi_entities') as $entity) {
+        foreach ($DB->request(Entity::getTable()) as $entity) {
             $rate   = Entity::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
 
             if ($rate > 0) {

@@ -43,7 +43,7 @@ class QueryExpression
     /**
      * Create a query expression
      *
-     * @param string $value Query parameter value, defaults to '?'
+     * @param string $expression Query parameter value, defaults to '?'
      */
     public function __construct($expression)
     {

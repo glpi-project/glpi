@@ -979,6 +979,7 @@ class ReservationItem extends CommonDBChild
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var ReservationItem $item */
             switch ($tabnum) {
                 case 1:
                     $item->showListSimple();

@@ -329,7 +329,7 @@ JAVASCRIPT;
      * Save filter in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $settings contains a JSON representation of the filter data
+     * @param string $settings contains a JSON representation of the filter data
      *
      * @return void
      */

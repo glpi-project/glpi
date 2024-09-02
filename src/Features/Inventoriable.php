@@ -69,7 +69,7 @@ trait Inventoriable
      *
      * @param bool $prepend_dir_path Indicated wether the GLPI_INVENTORY_DIR have to be prepend to returned value.
      *
-     * @return void|string
+     * @return string|null
      */
     public function getInventoryFileName(bool $prepend_dir_path = true): ?string
     {

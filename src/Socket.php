@@ -1054,7 +1054,7 @@ class Socket extends CommonDBChild
                                         )
             );
 
-            foreach ($DB->request('glpi_sockets', $crit) as $data) {
+            foreach ($DB->request(self::getTable(), $crit) as $data) {
                 Session::addToNavigateListItems('Socket', $data["id"]);
                 echo "<tr class='tab_bg_1'>";
 
@@ -1130,9 +1130,9 @@ class Socket extends CommonDBChild
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         $options = []
     ) {
 

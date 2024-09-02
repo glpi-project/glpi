@@ -103,9 +103,7 @@ include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/RuleBuilder.php';
-include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
-include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {

@@ -210,6 +210,10 @@ final class DbUtils
                     $table = substr($table, \strlen(NS_GLPI));
                 }
             }
+            //handle PHPUnit mocks
+            if (str_starts_with($table, 'mock_')) {
+                $table = preg_replace('/^mock_(.+)_.+$/', '$1', $table);
+            }
             $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
             if (strstr($table, '_')) {
                 $split = explode('_', $table);
@@ -449,6 +453,9 @@ final class DbUtils
      * @param string $itemtype itemtype
      *
      * @return CommonDBTM|false itemtype instance or false if class does not exists
+     * @template T
+     * @phpstan-param class-string<T> $itemtype
+     * @phpstan-return T|false
      */
     public function getItemForItemtype($itemtype)
     {
@@ -496,7 +503,7 @@ final class DbUtils
      * Count the number of elements in a table.
      *
      * @param string|array   $table     table name(s)
-     * @param ?string|?array $condition array of criteria
+     * @param string|array   $condition array of criteria
      *
      * @return integer Number of elements in table
      */
@@ -532,7 +539,7 @@ final class DbUtils
      *
      * @param string|array   $table     table name(s)
      * @param string         $field     field name
-     * @param ?string|?array $condition array of criteria
+     * @param array|string|null          $condition array of criteria
      *
      * @return int nb of elements in table
      */
@@ -604,7 +611,7 @@ final class DbUtils
      * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
      *
      * @param string         $table    Table name
-     * @param ?string|?array $criteria Request criteria
+     * @param array|string|null          $criteria Request criteria
      * @param boolean        $usecache Use cache (false by default)
      * @param string         $order    Result order (default '')
      *

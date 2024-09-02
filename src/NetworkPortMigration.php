@@ -491,8 +491,8 @@ class NetworkPortMigration extends CommonDBChild
     public static function getMigrationInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $internet_super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
        // TODO : study to display the correct information for this undefined NetworkPort

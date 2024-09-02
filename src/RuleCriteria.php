@@ -274,7 +274,7 @@ class RuleCriteria extends CommonDBChild
                         }
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
-                        return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
+                        return $rule->dropdownConditions($options);
                     }
                 }
                 break;
@@ -506,7 +506,7 @@ class RuleCriteria extends CommonDBChild
             case Rule::PATTERN_NOT_CIDR:
                 $exploded = explode('/', $pattern);
                 $subnet   = ip2long($exploded[0]);
-                $bits     = $exploded[1] ?? null;
+                $bits     = (int)($exploded[1] ?? 0);
                 $mask     = -1 << (32 - $bits);
                 $subnet  &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
 

@@ -70,7 +70,7 @@ class Provider
     /**
      * Retrieve the number of element for a given item
      *
-     * @param CommonDBTM|null object to count
+     * @param CommonDBTM|null $item object to count
      *
      * @param array $params default values for
      * - 'apply_filters' values from dashboard filters
@@ -81,7 +81,7 @@ class Provider
      * - 'label'
      * - 'icon'
      */
-    public static function bigNumberItem(CommonDBTM $item = null, array $params = []): array
+    public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
 
@@ -155,8 +155,8 @@ class Provider
 
 
     /**
-     * @method self::bigNumberItem
-     * @method self::nbItemByFk
+     * @method array bigNumberItem(CommonDBTM $item, array $params = [])
+     * @method array nbItemByFk(CommonDBTM $item, array $params = [])
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
@@ -772,8 +772,8 @@ class Provider
      * - 'icon'
      */
     public static function nbItemByFk(
-        CommonDBTM $item = null,
-        CommonDBTM $fk_item = null,
+        ?CommonDBTM $item = null,
+        ?CommonDBTM $fk_item = null,
         array $params = []
     ): array {
         $DB = DBConnection::getReadConnection();
@@ -891,7 +891,7 @@ class Provider
      *
      * @return array
      */
-    public static function articleListItem(CommonDBTM $item = null, array $params = []): array
+    public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
 

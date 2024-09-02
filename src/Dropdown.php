@@ -349,6 +349,7 @@ class Dropdown
 
            // Supplier Links
             if ($itemtype == "Supplier") {
+                /** @var Supplier $item */
                 if ($item->getFromDB($params['value'])) {
                     $link_icon = '<div>';
                     $link_icon .= $item->getLinks();
@@ -368,7 +369,10 @@ class Dropdown
             }
 
             if ($params['display_dc_position']) {
-                if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+                if (
+                    method_exists($item, 'isRackPart')
+                    && ($rack = $item->isRackPart($itemtype, $params['value'], true))
+                ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
@@ -384,6 +388,7 @@ class Dropdown
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
                 //  as the profile does not have rights to ITILCategory to initialise it before.
+                /** @var ITILCategory $item */
                 if ($item->isNewItem()) {
                     $item->getFromDB($params['value']);
                 }
@@ -480,7 +485,7 @@ class Dropdown
      *
      * @return string the value of the dropdown
      **/
-    public static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '&nbsp;')
+    public static function getDropdownName($table, $id, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2375,7 +2380,7 @@ JAVASCRIPT;
      * Dropdown for global item management
      *
      * @param integer $ID           item ID
-     * @param array   attrs   array which contains the extra paramters
+     * @param array   $attrs   array which contains the extra paramters
      *
      * Parameters can be :
      * - target target for actions
@@ -2461,10 +2466,17 @@ JAVASCRIPT;
     public static function import($itemtype, $input)
     {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->import($input);
         }
-        return $item->import($input);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
 
@@ -2491,16 +2503,23 @@ JAVASCRIPT;
         $add = true
     ) {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
-        return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
     /**
      * Get the label associated with a management type
      *
-     * @param integer value the type of management (default 0)
+     * @param integer $value the type of management (default 0)
      *
      * @return string the label corresponding to it, or ""
      **/
@@ -3151,10 +3170,9 @@ JAVASCRIPT;
                 ];
 
                 if (
-                    $_SESSION['glpiis_ids_visible']
-                    && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']
+                    $_SESSION['glpiis_ids_visible'] && (int) $post['searchText'] === $post['searchText']
                 ) {
-                    $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
+                    $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
 
                 if ($item instanceof CommonDCModelDropdown) {

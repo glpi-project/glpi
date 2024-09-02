@@ -1090,9 +1090,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonDBTM $item    Object instance
-     * @param array      $options Options
-     * @param boolean    $simple  (false by default)
+     * @param CommonITILObject  $item    Object instance
+     * @param array             $options Options
+     * @param boolean           $simple  (false by default)
      *
      * @return array
      **/

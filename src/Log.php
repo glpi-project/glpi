@@ -92,7 +92,10 @@ class Log extends CommonDBTM
         }
 
         $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = countElementsInTable(
                 'glpi_logs',
                 ['itemtype' => $item->getType(),
@@ -283,7 +286,7 @@ class Log extends CommonDBTM
 
         $result = $DB->insert(self::getTable(), $params);
 
-        if ($result && $DB->affectedRows($result) > 0) {
+        if ($result && $DB->affectedRows() > 0) {
             return $_SESSION['glpi_maxhistory'] = $DB->insertId();
         }
         return false;

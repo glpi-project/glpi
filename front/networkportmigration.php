@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \DBMysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 include('../inc/includes.php');

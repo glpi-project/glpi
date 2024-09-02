@@ -179,7 +179,7 @@
                 {% elseif type == 'password' %}
                     {{ fields.passwordField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'tinymce' %}
-                    {% set fields_params = fields_params|merge({'enable_richtext': true}) %}
+                    {% set fields_params = fields_params|merge({'enable_richtext': true, 'full_width': true, 'label_class': 'col-xxl-2', 'input_class': 'col-xxl-10'}) %}
                     {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'duration' %}
                     {% set toadd = [] %}

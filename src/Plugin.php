@@ -415,7 +415,7 @@ class Plugin extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+         * @var \Laminas\I18n\Translator\Translator $TRANSLATE
          */
         global $CFG_GLPI, $TRANSLATE;
 

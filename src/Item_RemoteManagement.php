@@ -56,20 +56,19 @@ class Item_RemoteManagement extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        [
-                            'items_id'     => $item->getID(),
-                            'itemtype'     => $item->getType()
-                        ]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+        ) {
+            $nb = countElementsInTable(
+                self::getTable(),
+                [
+                    'items_id'     => $item->getID(),
+                    'itemtype'     => $item->getType()
+                ]
+            );
         }
-        return '';
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
     }
 
 

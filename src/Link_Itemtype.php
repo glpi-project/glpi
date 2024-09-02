@@ -167,6 +167,7 @@ class Link_Itemtype extends CommonDBChild
             $nb = 0;
             switch ($item->getType()) {
                 case 'Link':
+                    /** @var Link $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             $this->getTable(),

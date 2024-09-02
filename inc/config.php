@@ -88,6 +88,7 @@ if ($missing_db_config) {
 
     if (!isCommandLine()) {
         // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+        $debug_mode = $_SESSION['glpi_use_mode'];
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
         Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
@@ -109,6 +110,7 @@ if ($missing_db_config) {
         echo '</div>';
         echo '</div>';
         Html::nullFooter();
+        $_SESSION['glpi_use_mode'] = $debug_mode;
     } else {
         echo $title_text . "\n";
         echo $missing_conf_text . "\n";
@@ -199,6 +201,7 @@ if ($missing_db_config) {
     // Check version
     if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
         // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
+        $debug_mode = $_SESSION['glpi_use_mode'];
         Toolbox::setDebugMode(Session::NORMAL_MODE);
 
         Session::loadLanguage('', false);
@@ -265,8 +268,10 @@ if ($missing_db_config) {
             echo "</div>";
             echo "</div>";
             Html::nullFooter();
+            $_SESSION['glpi_use_mode'] = $debug_mode;
             exit();
         }
+        $_SESSION['glpi_use_mode'] = $debug_mode;
     }
 }
 

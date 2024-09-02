@@ -338,10 +338,6 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 10.0.11
@@ -356,10 +352,6 @@ class DBmysql
      * Execute a MySQL query
      *
      * @param string $query Query to execute
-     *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
      *
      * @return mysqli_result|boolean Query result handler
      */
@@ -411,7 +403,7 @@ class DBmysql
         }
 
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME = $TIMER->getTime();
+            $TIME = (float) $TIMER->getTime();
             $debug_data['time'] = (int) ($TIME * 1000);
             $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
@@ -1005,7 +997,8 @@ class DBmysql
      */
     public function freeResult($result)
     {
-        return $result->free();
+        $result->free();
+        return true;
     }
 
     /**
@@ -1573,7 +1566,6 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
      * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
      * @param array  $joins  JOINS criteria array
      *

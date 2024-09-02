@@ -214,7 +214,7 @@ class Unmanaged extends CommonDBTM
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         if (self::canUpdate()) {
             $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
@@ -261,7 +261,7 @@ class Unmanaged extends CommonDBTM
      * @param int         $items_id ID of Unmanaged equipment
      * @param string|null $itemtype Item type to convert to. Will take Unmanaged value if null
      */
-    public function convert(int $items_id, string $itemtype = null)
+    public function convert(int $items_id, ?string $itemtype = null)
     {
         /** @var \DBmysql $DB */
         global $DB;

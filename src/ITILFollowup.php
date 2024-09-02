@@ -274,7 +274,6 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-        $this->updateParentStatus($this->input['_job'], $this->input);
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
@@ -284,8 +283,6 @@ class ITILFollowup extends CommonDBChild
             ];
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
         }
-
-        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
        // Add log entry in the ITILObject
         $changes = [
@@ -300,6 +297,9 @@ class ITILFollowup extends CommonDBChild
             $this->getType(),
             Log::HISTORY_ADD_SUBITEM
         );
+
+        $this->updateParentStatus($this->input['_job'], $this->input);
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
         parent::post_addItem();
     }
@@ -900,7 +900,10 @@ class ITILFollowup extends CommonDBChild
                 $input = $ma->getInput();
                 $fup   = new self();
                 foreach ($ids as $id) {
-                    if ($item->getFromDB($id)) {
+                    if (
+                        ($item instanceof CommonITILObject)
+                        && $item->getFromDB($id)
+                    ) {
                         if (in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
@@ -1083,7 +1086,7 @@ class ITILFollowup extends CommonDBChild
      *
      * TODO 10.1 move method and `item` property into parent class
      *
-     * @param CommonITILObject Parent item
+     * @param CommonITILObject $parent Parent item
      *
      * @return void
      */

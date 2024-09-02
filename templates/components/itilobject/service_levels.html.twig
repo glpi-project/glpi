@@ -215,6 +215,14 @@
                            myCollapse.show();
                         }
                      </script>
+
+                     {% if item.fields[la_field.lafieldname] != 0 %}
+                        <script type="text/javascript">
+                           $(document).ready(function() {
+                              toggleAssignLA_{{ rand }}();
+                           });
+                        </script>
+                     {% endif %}
                   {% endif %}
                {% endif %}
             </div>
@@ -231,6 +239,7 @@
             full_width: true,
             is_horizontal: false,
             add_field_class: (is_expanded ? 'col-sm-6' : ''),
+            required: field_options.fields_template.isMandatoryField(la_field.lafieldname)
          }
       ) }}
    {% endif %}

@@ -256,6 +256,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $nb = 0;
             switch ($item->getType()) {
                 case __CLASS__:
+                    /** @var KnowbaseItem $item */
                     $ong[1] = $this->getTypeName(1);
                     if ($item->canUpdateItem()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -278,6 +279,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var KnowbaseItem $item */
             switch ($tabnum) {
                 case 1:
                     $item->showFull();

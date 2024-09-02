@@ -378,7 +378,7 @@ class Database extends CommonDBChild
     {
         if (
             !$withtemplate
-            && ($item->getType() == DatabaseInstance::class)
+            && ($item instanceof DatabaseInstance)
             && $item->canView()
         ) {
             $nb = 0;

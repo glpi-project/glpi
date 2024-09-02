@@ -45,11 +45,13 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (
     isset($_POST["itemtype"])
     && isset($_POST["value"])
 ) {
-   // Security
+    // Security
     if (!is_subclass_of($_POST["itemtype"], "CommonDBTM")) {
         exit();
     }
@@ -81,13 +83,36 @@ if (
                     }
                 }
             }
-            echo ($tmpname["comment"] ?? '');
+            echo($tmpname["comment"] ?? '');
 
             if (isset($_POST['withlink']) && isset($tmpname['link'])) {
                 echo "<script type='text/javascript' >\n";
                 echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
                 echo "</script>\n";
             }
+            break;
+
+        case Group::getType():
+            $tmpname = [
+                'comment' => "",
+            ];
+            if ($_POST['value'] != 0) {
+                $group = new \Group();
+                if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
+                    $group_params = [
+                        'id' => $group->getID(),
+                        'group_name' => $group->fields['completename'],
+                        'comment' => $group->fields['comment'],
+                    ];
+                    $comment = TemplateRenderer::getInstance()->render('components/group/info_card.html.twig', [
+                        'group' => $group_params,
+                    ]);
+                    $tmpname = [
+                        'comment' => $comment,
+                    ];
+                }
+            }
+            echo($tmpname["comment"] ?? '');
             break;
 
         default:
@@ -123,12 +148,15 @@ if (
                     $item = getItemForItemtype($_POST['itemtype']);
                     echo "<script type='text/javascript' >\n";
 
-                   //if item have a DC position (reload url to it's rack)
-                    if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
+                    //if item have a DC position (reload url to it's rack)
+                    if (
+                        method_exists($item, 'isRackPart')
+                        && ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true))
+                    ) {
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
                   html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";
                     } else {
-                       //remove old dc position
+                        //remove old dc position
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".empty();";
                     }
                     echo "</script>\n";

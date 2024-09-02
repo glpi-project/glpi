@@ -238,7 +238,7 @@ class Migration
     /**
      * Display an error
      *
-     * @param string  $msg Message to display
+     * @param string  $message Message to display
      *
      * @return void
      **/

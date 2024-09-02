@@ -92,7 +92,7 @@ class ProjectCost extends CommonDBChild
     {
 
        // can exists for template
-        if (($item->getType() == 'Project') && Project::canView()) {
+        if ((get_class($item) == Project::class) && Project::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);

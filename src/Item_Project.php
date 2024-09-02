@@ -234,7 +234,10 @@ class Item_Project extends CommonDBRelation
 
                 default:
                    // Not used now
-                    if (Session::haveRight("project", Project::READALL)) {
+                    if (
+                        Session::haveRight("project", Project::READALL)
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
                               $nb = self::countForItem($item);

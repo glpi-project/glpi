@@ -64,7 +64,10 @@ class ITILSolution extends CommonDBChild
         if ($item->isNewItem()) {
             return '';
         }
-        if ($item->maySolve()) {
+        if (
+            ($item instanceof CommonITILObject)
+            && $item->maySolve()
+        ) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -275,7 +278,7 @@ class ITILSolution extends CommonDBChild
             );
 
            // Invalid template
-            if (!$html) {
+            if ($html === null) {
                 return false;
             }
 

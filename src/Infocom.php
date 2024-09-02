@@ -141,10 +141,14 @@ class Infocom extends CommonDBChild
     {
 
        // Can exists on template
-        if (Session::haveRight(self::$rightname, READ)) {
+        if (
+            Session::haveRight(self::$rightname, READ)
+            && ($item instanceof CommonDBTM)
+        ) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'Supplier':
+                    /** @var Supplier $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
@@ -176,6 +180,7 @@ class Infocom extends CommonDBChild
 
         switch ($item->getType()) {
             case 'Supplier':
+                /** @var Supplier $item */
                 $item->showInfocoms();
                 break;
 
@@ -345,7 +350,7 @@ class Infocom extends CommonDBChild
     public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
     {
 
-        if (isset($infocoms[$field])) {
+        if (isset($infocoms[$field]) || is_null($infocoms[$field])) {
             switch ($action) {
                 default:
                 case 0:
@@ -400,15 +405,18 @@ class Infocom extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-       //Check if one or more dates needs to be updated
+        //Check if one or more dates needs to be updated
         foreach (self::getAutoManagemendDatesFields() as $key => $field) {
             $result = Entity::getUsedConfig($key, $this->fields['entities_id']);
 
-           //Only update date if it's empty in DB. Otherwise do nothing
+            //Only update date if it's empty in DB. Otherwise do nothing
             if (
                 ($result > 0)
                 && !isset($this->fields[$field])
             ) {
+                if (!isset($input[$field])) {
+                    $input[$field] = null;
+                }
                 self::autofillDates($input, $field, $result);
             }
         }
@@ -816,11 +824,11 @@ class Infocom extends CommonDBChild
     /**
      * Calculate amortization values
      *
-     * @param number $value       Purchase value
-     * @param number $duration    Amortise duration
-     * @param string $fiscaldate  Begin of fiscal excercise
-     * @param number $buydate     Buy date
-     * @param number $usedate     Date of use
+     * @param number        $value       Purchase value
+     * @param number        $duration    Amortise duration
+     * @param string        $fiscaldate  Begin of fiscal excercise
+     * @param string $buydate     Buy date
+     * @param string $usedate     Date of use
      *
      * @return array|boolean
      */
@@ -886,7 +894,7 @@ class Infocom extends CommonDBChild
                     $fiscal_end->modify('+1 year');
                 }
                 $days = $fiscal_end->diff($usedate);
-                $days = $days->format('%m') * 30 + $days->format('%d');
+                $days = (int) $days->format('%m') * 30 + (int) $days->format('%d');
                 $current_annuity = $annuity * $days / 360;
             } else if ($i == $duration) {
                 $current_annuity = $value;
@@ -1758,13 +1766,14 @@ class Infocom extends CommonDBChild
      * @param integer $deletenotice  period in months of notice (default 0)
      * @param boolean $color         if show expire date in red color (false by default)
      * @param boolean $auto_renew
+     * @param integer $periodicity   renewal periodicity in month if different from addwarranty
      *
      * @return string expiration date
      **/
-    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false)
+    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
 
-       // Life warranty
+        // Life warranty
         if (
             ($addwarranty == -1)
             && ($deletenotice == 0)
@@ -1778,11 +1787,13 @@ class Infocom extends CommonDBChild
 
         $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
 
-        if ($auto_renew && $addwarranty > 0) {
+        $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
+
+        if ($auto_renew && $periodicity > 0) {
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
-                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$addwarranty month");
+                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$periodicity month");
             }
         }
 
@@ -1797,7 +1808,7 @@ class Infocom extends CommonDBChild
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
 
         $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
@@ -1916,7 +1927,7 @@ class Infocom extends CommonDBChild
      */
     public static function getExcludedTypes()
     {
-        return ['ConsumableItem', 'CartridgeItem', 'Software'];
+        return ['ConsumableItem', 'CartridgeItem'];
     }
 
 

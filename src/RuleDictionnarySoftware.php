@@ -59,14 +59,6 @@ class RuleDictionnarySoftware extends Rule
 
 
     /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 4;
-    }
-
-    /**
      * @see Rule::getCriterias()
      **/
     public function getCriterias()

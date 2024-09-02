@@ -178,7 +178,7 @@ class NetworkPortInstantiation extends CommonDBChild
      * Get HTMLTable columns headers for a given item type
      * Beware : the internet information are "sons" of each instantiation ...
      *
-     * @param HTMLTableSuperHeader $group           HTMLTableGroup object
+     * @param HTMLTableGroup       $group           HTMLTableGroup object
      * @param HTMLTableSuperHeader $super           HTMLTableSuperHeader object
      * @param HTMLTableSuperHeader $internet_super  HTMLTableSuperHeader object for the internet sub part (default NULL)
      * @param HTMLTableHeader      $father          HTMLTableHeader object (default NULL)
@@ -190,8 +190,8 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
-        HTMLTableSuperHeader $internet_super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $internet_super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -238,7 +238,7 @@ class NetworkPortInstantiation extends CommonDBChild
     protected function getPeerInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -265,7 +265,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTableWithPeer(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -334,7 +334,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getInstantiationHTMLTable(
         NetworkPort $netport,
         HTMLTableRow $row,
-        HTMLTableCell $father = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         /** @var \DBmysql $DB */
@@ -855,7 +855,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->getType() == "NetworkPort") {
+        if (get_class($item) == NetworkPort::class) {
             $instantiation = $item->getInstantiation();
             if ($instantiation !== false) {
                 $log = new Log();
@@ -874,7 +874,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == "NetworkPort") {
+        if (get_class($item) == NetworkPort::class) {
             $instantiation = $item->getInstantiation();
             if ($instantiation !== false) {
                 Log::displayTabContentForItem($instantiation, $tabnum, $withtemplate);

@@ -545,8 +545,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         if (self::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'RSSFeed':
+            switch (get_class($item)) {
+                case RSSFeed::class:
                     $showtab = [1 => __('Content')];
                     if (Session::haveRight('rssfeed_public', UPDATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -588,8 +588,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'RSSFeed':
+        switch (get_class($item)) {
+            case RSSFeed::class:
                 switch ($tabnum) {
                     case 1:
                         $item->showFeedContent();

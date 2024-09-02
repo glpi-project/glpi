@@ -5976,7 +5976,7 @@ HTML;
             'name'       => array_keys($passwords)
         ];
 
-        foreach ($DB->request('glpi_users', $crit) as $data) {
+        foreach ($DB->request(self::getTable(), $crit) as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }
@@ -6019,7 +6019,7 @@ HTML;
      *
      * @return string
      */
-    public static function getThumbnailURLForPicture(string $picture = null)
+    public static function getThumbnailURLForPicture(?string $picture = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
