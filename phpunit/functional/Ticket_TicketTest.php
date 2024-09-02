@@ -177,7 +177,7 @@ class Ticket_TicketTest extends DbTestCase
             'content'  => 'test',
             'status'   => \Ticket::INCOMING
         ]);
-        $this->integer((int)$tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$tickets_id);
 
         // Create 5 other tickets
         $tickets = [];
@@ -187,7 +187,7 @@ class Ticket_TicketTest extends DbTestCase
                 'content'  => 'test' . $i,
                 'status'   => \Ticket::INCOMING
             ]);
-            $this->integer((int)$linked_tickets_id)->isGreaterThan(0);
+            $this->assertGreaterThan(0, (int)$linked_tickets_id);
             $tickets[] = $linked_tickets_id;
         }
 
@@ -204,10 +204,10 @@ class Ticket_TicketTest extends DbTestCase
         }
 
         $linked = @\Ticket_Ticket::getLinkedTicketsTo((int) $tickets_id);
-        $this->array($linked)->hasSize(5);
+        $this->assertCount(5, $linked);
         for ($i = 0; $i < 5; $i++) {
             $linked = @\Ticket_Ticket::getLinkedTicketsTo((int) $tickets[$i]);
-            $this->array($linked)->hasSize(1);
+            $this->assertCount(1, $linked);
         }
     }
 

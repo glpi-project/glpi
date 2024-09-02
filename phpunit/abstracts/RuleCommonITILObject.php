@@ -65,8 +65,8 @@ abstract class RuleCommonITILObject extends DbTestCase
     protected function getTestedClass(): string
     {
         $test_class = static::class;
-        // Rule class has the same name as the test class but in the global namespace
-        return substr(strrchr($test_class, '\\'), 1);
+        // Rule class has the same name as the test class without Test suffix but in the global namespace
+        return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
     }
 
     /**
@@ -156,7 +156,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content' => "test"
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(5);
+        $this->assertEquals(5, (int)$itil->getField('urgency'));
 
         // test create ITIL Object (trigger on user assign)
         $itil = $this->getITILObjectInstance();
@@ -168,7 +168,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         // _users_id_assign is stored in glpi_*_users table, so remove it
         unset($itil_input['_users_id_assign']);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(5);
+        $this->assertEquals(5, (int)$itil->getField('urgency'));
     }
 
     public function testTriggerUpdate()
@@ -188,7 +188,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content' => "test"
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(3);
+        $this->assertEquals(3, (int)$itil->getField('urgency'));
 
         // update ITIL Object title and trigger rule on title updating
         $itil->update([
@@ -196,7 +196,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'name' => 'test ITIL Object, will trigger on rule (title)'
         ]);
         $itil->getFromDB($itil_id);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(5);
+        $this->assertEquals(5, (int)$itil->getField('urgency'));
 
         // test create ITIL Object (for check triggering on actor after update)
         $itil = $this->getITILObjectInstance();
@@ -205,7 +205,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content' => "test"
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(3);
+        $this->assertEquals(3, (int)$itil->getField('urgency'));
 
         // update ITIL Object title and trigger rule on actor addition
         $itil->update([
@@ -220,8 +220,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil->getFromDB($itil_id);
         $itil_user = $this->getITILLinkInstance('User');
         $actors = $itil_user->getActors($itil_id);
-        $this->integer((int)$actors[2][0]['users_id'])->isEqualTo($users_id);
-        $this->integer((int)$itil->getField('urgency'))->isEqualTo(5);
+        $this->asserTEquals($users_id, (int)$actors[2][0]['users_id']);
+        $this->assertEquals(5, (int)$itil->getField('urgency'));
     }
 
     private function createTestTriggerRule($condition)
@@ -317,7 +317,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
         unset($itil_input['_users_id_assign']); // _users_id_assign is stored in glpi_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::WAITING);
+        $this->assertEquals(\CommonITILObject::WAITING, (int)$itil->getField('status'));
     }
 
     /**
@@ -376,11 +376,14 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_user_table = $this->getITILLinkClass('User')::getTable();
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::INCOMING);
-        $this->integer(countElementsInTable(
-            $itil_user_table,
-            [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
-        ))->isEqualTo(1);
+        $this->assertEquals(\CommonITILObject::INCOMING, (int)$itil->getField('status'));
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_user_table,
+                [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
+            )
+        );
 
         // The next part only applies to tickets
         if ($itil::getType() === 'Ticket') {
@@ -393,24 +396,30 @@ abstract class RuleCommonITILObject extends DbTestCase
             ]);
             unset($itil_input['_users_id_assign']);
             $this->checkInput($itil, $itil_id, $itil_input);
-            $this->integer((int)$itil->getField('status'))->isEqualTo(\Ticket::ASSIGNED);
-            $this->integer(countElementsInTable(
-                $itil_user_table,
-                [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
-            ))->isEqualTo(1); // Assigned to TU_USER
+            $this->assertEquals(\Ticket::ASSIGNED, (int)$itil->getField('status'));
+            $this->assertEquals(
+                1,
+                countElementsInTable(
+                    $itil_user_table,
+                    [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
+                )
+            ); // Assigned to TU_USER
 
-            $this->boolean($itil->update([
+            $this->assertTrue($itil->update([
                 'id'                => $itil_id,
                 'name'              => 'assign to tech (on update)',
                 'content'           => 'test',
                 '_users_id_assign'  => getItemByTypeName('User', 'glpi', true), // rule should erase this value
-            ]))->isTrue();
-            $this->boolean($itil->getFromDB($itil_id))->isTrue();
-            $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::INCOMING);
-            $this->integer(countElementsInTable(
-                $itil_user_table,
-                [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
-            ))->isEqualTo(2); // Assigned to TU_USER + tech
+            ]));
+            $this->assertTrue($itil->getFromDB($itil_id));
+            $this->assertEquals(\CommonITILObject::INCOMING, (int)$itil->getField('status'));
+            $this->assertEquals(
+                2,
+                countElementsInTable(
+                    $itil_user_table,
+                    [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
+                )
+            ); // Assigned to TU_USER + tech
         }
     }
 
@@ -420,21 +429,21 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Create ITILCategory with code
         $ITILCategoryForAdd = new \ITILCategory();
-        $ITILCategoryForAddId = $ITILCategoryForAdd->add($categoryinput = [
+        $ITILCategoryForAddId = $ITILCategoryForAdd->add([
             "name" => "ITIL Category",
             "code" => "itil_category_for_add",
         ]);
 
-        $this->integer((int)$ITILCategoryForAddId)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$ITILCategoryForAddId);
 
         // Create ITILCategory with code
         $ITILCategoryForUpdate = new \ITILCategory();
-        $ITILCategoryForUpdateId = $ITILCategoryForUpdate->add($categoryinput = [
+        $ITILCategoryForUpdateId = $ITILCategoryForUpdate->add([
             "name" => "ITIL Category",
             "code" => "itil_category_for_update",
         ]);
 
-        $this->integer((int)$ITILCategoryForUpdateId)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$ITILCategoryForUpdateId);
 
         // Create rule
         $rule_itil = $this->getRuleInstance();
@@ -475,16 +484,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('itilcategories_id'))->isEqualTo($ITILCategoryForAddId);
+        $this->assertEquals($ITILCategoryForAddId, (int)$itil->getField('itilcategories_id'));
 
-        $this->boolean($itil->update($itil_input = [
+        $this->assertTrue($itil->update($itil_input = [
             'id'      => $itil_id,
             'name'    => 'some ITIL Object (on update)',
             'content' => 'some text #itil_category_for_update# some text'
-        ]))->isTrue();
+        ]));
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil->getField('itilcategories_id'))->isEqualTo($ITILCategoryForUpdateId);
+        $this->assertEquals($ITILCategoryForUpdateId, (int)$itil->getField('itilcategories_id'));
     }
 
     public function testITILSolutionAssignFromRule()
@@ -496,7 +505,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
             'content' => "<p>content of solution template  white ' quote</p>"
         ]);
-        $this->integer((int)$solutionTemplate_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$solutionTemplate_id);
 
         // Create rule
         $rule_itil = $this->getRuleInstance();
@@ -536,30 +545,29 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->integer((int)$itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$itil_id);
 
         // update ITIL Object content and trigger rule on content updating
-        $this->boolean(
+        $this->assertTrue(
             $itil->update([
                 'id'   => $itil_id,
                 'content' => 'test ITIL Object, will trigger on rule (content)'
-            ]),
-            'Not updated'
+            ])
         );
 
         //load ITILSolution
         $itilSolution = new \ITILSolution();
-        $this->boolean($itilSolution->getFromDBByCrit([
+        $this->assertTrue($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
             'itemtype' => $itil::getType(),
-        ]))->isTrue();
+        ]));
 
-        $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
-        $this->string($itilSolution->fields['content'])->isEqualTo("<p>content of solution template  white &#039; quote</p>");
+        $this->assertGreaterThan(0, (int)$itilSolution->getID());
+        $this->assertEquals("<p>content of solution template  white &#039; quote</p>", $itilSolution->fields['content']);
 
         //reload and check ITIL Object status
         $itil->getFromDB($itil_id);
-        $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::SOLVED);
+        $this->assertEquals(\CommonITILObject::SOLVED, (int)$itil->getField('status'));
     }
 
     public function testAssignGroup()
@@ -655,23 +663,23 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //load ITILGroup1 (expected false)
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //load ITILGroup2 (expected true)
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
     }
 
     public function testGroupRequesterAssignFromDefaultUserOnCreate()
@@ -733,7 +741,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //add default group to user
         $user->fields['groups_id'] = $group_id;
-        $this->boolean($user->update($user->fields))->isTrue();
+        $this->assertTrue($user->update($user->fields));
 
         // Check ITIL Object that trigger rule on creation
         $itil = $this->getITILObjectInstance();
@@ -748,13 +756,13 @@ abstract class RuleCommonITILObject extends DbTestCase
         //load ITILGroup
         $itil_group = $this->getITILLinkInstance('Group');
         $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
     }
 
 
@@ -767,7 +775,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $task_template_id = $task_template->add([
             'content' => "<p>test content</p>"
         ]);
-        $this->integer($task_template_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $task_template_id);
 
         $itil_class = $this->getITILObjectClass();
 
@@ -781,7 +789,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'condition'    => \RuleCommonITILObject::ONADD + \RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
-        $this->integer($rule_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_itil_id);
 
         // Add condition (priority = 5) to rule
         $rule_criteria_em = new RuleCriteria();
@@ -791,7 +799,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'condition' => \Rule::PATTERN_IS,
             'pattern'   => 5,
         ]);
-        $this->integer($rule_criteria_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_criteria_id);
 
         // Add action to rule
         $rule_action_em = new RuleAction();
@@ -801,7 +809,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'field'       => 'task_template',
             'value'       => $task_template_id,
         ]);
-        $this->integer($rule_action_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_action_id);
 
         // Test on creation
         $itil_em = $this->getITILObjectInstance();
@@ -811,17 +819,17 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content'  => 'test',
             'priority' => 5,
         ]);
-        $this->integer($itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_id);
 
         $itil_task_em = $this->getITILLinkInstance('Task');
         $itil_tasks = $itil_task_em->find([
             $itil_fk => $itil_id
         ]);
 
-        $this->array($itil_tasks)->hasSize(1);
+        $this->assertCount(1, $itil_tasks);
         $task_data = array_pop($itil_tasks);
-        $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
+        $this->assertArrayHasKey('content', $task_data);
+        $this->assertEquals('<p>test content</p>', $task_data['content']);
 
         // Test on update
         $itil_em = $this->getITILObjectInstance();
@@ -830,14 +838,14 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content'  => 'test',
             'priority' => 4,
         ]);
-        $this->integer($itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_id);
 
         $itil_task_em = $this->getITILLinkInstance('Task');
         $itil_tasks = $itil_task_em->find([
             $itil_fk => $itil_id
         ]);
 
-        $this->array($itil_tasks)->hasSize(0);
+        $this->assertCount(0, $itil_tasks);
 
         $itil_em->update([
             'id' => $itil_id,
@@ -847,10 +855,11 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_fk => $itil_id
         ]);
 
-        $this->array($itil_tasks)->hasSize(1);
+        $this->assertCount(1, $itil_tasks);
         $task_data = array_pop($itil_tasks);
-        $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
+        $this->assertArrayHasKey('content', $task_data);
+        ;
+        $this->assertEquals('<p>test content</p>', $task_data['content']);
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('TaskTemplate', [
@@ -874,15 +883,15 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_tasks = $itil_task_em->find([
             $itil_fk => getItemByTypeName($this->getITILObjectClass(), 'test ITIL Object with two tasks', true),
         ]);
-        $this->array($itil_tasks)->hasSize(2);
+        $this->assertCount(2, $itil_tasks);
 
         $task_data = array_pop($itil_tasks);
-        $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo('<p>test content 2</p>');
+        $this->assertArrayHasKey('content', $task_data);
+        $this->assertEquals('<p>test content 2</p>', $task_data['content']);
 
         $task_data = array_pop($itil_tasks);
-        $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
+        $this->assertArrayHasKey('content', $task_data);
+        $this->assertEquals('<p>test content</p>', $task_data['content']);
     }
 
     public function testFollowupTemplateAssignFromRule()
@@ -894,7 +903,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $followup_template_id = $followup_template->add([
             'content' => "<p>test testFollowupTemplateAssignFromRule</p>"
         ]);
-        $this->integer($followup_template_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $followup_template_id);
 
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
@@ -909,7 +918,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'condition'    => \RuleCommonITILObject::ONADD + \RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
-        $this->integer($rule_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_itil_id);
 
         // Add condition (priority = 5) to rule
         $rule_criteria = new RuleCriteria();
@@ -919,7 +928,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'condition' => \Rule::PATTERN_IS,
             'pattern'   => 4,
         ]);
-        $this->integer($rule_criteria_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_criteria_id);
 
         // Add action to rule
         $rule_action = new RuleAction();
@@ -929,7 +938,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'field'       => 'itilfollowup_template',
             'value'       => $followup_template_id,
         ]);
-        $this->integer($rule_action_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rule_action_id);
 
         // Test on creation
         $itil = $this->getITILObjectInstance();
@@ -938,7 +947,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content'  => 'test',
             'priority' => 4,
         ]);
-        $this->integer($itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_id);
 
         $itil_followups = new ITILFollowup();
         $itil_followups = $itil_followups->find([
@@ -946,10 +955,10 @@ abstract class RuleCommonITILObject extends DbTestCase
             'itemtype' => $itil_class,
         ]);
 
-        $this->array($itil_followups)->hasSize(1);
+        $this->assertCount(1, $itil_followups);
         $itil_followups_data = array_pop($itil_followups);
-        $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
+        $this->assertArrayHasKey('content', $itil_followups_data);
+        $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
 
         // Test on update
         $itil = $this->getITILObjectInstance();
@@ -958,7 +967,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content'  => 'test',
             'priority' => 3,
         ]);
-        $this->integer($itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_id);
 
         $itil_followups = new ITILFollowup();
         $itil_followups = $itil_followups->find([
@@ -966,7 +975,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'itemtype' => $itil_class,
         ]);
 
-        $this->array($itil_followups)->hasSize(0);
+        $this->assertCount(0, $itil_followups);
 
         $itil->update([
             'id' => $itil_id,
@@ -979,10 +988,10 @@ abstract class RuleCommonITILObject extends DbTestCase
             'itemtype' => $itil_class,
         ]);
 
-        $this->array($itil_followups)->hasSize(1);
+        $this->assertCount(1, $itil_followups);
         $itil_followups_data = array_pop($itil_followups);
-        $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
+        $this->assertArrayHasKey('content', $itil_followups_data);
+        $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('ITILFollowupTemplate', [
@@ -1008,15 +1017,15 @@ abstract class RuleCommonITILObject extends DbTestCase
             'items_id' => getItemByTypeName($itil_class, 'test ITIL Object with two followups', true),
             'itemtype' => $itil_class,
         ]);
-        $this->array($itil_followups)->hasSize(2);
+        $this->assertCount(2, $itil_followups);
 
         $itil_followups_data = array_pop($itil_followups);
-        $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule 2</p>');
+        $this->assertArrayHasKey('content', $itil_followups_data);
+        $this->assertEquals('<p>test testFollowupTemplateAssignFromRule 2</p>', $itil_followups_data['content']);
 
         $itil_followups_data = array_pop($itil_followups);
-        $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
+        $this->assertArrayHasKey('content', $itil_followups_data);
+        $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
     }
 
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()
@@ -1096,31 +1105,31 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //link between group1 and ITIL Object will not exist
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //link between group2 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //link between group3 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id3,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //add user to groups
         $group_user = new Group_User();
@@ -1153,31 +1162,31 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //link between group1 and ITIL Object will exist
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group2 and ITIL Object will exist
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group3 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id3,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
     }
 
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnAdd()
@@ -1279,31 +1288,31 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //link between group1 and ITIL Object will exist
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group2 and ITIL Object will exist
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group3 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
     }
 
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdate()
@@ -1409,31 +1418,31 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //link between group1 and ITIL Object will not exist
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id1,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //link between group2 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id2,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //link between group2 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
 
         //remove old user manually because from IHM is done before update ITIL Object
         $itil_user = $this->getITILLinkInstance('User');
@@ -1456,31 +1465,31 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         //link between group1 and ITIL Object will exist
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group2 and ITIL Object will exist
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id2,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //link between group3 and ITIL Object will not exist
-        $this->boolean(
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
                 'type'               => \CommonITILActor::REQUESTER
             ])
-        )->isFalse();
+        );
     }
 
     public function testValidationCriteria()
@@ -1489,7 +1498,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $validation_class = $itil_class . 'Validation';
         if (!class_exists($validation_class)) {
             // Useless assertion to prevent atoum from marking this as a failure
-            $this->boolean(true)->isTrue();
+            $this->assertTrue(true);
             return;
         }
         $this->login();
@@ -1536,23 +1545,23 @@ abstract class RuleCommonITILObject extends DbTestCase
             'global_validation' => CommonITILValidation::WAITING,
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was NOT executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isNotEqualTo($action_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals($action_value, $itil->fields['impact']);
 
         // Case 2: add validation to the ITIL Object, should trigger the rule
         $update = $itil->update([
             'id'                => $itil_id,
             'global_validation' => CommonITILValidation::ACCEPTED,
         ]);
-        $this->boolean($update)->isTrue();
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($update);
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isEqualTo($action_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals($action_value, $itil->fields['impact']);
 
         // Case 3: create a ITIL Object with validation, should trigger the rule
         $itil = $this->getITILObjectInstance();
@@ -1562,10 +1571,10 @@ abstract class RuleCommonITILObject extends DbTestCase
             'global_validation' => CommonITILValidation::ACCEPTED,
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was executed
-        $this->integer($itil->fields['impact'])->isEqualTo($action_value);
+        $this->assertEquals($action_value, $itil->fields['impact']);
     }
 
     public function testValidationAction()
@@ -1574,7 +1583,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $validation_class = $itil_class . 'Validation';
         if (!class_exists($validation_class)) {
             // Useless assertion to prevent atoum from marking this as a failure
-            $this->boolean(true)->isTrue();
+            $this->assertTrue(true);
             return;
         }
         $this->login();
@@ -1621,23 +1630,22 @@ abstract class RuleCommonITILObject extends DbTestCase
             'priority' => 4,
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was NOT executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['global_validation'])->isNotEqualTo($action_value);
-
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals($action_value, $itil->fields['global_validation']);
         // Case 2: add target priority to the ITIL Object, should trigger the rule
         $update = $itil->update([
             'id'       => $itil_id,
             'priority' => 6,
         ]);
-        $this->boolean($update)->isTrue();
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($update);
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['global_validation'])->isEqualTo($action_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals($action_value, $itil->fields['global_validation']);
 
         // Case 3: create a ITIL Object with target priority, should trigger the rule
         $itil = $this->getITILObjectInstance();
@@ -1647,10 +1655,10 @@ abstract class RuleCommonITILObject extends DbTestCase
             'priority' => 6
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
+        $this->assertTrue($itil->getFromDB($itil_id));
 
         // Check that the rule was executed
-        $this->integer($itil->fields['global_validation'])->isEqualTo($action_value);
+        $this->assertEquals($action_value, $itil->fields['global_validation']);
     }
 
     public function testITILCategoryCode()
@@ -1698,8 +1706,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->getID();
 
         // Check that the rule was executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isEqualTo($rule_action_impact_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals($rule_action_impact_value, $itil->fields['impact']);
 
         // Create another ITIL Object that doesn't match the rule
         $itil = $this->createItem($this->getITILObjectClass(), [
@@ -1710,8 +1718,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->getID();
 
         // Check that the rule was NOT executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isNotEqualTo($rule_action_impact_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals($rule_action_impact_value, $itil->fields['impact']);
 
         // Update ticket to match the rule
         $this->updateItem($this->getITILObjectClass(), $itil_id, [
@@ -1719,8 +1727,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Check that the rule was executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isEqualTo($rule_action_impact_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals($rule_action_impact_value, $itil->fields['impact']);
 
         // Change impact, the rule must not be executed again as the category didn't change
         $this->updateItem($this->getITILObjectClass(), $itil_id, [
@@ -1729,8 +1737,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Check that the rule was NOT executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isNotEqualTo($rule_action_impact_value);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals($rule_action_impact_value, $itil->fields['impact']);
     }
 
     public function testAssignAppliance()
@@ -1792,13 +1800,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilCreate_id
-            ]
-        ))->isEqualTo(1);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilCreate_id
+                ]
+            )
+        );
 
         //create ITIL Object to match rule on update
         $itilUpdate = $this->getITILObjectInstance();
@@ -1809,13 +1820,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
         //no appliance associated
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(0);
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
 
         //update ITIL Object content to match rule
         $itilUpdate->update(
@@ -1827,13 +1841,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         );
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(1);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
     }
 
     public function testRegexAppliance()
@@ -1891,16 +1908,19 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
-        $this->integer($itilCreate_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itilCreate_id);
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilCreate_id
-            ]
-        ))->isEqualTo(1);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilCreate_id
+                ]
+            )
+        );
 
         //create ITIL Object to match rule on update
         $itilUpdate = $this->getITILObjectInstance();
@@ -1911,13 +1931,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
         //no appliance associated
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(0);
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
 
         //update ITIL Object content to match rule
         $itilUpdate->update(
@@ -1928,13 +1951,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         );
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            ['itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(1);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                ['itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
     }
 
     public function testAppendAppliance()
@@ -2009,16 +2035,19 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
-        $this->integer($itilCreate_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itilCreate_id);
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            [
-                'itemtype'  =>  \Appliance::getType(),
-                $itil_fk => $itilCreate_id
-            ]
-        ))->isEqualTo(2);
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype'  =>  \Appliance::getType(),
+                    $itil_fk => $itilCreate_id
+                ]
+            )
+        );
 
         //create ITIL Object to match rule on update
         $itilUpdate = $this->getITILObjectInstance();
@@ -2029,14 +2058,17 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
         //no appliance associated
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            [
-                'itemtype'  =>  \Appliance::getType(),
-                'items_id'   => $appliancetest1_id,
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(0);
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype'  =>  \Appliance::getType(),
+                    'items_id'   => $appliancetest1_id,
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
 
         //update ITIL Object content to match rule
         $itilUpdate->update(
@@ -2047,13 +2079,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         );
 
         //check for one associated element
-        $this->integer(countElementsInTable(
-            $itil_item_table,
-            [
-                'itemtype'  =>  \Appliance::getType(),
-                $itil_fk => $itilUpdate_id
-            ]
-        ))->isEqualTo(2);
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype'  =>  \Appliance::getType(),
+                    $itil_fk => $itilUpdate_id
+                ]
+            )
+        );
     }
 
     public function testStopProcessingAction()
@@ -2145,8 +2180,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->checkInput($itil, $itil_id, $itil_input);
 
         // Check that the rule was executed
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['impact'])->isEqualTo(2);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals(2, $itil->fields['impact']);
     }
 
     /**
@@ -2157,7 +2192,6 @@ abstract class RuleCommonITILObject extends DbTestCase
      */
     protected function testActionProvider(): Generator
     {
-
         // Test 'regex_result' action on the ticket category completename
         $root_category = $this->createItem(ITILCategory::getType(), [
             'name' => 'Category root'
@@ -2454,135 +2488,130 @@ abstract class RuleCommonITILObject extends DbTestCase
     /**
      * Test a given ticket rule
      *
-     * @dataprovider testActionProvider
-     *
-     * @param array  $criteria           Details of the rule criteria:
-     *                                    - condition
-     *                                    - field
-     *                                    - pattern
-     * @param array  $action             Details of the rule action:
-     *                                    - action_type
-     *                                    - field
-     *                                    - value
-     *                                    - field_specific (optionnal, will
-     *                                     contain a callback to handle fields
-     *                                     that are no part of the ticket table,
-     *                                     like assigned groups for exemple)
-     * @param string $control_test_value A control value for the criteria.
-     *                                   This value is not expected to trigger
-     *                                   the rule
-     * @param string $real_test_value    The test value value for the criteria.
-     *                                   This value is expected to trigger the
-     *                                   rule
-     * @param string $expected_value     Expected value if the test succeed.
-     *
      * @return void
      */
-    public function testAction(
-        array $criteria,
-        array $action,
-        string $control_test_value,
-        string $real_test_value,
-        string $expected_value
-    ): void {
+
+    public function testAction(): void
+    {
         global $DB;
 
         $this->login();
 
-        // Disable all others rules before running the test
-        $DB->update(Rule::getTable(), ['is_active' => false], [
-            'sub_type' => "RuleAsset"
-        ]);
-        $active_rules = countElementsInTable(Rule::getTable(), [
-            'is_active' => true,
-            'sub_type'  => "RuleAsset",
-        ]);
-        $this->integer($active_rules)->isEqualTo(0);
+        $provider = $this->testActionProvider();
+        foreach ($provider as $row) {
+            $criteria = $row['criteria'];
+            $action = $row['action'];
+            $control_test_value = $row['control_test_value'];
+            $real_test_value = $row['real_test_value'];
+            $expected_value = $row['expected_value'];
 
-        // Create the rule
-        $rule_ticket = $this->createItem(\RuleTicket::getType(), [
-            'name'      => __FUNCTION__,
-            'match'     => 'AND',
-            'is_active' => true,
-            'sub_type'  => 'RuleTicket',
-            'condition' => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
-        ]);
+            // Disable all others rules before running the test
+            $DB->update(Rule::getTable(), ['is_active' => false], [
+                'sub_type' => "RuleAsset"
+            ]);
+            $active_rules = countElementsInTable(Rule::getTable(), [
+                'is_active' => true,
+                'sub_type' => "RuleAsset",
+            ]);
+            $this->assertEquals(0, $active_rules);
 
-        // Add the condition
-        $this->createItem(RuleCriteria::getType(), [
-            'rules_id'  => $rule_ticket->getID(),
-            'criteria'  => $criteria['field'],
-            'condition' => $criteria['condition'],
-            'pattern'   => $criteria['pattern'],
-        ]);
+            // Create the rule
+            $rule_ticket = $this->createItem(\RuleTicket::getType(), [
+                'name' => __FUNCTION__,
+                'match' => 'AND',
+                'is_active' => true,
+                'sub_type' => 'RuleTicket',
+                'condition' => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+            ]);
 
-        // Add the action
-        $this->createItem(RuleAction::getType(), [
-            'rules_id'    => $rule_ticket->getID(),
-            'action_type' => $action['action_type'],
-            'field'       => $action['field'],
-            'value'       => $action['value'],
-        ]);
+            // Add the condition
+            $this->createItem(RuleCriteria::getType(), [
+                'rules_id' => $rule_ticket->getID(),
+                'criteria' => $criteria['field'],
+                'condition' => $criteria['condition'],
+                'pattern' => $criteria['pattern'],
+            ]);
 
-        // Reset rule cache
-        SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
-        SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+            // Add the action
+            $this->createItem(RuleAction::getType(), [
+                'rules_id' => $rule_ticket->getID(),
+                'action_type' => $action['action_type'],
+                'field' => $action['field'],
+                'value' => $action['value'],
+            ]);
 
-        // First, test the rule on item creation
-        // We will create two items, the first one should NOT trigger the rule
-        // (control test) and the second should trigger the rule.
+            // Reset rule cache
+            SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+            SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
 
-        // Create the control test subject
-        $control_item = $this->createItem(Ticket::getType(), [
-            'name' => $control_test_value,
-            'content' => 'testAction',
-        ]);
+            // First, test the rule on item creation
+            // We will create two items, the first one should NOT trigger the rule
+            // (control test) and the second should trigger the rule.
 
-        // Verify that the test subject didn't trigger the rule
-        $this->variable($this->testActionGetTestResultValue(
-            $action,
-            $control_item
-        ))->isNotEqualTo($expected_value);
+            // Create the control test subject
+            $control_item = $this->createItem(Ticket::getType(), [
+                'name' => $control_test_value,
+                'content' => 'testAction',
+            ]);
 
-        // Create the real test subject
-        $real_item = $this->createItem(Ticket::getType(), [
-            'name' => $real_test_value,
-            'content' => 'testAction',
-        ]);
+            // Verify that the test subject didn't trigger the rule
+            $this->assertNotEquals(
+                $expected_value,
+                $this->testActionGetTestResultValue(
+                    $action,
+                    $control_item
+                )
+            );
 
-        // Verify that the test subject did trigger the rule
-        $this->variable($this->testActionGetTestResultValue(
-            $action,
-            $real_item
-        ))->isEqualTo($expected_value);
+            // Create the real test subject
+            $real_item = $this->createItem(Ticket::getType(), [
+                'name' => $real_test_value,
+                'content' => 'testAction',
+            ]);
 
-        // Second step, test the rule on item update
-        // We will create the item with the control test value, expecting it to
-        // not match the rule, then update it to the real value
+            // Verify that the test subject did trigger the rule
+            $this->assertEquals(
+                $expected_value,
+                $this->testActionGetTestResultValue(
+                    $action,
+                    $real_item
+                )
+            );
 
-        // Create the test subject
-        $item = $this->createItem(Ticket::getType(), [
-            'name'    => $control_test_value,
-            'content' => 'testAction',
-        ]);
+            // Second step, test the rule on item update
+            // We will create the item with the control test value, expecting it to
+            // not match the rule, then update it to the real value
 
-        // Verify that the test subject didn't trigger the rule
-        $this->variable($this->testActionGetTestResultValue(
-            $action,
-            $item
-        ))->isNotEqualTo($expected_value);
+            // Create the test subject
+            $item = $this->createItem(Ticket::getType(), [
+                'name' => $control_test_value,
+                'content' => 'testAction',
+            ]);
 
-        // Updatea the test subject to the value expected by the rule
-        $this->updateItem(Ticket::getType(), $item->fields['id'], [
-            'name' => $real_test_value,
-        ]);
-        $item->getFromDb($item->fields['id']);
+            // Verify that the test subject didn't trigger the rule
+            $this->assertNotEquals(
+                $expected_value,
+                $this->testActionGetTestResultValue(
+                    $action,
+                    $item
+                )
+            );
 
-        // Verify that the test subject did trigger the rule
-        $this->variable($this->testActionGetTestResultValue(
-            $action,
-            $item
-        ))->isEqualTo($expected_value);
+            // Updatea the test subject to the value expected by the rule
+            $this->updateItem(Ticket::getType(), $item->fields['id'], [
+                'name' => $real_test_value,
+            ]);
+            $item->getFromDb($item->fields['id']);
+
+            // Verify that the test subject did trigger the rule
+            $this->assertEquals(
+                $expected_value,
+                $this->testActionGetTestResultValue(
+                    $action,
+                    $item
+                )
+            );
+        }
     }
 
     /**
@@ -2596,7 +2625,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         if (!$itil_object->isField('global_validation')) {
             // Nothing to check if field not exists.
-            $this->boolean(true)->isTrue();
+            $this->assertTrue(true);
             return;
         }
 
@@ -2638,22 +2667,22 @@ abstract class RuleCommonITILObject extends DbTestCase
             ],
             '_add_validation'   => false,
         ], ['validatortype']);
-        $this->integer($itil_object->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
-        $this->integer($itil_object->fields['global_validation'])->isEqualTo(CommonITILValidation::WAITING);
+        $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+        $this->assertEquals(CommonITILValidation::WAITING, $itil_object->fields['global_validation']);
 
         // Change category without triggering the rule
         $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
             'itilcategories_id' => $category2->getID()
         ]);
         $itil_object->getFromDB($itil_object->getID());
-        $this->integer($itil_object->fields['urgency'])->isNotEqualTo($urgency_if_rule_triggered);
+        $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
 
         // Change category and trigger the rule
         $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
             'itilcategories_id' => $category1->getID()
         ]);
         $itil_object->getFromDB($itil_object->getID());
-        $this->integer($itil_object->fields['urgency'])->isEqualTo($urgency_if_rule_triggered);
+        $this->assertEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
     }
 
     /**
@@ -2701,10 +2730,10 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Check if the category "Test category" is assigned
-        $this->integer($itil_object->fields['itilcategories_id'])->isEqualTo($category->getID());
+        $this->assertEquals($category->getID(), $itil_object->fields['itilcategories_id']);
 
         // Check if the location "Test location" is assigned
-        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location->getID());
+        $this->assertEquals($location->getID(), $itil_object->fields['locations_id']);
     }
 
 
@@ -2757,28 +2786,28 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Check if the location "Test location" is assigned
-        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location->getID());
+        $this->assertEquals($location->getID(), $itil_object->fields['locations_id']);
 
         $this->login('tech', 'tech');
 
         //remove requester
         $itil_user = $this->getITILLinkInstance('User');
         $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
-        $this->boolean($itil_user->deleteByCriteria([
+        $this->assertTrue($itil_user->deleteByCriteria([
             "type" => \CommonITILActor::REQUESTER,
             "users_id" => $user->fields['id'],
             $itil_fk => $itil_object->getID(),
-        ]))->isTrue();
+        ]));
 
         //reload ITIL object
-        $this->boolean($itil_object->getFromDB($itil_object->getID()))->isTrue();
+        $this->assertTrue($itil_object->getFromDB($itil_object->getID()));
 
         //Load user tech
         $user = new \User();
         $user->getFromDB(getItemByTypeName('User', 'tech', true));
 
         // update ITIL object to update requester
-        $this->boolean($itil_object->update([
+        $this->assertTrue($itil_object->update([
             'name'                  => 'Test update',
             'id'                    => $itil_object->fields['id'],
             'content'               => 'test',
@@ -2786,9 +2815,9 @@ abstract class RuleCommonITILObject extends DbTestCase
                 "_type" => "user",
                 "users_id" => $user->fields['id']
             ]
-        ]))->isTrue();
+        ]));
 
         // Check if the location "Test location" is assigned
-        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location2->getID());
+        $this->assertEquals($location2->getID(), $itil_object->fields['locations_id']);
     }
 }

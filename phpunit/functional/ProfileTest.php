@@ -201,18 +201,18 @@ class ProfileTest extends DbTestCase
 
         // Get default "Admin" profile
         $profile = new \Profile();
-        $this->boolean($profile->getFromDB(3))->isTrue();
+        $this->assertTrue($profile->getFromDB(3));
 
         // Clone it
         $cloned_profile = new \Profile();
         $clone_profiles_id = $profile->clone([
             'name' => __FUNCTION__,
         ]);
-        $this->integer($clone_profiles_id)->isGreaterThan(0);
-        $this->boolean($cloned_profile->getFromDB($clone_profiles_id))->isTrue();
+        $this->assertGreaterThan(0, $clone_profiles_id);
+        $this->assertTrue($cloned_profile->getFromDB($clone_profiles_id));
 
         // Verify the original profile still references the source profile
-        $this->integer($profile->fields['id'])->isEqualTo(3);
+        $this->assertEquals(3, $profile->fields['id']);
 
         // Some fields in the Profile itself to check that they are cloned
         $core_fields = ['interface', 'helpdesk_hardware', 'helpdesk_item_type'];
@@ -220,7 +220,7 @@ class ProfileTest extends DbTestCase
             if ($field === 'helpdesk_item_type') {
                 $this->array(importArrayFromDB($cloned_profile->fields[$field]))->isEqualTo(importArrayFromDB($profile->fields[$field]));
             } else {
-                $this->variable($cloned_profile->fields[$field])->isEqualTo($profile->fields[$field]);
+                $this->assertEquals($profile->fields[$field], $cloned_profile->fields[$field]);
             }
         }
 
@@ -240,7 +240,7 @@ class ProfileTest extends DbTestCase
         $this->integer(count($rights[$clone_profiles_id]))->isEqualTo(count($rights[3]));
 
         foreach ($rights[3] as $right => $value) {
-            $this->integer($rights[$clone_profiles_id][$right])->isEqualTo($value);
+            $this->assertEquals($value, $rights[$clone_profiles_id][$right]);
         }
     }
 

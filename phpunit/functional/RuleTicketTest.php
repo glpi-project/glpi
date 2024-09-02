@@ -40,16 +40,17 @@ use ContractType;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Location;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
 use Ticket_Contract;
 
-// Force import because of atoum autoloader not working
-require_once 'RuleCommonITILObject.php';
+// Force import because of autoloader not working
+require_once __DIR__ . '/../abstracts/RuleCommonITILObject.php';
 
 /* Test for inc/ruleticket.class.php */
 
-class RuleTicket extends RuleCommonITILObject
+class RuleTicketTest extends RuleCommonITILObject
 {
     public function testGetCriteria()
     {
@@ -89,52 +90,6 @@ class RuleTicket extends RuleCommonITILObject
         );
     }
 
-            1,
-            countElementsInTable(
-        );
-            1,
-            countElementsInTable(
-        ); // Assigned to TU_USER
-            2,
-            countElementsInTable(
-        ); // Assigned to TU_USER + tech
-            Sanitizer::encodeHtmlSpecialChars('<p>test content</p>'),
-            $task_data['content']
-        );
-            $task_data['content']
-            $task_data['content']
-            $task_data['content']
-            $ticket_followups_data['content']
-            $ticket_followups_data['content']
-            $ticket_followups_data['content']
-            $ticket_followups_data['content']
-            1,
-            countElementsInTable(
-        );
-            0,
-            countElementsInTable(
-        );
-            1,
-            countElementsInTable(
-        );
-            1,
-            countElementsInTable(
-        );
-            0,
-            countElementsInTable(
-        );
-            1,
-            countElementsInTable(
-        );
-            2,
-            countElementsInTable(
-        );
-            0,
-            countElementsInTable(
-        );
-            2,
-            countElementsInTable(
-        );
     public function testAssignContract()
     {
         $this->login();
@@ -240,9 +195,7 @@ class RuleTicket extends RuleCommonITILObject
         ];
     }
 
-    /**
-     * @dataProvider testMailHeaderCriteriaProvider
-     */
+    #[DataProvider('testMailHeaderCriteriaProvider')]
     public function testMailHeaderCriteria(
         string $pattern,
         string $header
@@ -295,8 +248,8 @@ class RuleTicket extends RuleCommonITILObject
         ]);
 
         // Verify ITIL Object has priority 5
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['priority'])->isEqualTo(5);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals(5, $itil->fields['priority']);
 
         // Retest ITIL Object with different header value
         $itil_id = $itil->add([
@@ -308,8 +261,8 @@ class RuleTicket extends RuleCommonITILObject
         ]);
 
         // Verify ITIL Object does not have priority 5
-        $this->boolean($itil->getFromDB($itil_id))->isTrue();
-        $this->integer($itil->fields['priority'])->isNotEqualTo(5);
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals(5, $itil->fields['priority']);
     }
 
     /**
@@ -380,18 +333,18 @@ class RuleTicket extends RuleCommonITILObject
 
         // Check that the rule was not executed yet
         $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->integer($ticket->fields['impact'])->isNotEqualTo($rule_value);
+        $this->assertNotEquals($rule_value, $ticket->fields['impact']);
 
         // Update ticket
         $update_1_res = $ticket->update([
             'id' => $ticket->fields['id'],
             'content' => 'content update 1',
         ]);
-        $this->boolean($update_1_res)->isTrue();
+        $this->assertTrue($update_1_res);
 
         // Check that rule was not executed yet
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->fields['impact'])->isNotEqualTo($rule_value);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertNotEquals($rule_value, $ticket->fields['impact']);
 
         // Create contract
         $contract = new Contract();
@@ -417,11 +370,11 @@ class RuleTicket extends RuleCommonITILObject
             'id' => $ticket->fields['id'],
             'content' => 'content update 2',
         ]);
-        $this->boolean($update_2_res)->isTrue();
+        $this->assertTrue($update_2_res);
 
         // Check that rule was executed correctly
-        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->integer($ticket->fields['impact'])->isEqualTo($rule_value);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals($rule_value, $ticket->fields['impact']);
 
        // Create a second ticket with the contract linked
         $ticket_2 = new \Ticket();
@@ -435,8 +388,8 @@ class RuleTicket extends RuleCommonITILObject
         $this->checkInput($ticket_2, $tickets_id_2, $ticket_input_2);
 
         // Check that the rule was executed correctly
-        $this->boolean($ticket_2->getFromDB($tickets_id_2))->isTrue();
-        $this->integer($ticket_2->fields['impact'])->isEqualTo($rule_value);
+        $this->assertTrue($ticket_2->getFromDB($tickets_id_2));
+        $this->assertEquals($rule_value, $ticket_2->fields['impact']);
     }
 
     public function testGroupRequesterAssignFromDefaultUserAndLocationFromUserOnUpdate()
@@ -507,7 +460,7 @@ class RuleTicket extends RuleCommonITILObject
 
         //add default group to user
         $user->fields['groups_id'] = $group_id;
-        $this->boolean($user->update($user->fields))->isTrue();
+        $this->assertTrue($user->update($user->fields));
 
         //create new location
         $location = new \Location();
@@ -518,7 +471,7 @@ class RuleTicket extends RuleCommonITILObject
 
         //add location to user
         $user->fields['locations_id'] = $location_id;
-        $this->boolean($user->update($user->fields))->isTrue();
+        $this->assertTrue($user->update($user->fields));
 
         // Create ITIL Object
         $itil = $this->getITILObjectInstance();
@@ -532,10 +485,11 @@ class RuleTicket extends RuleCommonITILObject
         $this->checkInput($itil, $itil_id, $itil_input);
 
         //locations_id must be set to 0
-        $this->integer($itil->fields['locations_id'])->isIdenticalTo(0);
+        $this->assertSame(0, $itil->fields['locations_id']);
 
         //load ITILGroup (expected false)
         $itil_group = $this->getITILLinkInstance('Group');
+        $this->assertFalse(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
@@ -552,17 +506,17 @@ class RuleTicket extends RuleCommonITILObject
 
         //load ITILGroup
         $itil_group = $this->getITILLinkInstance('Group');
-        $this->boolean(
+        $this->assertTrue(
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
                 'type'      => \CommonITILActor::REQUESTER
             ])
-        )->isTrue();
+        );
 
         //locations_id must be set to
         $itil->getFromDB($itil_id);
-        $this->integer($itil->fields['locations_id'])->isIdenticalTo($location_id);
+        $this->assertSame($location_id, $itil->fields['locations_id']);
     }
 
     public function testNewActors()
@@ -709,16 +663,16 @@ class RuleTicket extends RuleCommonITILObject
         $manager_id = $user->add([
             'name' => 'test manager',
         ]);
-        $this->integer($manager_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $manager_id);
         $user_id = $user->add([
             'name' => 'test user',
             'users_id_supervisor' => $manager_id,
         ]);
-        $this->integer($user_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $user_id);
 
         // check manager
         $user->getFromDB($user_id);
-        $this->integer($user->fields['users_id_supervisor'])->isEqualTo($manager_id);
+        $this->assertEquals($manager_id, $user->fields['users_id_supervisor']);
 
         // create rule
         $ruleticket = new \RuleTicket();
@@ -760,17 +714,17 @@ class RuleTicket extends RuleCommonITILObject
             'content' => 'test manager',
             '_users_id_requester' => [$user_id],
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
         // check manager
         $ticket_user = new \Ticket_User();
-        $this->boolean(
+        $this->assertTrue(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
                 'users_id'      => $manager_id,
                 'type'          => \CommonITILActor::OBSERVER,
             ])
-        )->isTrue();
+        );
     }
 
     public function testAssignProject()

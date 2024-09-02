@@ -455,7 +455,7 @@ class TicketTaskTest extends DbTestCase
             'begin'              => $date_begin_string,
             'end'                => $date_end_string,
         ]);
-        $this->integer($task_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $task_id);
 
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
 
@@ -490,7 +490,7 @@ class TicketTaskTest extends DbTestCase
             'type'       => \CommonITILActor::ASSIGN,
         ]))->isTrue();
 
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
 
         $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
 
@@ -730,7 +730,7 @@ class TicketTaskTest extends DbTestCase
         $data = SearchEngine::getData('ITILFollowup', [
             'criteria' => $criteria,
         ]);
-        $this->integer($data['data']['totalcount'])->isEqualTo(1);
-        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('ticket title');
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals('ticket title', $data['data']['rows'][0]['Ticket_1'][0]['name']);
     }
 }

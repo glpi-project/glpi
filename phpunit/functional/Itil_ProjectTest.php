@@ -89,7 +89,7 @@ class Itil_ProjectTest extends DbTestCase
             $item_count = count($items);
             $this->assertSame(
                 "<span><i class='ti ti-alert-circle me-2'></i>Itil items</span> <span class='badge glpi-badge'>{$item_count}</span>",
-                $itil_project->getTabNameForItem($project))->isIdenticalTo(
+                $itil_project->getTabNameForItem($project)
             );
         }
 

@@ -291,7 +291,7 @@ class ProjectTaskTest extends DbTestCase
         $task->getFromDB($task->getID());
 
         // Check that the task is still linked to the project
-        $this->integer($task->fields['projects_id'])->isEqualTo($project->getID());
+        $this->assertEquals($project->getID(), $task->fields['projects_id']);
 
         // Check if session has an error message
         $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
@@ -340,9 +340,9 @@ class ProjectTaskTest extends DbTestCase
         $subtask2->getFromDB($subtask2->getID());
 
         // Check all tasks have been moved
-        $this->integer($task->fields['projects_id'])->isEqualTo($project2->getID());
-        $this->integer($subtask->fields['projects_id'])->isEqualTo($project2->getID());
-        $this->integer($subtask2->fields['projects_id'])->isEqualTo($project2->getID());
+        $this->assertEquals($project2->getID(), $task->fields['projects_id']);
+        $this->assertEquals($project2->getID(), $subtask->fields['projects_id']);
+        $this->assertEquals($project2->getID(), $subtask2->fields['projects_id']);
     }
 
     public function testCloneProjectTask()
@@ -377,8 +377,8 @@ class ProjectTaskTest extends DbTestCase
         $clonedTask = \ProjectTask::getById($clonedTaskId);
 
         // Check if the cloned task is in the same project with the same name
-        $this->integer($clonedTask->fields['projects_id'])->isEqualTo($project->getID());
-        $this->string($clonedTask->fields['name'])->isEqualTo($task->fields['name'] . ' (copy)');
+        $this->assertEquals($project->getID(), $clonedTask->fields['projects_id']);
+        $this->assertEquals($task->fields['name'] . ' (copy)', $clonedTask->fields['name']);
 
         // Check if the subtask has been cloned
         $clonedSubtask = new \ProjectTask();
@@ -387,9 +387,9 @@ class ProjectTaskTest extends DbTestCase
             'projecttasks_id' => $clonedTaskId,
         ]);
 
-        $this->integer($clonedSubtask->getID())->isGreaterThan(0);
-        $this->integer($clonedSubtask->fields['projects_id'])->isEqualTo($project->getID());
-        $this->string($clonedSubtask->fields['name'])->isEqualTo($subtask->fields['name'] . ' (copy)');
+        $this->assertGreaterThan(0, $clonedSubtask->getID());
+        $this->assertEquals($project->getID(), $clonedSubtask->fields['projects_id']);
+        $this->assertEquals($subtask->fields['name'] . ' (copy)', $clonedSubtask->fields['name']);
 
         // Check if the subtask of the subtask has been cloned
         $clonedSubtask2 = new \ProjectTask();
@@ -398,9 +398,9 @@ class ProjectTaskTest extends DbTestCase
             'projecttasks_id' => $clonedSubtask->getID(),
         ]);
 
-        $this->integer($clonedSubtask2->getID())->isGreaterThan(0);
-        $this->integer($clonedSubtask2->fields['projects_id'])->isEqualTo($project->getID());
-        $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
+        $this->assertGreaterThan(0, $clonedSubtask2->getID());
+        $this->assertEquals($project->getID(), $clonedSubtask2->fields['projects_id']);
+        $this->assertEquals($subtask2->fields['name'] . ' (copy)', $clonedSubtask2->fields['name']);
     }
     protected function testAutochangeStateProvider()
     {
@@ -490,8 +490,8 @@ class ProjectTaskTest extends DbTestCase
     public function testAutochangeState($input, $result)
     {
         $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
-        $this->integer($projecttask->fields['percent_done'])->isEqualTo($result['percent_done']);
-        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo($result['projectstates_id']);
+        $this->assertEquals($result['percent_done'], $projecttask->fields['percent_done']);
+        $this->assertEquals($result['projectstates_id'], $projecttask->fields['projectstates_id']);
     }
 
     protected function testAutoSetDateForAddProvider()
@@ -626,8 +626,8 @@ class ProjectTaskTest extends DbTestCase
         $task = $this->createItem('ProjectTask', $input, $skip_fields);
 
         // Check if the task has been added with the current date
-        $this->variable($task->fields['real_start_date'])->isEqualTo($result['real_start_date']);
-        $this->variable($task->fields['real_end_date'])->isEqualTo($result['real_end_date']);
+        $this->assertEquals($result['real_start_date'], $task->fields['real_start_date']);
+        $this->assertEquals($result['real_end_date'], $task->fields['real_end_date']);
     }
 
     protected function testAutoSetDateForUpdateProvider()
@@ -765,10 +765,10 @@ class ProjectTaskTest extends DbTestCase
         $this->updateItem(\ProjectTask::class, $task->getID(), $input);
 
         $ptask = new \ProjectTask();
-        $this->boolean($ptask->getFromDB($task->getID()))->isTrue();
+        $this->assertTrue($ptask->getFromDB($task->getID()));
 
         foreach ($result as $field => $value) {
-            $this->variable($ptask->fields[$field])->isEqualTo($value);
+            $this->assertEquals($value, $ptask->fields[$field]);
         }
     }
 

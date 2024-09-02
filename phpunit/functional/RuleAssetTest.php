@@ -205,7 +205,7 @@ class RuleAssetTest extends DbTestCase
             'is_active' => true,
             'sub_type'  => "RuleAsset",
         ]);
-        $this->integer($active_rules)->isEqualTo(0);
+        $this->assertEquals(0, $active_rules);
 
         // Create the rule
         $rule_asset = $this->createItem(\RuleAsset::getType(), [
@@ -247,15 +247,15 @@ class RuleAssetTest extends DbTestCase
             'id'          => $item->getID(),
             $action_field => 'value_not_changed',
         ]);
-        $this->boolean($update)->isTrue();
-        $this->boolean($item->getFromDB($item->getID()))->isTrue();
+        $this->assertTrue($update);
+        $this->assertTrue($item->getFromDB($item->getID()));
 
         // Check whether or not the rule affected our item
         $value = $item->fields[$action_field];
         if ($success == true) {
-            $this->string($value)->isEqualTo("value_changed");
+            $this->assertEquals("value_changed", $value);
         } else {
-            $this->string($value)->isEqualTo("value_not_changed");
+            $this->assertEquals("value_not_changed", $value);
         }
     }
 

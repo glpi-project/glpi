@@ -35,22 +35,28 @@
 
 namespace tests\units;
 
-// Force import because of atoum autoloader not working
-require_once 'RuleCommonITILObject.php';
+// Force import because of autoloader not working
+require_once __DIR__ . '/../abstracts/RuleCommonITILObject.php';
 
-class RuleProblem extends RuleCommonITILObject
+class RuleChangeTest extends RuleCommonITILObject
 {
     public function testGetCriteria()
     {
         $rule = $this->getRuleInstance();
         $criteria = $rule->getCriterias();
-        $this->array($criteria)->size->isGreaterThan(19);
+        $this->assertGreaterThan(
+            20,
+            count($criteria)
+        );
     }
 
     public function testGetActions()
     {
         $rule = $this->getRuleInstance();
         $actions  = $rule->getActions();
-        $this->array($actions)->size->isGreaterThan(19);
+        $this->assertGreaterThan(
+            20,
+            count($actions)
+        );
     }
 }

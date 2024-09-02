@@ -125,9 +125,9 @@ class NotificationMailingTest extends DbTestCase
         $this->login();
 
         $user = new \User();
-        $this->boolean((bool)$user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->assertTrue((bool)$user->getFromDB(\Session::getLoginUserID()));
         $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
-        $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
+        $this->assertTrue((bool)$user->isUserNotificationEnable()); //like default configuration
 
         //should be sent
         $notification_target = new \NotificationTargetUser();
@@ -166,9 +166,9 @@ class NotificationMailingTest extends DbTestCase
         ], true))->isTrue();
 
         //check computed value
-        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
-        $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
-        $this->boolean($user->isUserNotificationEnable())->isFalse();
+        $this->assertTrue($user->getFromDB(\Session::getLoginUserID()));
+        $this->assertFalse((bool)$user->fields['is_notif_enable_default']);
+        $this->assertFalse($user->isUserNotificationEnable());
 
         //Notification from NotificationTargetUser must be sent
         $notification_target = new \NotificationTargetUser();

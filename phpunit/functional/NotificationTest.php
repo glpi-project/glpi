@@ -126,7 +126,7 @@ class NotificationTest extends DbTestCase
         $success = $DB->update(\Notification::getTable(), ['is_active' => false], [
             'name' => ['<>', $target_notification]
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
         $this->integer(
             countElementsInTable(
                 \Notification::getTable(),
@@ -149,7 +149,7 @@ class NotificationTest extends DbTestCase
                 "value"      => $cat_B->fields['id'],
             ]
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
 
         // Create tickets
         $this->createItem("Ticket", [
@@ -174,11 +174,11 @@ class NotificationTest extends DbTestCase
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $update_ticket_notif   = new \Notification();
-        $this->boolean($update_ticket_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update']))->isTrue();
+        $this->assertTrue($update_ticket_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update']));
         $update_followup_notif = new \Notification();
-        $this->boolean($update_followup_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_followup']))->isTrue();
+        $this->assertTrue($update_followup_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_followup']));
         $update_task_notif = new \Notification();
-        $this->boolean($update_task_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_task']))->isTrue();
+        $this->assertTrue($update_task_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_task']));
 
         // Create a ticket and attach documents to it
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
@@ -200,9 +200,9 @@ HTML,
                 $prefix,
             ]
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
         $ticket_img = new \Document();
-        $this->boolean($ticket_img->getFromDBByCrit(['tag' => 'aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000']))->isTrue();
+        $this->assertTrue($ticket_img->getFromDBByCrit(['tag' => 'aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000']));
 
         $ticket_doc = $this->createTxtDocument();
         $this->createItem(
@@ -234,9 +234,9 @@ HTML,
                 $prefix,
             ]
         ]);
-        $this->integer($followup_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $followup_id);
         $followup_img = new \Document();
-        $this->boolean($followup_img->getFromDBByCrit(['tag' => 'bbbbbbbb-bbbbbbbb-bbbbbbbbbbbbbb.00000000']))->isTrue();
+        $this->assertTrue($followup_img->getFromDBByCrit(['tag' => 'bbbbbbbb-bbbbbbbb-bbbbbbbbbbbbbb.00000000']));
 
         $followup_doc = $this->createTxtDocument();
         $this->createItem(
@@ -267,9 +267,9 @@ HTML,
                 $prefix,
             ]
         ]);
-        $this->integer($task_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $task_id);
         $task_img = new \Document();
-        $this->boolean($task_img->getFromDBByCrit(['tag' => 'cccccccc-cccccccc-cccccccccccccc.00000000']))->isTrue();
+        $this->assertTrue($task_img->getFromDBByCrit(['tag' => 'cccccccc-cccccccc-cccccccccccccc.00000000']));
 
         $task_doc = $this->createTxtDocument();
         $this->createItem(
@@ -465,12 +465,12 @@ HTML,
             ['is_active' => false],
             ['id' => ['<>', $notification->getID()]]
         );
-        $this->boolean($deactivated)->isTrue();
-        $this->boolean($notification->update(['id' => $notification->getID(), 'is_active' => 1]))->isTrue();
+        $this->assertTrue($deactivated);
+        $this->assertTrue($notification->update(['id' => $notification->getID(), 'is_active' => 1]));
 
         // Update global/notification configuration
         $CFG_GLPI['attach_ticket_documents_to_mail'] = $global_config;
-        $this->boolean($notification->update(['id' => $notification->getID(), 'attach_documents' => $notif_config]))->isTrue();
+        $this->assertTrue($notification->update(['id' => $notification->getID(), 'attach_documents' => $notif_config]));
 
         // Adapt notification template to send expected content format (HTML or plain text)
         $notification_notificationtemplate_it = $DB->request([
@@ -488,7 +488,7 @@ HTML,
                     ['content_html' => $send_html ? '<p>HTML</p>' : null],
                     ['notificationtemplates_id' => $notificationtemplate_data['id']]
                 );
-                $this->boolean($template_updated)->isTrue();
+                $this->assertTrue($template_updated);
             }
         }
 
@@ -500,18 +500,18 @@ HTML,
             'id' => $item_to_update->getID(),
             'content' => $item_to_update->fields['content'] . '<p>updated</p>',
         ]);
-        $this->boolean($updated)->isTrue();
+        $this->assertTrue($updated);
 
         // Check documents attached to notification
         $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
-        $this->array($queued_notifications)->hasSize(1);
+        $this->assertCount(1, $queued_notifications);
 
         \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
 
         $attachments = $transport->sent_email->getAttachments();
-        $this->array($attachments)->hasSize(count($expected_attachments));
+        $this->assertCount(count($expected_attachments), $attachments);
 
         $attachement_filenames = [];
         foreach ($attachments as $attachment) {
@@ -526,7 +526,7 @@ HTML,
         }
         sort($expected_filenames);
 
-        $this->array($attachement_filenames)->isEqualTo($expected_filenames);
+        $this->assertEquals($expected_filenames, $attachement_filenames);
     }
 
     /**
@@ -539,7 +539,7 @@ HTML,
         $image = imagecreate(100, 100);
         $this->object($image)->isInstanceOf(\GdImage::class);
         $this->integer(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
-        $this->boolean(imagepng($image, GLPI_TMP_DIR . '/' . $filename))->isTrue();
+        $this->assertTrue(imagepng($image, GLPI_TMP_DIR . '/' . $filename));
 
         return $filename;
     }

@@ -792,7 +792,7 @@ class RuleTest extends DbTestCase
         // Test with a rule type which a single rule
         $softcat_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleSoftwareCategory']);
         // Make sure this test is still valid
-        $this->integer($softcat_rule_count)->isEqualTo(1);
+        $this->assertEquals(1, $softcat_rule_count);
 
         $rule = new \RuleSoftwareCategory();
         $rule->add([
@@ -804,17 +804,17 @@ class RuleTest extends DbTestCase
             'sub_type' => 'RuleSoftwareCategory',
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 1);
+        $this->assertEquals($ranking_start + 1, $rule->fields['ranking']);
         $rule->add([
             'sub_type' => 'RuleSoftwareCategory',
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 2);
+        $this->assertEquals($ranking_start + 2, $rule->fields['ranking']);
 
         // Test with a rule type which already has more than 1 rule
         $ticket_rule_count = countElementsInTable('glpi_rules', ['sub_type' => 'RuleTicket']);
         // Make sure this test is still valid
-        $this->integer($ticket_rule_count)->isGreaterThan(1);
+        $this->assertGreaterThan(1, $ticket_rule_count);
 
         $rule = new \RuleTicket();
         $rule->add([
@@ -826,12 +826,12 @@ class RuleTest extends DbTestCase
             'sub_type' => 'RuleTicket',
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 1);
+        $this->assertEquals($ranking_start + 1, $rule->fields['ranking']);
         $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo($ranking_start + 2);
+        $this->assertEquals($ranking_start + 2, $rule->fields['ranking']);
 
         // Test with a rule type which has no rules
         $rule = new RuleTest();
@@ -839,17 +839,17 @@ class RuleTest extends DbTestCase
             'sub_type' => RuleTest::class,
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo(0);
+        $this->assertEquals(0, $rule->fields['ranking']);
         $rule->add([
             'sub_type' => RuleTest::class,
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+        $this->assertEquals(1, $rule->fields['ranking']);
         $rule->add([
             'sub_type' => RuleTest::class,
             'name'     => 'test'
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo(2);
+        $this->assertEquals(2, $rule->fields['ranking']);
     }
 
     public function testMoveRule()
@@ -960,7 +960,7 @@ class RuleTest extends DbTestCase
             'name'     => __FUNCTION__,
             'ranking'  => -1
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo($last_ranking + 1);
+        $this->assertEquals($last_ranking + 1, $rule->fields['ranking']);
     }
 
     public function testValidRankingOnAdd()
@@ -971,13 +971,13 @@ class RuleTest extends DbTestCase
             'name'     => __FUNCTION__,
             'ranking'  => 1
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+        $this->assertEquals(1, $rule->fields['ranking']);
         $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => __FUNCTION__,
             'ranking'  => 1
         ]);
-        $this->integer($rule->fields['ranking'])->isEqualTo(1);
+        $this->assertEquals(1, $rule->fields['ranking']);
     }
 }
 

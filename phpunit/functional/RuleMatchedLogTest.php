@@ -41,7 +41,7 @@ use Printer;
 
 /* Test for inc/rule.class.php */
 
-class RuleMatchedLog extends DbTestCase
+class RuleMatchedLogTest extends DbTestCase
 {
     public function testCriteriaAddition()
     {
@@ -104,23 +104,23 @@ class RuleMatchedLog extends DbTestCase
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
         }
-        $this->boolean($inventory->inError())->isFalse();
-        $this->array($inventory->getErrors())->isEmpty();
+        $this->assertFalse($inventory->inError());
+        $this->assertEmpty($inventory->getErrors());
 
         $printers_id = $inventory->getItem()->fields['id'];
-        $this->integer($printers_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $printers_id);
 
-        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+        $this->assertTrue($printer->getFromDB($printers_id));
 
-        $this->boolean($rulematchedlog->getFromDBByCrit(
+        $this->assertTrue($rulematchedlog->getFromDBByCrit(
             [
                 'items_id' => $printers_id,
                 'itemtype' => Printer::class,
             ]
-        ))->isTrue();
+        ));
         $input = $rulematchedlog->fields['input'];
-        $this->string($input)->isNotEmpty();
-        $this->string($input)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
+        $this->assertNotEmpty($input);
+        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}', $input);
 
         // Update test
         $xmlupdate = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -154,14 +154,14 @@ class RuleMatchedLog extends DbTestCase
         if ($inventoryupdate->inError()) {
             $this->dump($inventoryupdate->getErrors());
         }
-        $this->boolean($inventoryupdate->inError())->isFalse();
-        $this->array($inventoryupdate->getErrors())->isEmpty();
+        $this->assertFalse($inventoryupdate->inError());
+        $this->assertEmpty($inventoryupdate->getErrors());
 
         $results = $rulematchedlog->find([
             'items_id' => $printers_id,
             'itemtype' => Printer::class,
         ]);
-        $this->integer(count($results))->isEqualTo(2);
+        $this->assertEquals(2, count($results));
         $result = $rulematchedlog->find(
             [
                 'items_id' => $printers_id,
@@ -172,7 +172,7 @@ class RuleMatchedLog extends DbTestCase
         );
         $update_result = reset($result);
         $input = $update_result['input'];
-        $this->string($input)->isNotEmpty();
-        $this->string($input)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
+        $this->assertNotEmpty($input);
+        $this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}', $input);
     }
 }

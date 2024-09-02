@@ -133,7 +133,7 @@ class NotificationTargetTicketTest extends DbTestCase
             "itemtype_target" => \User::class,
             "items_id_target" => getItemByTypeName(\User::class, TU_USER, true),
         ]);
-        $this->integer($ticket_validation_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_validation_id);
 
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -155,7 +155,7 @@ class NotificationTargetTicketTest extends DbTestCase
             "itemtype_target" => \User::class,
             "items_id_target" => getItemByTypeName(\User::class, 'jsmith123', true),
         ]);
-        $this->integer($ticket_validation_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_validation_id);
 
         $basic_options['validation_id'] = $ticket_validation_id;
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -515,7 +515,7 @@ class NotificationTargetTicketTest extends DbTestCase
             "root.tld",
             $root_tickets_id
         ], $expected_raw_url);
-        $this->string($ret['##ticket.url##'])->isEqualTo($root_expected_url);
+        $this->assertEquals($root_expected_url, $ret['##ticket.url##']);
 
         // test sub entity with changed url
         $entity  = new \Entity();
@@ -542,6 +542,6 @@ class NotificationTargetTicketTest extends DbTestCase
             "parent.tld",
             $parent_tickets_id
         ], $expected_raw_url);
-        $this->string($ret['##ticket.url##'])->isEqualTo($parent_expected_url);
+        $this->assertEquals($parent_expected_url, $ret['##ticket.url##']);
     }
 }
