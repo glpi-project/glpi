@@ -40,6 +40,7 @@ use Contract;
 use DbTestCase;
 use Domain_Item;
 use Notepad;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Session;
 use Ticket;
@@ -102,9 +103,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider actionsProvider
-     */
+    #[DataProvider('actionsProvider')]
     public function testGetAllMassiveActions($itemtype, $items_id, $allcount, $singlecount)
     {
         $this->login();
@@ -212,9 +211,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider amendCommentProvider
-     */
+    #[DataProvider('amendCommentProvider')]
     public function testProcessMassiveActionsForOneItemtype_AmendComment(
         CommonDBTM $item,
         bool $itemtype_is_compatible,
@@ -294,9 +291,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addNoteProvider
-     */
+    #[DataProvider('addNoteProvider')]
     public function testProcessMassiveActionsForOneItemtype_AddNote(
         CommonDBTM $item,
         bool $has_right
@@ -389,9 +384,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider linkToProblemProvider
-     */
+    #[DataProvider('linkToProblemProvider')]
     public function testProcessMassiveActionsForOneItemtype_linkToProblem(
         CommonDBTM $item,
         array $input,
@@ -686,14 +679,13 @@ class MassiveActionTest extends DbTestCase
     }
 
     /**
-     * Test the the "delete_email" massive action for User
-     *
-     * @dataProvider deleteEmailsProvider
+     * Test the "delete_email" massive action for User
      *
      * @param array $items Arrays of users' ids
      * @param int   $ok    Number of items that should be marked as OK
      * @param int   $ko    Number of items that should be marked as KO
      */
+    #[DataProvider('deleteEmailsProvider')]
     public function testProcessMassiveActionsForOneItemtype_deleteEmail(
         array $items,
         int $ok,

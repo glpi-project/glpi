@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ReservationTest extends DbTestCase
 {
@@ -135,9 +136,7 @@ class ReservationTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataAddReservationTest
-     */
+    #[DataProvider('dataAddReservationTest')]
     public function testAddJustOneReservation($begin, $end): void
     {
         $this->login();

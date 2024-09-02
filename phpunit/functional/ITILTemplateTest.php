@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/itiltemplate.class.php */
 class ITILTemplateTest extends DbTestCase
@@ -49,9 +50,7 @@ class ITILTemplateTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testTemplateUsage($itiltype)
     {
         $this->login();
@@ -156,9 +155,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertGreaterThan(0, $tid);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetAllowedFields($itiltype)
     {
         $class = $itiltype . 'Template';
@@ -298,9 +295,7 @@ class ITILTemplateTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider fieldsProvider
-     * */
+    #[DataProvider('fieldsProvider')]
     public function testGetMandatoryFields($itemtype, $fields)
     {
         $tpl_class = '\\' . $itemtype . 'Template';
@@ -311,9 +306,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertSame($fields, $result);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetTabNameForItem($itiltype)
     {
         $this->login();
@@ -337,9 +330,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertSame($expected, $tpl->getTabNameForItem($tpl));
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testTasks($itiltype)
     {
         $this->login();
@@ -435,9 +426,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertCount(2, $iterator);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetITILTemplateToUse($itiltype)
     {
         $this->login('tech', 'tech');

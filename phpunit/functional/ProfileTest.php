@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/profile.class.php */
 
@@ -100,9 +101,8 @@ class ProfileTest extends DbTestCase
      *
      * @param array   $user     Array containing 'login' and 'password' fields of tested user.
      * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
-     *
-     * @dataProvider haveUserRightProvider
      */
+    #[DataProvider('haveUserRightProvider')]
     public function testHaveUserRight(array $user, array $rightset)
     {
 

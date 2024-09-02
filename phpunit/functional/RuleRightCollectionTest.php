@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RuleRightCollectionTest extends DbTestCase
 {
@@ -65,9 +66,7 @@ class RuleRightCollectionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider prepateInputDataForProcessProvider
-     */
+    #[DataProvider('prepateInputDataForProcessProvider')]
     public function testPrepareInputDataForProcess($input, $params, $expected)
     {
         $collection = new \RuleRightCollection();

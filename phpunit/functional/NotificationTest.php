@@ -41,6 +41,7 @@ use Group;
 use Group_User;
 use NotificationEvent;
 use NotificationTarget;
+use PHPUnit\Framework\Attributes\DataProvider;
 use QueuedNotification;
 use User;
 
@@ -423,9 +424,7 @@ HTML,
         }
     }
 
-    /**
-     * @dataProvider attachedDocumentsProvider
-     */
+    #[DataProvider('attachedDocumentsProvider')]
     public function testAttachedDocuments(
         int $global_config,
         int $notif_config,

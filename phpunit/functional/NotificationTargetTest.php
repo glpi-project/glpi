@@ -39,6 +39,7 @@ use DbTestCase;
 use Entity;
 use Generator;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 
 /* Test for inc/notificationtarget.class.php */
@@ -216,9 +217,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getReplyToProvider
-     */
+    #[DataProvider('getReplyToProvider')]
     public function testGetReplyTo(
         array $global_config,
         array $entities_configs,
@@ -441,9 +440,8 @@ class NotificationTargetTest extends DbTestCase
 
     /**
      * Tests for NotificationTarget::getInstanceClass
-     *
-     * @dataProvider testGetInstanceClassProvider
      */
+    #[DataProvider('testGetInstanceClassProvider')]
     public function testGetInstanceClass(string $itemtype, string $class): void
     {
         $output = \NotificationTarget::getInstanceClass($itemtype);
@@ -486,9 +484,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testFormatUrlProvider
-     */
+    #[DataProvider('testFormatUrlProvider')]
     public function testFormatUrl(int $usertype, string $redirect, string $expected): void
     {
         $instance = new \NotificationTarget();
@@ -552,9 +548,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider messageItemProvider
-     */
+    #[DataProvider('messageItemProvider')]
     public function testGetMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event, string $expected)
     {
         //set UUID

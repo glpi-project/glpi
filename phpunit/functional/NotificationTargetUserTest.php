@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/notificationtargetuser.class.php */
 
@@ -97,9 +98,7 @@ class NotificationTargetUserTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addDataForPasswordExpiresTemplateProvider
-     */
+    #[DataProvider('addDataForPasswordExpiresTemplateProvider')]
     public function testAddDataForPasswordExpiresTemplate(int $expiration_time, int $lock_delay, array $expected)
     {
         global $CFG_GLPI;

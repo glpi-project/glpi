@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
 /* Test for inc/rulecriteria.class.php */
@@ -1056,9 +1057,7 @@ class RuleCriteriaTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider ruleCriteriaMatchProvider
-    */
+    #[DataProvider('ruleCriteriaMatchProvider')]
     public function testMatch(int $condition, string $pattern, string $value, bool $matches)
     {
         $criteria = new \RuleCriteria();

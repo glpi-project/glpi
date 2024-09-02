@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 
 /* Test for inc/rule.class.php */
@@ -371,9 +372,7 @@ class RuleTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider actionsNamesProvider
-     */
+    #[DataProvider('actionsNamesProvider')]
     public function testGetActionName($label, $field)
     {
         $ruleTicket = new \RuleTicket();
@@ -712,32 +711,33 @@ class RuleTest extends DbTestCase
             'sub_type'  => 'RuleSoftwareCategory',
             'name'      => __FUNCTION__
         ]);
-        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 1);
+        $this->assertSame($ranking_start + 1, $rule->fields['ranking']);
         $rules_id_3 = $rule->add([
             'sub_type'  => 'RuleSoftwareCategory',
             'name'      => __FUNCTION__
         ]);
-        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 2);
+        $this->assertSame($ranking_start + 2, $rule->fields['ranking']);
         $rules_id_4 = $rule->add([
             'sub_type'  => 'RuleSoftwareCategory',
             'name'      => __FUNCTION__
         ]);
-        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 3);
+        $this->assertSame($ranking_start + 3, $rule->fields['ranking']);
 
         $rule->update([
             'id'      => $rules_id_1,
             'ranking' => $ranking_start + 2
         ]);
-        $this->integer($rule->fields['ranking'])->isIdenticalTo($ranking_start + 2);
+        $this->assertSame($ranking_start + 2, $rule->fields['ranking']);
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isIdenticalTo(
+            $this->assertSame(
                 match ($data['id']) {
                     $rules_id_1 => $ranking_start + 2,
                     $rules_id_2 => $ranking_start,
                     $rules_id_3 => $ranking_start + 1,
                     $rules_id_4 => $ranking_start + 3
-                }
+                },
+                $data['ranking']
             );
         }
     }
@@ -834,19 +834,19 @@ class RuleTest extends DbTestCase
         $this->assertEquals($ranking_start + 2, $rule->fields['ranking']);
 
         // Test with a rule type which has no rules
-        $rule = new RuleTest();
+        $rule = new MyRuleTest();
         $rule->add([
-            'sub_type' => RuleTest::class,
+            'sub_type' => MyRuleTest::class,
             'name'     => 'test'
         ]);
         $this->assertEquals(0, $rule->fields['ranking']);
         $rule->add([
-            'sub_type' => RuleTest::class,
+            'sub_type' => MyRuleTest::class,
             'name'     => 'test'
         ]);
         $this->assertEquals(1, $rule->fields['ranking']);
         $rule->add([
-            'sub_type' => RuleTest::class,
+            'sub_type' => MyRuleTest::class,
             'name'     => 'test'
         ]);
         $this->assertEquals(2, $rule->fields['ranking']);
@@ -878,13 +878,14 @@ class RuleTest extends DbTestCase
         $collection->moveRule($rules_id_1, 0, $ranking_start + 2);
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isEqualTo(
+            $this->assertEquals(
                 match ($data['id']) {
                     $rules_id_1 => $ranking_start + 2,
                     $rules_id_2 => $ranking_start,
                     $rules_id_3 => $ranking_start + 1,
                     $rules_id_4 => $ranking_start + 3
-                }
+                },
+                $data['ranking']
             );
         }
 
@@ -892,13 +893,14 @@ class RuleTest extends DbTestCase
         $collection->moveRule($rules_id_3, $rules_id_2, 'before');
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isEqualTo(
+            $this->assertEquals(
                 match ($data['id']) {
                     $rules_id_1 => $ranking_start + 2,
                     $rules_id_2 => $ranking_start + 1,
                     $rules_id_3 => $ranking_start,
                     $rules_id_4 => $ranking_start + 3
-                }
+                },
+                $data['ranking']
             );
         }
 
@@ -906,13 +908,14 @@ class RuleTest extends DbTestCase
         $collection->moveRule($rules_id_1, $rules_id_4, 'after');
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isEqualTo(
+            $this->assertEquals(
                 match ($data['id']) {
                     $rules_id_1 => $ranking_start + 3,
                     $rules_id_2 => $ranking_start + 1,
                     $rules_id_3 => $ranking_start,
                     $rules_id_4 => $ranking_start + 2
-                }
+                },
+                $data['ranking']
             );
         }
 
@@ -920,13 +923,14 @@ class RuleTest extends DbTestCase
         $collection->moveRule($rules_id_1, 0, 'before');
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isEqualTo(
+            $this->assertEquals(
                 match ($data['id']) {
                     $rules_id_1 => 0, // Before all makes it rank 0 always
                     $rules_id_2 => $ranking_start + 2,
                     $rules_id_3 => $ranking_start + 1,
                     $rules_id_4 => $ranking_start + 3
-                }
+                },
+                $data['ranking']
             );
         }
 
@@ -934,13 +938,14 @@ class RuleTest extends DbTestCase
         $collection->moveRule($rules_id_1, 0, 'after');
         $rules = getAllDataFromTable('glpi_rules', ['name' => __FUNCTION__]);
         foreach ($rules as $data) {
-            $this->integer($data['ranking'])->isEqualTo(
+            $this->assertEquals(
                 match ($data['id']) {
                     $rules_id_1 => $ranking_start + 3,
                     $rules_id_2 => $ranking_start + 1,
                     $rules_id_3 => $ranking_start,
                     $rules_id_4 => $ranking_start + 2
-                }
+                },
+                $data['ranking']
             );
         }
     }
@@ -953,7 +958,7 @@ class RuleTest extends DbTestCase
             'name'     => __FUNCTION__,
             'ranking'  => -1
         ]);
-        $this->integer($rule->fields['ranking'])->isNotEqualTo(-1);
+        $this->assertNotEquals(-1, $rule->fields['ranking']);
         $last_ranking = $rule->fields['ranking'];
         $rule->add([
             'sub_type' => 'RuleTicket',
@@ -982,12 +987,12 @@ class RuleTest extends DbTestCase
 }
 
 // @codingStandardsIgnoreStart
-class RuleTest extends \Rule
+class MyRuleTest extends \Rule
 {
 }
 
 // @codingStandardsIgnoreStart
-/** @used-by RuleTest */
-class RuleTestCollection extends \RuleCollection
+/** @used-by MyRuleTest */
+class MyRuleTestCollection extends \RuleCollection
 {
 }
