@@ -121,7 +121,7 @@ class Antivirus extends InventoryAsset
         $value = $this->data;
         $itemAntivirus = new ItemAntivirus();
 
-       //check for existing
+        //check for existing
         foreach ($value as $k => $val) {
             $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
             $compare = array_map('strtolower', $compare);
@@ -140,7 +140,7 @@ class Antivirus extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) !== 0) {
+        if (count($db_antivirus) !== 0) {
             foreach ($db_antivirus as $idtmp => $data) {
                 if ($data['is_dynamic'] == 1) {
                     $itemAntivirus->delete(['id' => $idtmp], true);

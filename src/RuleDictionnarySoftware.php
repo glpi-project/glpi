@@ -54,11 +54,6 @@ class RuleDictionnarySoftware extends Rule
         return __('Dictionary of software');
     }
 
-    public function maxActionsCount()
-    {
-        return 4;
-    }
-
     public function getCriterias()
     {
         static $criterias = [];

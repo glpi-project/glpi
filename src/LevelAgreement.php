@@ -488,6 +488,7 @@ TWIG, $twig_params);
             $nb = 0;
             switch ($item->getType()) {
                 case 'SLM':
+                    /** @var \SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
@@ -1011,6 +1012,18 @@ TWIG, $twig_params);
         }
 
         Rule::cleanForItemAction($this);
+    }
+
+    public function post_clone($source, $history)
+    {
+        // Clone levels
+        $classname = get_called_class();
+        $fk        = getForeignKeyFieldForItemType($classname);
+        $level     = new static::$levelclass();
+        foreach ($level->find([$fk => $source->getID()]) as $data) {
+            $level->getFromDB($data['id']);
+            $level->clone([$fk => $this->getID()]);
+        }
     }
 
     /**

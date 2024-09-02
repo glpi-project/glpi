@@ -6167,7 +6167,7 @@ JAVASCRIPT;
      *
      * @return string
      */
-    public static function getThumbnailURLForPicture(string $picture = null)
+    public static function getThumbnailURLForPicture(?string $picture = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

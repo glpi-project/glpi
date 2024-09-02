@@ -486,7 +486,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string|void
      **/
-    public function collect($mailgateID, $display = 0)
+    public function collect($mailgateID, $display = false)
     {
         /**
          * @var array $CFG_GLPI
@@ -1136,7 +1136,7 @@ class MailCollector extends CommonDBTM
        // Wrap content for blacklisted items
         $cleaned_count = 0;
         $itemstoclean = [];
-        $blacklisted_contents = $DB->request(['FROM' => 'glpi_blacklistedmailcontents']);
+        $blacklisted_contents = $DB->request(['FROM' => BlacklistedMailContent::getTable()]);
         foreach ($blacklisted_contents as $data) {
             $toclean = trim($data['content']);
             if (!empty($toclean)) {
@@ -1823,7 +1823,7 @@ class MailCollector extends CommonDBTM
             $content .= sprintf('(%s)', $mailer::buildDsn(false));
         }
 
-        $collectors = $DB->request(['FROM' => 'glpi_mailcollectors']);
+        $collectors = $DB->request(['FROM' => self::getTable()]);
         foreach ($collectors as $mc) {
             $content .= "\nName: '" . $mc['name'] . "'";
             $content .= "\n\tActive: " . ($mc['is_active'] ? "Yes" : "No");
@@ -2058,7 +2058,9 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
      *
      * @see NotificationTarget::getMessageIdForEvent()
      *
-     * @return string
+     * @param string $header
+     *
+     * @return array|null
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {

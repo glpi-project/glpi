@@ -910,7 +910,7 @@ abstract class MainAsset extends InventoryAsset
         $input = $this->handleInput($val, $this->item);
 
         if ($this->isNew()) {
-            // ONADD were already exececuted, and we want to skip rules that are only ONUPDATE
+            // ONADD were already executed, and we want to skip rules that are only ONUPDATE
             $input['_skip_rules'] = true;
         }
 

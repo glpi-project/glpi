@@ -105,8 +105,8 @@ class Rule extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            RuleAction::class,
-            RuleCriteria::class
+            $this->ruleactionclass,
+            $this->rulecriteriaclass
         ];
     }
 
@@ -516,11 +516,17 @@ class Rule extends CommonDBTM
         return false;
     }
 
+    /**
+     * @phpstan-return class-string<RuleAction>
+     */
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
 
+    /**
+     * @phpstan-return class-string<RuleCriteria>
+     */
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;
@@ -944,7 +950,7 @@ class Rule extends CommonDBTM
      * @see {@link actions}
      * @see {@link criterias}
      **/
-    public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
+    public function getRuleWithCriteriasAndActions($ID, $withcriterias = false, $withactions = false)
     {
         if (static::isNewID($ID)) {
             return $this->getEmpty();
@@ -1397,8 +1403,8 @@ JS
     /**
      * Process the rule
      *
-     * @param array &$input the input data used to check criterias
-     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$input the input data used to check criteria
+     * @param array &$output the initial output array used to be manipulated by actions
      * @param array &$params parameters for all internal functions
      * @param array &$options array options:
      *                     - only_criteria : only react on specific criteria
@@ -1577,12 +1583,12 @@ JS
     /**
      * Process a criteria of a rule
      *
-     * @param RuleCriteria &$criteria  criteria to check
+     * @param RuleCriteria $criteria  criteria to check
      * @param array &$input     the input data used to check criteria
      *
      * @return boolean
      **/
-    public function checkCriteria(&$criteria, &$input)
+    public function checkCriteria($criteria, &$input)
     {
         $partial_regex_result = [];
         // Undefine criteria field : set to blank
@@ -3027,12 +3033,12 @@ JS
     /**
      * Clean Rule with Action or Criteria linked to an item
      *
-     * @param Object $item
-     * @param string $field name (default is FK to item)
-     * @param object $ruleitem (instance of Rules of SlaLevel)
-     * @param string $table (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-     * @param string $valfield (value or pattern)
-     * @param string $fieldfield (criteria of field)
+     * @param CommonDBTM $item
+     * @param string     $field      name (default is FK to item)
+     * @param Rule       $ruleitem   instance of Rules of SlaLevel
+     * @param string     $table      glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias
+     * @param string     $valfield   value or pattern
+     * @param string     $fieldfield criteria of field
      **/
     private static function cleanForItemActionOrCriteria(
         $item,

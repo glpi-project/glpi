@@ -71,6 +71,7 @@ class CableStrand extends CommonDropdown
             $nb = 0;
             switch ($item->getType()) {
                 case __CLASS__:
+                    /** @var CableStrand $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             Cable::getTable(),
@@ -87,6 +88,7 @@ class CableStrand extends CommonDropdown
     {
 
         if ($item->getType() == __CLASS__) {
+            /** @var CableStrand $item */
             switch ($tabnum) {
                 case 1:
                     $item->showItems();

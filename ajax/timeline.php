@@ -83,6 +83,14 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
+    if (!$parent instanceof CommonITILObject) {
+        trigger_error(
+            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
+            E_USER_WARNING
+        );
+        exit();
+    }
+
     $twig = TemplateRenderer::getInstance();
     $template = null;
     if (isset($_REQUEST[$parent::getForeignKeyField()])) {

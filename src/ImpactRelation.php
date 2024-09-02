@@ -102,8 +102,6 @@ class ImpactRelation extends CommonDBRelation
      * Get an impact id from an input form
      *
      * @param array $input   Array containing the impact to be deleted
-     * @param array $options
-     * @param bool  $history
      *
      * @return bool false on failure
      */

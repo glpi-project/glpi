@@ -49,11 +49,6 @@ class RuleDictionnaryPrinter extends Rule
         return __('Dictionary of printers');
     }
 
-    public function maxActionsCount()
-    {
-        return 4;
-    }
-
     public function getCriterias()
     {
         static $criterias = [];

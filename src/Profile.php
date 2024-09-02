@@ -838,7 +838,7 @@ class Profile extends CommonDBTM
      * @param string $form The tab/form name
      * @phpstan-param non-empty-string $form
      * @param string $interface The interface name
-     * @phpstan-param 'central'|'helpdesk' $interface
+     * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @return array
      * @phpstan-type RightDefinition = array{rights: array{}, label: string, field: string, scope: string}
      * @phpstan-return $interface == 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form == 'all' ? array<string, array<string, RightDefinition[]>> : ($group == 'all' ? array<string, RightDefinition[]> : RightDefinition[]))

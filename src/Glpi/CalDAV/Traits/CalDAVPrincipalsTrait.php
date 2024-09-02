@@ -115,7 +115,7 @@ trait CalDAVPrincipalsTrait
     /**
      * Get visible groups for current session.
      *
-     * @return array
+     * @return Iterator
      */
     protected function getVisibleGroupsIterator(): Iterator
     {
@@ -159,7 +159,7 @@ trait CalDAVPrincipalsTrait
     /**
      * Get visible users for current session.
      *
-     * @return array
+     * @return Iterator
      */
     protected function getVisibleUsersIterator(): Iterator
     {

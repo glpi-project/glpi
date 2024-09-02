@@ -365,6 +365,13 @@ class Entity extends CommonTreeDropdown
             $input['altitude'] = $parent->fields['altitude'];
         }
 
+        if (!array_key_exists('custom_css_code', $input) || $input['custom_css_code'] === null) {
+            // The `custom_css_code` field is a textfield and therefore has no default value.
+            // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
+            // See https://github.com/glpi-project/glpi/pull/17648
+            $input['custom_css_code'] = '';
+        }
+
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
         }
@@ -389,6 +396,13 @@ class Entity extends CommonTreeDropdown
 
         $input = $this->handleConfigStrategyFields($input);
         $input = $this->handleSatisfactionSurveyConfigOnUpdate($input);
+
+        if (array_key_exists('custom_css_code', $input) && $input['custom_css_code'] === null) {
+            // The `custom_css_code` field is a textfield and therefore has no default value.
+            // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
+            // See https://github.com/glpi-project/glpi/pull/17648
+            $input['custom_css_code'] = '';
+        }
 
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
@@ -1890,7 +1904,6 @@ class Entity extends CommonTreeDropdown
             $this->fields['id'],
             'custom_css_code'
         );
-
         if (empty($custom_css_code)) {
             return '';
         }
@@ -2912,6 +2925,7 @@ class Entity extends CommonTreeDropdown
      *
      * @param string $entity_string
      * @param string|null $title
+     *
      * @return string
      */
     public static function badgeCompletename(string $entity_string = "", ?string $title = null): string

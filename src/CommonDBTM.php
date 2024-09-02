@@ -343,10 +343,10 @@ class CommonDBTM extends CommonGLPI
         $item = new static();
 
         foreach ($iter as $row) {
-            if (!isset($row["id"])) {
+            if (!isset($row[static::getIndexName()])) {
                 continue;
             }
-            if ($item->getFromDB($row["id"])) {
+            if ($item->getFromDB($row[static::getIndexName()])) {
                 yield $item;
             }
         }
@@ -366,7 +366,8 @@ class CommonDBTM extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = ['SELECT' => 'id',
+        $crit = [
+            'SELECT' => static::getIndexName(),
             'FROM'   => static::getTable(),
             'WHERE'  => $crit
         ];
@@ -374,7 +375,7 @@ class CommonDBTM extends CommonGLPI
         $iter = $DB->request($crit);
         if (count($iter) === 1) {
             $row = $iter->current();
-            return $this->getFromDB($row['id']);
+            return $this->getFromDB($row[static::getIndexName()]);
         } else if (count($iter) > 1) {
             trigger_error(
                 sprintf(
@@ -2893,7 +2894,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function can($ID, int $right, array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null): bool
     {
         if (Session::isInventory()) {
             return true;
@@ -3969,7 +3970,7 @@ class CommonDBTM extends CommonGLPI
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
     }
 

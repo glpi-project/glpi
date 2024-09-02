@@ -4163,7 +4163,7 @@ TWIG, $twig_params);
         global $DB;
 
         $it = $DB->request([
-            'FROM' => 'glpi_authldaps',
+            'FROM' => self::getTable(),
             'WHERE' => ['is_default' => 1, 'is_active' => 1],
             'LIMIT' => 1,
         ]);

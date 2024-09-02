@@ -127,7 +127,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
 
         $kb_item = new KnowbaseItem();

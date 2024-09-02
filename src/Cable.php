@@ -446,6 +446,7 @@ class Cable extends CommonDBTM
                 $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
 
                 if (method_exists($itemtype, 'renderDcBreadcrumb')) {
+                    /** @var class-string $itemtype */
                     return $itemtype::renderDcBreadcrumb($items_id);
                 }
         }

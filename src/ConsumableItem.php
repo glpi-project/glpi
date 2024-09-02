@@ -326,7 +326,7 @@ class ConsumableItem extends CommonDBTM
      * @return integer 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
-    public static function cronConsumable(CronTask $task = null)
+    public static function cronConsumable(?CronTask $task = null)
     {
         /**
          * @var array $CFG_GLPI

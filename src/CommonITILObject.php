@@ -8690,7 +8690,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
         $task_class = $this->getType() . 'Task';
-        /** @var DBMysql $DB */
+        /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
 
         $or_crits = [

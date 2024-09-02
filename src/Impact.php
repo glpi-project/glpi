@@ -249,6 +249,8 @@ JS);
      * @param CommonDBTM $item   starting point of the graph
      * @param array      $graph  array containing the graph nodes and egdes
      * @param bool       $scripts True if the JS code should be generated
+     *
+     * @return void
      */
     public static function displayListView(CommonDBTM $item, array $graph, bool $scripts = false): void
     {

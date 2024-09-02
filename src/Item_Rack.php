@@ -1035,6 +1035,10 @@ JAVASCRIPT;
                 }
             }
 
+            /**
+             * @var int $position
+             * @var int $required_units
+             */
             if (
                 $position > $rack->fields['number_units'] ||
                 $position + $required_units  > $rack->fields['number_units'] + 1

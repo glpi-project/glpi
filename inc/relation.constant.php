@@ -1782,6 +1782,7 @@ foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
             // related item will be preserved with its foreign key defined to 0, making it an unwanted orphaned item.
             $target_table_key_prefix = '_';
         }
+        /** @var class-string<CommonDBTM> $target_itemtype */
         $target_table_key = $target_table_key_prefix . $target_itemtype::getTable();
         $source_table     = $source_itemtype::getTable();
 

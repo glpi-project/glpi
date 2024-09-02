@@ -1005,7 +1005,7 @@ HTML;
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
-                                    $unset_url($value, 'url');
+                                    $unset_url($value);
                                 }
                             }
                         };
@@ -1050,7 +1050,7 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filter_names
+     * @param array $filters
      *
      * @return string the html
      */

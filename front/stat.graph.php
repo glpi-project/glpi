@@ -48,6 +48,7 @@ Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
+/** @var CommonITILObject $item */
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
     exit;
 }

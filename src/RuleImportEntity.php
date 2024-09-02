@@ -46,12 +46,6 @@ class RuleImportEntity extends Rule
         return __('Rules for assigning an item to an entity');
     }
 
-    public function maxActionsCount()
-    {
-        // Unlimited
-        return 5;
-    }
-
     public function executeActions($output, $params, array $input = [])
     {
         if (count($this->actions)) {

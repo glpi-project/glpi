@@ -51,11 +51,6 @@ class RuleSoftwareCategory extends Rule
         return __('Rules for assigning a category to software');
     }
 
-    public function maxActionsCount()
-    {
-        return 1;
-    }
-
     public function getCriterias()
     {
         static $criterias = [];

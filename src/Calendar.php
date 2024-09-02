@@ -143,7 +143,7 @@ class Calendar extends CommonDropdown
                                  || ($input['entities_id'] != $item->getEntityID())
                             ) {
                                 if ($item->can(-1, CREATE, $options)) {
-                                    if ($item->clone($options)) {
+                                    if (method_exists($item, 'clone') && $item->clone($options)) {
                                          $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                                     } else {
                                          $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

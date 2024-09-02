@@ -755,7 +755,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         if (!empty($condition["where"])) {
-            $WHERE .= " AND " . $condition["where"];
+            $WHERE[] = new QueryExpression($condition["where"]);
         }
 
         $iterator = $DB->request([
@@ -1043,8 +1043,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -1072,9 +1072,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         if (empty($item)) {

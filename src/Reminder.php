@@ -462,8 +462,8 @@ class Reminder extends CommonDBVisible implements
     {
         if (self::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Reminder':
+            switch (get_class($item)) {
+                case Reminder::class:
                     if (Session::haveRight('reminder_public', CREATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
@@ -494,8 +494,8 @@ class Reminder extends CommonDBVisible implements
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Reminder':
+        switch (get_class($item)) {
+            case Reminder::class:
                 $item->showVisibility();
                 return true;
         }

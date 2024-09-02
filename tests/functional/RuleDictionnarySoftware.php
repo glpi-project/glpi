@@ -44,7 +44,7 @@ class RuleDictionnarySoftware extends DbTestCase
     public function testMaxActionsCount()
     {
         $rule = new \RuleDictionnarySoftware();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(7);
     }
 
     public function testGetCriteria()

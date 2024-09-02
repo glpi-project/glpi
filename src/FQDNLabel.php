@@ -260,7 +260,10 @@ abstract class FQDNLabel extends CommonDBChild
         }
 
         foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search) as $class => $IDs) {
-            if ($FQDNlabel = getItemForItemtype($class)) {
+            if (
+                ($FQDNlabel = getItemForItemtype($class))
+                && ($FQDNlabel instanceof CommonDBChild)
+            ) {
                 foreach ($IDs as $ID) {
                     if ($FQDNlabel->getFromDB($ID)) {
                         $FQNDs_with_Items[] = array_merge(
@@ -269,6 +272,11 @@ abstract class FQDNLabel extends CommonDBChild
                         );
                     }
                 }
+            } else {
+                trigger_error(
+                    sprintf('%s is not a valid item type', $class),
+                    E_USER_WARNING
+                );
             }
         }
 

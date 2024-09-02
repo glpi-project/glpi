@@ -33,20 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strstr($_SERVER['PHP_SELF'], "rulecriteriavalue.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-Session::checkLoginUser();
-
-// Non define case
-/** @var Rule $rule */
-if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
-    $value = '';
-    if (isset($_POST['value'])) {
-        $value = $_POST['value'];
-    }
-    $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition'], $value);
-}
+// Fix default value for `custom_css_code`
+$migration->addPostQuery(
+    $DB->buildUpdate(
+        'glpi_entities',
+        [
+            'custom_css_code' => '',
+        ],
+        [
+            'custom_css_code' => null,
+        ]
+    )
+);

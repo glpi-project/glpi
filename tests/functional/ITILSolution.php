@@ -581,4 +581,25 @@ HTML,
         $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
         $this->integer((int)$ticket->fields['status'])->isIdenticalTo($ticket::CLOSED);
     }
+
+    public function testAddEmptyContent()
+    {
+        $this->login();
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'               => 'ticket title',
+            'description'        => 'a description',
+            'content'            => 'test',
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        $solution = new \ITILSolution();
+        $solution_id = $solution->add([
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => '',
+        ]);
+        $this->integer($solution_id)->isGreaterThan(0);
+    }
 }

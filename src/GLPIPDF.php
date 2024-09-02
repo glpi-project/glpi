@@ -60,7 +60,7 @@ class GLPIPDF extends TCPDF
     ];
     private array $config = [];
 
-    public function __construct(array $config = [], int $count = null, string $title = null, bool $addpage = true)
+    public function __construct(array $config = [], ?int $count = null, ?string $title = null, bool $addpage = true)
     {
         $config += self::$default_config;
         $this->config = $config;

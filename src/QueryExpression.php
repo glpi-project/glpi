@@ -38,6 +38,11 @@
  */
 class QueryExpression extends Glpi\DBAL\QueryExpression
 {
+    /**
+     * Create a query expression
+     *
+     * @param string $expression The query expression
+     */
     public function __construct($expression)
     {
         Toolbox::deprecated();

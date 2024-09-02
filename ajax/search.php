@@ -57,7 +57,7 @@ switch ($_REQUEST['action']) {
             die;
         }
 
-        /** @var CommonDBTM $itemtype */
+        /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $_REQUEST['itemtype'];
         if (!$itemtype::canView()) {
             http_response_code(403);
@@ -73,7 +73,11 @@ switch ($_REQUEST['action']) {
         // Remove hidden criteria such as the longitude and latitude criteria which are injected in the search engine itself for map searches
         $params['criteria'] = array_filter($params['criteria'], static fn ($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
 
-        if (isset($search_params['browse']) && $search_params['browse'] == 1) {
+        if (
+            isset($search_params['browse'])
+            && $search_params['browse'] == 1
+            && method_exists($itemtype, 'showBrowseView')
+        ) {
             $itemtype::showBrowseView($itemtype, $search_params, true);
         } else {
             $results = Search::getDatas($itemtype, $search_params);

@@ -215,7 +215,6 @@ class View extends CommonGLPI
      *
      * @param bool   $force_refresh do not rely on cache to get plugins list
      * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
-     * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin by given string
      *
      * @return void display things
@@ -271,7 +270,7 @@ class View extends CommonGLPI
     /**
      * Display discover tab (all availble plugins)
      *
-     * @param bool   $force_refresh do not rely on cache to get plugins list
+     * @param bool   $force do not rely on cache to get plugins list
      * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
      * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin by given string
@@ -649,7 +648,7 @@ HTML;
     /**
      * Return HTML part for plugin stars
      *
-     * @param float|int $value current stars note on 5
+     * @param float $value current stars note on 5
      *
      * @return string plugins stars html
      */

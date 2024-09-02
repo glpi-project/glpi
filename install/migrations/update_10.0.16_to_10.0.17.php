@@ -33,20 +33,40 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strstr($_SERVER['PHP_SELF'], "rulecriteriavalue.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+/**
+ * Update from 10.0.16 to 10.0.17
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update10016to10017()
+{
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
+    global $DB, $migration;
 
-Session::checkLoginUser();
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.16_to_10.0.17/';
 
-// Non define case
-/** @var Rule $rule */
-if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
-    $value = '';
-    if (isset($_POST['value'])) {
-        $value = $_POST['value'];
+    //TRANS: %s is the number of new version
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.17'));
+    $migration->setVersion('10.0.17');
+
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
     }
-    $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition'], $value);
+
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }

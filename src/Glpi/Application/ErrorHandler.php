@@ -135,7 +135,7 @@ class ErrorHandler
      * @param LoggerInterface|null $logger
      * @param string               $env
      */
-    private function __construct(LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
+    private function __construct(?LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
     {
         $this->logger = $logger;
         $this->env = $env;

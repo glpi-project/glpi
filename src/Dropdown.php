@@ -368,6 +368,7 @@ class Dropdown
 
            // Supplier Links
             if ($itemtype == "Supplier") {
+                /** @var Supplier $item */
                 if ($item->getFromDB($params['value'])) {
                     $link_icon = '<div>';
                     $link_icon .= $item->getLinks();
@@ -385,8 +386,10 @@ class Dropdown
             }
 
             if ($params['display_dc_position']) {
-                /** @var DCBreadcrumb $item */
-                if ($rack = $item->getParentRack()) {
+                if (
+                    method_exists($item, 'getParentRack')
+                    && ($rack = $item->getParentRack())
+                ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
@@ -498,7 +501,7 @@ class Dropdown
      *
      * @return string the value of the dropdown
      **/
-    public static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '')
+    public static function getDropdownName($table, $id, $withcomment = false, $translate = true, $tooltip = true, string $default = '')
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2504,7 +2507,7 @@ JAVASCRIPT;
      * Dropdown for global item management
      *
      * @param integer $ID           item ID
-     * @param array   attrs   array which contains the extra paramters
+     * @param array   $attrs   array which contains the extra paramters
      *
      * Parameters can be :
      * - target target for actions
@@ -2590,10 +2593,17 @@ JAVASCRIPT;
     public static function import($itemtype, $input)
     {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->import($input);
         }
-        return $item->import($input);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
 
@@ -2620,16 +2630,23 @@ JAVASCRIPT;
         $add = true
     ) {
 
-        if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+        if (
+            ($item = getItemForItemtype($itemtype))
+            && ($item instanceof CommonDropdown)
+        ) {
+            return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
         }
-        return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+        trigger_error(
+            sprintf('%s is not a valid item type.', $itemtype),
+            E_USER_WARNING
+        );
+        return false;
     }
 
     /**
      * Get the label associated with a management type
      *
-     * @param integer value the type of management (default 0)
+     * @param integer $value the type of management (default 0)
      *
      * @return string the label corresponding to it, or ""
      **/
@@ -3304,10 +3321,9 @@ JAVASCRIPT;
                 $orwhere = ["$table.$field" => ['LIKE', $search]];
 
                 if (
-                    $_SESSION['glpiis_ids_visible']
-                    && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']
+                    $_SESSION['glpiis_ids_visible'] && (int) $post['searchText'] === $post['searchText']
                 ) {
-                    $orwhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
+                    $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
 
                 if ($item instanceof CommonDCModelDropdown) {

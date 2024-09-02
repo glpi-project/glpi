@@ -1019,8 +1019,8 @@ TWIG, $avatar_params) . $username;
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Entity':
+            switch (get_class($item)) {
+                case Entity::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $count = $DB->request([
@@ -1045,7 +1045,7 @@ TWIG, $avatar_params) . $username;
                     }
                     break;
 
-                case 'Profile':
+                case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
@@ -1054,7 +1054,7 @@ TWIG, $avatar_params) . $username;
                     }
                     break;
 
-                case 'User':
+                case User::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
@@ -1072,16 +1072,16 @@ TWIG, $avatar_params) . $username;
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'Entity':
+        switch (get_class($item)) {
+            case Entity::class:
                 self::showForEntity($item);
                 break;
 
-            case 'Profile':
+            case Profile::class:
                 self::showForProfile($item);
                 break;
 
-            case 'User':
+            case User::class:
                 self::showForUser($item);
                 break;
         }

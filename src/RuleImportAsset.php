@@ -72,11 +72,6 @@ class RuleImportAsset extends Rule
         return $col->getTitle();
     }
 
-    public function maxActionsCount()
-    {
-        return 1;
-    }
-
     public function getCriterias()
     {
         static $criteria = [];

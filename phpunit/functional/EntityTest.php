@@ -604,7 +604,7 @@ class EntityTest extends DbTestCase
                 'child_custom_css_code'   => '',
                 'expected'                => '<style>body { color:blue; }</style>',
             ],
-            /*[ see https://github.com/glpi-project/glpi/issues/17648
+            [
             // Do not output custom CSS if empty
                 'entity_id'               => $root_id,
                 'root_enable_custom_css'  => 1,
@@ -612,7 +612,7 @@ class EntityTest extends DbTestCase
                 'child_enable_custom_css' => 0,
                 'child_custom_css_code'   => '',
                 'expected'                => '',
-            ],*/
+            ],
             [
             // Do not output custom CSS from parent if disabled in parent
                 'entity_id'               => $child_id,
@@ -622,7 +622,7 @@ class EntityTest extends DbTestCase
                 'child_custom_css_code'   => '',
                 'expected'                => '',
             ],
-            /*[ see https://github.com/glpi-project/glpi/issues/17648
+            [
             // Do not output custom CSS from parent if empty
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
@@ -630,7 +630,7 @@ class EntityTest extends DbTestCase
                 'child_enable_custom_css' => \Entity::CONFIG_PARENT,
                 'child_custom_css_code'   => '',
                 'expected'                => '',
-            ],*/
+            ],
             [
             // Output custom CSS from parent
                 'entity_id'               => $child_id,
@@ -649,7 +649,7 @@ class EntityTest extends DbTestCase
                 'child_custom_css_code'   => 'body { color:blue; }',
                 'expected'                => '',
             ],
-            /*[ see https://github.com/glpi-project/glpi/issues/17648
+            [
             // Do not output custom CSS from entity itself if empty
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
@@ -657,7 +657,7 @@ class EntityTest extends DbTestCase
                 'child_enable_custom_css' => 1,
                 'child_custom_css_code'   => '',
                 'expected'                => '',
-            ],*/
+            ],
             [
             // Output custom CSS from entity itself
                 'entity_id'               => $child_id,

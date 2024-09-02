@@ -192,7 +192,7 @@ class Problem extends CommonITILObject
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
+        switch (get_class($item)) {
             case __CLASS__:
                 switch ($tabnum) {
                     case 1:
@@ -1015,7 +1015,7 @@ class Problem extends CommonITILObject
                         'values' => []
                     ];
 
-                    if ($problem->getFromDBwithData($data['id'], 0)) {
+                    if ($problem->getFromDBwithData($data['id'])) {
                         $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
                         $row['values'][] = [

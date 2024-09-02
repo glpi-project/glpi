@@ -154,7 +154,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public function can($ID, int $right, array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null): bool
     {
         return match ($right) {
             READ => static::canView(),

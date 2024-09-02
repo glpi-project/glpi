@@ -91,8 +91,8 @@ class HTMLTableRow extends HTMLTableEntity
     public function addCell(
         HTMLTableHeader $header,
         $content,
-        HTMLTableCell $father = null,
-        CommonDBTM $item = null
+        ?HTMLTableCell $father = null,
+        ?CommonDBTM $item = null
     ) {
 
         if (!$this->group->haveHeader($header)) {

@@ -464,6 +464,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Searching IDs in dropdowns now matches the beginning of the ID instead of anywhere in the ID.
 
 ### Deprecated
 

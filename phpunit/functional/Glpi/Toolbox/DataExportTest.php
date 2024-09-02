@@ -90,6 +90,49 @@ HTML,
 HTML,
             'expected_result' => 'Processing (assigned)',
         ];
+
+        // Leading/trailing spacing chars in HTML
+        $spacing_chars = [
+            " ",
+            "\n",
+            "\r",
+            "\t",
+            "\xC2\xA0", // unicode value of decoded &nbsp;
+        ];
+        foreach ($spacing_chars as $spacing_char) {
+            yield [
+                'value'           => '<div>' . $spacing_char . 'Some value' . '</div>',
+                'expected_result' => 'Some value',
+            ];
+            yield [
+                'value'           => '<div>' . 'Some value' . $spacing_char . '</div>',
+                'expected_result' => 'Some value',
+            ];
+            yield [
+                'value'           => '<div>' . $spacing_char . 'Some value' . $spacing_char . '</div>',
+                'expected_result' => 'Some value',
+            ];
+        }
+
+        // Leading/trailing spacing chars combo in HTML
+        yield [
+            'value'           => '<div>' . 'Some value' . "\t  \n\r   \t" . '</div>',
+            'expected_result' => 'Some value',
+        ];
+        yield [
+            'value'           => '<div>' . "\t\n\t" . 'Some value' . '</div>',
+            'expected_result' => 'Some value',
+        ];
+
+        // Ending char that is a special char ending with a subset of the non breakable space bytes should not be altered
+        yield [
+            'value'           => '<div>' . 'Some value' . "\xE5\x8A\xA0" . '</div>',
+            'expected_result' => 'Some value' . "\xE5\x8A\xA0",
+        ];
+        yield [
+            'value'           => 'Some value' . "\xE5\x8A\xA0",
+            'expected_result' => 'Some value' . "\xE5\x8A\xA0",
+        ];
     }
 
     #[DataProvider('normalizeValueForTextExportProvider')]

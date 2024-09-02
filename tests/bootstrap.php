@@ -82,7 +82,6 @@ include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/functional/CommonITILRecurrent.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
-include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
 
 loadDataset();
 

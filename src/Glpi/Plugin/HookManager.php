@@ -109,7 +109,7 @@ class HookManager
      * Add a functional hook
      *
      * @param string $hook
-     * @param string $file
+     * @param callable $function
      */
     public function registerFunctionalHook(
         string $hook,
@@ -132,7 +132,7 @@ class HookManager
      *
      * @param string $hook
      * @param string $itemtype
-     * @param string $file
+     * @param callable $function
      */
     public function registerItemHook(
         string $hook,

@@ -255,7 +255,6 @@ class DCRoom extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         switch ($item::class) {
             case Datacenter::class:
                 $nb = 0;
@@ -273,7 +272,6 @@ class DCRoom extends CommonDBTM
                     $nb,
                     $item::getType()
                 );
-             break;
         }
 
         return '';
