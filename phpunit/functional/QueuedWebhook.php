@@ -39,7 +39,7 @@ use CronTask;
 use DbTestCase;
 use Webhook;
 
-class QueuedNotification extends DbTestCase
+class QueuedWebhook extends DbTestCase
 {
     public function testQueuedWebhookClean()
     {
@@ -49,10 +49,10 @@ class QueuedNotification extends DbTestCase
         $webkook->add([
             'name' => 'test',
         ]);
-        $this->integer($webkook->getID())->isGreaterThan(0);
+        $this->assertGreaterThan(0, $webkook->getID());
 
         $task = 'queuedwebhookclean';
 
-        $this->string(CronTask::launch(-CronTask::MODE_INTERNAL, 1, $task))->isEqualTo($task);
+        $this->assertSame($task, CronTask::launch(-CronTask::MODE_INTERNAL, 1, $task));
     }
 }
