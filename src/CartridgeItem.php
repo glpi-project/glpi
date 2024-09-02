@@ -168,7 +168,7 @@ class CartridgeItem extends CommonDBTM
      *
      * @return boolean : true for success
      **/
-    public function addCompatibleType($cartridgeitems_id, $printermodels_id)
+    public static function addCompatibleType($cartridgeitems_id, $printermodels_id)
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -290,10 +290,9 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                             );
                         }
                         // Add new assoc
-                        $ct = new CartridgeItem();
                         foreach ($carttype as $cartID) {
                             foreach ($tab as $model) {
-                                $ct->addCompatibleType($cartID, $model);
+                                CartridgeItem::addCompatibleType($cartID, $model);
                             }
                         }
                     }

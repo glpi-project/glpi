@@ -119,7 +119,7 @@ abstract class NotificationSetting extends CommonDBTM
 
 
     /**
-     * Disable (temporary) all notifications
+     * Disable (temporary) all notifications for the rest of the request execution
      *
      * @return void
      */
