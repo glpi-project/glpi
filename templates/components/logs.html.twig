@@ -117,7 +117,7 @@
          <tr><td colspan="6">{{ __('No historical matching your filters') }}</td></tr>
       {% else %}
          {% for entry in logs %}
-			         {% if entry['display_history'] %}
+      	     {% if entry['display_history'] %}
                <tr>
                   <td>{{ entry['id'] }}</td>
                   <td>{{ entry['date_mod'] }}</td>
@@ -125,7 +125,7 @@
                   <td>{{ entry['field']|verbatim_value }}</td>
                   <td colspan="2" style="width: 60%">{{ entry['change']|raw }}</td>
                </tr>
-			         {% endif %}
+            {% endif %}
          {% endfor %}
       {% endif %}
       </tbody>
