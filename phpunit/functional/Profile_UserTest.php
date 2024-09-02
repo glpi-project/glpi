@@ -71,7 +71,6 @@ class Profile_UserTest extends DbTestCase
             ],
             array_column($authorizations, 'id')
         );
-            $e2e_tests_users_id,
         $authorizations_by_user_id = [];
         foreach ($authorizations as $authorization) {
             $authorizations_by_user_id[$authorization['users_id']] = $authorization['id'];

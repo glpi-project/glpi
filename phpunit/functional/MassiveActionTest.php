@@ -599,7 +599,6 @@ class MassiveActionTest extends DbTestCase
             $has_right = $row['has_right'];
             $should_work = $row['should_work'];
 
-
             // Set up session rights
             if ($has_right) {
                 $this->login('tech', 'tech');
@@ -633,6 +632,7 @@ class MassiveActionTest extends DbTestCase
                 Ticket::class
             );
         }
+    }
 
     /**
      * Data provider for testDeleteEmails
