@@ -69,6 +69,7 @@ class QueuedWebhookTest extends DbTestCase
 
         $queuedWebhook2 = new QueuedWebhook();
         $queuedWebhook2->add([
+            'webhooks_id' => $webhook1->getID(),
             'send_time' => date("Y-m-d H:i:s", time() - (35 * DAY_TIMESTAMP)),
         ]);
 
@@ -80,6 +81,7 @@ class QueuedWebhookTest extends DbTestCase
 
         $queuedWebhook4 = new QueuedWebhook();
         $queuedWebhook4->add([
+            'webhooks_id' => $webhook2->getID(),
             'send_time' => date("Y-m-d H:i:s", time() + (3 * DAY_TIMESTAMP)),
         ]);
 
@@ -91,11 +93,11 @@ class QueuedWebhookTest extends DbTestCase
         $queuedWebhook1->update(
             [
                 'id' => $queuedWebhook1->getID(),
-                'sent_try' => 3
+                'sent_try' => 4
             ],
         );
 
-        $this->assertEquals(3, $queuedWebhook1->fields['sent_try']);
+        $this->assertEquals(4, $queuedWebhook1->fields['sent_try']);
 
         $queuedWebhook2->update(
             [
@@ -105,24 +107,6 @@ class QueuedWebhookTest extends DbTestCase
         );
 
         $this->assertEquals(1, $queuedWebhook2->fields['sent_try']);
-
-        $queuedWebhook3->update(
-            [
-                'id' => $queuedWebhook3->getID(),
-                'sent_try' => 0
-            ],
-        );
-
-        $this->assertEquals(0, $queuedWebhook3->fields['sent_try']);
-
-        $queuedWebhook4->update(
-            [
-                'id' => $queuedWebhook4->getID(),
-                'sent_try' => 5
-            ],
-        );
-
-        $this->assertEquals(5, $queuedWebhook4->fields['sent_try']);
 
         $cron = new CronTask();
         $cron->getFromDBByCrit([
