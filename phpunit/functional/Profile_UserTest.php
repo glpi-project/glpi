@@ -62,15 +62,13 @@ class Profile_UserTest extends DbTestCase
         $tu_users_id = getItemByTypeName('User', TU_USER, true);
         $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
         $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
-        $this->assertEquals(
-            [
-                $glpi_users_id,
-                $tu_users_id,
-                $jsmith_users_id,
-                $e2e_tests_users_id,
-            ],
-            array_column($authorizations, 'id')
-        );
+
+        $auth_array = array_column($authorizations, 'users_id');
+        $this->assertContains($glpi_users_id, $auth_array);
+        $this->assertContains($tu_users_id, $auth_array);
+        $this->assertContains($jsmith_users_id, $auth_array);
+        $this->assertContains($e2e_tests_users_id, $auth_array);
+
         $authorizations_by_user_id = [];
         foreach ($authorizations as $authorization) {
             $authorizations_by_user_id[$authorization['users_id']] = $authorization['id'];

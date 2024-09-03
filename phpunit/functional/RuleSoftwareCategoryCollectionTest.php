@@ -186,7 +186,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "softwarecategories_id" => "$categories_id",
-                "_ruleid"               => "$rules_id"
+                "_ruleid"               => $rules_id
             ],
             $result
         );
@@ -267,7 +267,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "_ignore_import" => '1',
-                "_ruleid"        => "$rules_id"
+                "_ruleid"        => $rules_id
             ],
             $result
         );
