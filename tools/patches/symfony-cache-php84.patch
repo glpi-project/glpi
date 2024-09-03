@@ -1,0 +1,35 @@
+diff --git a/Traits/Redis6ProxyTrait.php b/Traits/Redis6ProxyTrait.php
+index d339e560c7..34f60cb102 100644
+--- a/Traits/Redis6ProxyTrait.php
++++ b/Traits/Redis6ProxyTrait.php
+@@ -11,7 +11,7 @@
+ 
+ namespace Symfony\Component\Cache\Traits;
+ 
+-if (version_compare(phpversion('redis'), '6.1.0', '>=')) {
++if (version_compare(phpversion('redis'), '6.1.0-dev', '>=')) {
+     /**
+      * @internal
+      */
+@@ -27,7 +27,7 @@ if (version_compare(phpversion('redis'), '6.1.0', '>=')) {
+             return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->hRandField(...\func_get_args());
+         }
+ 
+-        public function hSet($key, $fields_and_vals): \Redis|false|int
++        public function hSet($key, ...$fields_and_vals): \Redis|false|int
+         {
+             return ($this->lazyObjectState->realInstance ??= ($this->lazyObjectState->initializer)())->hSet(...\func_get_args());
+         }
+diff --git a/Traits/RedisCluster6ProxyTrait.php b/Traits/RedisCluster6ProxyTrait.php
+index 7addffb97c..9c3169e323 100644
+--- a/Traits/RedisCluster6ProxyTrait.php
++++ b/Traits/RedisCluster6ProxyTrait.php
+@@ -11,7 +11,7 @@
+ 
+ namespace Symfony\Component\Cache\Traits;
+ 
+-if (version_compare(phpversion('redis'), '6.1.0', '>')) {
++if (version_compare(phpversion('redis'), '6.1.0-dev', '>')) {
+     /**
+      * @internal
+      */

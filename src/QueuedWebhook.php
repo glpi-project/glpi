@@ -559,7 +559,7 @@ JS);
      *
      * @return integer either 0 or 1
      **/
-    public static function cronQueuedWebhook(CronTask $task = null)
+    public static function cronQueuedWebhook(?CronTask $task = null)
     {
         $cron_status = 0;
 
@@ -585,7 +585,7 @@ JS);
      *
      * @return integer either 0 or 1
      **/
-    public static function cronQueuedWebhookClean(CronTask $task = null)
+    public static function cronQueuedWebhookClean(?CronTask $task = null)
     {
         /** @var \DBmysql $DB */
         global $DB;

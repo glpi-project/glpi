@@ -1,0 +1,13 @@
+diff --git a/src/EventDispatcher.php b/src/EventDispatcher.php
+index 6c5128f..35fdaea 100644
+--- a/src/EventDispatcher.php
++++ b/src/EventDispatcher.php
+@@ -14,7 +14,7 @@ class EventDispatcher implements EventDispatchingListenerRegistry
+      */
+     protected $listenerProvider;
+ 
+-    public function __construct(ListenerProviderInterface $listenerProvider = null)
++    public function __construct(?ListenerProviderInterface $listenerProvider = null)
+     {
+         $this->listenerProvider = $listenerProvider instanceof ListenerProviderInterface
+             ? $listenerProvider

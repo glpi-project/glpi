@@ -1,0 +1,198 @@
+diff --git a/lib/Component/VCalendar.php b/lib/Component/VCalendar.php
+index 4db318135..017aed70c 100644
+--- a/lib/Component/VCalendar.php
++++ b/lib/Component/VCalendar.php
+@@ -281,7 +281,7 @@ public function getBaseComponent($componentName = null)
+      *
+      * @return VCalendar
+      */
+-    public function expand(DateTimeInterface $start, DateTimeInterface $end, DateTimeZone $timeZone = null)
++    public function expand(DateTimeInterface $start, DateTimeInterface $end, ?DateTimeZone $timeZone = null)
+     {
+         $newChildren = [];
+         $recurringEvents = [];
+diff --git a/lib/DateTimeParser.php b/lib/DateTimeParser.php
+index c5dbac97d..69072ef8c 100644
+--- a/lib/DateTimeParser.php
++++ b/lib/DateTimeParser.php
+@@ -31,7 +31,7 @@ class DateTimeParser
+      *
+      * @return DateTimeImmutable
+      */
+-    public static function parseDateTime($dt, DateTimeZone $tz = null)
++    public static function parseDateTime($dt, ?DateTimeZone $tz = null)
+     {
+         // Format is YYYYMMDD + "T" + hhmmss
+         $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])([Z]?)$/', $dt, $matches);
+@@ -61,7 +61,7 @@ public static function parseDateTime($dt, DateTimeZone $tz = null)
+      *
+      * @return DateTimeImmutable
+      */
+-    public static function parseDate($date, DateTimeZone $tz = null)
++    public static function parseDate($date, ?DateTimeZone $tz = null)
+     {
+         // Format is YYYYMMDD
+         $result = preg_match('/^([0-9]{4})([0-1][0-9])([0-3][0-9])$/', $date, $matches);
+diff --git a/lib/Document.php b/lib/Document.php
+index 6b908c70e..d2131f479 100644
+--- a/lib/Document.php
++++ b/lib/Document.php
+@@ -157,7 +157,7 @@ public function create($name)
+      *
+      * @return Component
+      */
+-    public function createComponent($name, array $children = null, $defaults = true)
++    public function createComponent($name, ?array $children = null, $defaults = true)
+     {
+         $name = strtoupper($name);
+         $class = Component::class;
+@@ -187,7 +187,7 @@ public function createComponent($name, array $children = null, $defaults = true)
+      * @param array  $parameters
+      * @param string $valueType  Force a specific valuetype, such as URI or TEXT
+      */
+-    public function createProperty($name, $value = null, array $parameters = null, $valueType = null, int $lineIndex = null, string $lineString = null): Property
++    public function createProperty($name, $value = null, ?array $parameters = null, $valueType = null, ?int $lineIndex = null, ?string $lineString = null): Property
+     {
+         // If there's a . in the name, it means it's prefixed by a groupname.
+         if (false !== ($i = strpos($name, '.'))) {
+diff --git a/lib/FreeBusyGenerator.php b/lib/FreeBusyGenerator.php
+index 81b8126d5..56ae166fa 100644
+--- a/lib/FreeBusyGenerator.php
++++ b/lib/FreeBusyGenerator.php
+@@ -89,7 +89,7 @@ class FreeBusyGenerator
+      * @param mixed             $objects
+      * @param DateTimeZone      $timeZone
+      */
+-    public function __construct(DateTimeInterface $start = null, DateTimeInterface $end = null, $objects = null, DateTimeZone $timeZone = null)
++    public function __construct(?DateTimeInterface $start = null, ?DateTimeInterface $end = null, $objects = null, ?DateTimeZone $timeZone = null)
+     {
+         $this->setTimeRange($start, $end);
+ 
+@@ -158,7 +158,7 @@ public function setObjects($objects)
+      * @param DateTimeInterface $start
+      * @param DateTimeInterface $end
+      */
+-    public function setTimeRange(DateTimeInterface $start = null, DateTimeInterface $end = null)
++    public function setTimeRange(?DateTimeInterface $start = null, ?DateTimeInterface $end = null)
+     {
+         if (!$start) {
+             $start = new DateTimeImmutable(Settings::$minDate);
+diff --git a/lib/ITip/Broker.php b/lib/ITip/Broker.php
+index dbdd80b78..f007304ce 100644
+--- a/lib/ITip/Broker.php
++++ b/lib/ITip/Broker.php
+@@ -108,7 +108,7 @@ class Broker
+      *
+      * @return VCalendar|null
+      */
+-    public function processMessage(Message $itipMessage, VCalendar $existingObject = null)
++    public function processMessage(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         // We only support events at the moment.
+         if ('VEVENT' !== $itipMessage->component) {
+@@ -266,7 +266,7 @@ public function parseEvent($calendar, $userHref, $oldCalendar = null)
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageRequest(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageRequest(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         if (!$existingObject) {
+             // This is a new invite, and we're just going to copy over
+@@ -301,7 +301,7 @@ protected function processMessageRequest(Message $itipMessage, VCalendar $existi
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageCancel(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageCancel(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         if (!$existingObject) {
+             // The event didn't exist in the first place, so we're just
+@@ -326,7 +326,7 @@ protected function processMessageCancel(Message $itipMessage, VCalendar $existin
+      *
+      * @return VCalendar|null
+      */
+-    protected function processMessageReply(Message $itipMessage, VCalendar $existingObject = null)
++    protected function processMessageReply(Message $itipMessage, ?VCalendar $existingObject = null)
+     {
+         // A reply can only be processed based on an existing object.
+         // If the object is not available, the reply is ignored.
+@@ -807,7 +807,7 @@ protected function parseEventForAttendee(VCalendar $calendar, array $eventInfo,
+      *
+      * @return array
+      */
+-    protected function parseEventInfo(VCalendar $calendar = null)
++    protected function parseEventInfo(?VCalendar $calendar = null)
+     {
+         $uid = null;
+         $organizer = null;
+diff --git a/lib/Property.php b/lib/Property.php
+index 0805c139a..f52760f9c 100644
+--- a/lib/Property.php
++++ b/lib/Property.php
+@@ -81,7 +81,7 @@ abstract class Property extends Node
+      * @param array             $parameters List of parameters
+      * @param string            $group      The vcard property group
+      */
+-    public function __construct(Component $root, $name, $value = null, array $parameters = [], $group = null, int $lineIndex = null, string $lineString = null)
++    public function __construct(Component $root, $name, $value = null, array $parameters = [], $group = null, ?int $lineIndex = null, ?string $lineString = null)
+     {
+         $this->name = $name;
+         $this->group = $group;
+diff --git a/lib/Property/ICalendar/DateTime.php b/lib/Property/ICalendar/DateTime.php
+index ca71633b9..3ea21e2ec 100644
+--- a/lib/Property/ICalendar/DateTime.php
++++ b/lib/Property/ICalendar/DateTime.php
+@@ -131,7 +131,7 @@ public function isFloating()
+      *
+      * @return \DateTimeImmutable
+      */
+-    public function getDateTime(DateTimeZone $timeZone = null)
++    public function getDateTime(?DateTimeZone $timeZone = null)
+     {
+         $dt = $this->getDateTimes($timeZone);
+         if (!$dt) {
+@@ -153,7 +153,7 @@ public function getDateTime(DateTimeZone $timeZone = null)
+      * @return \DateTimeImmutable[]
+      * @return \DateTime[]
+      */
+-    public function getDateTimes(DateTimeZone $timeZone = null)
++    public function getDateTimes(?DateTimeZone $timeZone = null)
+     {
+         // Does the property have a TZID?
+         $tzid = $this['TZID'];
+diff --git a/lib/Recur/EventIterator.php b/lib/Recur/EventIterator.php
+index 61f05d7de..55d6e4779 100644
+--- a/lib/Recur/EventIterator.php
++++ b/lib/Recur/EventIterator.php
+@@ -93,7 +93,7 @@ class EventIterator implements \Iterator
+      * @param DateTimeZone    $timeZone reference timezone for floating dates and
+      *                                  times
+      */
+-    public function __construct($input, $uid = null, DateTimeZone $timeZone = null)
++    public function __construct($input, $uid = null, ?DateTimeZone $timeZone = null)
+     {
+         if (is_null($timeZone)) {
+             $timeZone = new DateTimeZone('UTC');
+diff --git a/lib/TimeZoneUtil.php b/lib/TimeZoneUtil.php
+index 6422c0930..0d77e71ed 100644
+--- a/lib/TimeZoneUtil.php
++++ b/lib/TimeZoneUtil.php
+@@ -75,7 +75,7 @@ private function addFinder(string $key, TimezoneFinder $finder): void
+      * Alternatively, if $failIfUncertain is set to true, it will throw an
+      * exception if we cannot accurately determine the timezone.
+      */
+-    private function findTimeZone(string $tzid, Component $vcalendar = null, bool $failIfUncertain = false): DateTimeZone
++    private function findTimeZone(string $tzid, ?Component $vcalendar = null, bool $failIfUncertain = false): DateTimeZone
+     {
+         foreach ($this->timezoneFinders as $timezoneFinder) {
+             $timezone = $timezoneFinder->find($tzid, $failIfUncertain);
+@@ -126,7 +126,7 @@ public static function addTimezoneFinder(string $key, TimezoneFinder $finder): v
+      *
+      * @return DateTimeZone
+      */
+-    public static function getTimeZone($tzid, Component $vcalendar = null, $failIfUncertain = false)
++    public static function getTimeZone($tzid, ?Component $vcalendar = null, $failIfUncertain = false)
+     {
+         return self::getInstance()->findTimeZone($tzid, $vcalendar, $failIfUncertain);
+     }

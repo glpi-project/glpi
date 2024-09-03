@@ -208,15 +208,12 @@ class State extends DbTestCase
         unset($CFG_GLPI['state_types'][0]);
         $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
 
-        $this->when(
+        $this->exception(
             function () use ($item, $states_id) {
                 $this->boolean($item->isStateVisible($states_id))->isTrue();
             }
-        )
-            ->error()
-            ->withType(E_USER_ERROR)
-            ->withMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype))
-            ->exists();
+        )->isInstanceOf(\LogicException::class)
+         ->hasMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype));
     }
 
     public function testGetStateVisibilityCriteria(): void

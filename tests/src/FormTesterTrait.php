@@ -149,7 +149,7 @@ trait FormTesterTrait
     protected function getQuestionId(
         Form $form,
         string $question_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());
@@ -227,7 +227,7 @@ trait FormTesterTrait
     protected function getCommentId(
         Form $form,
         string $comment_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());

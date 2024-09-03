@@ -257,7 +257,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
