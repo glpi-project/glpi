@@ -36,20 +36,18 @@ namespace Glpi\Http;
 
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Routing\PluginsRouter;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Router;
 
 class PluginsRouterListener implements EventSubscriberInterface
 {
     public const ROUTE_NAME = 'glpi_plugin';
 
     public function __construct(
-        #[Autowire(service: PluginContainer::class)] private readonly PluginContainer $plugin_container,
+        private readonly PluginContainer $plugin_container,
     ) {
     }
 

@@ -49,7 +49,7 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
 
-    $services
+    $services = $services
         ->defaults()
             ->autowire()
             ->autoconfigure()

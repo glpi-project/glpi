@@ -37,12 +37,11 @@ namespace Glpi\Config\LegacyConfigurators;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\DependencyInjection\PluginContainer;
 use Plugin;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Update;
 
 final readonly class InitializePlugins implements LegacyConfigProviderInterface
 {
-    public function __construct(#[Autowire(service: PluginContainer::class)] private PluginContainer $pluginContainer)
+    public function __construct(private PluginContainer $pluginContainer)
     {
     }
 

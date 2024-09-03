@@ -54,13 +54,6 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
-        if ($env === null) {
-            $env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? $_SERVER['GLPI_ENVIRONMENT_TYPE'] ?? null;
-        }
-        if ($env !== null && !\defined('GLPI_ENVIRONMENT_TYPE')) {
-            \define('GLPI_ENVIRONMENT_TYPE', $env);
-        }
-
         // Initialize configuration constants.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
