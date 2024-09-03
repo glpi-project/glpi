@@ -72,13 +72,16 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   compileLocales();
+   $exit_code = compileLocales();
+
    exit($exit_code);
 }
 
 // Handle specific "locales:compile" command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
-   return compileLocales();
+   $exit_code = compileLocales();
+
+   exit($exit_code);
 }
 
 function compileLocales(): int
