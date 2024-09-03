@@ -72,6 +72,30 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
     }
 
+    #[Override]
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        if (!is_array($answer)) {
+            $answer = [$answer];
+        }
+
+        $actors = [];
+        if (is_array($answer)) {
+            foreach ($answer as $actor) {
+                $actor_parts = explode('-', $actor);
+                $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
+                $item_id = $actor_parts[1];
+
+                $actors[] = [
+                    'itemtype' => $itemtype,
+                    'items_id' => $item_id
+                ];
+            }
+        }
+
+        return $actors;
+    }
+
     /**
      * Check if the question allows multiple actors
      *
@@ -163,7 +187,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
                     'col-12',
                     'col-sm-6',
                     not is_multiple_actors ? '' : 'd-none'
-                ]|join(' ')
+                ]|join(' '),
+                wrapper_class: ''
             }
         ) }}
         {{ fields.htmlField(
@@ -177,7 +202,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
                     'col-12',
                     'col-sm-6',
                     is_multiple_actors ? '' : 'd-none'
-                ]|join(' ')
+                ]|join(' '),
+                wrapper_class: ''
             }
         ) }}
 TWIG;
@@ -239,27 +265,15 @@ TWIG;
     {
         $template = <<<TWIG
             <div class="form-control-plaintext">
-                {% for itemtype, actors_id in actors %}
-                    {% for actor_id in actors_id %}
-                        {{ get_item_link(itemtype, actor_id) }}
-                    {% endfor %}
+                {% for actors in actors %}
+                    {{ get_item_link(actors.itemtype, actors.items_id) }}
                 {% endfor %}
             </div>
 TWIG;
 
-        $actors = [];
-        foreach ($answer as $actor) {
-            foreach ($this->getAllowedActorTypes() as $type) {
-                if (strpos($actor, $type::getForeignKeyField()) === 0) {
-                    $actors[$type][] = (int)substr($actor, strlen($type::getForeignKeyField()) + 1);
-                    break;
-                }
-            }
-        }
-
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'actors' => $actors
+            'actors' => $answer
         ]);
     }
 
@@ -269,11 +283,9 @@ TWIG;
         $formatted_actors = [];
         foreach ($answer as $actor) {
             foreach ($this->getAllowedActorTypes() as $type) {
-                if (strpos($actor, $type::getForeignKeyField()) === 0) {
-                    $items_id = (int)substr($actor, strlen($type::getForeignKeyField()) + 1);
-                    $item     = $type::getById($items_id);
-
-                    if ($item !== null) {
+                if ($actor['itemtype'] === $type) {
+                    $item = $type::getById($actor['items_id']);
+                    if ($item !== false) {
                         $formatted_actors[] = $item->getName();
                     }
                 }
@@ -294,7 +306,8 @@ TWIG;
             value,
             {
                 'multiple': is_multiple_actors,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label
             }
         ]) %}
 
@@ -318,7 +331,8 @@ TWIG;
             'value'              => $this->getDefaultValue($question, $is_multiple_actors),
             'question'           => $question,
             'allowed_types'      => $this->getAllowedActorTypes(),
-            'is_multiple_actors' => $is_multiple_actors
+            'is_multiple_actors' => $is_multiple_actors,
+            'aria_label'         => $question->fields['name']
         ]);
     }
 

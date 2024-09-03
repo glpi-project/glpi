@@ -4911,6 +4911,7 @@ JAVASCRIPT;
                 'right'           => $p['right'],
                 'entity_restrict' => $entity_restrict,
             ]),
+            'aria_label'          => $p['aria_label'] ?? '',
         ];
 
         if ($p['multiple']) {

@@ -48,6 +48,7 @@ use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
+use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Form;
 use Override;
 use Ticket;
@@ -186,6 +187,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new AssociatedItemsField(),
             new ITILFollowupField(),
             new RequestSourceField(),
+            new ValidationField(),
         ];
     }
 

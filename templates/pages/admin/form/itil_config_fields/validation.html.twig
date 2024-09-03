@@ -1,0 +1,93 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{{ fields.dropdownArrayField(
+    main_config_field.input_name,
+    main_config_field.value,
+    main_config_field.possible_values,
+    main_config_field.label,
+    options
+) }}
+
+<div
+    {% if main_config_field.value != CONFIG_SPECIFIC_ACTORS %}
+        class="d-none"
+    {% endif %}
+    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ACTORS }}"
+>
+    {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
+        specific_values_extra_field.input_name,
+        specific_values_extra_field.values,
+        {
+            multiple: true,
+            allowed_types: specific_values_extra_field.allowed_types,
+            aria_label: specific_values_extra_field.aria_label,
+        }
+    ]) %}
+
+    {{ fields.htmlField(
+        'default_value',
+        actors_dropdown,
+        '',
+        {
+            no_label: true,
+            mb: 'mb-2',
+            wrapper_class: ''
+        }
+    ) }}
+</div>
+
+<div
+    {% if main_config_field.value != CONFIG_SPECIFIC_ANSWERS %}
+        class="d-none"
+    {% endif %}
+    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
+    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+>
+    {{ fields.dropdownArrayField(
+        specific_answers_extra_field.input_name,
+        '',
+        specific_answers_extra_field.possible_values,
+        "",
+        options|merge({
+            no_label: true,
+            display_emptychoice: true,
+            multiple: true,
+            values: specific_answers_extra_field.values,
+            aria_label: specific_answers_extra_field.aria_label,
+        })
+    ) }}
+</div>
