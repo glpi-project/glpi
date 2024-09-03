@@ -17,7 +17,7 @@
     "GLOB_BRACE",
 
     "// PHP 8.1 symbols",
-    "Ldap\\Connection",
+    "LDAP\\Connection",
 
     "// GLPI config classes",
     "DB", "DBSlave",
