@@ -1,7 +1,10 @@
+includes:
+    - .phpstan-baseline.php
+
 parameters:
     parallel:
         maximumNumberOfProcesses: 2
-    level: 1
+    level: 4
     bootstrapFiles:
         - inc/based_config.php
     paths:
@@ -18,5 +21,8 @@ parameters:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
         - '/\w+ has been replaced by \w+/'
+        -
+            message: '/LDAP\\Connection/'
+            reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
