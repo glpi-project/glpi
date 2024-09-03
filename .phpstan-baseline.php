@@ -398,6 +398,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
+	// identifier: isset.offset
+	'message' => '#^Offset 1 on array\\{array\\<int, string\\>, array\\<int, numeric\\-string\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.1_to_9.5.2.php',
+];
+$ignoreErrors[] = [
 	// identifier: foreach.emptyArray
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'count' => 2,
@@ -796,12 +802,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: booleanAnd.leftAlwaysFalse
 	'message' => '#^Left side of && is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanAnd.leftAlwaysTrue
-	'message' => '#^Left side of && is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
@@ -1352,12 +1352,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Computer\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -1714,12 +1708,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DatabaseInstance.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
@@ -2440,12 +2428,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: function.impossibleType
 	'message' => '#^Call to function is_array\\(\\) with null will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanAnd.leftAlwaysTrue
-	'message' => '#^Left side of && is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
 ];
@@ -3508,7 +3490,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: if.alwaysTrue
 	'message' => '#^If condition is always true\\.$#',
-	'count' => 1,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -3538,6 +3520,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:giveItem\\(\\) should return string but returns int\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	// identifier: isset.offset
+	'message' => '#^Offset 2 on array\\{0\\: string, 1\\: string, 2\\: string, 3\\: numeric\\-string, 4\\?\\: string, 5\\?\\: non\\-empty\\-string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	// identifier: isset.offset
+	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
@@ -4100,12 +4094,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Item_SoftwareLicense\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
@@ -4122,12 +4110,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicenseByEntity\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -4442,12 +4424,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Monitor\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -4480,12 +4456,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
@@ -4600,6 +4570,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: if.alwaysTrue
 	'message' => '#^If condition is always true\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	// identifier: isset.offset
+	'message' => '#^Offset 2 on array\\{array\\<int, string\\>, array\\<int, non\\-empty\\-string\\>, array\\<int, numeric\\-string\\>, array\\<int, non\\-empty\\-string\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
@@ -4790,12 +4766,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Peripheral\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -4828,12 +4798,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
 ];
@@ -5116,12 +5080,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Printer.php',
 ];
@@ -5798,12 +5756,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	// identifier: booleanOr.rightAlwaysFalse
-	'message' => '#^Right side of \\|\\| is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	// identifier: deadCode.unreachable
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
@@ -5952,12 +5904,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	// identifier: doWhile.alwaysFalse
-	'message' => '#^Do\\-while loop condition is always false\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
@@ -6146,14 +6092,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	// identifier: function.impossibleType
-	'message' => '#^Call to function is_resource\\(\\) with array\\<string\\>\\|string will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	// identifier: function.impossibleType
-	'message' => '#^Call to function is_resource\\(\\) with array\\|string will always evaluate to false\\.$#',
+	// identifier: greaterOrEqual.alwaysTrue
+	'message' => '#^Comparison operation "\\>\\=" between 3 and 3 is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
@@ -6256,12 +6196,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
