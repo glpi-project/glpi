@@ -467,6 +467,8 @@ class Phone extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Agent::rawSearchOptionsToAdd());
+
         return $tab;
     }
 
