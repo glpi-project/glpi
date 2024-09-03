@@ -1077,78 +1077,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTEND\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTSTAMP\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTSTART\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$LAST\\-MODIFIED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$RRULE\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$STATUS\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$URL\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$CREATED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
 	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Node\\:\\:\\$CREATED\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/src/CommonITILTask.php',
@@ -2567,24 +2495,6 @@ $ignoreErrors[] = [
 	// identifier: property.notFound
 	'message' => '#^Access to an undefined property Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:\\$fields\\.$#',
 	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$LAST\\-MODIFIED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$UID\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VCalendar\\:\\:\\$PRODID\\.$#',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
 ];
 $ignoreErrors[] = [
@@ -4808,42 +4718,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Phone.php',
 ];
 $ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DESCRIPTION\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DTEND\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DTSTART\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$RRULE\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysTrue
 	'message' => '#^If condition is always true\\.$#',
 	'count' => 1,
@@ -4878,54 +4752,6 @@ $ignoreErrors[] = [
 	'message' => '#^Offset \'planning_type\' does not exist on class\\-string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTEND\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTSTART\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$RRULE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$STATUS\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$CREATED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
@@ -5175,72 +5001,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTEND\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTSTART\\.$#',
-	'count' => 3,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$PERCENT\\-COMPLETE\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$RRULE\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$STATUS\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$URL\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$CREATED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
 	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Node\\:\\:\\$CREATED\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/src/ProjectTask.php',
@@ -5406,54 +5166,6 @@ $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RefusedEquipment.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DESCRIPTION\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTEND\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$DTSTART\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$RRULE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\:\\:\\$STATUS\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$CREATED\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VEvent\\|Sabre\\\\VObject\\\\Component\\\\VJournal\\|Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$SUMMARY\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property Sabre\\\\VObject\\\\Component\\\\VTodo\\:\\:\\$DUE\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
