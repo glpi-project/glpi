@@ -5726,8 +5726,8 @@ final class SQLProvider implements SearchProviderInterface
 
                         $out  = "<a id='$itemtype" . $data[$ID][0]['id'] . "' href=\"" . $link;
                         // Force solution tab if solved
-                        /** @var \CommonITILObject $item */
                         if ($item = getItemForItemtype($itemtype)) {
+                            /** @var \CommonITILObject $item */
                             if (in_array($data[$ID][0]['status'], $item->getSolvedStatusArray())) {
                                 $out .= "&amp;forcetab=$itemtype$2";
                             }

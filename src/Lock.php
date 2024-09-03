@@ -391,7 +391,7 @@ TWIG, $twig_params);
             ];
 
             foreach ($results as $result) {
-                /** @var CommonDBTM $asset */
+                /** @var CommonDBTM $peripheral */
                 $peripheral = getItemForItemtype($result['itemtype_peripheral']);
                 if ($peripheral === false || $peripheral->getFromDB($result['items_id_peripheral']) === false) {
                     // ignore orphan data

@@ -35,7 +35,7 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
- * @var DB $DB
+ * @var DBmysql $DB
  * @var Migration $migration
  */
 

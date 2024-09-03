@@ -36,7 +36,7 @@
 use Glpi\Http\Response;
 use Glpi\RichText\RichText;
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 header("Content-Type: application/json; charset=UTF-8");

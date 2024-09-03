@@ -403,7 +403,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                             }
                         }
                     } else if ($category === 'subtypes' && $controller === ITILController::class) {
-                        /** @var ITILController $controller */
+                        /** @phpstan-var class-string<ITILController> $controller */
                         foreach ($itemtypes as $supported_itemtype => $type_data) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
                         }

@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var $this \Glpi\Controller\LegacyFileLoadController */
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 Session::checkRight("config", UPDATE);

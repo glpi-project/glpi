@@ -369,7 +369,6 @@ class NetworkName extends FQDNLabel
     public static function showFormForNetworkPort($networkPortID)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
         global $DB;
