@@ -34,8 +34,7 @@
 describe('Service catalog page', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Self-Service', true);
-
+        cy.changeProfile('Super-Admin', true);
     });
 
     it('can pick a form in the service catalog', () => {
@@ -46,8 +45,16 @@ describe('Service catalog page', () => {
             'name': form_name,
             'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
             'is_active': true,
-        });
+        }).as('form_id');
 
+        // Allow form to be displayed in the service catalog.
+        cy.get('@form_id').visitFormTab('Policies');
+        cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
+        cy.findByRole('link', {'name': "There are 7 user(s) matching these criteria."}).should('exist');
+        cy.findByRole('button', {name: 'Save changes'}).click();
+
+        // Got to service catalog
+        cy.changeProfile('Self-Service', true);
         cy.visit('/ServiceCatalog');
         cy.injectAndCheckA11y();
         cy.findByRole('region', {'name': form_name}).as('form');
@@ -61,7 +68,5 @@ describe('Service catalog page', () => {
         // Go to form
         cy.get('@form').click();
         cy.url().should('include', '/Form/Render');
-
-        // TODO: validate the form is actually displayed, can't be done others PR are merged.
     });
 });

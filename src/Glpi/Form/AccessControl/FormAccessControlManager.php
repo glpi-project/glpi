@@ -116,8 +116,8 @@ final class FormAccessControlManager
         Form $form,
         FormAccessParameters $parameters
     ): bool {
-        // Form administrators can preview all forms.
-        if (Session::haveRight(Form::$rightname, READ)) {
+        // Form administrators can bypass restrictions while previewing forms.
+        if ($parameters->isBypassingRestrictions()) {
             return true;
         }
 

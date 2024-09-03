@@ -35,7 +35,10 @@
 
 namespace Glpi\Tests;
 
+use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -384,9 +387,30 @@ class FormBuilder
      */
     public function addAccessControl(
         string $strategy,
-        JsonFieldInterface $config
+        JsonFieldInterface $config,
+        bool $is_active = true,
     ): self {
-        $this->access_control[$strategy] = $config;
+        $this->access_control[$strategy] = [
+            'config'    => $config,
+            'is_active' => $is_active,
+        ];
+        return $this;
+    }
+
+    /**
+     * Shorthand to add an allow list without restrictions to the form.
+     *
+     * @return self
+     */
+    public function allowAllUsers(): self
+    {
+        $this->addAccessControl(
+            strategy: AllowList::class,
+            config: new AllowListConfig(
+                user_ids: [AbstractRightsDropdown::ALL_USERS]
+            ),
+            is_active: true,
+        );
         return $this;
     }
 }

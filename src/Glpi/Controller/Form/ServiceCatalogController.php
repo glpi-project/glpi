@@ -35,9 +35,11 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -60,10 +62,16 @@ final class ServiceCatalogController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $parameters = new FormAccessParameters(
+            session_info: Session::getCurrentSessionInfo(),
+            url_parameters: $request->query->all()
+        );
+        $forms = $this->service_catalog_manager->getForms($parameters);
+
         return $this->render('pages/self-service/service_catalog.html.twig', [
             'title'     => __("New ticket"),
             'menu'      => ["create_ticket"],
-            'forms'     => $this->service_catalog_manager->getForms(),
+            'forms'     => $forms,
         ]);
     }
 }

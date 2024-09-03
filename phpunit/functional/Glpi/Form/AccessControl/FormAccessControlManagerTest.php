@@ -177,9 +177,10 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testAdminCanBypassFormRestrictions(): void
     {
-        $this->login('glpi', 'glpi');
         $form = $this->getFormAccessibleOnlyToTechUser();
-        $access_parameters = $this->getEmptyParameters();
+        $access_parameters = new FormAccessParameters(
+            bypass_restriction: true,
+        );
 
         $this->assertTrue(
             $this->getManager()->canAnswerForm($form, $access_parameters)
