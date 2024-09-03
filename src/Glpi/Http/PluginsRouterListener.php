@@ -35,8 +35,9 @@
 namespace Glpi\Http;
 
 use Glpi\DependencyInjection\PluginContainer;
+use Glpi\Routing\PluginsRouter;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -48,8 +49,7 @@ class PluginsRouterListener implements EventSubscriberInterface
     public const ROUTE_NAME = 'glpi_plugin';
 
     public function __construct(
-        private readonly PluginContainer $plugin_container,
-        private readonly RequestStack $requestStack,
+        #[Autowire(service: PluginContainer::class)] private readonly PluginContainer $plugin_container,
     ) {
     }
 
@@ -77,10 +77,7 @@ class PluginsRouterListener implements EventSubscriberInterface
             return;
         }
 
-        [
-            'plugins_or_marketplace' => $plugins_or_marketplace,
-            'plugin_name' => $plugin_name,
-        ] = $route_params;
+        $plugin_name = $route_params['plugin_name'] ?? null;
 
         if (!\Plugin::isPluginActive($plugin_name)) {
             $request->attributes->remove('_route');
@@ -94,9 +91,9 @@ class PluginsRouterListener implements EventSubscriberInterface
             throw new NotFoundHttpException('No route found.');
         }
 
-        $router = $this->plugin_container->get('glpi_plugins_router');
-        if (!$router instanceof Router) {
-            throw new \RuntimeException('Incorrectly set Router in GLPI\'s Plugin container.');
+        $router = $this->plugin_container->get(PluginsRouter::class);
+        if (!$router instanceof PluginsRouter) {
+            throw new \RuntimeException('Incorrectly set PluginsRouter in GLPI\'s Plugin container.');
         }
 
         try {
@@ -106,9 +103,56 @@ class PluginsRouterListener implements EventSubscriberInterface
             return;
         }
 
-        foreach ($matches as $attribute => $value) {
-            $request->attributes->set($attribute, $value);
+        if (!isset($matches['_controller'])) {
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". The route is wrongly configured. Did you forget to set the "_controller" request attribute?', $request->getPathInfo()));
         }
+
+        $matches['_controller'] = $this->resolveController($matches['_controller']);
+
+        $request->attributes->add($matches);
+
+        unset($matches['_route'], $matches['_controller']);
         $request->attributes->set('_route_params', $matches);
+    }
+
+    private function resolveController(mixed $controller): callable
+    {
+        if (\is_object($controller) || \is_callable($controller)) {
+            // Nothing to do, already set.
+            return $controller;
+        }
+
+        if (\is_array($controller)) {
+            [$class, $method] = $controller;
+        } elseif (\str_contains($controller, ':')) {
+            [$class, $method] = \preg_split('~:+~', $controller, 2);
+        } else {
+            $class = $controller;
+            $method = null;
+        }
+
+        if (!$class || !\is_string($class)) {
+            throw new \RuntimeException('Wrongly formed controller array');
+        }
+
+        if (!$this->plugin_container->has($class)) {
+            $this->plugin_container->get($class);
+            throw new \RuntimeException(\sprintf(
+                'Expected controller class "%s" to be a service, but did not find it in the Service Container.',
+                $class,
+            ));
+        }
+
+        try {
+            $object = new $class();
+        } catch (\Error) {
+            $object = $this->plugin_container->get($class);
+        }
+
+        if (!\is_callable($object)) {
+            return \sprintf('Controller class "%s" cannot be called without a method name. You need to implement "__invoke", or implement your route parameters on a public method.', $class);
+        }
+
+        return $method ? [$object, $method] : $object;
     }
 }

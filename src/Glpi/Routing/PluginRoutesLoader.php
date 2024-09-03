@@ -34,7 +34,9 @@
 
 namespace Glpi\Routing;
 
+use Glpi\DependencyInjection\PluginContainer;
 use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
@@ -43,14 +45,14 @@ use Symfony\Component\Routing\RouteCollection;
 
 class PluginRoutesLoader extends Loader
 {
-    private string $projectDir;
+    private PluginContainer $container;
 
     public function __construct(
         ?string $env,
-        string $projectDir,
+        PluginContainer $container,
     ) {
         parent::__construct($env);
-        $this->projectDir = $projectDir;
+        $this->container = $container;
     }
 
     public function load(mixed $resource, ?string $type = null): RouteCollection
@@ -88,6 +90,9 @@ class PluginRoutesLoader extends Loader
 
             $routes->addCollection($plugin_routes);
         }
+
+        /** @var Router $initial_routes */
+        $initial_routes = $this->container->getSymfonyService('router');
 
         return $routes;
     }

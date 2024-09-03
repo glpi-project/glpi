@@ -36,19 +36,34 @@ namespace Glpi\DependencyInjection;
 
 use Glpi\Kernel\Kernel;
 use Glpi\Routing\PluginRoutesLoader;
-use Psr\Container\ContainerInterface;
+use Glpi\Routing\PluginsRouter;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Compiler\RemoveBuildParametersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
+use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader as ContainerPhpFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\Config\FileLocator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
+use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
+use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 class PluginContainer implements ContainerInterface
 {
@@ -67,15 +82,45 @@ class PluginContainer implements ContainerInterface
         $this->kernel = $kernel;
     }
 
-    public function get(string $id)
+    public function set(string $id, ?object $service): void
+    {
+        $this->internal_container->set($id, $service);
+    }
+
+    public function initialized(string $id): bool
+    {
+        return $this->internal_container->initialized($id);
+    }
+
+    public function getParameter(string $name): \UnitEnum|float|array|bool|int|string|null
+    {
+        return $this->internal_container->getParameter($name) ?? $this->symfony_container->getParameter($name);
+    }
+
+    public function hasParameter(string $name): bool
+    {
+        return $this->internal_container->hasParameter($name) || $this->symfony_container->hasParameter($name);
+    }
+
+    public function setParameter(string $name, \UnitEnum|float|array|bool|int|string|null $value): void
+    {
+        $this->internal_container->setParameter($name, $value);
+    }
+
+    public function get(string $id, int $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE): ?object
     {
         $this->initializeContainer();
 
         try {
-            return $this->internal_container->get($id);
+            return $this->internal_container->get($id, $invalidBehavior);
         } catch (NotFoundExceptionInterface) {
         }
 
+        return $this->symfony_container->get($id);
+    }
+
+    public function getSymfonyService(string $id): mixed
+    {
         return $this->symfony_container->get($id);
     }
 
@@ -108,8 +153,7 @@ class PluginContainer implements ContainerInterface
                 && \is_object($this->internal_container = include $cachePath)
                 && (!$this->kernel->isDebug() || $cache->isFresh())
             ) {
-                $this->internal_container->set('kernel', $this->kernel);
-                $this->internal_container->set('service_container', $this);
+                $this->internal_container->set('service_container', $this->internal_container);
 
                 return;
             }
@@ -127,29 +171,30 @@ class PluginContainer implements ContainerInterface
 
         $this->dumpContainer($cache, $container);
 
+        $this->setRuntimeServices($container);
+
         $this->internal_container = $container;
     }
 
-    private function configureContainerServices(ContainerBuilder $container): void
+    private function getContainerLoader(ContainerBuilder $container): DelegatingLoader
     {
-        $container->setDefinition('routing.loader', (new Definition())
-            ->setClass(PluginRoutesLoader::class)
-            ->setBindings([
-                '$env' => $this->kernel->getEnvironment(),
-                '$projectDir' => $this->kernel->getProjectDir(),
-            ]));
+        $env = $this->kernel->getEnvironment();
+        $locator = new FileLocator($this->kernel);
+        $resolver = new LoaderResolver([
+//            new XmlFileLoader($container, $locator, $env),
+//            new YamlFileLoader($container, $locator, $env),
+//            new IniFileLoader($container, $locator, $env),
+            new PhpFileLoader($container, $locator, $env, class_exists(ConfigBuilderGenerator::class) ? new ConfigBuilderGenerator($this->kernel->getBuildDir()) : null),
+            new GlobFileLoader($container, $locator, $env),
+            new DirectoryLoader($container, $locator, $env),
+            new ClosureLoader($container, $env),
+            new Psr4DirectoryLoader($locator),
+        ]);
 
-        $container->setDefinition('glpi_plugins_router', (new Definition())
-            ->setClass(Router::class)
-            ->setPublic(true)
-            ->setBindings([
-                '$loader' => new Reference('routing.loader'),
-                '$resource' => 'glpi_routes',
-                '$options' => ['cache_dir' => $this->kernel->getCacheDir() . '/glpi_routes/'],
-            ]));
+        return new DelegatingLoader($resolver);
     }
 
-    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container): void
+    private function dumpContainer(ConfigCache $cache, ContainerBuilder $container): void
     {
         $dumper = new PhpDumper($container);
 
@@ -183,5 +228,75 @@ class PluginContainer implements ContainerInterface
         }
 
         $cache->write($rootCode, $container->getResources());
+    }
+
+    private function configureContainerServices(ContainerBuilder $container): void
+    {
+        $loader = $this->getContainerLoader($container);
+
+
+        // Hacks coming from Symfony's way of handling custom configurators
+        $file = (new \ReflectionObject($this->kernel))->getFileName();
+        /* @var ContainerPhpFileLoader $kernelLoader */
+        $kernelLoader = $loader->getResolver()->resolve($file);
+        $instanceof = \Closure::bind(fn &() => $this->instanceof, $kernelLoader, $kernelLoader)();
+        $configurator = new ContainerConfigurator($container, $kernelLoader, $instanceof, $file, $file, $this->kernel->getEnvironment());
+
+
+        // Handy configurator (just like Symfony config files)
+        $services = $configurator->services();
+        $services
+            ->defaults()
+                ->autowire()
+                ->autoconfigure()
+            ->instanceof(PublicService::class)->public()
+        ;
+
+
+        // Autoconfig
+        $container->registerForAutoconfiguration(PublicService::class)->setPublic(true);
+
+
+        // Services that will be set *after* the container's compilation
+        $services->set(self::class)->synthetic();
+        $services->set('symfony_router')->synthetic();
+
+
+        // Routes loader
+        $route_loader = $services->set(PluginRoutesLoader::class);
+        $route_loader->bind('$env', $this->kernel->getEnvironment());
+        $route_loader->bind('$container', new Reference(self::class));
+        $services->alias('routing.loader', PluginRoutesLoader::class);
+
+
+        // Internal Routing service used by GLPI's PluginsRouter
+        $router = $services->set('glpi_internal_router', Router::class)->public();
+        $router->bind('$loader', new Reference(PluginRoutesLoader::class));
+        $router->bind('$resource', 'glpi_routes');
+        $router->bind('$options', ['cache_dir' => $this->kernel->getCacheDir() . '/glpi_routes/']);
+
+
+        // Plugins routing (with runtime checks)
+        $router = $services->set(PluginsRouter::class)->public();
+        $router->arg(0, new Reference('glpi_internal_router'));
+        $router->arg(1, new Reference('symfony_router'));
+        $services->alias(UrlGeneratorInterface::class, PluginsRouter::class);
+        $services->alias(UrlMatcherInterface::class, PluginsRouter::class);
+        $services->alias(RequestMatcherInterface::class, PluginsRouter::class);
+        $services->alias(RouterInterface::class, PluginsRouter::class);
+
+        // Plugins services
+        foreach (\Plugin::getPlugins() as $key) {
+            $path = \Plugin::getPhpDir($key);
+            $services->load(\NS_PLUG . \ucfirst($key) . '\\Controller\\', $path . '/src/Controller/');
+        }
+    }
+
+    private function setRuntimeServices(ContainerBuilder $container): void
+    {
+        // Container service is available for autowiring.
+        $container->set(self::class, $this);
+
+        $container->set('symfony_router', $this->symfony_container->get('router'));
     }
 }
