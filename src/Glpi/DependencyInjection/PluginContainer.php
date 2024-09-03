@@ -141,35 +141,11 @@ class PluginContainer implements ContainerInterface
             return;
         }
 
-        $cache = new ConfigCache(sprintf("%s/%s.php", $this->kernel->getCacheDir(), \str_replace('\\', '_', self::class)), $this->kernel->isDebug());
-        $cachePath = $cache->getPath();
-
-        // Silence E_WARNING to ignore "include" failures - don't use "@" to prevent silencing fatal errors
-        $errorLevel = \error_reporting(\E_ALL ^ \E_WARNING);
-
-        try {
-            if (
-                \is_file($cachePath)
-                && \is_object($this->internal_container = include $cachePath)
-                && (!$this->kernel->isDebug() || $cache->isFresh())
-            ) {
-                $this->internal_container->set('service_container', $this->internal_container);
-
-                return;
-            }
-        } catch (\Throwable $e) {
-            // rebuild the container if any error occurs
-        } finally {
-            \error_reporting($errorLevel);
-        }
-
         $container = new ContainerBuilder(new ParameterBag($this->container_parameters->all()));
 
         $this->configureContainerServices($container);
 
         $container->compile();
-
-        $this->dumpContainer($cache, $container);
 
         $this->setRuntimeServices($container);
 
@@ -181,9 +157,6 @@ class PluginContainer implements ContainerInterface
         $env = $this->kernel->getEnvironment();
         $locator = new FileLocator($this->kernel);
         $resolver = new LoaderResolver([
-//            new XmlFileLoader($container, $locator, $env),
-//            new YamlFileLoader($container, $locator, $env),
-//            new IniFileLoader($container, $locator, $env),
             new PhpFileLoader($container, $locator, $env, class_exists(ConfigBuilderGenerator::class) ? new ConfigBuilderGenerator($this->kernel->getBuildDir()) : null),
             new GlobFileLoader($container, $locator, $env),
             new DirectoryLoader($container, $locator, $env),
@@ -192,42 +165,6 @@ class PluginContainer implements ContainerInterface
         ]);
 
         return new DelegatingLoader($resolver);
-    }
-
-    private function dumpContainer(ConfigCache $cache, ContainerBuilder $container): void
-    {
-        $dumper = new PhpDumper($container);
-
-        $buildParameters = [];
-        foreach ($container->getCompilerPassConfig()->getPasses() as $pass) {
-            if ($pass instanceof RemoveBuildParametersPass) {
-                $buildParameters = \array_merge($buildParameters, $pass->getRemovedParameters());
-            }
-        }
-
-        $content = $dumper->dump([
-            'file' => $cache->getPath(),
-            'as_files' => true,
-            'debug' => $this->kernel->isDebug(),
-            'inline_factories' => true,
-            'inline_class_loader' => true,
-            'build_time' => $container->hasParameter('kernel.container_build_time') ? $container->getParameter('kernel.container_build_time') : \time(),
-        ]);
-
-        $rootCode = array_pop($content);
-        $dir = \dirname($cache->getPath()) . '/';
-        $fs = new Filesystem();
-
-        foreach ($content as $file => $code) {
-            $fs->dumpFile($dir . $file, $code);
-            @chmod($dir . $file, 0666 & ~umask());
-        }
-        $legacyFile = \dirname($dir . key($content)) . '.legacy';
-        if (is_file($legacyFile)) {
-            @unlink($legacyFile);
-        }
-
-        $cache->write($rootCode, $container->getResources());
     }
 
     private function configureContainerServices(ContainerBuilder $container): void
