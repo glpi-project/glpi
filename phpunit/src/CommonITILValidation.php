@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Glpi\PHPUnit\Tests;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/commonitilvalidation.class.php */
 
@@ -45,7 +46,7 @@ abstract class CommonITILValidation extends DbTestCase
     {
         $test_class = static::class;
         // Rule class has the same name as the test class but in the global namespace
-        return substr(strrchr($test_class, '\\'), 1);
+        return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
     }
 
     protected function getITILObjectClass(): string
@@ -54,7 +55,7 @@ abstract class CommonITILValidation extends DbTestCase
         return str_replace('Validation', '', $tested_class);
     }
 
-    protected function testComputeValidationProvider(): array
+    public static function testComputeValidationProvider(): array
     {
         return [
          // 100% validation required
@@ -147,9 +148,7 @@ abstract class CommonITILValidation extends DbTestCase
         ];
     }
 
-    /**
-     * @dataprovider testComputeValidationProvider
-     */
+    #[DataProvider('testComputeValidationProvider')]
     public function testComputeValidation(
         int $accepted,
         int $refused,
@@ -162,7 +161,7 @@ abstract class CommonITILValidation extends DbTestCase
             $validation_percent
         );
 
-        $this->integer($test_result)->isEqualTo($result);
+        $this->assertEquals($result, $test_result);
     }
 
     public function testCanValidateUser()
@@ -175,13 +174,13 @@ abstract class CommonITILValidation extends DbTestCase
             'name'      => __FUNCTION__,
             'content'   => __FUNCTION__,
         ]);
-        $this->integer($itil_items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_items_id);
 
         $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
         // Test the current user cannot approve since there are no approvals
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Add user approval for current user
         $validations_id_1 = $validation->add([
@@ -190,8 +189,8 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => $_SESSION['glpiID'],
             'comment_submission'                => __FUNCTION__,
         ]);
-        $this->integer($validations_id_1)->isGreaterThan(0);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertGreaterThan(0, $validations_id_1);
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Add user approval for other user
         $validation = new $validation_class();
@@ -201,14 +200,14 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => \User::getIdByName('normal'), // Other user.
             'comment_submission'                => __FUNCTION__,
         ]);
-        $this->integer($validations_id_2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $validations_id_2);
 
         // Test the current user can still approve since they still have an approval
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
         // Remove user approval for current user
-        $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
+        $this->assertTrue($validation->delete(['id' => $validations_id_1]));
         // Test the current user cannot still approve since the remaining approval isn't for them
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // without substitution period
@@ -217,7 +216,7 @@ abstract class CommonITILValidation extends DbTestCase
             'users_id' => \User::getIdByName('normal'),
             'users_id_substitute' => $_SESSION['glpiID'],
         ]);
-        $this->boolean($validator_substitute->isNewItem())->isFalse();
+        $this->assertFalse($validator_substitute->isNewItem());
         $other_user = new \User();
         $other_user->getFromDBbyName('normal');
         $other_user->update([
@@ -225,7 +224,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only
@@ -235,7 +234,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only excluding now
@@ -245,7 +244,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only
@@ -255,7 +254,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only excluding now
@@ -265,7 +264,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => '2021-01-01 00:00:00',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -275,7 +274,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -285,7 +284,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
     }
 
     public function testCanValidateGroup()
@@ -298,33 +297,36 @@ abstract class CommonITILValidation extends DbTestCase
             'name'      => __FUNCTION__,
             'content'   => __FUNCTION__,
         ]);
-        $this->integer($itil_items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_items_id);
 
         $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
         // Test the current user cannot approve since there are no approvals
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Create a test group
         $group = new \Group();
         $groups_id = $group->add([
             'name' => __FUNCTION__ . ' group',
         ]);
-        $this->integer($groups_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $groups_id);
 
         $other_group = new \Group();
         $other_groups_id = $group->add([
             'name' => __FUNCTION__ . ' other group',
         ]);
-        $this->integer($other_groups_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $other_groups_id);
 
         // Add current user to the group
         $group_user = new \Group_User();
-        $this->integer($group_user->add([
-            'groups_id' => $groups_id,
-            'users_id'  => $_SESSION['glpiID'],
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $group_user->add([
+                'groups_id' => $groups_id,
+                'users_id'  => $_SESSION['glpiID'],
+            ])
+        );
 
         // Add approval for user's group
         $validations_id_1 = $validation->add([
@@ -333,8 +335,8 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => $groups_id,
             'comment_submission'                => __FUNCTION__,
         ]);
-        $this->integer($validations_id_1)->isGreaterThan(0);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertGreaterThan(0, $validations_id_1);
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Add approval for other group
         $validation = new $validation_class();
@@ -344,29 +346,32 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => $other_groups_id, // Other group.
             'comment_submission'                => __FUNCTION__,
         ]);
-        $this->integer($validations_id_2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $validations_id_2);
 
         // Test the current user can still approve since they still have an approval
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
         // Remove approval for current user's group
-        $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
+        $this->assertTrue($validation->delete(['id' => $validations_id_1]));
         // Test the current user cannot still approve since the remaining approval isn't for them
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Add normal user to the other group
         $group_user = new \Group_User();
-        $this->integer($group_user->add([
-            'groups_id' => $other_groups_id,
-            'users_id'  => \User::getIdByName('normal'),
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $group_user->add([
+                'groups_id' => $other_groups_id,
+                'users_id'  => \User::getIdByName('normal'),
+            ])
+        );
 
-        // Add current user as a substitute of norrmal (member of other group)
+        // Add current user as a substitute of normal (member of other group)
         $validator_substitute = new \ValidatorSubstitute();
         $validator_substitute->add([
             'users_id' => \User::getIdByName('normal'),
             'users_id_substitute' => $_SESSION['glpiID'],
         ]);
-        $this->boolean($validator_substitute->isNewItem())->isFalse();
+        $this->assertFalse($validator_substitute->isNewItem());
         $other_user = new \User();
         $other_user->getFromDBbyName('normal');
         $other_user->update([
@@ -374,7 +379,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only
@@ -384,7 +389,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only excluding now
@@ -394,7 +399,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
             'substitution_end_date' => 'NULL',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only
@@ -404,7 +409,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only excluding now
@@ -414,7 +419,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => '2021-01-01 00:00:00',
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -424,7 +429,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+        $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -434,20 +439,18 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+        $this->assertFalse($validation::canValidate($itil_items_id));
     }
 
-    protected function prepareInputForAddProvider()
+    public static function prepareInputForAddProvider()
     {
-        $fk_field = $this->getITILObjectClass()::getForeignKeyField();
-
         $user_validations = [
             [
                 'input' => [
                     'itemtype_target' => 'User',
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
-                    $fk_field => 1,
+                    '%FK_FIELD%' => 1,
                 ],
                 'expected' => [
                     'itemtype_target' => 'User',
@@ -477,7 +480,7 @@ abstract class CommonITILValidation extends DbTestCase
                     'itemtype_target' => 'Group',
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
-                    $fk_field => 1,
+                    '%FK_FIELD%' => 1,
                 ],
                 'expected' => [
                     'itemtype_target' => 'Group',
@@ -500,35 +503,43 @@ abstract class CommonITILValidation extends DbTestCase
         return array_merge($user_validations, $group_validations);
     }
 
-    /**
-     * @dataProvider prepareInputForAddProvider
-     */
+    #[DataProvider('prepareInputForAddProvider')]
     public function testPrepareInputForAdd(array $input, array $expected, array $input_blocklist = [])
     {
         $this->login();
 
-        $validation_class = $this->getTestedClassName();
+        if (isset($input['%FK_FIELD%'])) {
+            $fk_field = $this->getITILObjectClass()::getForeignKeyField();
+            $input[$fk_field] = $input['%FK_FIELD%'];
+            unset($input['%FK_FIELD%']);
+        }
+
+        $validation_class = $this->getTestedClass();
         /** @var \CommonITILValidation $validation */
         $validation = new $validation_class();
         $validation::$mustBeAttached = false;
 
         if (!empty($expected)) {
             $result = $validation->prepareInputForAdd($input);
-            $this->array($result)->hasKeys(array_keys($expected));
+            foreach (array_keys($expected) as $key) {
+                $this->assertArrayHasKey($key, $result);
+            }
             if (!empty($input_blocklist)) {
-                $this->array($result)->notHasKeys($input_blocklist);
+                foreach ($input_blocklist as $key) {
+                    $this->assertArrayNotHasKey($key, $result);
+                }
             }
             foreach ($result as $k => $v) {
                 if (isset($expected[$k])) {
-                    $this->variable($v)->isEqualTo($expected[$k]);
+                    $this->assertEquals($expected[$k], $v);
                 }
             }
         } else {
-            $this->boolean($validation->prepareInputForAdd($input))->isFalse();
+            $this->assertFalse($validation->prepareInputForAdd($input));
         }
     }
 
-    protected function prepareInputForUpdateProvider()
+    public static function prepareInputForUpdateProvider()
     {
         return [
             [
@@ -557,14 +568,12 @@ abstract class CommonITILValidation extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider prepareInputForUpdateProvider
-     */
+    #[DataProvider('prepareInputForUpdateProvider')]
     public function testPrepareInputForUpdate(array $input, array $expected)
     {
         $this->login();
 
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         /** @var \CommonITILValidation $validation */
         $validation = new $validation_class();
         $validation::$mustBeAttached = false;
@@ -584,7 +593,7 @@ abstract class CommonITILValidation extends DbTestCase
         unset($array);
         $itilObject = new $validation::$itemtype();
         $itilObject->getFromDb(1);
-        $this->boolean($itilObject->isNewItem())->isFalse();
+        $this->assertFalse($itilObject->isNewItem());
         $validation->add([
             'users_id' => \Session::getLoginUserID(),
             $validation::$items_id => $itilObject->getID(),
@@ -594,21 +603,23 @@ abstract class CommonITILValidation extends DbTestCase
             'status' => $input['status'],
             'timeline_position' => '1',
         ]);
-        $this->boolean($validation->isNewItem())->isFalse();
+        $this->assertFalse($validation->isNewItem());
         if (!empty($expected)) {
             $result = $validation->prepareInputForUpdate($input);
-            $this->array($result)->hasKeys(array_keys($expected));
+            foreach (array_keys($expected) as $key) {
+                $this->assertArrayHasKey($key, $result);
+            }
             foreach ($result as $k => $v) {
                 if (isset($expected[$k])) {
-                    $this->variable($v)->isEqualTo($expected[$k]);
+                    $this->assertEquals($expected[$k], $v);
                 }
             }
         } else {
-            $this->boolean($validation->prepareInputForUpdate($input))->isFalse();
+            $this->assertFalse($validation->prepareInputForUpdate($input));
         }
     }
 
-    protected function getHistoryChangeWhenUpdateFieldProvider()
+    public static function getHistoryChangeWhenUpdateFieldProvider()
     {
         return [
             [
@@ -649,19 +660,17 @@ abstract class CommonITILValidation extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getHistoryChangeWhenUpdateFieldProvider
-     */
+    #[DataProvider('getHistoryChangeWhenUpdateFieldProvider')]
     public function testGetHistoryChangeWhenUpdateField(array $fields, string $field, array $expected)
     {
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
         $validation->fields = array_merge($validation->fields, $fields);
-        $this->array($validation->getHistoryChangeWhenUpdateField($field))->isIdenticalTo($expected);
+        $this->assertSame($expected, $validation->getHistoryChangeWhenUpdateField($field));
     }
 
-    protected function getHistoryNameForItemProvider()
+    public static function getHistoryNameForItemProvider()
     {
         return [
             [
@@ -699,21 +708,19 @@ abstract class CommonITILValidation extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getHistoryNameForItemProvider
-     */
+    #[DataProvider('getHistoryNameForItemProvider')]
     public function testGetHistoryNameForItem(array $fields, string $case, string $expected)
     {
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
         $validation->fields = array_merge($validation->fields, $fields);
-        $this->string($validation->getHistoryNameForItem($validation, $case))->isIdenticalTo($expected);
+        $this->assertSame($expected, $validation->getHistoryNameForItem($validation, $case));
     }
 
     public function testCreateValidation()
     {
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
         $user = new \User();
@@ -744,8 +751,8 @@ abstract class CommonITILValidation extends DbTestCase
             'status' => \CommonITILValidation::WAITING,
             'users_id' => 1,
         ]);
-        $this->integer((int) $validations_id)->isGreaterThan(0);
-        $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(1);
+        $this->assertGreaterThan(0, (int) $validations_id);
+        $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
 
         $validations_id = $validation->add([
             $itil_class::getForeignKeyField() => $itil_item->getID(),
@@ -754,35 +761,33 @@ abstract class CommonITILValidation extends DbTestCase
             'status' => \CommonITILValidation::WAITING,
             'users_id' => 1,
         ]);
-        $this->integer((int) $validations_id)->isGreaterThan(0);
-        $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(2);
+        $this->assertGreaterThan(0, (int) $validations_id);
+        $this->assertEquals(2, $validation_class::getNumberToValidate($user->getID()));
 
         $validation->update([
             'id' => $validations_id,
             'status' => \CommonITILValidation::ACCEPTED,
         ]);
-        $this->integer($validation_class::getNumberToValidate($user->getID()))->isEqualTo(1);
+        $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
     }
 
     public function testGetCanValidationStatusArray()
     {
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
-        $this->array($validation->getCanValidationStatusArray())->contains(\CommonITILValidation::NONE);
-        $this->array($validation->getCanValidationStatusArray())->contains(\CommonITILValidation::ACCEPTED);
+        $this->assertContains(\CommonITILValidation::NONE, $validation->getCanValidationStatusArray());
+        $this->assertContains(\CommonITILValidation::ACCEPTED, $validation->getCanValidationStatusArray());
     }
 
     public function testGetAllValidationStatusArray()
     {
-        $validation_class = $this->getTestedClassName();
+        $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 
-        $this->array($validation->getAllValidationStatusArray())->containsValues([
-            \CommonITILValidation::NONE,
-            \CommonITILValidation::WAITING,
-            \CommonITILValidation::REFUSED,
-            \CommonITILValidation::ACCEPTED,
-        ]);
+        $this->assertContains(\CommonITILValidation::NONE, $validation->getAllValidationStatusArray());
+        $this->assertContains(\CommonITILValidation::WAITING, $validation->getAllValidationStatusArray());
+        $this->assertContains(\CommonITILValidation::REFUSED, $validation->getAllValidationStatusArray());
+        $this->assertContains(\CommonITILValidation::ACCEPTED, $validation->getAllValidationStatusArray());
     }
 }

@@ -37,8 +37,8 @@ namespace tests\units;
 
 /* Test for src/ChangeValidation.php */
 
-use Glpi\Tests\CommonITILValidation;
+use Glpi\PHPUnit\Tests\CommonITILValidation;
 
-class ChangeValidation extends CommonITILValidation
+class ChangeValidationTest extends CommonITILValidation
 {
 }

@@ -7903,7 +7903,7 @@ HTML
 
         $ticket = new \Ticket();
         $id = $ticket->add($input);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
         $this->checkInput($ticket, $id, $expected);
     }
 }
