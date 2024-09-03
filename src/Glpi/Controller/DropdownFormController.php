@@ -201,7 +201,5 @@ final class DropdownFormController extends AbstractController
 
             $dropdown::displayFullPageForItem($id, null, $options);
         }
-
-        throw new BadRequestHttpException();
     }
 }
