@@ -93,10 +93,16 @@ final class SubmitAnswerController extends AbstractController
     {
         $form_access_manager = FormAccessControlManager::getInstance();
 
-        $parameters = new FormAccessParameters(
-            session_info: Session::getCurrentSessionInfo(),
-            url_parameters: $request->request->all(),
-        );
+        if (Session::haveRight(Form::$rightname, READ)) {
+            // Form administrators can bypass restrictions while previewing forms.
+            $parameters = new FormAccessParameters(bypass_restriction: true);
+        } else {
+            // Load current user session info and URL parameters.
+            $parameters = new FormAccessParameters(
+                session_info: Session::getCurrentSessionInfo(),
+                url_parameters: $request->query->all(),
+            );
+        }
 
         if (!$form_access_manager->canAnswerForm($form, $parameters)) {
             throw new AccessDeniedHttpException();

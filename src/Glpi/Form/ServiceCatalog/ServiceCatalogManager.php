@@ -35,10 +35,19 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 
 final class ServiceCatalogManager
 {
+    private FormAccessControlManager $access_manager;
+
+    public function __construct()
+    {
+        $this->access_manager = FormAccessControlManager::getInstance();
+    }
+
     /**
      * Return all available forms for the given user.
      *
@@ -51,16 +60,16 @@ final class ServiceCatalogManager
      *
      * @return Form[]
      */
-    public function getForms(): array
+    public function getForms(FormAccessParameters $parameters): array
     {
-        $forms = $this->getFormsFromDatabase();
+        $forms = $this->getFormsFromDatabase($parameters);
         $forms = $this->addSuffixesToIdenticalFormNames($forms);
 
         return $forms;
     }
 
     /** @return Form[] */
-    private function getFormsFromDatabase(): array
+    private function getFormsFromDatabase(FormAccessParameters $parameters): array
     {
         $forms = [];
         $raw_forms = (new Form())->find([
@@ -71,7 +80,14 @@ final class ServiceCatalogManager
             $form = new Form();
             $form->getFromResultSet($raw_form);
             $form->post_getFromDB();
-            $forms[] = $form;
+
+            // Note: this is in theory less performant than applying the parameters
+            // directly to the SQL query (which would require more complicated code).
+            // However, the number of forms is expected to be low, so this is acceptable.
+            // If performance becomes an issue, we can revisit this and/or add a cache.
+            if ($this->access_manager->canAnswerForm($form, $parameters)) {
+                $forms[] = $form;
+            }
         };
 
         return $forms;
