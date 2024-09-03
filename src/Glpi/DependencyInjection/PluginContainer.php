@@ -288,6 +288,9 @@ class PluginContainer implements ContainerInterface
         // Plugins services
         foreach (\Plugin::getPlugins() as $key) {
             $path = \Plugin::getPhpDir($key);
+            if (!\is_dir($path . '/src/Controller/')) {
+                continue;
+            }
             $services->load(\NS_PLUG . \ucfirst($key) . '\\Controller\\', $path . '/src/Controller/');
         }
     }
