@@ -621,7 +621,7 @@ HTML,
             'description'        => 'a description',
             'content'            => 'test',
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
         $solution = new \ITILSolution();
         $solution_id = $solution->add([
@@ -629,6 +629,6 @@ HTML,
             'items_id'           => $ticket->getID(),
             'content'            => '',
         ]);
-        $this->integer($solution_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $solution_id);
     }
 }

@@ -41,6 +41,7 @@ use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 
 class ImpactTest extends \DbTestCase
@@ -487,10 +488,7 @@ class ImpactTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider bfsProvider
-     */
-    public function testBfs($a, $b, $direction, $result)
+    public function testBfs()
     {
         $provider = $this->bfsProvider();
         foreach ($provider as $row) {

@@ -38,6 +38,7 @@ namespace tests\units;
 use Computer;
 use DbTestCase;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
 use RuleCriteria;
@@ -170,92 +171,83 @@ class RuleAssetTest extends DbTestCase
 
     /**
      * Test a given criteria
-     *
-     * @dataprovider testCriteriaProvider
-     *
-     * @param string $itemtype          Test subject's type
-     * @param array  $input             Input used to create the test subject
-     * @param string $criteria_field    The tested criteria name
-     * @param string $criteria_value    The tested criteria value
-     * @param string $action_field      Field used in the action to test the
-     *                                  results.
-     *                                  Must be a string or text field and be
-     *                                  different that $criteria_field
-     * @param int    $condition         Condition operator (is, is not, ...)
-     * @param bool   $success           Is the rule expected to succeed ?
      */
-    public function testCriteria(
-        string $itemtype,
-        array $input,
-        string $criteria_field,
-        string $criteria_value,
-        string $action_field,
-        int $condition,
-        bool $success
-    ) {
+    public function testCriteria()
+    {
         global $DB;
 
         $this->login();
 
-        // Disable all others rules before running the test
-        $DB->update(Rule::getTable(), ['is_active' => false], [
-            'sub_type' => "RuleAsset"
-        ]);
-        $active_rules = countElementsInTable(Rule::getTable(), [
-            'is_active' => true,
-            'sub_type'  => "RuleAsset",
-        ]);
-        $this->assertEquals(0, $active_rules);
+        $provider = $this->testCriteriaProvider();
+        foreach ($provider as $row) {
+            $itemtype = $row['itemtype'];
+            $input = $row['input'];
+            $criteria_field = $row['criteria_field'];
+            $criteria_value = $row['criteria_value'];
+            $action_field = $row['action_field'];
+            $condition = $row['condition'];
+            $success = $row['success'];
 
-        // Create the rule
-        $rule_asset = $this->createItem(\RuleAsset::getType(), [
-            'name'      => 'testLastInventoryUpdateCriteria',
-            'match'     => 'AND',
-            'is_active' => true,
-            'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE,
-        ]);
+            // Disable all others rules before running the test
+            $DB->update(Rule::getTable(), ['is_active' => false], [
+                'sub_type' => "RuleAsset"
+            ]);
+            $active_rules = countElementsInTable(Rule::getTable(), [
+                'is_active' => true,
+                'sub_type' => "RuleAsset",
+            ]);
+            $this->assertEquals(0, $active_rules);
 
-        // Add the condition
-        $this->createItem(RuleCriteria::getType(), [
-            'rules_id'  => $rule_asset->getID(),
-            'criteria'  => $criteria_field,
-            'condition' => $condition,
-            'pattern'   => $criteria_value,
-        ]);
+            // Create the rule
+            $rule_asset = $this->createItem(\RuleAsset::getType(), [
+                'name' => 'testLastInventoryUpdateCriteria',
+                'match' => 'AND',
+                'is_active' => true,
+                'sub_type' => 'RuleAsset',
+                'condition' => \RuleAsset::ONUPDATE,
+            ]);
 
-        // Add the action
-        $this->createItem(RuleAction::getType(), [
-            'rules_id'    => $rule_asset->getID(),
-            'action_type' => "assign",
-            'field'       => $action_field,
-            'value'       => "value_changed",
-        ]);
+            // Add the condition
+            $this->createItem(RuleCriteria::getType(), [
+                'rules_id' => $rule_asset->getID(),
+                'criteria' => $criteria_field,
+                'condition' => $condition,
+                'pattern' => $criteria_value,
+            ]);
 
-        // Reset rule cache
-        SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
-        SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
+            // Add the action
+            $this->createItem(RuleAction::getType(), [
+                'rules_id' => $rule_asset->getID(),
+                'action_type' => "assign",
+                'field' => $action_field,
+                'value' => "value_changed",
+            ]);
 
-        // Creat the test subject
-        $item = $this->createItem($itemtype, $input);
+            // Reset rule cache
+            SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
+            SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
 
-        // Safety check before test
-        $this->variable($item->fields[$action_field])->isNotEqualTo("value_changed");
+            // Creat the test subject
+            $item = $this->createItem($itemtype, $input);
 
-        // Execute the test
-        $update = $item->update([
-            'id'          => $item->getID(),
-            $action_field => 'value_not_changed',
-        ]);
-        $this->assertTrue($update);
-        $this->assertTrue($item->getFromDB($item->getID()));
+            // Safety check before test
+            $this->assertNotEquals("value_changed", $item->fields[$action_field]);
 
-        // Check whether or not the rule affected our item
-        $value = $item->fields[$action_field];
-        if ($success == true) {
-            $this->assertEquals("value_changed", $value);
-        } else {
-            $this->assertEquals("value_not_changed", $value);
+            // Execute the test
+            $update = $item->update([
+                'id' => $item->getID(),
+                $action_field => 'value_not_changed',
+            ]);
+            $this->assertTrue($update);
+            $this->assertTrue($item->getFromDB($item->getID()));
+
+            // Check whether the rule affected our item
+            $value = $item->fields[$action_field];
+            if ($success == true) {
+                $this->assertEquals("value_changed", $value);
+            } else {
+                $this->assertEquals("value_not_changed", $value);
+            }
         }
     }
 
@@ -639,7 +631,7 @@ class RuleAssetTest extends DbTestCase
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertEquals(
-            $user->getField('groups_id'),
+            [$user->getField('groups_id')],
             $computer->getField('groups_id')
         );
     }
@@ -723,6 +715,6 @@ class RuleAssetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
-        $this->assertEquals($group_id, $computer->getField('groups_id'));
+        $this->assertEquals([$group_id], $computer->getField('groups_id'));
     }
 }

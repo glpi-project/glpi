@@ -457,94 +457,97 @@ class TicketTaskTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $task_id);
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+        $this->assertEquals(\Ticket::PLANNED, \Ticket::getById($ticket_id)->fields['status']);
 
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "De-planned Task",
             'begin'              => null,
             'end'                => null,
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
 
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "Planned Task",
             'begin'              => $date_begin_string,
             'end'                => $date_end_string,
-        ]))->isTrue();
+        ]));
 
 
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+        $this->assertEquals(\Ticket::PLANNED, \Ticket::getById($ticket_id)->fields['status']);
 
         $ticket = new \Ticket();
         $ticket_users = new \Ticket_User();
 
         // remove assigned user from ticket
-        $this->boolean($ticket_users->deleteByCriteria([
+        $this->assertTrue($ticket_users->deleteByCriteria([
             'tickets_id' => $ticket_id,
             'type'       => \CommonITILActor::ASSIGN,
-        ]))->isTrue();
+        ]));
 
         $this->assertTrue($ticket->getFromDB($ticket_id));
 
-        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+        $this->assertEquals(\Ticket::INCOMING, \Ticket::getById($ticket_id)->fields['status']);
 
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "De-planned Task",
             'begin'              => null,
             'end'                => null,
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+        $this->assertEquals(\Ticket::INCOMING, \Ticket::getById($ticket_id)->fields['status']);
 
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "Planned Task",
             'begin'              => $date_begin_string,
             'end'                => $date_end_string,
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+        $this->assertEquals(\Ticket::PLANNED, \Ticket::getById($ticket_id)->fields['status']);
 
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "De-planned Task",
             'begin'              => null,
             'end'                => null,
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+        $this->assertEquals(\Ticket::INCOMING, \Ticket::getById($ticket_id)->fields['status']);
 
         // Check that adding a followup on a ticket that has the CommonITILObject::PLANNED status will not fail.
-        $this->boolean($task->update([
+        $this->assertTrue($task->update([
             'id'                 => $task_id,
             'tickets_id'         => $ticket_id,
             'content'            => "Planned Task",
             'begin'              => $date_begin_string,
             'end'                => $date_end_string,
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+        $this->assertEquals(\Ticket::PLANNED, \Ticket::getById($ticket_id)->fields['status']);
 
         $followup = new \ITILFollowup();
-        $this->integer($followup->add([
-            'itemtype'   => 'Ticket',
-            'items_id'   => $ticket_id,
-            'content'    => 'Followup on planned ticket',
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype'   => 'Ticket',
+                'items_id'   => $ticket_id,
+                'content'    => 'Followup on planned ticket',
+            ])
+        );
 
-        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+        $this->assertEquals(\Ticket::PLANNED, \Ticket::getById($ticket_id)->fields['status']);
     }
 
     public function testUpdateParentStatus()
@@ -711,11 +714,14 @@ class TicketTaskTest extends DbTestCase
         $this->login();
         $ticket = $this->getNewTicket(true);
         $followup = new \ITILFollowup();
-        $this->integer($followup->add([
-            'itemtype' => 'Ticket',
-            'items_id' => $ticket->fields['id'],
-            'content'  => 'Test followup',
-        ]))->isGreaterThan(0);
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket->fields['id'],
+                'content'  => 'Test followup',
+            ])
+        );
 
         $criteria = [
             [

@@ -1889,7 +1889,7 @@ class SLMTest extends DbTestCase
         $actions = $sla_level->getSpecificMassiveActions();
 
         // Check that the export action is not available
-        $this->array($actions)->notHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export');
+        $this->assertArrayNotHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', $actions);
     }
 
     public function testCloneSLA()
@@ -1903,355 +1903,6 @@ class SLMTest extends DbTestCase
 
         // Create an SLA
         /** @var \SLA $sla */
-        $sla = $this->createItem(\SLA::class, [
-            'name'            => 'SLA',
-            'slms_id'         => $slm->getID(),
-            'definition_time' => 'hour',
-            'number_time'     => 4,
-        ]);
-
-        // Create multiple escalation levels
-        $sla_levels = $this->createItems(\SlaLevel::class, [
-            [
-                'name'                          => 'SLA level 1',
-                'slas_id'                       => $sla->getID(),
-                'execution_time'                => -HOUR_TIMESTAMP,
-                'is_active'                     => true,
-                'is_recursive'                  => true,
-                'match'                         => 'AND',
-            ],
-            [
-                'name'                          => 'SLA level 2',
-                'slas_id'                       => $sla->getID(),
-                'execution_time'                => -2 * HOUR_TIMESTAMP,
-                'is_active'                     => true,
-                'is_recursive'                  => true,
-                'match'                         => 'AND',
-            ],
-        ]);
-
-        // Create multiple escalation levels criteria
-        $sla_levels_criterias = $this->createItems(\SlaLevelCriteria::class, [
-            [
-                'slalevels_id' => $sla_levels[0]->getID(),
-                'criteria'     => 'status',
-                'pattern'      => 1,
-                'condition'    => 0,
-            ],
-            [
-                'slalevels_id' => $sla_levels[1]->getID(),
-                'criteria'     => 'urgency',
-                'pattern'      => 5,
-                'condition'    => 0,
-            ],
-        ]);
-
-        // Create multiple escalation levels actions
-        $sla_levels_actions = $this->createItems(\SlaLevelAction::class, [
-            [
-                'slalevels_id' => $sla_levels[0]->getID(),
-                'action_type'  => 'assign',
-                'field'        => 'type',
-                'value'        => 1,
-            ],
-            [
-                'slalevels_id' => $sla_levels[1]->getID(),
-                'action_type'  => 'assign',
-                'field'        => 'type',
-                'value'        => 2,
-            ],
-        ]);
-
-        // Clone the SLA
-        $sla_clone_id = $sla->clone();
-        $sla_clone = \SLA::getById($sla_clone_id);
-
-        // Check that the clone has the same fields as the original
-        $this->array($sla_clone->fields)->isEqualTo(array_merge(
-            $sla->fields,
-            [
-                'id' => $sla_clone_id,
-                'name' => 'SLA (copy)',
-            ]
-        ));
-
-        // Check that SLA levels have been cloned
-        $sla_clone_levels = (new \SlaLevel())->find(['slas_id' => $sla_clone_id]);
-        $this->array($sla_clone_levels)->hasSize(2);
-        $this->array(\SlaLevel::getById(current($sla_clone_levels)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels[0]->fields,
-                [
-                    'id'        => current($sla_clone_levels)['id'],
-                    'name'      => 'SLA level 1 (copy)',
-                    'uuid'      => current($sla_clone_levels)['uuid'],
-                    'slas_id'   => $sla_clone_id,
-                    'is_active' => 0,
-                ]
-            )
-        );
-        $this->array(\SlaLevel::getById(next($sla_clone_levels)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels[1]->fields,
-                [
-                    'id'        => current($sla_clone_levels)['id'],
-                    'name'      => 'SLA level 2 (copy 2)',
-                    'uuid'      => current($sla_clone_levels)['uuid'],
-                    'slas_id'   => $sla_clone_id,
-                    'is_active' => 0,
-                ]
-            )
-        );
-
-        // Check that SLA levels criteria have been cloned
-        $sla_clone_criteria = (new \SlaLevelCriteria())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
-        $this->array($sla_clone_criteria)->hasSize(2);
-        $this->array(\SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels_criterias[0]->fields,
-                [
-                    'id'           => current($sla_clone_criteria)['id'],
-                    'slalevels_id' => reset($sla_clone_levels)['id'],
-                ]
-            )
-        );
-        $this->array(\SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels_criterias[1]->fields,
-                [
-                    'id'           => current($sla_clone_criteria)['id'],
-                    'slalevels_id' => next($sla_clone_levels)['id'],
-                ]
-            )
-        );
-
-        // Check that SLA levels actions have been cloned
-        $sla_clone_actions = (new \SlaLevelAction())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
-        $this->array($sla_clone_actions)->hasSize(2);
-        $this->array(\SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels_actions[0]->fields,
-                [
-                    'id'           => current($sla_clone_actions)['id'],
-                    'slalevels_id' => reset($sla_clone_levels)['id'],
-                ]
-            )
-        );
-        $this->array(\SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields)->isEqualTo(
-            array_merge(
-                $sla_levels_actions[1]->fields,
-                [
-                    'id'           => current($sla_clone_actions)['id'],
-                    'slalevels_id' => next($sla_clone_levels)['id'],
-                ]
-            )
-        );
-    }
-
-    public function testCloneOLA()
-    {
-        $this->login();
-
-        // Create an SLM
-        $slm = $this->createItem(\SLM::class, [
-            'name' => 'SLM',
-        ]);
-
-        // Create an OLA
-        /** @var \OLA $ola */
-        $ola = $this->createItem(\OLA::class, [
-            'name'            => 'OLA',
-            'slms_id'         => $slm->getID(),
-            'definition_time' => 'hour',
-            'number_time'     => 4,
-        ]);
-
-        // Create multiple escalation levels
-        $ola_levels = $this->createItems(\OlaLevel::class, [
-            [
-                'name'                          => 'OLA level 1',
-                'olas_id'                       => $ola->getID(),
-                'execution_time'                => -HOUR_TIMESTAMP,
-                'is_active'                     => true,
-                'is_recursive'                  => true,
-                'match'                         => 'AND',
-            ],
-            [
-                'name'                          => 'OLA level 2',
-                'olas_id'                       => $ola->getID(),
-                'execution_time'                => -2 * HOUR_TIMESTAMP,
-                'is_active'                     => true,
-                'is_recursive'                  => true,
-                'match'                         => 'AND',
-            ],
-        ]);
-
-        // Create multiple escalation levels criteria
-        $ola_levels_criterias = $this->createItems(\OlaLevelCriteria::class, [
-            [
-                'olalevels_id' => $ola_levels[0]->getID(),
-                'criteria'     => 'status',
-                'pattern'      => 1,
-                'condition'    => 0,
-            ],
-            [
-                'olalevels_id' => $ola_levels[1]->getID(),
-                'criteria'     => 'urgency',
-                'pattern'      => 5,
-                'condition'    => 0,
-            ],
-        ]);
-
-        // Create multiple escalation levels actions
-        $ola_levels_actions = $this->createItems(\OlaLevelAction::class, [
-            [
-                'olalevels_id' => $ola_levels[0]->getID(),
-                'action_type'  => 'assign',
-                'field'        => 'type',
-                'value'        => 1,
-            ],
-            [
-                'olalevels_id' => $ola_levels[1]->getID(),
-                'action_type'  => 'assign',
-                'field'        => 'type',
-                'value'        => 2,
-            ],
-        ]);
-
-        // Clone the OLA
-        $ola_clone_id = $ola->clone();
-        $ola_clone = \OLA::getById($ola_clone_id);
-
-        // Check that the clone has the same fields as the original
-        $this->array($ola_clone->fields)->isEqualTo(array_merge(
-            $ola->fields,
-            [
-                'id' => $ola_clone_id,
-                'name' => 'OLA (copy)',
-            ]
-        ));
-
-        // Check that OLA levels have been cloned
-        $ola_clone_levels = (new \OlaLevel())->find(['olas_id' => $ola_clone_id]);
-        $this->array($ola_clone_levels)->hasSize(2);
-        $this->array(\OlaLevel::getById(current($ola_clone_levels)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels[0]->fields,
-                [
-                    'id'        => current($ola_clone_levels)['id'],
-                    'name'      => 'OLA level 1 (copy)',
-                    'uuid'      => current($ola_clone_levels)['uuid'],
-                    'olas_id'   => $ola_clone_id,
-                    'is_active' => 0,
-                ]
-            )
-        );
-        $this->array(\OlaLevel::getById(next($ola_clone_levels)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels[1]->fields,
-                [
-                    'id'        => current($ola_clone_levels)['id'],
-                    'name'      => 'OLA level 2 (copy 2)',
-                    'uuid'      => current($ola_clone_levels)['uuid'],
-                    'olas_id'   => $ola_clone_id,
-                    'is_active' => 0,
-                ]
-            )
-        );
-
-        // Check that OLA levels criteria have been cloned
-        $ola_clone_criteria = (new \OlaLevelCriteria())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
-        $this->array($ola_clone_criteria)->hasSize(2);
-        $this->array(\OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels_criterias[0]->fields,
-                [
-                    'id'           => current($ola_clone_criteria)['id'],
-                    'olalevels_id' => reset($ola_clone_levels)['id'],
-                ]
-            )
-        );
-        $this->array(\OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels_criterias[1]->fields,
-                [
-                    'id'           => current($ola_clone_criteria)['id'],
-                    'olalevels_id' => next($ola_clone_levels)['id'],
-                ]
-            )
-        );
-
-        // Check that OLA levels actions have been cloned
-        $ola_clone_actions = (new \OlaLevelAction())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
-        $this->array($ola_clone_actions)->hasSize(2);
-        $this->array(\OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels_actions[0]->fields,
-                [
-                    'id'           => current($ola_clone_actions)['id'],
-                    'olalevels_id' => reset($ola_clone_levels)['id'],
-                ]
-            )
-        );
-        $this->array(\OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields)->isEqualTo(
-            array_merge(
-                $ola_levels_actions[1]->fields,
-                [
-                    'id'           => current($ola_clone_actions)['id'],
-                    'olalevels_id' => next($ola_clone_levels)['id'],
-                ]
-            )
-        );
-    }
-
-    /** FIXME feature has not yet been merged on main -_-
-    public function testCannotExportSLALevel()
-    {
-        $this->login();
-
-        // Create an SLM
-        $slm = $this->createItem(\SLM::class, [
-            'name' => 'SLM',
-        ]);
-
-        // Create an SLA
-        $sla = $this->createItem(\SLA::class, [
-            'name'            => 'SLA',
-            'slms_id'         => $slm->getID(),
-            'definition_time' => 'hour',
-            'number_time'     => 4,
-        ]);
-
-        // Create an escalation level
-        $sla_level = $this->createItem(\SlaLevel::class, [
-            'name'                          => 'SLA level',
-            'slas_id'                       => $sla->getID(),
-            'execution_time'                => -HOUR_TIMESTAMP,
-            'is_active'                     => true,
-            'is_recursive'                  => true,
-            'match'                         => 'AND',
-        ]);
-
-        // Retrieve available actions
-        $actions = $sla_level->getSpecificMassiveActions();
-
-        // Check that the export action is not available
-        $this->assertArrayNotHasKey(
-            Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export',
-            $actions
-        );
-    }
-
-    public function testCloneSLA()
-    {
-        $this->login();
-
-        // Create an SLM
-        $slm = $this->createItem(\SLM::class, [
-            'name' => 'SLM',
-        ]);
-
-        // Create an SLA
         $sla = $this->createItem(\SLA::class, [
             'name'            => 'SLA',
             'slms_id'         => $slm->getID(),
@@ -2330,7 +1981,7 @@ class SLMTest extends DbTestCase
         // Check that SLA levels have been cloned
         $sla_clone_levels = (new \SlaLevel())->find(['slas_id' => $sla_clone_id]);
         $this->assertCount(2, $sla_clone_levels);
-        $current = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
+        $sla_compare = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[0]->fields,
@@ -2342,9 +1993,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $sla_compare
         );
-        $current = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
+        $sla_compare = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[1]->fields,
@@ -2356,13 +2007,12 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $sla_compare
         );
 
         // Check that SLA levels criteria have been cloned
         $sla_clone_criteria = (new \SlaLevelCriteria())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_criteria);
-        $current = \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[0]->fields,
@@ -2371,9 +2021,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields
         );
-        $current = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
+        $sla_compare = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[1]->fields,
@@ -2382,13 +2032,13 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
 
         // Check that SLA levels actions have been cloned
         $sla_clone_actions = (new \SlaLevelAction())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_actions);
-        $current = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
+        $sla_compare = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[0]->fields,
@@ -2397,9 +2047,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
-        $current = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
+        $sla_compare = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[1]->fields,
@@ -2408,7 +2058,7 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
     }
 
@@ -2422,6 +2072,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create an OLA
+        /** @var \OLA $ola */
         $ola = $this->createItem(\OLA::class, [
             'name'            => 'OLA',
             'slms_id'         => $slm->getID(),
@@ -2500,7 +2151,7 @@ class SLMTest extends DbTestCase
         // Check that OLA levels have been cloned
         $ola_clone_levels = (new \OlaLevel())->find(['olas_id' => $ola_clone_id]);
         $this->assertCount(2, $ola_clone_levels);
-        $current = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
+        $ola_compare = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[0]->fields,
@@ -2512,9 +2163,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
+        $ola_compare = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[1]->fields,
@@ -2526,13 +2177,13 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $ola_compare
         );
 
         // Check that OLA levels criteria have been cloned
         $ola_clone_criteria = (new \OlaLevelCriteria())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
         $this->assertCount(2, $ola_clone_criteria);
-        $current = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
+        $ola_compare = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[0]->fields,
@@ -2541,9 +2192,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
+        $ola_compare = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[1]->fields,
@@ -2552,13 +2203,13 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
 
         // Check that OLA levels actions have been cloned
         $ola_clone_actions = (new \OlaLevelAction())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
         $this->assertCount(2, $ola_clone_actions);
-        $current = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
+        $ola_compare = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[0]->fields,
@@ -2567,9 +2218,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
+        $ola_compare = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[1]->fields,
@@ -2578,8 +2229,7 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
     }
-    */
 }

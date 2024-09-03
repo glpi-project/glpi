@@ -212,12 +212,13 @@ class RuleMailCollectorTest extends DbTestCase
             $rule_options
         );
 
-        $this->array($output)->isEqualTo(
+        $this->assertEquals(
             [
                 'entities_id' => $entity_id,
                 '_ruleid'     => $rule_id,
                 'externalid' => 'great',
-            ]
+            ],
+            $output
         );
     }
 }
