@@ -312,7 +312,7 @@ class VirtualMachine extends InventoryAsset
             if ($this->conf->vm_type) {
                 $vm->computertypes_id = $this->conf->vm_type;
             }
-
+            $this->handleLinks();
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $computers_vm_id = $this->getExistingVMAsComputer($vm);
                 if ($computers_vm_id == 0) {
@@ -320,7 +320,7 @@ class VirtualMachine extends InventoryAsset
                     //a callback on rulepassed() will be done if one is found.
                     $rule = new RuleImportAssetCollection();
                     $rule->getCollectionPart();
-                    $input = (array)$vm;
+                    $input = $this->handleInput($vm, $this->item);
                     $input['itemtype'] = \Computer::class;
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
@@ -337,7 +337,7 @@ class VirtualMachine extends InventoryAsset
                 } else {
                     // Update computer
                     $computervm->getFromDB($computers_vm_id);
-                    $input = (array)$vm;
+                    $input = $this->handleInput($vm, $this->item);
                     $input['id'] = $computers_vm_id;
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
