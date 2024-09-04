@@ -517,7 +517,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validation_class = $this->getTestedClass();
         /** @var \CommonITILValidation $validation */
         $validation = new $validation_class();
-        $validation::$mustBeAttached = false;
+        //$validation::$mustBeAttached = false;
 
         if (!empty($expected)) {
             $result = $validation->prepareInputForAdd($input);
@@ -576,7 +576,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validation_class = $this->getTestedClass();
         /** @var \CommonITILValidation $validation */
         $validation = new $validation_class();
-        $validation::$mustBeAttached = false;
+        //$validation::$mustBeAttached = false;
 
         // Replace placeholders
         $arrays = [&$input, &$expected];
