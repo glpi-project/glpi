@@ -14,7 +14,7 @@ parameters:
         - install
         - src
     universalObjectCratesClasses:
-        - Sabre\VObject\Component
+        - Sabre\VObject\Node
     stubFiles:
         - stubs/glpi_constants.php
     ignoreErrors:
