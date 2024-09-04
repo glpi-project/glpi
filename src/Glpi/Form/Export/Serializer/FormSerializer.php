@@ -204,7 +204,7 @@ final class FormSerializer extends AbstractFormSerializer
             $section_spec = new SectionContentSpecification();
             $section_spec->name = $section->fields['name'];
             $section_spec->rank = $section->fields['rank'];
-            $section_spec->description = $section->fields['description'];
+            $section_spec->description = $section->fields['description'] ?? "";
 
             $form_spec->sections[] = $section_spec;
         }
