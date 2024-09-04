@@ -2,12 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: identical.alwaysFalse
-	'message' => '#^Strict comparison using \\=\\=\\= between class\\-string\\<CommonDBTM\\> and \'Planning\' will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/central.php',
-];
-$ignoreErrors[] = [
 	// identifier: function.impossibleType
 	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
 	'count' => 1,
