@@ -64,8 +64,9 @@ if (empty($answers)) {
 
 // Try to save answers
 $handler = AnswersHandler::getInstance();
-$answers_set = $handler->saveAnswers($form, $answers, Session::getLoginUserID());
-if (!$answers_set) {
+try {
+    $answers_set = $handler->saveAnswers($form, $answers, Session::getLoginUserID());
+} catch (\Throwable $e) {
     Response::sendError(500, __('Failed to save answers'));
 }
 

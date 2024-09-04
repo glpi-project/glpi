@@ -2,12 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: booleanNot.alwaysFalse
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/form/answer.php',
-];
-$ignoreErrors[] = [
 	// identifier: greater.alwaysFalse
 	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
 	'count' => 1,
