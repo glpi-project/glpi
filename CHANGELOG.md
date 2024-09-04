@@ -69,6 +69,7 @@ The present file will list all changes made to the project; according to the
 - Testing LDAP replicates now shows results as toast notifications rather than inside the replicate tab after a page reload.
 - The debug tab that was present, for some items, when the debug mode was active, no longer exists. The corresponding features have been either moved, either removed.
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
+- "If software are no longer used" transfer option is now taken into account rather than always preserving.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.

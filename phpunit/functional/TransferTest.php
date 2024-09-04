@@ -431,6 +431,103 @@ class TransferTest extends DbTestCase
         }
     }
 
+    public function testCleanSoftware()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $dest_entity = getItemByTypeName('Entity', '_test_child_1', true);
+
+        // Create test computers
+
+        $computer = new Computer();
+        $computers_id_1 = $computer->add([
+            'name'        => 'test_transfer_pc_1',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_1);
+        $computers_id_2 = $computer->add([
+            'name'        => 'test_transfer_pc_2',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_2);
+
+        // Create test software and versions. One software is linked to both computers, the other is linked to only one.
+        $software = new Software();
+        $software_id_1 = $software->add([
+            'name'        => 'test_transfer_software_1',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $software_id_1);
+        $software_id_2 = $software->add([
+            'name'        => 'test_transfer_software_2',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $software_id_2);
+        $softwareversion = new SoftwareVersion();
+        $softwareversion_id_1 = $softwareversion->add([
+            'name'         => 'test_transfer_software_1::V1',
+            'softwares_id' => $software_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $softwareversion_id_1);
+        $softwareversion_id_2 = $softwareversion->add([
+            'name'         => 'test_transfer_software_1::V2',
+            'softwares_id' => $software_id_2,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $softwareversion_id_2);
+
+        $item_softwareversion = new Item_SoftwareVersion();
+        $item_softwareversion_id_1 = $item_softwareversion->add([
+            'items_id'     => $computers_id_1,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_1);
+        $item_softwareversion_id_2 = $item_softwareversion->add([
+            'items_id'     => $computers_id_1,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_2,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_2);
+        $item_softwareversion_id_3 = $item_softwareversion->add([
+            'items_id'     => $computers_id_2,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_3);
+
+        // Transfer the first computer to another entity
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Computer' => [$computers_id_1]], $dest_entity, ['keep_software' => 1, 'clean_software' => 1]);
+
+        // Software 2 should be deleted since it was only linked to the first computer
+        //TODO Why not just move?
+        $this->assertTrue($software->getFromDB($software_id_2));
+        $this->assertEquals(1, $software->fields['is_deleted']);
+        // There should be a non-deleted copy of software 2 in the destination entity
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $software::getTable(),
+            'WHERE'  => [
+                'name' => 'test_transfer_software_2',
+                'entities_id' => $dest_entity,
+                'is_deleted' => 0
+            ]
+        ]);
+        $this->assertCount(1, $it);
+        $software_id_2_dest = $it->current()['id'];
+
+        // Transfer computer 1 back to the original entity but purge software instead
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Computer' => [$computers_id_1]], $test_entity, ['keep_software' => 1, 'clean_software' => 2]);
+        $this->assertFalse($software->getFromDB($software_id_2_dest));
+    }
+
     protected function testKeepCertificateOptionData(): array
     {
         $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);

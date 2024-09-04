@@ -268,6 +268,7 @@ final class Transfer extends CommonDBTM
             // Clean unused
             // FIXME: only if Software or SoftwareLicense has been changed?
             $this->cleanSoftwareVersions();
+            $this->cleanSoftwares();
             if (!$intransaction && $DB->inTransaction()) {
                 $DB->commit();
             }
@@ -1931,8 +1932,8 @@ final class Transfer extends CommonDBTM
      */
     public function cleanSoftwares()
     {
-        // FIXME This method is not called anywhere and 'clean_software' option is not handled anywhere else.
-        if (!isset($this->already_transfer['Software'])) {
+        if (!isset($this->already_transfer['Software']) || (int) $this->options['clean_software'] === 0) {
+            // Nothing to clean
             return;
         }
 
@@ -1943,9 +1944,9 @@ final class Transfer extends CommonDBTM
                 && (countElementsInTable("glpi_softwareversions", ['softwares_id' => $old]) == 0)
             ) {
                 if ($this->options['clean_software'] == 1) { // delete
-                    $soft->delete(['id' => $old], 0);
-                } else if ($this->options['clean_software'] ==  2) { // purge
-                    $soft->delete(['id' => $old], 1);
+                    $soft->delete(['id' => $old]);
+                } else if ($this->options['clean_software'] == 2) { // purge
+                    $soft->delete(['id' => $old], true);
                 }
             }
         }
