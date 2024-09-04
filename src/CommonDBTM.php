@@ -3794,8 +3794,8 @@ class CommonDBTM extends CommonGLPI
     {
         $type = $this->getType();
 
-        if (isset(static::$search_options_cache[$type])) {
-            return static::$search_options_cache[$type];
+        if (isset(self::$search_options_cache[$type])) {
+            return self::$search_options_cache[$type];
         }
 
         $options[$type] = [];
@@ -3838,7 +3838,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        static::$search_options_cache[$type] = $options[$type];
+        self::$search_options_cache[$type] = $options[$type];
         return $options[$type];
     }
 
@@ -6699,6 +6699,6 @@ TWIG, $twig_params);
 
     public static function clearSearchOptionCache(): void
     {
-        static::$search_options_cache = [];
+        self::$search_options_cache = [];
     }
 }
