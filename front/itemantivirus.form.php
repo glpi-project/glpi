@@ -78,10 +78,10 @@ if (isset($_POST["add"])) {
             sprintf(__('%s purges an antivirus'), $_SESSION["glpiname"])
         );
     }
-    $itemtype = $antivirus->field['itemtype'];
+    $itemtype = $antivirus->fields['itemtype'];
     $item = new $itemtype();
     $item->getFromDB($antivirus->fields['items_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL($antivirus->field['itemtype']) . '?id=' . $antivirus->fields['items_id'] .
+    Html::redirect(Toolbox::getItemTypeFormURL($antivirus->fields['itemtype']) . '?id=' . $antivirus->fields['items_id'] .
                   ($item->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["update"])) {
     $antivirus->check($_POST["id"], UPDATE);
