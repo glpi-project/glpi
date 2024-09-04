@@ -121,8 +121,10 @@ class Group extends CommonTreeDropdown
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /**  @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         if ($withtemplate || !self::canView()) {
             return '';
@@ -137,14 +139,21 @@ class Group extends CommonTreeDropdown
             $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-                $user = Session::getSavedOption(__CLASS__, 'user', 0);
-                $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
                 if ($item->getField('is_itemgroup')) {
-                    $ong[1] = $this->createTabEntryForGroup($item, $CFG_GLPI['linkgroup_types'], 'groups_id', $tree, $user, $type, __('Used items'));
+                    $total_linkgroups = 0;
+                    foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
+                        if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
+                            $total_linkgroups += countElementsInTable($itemtype_linked::getTable(), ['groups_id' => $item->getID()]);
+                        }
+                    }
+                    $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
                 }
                 if ($item->getField('is_assign')) {
-                    $ong[2] = $this->createTabEntryForGroup($item, $CFG_GLPI['linkgroup_tech_types'], 'groups_id_tech', $tree, $user, $type, __('Managed items'));
+                    $total_linkgroup_tech_types = 0;
+                    foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
+                        $total_linkgroup_tech_types += countElementsInTable($itemtype_linked::getTable(), ['groups_id_tech' => $item->getID()]);
+                    }
+                    $ong[2] = self::createTabEntry(__('Managed items'), $total_linkgroup_tech_types);
                 }
             } else {
                 if ($item->getField('is_itemgroup')) {
@@ -161,16 +170,6 @@ class Group extends CommonTreeDropdown
         }
 
         return $ong;
-    }
-
-    private function createTabEntryForGroup($item, $types, $field, $tree, $user, $type, $label)
-    {
-        if (!in_array($type, $types)) {
-            $type = '';
-        }
-        $datas = [];
-        $nb = $item->getDataItems($types, $field, $tree, $user, 0, $datas);
-        return self::createTabEntry($label, $nb);
     }
 
 
