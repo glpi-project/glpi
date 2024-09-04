@@ -2,12 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/ajax/searchoptionvalue.php',
-];
-$ignoreErrors[] = [
 	// identifier: classConstant.nonObject
 	'message' => '#^Cannot access constant class on object\\|false\\.$#',
 	'count' => 6,
