@@ -5906,12 +5906,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Session\\:\\:haveRight\\(\\) should return bool but returns int\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Session\\:\\:loadLanguage\\(\\) with return type void returns mixed but should not return anything\\.$#',
 	'count' => 1,
