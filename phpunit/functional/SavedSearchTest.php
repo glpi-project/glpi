@@ -199,7 +199,7 @@ class SavedSearchTest extends DbTestCase
         $mine = $bk->getMine();
         $this->assertCount(1, $mine);
         $this->assertEqualsCanonicalizing(
-            ['name' => 'private normal user'],
+            ['private normal user'],
             array_column($mine, 'name')
         );
 
