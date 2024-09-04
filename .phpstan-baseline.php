@@ -14,12 +14,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/comments.php',
 ];
 $ignoreErrors[] = [
-	// identifier: nullCoalesce.offset
-	'message' => '#^Offset \'comment\' on array\\{comment\\: string\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanAnd.alwaysFalse
 	'message' => '#^Result of && is always false\\.$#',
 	'count' => 1,

@@ -95,9 +95,6 @@ if (
             break;
 
         case Group::getType():
-            $tmpname = [
-                'comment' => "",
-            ];
             if ($_POST['value'] != 0) {
                 $group = new \Group();
                 if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
@@ -106,15 +103,11 @@ if (
                         'group_name' => $group->fields['completename'],
                         'comment' => $group->fields['comment'],
                     ];
-                    $comment = TemplateRenderer::getInstance()->render('components/group/info_card.html.twig', [
+                    TemplateRenderer::getInstance()->display('components/group/info_card.html.twig', [
                         'group' => $group_params,
                     ]);
-                    $tmpname = [
-                        'comment' => $comment,
-                    ];
                 }
             }
-            echo($tmpname["comment"] ?? '');
             break;
 
         default:
