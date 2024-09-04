@@ -608,10 +608,12 @@ JS);
                     ]
                 ],
                 [
-                    $webhook_table => [
-                        'ON' => [
-                            $queued_table => 'webhooks_id',
-                            $webhook_table => 'id'
+                    'LEFT JOIN' => [
+                        $webhook_table => [
+                            'ON' => [
+                                $queued_table => 'webhooks_id',
+                                $webhook_table => 'id'
+                            ]
                         ]
                     ]
                 ]
