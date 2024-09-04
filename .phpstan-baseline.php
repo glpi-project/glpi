@@ -2,24 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: function.impossibleType
-	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	// identifier: isset.offset
-	'message' => '#^Offset \'comment\' on \\*NEVER\\* in isset\\(\\) always exists and is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanAnd.alwaysFalse
-	'message' => '#^Result of && is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanOr.alwaysFalse
 	'message' => '#^Result of \\|\\| is always false\\.$#',
 	'count' => 1,
@@ -824,18 +806,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	// identifier: assign.propertyType
 	'message' => '#^Property CommonDBTM\\:\\:\\$right \\(int\\) does not accept null\\.$#',
 	'count' => 1,
@@ -899,18 +869,6 @@ $ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method CommonDBVisible\\:\\:showVisibility\\(\\) with return type void returns true but should not return anything\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBVisible.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonDBVisible.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 3,
 	'path' => __DIR__ . '/src/CommonDBVisible.php',
 ];
 $ignoreErrors[] = [
@@ -1304,18 +1262,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
 	// identifier: phpDoc.parseError
 	'message' => '#^PHPDoc tag @param has invalid value \\(integer type \\$obj_id ITIL object on which the used item are attached\\)\\: Unexpected token "type", expected variable at offset 76$#',
 	'count' => 1,
@@ -1422,18 +1368,6 @@ $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method ContractCost\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ContractCost.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
@@ -1892,12 +1826,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Dropdown\\:\\:getDropdownName\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.empty
 	'message' => '#^Method Dropdown\\:\\:getDropdownUsers\\(\\) should return array\\|string but empty return statement found\\.$#',
 	'count' => 1,
@@ -1922,12 +1850,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	// identifier: isset.offset
 	'message' => '#^Offset \'max\' on array in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
@@ -1937,12 +1859,6 @@ $ignoreErrors[] = [
 	// identifier: isset.offset
 	'message' => '#^Offset \'min\' on array in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
@@ -2442,12 +2358,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$exit_code is never read, only written\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/ItemtypeExtension.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
@@ -3950,18 +3860,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Item_Disk\\:\\:showForItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -4588,18 +4486,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method NotificationTargetCommonITILObject\\:\\:addAdditionnalUserInfo\\(\\) should return 0\\|0\\.0\\|\'\'\\|\'0\'\\|array\\{\\}\\|false\\|null but returns array\\{show_private\\: mixed, is_self_service\\: mixed\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
