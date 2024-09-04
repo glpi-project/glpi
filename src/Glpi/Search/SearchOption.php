@@ -131,7 +131,7 @@ final class SearchOption implements \ArrayAccess
         global $CFG_GLPI;
         $item = null;
 
-        static $search = [];
+        $search = [];
 
 
         $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
