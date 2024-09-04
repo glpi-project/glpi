@@ -194,13 +194,14 @@ class Ticket_TicketTest extends DbTestCase
         // Link the first ticket to the others
         $link = new \Ticket_Ticket();
         foreach ($tickets as $linked_ticket_id) {
-            $this->integer(
+            $this->assertGreaterThan(
+                0,
                 (int)$link->add([
                     'tickets_id_1' => $tickets_id,
                     'tickets_id_2' => $linked_ticket_id,
                     'link'         => \CommonITILObject_CommonITILObject::LINK_TO
                 ])
-            )->isGreaterThan(0);
+            );
         }
 
         $linked = @\Ticket_Ticket::getLinkedTicketsTo((int) $tickets_id);

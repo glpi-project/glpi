@@ -2841,13 +2841,13 @@ class TicketTest extends DbTestCase
         $input = \Ticket::getDefaultValues();
 
         $this->assertEquals(0, $input['_users_id_requester']);
-        $this->assertContains(1, $input['_users_id_requester_notif']['use_notification']);
+        $this->assertContains('1', $input['_users_id_requester_notif']['use_notification']);
         $this->assertContains('', $input['_users_id_requester_notif']['alternative_email']);
 
         $this->assertEquals(0, $input['_groups_id_requester']);
 
         $this->assertEquals(0, $input['_users_id_assign']);
-        $this->assertContains(1, $input['_users_id_assign_notif']['use_notification']);
+        $this->assertContains('1', $input['_users_id_assign_notif']['use_notification']);
         $this->assertContains('', $input['_users_id_assign_notif']['alternative_email']);
 
         $this->assertEquals(0, $input['_groups_id_assign']);
@@ -6419,10 +6419,15 @@ HTML
     {
         $provider = $this->providerGetPrimaryRequesterUser();
         foreach ($provider as $row) {
+            /** @var \Ticket $ticket */
             $ticket = $row['ticket'];
             $expected = $row['expected'];
             $output = $ticket->getPrimaryRequesterUser();
-            $this->assertSame($expected, $output);
+            if ($expected === null) {
+                $this->assertNull($output);
+            } else {
+                $this->assertSame($expected, $output->getID());
+            }
         }
     }
 
