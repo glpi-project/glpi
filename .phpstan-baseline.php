@@ -2,22 +2,10 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: greater.alwaysFalse
-	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/itilfollowup.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/ajax/searchoptionvalue.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysFalse
-	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/task.php',
 ];
 $ignoreErrors[] = [
 	// identifier: classConstant.nonObject
