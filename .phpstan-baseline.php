@@ -2,12 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: booleanAnd.rightAlwaysTrue
-	'message' => '#^Right side of && is always true\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/ajax/dropdownItilActors.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysFalse
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'count' => 1,
