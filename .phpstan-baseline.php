@@ -2,12 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: booleanOr.alwaysFalse
-	'message' => '#^Result of \\|\\| is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/commonitilobject_item.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanAnd.rightAlwaysTrue
 	'message' => '#^Right side of && is always true\\.$#',
 	'count' => 2,
