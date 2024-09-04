@@ -194,12 +194,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/inventory.php',
 ];
 $ignoreErrors[] = [
-	// identifier: property.notFound
-	'message' => '#^Access to an undefined property ItemAntivirus\\:\\:\\$field\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/front/itemantivirus.form.php',
-];
-$ignoreErrors[] = [
 	// identifier: deadCode.unreachable
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
