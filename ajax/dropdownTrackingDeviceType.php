@@ -50,7 +50,6 @@ $itemtype = $_POST["itemtype"] ?? '';
 // Check for required params
 if (empty($itemtype)) {
     Response::sendError(400, "Bad request: itemtype cannot be empty", Response::CONTENT_TYPE_TEXT_HTML);
-    die;
 }
 
 // Check if itemtype is valid in the given context

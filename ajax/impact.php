@@ -128,7 +128,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             default:
                 Response::sendError(400, "Missing or invalid 'action' parameter");
-                break;
         }
         break;
 

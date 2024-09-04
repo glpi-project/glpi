@@ -63,7 +63,7 @@ if (
     die();
 }
 
-/** @var class-string<CommonDBTM> $itemtype */
+/** @var class-string<CommonGLPI> $itemtype */
 $itemtype = $_REQUEST['itemtype'];
 $params = $_REQUEST['params'];
 

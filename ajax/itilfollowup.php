@@ -108,7 +108,7 @@ if ($template->fields['requesttypes_id']) {
     }
 }
 
-if ($template->fields['pendingreasons_id'] ?? 0 > 0) {
+if (($template->fields['pendingreasons_id'] ?? 0) > 0) {
     $pendingReason = new PendingReason();
     if ($pendingReason->getFromDB($template->fields['pendingreasons_id'])) {
         $template->fields = array_merge($template->fields, [
