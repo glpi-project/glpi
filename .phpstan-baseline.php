@@ -6182,12 +6182,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	// identifier: property.defaultValue
-	'message' => '#^Property Transfer\\:\\:\\$inittype \\(string\\) does not accept default value of type int\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
