@@ -342,7 +342,7 @@ class NetworkPortTest extends DbTestCase
 
         // Check that there is no saveInput already
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
+            $this->assertArrayNotHasKey(\NetworkPort::class, $_SESSION['saveInput']);
         }
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $networkport = new \NetworkPort();
@@ -368,7 +368,7 @@ class NetworkPortTest extends DbTestCase
 
         // Check that there is no savedInput after update
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
+            $this->assertArrayNotHasKey(\NetworkPort::class, $_SESSION['saveInput']);
         }
     }
 

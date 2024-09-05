@@ -117,7 +117,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getField('id'));
 
@@ -347,8 +347,14 @@ class DbTestCase extends \GLPITestCase
             ],
             skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
         );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
-        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
+        $this->assertEquals(
+            $capacities,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        );
+        $this->assertEquals(
+            $profiles,
+            $this->callPrivateMethod($definition, 'getDecodedProfilesField')
+        );
 
         $manager = AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
@@ -374,7 +380,7 @@ class DbTestCase extends \GLPITestCase
         $contents = random_bytes(1024);
 
         $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
-        $this->integer($written_bytes)->isEqualTo(strlen($contents));
+        $this->assertEquals(strlen($contents), $written_bytes);
 
         return $this->createItem(
             Document::class,
@@ -416,9 +422,10 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was added
-        $this->array(
+        $this->assertContains(
+            $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->contains($capacity);
+        );
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();
@@ -463,9 +470,10 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was deleted
-        $this->array(
+        $this->assertNotContains(
+            $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->notContains($capacity);
+        );
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();

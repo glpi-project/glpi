@@ -439,5 +439,6 @@ class GLPITestCase extends TestCase
 
         // Statics values
         Log::$use_queue = false;
+        CommonDBTM::clearSearchOptionCache();
     }
 }

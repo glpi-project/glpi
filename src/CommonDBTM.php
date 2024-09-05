@@ -192,6 +192,7 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
+    private static $search_options_cache = [];
 
     /**
      * Return the table used to store this object
@@ -3791,12 +3792,10 @@ class CommonDBTM extends CommonGLPI
      **/
     final public function searchOptions()
     {
-        static $options = [];
-
         $type = $this->getType();
 
-        if (isset($options[$type])) {
-            return $options[$type];
+        if (isset(self::$search_options_cache[$type])) {
+            return self::$search_options_cache[$type];
         }
 
         $options[$type] = [];
@@ -3839,6 +3838,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
+        self::$search_options_cache[$type] = $options[$type];
         return $options[$type];
     }
 
@@ -6695,5 +6695,10 @@ TWIG, $twig_params);
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
         return [];
+    }
+
+    public static function clearSearchOptionCache(): void
+    {
+        self::$search_options_cache = [];
     }
 }

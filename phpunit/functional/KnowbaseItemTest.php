@@ -797,11 +797,11 @@ HTML,
         ]);
 
         // We expect one category
-        $this->array($linked_categories)->hasSize(1);
+        $this->assertCount(1, $linked_categories);
 
         // Check category id
         $data = array_pop($linked_categories);
-        $this->integer($data['knowbaseitemcategories_id'])->isEqualTo($category->getID());
+        $this->assertEquals($category->getID(), $data['knowbaseitemcategories_id']);
     }*/
 
     public function testCreateWithCategories()

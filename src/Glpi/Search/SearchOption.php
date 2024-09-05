@@ -131,246 +131,245 @@ final class SearchOption implements \ArrayAccess
         global $CFG_GLPI;
         $item = null;
 
-        static $search = [];
+        $search = [];
 
-        if (!isset($search[$itemtype])) {
-            $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
-                // Check duplicate keys between new options and existing options
-                $duplicate_keys = array_intersect(array_keys($search[$itemtype]), array_keys($new_options));
-                if (count($duplicate_keys) > 0) {
-                    trigger_error(
-                        sprintf(
-                            'Duplicate keys found in search options for item type %s: %s',
-                            $itemtype,
-                            implode(', ', $duplicate_keys)
-                        ),
-                        E_USER_WARNING
-                    );
+
+        $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
+            // Check duplicate keys between new options and existing options
+            $duplicate_keys = array_intersect(array_keys($search[$itemtype]), array_keys($new_options));
+            if (count($duplicate_keys) > 0) {
+                trigger_error(
+                    sprintf(
+                        'Duplicate keys found in search options for item type %s: %s',
+                        $itemtype,
+                        implode(', ', $duplicate_keys)
+                    ),
+                    E_USER_WARNING
+                );
+            }
+            $search[$itemtype] += $new_options;
+        };
+
+        // standard type first
+        switch ($itemtype) {
+            case 'Internet':
+                $search[$itemtype]['common']            = __('Characteristics');
+
+                $search[$itemtype][1]['table']          = 'networkport_types';
+                $search[$itemtype][1]['field']          = 'name';
+                $search[$itemtype][1]['name']           = __('Name');
+                $search[$itemtype][1]['datatype']       = 'itemlink';
+                $search[$itemtype][1]['searchtype']     = 'contains';
+
+                $search[$itemtype][2]['table']          = 'networkport_types';
+                $search[$itemtype][2]['field']          = 'id';
+                $search[$itemtype][2]['name']           = __('ID');
+                $search[$itemtype][2]['searchtype']     = 'contains';
+
+                $search[$itemtype][31]['table']         = 'glpi_states';
+                $search[$itemtype][31]['field']         = 'completename';
+                $search[$itemtype][31]['name']          = __('Status');
+
+                $fn_append_options(\NetworkPort::getSearchOptionsToAdd('networkport_types'));
+                break;
+
+            case \AllAssets::getType():
+                $search[$itemtype]['common']            = __('Characteristics');
+
+                $search[$itemtype][1]['table']          = 'asset_types';
+                $search[$itemtype][1]['field']          = 'name';
+                $search[$itemtype][1]['name']           = __('Name');
+                $search[$itemtype][1]['datatype']       = 'itemlink';
+                $search[$itemtype][1]['searchtype']     = 'contains';
+
+                $search[$itemtype][2]['table']          = 'asset_types';
+                $search[$itemtype][2]['field']          = 'id';
+                $search[$itemtype][2]['name']           = __('ID');
+                $search[$itemtype][2]['searchtype']     = 'contains';
+
+                $search[$itemtype][31]['table']         = 'glpi_states';
+                $search[$itemtype][31]['field']         = 'completename';
+                $search[$itemtype][31]['name']          = __('Status');
+
+                $fn_append_options(\Location::getSearchOptionsToAdd());
+
+                $search[$itemtype][5]['table']          = 'asset_types';
+                $search[$itemtype][5]['field']          = 'serial';
+                $search[$itemtype][5]['name']           = __('Serial number');
+
+                $search[$itemtype][6]['table']          = 'asset_types';
+                $search[$itemtype][6]['field']          = 'otherserial';
+                $search[$itemtype][6]['name']           = __('Inventory number');
+
+                $search[$itemtype][16]['table']         = 'asset_types';
+                $search[$itemtype][16]['field']         = 'comment';
+                $search[$itemtype][16]['name']          = __('Comments');
+                $search[$itemtype][16]['datatype']      = 'text';
+
+                $search[$itemtype][70]['table']         = 'glpi_users';
+                $search[$itemtype][70]['field']         = 'name';
+                $search[$itemtype][70]['name']          = \User::getTypeName(1);
+
+                $search[$itemtype][7]['table']          = 'asset_types';
+                $search[$itemtype][7]['field']          = 'contact';
+                $search[$itemtype][7]['name']           = __('Alternate username');
+                $search[$itemtype][7]['datatype']       = 'string';
+
+                $search[$itemtype][8]['table']          = 'asset_types';
+                $search[$itemtype][8]['field']          = 'contact_num';
+                $search[$itemtype][8]['name']           = __('Alternate username number');
+                $search[$itemtype][8]['datatype']       = 'string';
+
+                $search[$itemtype][71]['table']         = 'glpi_groups';
+                $search[$itemtype][71]['field']         = 'completename';
+                $search[$itemtype][71]['name']          = \Group::getTypeName(1);
+
+                $search[$itemtype][19]['table']         = 'asset_types';
+                $search[$itemtype][19]['field']         = 'date_mod';
+                $search[$itemtype][19]['name']          = __('Last update');
+                $search[$itemtype][19]['datatype']      = 'datetime';
+                $search[$itemtype][19]['massiveaction'] = false;
+
+                $search[$itemtype][23]['table']         = 'glpi_manufacturers';
+                $search[$itemtype][23]['field']         = 'name';
+                $search[$itemtype][23]['name']          = \Manufacturer::getTypeName(1);
+
+                $search[$itemtype][24]['table']         = 'glpi_users';
+                $search[$itemtype][24]['field']         = 'name';
+                $search[$itemtype][24]['linkfield']     = 'users_id_tech';
+                $search[$itemtype][24]['name']          = __('Technician in charge');
+                $search[$itemtype][24]['condition']     = ['is_assign' => 1];
+
+                $search[$itemtype][49]['table']          = 'glpi_groups';
+                $search[$itemtype][49]['field']          = 'completename';
+                $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
+                $search[$itemtype][49]['name']           = __('Group in charge');
+                $search[$itemtype][49]['condition']      = ['is_assign' => 1];
+                $search[$itemtype][49]['datatype']       = 'dropdown';
+
+                $search[$itemtype][80]['table']         = 'glpi_entities';
+                $search[$itemtype][80]['field']         = 'completename';
+                $search[$itemtype][80]['name']          = \Entity::getTypeName(1);
+                break;
+
+            default:
+                if ($item = getItemForItemtype($itemtype)) {
+                    $search[$itemtype] = $item->searchOptions();
                 }
-                $search[$itemtype] += $new_options;
-            };
+                break;
+        }
 
-            // standard type first
-            switch ($itemtype) {
-                case 'Internet':
-                    $search[$itemtype]['common']            = __('Characteristics');
+        if (
+            \Session::getLoginUserID()
+            && in_array($itemtype, $CFG_GLPI["ticket_types"])
+        ) {
+            $search[$itemtype]['tracking']          = __('Assistance');
 
-                    $search[$itemtype][1]['table']          = 'networkport_types';
-                    $search[$itemtype][1]['field']          = 'name';
-                    $search[$itemtype][1]['name']           = __('Name');
-                    $search[$itemtype][1]['datatype']       = 'itemlink';
-                    $search[$itemtype][1]['searchtype']     = 'contains';
+            $fn_append_options(Problem::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(Ticket::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(Change::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][2]['table']          = 'networkport_types';
-                    $search[$itemtype][2]['field']          = 'id';
-                    $search[$itemtype][2]['name']           = __('ID');
-                    $search[$itemtype][2]['searchtype']     = 'contains';
+        if (
+            in_array($itemtype, $CFG_GLPI["networkport_types"])
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\NetworkPort::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][31]['table']         = 'glpi_states';
-                    $search[$itemtype][31]['field']         = 'completename';
-                    $search[$itemtype][31]['name']          = __('Status');
+        if (
+            in_array($itemtype, $CFG_GLPI["contract_types"])
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\Contract::getSearchOptionsToAdd());
+        }
 
-                    $fn_append_options(\NetworkPort::getSearchOptionsToAdd('networkport_types'));
-                    break;
+        if (
+            \Document::canApplyOn($itemtype)
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\Document::getSearchOptionsToAdd());
+        }
 
-                case \AllAssets::getType():
-                    $search[$itemtype]['common']            = __('Characteristics');
+        if (
+            \Infocom::canApplyOn($itemtype)
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\Infocom::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][1]['table']          = 'asset_types';
-                    $search[$itemtype][1]['field']          = 'name';
-                    $search[$itemtype][1]['name']           = __('Name');
-                    $search[$itemtype][1]['datatype']       = 'itemlink';
-                    $search[$itemtype][1]['searchtype']     = 'contains';
+        if (
+            in_array($itemtype, $CFG_GLPI["domain_types"])
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\Domain::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][2]['table']          = 'asset_types';
-                    $search[$itemtype][2]['field']          = 'id';
-                    $search[$itemtype][2]['name']           = __('ID');
-                    $search[$itemtype][2]['searchtype']     = 'contains';
+        if (
+            in_array($itemtype, $CFG_GLPI["appliance_types"])
+            || ($itemtype == \AllAssets::getType())
+        ) {
+            $fn_append_options(\Appliance::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][31]['table']         = 'glpi_states';
-                    $search[$itemtype][31]['field']         = 'completename';
-                    $search[$itemtype][31]['name']          = __('Status');
+        if (in_array($itemtype, $CFG_GLPI["link_types"])) {
+            $search[$itemtype]['link'] = \Link::getTypeName(\Session::getPluralNumber());
+            $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
+            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(\Session::getPluralNumber());
+            $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $fn_append_options(\Location::getSearchOptionsToAdd());
+        if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
+            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
+            $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][5]['table']          = 'asset_types';
-                    $search[$itemtype][5]['field']          = 'serial';
-                    $search[$itemtype][5]['name']           = __('Serial number');
+        if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
+            $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
+            $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
+        }
 
-                    $search[$itemtype][6]['table']          = 'asset_types';
-                    $search[$itemtype][6]['field']          = 'otherserial';
-                    $search[$itemtype][6]['name']           = __('Inventory number');
+        if ($withplugins) {
+            // Search options added by plugins
+            $plugsearch = \Plugin::getAddSearchOptions($itemtype);
+            $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
+            if (count($plugsearch)) {
+                $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
+                $fn_append_options($plugsearch);
+            }
+        }
 
-                    $search[$itemtype][16]['table']         = 'asset_types';
-                    $search[$itemtype][16]['field']         = 'comment';
-                    $search[$itemtype][16]['name']          = __('Comments');
-                    $search[$itemtype][16]['datatype']      = 'text';
+        // Complete linkfield if not define
+        if (!is_a($itemtype, CommonDBTM::class, true)) { // Special union type
+            $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
+        } else {
+            $itemtable = $itemtype::getTable();
+        }
 
-                    $search[$itemtype][70]['table']         = 'glpi_users';
-                    $search[$itemtype][70]['field']         = 'name';
-                    $search[$itemtype][70]['name']          = \User::getTypeName(1);
-
-                    $search[$itemtype][7]['table']          = 'asset_types';
-                    $search[$itemtype][7]['field']          = 'contact';
-                    $search[$itemtype][7]['name']           = __('Alternate username');
-                    $search[$itemtype][7]['datatype']       = 'string';
-
-                    $search[$itemtype][8]['table']          = 'asset_types';
-                    $search[$itemtype][8]['field']          = 'contact_num';
-                    $search[$itemtype][8]['name']           = __('Alternate username number');
-                    $search[$itemtype][8]['datatype']       = 'string';
-
-                    $search[$itemtype][71]['table']         = 'glpi_groups';
-                    $search[$itemtype][71]['field']         = 'completename';
-                    $search[$itemtype][71]['name']          = \Group::getTypeName(1);
-
-                    $search[$itemtype][19]['table']         = 'asset_types';
-                    $search[$itemtype][19]['field']         = 'date_mod';
-                    $search[$itemtype][19]['name']          = __('Last update');
-                    $search[$itemtype][19]['datatype']      = 'datetime';
-                    $search[$itemtype][19]['massiveaction'] = false;
-
-                    $search[$itemtype][23]['table']         = 'glpi_manufacturers';
-                    $search[$itemtype][23]['field']         = 'name';
-                    $search[$itemtype][23]['name']          = \Manufacturer::getTypeName(1);
-
-                    $search[$itemtype][24]['table']         = 'glpi_users';
-                    $search[$itemtype][24]['field']         = 'name';
-                    $search[$itemtype][24]['linkfield']     = 'users_id_tech';
-                    $search[$itemtype][24]['name']          = __('Technician in charge');
-                    $search[$itemtype][24]['condition']     = ['is_assign' => 1];
-
-                    $search[$itemtype][49]['table']          = 'glpi_groups';
-                    $search[$itemtype][49]['field']          = 'completename';
-                    $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
-                    $search[$itemtype][49]['name']           = __('Group in charge');
-                    $search[$itemtype][49]['condition']      = ['is_assign' => 1];
-                    $search[$itemtype][49]['datatype']       = 'dropdown';
-
-                    $search[$itemtype][80]['table']         = 'glpi_entities';
-                    $search[$itemtype][80]['field']         = 'completename';
-                    $search[$itemtype][80]['name']          = \Entity::getTypeName(1);
-                    break;
-
-                default:
-                    if ($item = getItemForItemtype($itemtype)) {
-                        $search[$itemtype] = $item->searchOptions();
-                    }
-                    break;
+        foreach ($search[$itemtype] as $key => $val) {
+            if (!is_array($val) || count($val) == 1) {
+                // skip sub-menu
+                continue;
+            }
+            // Force massive action to false if linkfield is empty :
+            if (isset($val['linkfield']) && empty($val['linkfield'])) {
+                $search[$itemtype][$key]['massiveaction'] = false;
             }
 
-            if (
-                \Session::getLoginUserID()
-                && in_array($itemtype, $CFG_GLPI["ticket_types"])
-            ) {
-                $search[$itemtype]['tracking']          = __('Assistance');
-
-                $fn_append_options(Problem::getSearchOptionsToAdd($itemtype));
-                $fn_append_options(Ticket::getSearchOptionsToAdd($itemtype));
-                $fn_append_options(Change::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (
-                in_array($itemtype, $CFG_GLPI["networkport_types"])
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\NetworkPort::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (
-                in_array($itemtype, $CFG_GLPI["contract_types"])
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\Contract::getSearchOptionsToAdd());
-            }
-
-            if (
-                \Document::canApplyOn($itemtype)
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\Document::getSearchOptionsToAdd());
-            }
-
-            if (
-                \Infocom::canApplyOn($itemtype)
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\Infocom::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (
-                in_array($itemtype, $CFG_GLPI["domain_types"])
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\Domain::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (
-                in_array($itemtype, $CFG_GLPI["appliance_types"])
-                || ($itemtype == \AllAssets::getType())
-            ) {
-                $fn_append_options(\Appliance::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-                $search[$itemtype]['link'] = \Link::getTypeName(\Session::getPluralNumber());
-                $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
-                $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(\Session::getPluralNumber());
-                $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
-                $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
-                $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
-            }
-
-            if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
-                $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
-                $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
-            }
-
-            if ($withplugins) {
-                // Search options added by plugins
-                $plugsearch = \Plugin::getAddSearchOptions($itemtype);
-                $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
-                if (count($plugsearch)) {
-                    $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
-                    $fn_append_options($plugsearch);
+            // Set default linkfield
+            if (!isset($val['linkfield']) || empty($val['linkfield'])) {
+                if (
+                    (strcmp($itemtable, $val['table']) == 0)
+                    && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))
+                ) {
+                    $search[$itemtype][$key]['linkfield'] = $val['field'];
+                } else {
+                    $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                 }
             }
-
-            // Complete linkfield if not define
-            if (!is_a($itemtype, CommonDBTM::class, true)) { // Special union type
-                $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
-            } else {
-                $itemtable = $itemtype::getTable();
-            }
-
-            foreach ($search[$itemtype] as $key => $val) {
-                if (!is_array($val) || count($val) == 1) {
-                    // skip sub-menu
-                    continue;
-                }
-                // Force massive action to false if linkfield is empty :
-                if (isset($val['linkfield']) && empty($val['linkfield'])) {
-                    $search[$itemtype][$key]['massiveaction'] = false;
-                }
-
-                // Set default linkfield
-                if (!isset($val['linkfield']) || empty($val['linkfield'])) {
-                    if (
-                        (strcmp($itemtable, $val['table']) == 0)
-                        && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))
-                    ) {
-                        $search[$itemtype][$key]['linkfield'] = $val['field'];
-                    } else {
-                        $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
-                    }
-                }
-                // Add default joinparams
-                if (!isset($val['joinparams'])) {
-                    $search[$itemtype][$key]['joinparams'] = [];
-                }
+            // Add default joinparams
+            if (!isset($val['joinparams'])) {
+                $search[$itemtype][$key]['joinparams'] = [];
             }
         }
 
