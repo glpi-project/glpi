@@ -165,7 +165,12 @@ class Group extends CommonTreeDropdown
                     }
                 }
 
-                if ($item->getField('is_usergroup') && Group::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT) && AuthLDAP::useAuthLdap()) {
+                if (
+                    $item->getField('is_usergroup')
+                    && Group::canUpdate()
+                    && Session::haveRight("user", User::UPDATEAUTHENT)
+                    && AuthLDAP::useAuthLdap()
+                ) {
                     $ong[3] = __('LDAP directory link');
                 }
         }
