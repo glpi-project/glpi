@@ -9077,73 +9077,75 @@ JSON;
 
     public function testRuleRefuseUpdateComputerVirtualMachines()
     {
-        //change config to import vms as computers
+        // Helper function to create JSON string
+        function createJsonString($versionClient)
+        {
+            return <<<JSON
+            {
+                "action": "inventory",
+                "content": {
+                    "bios": {
+                        "bdate": "2023-07-07",
+                        "bmanufacturer": "Dell Inc.",
+                        "bversion": "1.12.0",
+                        "mmanufacturer": "Dell Inc.",
+                        "mmodel": "0RWPXY",
+                        "msn": ".CF301Z3.CNCMC003AT0582.",
+                        "skunumber": "0B9F",
+                        "smanufacturer": "Dell Inc.",
+                        "smodel": "Inspiron 15 3525",
+                        "ssn": "CF301Z3"
+                    },
+                    "hardware": {
+                        "chassis_type": "Notebook",
+                        "datelastloggeduser": "Tue Jul 30 09:55",
+                        "defaultgateway": "192.168.1.1",
+                        "dns": "127.0.0.53",
+                        "lastloggeduser": "samuel",
+                        "memory": 15326,
+                        "name": "samuel-Inspiron-15-3525",
+                        "swap": 1951,
+                        "uuid": "4c4c4544-0046-3310-8030-c3c04f315a33",
+                        "vmsystem": "Physical",
+                        "workgroup": "home"
+                    },
+                    "virtualmachines": [
+                        {
+                            "image": "axllent\/mailpit",
+                            "name": "mailpit_update",
+                            "status": "running",
+                            "uuid": "0b66f80dde33",
+                            "vmtype": "docker"
+                        }
+                    ],
+                    "versionclient": "$versionClient"
+                },
+                "deviceid": "test-2024-09-04-16-49-35",
+                "itemtype": "Computer"
+            }
+            JSON;
+        }
+
+        // Change config to import VMs as computers
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
-        $json_str = <<<JSON
-        {
-            "action": "inventory",
-            "content": {
-                "bios": {
-                    "bdate": "2023-07-07",
-                    "bmanufacturer": "Dell Inc.",
-                    "bversion": "1.12.0",
-                    "mmanufacturer": "Dell Inc.",
-                    "mmodel": "0RWPXY",
-                    "msn": ".CF301Z3.CNCMC003AT0582.",
-                    "skunumber": "0B9F",
-                    "smanufacturer": "Dell Inc.",
-                    "smodel": "Inspiron 15 3525",
-                    "ssn": "CF301Z3"
-                },
-                "hardware": {
-                    "chassis_type": "Notebook",
-                    "datelastloggeduser": "Tue Jul 30 09:55",
-                    "defaultgateway": "192.168.1.1",
-                    "dns": "127.0.0.53",
-                    "lastloggeduser": "samuel",
-                    "memory": 15326,
-                    "name": "samuel-Inspiron-15-3525",
-                    "swap": 1951,
-                    "uuid": "4c4c4544-0046-3310-8030-c3c04f315a33",
-                    "vmsystem": "Physical",
-                    "workgroup": "home"
-                },
-                "virtualmachines": [
-                    {
-                        "image": "axllent\/mailpit",
-                        "name": "mailpit",
-                        "status": "running",
-                        "uuid": "0b66f80dde33",
-                        "vmtype": "docker"
-                    },
-                    {
-                        "image": "hello-world",
-                        "name": "elastic_tu",
-                        "status": "off",
-                        "uuid": "cdc8df147abb",
-                        "vmtype": "docker"
-                    }
-                ],
-                "versionclient": "GLPI-Agent_v1.10-dev"
-            },
-            "deviceid": "test-2024-09-04-16-49-35",
-            "itemtype": "Computer"
-        }
-        JSON;
-        $json = json_decode($json_str);
+        // Initial inventory
+        $json = json_decode(createJsonString("GLPI-Agent_v1.10-dev"));
         $count_vms = count($json->content->virtualmachines);
         $nb_computers = countElementsInTable(\Computer::getTable());
 
         $this->doInventory($json);
 
-        //check created vms
+        // Check created VMs
         $this->assertSame($count_vms, countElementsInTable(\ItemVirtualMachine::getTable()));
-        $this->assertSame($nb_computers + 3, countElementsInTable(\Computer::getTable()));
+        $this->assertSame($nb_computers + 2, countElementsInTable(\Computer::getTable()));
+        $computer = new \Computer();
+        $computer->getFromDBByCrit(['name' => 'mailpit_update']);
 
+        // Create Docker VM type
         $nb_vm = countElementsInTable(\VirtualMachineType::getTable());
         $docker_vm = $this->createItems(
             \VirtualMachineType::class,
@@ -9151,10 +9153,9 @@ JSON;
                 ['name' => 'docker'],
             ]
         );
-
         $this->assertGreaterThan($nb_vm, countElementsInTable(\VirtualMachineType::getTable()));
 
-        //IMPORT rule to refuse "db" virtual machine
+        // Import rule to refuse "docker" virtual machine
         $criteria = [
             [
                 'condition' => 0,
@@ -9209,62 +9210,15 @@ JSON;
 
         $nb_computers = countElementsInTable(\Computer::getTable());
 
-        $json_str = <<<JSON
-        {
-            "action": "inventory",
-            "content": {
-                "bios": {
-                    "bdate": "2023-07-07",
-                    "bmanufacturer": "Dell Inc.",
-                    "bversion": "1.12.0",
-                    "mmanufacturer": "Dell Inc.",
-                    "mmodel": "0RWPXY",
-                    "msn": ".CF301Z3.CNCMC003AT0582.",
-                    "skunumber": "0B9F",
-                    "smanufacturer": "Dell Inc.",
-                    "smodel": "Inspiron 15 3525",
-                    "ssn": "CF301Z3"
-                },
-                "hardware": {
-                    "chassis_type": "Notebook",
-                    "datelastloggeduser": "Tue Jul 30 09:55",
-                    "defaultgateway": "192.168.1.1",
-                    "dns": "127.0.0.53",
-                    "lastloggeduser": "samuel",
-                    "memory": 15326,
-                    "name": "samuel-Inspiron-15-3525",
-                    "swap": 1951,
-                    "uuid": "4c4c4544-0046-3310-8030-c3c04f315a33",
-                    "vmsystem": "Physical",
-                    "workgroup": "home"
-                },
-                "virtualmachines": [
-                    {
-                        "image": "axllent\/mailpit",
-                        "name": "mailpit",
-                        "status": "running",
-                        "uuid": "0b66f80dde33",
-                        "vmtype": "docker"
-                    },
-                    {
-                        "image": "hello-world",
-                        "name": "elastic_tu",
-                        "status": "off",
-                        "uuid": "cdc8df147abb",
-                        "vmtype": "docker"
-                    }
-                ],
-                "versionclient": "GLPI-Agent_v1.10-dev"
-            },
-            "deviceid": "test-2024-09-04-17-10-59",
-            "itemtype": "Computer"
-        }
-        JSON;
-        $json = json_decode($json_str);
+        // Second inventory
+        $json = json_decode(createJsonString("GLPI-Agent_v1.10-dev2"));
         $this->doInventory($json);
 
-        //check created vms
+        // Check created VMs
         $this->assertSame($count_vms, countElementsInTable(\ItemVirtualMachine::getTable()));
         $this->assertSame($nb_computers, countElementsInTable(\Computer::getTable()));
+        $c_update = new \Computer();
+        $c_update->getFromDBByCrit(['name' => 'mailpit_update']);
+        $this->assertSame($c_update->fields['date_mod'], $computer->fields['date_mod']);
     }
 }

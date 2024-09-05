@@ -1010,7 +1010,7 @@ class RuleImportAssetTest extends DbTestCase
     public function testGetCriteria()
     {
         $instance = new \RuleImportAsset();
-        $this->assertSame(23, count($instance->getCriterias()));
+        $this->assertSame(24, count($instance->getCriterias()));
     }
 
     public function testGetActions()
