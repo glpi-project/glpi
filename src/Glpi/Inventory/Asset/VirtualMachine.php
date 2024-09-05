@@ -312,7 +312,7 @@ class VirtualMachine extends InventoryAsset
             if ($this->conf->vm_type) {
                 $vm->computertypes_id = $this->conf->vm_type;
             }
-            $this->handleLinks();
+
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $computers_vm_id = $this->getExistingVMAsComputer($vm);
                 if ($computers_vm_id == 0) {
