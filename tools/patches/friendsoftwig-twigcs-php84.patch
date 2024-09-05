@@ -1,0 +1,100 @@
+diff --git a/src/RegEngine/Checker/Handler.php b/src/RegEngine/Checker/Handler.php
+index e29974a..91253be 100644
+--- a/src/RegEngine/Checker/Handler.php
++++ b/src/RegEngine/Checker/Handler.php
+@@ -11,7 +11,7 @@ class Handler
+ 
+     private ?Handler $parent;
+ 
+-    public function __construct(self $parent = null)
++    public function __construct(?self $parent = null)
+     {
+         $this->parent = $parent;
+     }
+diff --git a/src/Rule/AbstractRule.php b/src/Rule/AbstractRule.php
+index 1246f6c..443f539 100644
+--- a/src/Rule/AbstractRule.php
++++ b/src/Rule/AbstractRule.php
+@@ -45,7 +45,7 @@ protected function getNextSignificantToken(TokenStream $tokens, int $skip = 0):
+         return StreamNavigator::getNextSignificantToken($tokens, $skip);
+     }
+ 
+-    protected function skipTo(TokenStream $tokens, int $tokenType, string $tokenValue = null)
++    protected function skipTo(TokenStream $tokens, int $tokenType, ?string $tokenValue = null)
+     {
+         return StreamNavigator::skipTo($tokens, $tokenType, $tokenValue);
+     }
+diff --git a/src/Rule/UnusedMacro.php b/src/Rule/UnusedMacro.php
+index ad2faa2..57b6ac3 100644
+--- a/src/Rule/UnusedMacro.php
++++ b/src/Rule/UnusedMacro.php
+@@ -11,7 +11,7 @@ class UnusedMacro extends AbstractRule implements RuleInterface
+ {
+     public TemplateResolverInterface $loader;
+ 
+-    public function __construct(int $severity, TemplateResolverInterface $loader = null)
++    public function __construct(int $severity, ?TemplateResolverInterface $loader = null)
+     {
+         $this->loader = $loader ?: new NullResolver();
+ 
+diff --git a/src/Rule/UnusedVariable.php b/src/Rule/UnusedVariable.php
+index f22140b..abecf66 100644
+--- a/src/Rule/UnusedVariable.php
++++ b/src/Rule/UnusedVariable.php
+@@ -11,7 +11,7 @@ class UnusedVariable extends AbstractRule implements RuleInterface
+ {
+     public TemplateResolverInterface $loader;
+ 
+-    public function __construct(int $severity, TemplateResolverInterface $loader = null)
++    public function __construct(int $severity, ?TemplateResolverInterface $loader = null)
+     {
+         $this->loader = $loader ?: new NullResolver();
+ 
+diff --git a/src/TwigPort/SyntaxError.php b/src/TwigPort/SyntaxError.php
+index 8a26eba..3d08171 100644
+--- a/src/TwigPort/SyntaxError.php
++++ b/src/TwigPort/SyntaxError.php
+@@ -20,7 +20,7 @@ class SyntaxError extends \Exception
+      * @param int         $lineno  The template line where the error occurred
+      * @param Source|null $source  The source context where the error occurred
+      */
+-    public function __construct(string $message, int $lineno = -1, int $columnno = -1, Source $source = null)
++    public function __construct(string $message, int $lineno = -1, int $columnno = -1, ?Source $source = null)
+     {
+         parent::__construct($message);
+ 
+diff --git a/src/TwigPort/TokenStream.php b/src/TwigPort/TokenStream.php
+index d2b3a90..82f4f46 100644
+--- a/src/TwigPort/TokenStream.php
++++ b/src/TwigPort/TokenStream.php
+@@ -15,7 +15,7 @@ final class TokenStream
+     private int $current = 0;
+     private Source $source;
+ 
+-    public function __construct(array $tokens, Source $source = null)
++    public function __construct(array $tokens, ?Source $source = null)
+     {
+         $this->tokens = $tokens;
+         $this->source = $source ?: new Source('', '');
+@@ -51,7 +51,7 @@ public function nextIf($primary, $secondary = null)
+         }
+     }
+ 
+-    public function expect($type, $value = null, string $message = null): Token
++    public function expect($type, $value = null, ?string $message = null): Token
+     {
+         $token = $this->tokens[$this->current];
+ 
+diff --git a/src/Util/StreamNavigator.php b/src/Util/StreamNavigator.php
+index 573d577..cf58dd4 100644
+--- a/src/Util/StreamNavigator.php
++++ b/src/Util/StreamNavigator.php
+@@ -47,7 +47,7 @@ public static function getNextSignificantToken(TokenStream $tokens, int $skip =
+         return null;
+     }
+ 
+-    public static function skipTo(TokenStream $tokens, int $tokenType, string $tokenValue = null)
++    public static function skipTo(TokenStream $tokens, int $tokenType, ?string $tokenValue = null)
+     {
+         while (!$tokens->isEOF()) {
+             $continue = $tokens->getCurrent()->getType() !== $tokenType;

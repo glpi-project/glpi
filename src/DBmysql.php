@@ -365,7 +365,7 @@ class DBmysql
      */
     public function query($query)
     {
-        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -465,7 +465,7 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
