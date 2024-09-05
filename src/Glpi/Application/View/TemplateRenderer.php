@@ -63,10 +63,7 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private Environment $environment;
 
     public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
     {
@@ -81,7 +78,7 @@ class TemplateRenderer
         }
 
         $env_params = [
-            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+            'debug' => ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
             'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
         ];
 
@@ -99,10 +96,10 @@ class TemplateRenderer
             $loader,
             $env_params
         );
-       // Vendor extensions
+        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
+        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
@@ -118,7 +115,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-       // add superglobals
+        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);
