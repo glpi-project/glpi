@@ -43,8 +43,8 @@ if (isset($_SERVER['argv'])) {
       $options[$chunks[0]] = (isset($chunks[1]) ? $chunks[1] : true);
    }
 }
-
-// Handle specific dependencies update command that cannot be made upon symfony console
+ 
+//Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
    chdir(dirname(__FILE__, 2));
 
@@ -68,26 +68,40 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    file_put_contents('.package.hash', sha1_file('package-lock.json'));
 
    passthru('npm run-script build', $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
+   $exit_code = compileLocales();
+
    exit($exit_code);
 }
 
 // Handle specific "locales:compile" command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
+   $exit_code = compileLocales();
+
+   exit($exit_code);
+}
+
+function compileLocales(): int
+{
    chdir(dirname(__FILE__, 2));
 
    $exit_code = 0;
 
    $po_files = preg_grep('/\.po$/', scandir('./locales'));
+   echo "Compiling MO files...";
    foreach ($po_files as $po_file) {
       $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
-      echo("Processing {$po_file}\n");
       passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
       if ($exit_code > 0) {
          exit($exit_code);
       }
    }
+   echo " Done.\n";
 
-   exit($exit_code);
+   return $exit_code;
 }
 
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
