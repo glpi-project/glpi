@@ -9211,10 +9211,9 @@ JSON;
         $nb_computers = countElementsInTable(\Computer::getTable());
 
         // Second inventory
-        $json = json_decode(createJsonString("GLPI-Agent_v1.10-dev2"));
         $this->doInventory($json);
 
-        // Check created VMs
+        // Check that VM computers are not created
         $this->assertSame($count_vms, countElementsInTable(\ItemVirtualMachine::getTable()));
         $this->assertSame($nb_computers, countElementsInTable(\Computer::getTable()));
         $c_update = new \Computer();
