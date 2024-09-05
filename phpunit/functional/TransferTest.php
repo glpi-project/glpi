@@ -789,4 +789,50 @@ class TransferTest extends DbTestCase
             'type'         => \CommonITILActor::ASSIGN,
         ]));
     }
+
+    public function testTransferTaskCategory()
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $task_cat = new \TaskCategory();
+        $task_cat_id = $task_cat->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $task_cat_id);
+
+        $ticket_task = new \TicketTask();
+        $task_id = $ticket_task->add([
+            'name' => 'task',
+            'content' => 'content task',
+            'taskcategories_id' => $task_cat_id,
+            'tickets_id' => $ticket_id,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Ticket' => [$ticket_id]], $destination_entity, []);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+
+        //var_dump(getAllDataFromTable('glpi_taskcategories'));
+        $task_cats = $task_cat->find([
+            'name' => __FUNCTION__,
+            'entities_id' => $destination_entity,
+        ]);
+        $this->assertCount(1, $task_cats);
+        $task_cat = reset($task_cats);
+        $this->assertTrue($ticket_task->getFromDB($task_id));
+        $this->assertEquals($task_cat['id'], $ticket_task->fields['taskcategories_id']);
+    }
 }
