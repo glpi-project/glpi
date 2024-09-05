@@ -645,4 +645,51 @@ class TransferTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals(0, $ticket->fields['locations_id']);
     }
+
+    public function testTransferLinkedSuppliers()
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $supplier = new \Supplier();
+        $supplier_id = $supplier->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $source_entity,
+        ]);
+        $this->assertGreaterThan(0, $supplier_id);
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $supplier_ticket = new \Supplier_Ticket();
+        $this->assertGreaterThan(0, $supplier_ticket->add([
+            'tickets_id'   => $ticket_id,
+            'suppliers_id' => $supplier_id,
+            'type'         => \CommonITILActor::ASSIGN,
+        ]));
+
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Ticket' => [$ticket_id]], $destination_entity, []);
+
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+
+        $suppliers = $supplier->find([
+            'name' => __FUNCTION__,
+            'entities_id' => $destination_entity,
+        ]);
+        $this->assertCount(1, $suppliers);
+        $supplier = reset($suppliers);
+        $this->assertCount(1, $supplier_ticket->find([
+            'tickets_id' => $ticket_id,
+            'suppliers_id' => $supplier['id'],
+            'type'         => \CommonITILActor::ASSIGN,
+        ]));
+    }
 }
