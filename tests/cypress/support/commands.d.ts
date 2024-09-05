@@ -33,6 +33,7 @@
 
 declare namespace Cypress {
     interface Chainable<Subject> {
+        openEntitySelector(): Chainable<any>
         startToDrag(): Chainable<any>
         dropDraggedItemAfter(): Chainable<any>
         checkAndCloseAlert(text: string): Chainable<any>

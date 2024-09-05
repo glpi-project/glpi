@@ -9158,8 +9158,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         // Test environment data
         if ($is_testing) {
             $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
-            $e2e_entity = array_shift($root_entity);
-            $e2e_entity = array_replace($e2e_entity, [
+            $root_entity = current($root_entity);
+
+            // Main E2E test entity
+            $e2e_entity = array_replace($root_entity, [
                 'id' => 1,
                 'name' => 'E2ETestEntity',
                 'entities_id' => 0,
@@ -9167,6 +9169,26 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'level' => 2,
             ]);
             $tables['glpi_entities'][] = $e2e_entity;
+
+            // Sub entity 1
+            $e2e_subentity1 = array_replace($root_entity, [
+                'id' => 2,
+                'name' => 'E2ETestSubEntity1',
+                'entities_id' => 1,
+                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity1',
+                'level' => 3,
+            ]);
+            $tables['glpi_entities'][] = $e2e_subentity1;
+
+            // Sub entity 2
+            $e2e_subentity2 = array_replace($root_entity, [
+                'id' => 3,
+                'name' => 'E2ETestSubEntity2',
+                'entities_id' => 1,
+                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity2',
+                'level' => 3,
+            ]);
+            $tables['glpi_entities'][] = $e2e_subentity2;
 
             // New e2e super-admin user (login: e2e_tests, password: glpi)
             $default_glpi_user = array_filter($tables['glpi_users'], static fn ($u) => $u['id'] === self::USER_GLPI);
