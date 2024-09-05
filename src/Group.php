@@ -131,42 +131,43 @@ class Group extends CommonTreeDropdown
         }
 
         $ong = [];
-        if ($item instanceof Group) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable($this->getTable(), ['groups_id' => $item->getID()]);
-            }
-            $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+        switch (get_class($item)) {
+            case Group::class:
+                $nb = 0;
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = countElementsInTable($this->getTable(), ['groups_id' => $item->getID()]);
+                }
+                $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                if ($item->getField('is_itemgroup')) {
-                    $total_linkgroups = 0;
-                    foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
-                        if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
-                            $total_linkgroups += countElementsInTable($itemtype_linked::getTable(), ['groups_id' => $item->getID()]);
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($item->getField('is_itemgroup')) {
+                        $total_linkgroups = 0;
+                        foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
+                            if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
+                                $total_linkgroups += countElementsInTable($itemtype_linked::getTable(), ['groups_id' => $item->getID()]);
+                            }
                         }
+                        $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
                     }
-                    $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
-                }
-                if ($item->getField('is_assign')) {
-                    $total_linkgroup_tech_types = 0;
-                    foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
-                        $total_linkgroup_tech_types += countElementsInTable($itemtype_linked::getTable(), ['groups_id_tech' => $item->getID()]);
+                    if ($item->getField('is_assign')) {
+                        $total_linkgroup_tech_types = 0;
+                        foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
+                            $total_linkgroup_tech_types += countElementsInTable($itemtype_linked::getTable(), ['groups_id_tech' => $item->getID()]);
+                        }
+                        $ong[2] = self::createTabEntry(__('Managed items'), $total_linkgroup_tech_types);
                     }
-                    $ong[2] = self::createTabEntry(__('Managed items'), $total_linkgroup_tech_types);
+                } else {
+                    if ($item->getField('is_itemgroup')) {
+                        $ong[1] = __('Used items');
+                    }
+                    if ($item->getField('is_assign')) {
+                        $ong[2] = __('Managed items');
+                    }
                 }
-            } else {
-                if ($item->getField('is_itemgroup')) {
-                    $ong[1] = __('Used items');
-                }
-                if ($item->getField('is_assign')) {
-                    $ong[2] = __('Managed items');
-                }
-            }
 
-            if ($item->getField('is_usergroup') && Group::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT) && AuthLDAP::useAuthLdap()) {
-                $ong[3] = __('LDAP directory link');
-            }
+                if ($item->getField('is_usergroup') && Group::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT) && AuthLDAP::useAuthLdap()) {
+                    $ong[3] = __('LDAP directory link');
+                }
         }
 
         return $ong;
