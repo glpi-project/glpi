@@ -135,7 +135,10 @@ class Group extends CommonTreeDropdown
             case Group::class:
                 $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable($this->getTable(), ['groups_id' => $item->getID()]);
+                    $nb = countElementsInTable(
+                        $this->getTable(),
+                        ['groups_id' => $item->getID()]
+                    );
                 }
                 $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
