@@ -81,8 +81,9 @@ class TemplateRenderer
         }
 
         $env_params = [
-            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+            'debug'       => ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
             'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
+            'cache'       => false,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
@@ -91,7 +92,7 @@ class TemplateRenderer
             || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
         ) {
             trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
-        } else {
+        } else if (($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE) {
             $env_params['cache'] = $tpl_cachedir;
         }
 
@@ -99,10 +100,10 @@ class TemplateRenderer
             $loader,
             $env_params
         );
-       // Vendor extensions
+        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
+        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
@@ -117,7 +118,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-       // add superglobals
+        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);
