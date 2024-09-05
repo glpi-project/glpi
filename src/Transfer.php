@@ -1278,14 +1278,17 @@ final class Transfer extends CommonDBTM
         if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
             $input2 = $this->transferHelpdeskAdditionalInformations($item->fields);
             $input  = array_merge($input, $input2);
-            $this->transferTaskCategory($itemtype, $ID, $newID);
-            $this->transferLinkedSuppliers($itemtype, $ID, $newID);
         }
 
         $item->update($input);
         $this->addToAlreadyTransfer($itemtype, $ID, $newID);
 
         // Do it after item transfer for entity checks
+        if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
+            $this->transferTaskCategory($itemtype, $ID, $newID);
+            $this->transferLinkedSuppliers($itemtype, $ID, $newID);
+        }
+
         if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             // Monitor Direct Connect : keep / delete + clean unused / keep unused
             $this->transferDirectConnection($itemtype, $ID, 'Monitor');
@@ -2886,7 +2889,7 @@ final class Transfer extends CommonDBTM
      *
      * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
      * @param int $ID          Original ITIL Object ID
-     * @param int $newID       New ITIL Object ID
+     * @param int $newID       New ITIL Object ID (not used)
      *
      * @return void
      **/
@@ -2894,8 +2897,6 @@ final class Transfer extends CommonDBTM
     {
         /** @var DBmysql $DB */
         global $DB;
-
-        // FIXME This method seems broken as the $newID parameter is overwritten with a supplier ID rather than being used to know the new ITIL object ID
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
             return;
