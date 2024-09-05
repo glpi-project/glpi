@@ -9304,6 +9304,8 @@ abstract class CommonITILObject extends CommonDBTM
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
+                $actors_id_replace_input_key  = sprintf('_replace_%ss_%ss', strtolower($actor_itemtype), $actor_type);
+
                 $get_unique_key = function (array $actor) use ($actors_id_input_key): string {
                     // Use alternative_email in value key for "email" actors
                     return sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? '');
@@ -9440,6 +9442,40 @@ abstract class CommonITILObject extends CommonDBTM
                             );
                             continue;
                         }
+                        $actor_id = (int)$actor_id;
+                        $actor = [
+                            'itemtype' => $actor_itemtype,
+                            'items_id' => $actor_id,
+                            'type'     => $actor_type_value,
+                        ];
+                        $unique_key = $get_unique_key($actor);
+                        if (!array_key_exists($unique_key, $actors)) {
+                            $actors[$unique_key] = $actor;
+                        }
+                    }
+                }
+
+
+                if (array_key_exists($actors_id_replace_input_key, $this->input)) {
+                    // when input key used is _replace_$actor_$actor_type(provided by rule engine)
+                    // Ex: _replace_groups_assign    or _replace_users_assign    or _replace_suppliers_assign
+                    // Ex: _replace_groups_observer  or _replace_users_observer  or _replace_suppliers_observer
+                    // Ex: _replace_groups_requester or _replace_users_requester or _replace_suppliers_requester
+                    // this indicates a complete replacement of actors of the same type
+
+                    // remove all related actors
+                    $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+                    $existing_actors = $this->{str_replace("_id", "", $actor_fkey)}; // `$this->users` or `$this->groups` or `$this->suppliers`
+                    foreach ($existing_actors[$actor_type_value] as $actor_value) {
+                        $this->input[$actors_deleted_input_key][] = [
+                            "itemtype" => $actor_itemtype,
+                            "id" => $actor_value["id"],
+                        ];
+                    }
+
+
+                    // add actor defined by rule
+                    foreach ($this->input[$actors_id_replace_input_key] as $actor_id) {
                         $actor_id = (int)$actor_id;
                         $actor = [
                             'itemtype' => $actor_itemtype,

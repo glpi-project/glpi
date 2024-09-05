@@ -1169,4 +1169,118 @@ class RuleTicket extends RuleCommonITILObject
         $ticket->getFromDB($ticket->getID());
         $this->integer($ticket->fields['locations_id'])->isEqualTo($expected_location_after_creation);
     }
+
+    public function testAssignGroupOnUpdate()
+    {
+        $this->login();
+
+       //create new group1
+        $group1 = new \Group();
+        $group_id1 = $group1->add($group_input1 = [
+            "name" => "group1",
+            "is_assign" => true
+        ]);
+        $this->checkInput($group1, $group_id1, $group_input1);
+
+       //create new group2
+        $group2 = new \Group();
+        $group_id2 = $group2->add($group_input2 = [
+            "name" => "group2",
+            "is_assign" => true
+        ]);
+        $this->checkInput($group2, $group_id2, $group_input2);
+
+        //create new itilcategory
+        $cat = new \ITILCategory();
+        $cat_id = $cat->add($cat_input = [
+            "name" => "category",
+        ]);
+        $this->checkInput($cat, $cat_id, $cat_input);
+
+       // Create rule
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test assign group on update',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+       //create criteria to check
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'itilcategories_id',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $cat_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+       //create action to add group as group requester
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'replace',
+            'field'       => '_groups_id_assign',
+            'value'       => $group_id2,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+       // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add($ticket_input = [
+            'name'             => 'when assigning delete groups to add',
+            'content'          => 'test',
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+        //add group1 to ticket
+        $ticketGroup = new \Group_Ticket();
+        $ticketGroup->add([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id1,
+            'type'               => \CommonITILActor::ASSIGN
+        ]);
+
+        //load TicketGroup1 (expected true)
+        $ticketGroup = new \Group_Ticket();
+        $this->boolean(
+            $ticketGroup->getFromDBByCrit([
+                'tickets_id'         => $tickets_id,
+                'groups_id'          => $group_id1,
+                'type'               => \CommonITILActor::ASSIGN
+            ])
+        )->isTrue();
+
+        //update ticket and set cat
+        $ticket->update([
+            'id'                => $tickets_id,
+            'itilcategories_id' => $cat_id,
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+
+       //load TicketGroup1 (expected false)
+        $ticketGroup = new \Group_Ticket();
+        $this->boolean(
+            $ticketGroup->getFromDBByCrit([
+                'tickets_id'         => $tickets_id,
+                'groups_id'          => $group_id1,
+                'type'               => \CommonITILActor::ASSIGN
+            ])
+        )->isFalse();
+
+       //load TicketGroup2 (expected true)
+        $ticketGroup = new \Group_Ticket();
+        $this->boolean(
+            $ticketGroup->getFromDBByCrit([
+                'tickets_id'         => $tickets_id,
+                'groups_id'          => $group_id2,
+                'type'               => \CommonITILActor::ASSIGN
+            ])
+        )->isTrue();
+    }
 }

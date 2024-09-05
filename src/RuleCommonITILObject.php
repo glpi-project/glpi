@@ -194,7 +194,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                                 break;
                         }
                         break;
-
+                    case "replace":
+                        $actions = $this->getActions();
+                        $output[$actions[$action->fields["field"]]["replaceto"]][] = $action->fields["value"];
+                        break;
                     case "assign":
                         $output[$action->fields["field"]] = $action->fields["value"];
 
@@ -757,9 +760,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
 
         $actions['_users_id_requester']['name']                     = _n('Requester', 'Requesters', 1);
         $actions['_users_id_requester']['type']                     = 'dropdown_users';
-        $actions['_users_id_requester']['force_actions']            = ['assign', 'append'];
+        $actions['_users_id_requester']['force_actions']            = ['assign', 'append', 'replace'];
         $actions['_users_id_requester']['permitseveral']            = ['append'];
         $actions['_users_id_requester']['appendto']                 = '_additional_requesters';
+        $actions['_users_id_requester']['replaceto']               = '_replace_users_requesters';
         $actions['_users_id_requester']['appendtoarray']            = ['use_notification' => 1];
         $actions['_users_id_requester']['appendtoarrayfield']       = 'users_id';
 
@@ -767,9 +771,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_requester']['type']                    = 'dropdown';
         $actions['_groups_id_requester']['table']                   = 'glpi_groups';
         $actions['_groups_id_requester']['condition']               = ['is_requester' => 1];
-        $actions['_groups_id_requester']['force_actions']           = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
+        $actions['_groups_id_requester']['force_actions']           = ['assign', 'append', 'replace', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_requester']['permitseveral']           = ['append'];
         $actions['_groups_id_requester']['appendto']                = '_additional_groups_requesters';
+        $actions['_groups_id_requester']['replaceto']               = '_replace_groups_requesters';
 
         $actions['_groups_id_requester_by_completename']['name']              = sprintf(__('%1$s (%2$s)'), _n('Requester group', 'Requester groups', 1), __('by completename'));
         $actions['_groups_id_requester_by_completename']['type']              = 'dropdown';
@@ -781,9 +786,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
 
         $actions['_users_id_assign']['name']                        = __('Technician');
         $actions['_users_id_assign']['type']                        = 'dropdown_assign';
-        $actions['_users_id_assign']['force_actions']                = ['assign', 'append'];
+        $actions['_users_id_assign']['force_actions']                = ['assign', 'append', 'replace'];
         $actions['_users_id_assign']['permitseveral']               = ['append'];
         $actions['_users_id_assign']['appendto']                    = '_additional_assigns';
+        $actions['_users_id_assign']['replaceto']                   = '_replace_users_assigns';
         $actions['_users_id_assign']['appendtoarray']               = ['use_notification' => 1];
         $actions['_users_id_assign']['appendtoarrayfield']          = 'users_id';
 
@@ -791,9 +797,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
         $actions['_groups_id_assign']['condition']                  = ['is_assign' => 1];
-        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result'];
+        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result', 'replace'];
         $actions['_groups_id_assign']['permitseveral']              = ['append'];
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
+        $actions['_groups_id_assign']['replaceto']                  = '_replace_groups_assigns';
 
         $actions['_groups_id_assign_by_completename']['table']                = 'glpi_groups';
         $actions['_groups_id_assign_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), __('Technician group'), __('by completename'));
@@ -806,17 +813,19 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_suppliers_id_assign']['table']                   = 'glpi_suppliers';
         $actions['_suppliers_id_assign']['name']                    = __('Assigned to a supplier');
         $actions['_suppliers_id_assign']['type']                    = 'dropdown';
-        $actions['_suppliers_id_assign']['force_actions']           = ['assign', 'append'];
+        $actions['_suppliers_id_assign']['force_actions']           = ['assign', 'append', 'replace'];
         $actions['_suppliers_id_assign']['permitseveral']           = ['append'];
         $actions['_suppliers_id_assign']['appendto']                = '_additional_suppliers_assigns';
+        $actions['_suppliers_id_assign']['replaceto']               = '_replace_suppliers_assigns';
         $actions['_suppliers_id_assign']['appendtoarray']           = ['use_notification' => 1];
         $actions['_suppliers_id_assign']['appendtoarrayfield']      = 'suppliers_id';
 
         $actions['_users_id_observer']['name']                      = _n('Observer', 'Observers', 1);
         $actions['_users_id_observer']['type']                      = 'dropdown_users';
-        $actions['_users_id_observer']['force_actions']             = ['assign', 'append'];
+        $actions['_users_id_observer']['force_actions']             = ['assign', 'append', 'replace'];
         $actions['_users_id_observer']['permitseveral']             = ['append'];
         $actions['_users_id_observer']['appendto']                  = '_additional_observers';
+        $actions['_users_id_observer']['replaceto']                 = '_replace_users_observers';
         $actions['_users_id_observer']['appendtoarray']             = ['use_notification' => 1];
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
@@ -824,9 +833,11 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
         $actions['_groups_id_observer']['condition']                = ['is_watcher' => 1];
-        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result'];
+        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result', 'replace'];
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
+        $actions['_groups_id_observer']['replaceto']                = '_replace_groups_observers';
+
 
         $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
         $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Watcher group', 'Watcher groups', 1), __('by completename'));
