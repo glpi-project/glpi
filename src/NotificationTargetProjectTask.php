@@ -74,39 +74,38 @@ class NotificationTargetProjectTask extends NotificationTarget
 
     public function addSpecificTargets($data, $options)
     {
-
-       //Look for all targets whose type is Notification::ITEM_USER
+        // Look for all targets whose type is Notification::ITEM_USER
         switch ($data['type']) {
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
-                   //Send to the users in project team
+                    // Send to the users in project team
                     case Notification::TEAM_USER:
                         $this->addTeamUsers();
                         break;
 
-                   //Send to the groups in project team
+                    // Send to the groups in project task team
                     case Notification::TEAM_GROUP:
                         $this->addTeamGroups(0);
                         break;
 
-                   //Send to the groups supervisors in project team
+                    // Send to the groups supervisors in project team
                     case Notification::TEAM_GROUP_SUPERVISOR:
-                        $this->addTeamGroups(1);
+                        $this->addProjectTeamGroups(1);
                         break;
 
-                 //Send to the groups without supervisors in project team
+                    // Send to the groups without supervisors in project team
                     case Notification::TEAM_GROUP_WITHOUT_SUPERVISOR:
-                        $this->addTeamGroups(2);
+                        $this->addProjectTeamGroups(2);
                         break;
 
-                 //Send to the contacts in project team
+                    // Send to the contacts in project team
                     case Notification::TEAM_CONTACT:
-                          $this->addTeamContacts();
+                        $this->addTeamContacts();
                         break;
 
-                  //Send to the suppliers in project team
+                    // Send to the suppliers in project team
                     case Notification::TEAM_SUPPLIER:
-                         $this->addTeamSuppliers();
+                        $this->addTeamSuppliers();
                         break;
                 }
         }
@@ -161,6 +160,32 @@ class NotificationTargetProjectTask extends NotificationTarget
             'WHERE'  => [
                 'itemtype'        => 'Group',
                 'projecttasks_id' => $this->obj->fields['id']
+            ]
+        ]);
+
+        foreach ($iterator as $data) {
+            $this->addForGroup($manager, $data['items_id']);
+        }
+    }
+
+    /**
+     * Add project team groups to the notified user list
+     *
+     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+     *
+     * @return void
+     **/
+    public function addProjectTeamGroups($manager)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => 'items_id',
+            'FROM'   => 'glpi_projectteams',
+            'WHERE'  => [
+                'itemtype'    => 'Group',
+                'projects_id' => $this->obj->fields['projects_id']
             ]
         ]);
 
