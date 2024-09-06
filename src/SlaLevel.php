@@ -68,6 +68,14 @@ class SlaLevel extends LevelAgreementLevel
     }
 
 
+    public function getForbiddenStandardMassiveAction()
+    {
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'clone';
+        return $forbidden;
+    }
+
+
     /**
      * @param $sla SLA object
      *

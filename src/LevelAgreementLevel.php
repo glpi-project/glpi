@@ -203,9 +203,6 @@ abstract class LevelAgreementLevel extends RuleTicket
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
-
-
     public function getActions()
     {
 
