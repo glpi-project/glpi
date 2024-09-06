@@ -67,7 +67,7 @@ final class FormAccessControl extends CommonDBChild
     {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
-            return false;
+            return "";
         }
 
         $form_access_mananger = FormAccessControlManager::getInstance();
