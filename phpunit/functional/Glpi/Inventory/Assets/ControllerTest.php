@@ -212,11 +212,13 @@ class ControllerTest extends AbstractInventoryAsset
             'itemtype'     => 'Computer',
             'devicecontrols_id' => $controller_1_id
         ]);
+        $this->assertGreaterThan(0, $item_controller_1_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
             'name' => 'Samsung Electronics Co Ltd'
         ]);
+        $this->assertGreaterThan(0, $manufacturers_id);
 
         $controller_2_id = $device_control->add([
             'designation' => 'NVMe SSD Controller SM951/PM951',
@@ -252,26 +254,26 @@ class ControllerTest extends AbstractInventoryAsset
             $this->assertEquals(0, $controller['is_dynamic']);
         }
 
-       //computer inventory knows only "Xeon" and "NVMe SSD" controllers
+        //computer inventory knows only "Xeon" and "NVMe SSD" controllers
         $this->doInventory($xml_source, true);
 
-       //we still have 3 controllers
+        //we still have 3 controllers
         $controllers = $device_control->find();
         $this->assertCount(3, $controllers);
 
-       //we still have 3 controllers items linked to the computer
+        //we still have 3 controllers items linked to the computer
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $controllers);
 
-       //controllers present in the inventory source are now dynamic
+        //controllers present in the inventory source are now dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $controllers);
 
-       //controller not present in the inventory is still not dynamic
+        //controller not present in the inventory is still not dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $controllers);
 
-       //Redo inventory, but with removed "NVMe SSD" controller
+        //Redo inventory, but with removed "NVMe SSD" controller
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>

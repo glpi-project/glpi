@@ -342,9 +342,4 @@ class Unmanaged extends MainAsset
         $this->states_id_default = $conf->states_id_default;
         return $conf->import_unmanaged == 1;
     }
-
-    public function getItemtype(): string
-    {
-        return \Unmanaged::class;
-    }
 }

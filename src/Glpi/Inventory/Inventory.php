@@ -37,6 +37,8 @@ namespace Glpi\Inventory;
 
 use Agent;
 use CommonDBTM;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\MainAsset;
 use Lockedfield;
@@ -125,6 +127,8 @@ class Inventory
         }
 
         $converter = new Converter();
+        $converter->setExtraItemtypes($this->getExtraItemtypes());
+
         if (method_exists($this, 'getSchemaExtraProps')) {
             $converter->setExtraProperties($this->getSchemaExtraProps());
         }
@@ -564,8 +568,12 @@ class Inventory
     public function getMainClass()
     {
         $agent = $this->getAgent();
-        $main_class = '\Glpi\Inventory\Asset\\' . $agent->fields['itemtype'];
-        return $main_class;
+        $class_ns = '\Glpi\Inventory\Asset\\';
+        $main_class = $class_ns . $agent->fields['itemtype'];
+        if (class_exists($main_class)) {
+            return $main_class;
+        }
+        return $class_ns . 'GenericAsset';
     }
 
     /**
@@ -698,10 +706,10 @@ class Inventory
             }
 
             if ($assettype !== false) {
-               //handle if asset type has been found.
+                //handle if asset type has been found.
                 $asset = new $assettype($this->item, (array)$value);
+                $asset->setMainAsset($this->mainasset);
                 if ($asset->checkConf($this->conf)) {
-                    $asset->setMainAsset($this->mainasset);
                     $asset->setAgent($this->getAgent());
                     $asset->setExtraData($this->data);
                     $asset->setEntityID($this->mainasset->getEntityID());
@@ -990,5 +998,17 @@ class Inventory
     {
         $this->is_discovery = $disco;
         return $this;
+    }
+
+    protected function getExtraItemtypes(): array
+    {
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        $itemtypes = [];
+        foreach ($definitions as $definition) {
+            if ($definition->hasCapacityEnabled(new IsInventoriableCapacity())) {
+                $itemtypes[] = $definition->getAssetClassName();
+            }
+        }
+        return $itemtypes;
     }
 }

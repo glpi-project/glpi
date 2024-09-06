@@ -51,6 +51,7 @@ abstract class Asset extends CommonDBTM
     use \Glpi\Features\AssignableItem;
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
+    use \Glpi\Features\Inventoriable;
 
     /**
      * Asset definition.

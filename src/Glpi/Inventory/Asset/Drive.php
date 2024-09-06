@@ -124,7 +124,7 @@ class Drive extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_drive == 1;
+        return $conf->component_drive == 1 && parent::checkConf($conf);
     }
 
     /**

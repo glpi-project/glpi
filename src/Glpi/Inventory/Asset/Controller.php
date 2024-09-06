@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Controller extends Device
@@ -95,7 +94,7 @@ class Controller extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_control == 1;
+        return $conf->component_control == 1 && parent::checkConf($conf);
     }
 
     public function getItemtype(): string

@@ -1125,7 +1125,7 @@ class InventoryTest extends InventoryTestCase
 
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
         $this->assertSame('glpixps-2018-07-09-09-07-13', $metadata['deviceid']);

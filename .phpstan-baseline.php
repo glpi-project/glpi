@@ -1964,12 +1964,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
 $ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on CommonDBTM\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset_PeripheralAsset.php',
-];
-$ignoreErrors[] = [
 	// identifier: parameter.notFound
 	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$source_itemtype$#',
 	'count' => 1,

@@ -60,6 +60,7 @@ class NetworkPort extends InventoryAsset
     private $current_connection;
     private $vlan_stmt;
     private $pvlan_stmt;
+    protected Conf $conf;
 
     public function prepare(): array
     {
@@ -909,7 +910,10 @@ class NetworkPort extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $this->conf = $conf;
+        return in_array($this->item::class, $CFG_GLPI['networkport_types']);
     }
 
     public function getPart($part)

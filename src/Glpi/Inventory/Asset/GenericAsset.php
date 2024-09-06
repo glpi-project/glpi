@@ -35,39 +35,26 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
+use PhoneModel;
+use PhoneType;
 
-class SoundCard extends Device
+class GenericAsset extends MainAsset
 {
-    protected $ignored = ['controllers' => null];
-
-    public function prepare(): array
+    protected function getModelsFieldName(): string
     {
-        $mapping = [
-            'name'          => 'designation',
-            'manufacturer'  => 'manufacturers_id',
-            'description'   => 'comment'
-        ];
-        foreach ($this->data as &$val) {
-            foreach ($mapping as $origin => $dest) {
-                if (property_exists($val, $origin)) {
-                    $val->$dest = $val->$origin;
-                }
-            }
-            $val->is_dynamic = 1;
-            $this->ignored['controllers'][$val->name] = $val->name;
-        }
-        return $this->data;
+        /** @var \Glpi\Asset\Asset $item */
+        $item = $this->item;
+        $model_classname = $item->getDefinition()->getAssetModelClassName();
+
+        return getForeignKeyFieldForItemType($model_classname);
     }
 
-    public function checkConf(Conf $conf): bool
+    protected function getTypesFieldName(): string
     {
-        return $conf->component_soundcard == 1 && parent::checkConf($conf);
-    }
+        /** @var \Glpi\Asset\Asset $item */
+        $item = $this->item;
+        $type_classname = $item->getDefinition()->getAssetTypeClassName();
 
-    public function getItemtype(): string
-    {
-        return \Item_DeviceSoundCard::class;
+        return getForeignKeyFieldForItemType($type_classname);
     }
 }

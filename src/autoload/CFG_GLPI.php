@@ -166,7 +166,7 @@ $CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
 ];
 
 // `peripheralhost_types` contains assets that can host peripherals
-// `directconnect_types` contains the list of assets that are considred as peripherals
+// `directconnect_types` contains the list of assets that are considered as peripherals
 $CFG_GLPI["peripheralhost_types"]         = ['Computer'];
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
@@ -314,6 +314,10 @@ $CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
 $CFG_GLPI['itemdevicepci_types']          = ['*'];
+
+$CFG_GLPI['itemdevicecontrol_types']      = ['Computer'];
+
+$CFG_GLPI['itemdevicedrive_types']        = ['Computer'];
 
 $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral', 'Phone'];
 
@@ -633,3 +637,6 @@ $CFG_GLPI['tools_types'] = [
 $CFG_GLPI['admin_types'] = [
     'User', 'Group', 'Entity', 'Profile'
 ];
+
+$CFG_GLPI['process_types'] = ['Computer'];
+$CFG_GLPI['environment_types'] = ['Computer'];

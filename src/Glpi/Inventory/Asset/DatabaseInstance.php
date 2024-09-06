@@ -225,7 +225,9 @@ class DatabaseInstance extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        return in_array($this->item::class, $CFG_GLPI['databaseinstance_types']);
     }
 
     public function getItemtype(): string

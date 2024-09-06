@@ -296,7 +296,7 @@ class NetworkCard extends Device
     public function checkConf(Conf $conf): bool
     {
         $this->conf = $conf;
-        return $conf->component_networkcard == 1;
+        return $conf->component_networkcard == 1 && parent::checkConf($conf);
     }
 
     public function handlePorts($itemtype = null, $items_id = null)

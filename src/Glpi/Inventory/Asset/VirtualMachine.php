@@ -413,8 +413,10 @@ class VirtualMachine extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         $this->conf = $conf;
-        return $conf->import_vm == 1;
+        return $conf->import_vm == 1 && in_array($this->item::class, $CFG_GLPI['itemvirtualmachines_types']);
     }
 
     public function getItemtype(): string
