@@ -297,6 +297,12 @@ class NetworkPort extends InventoryAsset
             $rule->getCollectionPart();
             $rule->processAllRules($input, [], ['class' => $this]);
 
+            // Info: phpstan report dead code here (see baseline).
+            // Indeed, $this->connection_ports is initialized as an empty array above,
+            // and we never add anything into it.
+            // Thus, this condition is always true and the code after is never executed.
+            // TODO: Investigate to see if the dead code should be removed or
+            // if this is a real bug and this condition should not always be true (most likely the case).
             if (count($this->connection_ports) != 1) {
                 continue;
             }
@@ -369,6 +375,13 @@ class NetworkPort extends InventoryAsset
                 $this->handleHub($found_macs, $netports_id);
                 return;
             }
+
+            // Info: phpstan report dead code here (see baseline).
+            // Indeed, $this->connection_ports is initialized as an empty array above,
+            // and we never add anything into it.
+            // Thus, this condition above always true and the code under this comment is never executed.
+            // TODO: Investigate to see if the dead code should be removed or
+            // if this is a real bug and this condition should not always be true (most likely the case).
 
             $item_ids = [];
             $real_port_ids = [];

@@ -381,8 +381,13 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
            // TODO : what is the best way ? recursive or not ?
             $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
-           // Check unicity !
-            if ($sameNetworks && (count($sameNetworks) > 0)) {
+            // Check unicity !
+            if ($sameNetworks && count($sameNetworks) > 0) {
+                // Info: phpstan think $sameNetworks can't be empty for some reason,
+                // and thus warn us that the condition is always true (see baseline).
+                // This is probably a false positive due to some bad phpdoc somewhere,
+                // but I was not able to fint it.
+                // TODO: investigate.
                 return ['error' => __('Network already defined in visible entities'),
                     'input' => false
                 ];

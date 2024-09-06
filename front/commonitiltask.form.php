@@ -158,5 +158,3 @@ if (null == $redirect) {
 } else {
     Html::redirect($redirect);
 }
-
-Html::displayErrorAndDie('Lost');

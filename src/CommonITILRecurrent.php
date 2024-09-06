@@ -239,7 +239,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     return sprintf(_n('%d year', '%d years', $matches[1]), $matches[1]);
                 }
                 return Html::timestampToString($values[$field], false);
-            break;
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);

@@ -520,7 +520,6 @@ class Appliance extends CommonDBTM
                 Appliance::dropdown();
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
         }
         return parent::showMassiveActionsSubForm($ma);
     }

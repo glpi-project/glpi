@@ -358,7 +358,6 @@ class Rack extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         switch (get_class($item)) {
             case DCRoom::class:
                 $nb = 0;
@@ -376,7 +375,6 @@ class Rack extends CommonDBTM
                     $nb,
                     $item::getType()
                 );
-             break;
         }
         return '';
     }

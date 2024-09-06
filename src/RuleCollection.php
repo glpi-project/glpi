@@ -297,7 +297,7 @@ class RuleCollection extends CommonDBTM
     }
 
     /**
-     * @return class-string<Rule>
+     * @return class-string<Rule>|string class-string if valid; else empty string
      */
     public function getRuleClassName()
     {

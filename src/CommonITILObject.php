@@ -4169,7 +4169,6 @@ abstract class CommonITILObject extends CommonDBTM
                 echo "<br><br>";
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            return true;
         }
         return parent::showMassiveActionsSubForm($ma);
     }
@@ -9592,7 +9591,6 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
             default:
                 throw new \RuntimeException('Unexpected actor type.');
-                break;
         }
         return $actor;
     }

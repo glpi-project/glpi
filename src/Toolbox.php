@@ -1566,27 +1566,26 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "reservation":
                                 Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             default:
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-                                break;
                         }
+                        // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;
 
                     case "central":
                         switch (strtolower($data[0])) {
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                break;
 
                            // Use for compatibility with old name
                            // no break
@@ -1627,8 +1626,8 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                                break;
                         }
+                        // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;
                 }
             }

@@ -1488,7 +1488,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     static::dropdownAllDevices($name, 0, 0);
                     return ' ';
                 }
-                break;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }

@@ -568,8 +568,6 @@ class RuleAction extends CommonDBChild
                             } else {
                                 return Ticket::dropdownStatus($param);
                             }
-                            $display = true;
-                            break;
 
                         case "yesonly":
                             Dropdown::showYesNo("value", $param['value'], 0);

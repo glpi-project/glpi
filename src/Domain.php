@@ -473,7 +473,6 @@ class Domain extends CommonDBTM
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
             case "uninstall":
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name' => 'item_item',
@@ -483,7 +482,6 @@ class Domain extends CommonDBTM
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
             case "duplicate":
                 Dropdown::show('Entity');
                 break;
@@ -605,7 +603,6 @@ class Domain extends CommonDBTM
                 return [
                     'description' => __('Expired or expiring domains')
                 ];
-            break;
         }
         return [];
     }

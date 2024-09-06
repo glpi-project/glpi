@@ -500,10 +500,7 @@ TWIG, $twig_params);
         } else if ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
-            if ($extratype !== '') {
-                throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
-            }
-            $classname = 'Notification' . ucfirst($mode);
+            throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
         }
         $conf = self::getMode($mode);
         if ($conf['from'] !== 'core') {

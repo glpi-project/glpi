@@ -320,7 +320,6 @@ class Notification extends CommonDBTM implements FilterableInterface
                         'value'               => $values[$field],
                     ]
                 );
-             break;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }

@@ -175,18 +175,14 @@ abstract class AbstractRequest
             case self::INVENT_QUERY:
             case self::INVENT_ACTION:
                 return __("Inventory");
-                break;
             case self::OLD_SNMP_QUERY:
             case self::SNMP_QUERY:
             case self::NETINV_ACTION:
                 return __("Network inventory (SNMP)");
-                break;
             case self::NETDISCOVERY_ACTION:
                 return __("Network discovery (SNMP)");
-                break;
             default:
                 return $internalModule ?? '';
-                break;
         }
     }
 

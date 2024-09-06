@@ -1302,7 +1302,6 @@ TWIG);
 
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
             case 'unlock_fields':
                 $related_itemtype = $ma->getItemtype(false);
                 $lockedfield = new Lockedfield();
@@ -1320,7 +1319,6 @@ TWIG);
                 );
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
         }
         return false;
     }

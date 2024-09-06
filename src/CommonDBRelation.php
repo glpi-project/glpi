@@ -1806,6 +1806,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 return;
         }
 
+        // @phpstan-ignore deadCode.unreachable (defensive programming)
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
