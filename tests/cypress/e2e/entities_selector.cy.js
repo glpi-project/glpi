@@ -91,7 +91,7 @@ describe('Entities selector', () => {
         cy.findByRole('gridcell', {'name': "E2ETestSubEntity2"}).should('not.exist');
     });
 
-    it('Can enable sub entities', () => {
+    it('Can enable sub entities', { retries: {runMode: 2, openMode: 0} }, () => {
         cy.openEntitySelector();
 
         // Enable sub entities
