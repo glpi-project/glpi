@@ -35,8 +35,10 @@
 namespace Glpi\Controller\Form\Import;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -56,10 +58,12 @@ final class Step2PreviewController extends AbstractController
         $json = $file->getContent();
 
         $serializer = new FormSerializer();
+        $mapper = new DatabaseMapper(Session::getActiveEntities());
+
         return $this->render("pages/admin/form/import/step2_preview.html.twig", [
             'title'   => __("Preview import"),
             'menu'    => ['admin', Form::getType()],
-            'preview' => $serializer->previewImport($json),
+            'preview' => $serializer->previewImport($json, $mapper),
             'json'    => $json,
         ]);
     }

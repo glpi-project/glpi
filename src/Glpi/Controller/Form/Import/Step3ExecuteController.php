@@ -35,8 +35,10 @@
 namespace Glpi\Controller\Form\Import;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -55,10 +57,12 @@ final class Step3ExecuteController extends AbstractController
         $json = $request->request->get('json');
 
         $serializer = new FormSerializer();
+        $mapper = new DatabaseMapper(Session::getActiveEntities());
+
         return $this->render("pages/admin/form/import/step3_execute.html.twig", [
             'title'   => __("Import results"),
             'menu'    => ['admin', Form::getType()],
-            'results' => $serializer->importFormsFromJson($json),
+            'results' => $serializer->importFormsFromJson($json, $mapper),
         ]);
     }
 }
