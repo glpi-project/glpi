@@ -52,7 +52,7 @@ final class RendererController extends AbstractController
 {
     #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
     #[Route(
-        "/form/render/{id}",
+        "/Form/Render/{id}",
         name: "glpi_form_render",
         methods: "GET",
         requirements: ['id' => '\d+'],
