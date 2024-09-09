@@ -57,7 +57,7 @@ final class SubmitAnswerController extends AbstractController
 {
     #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
     #[Route(
-        "/form/submit-answers",
+        "/Form/SubmitAnswers",
         name: "glpi_form_submit_answers",
         methods: "POST"
     )]
