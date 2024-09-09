@@ -4339,6 +4339,10 @@ JAVASCRIPT;
                     default:
                         break;
                 }
+                // Check category / entity validity
+                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
+                    $options['itilcategories_id'] = 0;
+                }
             }
         }
 
