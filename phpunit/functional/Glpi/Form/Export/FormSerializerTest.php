@@ -83,7 +83,6 @@ final class FormSerializerTest extends \DbTestCase
 
         // Assert: filename should reference the number of forms
         $this->assertEquals("export-of-7-forms.json", $result->getFileName());
-
     }
 
     // Minimal form import to be sure there are no failure when most properties are null or empty.
@@ -227,8 +226,8 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
 
         // Act: export the form and preview the import
-        $json = self::$serializer->exportFormsToJson([$form]);
-        $preview = self::$serializer->previewImport($json);
+        $results = self::$serializer->exportFormsToJson([$form]);
+        $preview = self::$serializer->previewImport($results->getJsonContent());
 
         // Assert: the form should be valid
         $this->assertEquals([$form->fields['name']], $preview->getValidForms());
