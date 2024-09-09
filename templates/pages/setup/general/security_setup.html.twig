@@ -59,35 +59,35 @@
 
       {{ fields.numberField(
          'password_min_length',
-         config('password_min_length'),
+         config['password_min_length'],
          __('Password minimum length'),
          inline_field_options|merge({'min': 4})
       ) }}
 
       {{ fields.sliderField(
          'password_need_number',
-         config('password_need_number'),
+         config['password_need_number'],
          __('Password need digit'),
          inline_field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_letter',
-         config('password_need_letter'),
+         config['password_need_letter'],
          __('Password need lowercase character'),
          inline_field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_caps',
-         config('password_need_caps'),
+         config['password_need_caps'],
          __('Password need uppercase character'),
          inline_field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_symbol',
-         config('password_need_symbol'),
+         config['password_need_symbol'],
          __('Password need symbol'),
          inline_field_options
       ) }}
@@ -97,7 +97,7 @@
 
    {{ fields.dropdownNumberField(
       'password_expiration_delay',
-      config('password_expiration_delay'),
+      config['password_expiration_delay'],
       __('Password expiration delay (in days)'),
       inline_field_options|merge({
          'min': 15,
@@ -110,7 +110,7 @@
 
    {{ fields.dropdownNumberField(
       'password_expiration_notice',
-      config('password_expiration_notice'),
+      config['password_expiration_notice'],
       __('Password expiration notice time (in days)'),
       inline_field_options|merge({
          'min': 0,
@@ -123,7 +123,7 @@
 
    {{ fields.dropdownNumberField(
       'password_expiration_lock_delay',
-      config('password_expiration_lock_delay'),
+      config['password_expiration_lock_delay'],
       __('Delay before account deactivation (in days)'),
       inline_field_options|merge({
          'min': 0,
@@ -136,7 +136,7 @@
 
    {{ fields.dropdownTimestampField(
       'password_init_token_delay',
-      config('password_init_token_delay'),
+      config['password_init_token_delay'],
       __('Validity period of the password initialization token'),
       inline_field_options|merge({
          'min': constant('DAY_TIMESTAMP'),
@@ -148,7 +148,7 @@
 
    {{ fields.dropdownArrayField(
       'non_reusable_passwords_count',
-      config('non_reusable_passwords_count'),
+      config['non_reusable_passwords_count'],
       {
          '1': __('Last password'),
          '2': __('Last 2 passwords'),
@@ -174,7 +174,7 @@
    {% if config['2fa_enforced'] %}
       {{ fields.numberField(
          '2fa_grace_days',
-         config('2fa_grace_days'),
+         config['2fa_grace_days'],
          __('2FA grace period (in days)'),
          inline_field_options|merge({
             'min': 0,
