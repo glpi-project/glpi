@@ -38,17 +38,26 @@ describe ('Export forms', () => {
     });
 
     it('Export single form', () => {
+        cy.intercept('/Form/Export?*').as('download_request');
+
         cy.createFormWithAPI({
             'name': "My form",
         }).visitFormTab('Form');
         cy.findByRole('button', { 'name': "Actions" }).click();
         cy.findByRole('button', { 'name': "Export form" }).click();
-        cy.readFile("cypress/downloads/my-form.json").then((json) => {
-            cy.wrap(json.forms).should('have.length', 1);
+
+        cy.wait('@download_request').then((res) => {
+            // The filename is dynamic, we must read it from the reponse's headers
+            const filename = res.response.headers['content-disposition'].split('filename=')[1];
+            cy.readFile(`cypress/downloads/${filename}`).then((json) => {
+                cy.wrap(json.forms).should('have.length', 1);
+            });
         });
     });
 
     it('Export multiple form', () => {
+        cy.intercept('/Form/Export?*').as('download_request');
+
         cy.createFormWithAPI();
         cy.createFormWithAPI();
         cy.createFormWithAPI();
@@ -60,8 +69,13 @@ describe ('Export forms', () => {
         cy.get('@checkboxes').eq(2).check();
         cy.findByRole('button', { 'name': "Actions" }).click();
         cy.getDropdownByLabelText('Action').selectDropdownValue('Export form');
-        cy.readFile("cypress/downloads/export-of-3-forms.json").then((json) => {
-            cy.wrap(json.forms).should('have.length', 3);
+
+        cy.wait('@download_request').then((res) => {
+            // The filename is dynamic, we must read it from the reponse's headers
+            const filename = res.response.headers['content-disposition'].split('filename=')[1];
+            cy.readFile(`cypress/downloads/${filename}`).then((json) => {
+                cy.wrap(json.forms).should('have.length', 3);
+            });
         });
     });
 });

@@ -46,6 +46,7 @@ use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Section;
 use RuntimeException;
+use Session;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -108,15 +109,24 @@ final class FormSerializer extends AbstractFormSerializer
     /** @param array<Form> $forms */
     private function computeJsonFileName(array $forms): string
     {
+        $date = Session::getCurrentDate();
+
         if (count($forms) === 1) {
             $form = current($forms);
-            $filename = $form->fields['name'];
+            $formatted_name = \Toolbox::slugify($form->fields['name']);
+            $filename = "$formatted_name-$date";
         } else {
+            // When exporting multiple forms, we compute an additionnal checksum
+            // to make sure two different exports with the same number of forms
+            // have a different file name.
+            $ids = array_map(fn (Form $form) => $form->getID(), $forms);
+            $checksum = crc32(json_encode($ids));
+
             $nb = count($forms);
-            $filename = "export-of-$nb-forms";
+            $filename = "export-of-$nb-forms-$date-$checksum";
         }
 
-        return \Toolbox::slugify($filename) . ".json";
+        return $filename . ".json";
     }
 
     private function exportFormToSpec(Form $form): FormContentSpecification
