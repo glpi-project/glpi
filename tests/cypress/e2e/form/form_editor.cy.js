@@ -586,4 +586,68 @@ describe ('Form editor', () => {
             .should('have.length', 1) // First question
         ;
     });
+
+    it('can duplicate a question and change its type', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Create a question
+        cy.addQuestion("My question");
+
+        // Set all general questions properties
+        // Type specific properties should have their own tests
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('not.be.checked')
+                .check()
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("My question description")
+            ;
+        });
+
+        // Duplicate question
+        cy.findByRole('button', {'name': "Duplicate question"}).click();
+
+        // Change question type
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Validate values
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+            // Focus question to display hiden actions
+            cy.findByRole('textbox', {'name': 'Question name'}).click();
+
+            cy.findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', "My question")
+            ;
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('be.checked')
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .should('have.text', "My question description")
+            ;
+            cy.getDropdownByLabelText("Question type").should('have.text', 'Short answer');
+        });
+
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+            // Focus question to display hiden actions
+            cy.findByRole('textbox', {'name': 'Question name'}).click();
+
+            cy.findByRole('textbox', {'name': 'Question name'})
+                .should('have.value', "My question")
+            ;
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('be.checked')
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .should('have.text', "My question description")
+            ;
+            cy.getDropdownByLabelText("Question type").should('have.text', 'Date and time');
+        });
+    });
 });

@@ -83,6 +83,14 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                             new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                         }
                     });
+
+                    $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
+                        const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
+                        if (question_type === '{{ question_type|escape('js') }}') {
+                            const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
+                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                        }
+                    });
                 {% endif %}
             });
 TWIG;
@@ -220,7 +228,7 @@ TWIG;
                 <input
                     data-glpi-form-editor-specific-question-extra-data
                     type="text"
-                    class="w-full"
+                    class="flex-grow-1"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"

@@ -520,6 +520,9 @@ export class GlpiFormEditorController
             } else if (type === "comment") {
                 // The input is for a comment block
                 base_input_index = `_comments[${item_index}]`;
+            } else if (type === "temp") {
+                // We need to format the input name temporarily
+                base_input_index = `_temp[${item_index}]`;
             } else {
                 throw new Error(`Unknown item type: ${type}`);
             }
@@ -854,12 +857,18 @@ export class GlpiFormEditorController
     /**
      * Copy the given template into the given destination.
      *
-     * @param {jQuery} target         Template to copy
-     * @param {jQuery} destination    Destination to copy the template into
-     * @param {string} action         How to insert the template (append, prepend, after)
+     * @param {jQuery} target                    Template to copy
+     * @param {jQuery} destination               Destination to copy the template into
+     * @param {string} action                    How to insert the template (append, prepend, after)
+     * @param {boolean} is_from_duplicate_action Is this target is from a question to duplicate
      * @returns {jQuery} Copy of the template
      */
-    #copy_template(target, destination, action = "append") {
+    #copy_template(
+        target,
+        destination,
+        action = "append",
+        is_from_duplicate_action = false
+    ) {
         const copy = target.clone();
 
         // Keep track of rich text editors that will need to be initialized
@@ -895,13 +904,25 @@ export class GlpiFormEditorController
 
         // Look for select2 to init
         copy.find("select").each(function() {
-            let id = $(this).attr("id");
-            const config = window.select2_configs[id];
+            if (is_from_duplicate_action) {
+                // Remove select2 class
+                $(this).removeClass("select2-hidden-accessible");
+
+                // Remove data-select2-id
+                $(this).removeAttr("data-select2-id");
+
+                // Remove old select2 container
+                $(this).next(".select2-container").remove();
+            }
+
+            let id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+            const config = { ...window.select2_configs[id] };
 
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
                 $(this).attr("id", uid);
+                $(this).attr("data-glpi-form-editor-original-id", id);
 
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
@@ -914,6 +935,15 @@ export class GlpiFormEditorController
                 }
             }
         });
+
+        if (is_from_duplicate_action) {
+            // We need to temporarily format the inputs names to avoid conflicts with source question
+            this.#formatInputsNames(
+                copy,
+                "temp",
+                getUUID()
+            );
+        }
 
         // Insert the new question
         switch (action) {
@@ -956,6 +986,11 @@ export class GlpiFormEditorController
         [...popover_trigger_list].map(
             popover_trigger_el => new bootstrap.Popover(popover_trigger_el)
         );
+
+        if (is_from_duplicate_action) {
+            // Compute state to update inputs names
+            this.computeState();
+        }
 
         return copy;
     }
@@ -1615,11 +1650,13 @@ export class GlpiFormEditorController
     #duplicateQuestion(question) {
         // TinyMCE must be disabled before we can duplicate the question DOM
         const ids = this.#disableTinyMce(question);
-        const new_question = this.#copy_template(question, question, "after");
+        const new_question = this.#copy_template(question, question, "after", true);
         this.#enableTinyMce(ids);
 
         this.#setItemInput(new_question, "id", 0);
         this.#setActiveItem(new_question);
+
+        $(document).trigger('glpi-form-editor-question-duplicated', [question, new_question]);
     }
 
     /**
