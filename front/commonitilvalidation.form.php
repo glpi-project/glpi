@@ -68,7 +68,6 @@ if (isset($_POST["add"])) {
 
     if (!isset($_POST['items_id_target'])) {
         Html::back();
-        return;
     }
     if (!is_array($_POST['items_id_target'])) {
         $_POST['items_id_target'] = [$_POST['items_id_target']];

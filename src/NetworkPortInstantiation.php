@@ -464,7 +464,6 @@ TWIG, $twig_params);
 
             default:
                 throw new \RuntimeException(sprintf('Unexpected origin `%s`.', $origin));
-                break;
         }
 
         if (isset($this->fields[$field_name])) {

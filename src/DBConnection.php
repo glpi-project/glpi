@@ -873,7 +873,6 @@ class DBConnection extends CommonDBTM
                 break;
             default:
                 throw new \Exception(sprintf('Charset "%s" is not supported.', $charset));
-            break;
         }
     }
 

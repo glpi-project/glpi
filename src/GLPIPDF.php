@@ -147,11 +147,10 @@ class GLPIPDF extends TCPDF
         // only available inside the function scope, and will so not affect other elements from loop.
         // Also, varibales declared in font file will be automatically garbage collected (some are huge).
         $include_fct = function ($font_path) use (&$list) {
-            $name = null;
-            $type = null;
-
             include $font_path;
 
+            $name = $name ?? null;
+            $type = $type ?? null;
             if ($name === null) {
                 return; // Not a font file
             }

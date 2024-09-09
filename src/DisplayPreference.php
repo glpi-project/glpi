@@ -85,7 +85,6 @@ class DisplayPreference extends CommonDBTM
                 echo '<div class="alert alert-info">' . $msg . '<br>' . $msg2 . '</div>';
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-                break;
         }
         return parent::showMassiveActionsSubForm($ma);
     }

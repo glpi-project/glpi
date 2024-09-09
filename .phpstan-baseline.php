@@ -74,18 +74,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitiltask.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanOr.alwaysFalse
 	'message' => '#^Result of \\|\\| is always false\\.$#',
 	'count' => 1,
@@ -128,40 +116,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/inventory.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itilfollowup.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/massiveaction.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.notFound
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/front/rule.backup.php',
-];
-$ignoreErrors[] = [
 	// identifier: match.unhandled
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.graph.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ticket.form.php',
 ];
 $ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
@@ -191,12 +155,6 @@ $ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
 	'count' => 2,
-	'path' => __DIR__ . '/install/install.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
 	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
@@ -384,12 +342,6 @@ $ignoreErrors[] = [
 	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ajax.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance.php',
 ];
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
@@ -602,12 +554,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Certificate.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanAnd.leftAlwaysTrue
 	'message' => '#^Left side of && is always true\\.$#',
 	'count' => 1,
@@ -668,12 +614,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBConnexity.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method CommonDBRelation\\:\\:processMassiveActionsForOneItemtype\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -682,12 +622,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: isset.property
 	'message' => '#^Property CommonDBRelation\\:\\:\\$_force_log_option \\(int\\) in isset\\(\\) is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
@@ -920,22 +854,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	// identifier: staticMethod.notFound
 	'message' => '#^Call to an undefined static method CommonDBRelation\\:\\:getLinkedTo\\(\\)\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
 	// identifier: function.impossibleType
@@ -1196,12 +1118,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
@@ -1448,12 +1364,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between string and Glpi\\\\DBAL\\\\QueryExpression will always evaluate to false\\.$#',
 	'count' => 1,
@@ -1505,12 +1415,6 @@ $ignoreErrors[] = [
 	// identifier: booleanAnd.rightAlwaysFalse
 	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 4,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
@@ -1634,12 +1538,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DisplayPreference.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DisplayPreference.php',
-];
-$ignoreErrors[] = [
 	// identifier: function.impossibleType
 	'message' => '#^Call to function is_string\\(\\) with CommonDBTM\\|null will always evaluate to false\\.$#',
 	'count' => 1,
@@ -1691,12 +1589,6 @@ $ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Domain\\:\\:dropdownDomains\\(\\) with return type void returns int\\|string but should not return anything\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Domain.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Domain.php',
 ];
 $ignoreErrors[] = [
@@ -1880,12 +1772,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIMailer.php',
-];
-$ignoreErrors[] = [
 	// identifier: cast.string
 	'message' => '#^Cannot cast array\\<int, string\\>\\|null to string\\.$#',
 	'count' => 1,
@@ -1896,12 +1782,6 @@ $ignoreErrors[] = [
 	'message' => '#^Expression in empty\\(\\) is always falsy\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIPDF.php',
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
@@ -1937,12 +1817,6 @@ $ignoreErrors[] = [
 	// identifier: assign.propertyType
 	'message' => '#^Property Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:\\$response \\(DOMDocument\\) does not accept array\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
@@ -2342,12 +2216,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
 	// identifier: property.notFound
 	'message' => '#^Access to an undefined property Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:\\$fields\\.$#',
 	'count' => 5,
@@ -2434,12 +2302,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.empty
 	'message' => '#^Method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:getPrincipalByPath\\(\\) should return array but empty return statement found\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
@@ -2704,12 +2566,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.phpDocType
 	'message' => '#^PHPDoc tag @return with type int is incompatible with native type array\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
 ];
@@ -3308,12 +3164,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	// identifier: staticMethod.notFound
 	'message' => '#^Call to an undefined static method CommonGLPI\\:\\:showBrowseView\\(\\)\\.$#',
 	'count' => 1,
@@ -3365,12 +3215,6 @@ $ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Glpi\\\\Socket\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Socket.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Socket.php',
 ];
 $ignoreErrors[] = [
@@ -3512,12 +3356,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	// identifier: ternary.elseUnreachable
 	'message' => '#^Else branch is unreachable because ternary operator condition is always true\\.$#',
 	'count' => 1,
@@ -3536,14 +3374,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method IPNetmask\\:\\:setNetmaskFromString\\(\\) should return false but returns true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetmask.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
+	// identifier: greater.alwaysTrue
+	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
@@ -3574,18 +3406,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: assign.propertyType
 	'message' => '#^Property IPNetwork\\:\\:\\$networkUpdate \\(bool\\) does not accept null\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanOr.rightAlwaysFalse
-	'message' => '#^Right side of \\|\\| is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
@@ -3758,12 +3578,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.notFound
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
 	'count' => 1,
@@ -3850,12 +3664,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method KnowbaseItem_Item\\:\\:dropdownAllTypes\\(\\) should return string but returns int\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
 ];
@@ -3962,12 +3770,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysTrue
 	'message' => '#^If condition is always true\\.$#',
 	'count' => 1,
@@ -4052,12 +3854,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ManualLink.php',
-];
-$ignoreErrors[] = [
 	// identifier: else.unreachable
 	'message' => '#^Else branch is unreachable because previous condition is always true\\.$#',
 	'count' => 1,
@@ -4078,12 +3874,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.property
 	'message' => '#^Property MassiveAction\\:\\:\\$remainings \\(array\\) on left side of \\?\\? is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
@@ -4208,12 +3998,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
-];
-$ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
 	'message' => '#^Strict comparison using \\=\\=\\= between mixed and \'NetworkEquipment\' will always evaluate to false\\.$#',
 	'count' => 1,
@@ -4224,12 +4008,6 @@ $ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notepad.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification.php',
 ];
 $ignoreErrors[] = [
 	// identifier: if.alwaysTrue
@@ -4280,24 +4058,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplateTranslation.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#2 \\$extratype \\(\'\'\\) of method Notification_NotificationTemplate\\:\\:getModeClass\\(\\) is incompatible with type \'event\'\\|\'setting\'\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	// identifier: else.unreachable
-	'message' => '#^Else branch is unreachable because previous condition is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Notification_NotificationTemplate\\:\\:getName\\(\\) should return string but returns int\\.$#',
 	'count' => 1,
@@ -4312,18 +4072,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Notification_NotificationTemplate\\:\\:showForNotificationTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	// identifier: phpDoc.parseError
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$extratype \\=\\=\\= \'event\' \\? class\\-string\\<NotificationEventInterface\\> \\: class\\-string\\<NotificationSetting\\>\\)\\: Unexpected token "\\$extratype", expected type at offset 235$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
@@ -4712,12 +4460,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 11,
-	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
@@ -5008,12 +4750,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: booleanAnd.rightAlwaysTrue
 	'message' => '#^Right side of && is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rack.php',
 ];
@@ -5324,32 +5060,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleAction.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method RuleCollection\\:\\:exportRulesToXML\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method RuleCollection\\:\\:getRuleClassName\\(\\) should return class\\-string\\<Rule\\> but returns string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	// identifier: isset.offset
 	'message' => '#^Offset \'entity\' on array\\{0\\?\\: array\\{entity\\: mixed\\}, criteria\\?\\: non\\-empty\\-array\\<int\\<0, max\\>, array\\{id\\: mixed, name\\: mixed, label\\: string, pattern\\: mixed\\}\\>, actions\\?\\: non\\-empty\\-array\\<int\\<0, max\\>, array\\{id\\: mixed, name\\: mixed, label\\: string, value\\: mixed\\}\\>\\}&non\\-empty\\-array in isset\\(\\) does not exist\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
@@ -5408,12 +5126,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleRight.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SNMPCredential.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method SavedSearch\\:\\:croncountAll\\(\\) with return type void returns int but should not return anything\\.$#',
 	'count' => 1,
@@ -5422,12 +5134,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: method.childReturnType
 	'message' => '#^Return type \\(void\\) of method SavedSearch\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
@@ -5442,12 +5148,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_User.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
@@ -5732,12 +5432,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'count' => 1,
@@ -5754,18 +5448,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property Update\\:\\:\\$dbversion is never read, only written\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Update.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Update.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 18,
-	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
@@ -5789,12 +5471,6 @@ $ignoreErrors[] = [
 	// identifier: booleanAnd.rightAlwaysFalse
 	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 2,
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
@@ -5872,12 +5548,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
 	'message' => '#^Strict comparison using \\=\\=\\= between \\(int\\|string\\) and null will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];

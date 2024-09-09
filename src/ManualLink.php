@@ -202,7 +202,6 @@ class ManualLink extends CommonDBChild
         switch ($field) {
             case '_virtual':
                 return self::getLinkHtml($values);
-            break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

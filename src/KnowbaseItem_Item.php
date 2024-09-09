@@ -335,7 +335,6 @@ class KnowbaseItem_Item extends CommonDBRelation
                     }
                 }
                 return ' ';
-            break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

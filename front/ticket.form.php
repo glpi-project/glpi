@@ -264,7 +264,6 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 } else {
     if (Session::getCurrentInterface() != 'central') {
         Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
-        die;
     }
 
     unset($_REQUEST['id']);

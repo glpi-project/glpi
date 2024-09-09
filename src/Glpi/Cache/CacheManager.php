@@ -272,7 +272,6 @@ class CacheManager
 
                 default:
                     throw new \RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
-                    break;
             }
         }
 

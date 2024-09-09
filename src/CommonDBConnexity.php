@@ -696,6 +696,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 return true;
         }
 
+        // @phpstan-ignore deadCode.unreachable (defensive programming)
         return parent::showMassiveActionsSubForm($ma);
     }
 
@@ -864,6 +865,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 return;
         }
 
+        // @phpstan-ignore deadCode.unreachable (defensive programming)
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }

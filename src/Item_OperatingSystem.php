@@ -62,7 +62,6 @@ class Item_OperatingSystem extends CommonDBRelation
                 }
                 return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
-        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

@@ -6725,8 +6725,6 @@ JAVASCRIPT;
             case Entity::ANONYMIZE_USE_NICKNAME_USER:
                 return $this->fields['nickname'];
         }
-
-        return null;
     }
 
     /**
@@ -6757,8 +6755,6 @@ JAVASCRIPT;
 
                 return $user->fields['nickname'] ?? '';
         }
-
-        return null;
     }
 
     /**

@@ -488,10 +488,9 @@ TWIG, $twig_params);
      * Get class name for specified mode
      *
      * @param string $mode      Requested mode
-     * @param 'event'|'setting' $extratype Extra type (either 'event' or 'setting')
+     * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return string
-     * @phpstan-return $extratype === 'event' ? class-string<NotificationEventInterface> : class-string<NotificationSetting>
      */
     public static function getModeClass($mode, $extratype = '')
     {
@@ -500,6 +499,7 @@ TWIG, $twig_params);
         } else if ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
+            // @phpstan-ignore notIdentical.alwaysFalse (defensive programming)
             if ($extratype !== '') {
                 throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }

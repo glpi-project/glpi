@@ -536,7 +536,6 @@ function checkConfigFile()
     }
 
     Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
-    die();
 }
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {

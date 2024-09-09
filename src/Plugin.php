@@ -1971,31 +1971,26 @@ class Plugin extends CommonDBTM
                     __('This plugin requires PHP extension %1$s'),
                     $name
                 );
-             break;
             case 'plugin':
                 return sprintf(
                     __('This plugin requires %1$s plugin'),
                     $name
                 );
-             break;
             case 'compil':
                 return sprintf(
                     __('This plugin requires PHP compiled along with "%1$s"'),
                     $name
                 );
-             break;
             case 'param':
                 return sprintf(
                     __('This plugin requires PHP parameter %1$s'),
                     $name
                 );
-             break;
             case 'glpiparam':
                 return sprintf(
                     __('This plugin requires GLPI parameter %1$s'),
                     $name
                 );
-             break;
             default:
                 throw new \RuntimeException("messageMissing type $type is unknown!");
         }
@@ -2648,12 +2643,10 @@ TWIG;
                 }
 
                 return "<div style='text-align:right'>$output</div>";
-            break;
             case 'state':
                 $plugin = new self();
                 $state = $plugin->isLoadable($values['directory']) ? $values[$field] : self::TOBECLEANED;
                 return self::getState($state);
-            break;
             case 'homepage':
                 $value = Toolbox::formatOutputWebLink($values[$field]);
                 if (!empty($value)) {
@@ -2663,7 +2656,6 @@ TWIG;
                   </a>";
                 }
                 return "&nbsp;";
-            break;
             case 'name':
                 $value = Toolbox::stripTags($values[$field]);
                 $state = $values['state'];
@@ -2679,12 +2671,10 @@ TWIG;
                 } else {
                     return $value;
                 }
-                break;
             case 'author':
             case 'license':
             case 'version':
                 return $value = Toolbox::stripTags($values[$field]);
-            break;
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -2711,7 +2701,6 @@ TWIG;
                 ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
-            break;
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);

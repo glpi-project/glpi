@@ -202,7 +202,6 @@ class Update
 
         if (version_compare($current_version, '0.85.5', 'lt')) {
             die('Upgrade from version < 0.85.5 is not supported!');
-            die(1);
         }
 
         $DB = $this->DB;

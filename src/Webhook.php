@@ -496,42 +496,38 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
         $data = $api_data;
-        if ($data !== null) {
-            $data['item'] = $api_data;
-            $data['event'] = $event;
-            $this->addParentItemData($data, $itemtype, $items_id);
-            if ($raw_output) {
-                return json_encode($data, JSON_PRETTY_PRINT);
-            } else {
-                $payload_template = isset($this->fields['payload']) ? $this->fields['payload'] : null;
-                if ($this->fields['use_default_payload'] === 1) {
-                    $payload_template = null;
-                }
-                if (!empty($payload_template)) {
-                    $fn_desanitize = static function ($value) use (&$fn_desanitize) {
-                        if (is_array($value)) {
-                            foreach ($value as $k => $v) {
-                                $value[$k] = $fn_desanitize($v);
-                            }
-                        } else if (is_string($value)) {
-                            // slash double quotes
-                            $value = str_replace('"', '\\"', $value);
+        $data['item'] = $api_data;
+        $data['event'] = $event;
+        $this->addParentItemData($data, $itemtype, $items_id);
+        if ($raw_output) {
+            return json_encode($data, JSON_PRETTY_PRINT);
+        } else {
+            $payload_template = isset($this->fields['payload']) ? $this->fields['payload'] : null;
+            if ($this->fields['use_default_payload'] === 1) {
+                $payload_template = null;
+            }
+            if (!empty($payload_template)) {
+                $fn_desanitize = static function ($value) use (&$fn_desanitize) {
+                    if (is_array($value)) {
+                        foreach ($value as $k => $v) {
+                            $value[$k] = $fn_desanitize($v);
                         }
-                        return $value;
-                    };
-                    $data = $fn_desanitize($data);
-                    try {
-                        return TemplateManager::render($payload_template, $data, false, [new \Twig\Extra\Markdown\MarkdownExtension()]);
-                    } catch (Throwable $e) {
-                        return null;
+                    } else if (is_string($value)) {
+                        // slash double quotes
+                        $value = str_replace('"', '\\"', $value);
                     }
-                } else {
-                    return json_encode($data, JSON_PRETTY_PRINT);
+                    return $value;
+                };
+                $data = $fn_desanitize($data);
+                try {
+                    return TemplateManager::render($payload_template, $data, false, [new \Twig\Extra\Markdown\MarkdownExtension()]);
+                } catch (Throwable $e) {
+                    return null;
                 }
+            } else {
+                return json_encode($data, JSON_PRETTY_PRINT);
             }
         }
-        // An error occurred, so return nothing.
-        return null;
     }
 
     /**

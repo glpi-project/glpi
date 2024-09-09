@@ -84,13 +84,12 @@ switch ($action) {
         echo "<a href='" . htmlspecialchars($itemtype::getSearchURL()) . "'>" . __s('Back') . "</a>";
         echo "</div>";
         Html::redirect("rule.backup.php?action=export&itemtype=" . urlencode($_REQUEST['itemtype']));
-        break; // Even though the redirect call exits the script, phpcs still thinks there is a missing break
-
+        // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
     case "process_import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::processImportRules();
         Html::back();
-        break; // Even though the redirect call exits the script, phpcs still thinks there is a missing break
+        // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 }
 if ($action !== "export") {
     Html::footer();

@@ -288,8 +288,6 @@ TWIG;
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $is_multiple_actors
         ]);
-
-        return '';
     }
 
     #[Override]

@@ -6657,8 +6657,6 @@ CSS;
 
             return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         }
-
-        return "";
     }
 
     /**

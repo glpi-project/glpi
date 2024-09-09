@@ -397,7 +397,6 @@ class MassiveAction
             }
             if ($this->identifier != $identifier) {
                 throw new \Exception(__('Invalid process'));
-                return;
             }
             unset($_SESSION['current_massive_action'][$identifier]);
         }

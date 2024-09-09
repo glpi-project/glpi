@@ -130,7 +130,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                 }
                 return;
-            break;
 
             case 'change_count_method':
                 if ($item->setDoCount($ids, $input['do_count'])) {
