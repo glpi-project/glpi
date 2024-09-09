@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set interface = call("Session::getCurrentInterface") %}
+{% set interface = get_current_interface() %}
 {% set header_method = interface == 'central' ? 'header' : 'helpHeader' %}
 
 {% do call(['Html', header_method], {
