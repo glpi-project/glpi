@@ -143,7 +143,7 @@ class Group extends CommonTreeDropdown
                 $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    if ($item->getField('is_itemgroup')) {
+                    if ($item->fields['is_itemgroup']) {
                         $total_linkgroups = 0;
                         foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
                             if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
@@ -152,7 +152,7 @@ class Group extends CommonTreeDropdown
                         }
                         $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
                     }
-                    if ($item->getField('is_assign')) {
+                    if ($item->fields['is_assign']) {
                         $total_linkgroup_tech_types = 0;
                         foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
                             $total_linkgroup_tech_types += countElementsInTable($itemtype_linked::getTable(), ['groups_id_tech' => $item->getID()]);
