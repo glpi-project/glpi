@@ -76,7 +76,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function previewImport(
         string $json,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
 
@@ -104,7 +104,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function importFormsFromJson(
         string $json,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -168,7 +168,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function importFormFromSpec(
         FormContentSpecification $form_spec,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): Form {
         /** @var \DBmysql $DB */
         global $DB;
@@ -188,7 +188,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function doImportFormFormSpecs(
         FormContentSpecification $form_spec,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): Form {
         // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);

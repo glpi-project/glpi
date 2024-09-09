@@ -2140,6 +2140,16 @@ class Session
     }
 
     /**
+     * Get actives entities id.
+     *
+     * @return array<int>
+     */
+    public static function getActiveEntities(): array
+    {
+        return $_SESSION['glpiactiveentities'] ?? [];
+    }
+
+    /**
      * Filter given entities ID list to return only these tht are matching current active entities in session.
      *
      * @since 10.0.13
