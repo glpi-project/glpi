@@ -246,7 +246,7 @@ final class Form extends CommonDBTM
 
         $key = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . "export";
         $icon = '<i class="ti ti-file-arrow-right"></i>';
-        $label = __('Export form');
+        $label = __s('Export form');
         $actions[$key] = $icon . $label;
 
         return $actions;
@@ -258,7 +258,7 @@ final class Form extends CommonDBTM
         $ids = array_values($ma->getItems()[Form::class]);
         $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
 
-        $label = __("Click here to download the exported forms...");
+        $label = __s("Click here to download the exported forms...");
         echo "<a href=\"$export_url\">$label</a>";
         echo Html::scriptBlock("window.location.href = '$export_url';");
 
