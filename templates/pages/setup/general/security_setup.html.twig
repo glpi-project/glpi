@@ -103,7 +103,8 @@
          'min': 15,
          'max': 365,
          'step': 5,
-         'toadd': {'-1': __('Never')}
+         'toadd': {'-1': __('Never')},
+         'width': 'auto'
       })
    ) }}
 
@@ -115,7 +116,8 @@
          'min': 0,
          'max': 30,
          'step': 1,
-         'toadd': {'-1': __('Notification disabled')}
+         'toadd': {'-1': __('Notification disabled')},
+         'width': 'auto'
       })
    ) }}
 
@@ -127,7 +129,8 @@
          'min': 0,
          'max': 30,
          'step': 1,
-         'toadd': {'-1': __('Do not deactivate')}
+         'toadd': {'-1': __('Do not deactivate')},
+         'width': 'auto'
       })
    ) }}
 
@@ -139,6 +142,7 @@
          'min': constant('DAY_TIMESTAMP'),
          'max': constant('MONTH_TIMESTAMP'),
          'step': constant('DAY_TIMESTAMP'),
+         'width': 'auto'
       })
    ) }}
 
@@ -153,7 +157,9 @@
          '5': __('Last 5 passwords')
       },
       __('Prevent users from reusing previous passwords'),
-      inline_field_options
+      inline_field_options|merge({
+         'width': 'auto'
+      })
    ) }}
 
    {{ fields.largeTitle(__('Two-factor authentication (2FA)'), 'ti ti-2fa') }}
