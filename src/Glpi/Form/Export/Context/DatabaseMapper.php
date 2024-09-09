@@ -157,12 +157,6 @@ final class DatabaseMapper
             'name' => $name
         ];
 
-        // Compute default where (visibility restrictions)
-        $default_where = Search::addDefaultWhere($itemtype);
-        if ($default_where !== '') {
-            $condition[] = new QueryExpression($default_where);
-        }
-
         // Entities restrictions are not always included in addDefaultWhere,
         // it is safer to add them manually (they might be checked twice tho).
         $entities_restrictions = getEntitiesRestrictCriteria(
@@ -171,17 +165,6 @@ final class DatabaseMapper
         );
         $condition[] = $entities_restrictions;
         $query['WHERE'] = $condition;
-
-        // Compute default join (might be used by the default where)
-        $already_joined = [];
-        $default_join = Search::addDefaultJoin(
-            $itemtype,
-            $itemtype::getTable(),
-            $already_joined,
-        );
-        if ($default_join !== '') {
-            $query['JOIN'] = [new QueryExpression($default_join)];
-        }
 
         // Find item
         $rows = $DB->request($query);
