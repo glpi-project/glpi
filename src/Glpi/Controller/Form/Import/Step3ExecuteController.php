@@ -44,7 +44,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class Step3ExecuteController extends AbstractController
 {
-    #[Route("/form/import/execute", name: "glpi_form_import_execute", methods: "POST")]
+    #[Route("/Form/Import/Execute", name: "glpi_form_import_execute", methods: "POST")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {

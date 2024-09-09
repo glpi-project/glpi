@@ -270,7 +270,7 @@ final class Form extends CommonDBTM
         $links = [];
 
         if (self::canCreate()) {
-            $links['import_forms'] = '/form/import';
+            $links['import_forms'] = '/Form/Import';
         }
 
         return $links;

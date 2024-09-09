@@ -44,7 +44,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class Step2PreviewController extends AbstractController
 {
-    #[Route("/form/import/preview", name: "glpi_form_import_preview", methods: "POST")]
+    #[Route("/Form/Import/Preview", name: "glpi_form_import_preview", methods: "POST")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {

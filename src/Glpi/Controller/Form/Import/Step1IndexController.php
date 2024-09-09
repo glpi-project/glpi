@@ -46,7 +46,7 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 final class Step1IndexController extends AbstractController
 {
-    #[Route("/form/import", name: "glpi_form_import", methods: "GET")]
+    #[Route("/Form/Import", name: "glpi_form_import", methods: "GET")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {
