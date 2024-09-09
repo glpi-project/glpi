@@ -396,3 +396,24 @@ Cypress.Commands.add('disableDebugMode', () => {
         cy.reload();
     });
 });
+
+// The "startToDrag" and "dropDraggedItemAfter" commands are not perfect as they
+// simulate dragging by moving the DOM node using jquery.
+//
+// It would be better to trigger real events like mousedown/mousemove/moveup or
+// drag/dragstart/drop but I was no able to get it working with the html5sortable lib.
+//
+// Note: this also require to manually add `data-glpi-draggable-item` to draggable
+// items as the lib doesn't give us any way to find the draggable container afaik.
+Cypress.Commands.add('startToDrag', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).find(`[draggable=true]`).as('drag_source');
+});
+Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).find(`[draggable=true]`).as('drag_destination');
+    cy.getMany(["@drag_source", "@drag_destination"]).then(([$source, $destination]) => {
+        // move manually
+        $source.closest('[data-glpi-draggable-item]').detach().insertAfter(
+            $destination.closest('[data-glpi-draggable-item]')
+        );
+    });
+});

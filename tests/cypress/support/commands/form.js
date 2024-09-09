@@ -53,3 +53,21 @@ Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
 
     return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 });
+
+Cypress.Commands.add('saveFormEditorAndReload', () => {
+    cy.findByRole('button', {'name': 'Save'}).click();
+    cy.findByRole('alert')
+        .should('contain.text', 'Item successfully updated')
+    ;
+    cy.reload();
+});
+
+Cypress.Commands.add('addQuestion', (name) => {
+    cy.findByRole('button', {'name': 'Add a new question'}).click();
+    cy.focused().type(name); // Question name is focused by default
+});
+
+Cypress.Commands.add('addSection', (name) => {
+    cy.findByRole('button', {'name': 'Add a new section'}).click();
+    cy.focused().type(name); // Section name is focused by default
+});

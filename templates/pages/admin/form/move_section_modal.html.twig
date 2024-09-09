@@ -71,17 +71,19 @@
     </div>
 
     {# Items template #}
-    <div data-glpi-form-editor-move-section-modal-item-template>
-        <div
-            class="list-group-item"
+    <div
+        data-glpi-form-editor-move-section-modal-item-template
+        data-glpi-draggable-item
+    >
+        <section
+            class="list-group-item cursor-grab"
             data-glpi-form-editor-move-section-modal-item-section-key="null"
         >
-            <div class="row align-items-center">
+            <div class="row align-items-center" data-glpi-form-editor-section-handle>
                 <div class="col-auto">
                     <i
-                        class="ti ti-grip-vertical cursor-grab"
+                        class="ti ti-grip-vertical"
                         style="opacity: 0.6;"
-                        data-glpi-form-editor-section-handle
                     ></i>
                 </div>
                 <div
@@ -90,6 +92,6 @@
                 >
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>

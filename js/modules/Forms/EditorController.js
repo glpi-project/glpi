@@ -139,10 +139,11 @@ export class GlpiFormEditorController
             () => this.#handleBackendUpdateResponse()
         );
 
-        // Handle global click event, remove the active item
+        // Handle clicks inside the form editor, remove the active item
         $(document)
             .on(
                 'click',
+                '[data-glpi-form-editor]',
                 () => {
                     this.#setFormDetailsAsActive();
                     $('.simulate-focus').removeClass('simulate-focus');
@@ -320,6 +321,7 @@ export class GlpiFormEditorController
                 this.#addSection(
                     target.closest(`
                         [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
                         [data-glpi-form-editor-active-section],
                         [data-glpi-form-editor-active-question],
                         [data-glpi-form-editor-active-comment]
@@ -1476,6 +1478,9 @@ export class GlpiFormEditorController
                         "data-glpi-form-editor-move-section-modal-item-section-key",
                         uuid
                     );
+                copy
+                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
+                    .attr("aria-label", __('Move section: %1$d').replace("%1$d", name));
 
                 // Set section name
                 copy

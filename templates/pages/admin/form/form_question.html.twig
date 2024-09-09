@@ -52,6 +52,7 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
     <section
@@ -98,6 +99,7 @@
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
                 {# Duplicate question #}
                 <i
+                    role="button"
                     class="ti ti-copy ms-auto cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
