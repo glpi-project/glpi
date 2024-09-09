@@ -199,7 +199,7 @@ class DbTestCase extends \GLPITestCase
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $id = $item->add($input);
+        $item->add($input);
         $id = $item->getID();
         $this->assertIsInt($id);
         $this->assertGreaterThan(0, $id);
