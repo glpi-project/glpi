@@ -4058,18 +4058,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#2 \\$extratype \\(\'\'\\) of method Notification_NotificationTemplate\\:\\:getModeClass\\(\\) is incompatible with type \'event\'\\|\'setting\'\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	// identifier: else.unreachable
-	'message' => '#^Else branch is unreachable because previous condition is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Notification_NotificationTemplate\\:\\:getName\\(\\) should return string but returns int\\.$#',
 	'count' => 1,
@@ -4084,12 +4072,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Notification_NotificationTemplate\\:\\:showForNotificationTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	// identifier: phpDoc.parseError
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$extratype \\=\\=\\= \'event\' \\? class\\-string\\<NotificationEventInterface\\> \\: class\\-string\\<NotificationSetting\\>\\)\\: Unexpected token "\\$extratype", expected type at offset 235$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
