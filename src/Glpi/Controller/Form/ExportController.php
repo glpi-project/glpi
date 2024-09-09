@@ -45,7 +45,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ExportController extends AbstractController
 {
-    #[Route("/form/export", name: "glpi_form_export")]
+    #[Route("/Form/Export", name: "glpi_form_export")]
     public function __invoke(Request $request): Response
     {
         // Right check

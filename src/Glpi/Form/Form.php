@@ -256,7 +256,7 @@ final class Form extends CommonDBTM
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = "/form/export?" . http_build_query(['ids' => $ids]);
+        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
 
         $label = __("Click here to download the exported forms...");
         echo "<a href=\"$export_url\">$label</a>";
