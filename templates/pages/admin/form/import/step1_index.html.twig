@@ -1,0 +1,76 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set tabler_container_size = "narrow" %}
+
+{% block content_title %}
+    {{ __('Import forms') }}
+{% endblock content_title %}
+
+{% block content_body %}
+    <form
+        method="POST"
+        action="{{ path('Form/Import/Preview') }}"
+        enctype="multipart/form-data"
+    >
+        <div class="card">
+            <div class="card-body py-3 px-3">
+            <h3 id="select-files" class="card-title mb-3 mt-0">
+                {{ __('Select your file') }}
+            </h3>
+                <input
+                    accept=".json"
+                    aria-labelledby="select-files"
+                    class="form-control"
+                    type="file"
+                    name="import_file"
+                >
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="justify-content-end d-flex">
+                    <button type="submit" href="#" class="btn btn-primary">
+                        {{ __("Preview import") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    </form>
+{% endblock content_body %}
+

@@ -137,6 +137,31 @@ final class FormSerializerTest extends \DbTestCase
         );
     }
 
+    // Minimal form import to be sure there are no failure when most properties are null or empty.
+    public function testExportAndImportFormWithoutValues(): void
+    {
+        // Arrange: create an empty form
+        $form = $this->createItem(Form::class, []);
+
+        // Act: export then reimport the form as a copy
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate each fields are equals between the original and the copy
+        $fields_to_check = [
+            'name',
+            'header',
+            'entities_id',
+            'is_recursive',
+        ];
+        foreach ($fields_to_check as $field) {
+            $this->assertEquals(
+                $form_copy->fields[$field],
+                $form->fields[$field],
+                "Failed $field:"
+            );
+        }
+    }
+
     public function testExportAndImportFormBasicProperties(): void
     {
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
@@ -245,6 +270,45 @@ final class FormSerializerTest extends \DbTestCase
                 'rank'        => 2,
             ],
         ], $sections_data);
+    }
+
+    public function testPreviewImportWithValidForm(): void
+    {
+        // Arrange: create a valid form
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+
+        // Act: export the form and preview the import
+        $results = self::$serializer->exportFormsToJson([$form]);
+        $preview = self::$serializer->previewImport($results->getJsonContent());
+
+        // Assert: the form should be valid
+        $this->assertEquals([$form->fields['name']], $preview->getValidForms());
+        $this->assertEquals([], $preview->getInvalidForms());
+    }
+
+    public function testPreviewImportWithInvalidForm(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create an invalid form by setting it into a temporary entity
+        // that will be deleted later
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $form->fields['entities_id'] = $entity->getID();
+
+        // Act: export the form; delete the temporary entity to make the form
+        // invalid; preview the import
+        $json = $this->exportForm($form);
+        $this->deleteItem(Entity::class, $entity->getID());
+        $preview = self::$serializer->previewImport($json);
+
+        // Assert: the form should be invalid
+        $this->assertEquals([], $preview->getValidForms());
+        $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
     }
 
     // TODO: add a test later to make sure that requirements for each forms do

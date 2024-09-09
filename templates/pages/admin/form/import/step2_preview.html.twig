@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set tabler_container_size = "narrow" %}
+
+{% block content_title %}
+    {{ __('Import forms') }}
+{% endblock content_title %}
+
+{% block content_body %}
+    <form
+        method="POST"
+        action="{{ path('Form/Import/Execute') }}"
+    >
+        <div class="card">
+            <div class="card-header py-3 px-4">
+                <h3 class="card-title">{{ __("Import preview") }}</h3>
+            </div>
+            <table class="table table-card mb-0">
+                <thead>
+                    <tr>
+                        <th class="w-70 px-4">{{ __("Form name") }}</th>
+                        <th class="w-30 px-4">{{ __("Status") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for forms_name in preview.getValidForms() %}
+                        <tr>
+                            <td class="w-70 px-4">{{ forms_name }}</td>
+                            <td class="w-30 px-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="ti ti-check text-success me-2"></i>
+                                    <span>{{ __("Ready to be imported") }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% for forms_name in preview.getInvalidForms() %}
+                        <tr>
+                            <td class="w-70 px-4">{{ forms_name }}</td>
+                            <td class="w-30 px-4">
+                            <div class="d-flex align-items-center">
+                                    <i class="ti ti-x text-danger me-2"></i>
+                                    <span>{{ __("Can't be imported") }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="justify-content-end d-flex">
+                    <button type="submit" href="#" class="btn btn-primary">
+                        {{ __("Import") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="json" value="{{ json }}" />
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    </form>
+{% endblock content_body %}
+

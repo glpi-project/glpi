@@ -43,10 +43,10 @@ use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Html;
 use Log;
 use MassiveAction;
 use Override;
@@ -263,6 +263,17 @@ final class Form extends CommonDBTM
         echo Html::scriptBlock("window.location.href = '$export_url';");
 
         return true;
+    }
+
+    public static function getAdditionalMenuLinks(): array
+    {
+        $links = [];
+
+        if (self::canCreate()) {
+            $links['import_forms'] = '/Form/Import';
+        }
+
+        return $links;
     }
 
     /**

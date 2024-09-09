@@ -2372,12 +2372,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.phpDocType
-	'message' => '#^PHPDoc tag @return with type array\\<Glpi\\\\Form\\\\Form\\> is incompatible with native type Glpi\\\\Form\\\\Export\\\\Result\\\\ImportResult\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
-];
-$ignoreErrors[] = [
 	// identifier: parameter.defaultValue
 	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Glpi\\\\Form\\\\Form\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
 	'count' => 1,

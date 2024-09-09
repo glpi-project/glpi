@@ -84,7 +84,7 @@ final class DatabaseMapper
     }
 
     /** @param DataRequirementSpecification[] $data_requirements */
-    public function loadExistingContextForRequirements(
+    public function mapExistingItemsForRequirements(
         array $data_requirements
     ): bool {
         foreach ($data_requirements as $requirement) {
