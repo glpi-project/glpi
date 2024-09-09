@@ -68,7 +68,7 @@ final class FormDestination extends CommonDBChild
     {
         // Only for forms
         if (!($item instanceof Form)) {
-            return false;
+            return "";
         }
 
         $count = 0;

@@ -87,7 +87,7 @@ final class AnswersSet extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!($item instanceof Form)) {
-            return false;
+            return "";
         }
 
         $count = 0;

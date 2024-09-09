@@ -489,12 +489,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method AuthLDAP\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
 	'message' => '#^Method AuthLDAP\\:\\:ldapStamp2UnixStamp\\(\\) should return int but returns string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
@@ -542,12 +536,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method AuthMail\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
 	// identifier: offsetAccess.notFound
 	'message' => '#^Offset \'connect_string\' does not exist on string\\.$#',
 	'count' => 1,
@@ -578,12 +566,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Budget.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Budget\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Budget.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Budget\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -610,12 +592,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Central\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Central.php',
 ];
@@ -658,12 +634,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Change\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Change.php',
 ];
@@ -960,12 +930,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method CommonDBRelation\\:\\:getLinkedTo\\(\\)\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CommonITILRecurrent\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
 	// identifier: deadCode.unreachable
@@ -1310,12 +1274,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Config\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	// identifier: phpDoc.parseError
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$expanded_info \\? array\\<string, \\{name\\: string, dark\\: boolean\\}\\> \\: array\\<string, string\\>\\)\\: Unexpected token "\\$expanded_info", expected type at offset 154$#',
 	'count' => 1,
@@ -1350,12 +1308,6 @@ $ignoreErrors[] = [
 	'message' => '#^Offset \'allowmode\'\\|\'comment\'\\|\'hourmax\'\\|\'hourmin\'\\|\'logs_lifetime\'\\|\'mode\'\\|\'param\'\\|\'state\' on array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CronTaskLog\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTaskLog.php',
 ];
 $ignoreErrors[] = [
 	// identifier: class.notFound
@@ -1670,12 +1622,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method DisplayPreference\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\|null\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DisplayPreference.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.unusedType
 	'message' => '#^Method DisplayPreference\\:\\:showConfigForm\\(\\) never returns void so it can be removed from the return type\\.$#',
 	'count' => 1,
@@ -1722,12 +1668,6 @@ $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method Document\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Document_Item\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document_Item.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
@@ -1882,12 +1822,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: booleanAnd.leftAlwaysTrue
 	'message' => '#^Left side of && is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Entity\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Entity.php',
 ];
@@ -2342,12 +2276,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetDefinition\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
-];
-$ignoreErrors[] = [
 	// identifier: parameter.notFound
 	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$definition$#',
 	'count' => 1,
@@ -2732,38 +2660,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:getTabNameForItem\\(\\) should return string but returns false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Form\\\\AnswersSet\\:\\:getTabNameForItem\\(\\) should return string but returns false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.nonObject
 	'message' => '#^Cannot call method getItem\\(\\) on CommonDBTM\\|false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\:\\:getTabNameForItem\\(\\) should return string but returns false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractFormDestinationType.php',
-];
-$ignoreErrors[] = [
 	// identifier: staticMethod.notFound
 	'message' => '#^Call to an undefined static method class\\-string\\<Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\>\\|Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\:\\:getById\\(\\)\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\FormDestination\\:\\:getTabNameForItem\\(\\) should return string but returns false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
 ];
@@ -3134,12 +3038,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Inventory\\\\Conf\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
 	// identifier: nullCoalesce.offset
 	'message' => '#^Offset \'label\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
 	'count' => 1,
@@ -3236,12 +3134,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Marketplace\\\\View\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanAnd.rightAlwaysFalse
 	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
@@ -3258,12 +3150,6 @@ $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Search\\\\CriteriaFilter\\:\\:getTabNameForItem\\(\\) should return string but returns false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/CriteriaFilter.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
@@ -3518,12 +3404,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Group.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Group\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Group.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.childReturnType
 	'message' => '#^Return type \\(void\\) of method Group\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDropdown\\:\\:showForm\\(\\)$#',
 	'count' => 1,
@@ -3710,22 +3590,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method ITILCategory\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILCategory.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanAnd.leftAlwaysTrue
 	'message' => '#^Left side of && is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ITILFollowup.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method ITILTemplate\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
@@ -3938,12 +3806,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Item_SoftwareLicense\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicense\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -3954,12 +3816,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicenseByEntity\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Item_SoftwareVersion\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -3980,18 +3836,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Itil_Project.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Knowbase\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Knowbase.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method KnowbaseItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method KnowbaseItem\\:\\:showManageForm\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -4002,12 +3846,6 @@ $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method KnowbaseItem\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method KnowbaseItemTranslation\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -4104,12 +3942,6 @@ $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method Link\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Link.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Location\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Location.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
@@ -4352,12 +4184,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	// identifier: method.childReturnType
-	'message' => '#^Return type \\(array\\) of method NetworkPortConnectionLog\\:\\:getTabNameForItem\\(\\) should be compatible with return type \\(string\\) of method CommonGLPI\\:\\:getTabNameForItem\\(\\)$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortConnectionLog.php',
-];
-$ignoreErrors[] = [
 	// identifier: phpDoc.parseError
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 218$#',
 	'count' => 1,
@@ -4386,12 +4212,6 @@ $ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method NetworkPortMetrics\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortMetrics.php',
 ];
 $ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
@@ -4428,12 +4248,6 @@ $ignoreErrors[] = [
 	'message' => '#^Static property NotificationEventMailing\\:\\:\\$mailer \\(GLPIMailer\\) on left side of \\?\\? is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method NotificationSetting\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationSetting.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
@@ -4682,12 +4496,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Planning\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.empty
 	'message' => '#^Method Planning\\:\\:updateEventTimes\\(\\) should return bool but empty return statement found\\.$#',
 	'count' => 1,
@@ -4928,20 +4736,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Problem.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Problem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Profile\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
@@ -4966,12 +4762,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: method.notFound
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Project\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
 ];
@@ -5186,12 +4976,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RSSFeed.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method RSSFeed\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RSSFeed.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Rack\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -5378,12 +5162,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Reminder\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	// identifier: phpDoc.parseError
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219$#',
 	'count' => 1,
@@ -5510,18 +5288,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ReservationItem.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method ReservationItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ReservationItem.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Rule\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'count' => 2,
@@ -5572,12 +5338,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method RuleCollection\\:\\:getRuleClassName\\(\\) should return class\\-string\\<Rule\\> but returns string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method RuleCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
@@ -5637,39 +5397,9 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method RuleImportAssetCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	// identifier: isset.offset
-	'message' => '#^Offset \\(array\\<int, string\\>\\|string\\) on string in isset\\(\\) does not exist\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	// identifier: deadCode.unreachable
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
 	'message' => '#^Method RuleImportEntity\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
 	'count' => 4,
 	'path' => __DIR__ . '/src/RuleImportEntity.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method RuleMatchedLog\\:\\:getTabNameForItem\\(\\) should return string but returns array\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleMatchedLog.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method RuleMatchedLog\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleMatchedLog.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -5864,12 +5594,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Ticket\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.empty
 	'message' => '#^Method Ticket\\:\\:showForm\\(\\) should return bool but empty return statement found\\.$#',
 	'count' => 1,
@@ -6050,12 +5774,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method User\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysFalse
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'count' => 1,
@@ -6136,12 +5854,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: staticMethod.nonObject
 	'message' => '#^Cannot call static method getTypeName\\(\\) on int\\|string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Webhook\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];

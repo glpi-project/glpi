@@ -59,7 +59,7 @@ final class CriteriaFilter extends CommonDBChild
     {
         // Only on filterable items
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
-            return false;
+            return "";
         }
 
         // Count number of filter criteria (with nested sub-criteria)

@@ -47,7 +47,7 @@ abstract class AbstractFormDestinationType extends CommonGLPI implements FormDes
     {
         // Only for answers set
         if (!($item instanceof AnswersSet)) {
-            return false;
+            return "";
         }
 
         $count = 0;
