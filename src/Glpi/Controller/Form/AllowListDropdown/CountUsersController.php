@@ -49,7 +49,7 @@ use User;
 final class CountUsersController extends AbstractController
 {
     #[Route(
-        path: "/form/allow-list-dropdown/count-users",
+        path: "/Form/AllowListDropdown/CountUsers",
         name: "form_allow_list_dropdown_count_users",
         methods: "GET"
     )]

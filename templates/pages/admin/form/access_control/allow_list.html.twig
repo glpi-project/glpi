@@ -59,7 +59,7 @@
     const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
     $select.on('change', async function() {
         const response = await $.get(
-            "{{ path('/form/allow-list-dropdown/count-users') }}",
+            "{{ path('/Form/AllowListDropdown/CountUsers') }}",
             {
                 values: $(this).val()
             }
