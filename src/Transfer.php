@@ -2967,7 +2967,7 @@ final class Transfer extends CommonDBTM
      *
      * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
      * @param int $ID          Original ITIL Object ID
-     * @param int $newID       New ITIL Object ID
+     * @param int $newID       New ITIL Object ID (not used))
      *
      * @return void
      **/
@@ -2975,8 +2975,6 @@ final class Transfer extends CommonDBTM
     {
         /** @var DBmysql $DB */
         global $DB;
-
-        // FIXME This method seems broken as the $newID parameter is not used at all
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
             return;
