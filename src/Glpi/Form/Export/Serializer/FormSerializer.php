@@ -76,7 +76,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function previewImport(
         string $json,
-        DatabaseMapper $mapper = new DatabaseMapper(),
+        DatabaseMapper $mapper,
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
 

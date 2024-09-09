@@ -142,7 +142,9 @@ final class FormSerializerTest extends \DbTestCase
     public function testExportAndImportFormWithoutValues(): void
     {
         // Arrange: create an empty form
-        $form = $this->createItem(Form::class, []);
+        $form = $this->createItem(Form::class, [
+            'entities_id' => $this->getTestRootEntity(only_id: true)
+        ]);
 
         // Act: export then reimport the form as a copy
         $form_copy = $this->exportAndImportForm($form);
@@ -167,7 +169,6 @@ final class FormSerializerTest extends \DbTestCase
     {
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
 
-        $this->login();
         $form_copy = $this->exportAndImportForm($form);
 
         // Validate each fields
@@ -194,7 +195,7 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
         $entity = $this->createItem(Entity::class, [
             'name' => 'Temporary entity',
-            'entities_id' => $this->getTestRootEntity(true),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
         $form->fields['entities_id'] = $entity->getID();
 
@@ -221,7 +222,7 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
         $entity = $this->createItem(Entity::class, [
             'name' => 'My entity',
-            'entities_id' => $this->getTestRootEntity(true),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
         $form->fields['entities_id'] = $entity->getID();
 
@@ -248,7 +249,6 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createForm($builder);
 
         // Act: export and import the form
-        $this->login();
         $form_copy = $this->exportAndImportForm($form);
 
         // Assert: validate sections fields
@@ -286,7 +286,10 @@ final class FormSerializerTest extends \DbTestCase
 
         // Act: export the form and preview the import
         $results = self::$serializer->exportFormsToJson([$form]);
-        $preview = self::$serializer->previewImport($results->getJsonContent());
+        $preview = self::$serializer->previewImport(
+            $results->getJsonContent(),
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
 
         // Assert: the form should be valid
         $this->assertEquals([$form->fields['name']], $preview->getValidForms());
@@ -303,7 +306,7 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
         $entity = $this->createItem(Entity::class, [
             'name' => 'My entity',
-            'entities_id' => $this->getTestRootEntity(true),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
         $form->fields['entities_id'] = $entity->getID();
 
@@ -311,7 +314,10 @@ final class FormSerializerTest extends \DbTestCase
         // invalid; preview the import
         $json = $this->exportForm($form);
         $this->deleteItem(Entity::class, $entity->getID());
-        $preview = self::$serializer->previewImport($json);
+        $preview = self::$serializer->previewImport(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
 
         // Assert: the form should be invalid
         $this->assertEquals([], $preview->getValidForms());
@@ -320,7 +326,7 @@ final class FormSerializerTest extends \DbTestCase
 
     public function testImportRequirementsAreCheckedInVisibleEntities(): void
     {
-        $test_root_entity_id = $this->getTestRootEntity(true);
+        $test_root_entity_id = $this->getTestRootEntity(only_id: true);
 
         // Arrange: create a form in a sub entity
         $this->login(); // Need an active session to create entities
@@ -349,7 +355,7 @@ final class FormSerializerTest extends \DbTestCase
     {
         // Arrange: create a form in a sub entity
         $this->login(); // Need an active session to create entities
-        $test_root_entity_id = $this->getTestRootEntity(true);
+        $test_root_entity_id = $this->getTestRootEntity(only_id: true);
         $sub_entity = $this->createItem(Entity::class, [
             'name' => 'My sub entity',
             'entities_id' => $test_root_entity_id,
@@ -396,15 +402,11 @@ final class FormSerializerTest extends \DbTestCase
 
     private function exportAndImportForm(Form $form): Form
     {
-        if (!Session::isAuthenticated()) {
-            $this->fail("Need an active session to export and import forms");
-        }
-
         // Export and import process
         $json = $this->exportForm($form);
         $form_copy = $this->importForm(
             $json,
-            new DatabaseMapper(Session::getActiveEntities())
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 
         // Make sure it was not the same form object that was returned.
@@ -421,7 +423,7 @@ final class FormSerializerTest extends \DbTestCase
         $form_name = "Form with basic properties fully filled " . mt_rand();
         $builder = new FormBuilder($form_name);
         $builder->setHeader("My custom header")
-            ->setEntitiesId($this->getTestRootEntity(true))
+            ->setEntitiesId($this->getTestRootEntity(only_id: true))
             ->setIsRecursive(true)
         ;
 
