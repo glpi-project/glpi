@@ -56,9 +56,10 @@
 
 <script>
     // Each time the dropdown is modified, populate the helper link
-    $("select[name='_allow_list_dropdown[]']").on('change', async function() {
-        const response = await $.post(
-            CFG_GLPI.root_doc + '/ajax/form/allow_list_dropdown_count_users.php',
+    const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
+    $select.on('change', async function() {
+        const response = await $.get(
+            "{{ path('/Form/AllowListDropdown/CountUsers') }}",
             {
                 values: $(this).val()
             }
@@ -66,8 +67,9 @@
 
         $('[data-glpi-dropdown-count-preview]')
             .attr('href', response.link ?? null)
-            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}".replace("%d", response.count))
+            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}"
+            .replace("%d", response.count))
         ;
     });
-    $("select[name='_allow_list_dropdown[]']").trigger('change');
+    $select.trigger('change');
 </script>

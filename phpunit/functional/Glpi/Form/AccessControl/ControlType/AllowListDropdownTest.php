@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
 use DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowListDropdown;
 use Group;
@@ -44,11 +45,19 @@ use User;
 
 class AllowListDropdownTest extends DbTestCase
 {
+    public function testAllUsers(): void
+    {
+        $this->checkCountUserForCriteria(
+            criteria: ['users' => [AbstractRightsDropdown::ALL_USERS]],
+            expected_users_count: 7,
+        );
+    }
+
     public function testEmptyAllowList(): void
     {
         $this->checkCountUserForCriteria(
             criteria: [],
-            expected_users_count: countElementsInTable(User::getTable()),
+            expected_users_count: 0,
         );
     }
 
