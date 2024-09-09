@@ -8153,7 +8153,6 @@ abstract class CommonITILObject extends CommonDBTM
                 '_tasktemplates_id'           => $tasktemplates_id,
                 $this->getForeignKeyField()   => $this->fields['id'],
                 'date'                        => $this->fields['date'],
-                '_disablenotif'               => true
             ]);
         }
     }
