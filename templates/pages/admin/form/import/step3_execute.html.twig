@@ -54,7 +54,7 @@
             <tbody>
                 {% for form in results.getImportedForms() %}
                     <tr>
-                        <td class="w-70 px-4">{{ form.getLink()|raw }}</td>
+                        <td class="w-70 px-4">{{ get_item_link(form) }}</td>
                         <td class="w-30 px-4">
                             <div class="d-flex align-items-center">
                                 <i class="ti ti-check text-success me-2"></i>
