@@ -318,10 +318,10 @@ class VirtualMachine extends InventoryAsset
                 $rule = new RuleImportAssetCollection();
                 $rule->getCollectionPart();
                 $input = $this->handleInput($vm, $this->item);
+                $input['itemtype'] = \Computer::class;
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
-                    $input['itemtype'] = \Computer::class;
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $datarules = $rule->processAllRules($input);
@@ -337,7 +337,6 @@ class VirtualMachine extends InventoryAsset
                 } else {
                     // Update computer
                     $computervm->getFromDB($computers_vm_id);
-                    $input = $this->handleInput($vm, $this->item);
                     $input['id'] = $computers_vm_id;
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
