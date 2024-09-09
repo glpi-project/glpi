@@ -195,7 +195,7 @@
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
         ],
         "build": [
-            "bin/console dependencies install && bin/console locales:compile"
+            "bin/console dependencies install"
         ]
     }
 }

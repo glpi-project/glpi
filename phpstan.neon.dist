@@ -13,6 +13,8 @@ parameters:
         - inc
         - install
         - src
+    universalObjectCratesClasses:
+        - Sabre\VObject\Node
     ignoreErrors:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
