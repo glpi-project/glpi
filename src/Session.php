@@ -2293,7 +2293,7 @@ class Session
     }
 
     /**
-     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     * Helper function to get the date + time stored in $_SESSION['glpi_currenttime']
      *
      * @return null|string
      */
@@ -2301,6 +2301,16 @@ class Session
     {
         // TODO (11.0 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
+    }
+
+    /**
+     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     *
+     * @return null|string
+     */
+    public static function getCurrentDate(): ?string
+    {
+        return date('Y-m-d', strtotime(self::getCurrentTime()));
     }
 
     /**

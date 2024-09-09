@@ -63,10 +63,11 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createForm($builder);
 
         // Act: export form
+        $_SESSION['glpi_currenttime'] = "2024-09-09 08:38:28";
         $result = self::$serializer->exportFormsToJson([$form]);
 
         // Assert: filename should be the slugified form name + .json
-        $this->assertEquals("my-form.json", $result->getFileName());
+        $this->assertEquals("my-form-2024-09-09.json", $result->getFileName());
     }
 
     public function testMultipleFormExportFileName(): void
@@ -79,10 +80,61 @@ final class FormSerializerTest extends \DbTestCase
         }
 
         // Act: export forms
+        $_SESSION['glpi_currenttime'] = "2024-09-09 08:38:28";
         $result = self::$serializer->exportFormsToJson($forms);
 
         // Assert: filename should reference the number of forms
-        $this->assertEquals("export-of-7-forms.json", $result->getFileName());
+        $this->assertStringMatchesFormat(
+            "export-of-7-forms-2024-09-09-%s.json",
+            $result->getFileName()
+        );
+    }
+
+    public function testTwoExportsOfTheSameFormsHaveTheSameFileName(): void
+    {
+        // Arrange: create 5 forms
+        $forms = [];
+        foreach (range(1, 5) as $i) {
+            $builder = new FormBuilder("Form $i");
+            $forms[] = $this->createForm($builder);
+        }
+
+        // Act: export twice the same set of forms
+        $_SESSION['glpi_currenttime'] = "2024-09-09 08:38:28";
+        $result_a = self::$serializer->exportFormsToJson($forms);
+        $result_b = self::$serializer->exportFormsToJson($forms);
+
+        // Assert: file names should be equals since it is the same forms
+        $this->assertEquals(
+            $result_a,
+            $result_b,
+        );
+    }
+
+    public function testTwoExportsOfDifferentFormsHaveDifferentFileNames(): void
+    {
+        // Arrange: create 2 sets of 3 forms
+        $forms_set_a = [];
+        foreach (range(1, 3) as $i) {
+            $builder = new FormBuilder("Form A$i");
+            $forms_set_a[] = $this->createForm($builder);
+        }
+        $forms_set_b = [];
+        foreach (range(1, 3) as $i) {
+            $builder = new FormBuilder("Form B$i");
+            $forms_set_b[] = $this->createForm($builder);
+        }
+
+        // Act: export the two sets of forms
+        $_SESSION['glpi_currenttime'] = "2024-09-09 08:38:28";
+        $result_a = self::$serializer->exportFormsToJson($forms_set_a);
+        $result_b = self::$serializer->exportFormsToJson($forms_set_b);
+
+        // Assert: file names should not be equals since it is different forms
+        $this->assertNotEquals(
+            $result_a,
+            $result_b,
+        );
     }
 
     public function testExportAndImportFormBasicProperties(): void
