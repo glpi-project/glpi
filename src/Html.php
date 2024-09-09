@@ -2585,7 +2585,7 @@ HTML;
                     ]
                 );
             }
-            $out .= "<a title='" . __('Massive actions') . "'
+            $out .= "<a role=\"button\" title='" . __('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='btn btn-sm btn-primary me-2' ";
             if (is_array($p['confirm'] || strlen($p['confirm']))) {

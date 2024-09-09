@@ -56,6 +56,35 @@ final class FormSerializerTest extends \DbTestCase
         parent::setUpBeforeClass();
     }
 
+    public function testSingleFormExportFileName(): void
+    {
+        // Arrange: create a single form
+        $builder = new FormBuilder("My form");
+        $form = $this->createForm($builder);
+
+        // Act: export form
+        $result = self::$serializer->exportFormsToJson([$form]);
+
+        // Assert: filename should be the slugified form name + .json
+        $this->assertEquals("my-form.json", $result->getFileName());
+    }
+
+    public function testMultipleFormExportFileName(): void
+    {
+        // Arrange: create 7 forms
+        $forms = [];
+        foreach (range(1, 7) as $i) {
+            $builder = new FormBuilder("Form $i");
+            $forms[] = $this->createForm($builder);
+        }
+
+        // Act: export forms
+        $result = self::$serializer->exportFormsToJson($forms);
+
+        // Assert: filename should reference the number of forms
+        $this->assertEquals("export-of-7-forms.json", $result->getFileName());
+    }
+
     public function testExportAndImportFormBasicProperties(): void
     {
         $form = $this->createAndGetFormWithBasicPropertiesFilled();
@@ -175,7 +204,7 @@ final class FormSerializerTest extends \DbTestCase
 
     private function exportForm(Form $form): string
     {
-        return self::$serializer->exportFormsToJson([$form]);
+        return self::$serializer->exportFormsToJson([$form])->getJsonContent();
     }
 
     private function importForm(
