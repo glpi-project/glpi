@@ -48,7 +48,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TagListController extends AbstractController
 {
     #[Route(
-        "/form/tag-list",
+        "/Form/TagList",
         name: "glpi_form_tags_list",
         methods: "GET"
     )]
