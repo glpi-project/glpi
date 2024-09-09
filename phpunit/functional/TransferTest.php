@@ -825,7 +825,6 @@ class TransferTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
 
-        //var_dump(getAllDataFromTable('glpi_taskcategories'));
         $task_cats = $task_cat->find([
             'name' => __FUNCTION__,
             'entities_id' => $destination_entity,
