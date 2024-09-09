@@ -101,7 +101,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function formatRawAnswer($answer): string
     {
-        // By default only return the string ansswer
+        // By default only return the string answer
         if (!is_string($answer) && !is_numeric($answer)) {
             throw new \InvalidArgumentException(
                 'Raw answer must be a string or a method must be implemented to format the answer'

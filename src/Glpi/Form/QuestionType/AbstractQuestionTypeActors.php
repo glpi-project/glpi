@@ -262,7 +262,7 @@ TWIG;
                     $item     = $type::getById($items_id);
 
                     if ($item !== null) {
-                        $formatted_actors[] = $item->fields['name'];
+                        $formatted_actors[] = $item->getName();
                     }
                 }
             }
