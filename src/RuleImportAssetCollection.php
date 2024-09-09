@@ -91,8 +91,6 @@ class RuleImportAssetCollection extends RuleCollection
             return $criteria;
         }
 
-        // Info: phpstan think the code below is unreachable (see baseline).
-        // TODO: will be fixed once #17806 is merged.
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
