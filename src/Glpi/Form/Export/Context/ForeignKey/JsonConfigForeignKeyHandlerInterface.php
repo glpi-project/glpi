@@ -33,13 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\Export\Context\ForeignKey;
 
-final class DataRequirementSpecification
+use Glpi\Form\Export\Context\DatabaseMapper;
+
+interface JsonConfigForeignKeyHandlerInterface
 {
-    public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
-    ) {
-    }
+    /** @return \Glpi\Form\Export\Specification\DataRequirementSpecification[] */
+    public function getDataRequirements(array $serialized_data): array;
+
+    public function replaceForeignKeysByNames(array $serialized_data): array;
+
+    public function replaceNamesByForeignKeys(
+        array $serialized_data,
+        DatabaseMapper $mapper,
+    ): array;
 }

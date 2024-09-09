@@ -35,11 +35,24 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Group;
 use Override;
+use Profile;
+use User;
 
-final class AllowListConfig implements JsonFieldInterface
+final class AllowListConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface
 {
+    // Serialized keys names
+    private const KEY_USER_IDS = 'user_ids';
+    private const KEY_GROUP_IDS = 'group_ids';
+    private const KEY_PROFILE_IDS = 'profile_ids';
+
     public function __construct(
         private array $user_ids = [],
         private array $group_ids = [],
@@ -48,12 +61,32 @@ final class AllowListConfig implements JsonFieldInterface
     }
 
     #[Override]
+    public static function listForeignKeysHandlers(): array
+    {
+        return [
+            new ForeignKeyArrayHandler(
+                key: self::KEY_USER_IDS,
+                itemtype  : User::class,
+                ignored_values: [AbstractRightsDropdown::ALL_USERS],
+            ),
+            new ForeignKeyArrayHandler(
+                key: self::KEY_GROUP_IDS,
+                itemtype  : Group::class,
+            ),
+            new ForeignKeyArrayHandler(
+                key: self::KEY_PROFILE_IDS,
+                itemtype  : Profile::class,
+            ),
+        ];
+    }
+
+    #[Override]
     public static function jsonDeserialize(array $data): self
     {
         return new self(
-            user_ids   : $data['user_ids'] ?? [],
-            group_ids  : $data['group_ids'] ?? [],
-            profile_ids: $data['profile_ids'] ?? []
+            user_ids   : $data[self::KEY_USER_IDS] ?? [],
+            group_ids  : $data[self::KEY_GROUP_IDS] ?? [],
+            profile_ids: $data[self::KEY_PROFILE_IDS] ?? []
         );
     }
 
@@ -61,9 +94,9 @@ final class AllowListConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            'user_ids'    => $this->user_ids,
-            'group_ids'   => $this->group_ids,
-            'profile_ids' => $this->profile_ids,
+            self::KEY_USER_IDS    => $this->user_ids,
+            self::KEY_GROUP_IDS   => $this->group_ids,
+            self::KEY_PROFILE_IDS => $this->profile_ids,
         ];
     }
 

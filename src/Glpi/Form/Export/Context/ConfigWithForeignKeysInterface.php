@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,13 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\Export\Context;
 
-final class DataRequirementSpecification
+/**
+ * Must be implemented by all JsonFieldInterface objects that contains references
+ * foreign keys.
+ *
+ * The method of this interface will be used by the form serializer to ensure
+ * that form exports can be done correctly as an export can't contains hardcoded
+ * database foreign keys.
+ */
+interface ConfigWithForeignKeysInterface
 {
-    public function __construct(
-        public string $itemtype = "",
-        public string $name = "",
-    ) {
-    }
+    /**
+     * Must return one JsonConfigForeignKeyHandlerInterface per serialized key that
+     * will contains foreign keys data.
+     *
+     * @return \Glpi\Form\Export\Context\ForeignKey\JsonConfigForeignKeyHandlerInterface[]
+     */
+    public static function listForeignKeysHandlers(): array;
 }

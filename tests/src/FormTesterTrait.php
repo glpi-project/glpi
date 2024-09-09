@@ -40,6 +40,7 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
@@ -390,5 +391,39 @@ trait FormTesterTrait
         );
 
         return new FormAccessParameters($session_info, []);
+    }
+
+    private function exportForm(Form $form): string
+    {
+        return self::$serializer->exportFormsToJson([$form])->getJsonContent();
+    }
+
+    private function importForm(
+        string $json,
+        DatabaseMapper $mapper,
+    ): Form {
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $imported_forms = $import_result->getImportedForms();
+        $this->assertCount(1, $imported_forms, "Failed to import form from JSON: $json");
+        $form_copy = current($imported_forms);
+        return $form_copy;
+    }
+
+    private function exportAndImportForm(Form $form): Form
+    {
+        // Export and import process
+        $json = $this->exportForm($form);
+        $form_copy = $this->importForm(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Make sure it was not the same form object that was returned.
+        $this->assertNotEquals($form_copy->getId(), $form->getId());
+
+        // Make sure the new form really exist in the database.
+        $this->assertNotFalse($form_copy->getFromDB($form_copy->getId()));
+
+        return $form_copy;
     }
 }
