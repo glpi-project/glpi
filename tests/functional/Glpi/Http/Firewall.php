@@ -166,7 +166,6 @@ class Firewall extends \GLPITestCase
                 '/front/cron.php',
                 '/front/css.php',
                 '/front/document.send.php',
-                '/front/form/form_renderer.php',
                 '/front/helpdesk.php',
                 '/front/inventory.php',
                 '/front/locale.php',

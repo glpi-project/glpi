@@ -182,7 +182,7 @@
         {# TODO: UI/UX #}
         <div class="me-auto" data-glpi-form-editor-preview-actions>
             <a
-                href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
+                href="{{ path('/Form/Render/' ~ item.fields.id) }}"
                 target="_blank"
                 class="btn btn-secondary"
                 type="button"
@@ -201,7 +201,7 @@
                 form="main-form"
                 title="{{ __("Save and preview") }}"
                 data-glpi-form-editor-save-and-preview-action
-                data-glpi-form-editor-preview-url="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
+                data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
                 <i class="ti ti-eye me-1"></i>
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>

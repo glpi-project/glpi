@@ -231,7 +231,6 @@ final class Firewall implements FirewallInterface
             '/front/cron.php' => self::STRATEGY_NO_CHECK, // in GLPI mode, cronjob can also be triggered from public pages
             '/front/css.php' => self::STRATEGY_NO_CHECK, // CSS must be accessible also on public pages
             '/front/document.send.php' => self::STRATEGY_NO_CHECK, // may allow unauthenticated access, for public FAQ images
-            '/front/form/form_renderer.php' => self::STRATEGY_NO_CHECK, // Since forms may be available to unauthenticated users, we trust the `canAnswerForm` method to do the required session checks.
             '/front/helpdesk.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
             '/front/inventory.php' => self::STRATEGY_NO_CHECK, // allow anonymous requests from inventory agent
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
