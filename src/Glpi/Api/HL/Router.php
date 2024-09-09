@@ -169,14 +169,14 @@ EOT;
     public static function normalizeAPIVersion(string $version): string
     {
         $versions = array_column(static::getAPIVersions(), 'version');
-        $best_match = null;
+        $best_match = self::API_VERSION;
         if (in_array($version, $versions, true)) {
             // Exact match
             return $version;
         }
 
         foreach ($versions as $available_version) {
-            if (str_starts_with($available_version, $version . '.') && version_compare($available_version, $best_match ?? '0.0.0', '>')) {
+            if (str_starts_with($available_version, $version . '.') && version_compare($available_version, $best_match, '>')) {
                 $best_match = $available_version;
             }
         }
