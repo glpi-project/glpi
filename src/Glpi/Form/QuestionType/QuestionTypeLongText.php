@@ -158,7 +158,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         $template = <<<TWIG
             <div class="form-control-plaintext">{{ answer|safe_html }}</div>

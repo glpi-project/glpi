@@ -310,7 +310,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
         if (is_string($answer)) {
             return $answer;

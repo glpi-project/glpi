@@ -124,7 +124,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
         return CommonITILObject::getUrgencyName($answer);
     }

@@ -223,7 +223,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         $template = <<<TWIG
             <div class="form-control-plaintext">
@@ -252,7 +252,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
         $formatted_actors = [];
         foreach ($answer as $actor) {

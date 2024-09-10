@@ -337,7 +337,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
         return $this->formatAnswer($answer);
     }
