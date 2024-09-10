@@ -36,6 +36,7 @@
 namespace Glpi\Discover;
 
 use CommonGLPI;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
@@ -62,7 +63,10 @@ final class Discover extends CommonGLPI
         }
 
         // Don't load discover if we are in a testing environment
-        if (GLPI_ENVIRONMENT_TYPE === 'testing' && ($_SERVER['HTTP_LOAD_DISCOVER'] ?? 'false') === 'false') {
+        if (
+            defined('GLPI_ENVIRONMENT_TYPE') && GLPI_ENVIRONMENT_TYPE === GLPI::ENV_TESTING
+            && (!isset($_SERVER['HTTP_LOAD_DISCOVER']) || $_SERVER['HTTP_LOAD_DISCOVER'] === 'false')
+        ) {
             return;
         }
 
@@ -73,7 +77,6 @@ final class Discover extends CommonGLPI
             echo Html::css('public/lib/introjs.css');
             echo Html::scss('css/standalone/introjs.scss');
             echo Html::script('public/lib/introjs.js');
-            echo Html::script('js/discover.js');
 
             TemplateRenderer::getInstance()->display('discover/lessons.js.twig', [
                 'lesson' => $lesson,

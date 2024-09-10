@@ -33,7 +33,7 @@
 
 /* global introJs */
 
-function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson = false) {
+function launchIntro(endpoint, steps, endingSteps = [], isEndingLesson = false) {
     const intro = introJs();
     intro.setOptions({
         steps: steps,
@@ -45,17 +45,13 @@ function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson
             $.ajax({
                 url: endpoint,
                 method: 'POST',
-                data: {
-                    'action': 'lesson-done',
-                    'lesson_id': lessonId
-                }
             });
 
             if (endingSteps.length > 0) {
                 // Use setTimeout to delay the execution of the launchIntro function
                 // This allows the function to be executed after all other events in the event loop have been processed
                 setTimeout(function () {
-                    launchIntro(endpoint, lessonId, endingSteps, [], true);
+                    launchIntro(endpoint, endingSteps, [], true);
                 }, 0);
             }
         }

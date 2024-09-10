@@ -36,7 +36,7 @@
         {% if lesson['id'] in completed_lessons %}
             <i class="ti ti-check text-success" data-toggle="tooltip" data-placement="top" title="{{ __('Lesson completed') }}"></i>
         {% else %}
-            <a href="{{ path('front/discover.php?lessonId=' ~ lesson['id'] ~ '&action=start') }}" class="text-reset" data-toggle="tooltip" data-placement="top" title="{{ __('Play lesson') }}">
+            <a href="{{ path('Discover/Lesson/' ~ lesson['id'] ~ '/start') }}" class="text-reset" data-toggle="tooltip" data-placement="top" title="{{ __('Play lesson') }}">
                 <i class="ti ti-player-play text-primary"></i>
             </a>
         {% endif %}
@@ -69,7 +69,7 @@
         </span>
     </td>
     <td class="text-nowrap text-secondary">
-        <a href="{{ path('front/discover.php?lessonId=' ~ lesson['id'] ~ '&action=restart') }}" class="text-reset" data-toggle="tooltip" data-placement="top" title="{{ __('Restart lesson') }}">
+        <a href="{{ path('Discover/Lesson/' ~ lesson['id'] ~ '/restart') }}" class="text-reset" data-toggle="tooltip" data-placement="top" title="{{ __('Restart lesson') }}">
             <span class="d-flex align-items-center gap-1">
                 <i class="ti ti-refresh"></i>
             </span>

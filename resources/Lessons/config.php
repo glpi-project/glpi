@@ -80,7 +80,7 @@ return [
             "category" => "basics",
             "description" => __("Let discover the menus of GLPI"),
             "points" => 10,
-            "navigateTo" => "front/central.php",
+            "navigateTo" => "/",
             "steps" => [
                 [
                     "element" => "aside.navbar",
@@ -114,7 +114,7 @@ return [
             "category" => "assistance",
             "description" => __("Create your first ticket"),
             "points" => 10,
-            "navigateTo" => "front/ticket.php",
+            "navigateTo" => "/front/ticket.php",
             "steps" => [
                 [
                     "title" => __("Empty ticket page"),

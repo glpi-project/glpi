@@ -108,11 +108,13 @@ class TemplateRenderer
         $this->environment->addExtension(new MarkdownExtension());
         $this->environment->addRuntimeLoader(new class implements \Twig\RuntimeLoader\RuntimeLoaderInterface
         {
-            public function load($class)
+            public function load($class): ?MarkdownRuntime
             {
                 if (MarkdownRuntime::class === $class) {
                     return new MarkdownRuntime(new DefaultMarkdown());
                 }
+
+                return null;
             }
         });
        // GLPI extensions

@@ -32,9 +32,10 @@
  #}
 
 <script>
-    $(document).ready(function () {
+    import("{{ js_path('js/modules/Discover.js') }}").then(m => {
         var steps = {{ steps|map(step => step.intro ? step|merge({intro: step.intro|markdown_to_html}) : step)|json_encode|raw }};
         var endingSteps = {{ endingSteps|map(step => step.intro ? step|merge({intro: step.intro|markdown_to_html}) : step)|json_encode|raw }};
-        launchIntro('{{ path("ajax/discover.php") }}', '{{ lesson.id }}', steps, endingSteps);
+
+        new m.GlpiDiscover('{{ path("Discover/Lesson/" ~ lesson.id) }}', steps, endingSteps);
     });
 </script>
