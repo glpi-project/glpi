@@ -122,11 +122,6 @@
       ',': ','
    }, __('CSV delimiter'), field_options) }}
 
-   {{ fields.dropdownArrayField('palette', config['palette'], palettes, __('Color palette'), field_options|merge({
-      templateResult: 'formatThemes',
-      templateSelection: 'formatThemes',
-      escapeMarkup: 'function(m) { return m; }'
-   })) }}
    <script>
        function formatThemes(theme) {
            if (!theme.id) {
@@ -144,16 +139,6 @@
                'data-glpi-theme-dark': (palettes_isdark[e.target.value] ?? false) ? "1" : "0"
            });
        });
-   </script>
-
-   {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
-      'horizontal': __('Horizontal (menu in header'),
-      'vertical': __('Vertical (menu in sidebar)')
-   }, __('Page layout'), field_options|merge({
-      templateResult: 'formatGlobalLayout',
-      templateSelection: 'formatGlobalLayout',
-   })) }}
-   <script>
        function formatGlobalLayout(layout) {
            if (!layout.id) {
                return layout.text;
@@ -163,6 +148,20 @@
            );
        }
    </script>
+    {{ fields.dropdownArrayField('palette', config['palette'], palettes, __('Color palette'), field_options|merge({
+        templateResult: 'formatThemes',
+        templateSelection: 'formatThemes',
+        escapeMarkup: 'function(m) { return m; }'
+    })) }}
+
+   {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
+      'horizontal': __('Horizontal (menu in header'),
+      'vertical': __('Vertical (menu in sidebar)')
+   }, __('Page layout'), field_options|merge({
+      templateResult: 'formatGlobalLayout',
+      templateSelection: 'formatGlobalLayout',
+   })) }}
+
    {{ fields.dropdownArrayField('richtext_layout', config['richtext_layout'], {
       'inline': __('Inline (no toolbars)'),
       'classic': __('Classic (toolbar on top)')
