@@ -3439,6 +3439,18 @@ HTML;
     {
         $fg_color = "FFFFFF";
         if ($color !== "") {
+            if (strpos($color, 'rgba') !== false || strpos($color, 'rgb') !== false) {
+                $rgb_color = [];
+                if (preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/', $color, $matches)) {
+                    $rgb_color = [
+                        "R" => intval($matches[1]),
+                        "G" => intval($matches[2]),
+                        "B" => intval($matches[3])
+                    ];
+                }
+                $color = Color::rgbToHex($rgb_color);
+            }
+
             $color = str_replace("#", "", $color);
 
            // if transparency present, get only the color part
