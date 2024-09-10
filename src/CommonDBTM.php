@@ -1420,7 +1420,7 @@ class CommonDBTM extends CommonGLPI
 
         $link = $this->getLinkURL();
 
-        $label = $this->getNameID($options);
+        $label = \htmlspecialchars($this->getNameID($options));
         $title = '';
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);

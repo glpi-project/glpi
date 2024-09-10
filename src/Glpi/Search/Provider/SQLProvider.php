@@ -5140,7 +5140,7 @@ final class SQLProvider implements SearchProviderInterface
                                                 $out .= \Search::LBBR;
                                             }
                                             $count_display++;
-                                            $out .= "<a href='mailto:" . $split2[1] . "'>" . $split2[1] . "</a>";
+                                            $out .= "<a href='mailto:" . $split2[1] . "'>" . \htmlspecialchars($split2[1]) . "</a>";
                                         }
                                     }
                                 }
@@ -5343,7 +5343,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $text  = "<a ";
                             $text .= "href=\"" . \Ticket::getFormURLWithID($linkid) . "\">";
-                            $text .= $link_text . "</a>";
+                            $text .= \htmlspecialchars($link_text) . "</a>";
                             if (count($displayed)) {
                                 $out .= \Search::LBBR;
                             }
@@ -5385,7 +5385,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out  = "<a id='problem$itemtype" . $data['id'] . "' ";
                             $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
                                 \Toolbox::append_params($options, '&amp;') . "\">";
-                            $out .= $data[$ID][0]['name'] . "</a>";
+                            $out .= \htmlspecialchars($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
                     }
@@ -5446,7 +5446,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out  = "<a id='ticket$itemtype" . $data['id'] . "' ";
                             $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.php?" .
                                 \Toolbox::append_params($options, '&amp;') . "\">";
-                            $out .= $data[$ID][0]['name'] . "</a>";
+                            $out .= \htmlspecialchars($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
                     }
@@ -5626,7 +5626,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
-                           href='" . \ReservationItem::getFormURLWithID($data['refID']) . "' >" . $text . "</a>";
+                           href='" . \ReservationItem::getFormURLWithID($data['refID']) . "' >" . \htmlspecialchars($text) . "</a>";
                     }
                     return $text;
 
@@ -5659,7 +5659,7 @@ final class SQLProvider implements SearchProviderInterface
                         $name = $data[$ID][0]['trans'];
                     }
                     if ($itemtype == 'ProjectState') {
-                        $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . $name . "</a></div>";
+                        $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlspecialchars($name) . "</a></div>";
                     } else {
                         $out = $name;
                     }
@@ -5738,7 +5738,7 @@ final class SQLProvider implements SearchProviderInterface
                         ) {
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                         }
-                        $out    .= $name . "</a>";
+                        $out    .= \htmlspecialchars($name) . "</a>";
 
                         // Add tooltip
                         $id = $data[$ID][0]['id'];
@@ -5891,7 +5891,7 @@ final class SQLProvider implements SearchProviderInterface
                     $color = $_SESSION["glpipriority_$index"];
                     $name  = \CommonITILObject::getPriorityName($index);
                     return "<div class='badge_block' style='border-color: $color'>
-                        <span style='background: $color'></span>&nbsp;$name
+                        <span style='background: $color'></span>&nbsp;" . \htmlspecialchars($name) . "
                        </div>";
 
                 case "glpi_knowbaseitems.name":
@@ -5954,7 +5954,7 @@ final class SQLProvider implements SearchProviderInterface
                         $fa_class = "fa-eye-slash not-published";
                         $fa_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>$name</a></div>";
+                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>". \htmlspecialchars($name) ."</a></div>";
             }
         }
 
@@ -6021,7 +6021,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
-                                $chunks = preg_split('/ > /', $name);
+                                $chunks = \explode(' > ', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
                                     $class = $key === array_key_last($chunks) ? '' : 'class="text-muted"';
@@ -6033,7 +6033,7 @@ final class SQLProvider implements SearchProviderInterface
 
                             $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_" .
                                 $data[$ID][$k]['id'] . "' href='$page'>" .
-                                $name . "</a>";
+                                \htmlspecialchars($name) . "</a>";
                         }
                     }
                     return $out;
@@ -6072,6 +6072,7 @@ final class SQLProvider implements SearchProviderInterface
                                     'autoclose'     => false,
                                     'onclick'       => true,
                                 ];
+                                $plaintext = \htmlspecialchars($plaintext);
                                 $out .= sprintf(
                                     __('%1$s %2$s'),
                                     "<span id='text$rand'>" . \Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
@@ -6081,7 +6082,7 @@ final class SQLProvider implements SearchProviderInterface
                                     )
                                 );
                             } else {
-                                $out .= $plaintext;
+                                $out .= \htmlspecialchars($plaintext);
                             }
                         }
                     }
@@ -6148,15 +6149,16 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
+                            $mail = \htmlspecialchars($data[$ID][$k]['name']);
                             $out .= (empty($out) ? '' : \Search::LBBR);
-                            $out .= "<a href='mailto:" . htmlspecialchars($data[$ID][$k]['name']) . "'>" . $data[$ID][$k]['name'];
+                            $out .= "<a href='mailto:" . $mail . "'>" . $mail;
                             $out .= "</a>";
                         }
                     }
                     return (empty($out) ? '' : $out);
 
                 case "weblink":
-                    $orig_link = trim((string)$data[$ID][0]['name']);
+                    $orig_link = \htmlspecialchars(trim((string)$data[$ID][0]['name']));
                     if (!empty($orig_link) && \Toolbox::isValidWebUrl($orig_link)) {
                         // strip begin of link
                         $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
@@ -6247,7 +6249,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out .= $itemtype_name;
                         }
                     }
-                    return $out;
+                    return \htmlspecialchars($out);
 
                 case "language":
                     if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
@@ -6307,7 +6309,7 @@ HTML;
                     isset($so['toadd'])
                     && isset($so['toadd'][$field_data['name']])
                 ) {
-                    $out .= $so['toadd'][$field_data['name']];
+                    $out .= \htmlspecialchars($so['toadd'][$field_data['name']]);
                 } else {
                     // Trans field exists
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
@@ -6318,7 +6320,7 @@ HTML;
                         $out .= $field_data['trans_name'];
                     } else {
                         $value = $field_data['name'];
-                        $out .= $value;
+                        $out .= \htmlspecialchars($value ?: '');
                     }
                 }
             }
@@ -6371,6 +6373,17 @@ HTML;
 
                         $append_specific($specific, $tmpdata, $out);
                     }
+//                    dd([
+//                        'isset($table) && isset($field)' => isset($table) && isset($field),
+//                        '$out' => $out,
+//                        '$itemtype,' => $itemtype,
+//                        '$ID,' => $ID,
+//                        'array $data,' => $data,
+//                        '$meta = 0,' => $meta,
+//                        'array $addobjectparams = [],' => $addobjectparams,
+//                        '$orig_itemtype = null' => $orig_itemtype,
+//                        '$aggregate' => $aggregate,
+//                    ]);
                 }
             }
         }

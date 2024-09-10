@@ -147,7 +147,16 @@
                         {{ showItem(0, row[colkey]['displayname'], 0, 0,)|raw }}
                      {% else %}
                         {# Add a data-searchopt-content-id to each td to allow easy css selectors for a whole column #}
-                        {{ showItem(0, row[colkey]['displayname'], 0, 0, "data-searchopt-content-id=\"" ~ col['id'] ~ "\" " ~ call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                        {{ showItem(
+                            0,
+                            row[colkey]['displayname'],
+                            0,
+                            0,
+                            "data-searchopt-content-id=\""
+                                ~ col['id']
+                                ~ "\" "
+                                ~ call('Search::displayConfigItem',[itemtype, col['id'], row])
+                        )|raw }}
                      {% endif %}
                   {% endfor %}
 
