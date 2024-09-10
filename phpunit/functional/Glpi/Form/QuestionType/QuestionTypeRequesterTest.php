@@ -50,45 +50,23 @@ final class QuestionTypeRequesterTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    public static function singleRequesterAnswerIsDisplayedInTicketDescriptionProvider(): iterable
+    public static function requesterAnswerIsDisplayedInTicketDescriptionProvider(): iterable
     {
         $glpi_id = getItemByTypeName(User::class, "glpi", true);
+        $tech_id = getItemByTypeName(User::class, "tech", true);
+        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
+        $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
+
         yield 'simple user' => [
             'answer' => ["users_id-$glpi_id"],
             'expected' => "glpi",
         ];
 
-        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
         yield 'simple group' => [
             'answer' => ["groups_id-$test_group_1_id"],
             'expected' => "_test_group_1",
         ];
-    }
 
-    #[DataProvider("singleRequesterAnswerIsDisplayedInTicketDescriptionProvider")]
-    public function testSingleRequesterAnswerIsDisplayedInTicketDescription(
-        array $answer,
-        string $expected
-    ): void {
-        $builder = new FormBuilder();
-        $builder->addQuestion("Requester", QuestionTypeRequester::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
-        $form = $this->createForm($builder);
-
-        $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Requester" => $answer,
-        ]);
-
-        $this->assertStringContainsString(
-            "1) Requester: $expected",
-            strip_tags($ticket->fields['content']),
-        );
-    }
-
-    public static function multipleRequesterAnswerIsDisplayedInTicketDescriptionProvider(): iterable
-    {
-        $glpi_id = getItemByTypeName(User::class, "glpi", true);
-        $tech_id = getItemByTypeName(User::class, "tech", true);
         yield 'multiple users' => [
             'answer' => [
                 "users_id-$glpi_id",
@@ -97,8 +75,6 @@ final class QuestionTypeRequesterTest extends DbTestCase
             'expected' => "glpi, tech",
         ];
 
-        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
-        $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
         yield 'multiple groups' => [
             'answer' => [
                 "groups_id-$test_group_1_id",
@@ -108,14 +84,18 @@ final class QuestionTypeRequesterTest extends DbTestCase
         ];
     }
 
-    #[DataProvider("multipleRequesterAnswerIsDisplayedInTicketDescriptionProvider")]
-    public function testMultipleRequesterAnswerIsDisplayedInTicketDescription(
+    #[DataProvider("requesterAnswerIsDisplayedInTicketDescriptionProvider")]
+    public function testRequesterAnswerIsDisplayedInTicketDescription(
         array $answer,
         string $expected
     ): void {
         $builder = new FormBuilder();
         $builder->addQuestion("Requester", QuestionTypeRequester::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket", ['is_multiple_actors' => true]);
+        $builder->addDestination(
+            FormDestinationTicket::class,
+            "My ticket",
+            ['is_multiple_actors' => count($answer) > 1]
+        );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

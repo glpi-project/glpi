@@ -50,72 +50,57 @@ final class QuestionTypeObserverTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    public static function singleObserverAnswerIsDisplayedInTicketDescriptionProvider(): iterable
-    {
-        $glpi_id = getItemByTypeName(User::class, "glpi", true);
-        yield 'simple user' => [
-            'answer' => ["users_id-$glpi_id"],
-            'expected' => "glpi",
-        ];
-
-        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
-        yield 'simple group' => [
-            'answer' => ["groups_id-$test_group_1_id"],
-            'expected' => "_test_group_1",
-        ];
-    }
-
-    #[DataProvider("singleObserverAnswerIsDisplayedInTicketDescriptionProvider")]
-    public function testSingleObserverAnswerIsDisplayedInTicketDescription(
-        array $answer,
-        string $expected
-    ): void {
-        $builder = new FormBuilder();
-        $builder->addQuestion("Observer", QuestionTypeObserver::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
-        $form = $this->createForm($builder);
-
-        $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Observer" => $answer,
-        ]);
-
-        $this->assertStringContainsString(
-            "1) Observer: $expected",
-            strip_tags($ticket->fields['content']),
-        );
-    }
-
-    public static function multipleObserverAnswerIsDisplayedInTicketDescriptionProvider(): iterable
+    public static function observerAnswerIsDisplayedInTicketDescriptionProvider(): iterable
     {
         $glpi_id = getItemByTypeName(User::class, "glpi", true);
         $tech_id = getItemByTypeName(User::class, "tech", true);
+        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
+        $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
+
+        yield 'simple user' => [
+            'answer' => ["users_id-$glpi_id"],
+            'expected' => "glpi",
+            'is_multiple' => false,
+        ];
+
+        yield 'simple group' => [
+            'answer' => ["groups_id-$test_group_1_id"],
+            'expected' => "_test_group_1",
+            'is_multiple' => false,
+        ];
+
         yield 'multiple users' => [
             'answer' => [
                 "users_id-$glpi_id",
                 "users_id-$tech_id",
             ],
             'expected' => "glpi, tech",
+            'is_multiple' => true,
         ];
 
-        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
-        $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
         yield 'multiple groups' => [
             'answer' => [
                 "groups_id-$test_group_1_id",
                 "groups_id-$test_group_2_id",
             ],
             'expected' => "_test_group_1, _test_group_2",
+            'is_multiple' => true,
         ];
     }
 
-    #[DataProvider("multipleObserverAnswerIsDisplayedInTicketDescriptionProvider")]
-    public function testMultipleObserverAnswerIsDisplayedInTicketDescription(
+    #[DataProvider("observerAnswerIsDisplayedInTicketDescriptionProvider")]
+    public function testObserverAnswerIsDisplayedInTicketDescription(
         array $answer,
-        string $expected
+        string $expected,
+        bool $is_multiple
     ): void {
         $builder = new FormBuilder();
         $builder->addQuestion("Observer", QuestionTypeObserver::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket", ['is_multiple_actors' => true]);
+        $builder->addDestination(
+            FormDestinationTicket::class,
+            "My ticket",
+            ['is_multiple_actors' => $is_multiple]
+        );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
