@@ -131,7 +131,17 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function renderAnswerTemplate($answer): string;
+    public function renderAnswerTemplate(mixed $answer): string;
+
+    /**
+     * Format the given answer.
+     * This method is used to format the answer to display.
+     *
+     * @param mixed $answer Given raw answer data.
+     *
+     * @return string
+     */
+    public function formatRawAnswer(mixed $answer): string;
 
     /**
      * Get the name of this questions type.

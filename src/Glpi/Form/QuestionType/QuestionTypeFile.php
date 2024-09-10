@@ -116,7 +116,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         $template = <<<TWIG
             {% for document in documents %}
@@ -130,6 +130,15 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'documents' => array_map(fn($document_id) => (new Document())->getById($document_id), $answer)
         ]);
+    }
+
+    #[Override]
+    public function formatRawAnswer(mixed $answer): string
+    {
+        return implode(', ', array_map(
+            fn($document_id) => (new Document())->getById($document_id)->fields['filename'],
+            $answer
+        ));
     }
 
     #[Override]

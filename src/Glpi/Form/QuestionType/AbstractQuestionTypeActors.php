@@ -223,7 +223,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         $template = <<<TWIG
             <div class="form-control-plaintext">
@@ -249,6 +249,26 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'actors' => $actors
         ]);
+    }
+
+    #[Override]
+    public function formatRawAnswer(mixed $answer): string
+    {
+        $formatted_actors = [];
+        foreach ($answer as $actor) {
+            foreach ($this->getAllowedActorTypes() as $type) {
+                if (strpos($actor, $type::getForeignKeyField()) === 0) {
+                    $items_id = (int)substr($actor, strlen($type::getForeignKeyField()) + 1);
+                    $item     = $type::getById($items_id);
+
+                    if ($item !== null) {
+                        $formatted_actors[] = $item->getName();
+                    }
+                }
+            }
+        }
+
+        return implode(', ', $formatted_actors);
     }
 
     #[Override]

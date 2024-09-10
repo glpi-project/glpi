@@ -347,8 +347,11 @@ trait FormTesterTrait
         $formatted_answers = [];
         foreach ($answers as $question => $answer) {
             $key = $this->getQuestionId($form, $question);
-            // Real answer will be decoded as string by default
-            $formatted_answers[$key] = (string) $answer;
+            if (is_numeric($answer)) {
+                // Real answer will be decoded as string by default
+                $answer = (string) $answer;
+            }
+            $formatted_answers[$key] = $answer;
         }
 
         // Submit form

@@ -84,6 +84,16 @@ final readonly class Answer implements JsonSerializable
         return $this->raw_answer;
     }
 
+    public function getFormattedAnswer(): ?string
+    {
+        $type = $this->getType();
+        if ($type === null) {
+            return null;
+        }
+
+        return $type->formatRawAnswer($this->getRawAnswer());
+    }
+
     public function getQuestionLabel(): string
     {
         return $this->question_label;
