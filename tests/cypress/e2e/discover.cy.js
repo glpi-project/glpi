@@ -44,12 +44,11 @@ describe('Discover', () => {
 
         cy.changeProfile('Super-Admin', true);
     });
-    it('can view the default discover lesson', () => {
+    it('can view the default discover lesson and check if it is completed', () => {
         cy.findByRole('dialog').should('exist').within(() => {
             // Check the dialog title
             cy.findByRole('heading', { name: 'Introduction' }).should('exist');
 
-            cy.findByRole('button', { name: 'Next' }).click();
             cy.findByRole('button', { name: 'Next' }).click();
             cy.findByRole('button', { name: 'Next' }).click();
             cy.findByRole('button', { name: 'Done' }).click();
@@ -57,6 +56,13 @@ describe('Discover', () => {
 
         cy.findByRole('dialog').should('exist').within(() => {
             cy.findByRole('button', { name: 'Done' }).click();
+        });
+
+        cy.findByRole('link', { name: 'User menu' }).click();
+        cy.findByRole('link', { name: 'My lessons' }).click();
+
+        cy.findByRole('row', { name: 'Introduction' }).within(() => {
+            cy.findByRole('cell', { name: 'Status' }).find('i').should('have.attr', 'title', 'Lesson completed');
         });
     });
 });

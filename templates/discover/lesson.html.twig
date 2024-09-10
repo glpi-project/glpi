@@ -31,8 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
-<tr>
-    <td class="text-nowrap">
+<tr aria-label="{{ lesson['title'] }}">
+    <td class="text-nowrap" aria-label="{{ __('Status') }}">
         {% if lesson['id'] in completed_lessons %}
             <i class="ti ti-check text-success" data-toggle="tooltip" data-placement="top" title="{{ __('Lesson completed') }}"></i>
         {% else %}
