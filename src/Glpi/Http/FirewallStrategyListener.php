@@ -52,6 +52,8 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
 
     public function onKernelController(ControllerEvent $event): void
     {
+        $strategy = null;
+
         /** @var SecurityStrategy[] $attributes */
         $attributes = $event->getAttributes(SecurityStrategy::class);
         $number_of_attributes = \count($attributes);
@@ -63,10 +65,12 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
             ));
         } elseif ($number_of_attributes === 1) {
             $strategy = current($attributes)->strategy;
-        } else {
+        } elseif ($event->isMainRequest()) {
             $strategy = $this->firewall->computeFallbackStrategy($event->getRequest()->getPathInfo());
         }
 
-        $this->firewall->applyStrategy($strategy);
+        if ($strategy !== null) {
+            $this->firewall->applyStrategy($strategy);
+        }
     }
 }
