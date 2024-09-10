@@ -81,16 +81,16 @@ export class GlpiDiscover {
 
     #handleBeforeChange(intro) {
         // Disable scroll when intro is running
-        document.body.style.overflow = 'hidden';
+        $('body').addClass('overflow-hidden');
 
         if (this.steps && this.steps[this._currentStep] && this.steps[this._currentStep].actions) {
-            var step = this.steps[this._currentStep];
-            var actions = step.actions;
+            const step = this.steps[this._currentStep];
+            const actions = step.actions;
 
-            var actionEntries = Object.entries(actions);
-            for (var i = 0; i < actionEntries.length; i++) {
-                var action = actionEntries[i][0];
-                var data = actionEntries[i][1];
+            const actionEntries = Object.entries(actions);
+            for (let i = 0; i < actionEntries.length; i++) {
+                const action = actionEntries[i][0];
+                const data = actionEntries[i][1];
 
                 if (action === 'dropdown-show') {
                     return this.#handleDropdownShow(data, step, intro);
@@ -100,7 +100,7 @@ export class GlpiDiscover {
     }
 
     #handleDropdownShow(data, step, intro) {
-        var dropdown = document.querySelector(data);
+        const dropdown = document.querySelector(data);
         if ($(dropdown).length === 0) {
             return;
         }
@@ -135,7 +135,7 @@ export class GlpiDiscover {
 
     #handleExit() {
         // Enable scroll when intro is finished or skipped
-        document.body.style.overflow = 'auto';
+        $('body').removeClass('overflow-hidden');
     }
 
 }
