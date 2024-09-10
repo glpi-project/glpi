@@ -53,7 +53,7 @@ final class QuestionTypeDateTimeTest extends DbTestCase
             type: QuestionTypeDateTime::class,
             extra_data: json_encode([
                 'is_date_enabled' => 1,
-                'is_time_enabled' => 0,
+                'is_time_enabled' => 1,
             ])
         );
         $builder->addDestination(FormDestinationTicket::class, "My ticket");

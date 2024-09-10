@@ -90,7 +90,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             '<div class="form-control-plaintext">{{ answer }}</div>',
@@ -99,7 +99,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function formatRawAnswer($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
         // By default only return the string answer
         if (!is_string($answer) && !is_numeric($answer)) {
