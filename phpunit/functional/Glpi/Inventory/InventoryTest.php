@@ -9157,13 +9157,19 @@ JSON;
 
         // Create Docker VM type
         $nb_vm = countElementsInTable(\VirtualMachineType::getTable());
-        $docker_vm = $this->createItems(
-            \VirtualMachineType::class,
-            [
-                ['name' => 'docker'],
-            ]
-        );
-        $this->assertGreaterThan($nb_vm, countElementsInTable(\VirtualMachineType::getTable()));
+        $vm_types = new \VirtualMachineType();
+        if (!$vm_types->getFromDBByCrit(['name' => 'docker'])) {
+            $docker_vm = $this->createItems(
+                \VirtualMachineType::class,
+                [
+                    ['name' => 'docker'],
+                ]
+            );
+            $this->assertGreaterThan($nb_vm, countElementsInTable(\VirtualMachineType::getTable()));
+            $docker_type_id = $docker_vm[0]->fields['id'];
+        } else {
+            $docker_type_id = $vm_types->fields['id'];
+        }
 
         // Import rule to refuse "docker" virtual machine
         $criteria = [
@@ -9174,7 +9180,7 @@ JSON;
             ], [
                 'condition' => \Rule::PATTERN_IS,
                 'criteria'  => 'virtualmachinetypes_id',
-                'pattern'   => $docker_vm[0]->fields['id']
+                'pattern'   => $docker_type_id
             ]
         ];
         $action = [
@@ -9226,6 +9232,6 @@ JSON;
         // Check that VM computers are not updated
         $c_update = new \Computer();
         $c_update->getFromDBByCrit(['uuid' => 'zrerythegfzed']);
-        $this->assertSame($c_update->fields['name'], "mailpit_update");
+        $this->assertSame("mailpit_update", $c_update->fields['name']);
     }
 }
