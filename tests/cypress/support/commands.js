@@ -421,3 +421,9 @@ Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
         );
     });
 });
+
+Cypress.Commands.add('checkAndCloseAlert', (text) => {
+    cy.findByRole('alert').as('alert');
+    cy.get('@alert').should('contain.text', text);
+    cy.get('@alert').findByRole('button', {name: 'Close'}).click();
+});
