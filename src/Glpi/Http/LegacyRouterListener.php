@@ -92,12 +92,6 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
         $path = $this->getTargetPath($path);
 
-        // Enforce legacy index file for root URL.
-        // This prevents Symfony from being called.
-        if ($path === '/') {
-            $path = '/index.php';
-        }
-
         $response = $this->handleRedirects($path, $uri_prefix);
         if ($response) {
             return $response;

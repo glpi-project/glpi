@@ -77,8 +77,6 @@ trait LegacyRouterTrait
                 'front\/',
                 // install/update scripts
                 'install\/(install|update)\.php$',
-                // endpoints located on root directory
-                '(index|status)\.php',
             ];
 
             $plugins_path_patterns = [

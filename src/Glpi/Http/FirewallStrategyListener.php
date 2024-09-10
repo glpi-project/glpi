@@ -32,29 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Security;
+namespace Glpi\Http;
 
-use Glpi\Http\FirewallListener;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class SecurityStrategyAttributeListener implements EventSubscriberInterface
+final readonly class FirewallStrategyListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents(): array
+    public function __construct(private FirewallInterface $firewall)
     {
-        return [KernelEvents::CONTROLLER_ARGUMENTS => 'onKernelControllerArguments'];
     }
 
-    public function onKernelControllerArguments(ControllerArgumentsEvent $event): void
+    public static function getSubscribedEvents(): array
     {
-        /** @var SecurityStrategy[] $attributes */
-        $attributes = $event->getAttributes()[SecurityStrategy::class] ?? null;
-        if (!\is_array($attributes)) {
-            return;
-        }
+        return [KernelEvents::CONTROLLER => 'onKernelController'];
+    }
 
+    public function onKernelController(ControllerEvent $event): void
+    {
+        $strategy = null;
+
+        /** @var SecurityStrategy[] $attributes */
+        $attributes = $event->getAttributes(SecurityStrategy::class);
         $number_of_attributes = \count($attributes);
         if ($number_of_attributes > 1) {
             throw new \RuntimeException(\sprintf(
@@ -62,10 +63,14 @@ final class SecurityStrategyAttributeListener implements EventSubscriberInterfac
                 SecurityStrategy::class,
                 $number_of_attributes,
             ));
+        } elseif ($number_of_attributes === 1) {
+            $strategy = current($attributes)->strategy;
+        } elseif ($event->isMainRequest()) {
+            $strategy = $this->firewall->computeFallbackStrategy($event->getRequest()->getPathInfo());
         }
 
-        $attribute = $attributes[0];
-
-        $event->getRequest()->attributes->set(FirewallListener::STRATEGY_KEY, $attribute->strategy);
+        if ($strategy !== null) {
+            $this->firewall->applyStrategy($strategy);
+        }
     }
 }

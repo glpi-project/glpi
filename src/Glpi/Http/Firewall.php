@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -68,16 +67,22 @@ final class Firewall implements FirewallInterface
     public const STRATEGY_FAQ_ACCESS = 'faq_access';
 
     /**
-     * Security strategy to apply by default on core ajax/front scripts.
+     * Default strategy to apply (except for legacy scripts).
      */
-    private const STRATEGY_DEFAULT_FOR_CORE = self::STRATEGY_AUTHENTICATED;
+    private const STRATEGY_DEFAULT = self::STRATEGY_CENTRAL_ACCESS;
 
     /**
-     * Security strategy to apply by default on plugin ajax/front scripts.
+     * Security strategy to apply by default on core legacy scripts.
+     */
+    private const STRATEGY_DEFAULT_FOR_CORE_LEGACY = self::STRATEGY_AUTHENTICATED;
+
+    /**
+     * Security strategy to apply by default on plugins legacy scripts.
      *
      * @TODO In GLPI 11.0, raise default level to `self::STRATEGY_AUTHENTICATED`.
+     *       It requires to give to plugins the ability to define a specific strategy for legacy files.
      */
-    private const STRATEGY_DEFAULT_FOR_PLUGINS = self::STRATEGY_NO_CHECK;
+    private const STRATEGY_DEFAULT_FOR_PLUGINS_LEGACY = self::STRATEGY_NO_CHECK;
 
     /**
      * GLPI URLs path prefix.
@@ -119,13 +124,8 @@ final class Firewall implements FirewallInterface
         return new Firewall($CFG_GLPI['root_doc']);
     }
 
-    public function applyStrategy(string $path, ?string $strategy): void
+    public function applyStrategy(string $strategy): void
     {
-        if ($strategy === null) {
-            // If no strategy is defined for the route, use the fallback value.
-            $strategy = $this->computeFallbackStrategy($path);
-        }
-
         switch ($strategy) {
             case self::STRATEGY_AUTHENTICATED:
                 Session::checkLoginUser();
@@ -143,32 +143,16 @@ final class Firewall implements FirewallInterface
                 // nothing to do
                 break;
             default:
-                trigger_error(sprintf('Invalid `%s` strategy.', $strategy), E_USER_WARNING);
-                break;
+                throw new \LogicException(sprintf('Invalid firewall strategy `%s`.', $strategy));
         }
     }
 
-    /**
-     * Compute the fallback strategy for given path.
-     *
-     * @param string $path  URL path
-     * @return string
-     */
-    private function computeFallbackStrategy(string $path): string
+    public function computeFallbackStrategy(string $path): string
     {
-        if ($strategy = $this->computeSpecificStrategyForLegacyPaths($path)) {
-            return $strategy;
-        }
+        $unprefixed_path = preg_replace('/^' . preg_quote($this->path_prefix, '/') . '/', '', $path);
 
-        // Check if entrypoint is a legacy GLPI core ajax/front script.
-        if (
-            str_starts_with($path, $this->path_prefix . '/ajax/')
-            || str_starts_with($path, $this->path_prefix . '/front/')
-        ) {
-            return self::STRATEGY_DEFAULT_FOR_CORE;
-        }
-
-        // Check if entrypoint is a legacy plugin ajax/front script.
+        // Check if endpoint is a plugin endpoint
+        $is_plugin_endpoint = false;
         foreach ($this->plugins_dirs as $plugins_dir) {
             $relative_path = preg_replace(
                 '/^' . preg_quote($this->normalizePath($this->root_dir), '/') . '/',
@@ -176,14 +160,21 @@ final class Firewall implements FirewallInterface
                 $this->normalizePath($plugins_dir)
             );
 
-            if (preg_match('/^' . preg_quote($this->path_prefix . $relative_path, '/') . '\/[^\/]+\/(ajax|front)\/' . '/', $path) === 1) {
-                // Entrypoint is a plugin ajax/front script.
-                return self::STRATEGY_DEFAULT_FOR_PLUGINS;
+            if (preg_match('/^' . preg_quote($relative_path, '/') . '\//', $unprefixed_path) === 1) {
+                $is_plugin_endpoint = true;
+                break;
             }
         }
 
-        // No default security strategy for other entrypoints.
-        return self::STRATEGY_NO_CHECK;
+        // Legacy script
+        if (file_exists($this->root_dir . $unprefixed_path)) {
+            return $is_plugin_endpoint
+                ? self::STRATEGY_DEFAULT_FOR_PLUGINS_LEGACY
+                : $this->computeStrategyForCoreLegacyScript($unprefixed_path);
+        }
+
+        // Modern controllers
+        return self::STRATEGY_DEFAULT;
     }
 
     /**
@@ -207,16 +198,16 @@ final class Firewall implements FirewallInterface
     }
 
     /**
-     * Compute the specific strategy for legacy `/ajax` and `/front` paths.
+     * Compute the strategy for GLPI legacy scripts.
      */
-    private function computeSpecificStrategyForLegacyPaths(string $path): ?string
+    private function computeStrategyForCoreLegacyScript(string $path): string
     {
-        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, $this->path_prefix . '/front/central.php')) {
+        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
             // Allow anonymous access for embed dashboards.
             return 'no_check';
         }
 
-        if (isset($_GET["token"]) && str_starts_with($path, $this->path_prefix . '/front/planning.php')) {
+        if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
             // Token based access for ical/webcal access can be made anonymously.
             return 'no_check';
         }
@@ -242,11 +233,11 @@ final class Firewall implements FirewallInterface
         ];
 
         foreach ($paths as $checkPath => $strategy) {
-            if (\str_starts_with($path, $this->path_prefix . $checkPath)) {
+            if (\str_starts_with($path, $checkPath)) {
                 return $strategy;
             }
         }
 
-        return null;
+        return self::STRATEGY_DEFAULT_FOR_CORE_LEGACY;
     }
 }

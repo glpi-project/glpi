@@ -36,7 +36,8 @@ namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
-use Glpi\Http\GlpiPageResponse;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,6 +52,7 @@ final class ServiceCatalogController extends AbstractController
         $this->service_catalog_manager = new ServiceCatalogManager();
     }
 
+    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
         "/ServiceCatalog",
         name: "glpi_service_catalog",

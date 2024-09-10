@@ -222,12 +222,12 @@ class LegacyRouterListener extends \GLPITestCase
             '/front/page.php',
             '/install/install.php',
             '/install/update.php',
-            '/index.php',
-            '/status.php',
         ];
         $disallowed_glpi_php_paths = [
             '/.atoum.php',
             '/ajax-script.php',
+            '/index.php', // served by a Symfony controller
+            '/status.php', // served by a Symfony controller
             '/bin/console',
             '/config/config_db.php',
             '/files/PHP/1c/db5d8ce30068f6259d1b926165619386c58f1e.PHP',
