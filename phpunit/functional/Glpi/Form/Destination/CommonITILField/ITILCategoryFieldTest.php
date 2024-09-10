@@ -60,7 +60,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         ]);
 
         // Specific value
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
@@ -71,7 +71,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // No specific value
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
@@ -93,7 +93,7 @@ final class ITILCategoryFieldTest extends DbTestCase
             'tickettemplates_id_incident' => $ticket_template->getID(),
         ]);
 
-        $created_ticket = $this->sendFormAndAssertTicketType(
+        $created_ticket = $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
@@ -116,7 +116,7 @@ final class ITILCategoryFieldTest extends DbTestCase
             'name' => 'Test ITILCategory for specific value',
         ]);
 
-        $created_ticket = $this->sendFormAndAssertTicketType(
+        $created_ticket = $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
@@ -138,7 +138,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         ]);
 
         // Using answer from first question
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
@@ -158,7 +158,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // Using answer from second question
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
@@ -191,7 +191,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // With multiple answers submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -208,7 +208,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // Only first answer was submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -221,7 +221,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // Only second answer was submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -234,7 +234,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
 
         // No answers, fallback to default value
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertTicketCategory(
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
@@ -242,7 +242,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         );
     }
 
-    private function sendFormAndAssertTicketType(
+    private function sendFormAndAssertTicketCategory(
         Form $form,
         ITILCategoryFieldConfig $config,
         array $answers,
