@@ -379,6 +379,30 @@ class Session
 
 
     /**
+     * Check if active entities should be reloaded.
+     *
+     * @return bool true if active entities should be reloaded, false otherwise
+     */
+    public static function shouldReloadActiveEntities(): bool
+    {
+        $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
+        if (count($glpiactiveentities)) {
+            $glpiactive_entity = $_SESSION['glpiactive_entity'] ?? '';
+            $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
+            $entities = [$glpiactive_entity];
+            if ($glpiactive_entity_recursive) {
+                $entities = getSonsOf("glpi_entities", $glpiactive_entity);
+            }
+
+            return count($entities) !== count($glpiactiveentities)
+                || array_diff($entities, $glpiactiveentities) !== []
+                || array_diff($glpiactiveentities, $entities) !== [];
+        }
+        return false;
+    }
+
+
+    /**
      * Change active entity to the $ID one. Update glpiactiveentities session variable.
      * Reload groups related to this entity.
      *
@@ -415,6 +439,7 @@ class Session
                         }
                     }
                 }
+                $is_recursive = true;
             } else {
                 $ID = (int)$ID;
 

@@ -181,19 +181,9 @@ if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?
 // Manage entity change
 if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
     Session::changeActiveEntities($_REQUEST["force_entity"], true);
-} else {
-    $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
-    if (count($glpiactiveentities) > 1) {
-        $entities = getSonsOf("glpi_entities", $_SESSION["glpiactive_entity"]);
-        if (
-            count($entities) !== count($glpiactiveentities)
-            || array_diff($entities, $glpiactiveentities) !== []
-            || array_diff($glpiactiveentities, $entities) !== []
-        ) {
-            Session::changeActiveEntities(
-                $_SESSION["glpiactive_entity"],
-                $_SESSION["glpiactive_entity_recursive"]
-            );
-        }
-    }
+} elseif (Session::shouldReloadActiveEntities()) {
+    Session::changeActiveEntities(
+        $_SESSION["glpiactive_entity"],
+        $_SESSION["glpiactive_entity_recursive"]
+    );
 }
