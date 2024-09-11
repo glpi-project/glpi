@@ -385,6 +385,9 @@ class Session
      */
     public static function shouldReloadActiveEntities(): bool
     {
+        if (!array_key_exists('glpiactive_entity')) {
+            return false;
+        }
         $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
         if (count($glpiactiveentities)) {
             $glpiactive_entity = $_SESSION['glpiactive_entity'] ?? '';
