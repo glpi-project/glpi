@@ -52,7 +52,7 @@
                {% if value is not iterable %}
                   {% set value = {'content': value} %}
                {% endif %}
-               <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content }}</td>
+               <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content|raw }}</td>
             {% endfor %}
          </tr>
       {% endfor %}

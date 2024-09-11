@@ -5140,7 +5140,7 @@ final class SQLProvider implements SearchProviderInterface
                                                 $out .= \Search::LBBR;
                                             }
                                             $count_display++;
-                                            $out .= "<a href='mailto:" . $split2[1] . "'>" . \htmlspecialchars($split2[1]) . "</a>";
+                                            $out .= "<a href='mailto:" . \htmlspecialchars($split2[1]) . "'>" . \htmlspecialchars($split2[1]) . "</a>";
                                         }
                                     }
                                 }
@@ -5954,7 +5954,7 @@ final class SQLProvider implements SearchProviderInterface
                         $fa_class = "fa-eye-slash not-published";
                         $fa_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>". \htmlspecialchars($name) ."</a></div>";
+                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>" . \htmlspecialchars($name) . "</a></div>";
             }
         }
 
