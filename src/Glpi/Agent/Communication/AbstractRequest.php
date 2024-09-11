@@ -223,6 +223,10 @@ abstract class AbstractRequest
             }
         }
 
+        /*if ($auth_required === 'basic_authentification') {
+
+        }*/
+
         // Some network inventories may request may contains lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
         // and GLPI will consume about 500MB of memory to handle it,
