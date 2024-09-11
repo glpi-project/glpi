@@ -38,29 +38,29 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-final class SLAFieldConfig implements JsonFieldInterface
+final class SLMFieldConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const SLA_ID = 'sla_id';
+    public const SLM_ID = 'slm_id';
 
     public function __construct(
-        private SLAFieldStrategy $strategy,
-        private ?int $specific_sla_id = null,
+        private SLMFieldStrategy $strategy,
+        private ?int $specific_slm_id = null,
     ) {
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategy = SLAFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        $strategy = SLMFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {
-            $strategy = SLAFieldStrategy::FROM_TEMPLATE;
+            $strategy = SLMFieldStrategy::FROM_TEMPLATE;
         }
 
         return new self(
             strategy: $strategy,
-            specific_sla_id: $data[self::SLA_ID],
+            specific_slm_id: $data[self::SLM_ID],
         );
     }
 
@@ -69,17 +69,17 @@ final class SLAFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::SLA_ID => $this->specific_sla_id,
+            self::SLM_ID => $this->specific_slm_id,
         ];
     }
 
-    public function getStrategy(): SLAFieldStrategy
+    public function getStrategy(): SLMFieldStrategy
     {
         return $this->strategy;
     }
 
-    public function getSpecificSLAID(): ?int
+    public function getSpecificSLMID(): ?int
     {
-        return $this->specific_sla_id;
+        return $this->specific_slm_id;
     }
 }

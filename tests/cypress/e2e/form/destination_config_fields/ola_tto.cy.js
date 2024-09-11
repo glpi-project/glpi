@@ -41,7 +41,7 @@ describe('OLA TTO configuration', () => {
         cy.findByRole('button', {'name': "Add a new question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
@@ -58,7 +58,7 @@ describe('OLA TTO configuration', () => {
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create" }).click();
         cy.findByRole('button', { 'name': "Add ticket" }).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can use all possibles configuration options', () => {
@@ -74,6 +74,7 @@ describe('OLA TTO configuration', () => {
         // Switch to "From template"
         cy.get('@ola_tto_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@ola_tto_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific OLA"
@@ -85,6 +86,7 @@ describe('OLA TTO configuration', () => {
         });
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@ola_tto_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = 'OLA TTO - ' + slm_id;
@@ -101,6 +103,7 @@ describe('OLA TTO configuration', () => {
             cy.get('@config').getDropdownByLabelText('Select an OLA...').selectDropdownValue(ola_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to preview
         cy.findByRole('tab', { 'name': "Form" }).click();
@@ -110,6 +113,9 @@ describe('OLA TTO configuration', () => {
         ;
 
         // Fill form
+        cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
+
+        // Submit form
         cy.findByRole('button', { 'name': 'Send form' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 

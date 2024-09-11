@@ -37,8 +37,8 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\Destination\CommonITILField\OLAFieldConfig;
-use Glpi\Form\Destination\CommonITILField\OLAFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
@@ -79,8 +79,8 @@ final class OLATTRFieldTest extends DbTestCase
 
         $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new OLAFieldConfig(
-                strategy: OLAFieldStrategy::FROM_TEMPLATE,
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_olas_ttr_id: $created_ola_ttr->getID()
         );
@@ -101,9 +101,9 @@ final class OLATTRFieldTest extends DbTestCase
 
         $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new OLAFieldConfig(
-                strategy: OLAFieldStrategy::SPECIFIC_VALUE,
-                specific_ola_id: $created_ola_ttr->getID()
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: $created_ola_ttr->getID()
             ),
             expected_olas_ttr_id: $created_ola_ttr->getID()
         );
@@ -145,9 +145,9 @@ final class OLATTRFieldTest extends DbTestCase
 
         $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new OLAFieldConfig(
-                strategy: OLAFieldStrategy::SPECIFIC_VALUE,
-                specific_ola_id: $created_ola_ttr->getID()
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: $created_ola_ttr->getID()
             ),
             expected_olas_ttr_id: $created_ola_ttr->getID()
         );
@@ -155,7 +155,7 @@ final class OLATTRFieldTest extends DbTestCase
 
     private function checkOLATTRFieldConfiguration(
         Form $form,
-        OLAFieldConfig $config,
+        SLMFieldConfig $config,
         int $expected_olas_ttr_id
     ): Ticket {
         // Insert config

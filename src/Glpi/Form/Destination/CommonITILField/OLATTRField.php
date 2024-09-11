@@ -35,10 +35,11 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use OLA;
 use Override;
 use SLM;
 
-final class OLATTRField extends OLAField
+final class OLATTRField extends SLMField
 {
     #[Override]
     public function getKey(): string
@@ -56,6 +57,12 @@ final class OLATTRField extends OLAField
     public function getWeight(): int
     {
         return 40;
+    }
+
+    #[Override]
+    public function getSLMClass(): string
+    {
+        return OLA::class;
     }
 
     #[Override]

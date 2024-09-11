@@ -37,8 +37,8 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\Destination\CommonITILField\SLAFieldConfig;
-use Glpi\Form\Destination\CommonITILField\SLAFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
@@ -79,8 +79,8 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLAFieldConfig(
-                strategy: SLAFieldStrategy::FROM_TEMPLATE,
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_slas_ttr_id: $created_sla_ttr->getID()
         );
@@ -101,9 +101,9 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLAFieldConfig(
-                strategy: SLAFieldStrategy::SPECIFIC_VALUE,
-                specific_sla_id: $created_sla_ttr->getID()
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: $created_sla_ttr->getID()
             ),
             expected_slas_ttr_id: $created_sla_ttr->getID()
         );
@@ -145,9 +145,9 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLAFieldConfig(
-                strategy: SLAFieldStrategy::SPECIFIC_VALUE,
-                specific_sla_id: $created_sla_ttr->getID()
+            config: new SLMFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: $created_sla_ttr->getID()
             ),
             expected_slas_ttr_id: $created_sla_ttr->getID()
         );
@@ -155,7 +155,7 @@ final class SLATTRFieldTest extends DbTestCase
 
     private function checkSLATTRFieldConfiguration(
         Form $form,
-        SLAFieldConfig $config,
+        SLMFieldConfig $config,
         int $expected_slas_ttr_id
     ): Ticket {
         // Insert config

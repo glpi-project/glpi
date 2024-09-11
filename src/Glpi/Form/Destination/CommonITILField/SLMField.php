@@ -42,16 +42,16 @@ use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
-use OLA;
 
-abstract class OLAField extends AbstractConfigField
+abstract class SLMField extends AbstractConfigField
 {
+    abstract public function getSLMClass(): string;
     abstract public function getType(): int;
 
     #[Override]
     public function getConfigClass(): string
     {
-        return OLAFieldConfig::class;
+        return SLMFieldConfig::class;
     }
 
     #[Override]
@@ -61,14 +61,15 @@ abstract class OLAField extends AbstractConfigField
         string $input_name,
         array $display_options
     ): string {
-        if (!$config instanceof OLAFieldConfig) {
+        if (!$config instanceof SLMFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        $slm = new ($this->getSLMClass())();
         $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/itil_config_fields/ola.html.twig', [
+        return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => OLAFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_VALUE'  => SLMFieldStrategy::SPECIFIC_VALUE->value,
 
             // General display options
             'options' => $display_options,
@@ -77,15 +78,16 @@ abstract class OLAField extends AbstractConfigField
             'main_config_field' => [
                 'label'           => $this->getLabel(),
                 'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . OLAFieldConfig::STRATEGY . "]",
+                'input_name'      => $input_name . "[" . SLMFieldConfig::STRATEGY . "]",
                 'possible_values' => $this->getMainConfigurationValuesforDropdown(),
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
-                'empty_label'     => __("Select an OLA..."),
-                'value'           => $config->getSpecificOLAID() ?? 0,
-                'input_name'      => $input_name . "[" . OLAFieldConfig::OLA_ID . "]",
+                'slm_class' => $this->getSLMClass(),
+                'empty_label'     => sprintf(__("Select an %s..."), $slm->getTypeName()),
+                'value'           => $config->getSpecificSLMID() ?? 0,
+                'input_name'      => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
                 'type'            => $this->getType(),
             ],
         ]);
@@ -97,36 +99,37 @@ abstract class OLAField extends AbstractConfigField
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (!$config instanceof OLAFieldConfig) {
+        if (!$config instanceof SLMFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
         // Compute value according to strategy
-        $ola_id = $config->getStrategy()->getOLAID($config, $answers_set);
+        $slm_id = $config->getStrategy()->getSLMID($config);
 
         // Do not edit input if invalid value was found
-        if (!OLA::getById($ola_id)) {
+        $slm_class = $this->getSLMClass();
+        if (!$slm_class::getById($slm_id)) {
             return $input;
         }
 
-        $input[OLA::getFieldNames($this->getType())[1]] = $ola_id;
+        $input[$slm_class::getFieldNames($this->getType())[1]] = $slm_id;
 
         return $input;
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): OLAFieldConfig
+    public function getDefaultConfig(Form $form): SLMFieldConfig
     {
-        return new OLAFieldConfig(
-            OLAFieldStrategy::FROM_TEMPLATE
+        return new SLMFieldConfig(
+            SLMFieldStrategy::FROM_TEMPLATE
         );
     }
 
     private function getMainConfigurationValuesforDropdown(): array
     {
         $values = [];
-        foreach (OLAFieldStrategy::cases() as $strategies) {
-            $values[$strategies->value] = $strategies->getLabel();
+        foreach (SLMFieldStrategy::cases() as $strategies) {
+            $values[$strategies->value] = $strategies->getLabel($this);
         }
         return $values;
     }

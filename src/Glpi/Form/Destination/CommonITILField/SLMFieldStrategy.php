@@ -35,27 +35,25 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\AnswersSet;
-
-enum OLAFieldStrategy: string
+enum SLMFieldStrategy: string
 {
     case FROM_TEMPLATE = 'from_template';
     case SPECIFIC_VALUE = 'specific_value';
-    public function getLabel(): string
+
+    public function getLabel(SLMField $field): string
     {
         return match ($this) {
             self::FROM_TEMPLATE     => __("From template"),
-            self::SPECIFIC_VALUE    => __("Specific OLA"),
+            self::SPECIFIC_VALUE    => sprintf(__("Specific %s"), $field->getSLMClass()),
         };
     }
 
-    public function getOLAID(
-        OLAFieldConfig $config,
-        AnswersSet $answers_set,
+    public function getSLMID(
+        SLMFieldConfig $config,
     ): ?int {
         return match ($this) {
             self::FROM_TEMPLATE => null, // Let the template apply its default value by itself.
-            self::SPECIFIC_VALUE => $config->getSpecificOLAID(),
+            self::SPECIFIC_VALUE => $config->getSpecificSLMID(),
         };
     }
 }

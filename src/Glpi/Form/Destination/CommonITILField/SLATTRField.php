@@ -39,7 +39,7 @@ use Override;
 use SLA;
 use SLM;
 
-final class SLATTRField extends SLAField
+final class SLATTRField extends SLMField
 {
     #[Override]
     public function getKey(): string
@@ -57,6 +57,12 @@ final class SLATTRField extends SLAField
     public function getWeight(): int
     {
         return 40;
+    }
+
+    #[Override]
+    public function getSLMClass(): string
+    {
+        return SLA::class;
     }
 
     #[Override]
