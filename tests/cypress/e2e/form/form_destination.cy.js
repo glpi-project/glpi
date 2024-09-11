@@ -46,6 +46,7 @@ describe('Form destination', () => {
 
             // Create a ticket destination
             cy.findByRole('button', {name: "Add ticket"}).click();
+            cy.checkAndCloseAlert('Item successfully added');
         });
     });
 
@@ -59,6 +60,7 @@ describe('Form destination', () => {
 
         // Save form
         cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Check if the form destination name is updated
         cy.findByRole("textbox", {name: "Form destination name"}).should('exist').and('have.value', 'Updated ticket destination name');
@@ -103,6 +105,7 @@ describe('Form destination', () => {
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
         });
 
         describe('Validate manual values are kept after reload', () => {
@@ -122,6 +125,7 @@ describe('Form destination', () => {
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
         });
 
         describe('Validate manual values have been removed', () => {
