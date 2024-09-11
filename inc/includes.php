@@ -185,9 +185,11 @@ if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) !
     $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
     if (count($glpiactiveentities) > 1) {
         $entities = getSonsOf("glpi_entities", $_SESSION["glpiactive_entity"]);
-        sort($entities);
-        sort($glpiactiveentities);
-        if ($entities != $glpiactiveentities) {
+        if (
+            count($entities) !== count($glpiactiveentities)
+            || array_diff($entities, $glpiactiveentities) !== []
+            || array_diff($glpiactiveentities, $entities) !== []
+        ) {
             Session::changeActiveEntities(
                 $_SESSION["glpiactive_entity"],
                 $_SESSION["glpiactive_entity_recursive"]
