@@ -401,6 +401,16 @@ Cypress.Commands.add('disableDebugMode', () => {
     });
 });
 
+Cypress.Commands.add('openEntitySelector', () => {
+    cy.intercept('GET', '/ajax/entitytreesons.php*').as('load_data_request');
+
+    cy.findAllByText('Select the desired entity').should('not.be.visible');
+    cy.get('body').type('{ctrl}{alt}e');
+    cy.findAllByText('Select the desired entity').should('be.visible');
+
+    cy.wait('@load_data_request');
+});
+
 // The "startToDrag" and "dropDraggedItemAfter" commands are not perfect as they
 // simulate dragging by moving the DOM node using jquery.
 //

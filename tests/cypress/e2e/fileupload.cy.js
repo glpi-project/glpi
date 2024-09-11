@@ -30,12 +30,27 @@
  *
  * ---------------------------------------------------------------------
  */
+describe('File upload', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+        cy.visit('/front/document.form.php');
+    });
 
-declare namespace Cypress {
-    interface Chainable<Subject> {
-        openEntitySelector(): Chainable<any>
-        startToDrag(): Chainable<any>
-        dropDraggedItemAfter(): Chainable<any>
-        checkAndCloseAlert(text: string): Chainable<any>
-    }
-}
+    it('Can upload file', () => {
+        // Upload file
+        cy.get("input[type=file]").selectFile("fixtures/uploads/bar.txt");
+        cy.findByText('Upload successful').should('exist');
+        cy.findByRole("button", {'name': "Add"}).click();
+        cy.findByRole('textbox', {'name': "Name"}).should('have.value', 'bar.txt');
+
+        // Download file
+        cy.get('#main-form')
+            .findByRole('link', {'name': "bar.txt"})
+            .invoke('attr', 'target', '_self') // Cypress don't like new tabs
+            .click();
+        cy.readFile('cypress/downloads/bar.txt').then(content => {
+            cy.wrap('bar').should('eq', content);
+        });
+    });
+});

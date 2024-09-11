@@ -249,7 +249,7 @@ class EntityTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $expected = [0 => 0, 2 => $ent0];
+        $expected = [0 => 0, $ent0 => $ent0];
         $ancestors = getAncestorsOf('glpi_entities', $ent1);
         $this->assertSame($expected, $ancestors);
 
@@ -1204,6 +1204,8 @@ class EntityTest extends DbTestCase
     public static function entityTreeProvider(): iterable
     {
         $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
+        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
+        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
@@ -1216,7 +1218,16 @@ class EntityTest extends DbTestCase
                     'tree' => [
                         $e2e_test_root => [
                             'name' => 'E2ETestEntity',
-                            'tree' => []
+                            'tree' => [
+                                $e2e_test_child1 => [
+                                    'name' => 'E2ETestSubEntity1',
+                                    'tree' => [],
+                                ],
+                                $e2e_test_child2 => [
+                                    'name' => 'E2ETestSubEntity2',
+                                    'tree' => [],
+                                ],
+                            ],
                         ],
                         $entity_test_root->getID() => [
                             'name' => $entity_test_root->fields['name'],

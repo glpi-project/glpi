@@ -355,6 +355,10 @@ class SearchTest extends DbTestCase
 
     public function testNestedAndMetaComputer()
     {
+        $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
+        $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+
         $search_params = [
             'reset'      => 'reset',
             'is_deleted' => 0,
@@ -451,7 +455,7 @@ class SearchTest extends DbTestCase
         $contains = [
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('2', '3', '4')",
+            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
             "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
             "`glpi_computers`.`name` LIKE '%test%'",
             "AND `glpi_softwares`.`id` = '10784'",
@@ -471,6 +475,10 @@ class SearchTest extends DbTestCase
 
     public function testViewCriterion()
     {
+        $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
+        $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+
         $data = $this->doSearch('Computer', [
             'reset'      => 'reset',
             'is_deleted' => 0,
@@ -491,7 +499,7 @@ class SearchTest extends DbTestCase
         $contains = [
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('2', '3', '4')",
+            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
             "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))"
         ];
 
@@ -2528,6 +2536,10 @@ class SearchTest extends DbTestCase
 
     public function testSearchAllAssets()
     {
+        $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
+        $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+
         $data = $this->doSearch('AllAssets', [
             'reset'      => 'reset',
             'is_deleted' => 0,
@@ -2571,7 +2583,7 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
             $this->assertStringContainsString(
-                "`$type`.`entities_id` IN ('2', '3', '4')",
+                "`$type`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
                 $data['sql']['search']
             );
             $this->assertStringContainsString(

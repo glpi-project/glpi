@@ -102,7 +102,7 @@
                     title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
                         <i class="ti ti-x"></i>
                 </a>
-                <a href="{{ target }}?active_entity=all" class="btn btn-secondary"
+                <a href="{{ target }}?active_entity=all" class="btn btn-secondary" role="button"
                     title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="ti ti-eye"></i>
                 </a>
@@ -256,9 +256,9 @@
         hotkeys('ctrl+alt+e, option+command+e', async function(e) {
             e.stopPropagation();
             e.preventDefault();
-            $('.user-menu-dropdown-toggle').dropdown('show');
+            $('.user-menu-dropdown-toggle:visible').dropdown('show');
             await new Promise(r => setTimeout(r, 100));
-            $('.entity-dropdown-toggle').dropdown('show');
+            $('.user-menu-dropdown-toggle:visible').parent().find('.entity-dropdown-toggle').dropdown('show');
             $('input[name=entsearchtext]').filter(":visible")[0].focus();
         });
     });
