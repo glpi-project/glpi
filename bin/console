@@ -151,13 +151,9 @@ if (array_key_exists('config-dir', $options)) {
    define('GLPI_CONFIG_DIR', realpath($config_dir));
 }
 
-if (array_key_exists('env', $options)) {
-    define('GLPI_ENVIRONMENT_TYPE', $options['env']);
-}
-
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new \Glpi\Kernel\Kernel($options['env'] ?? null);
 $kernel->loadCliConsoleOnlyConfig();
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {

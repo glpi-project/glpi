@@ -56,6 +56,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `name` varchar(255) NOT NULL DEFAULT '',
             `header` longtext,
             `icon` varchar(255) NOT NULL DEFAULT '',
+            `description` longtext,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -231,6 +232,7 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_destinations_formdestinations", "config", "JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type'");
 
     $migration->addField("glpi_forms_forms", "icon", "string");
+    $migration->addField("glpi_forms_forms", "description", "text");
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [

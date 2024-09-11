@@ -45,9 +45,11 @@ describe('Service catalog tab', () => {
         // Make sure the values we are about to apply are are not already set to
         // prevent false negative.
         cy.getDropdownByLabelText("Icon").should('not.contain.text', 'ti-dog');
+        cy.findByLabelText("Description").awaitTinyMCE().should('not.contain.text', 'My description');
 
         // Set values
         cy.getDropdownByLabelText("Icon").selectDropdownValue('ti-dog');
+        cy.findByLabelText("Description").awaitTinyMCE().type('My description');
 
         // Save changes
         cy.findByRole('button', {'name': "Save changes"}).click();
@@ -55,5 +57,6 @@ describe('Service catalog tab', () => {
 
         // Validate values
         cy.getDropdownByLabelText("Icon").should('contain.text', 'ti-dog');
+        cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
     });
 });

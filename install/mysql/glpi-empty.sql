@@ -9414,6 +9414,7 @@ CREATE TABLE `glpi_forms_forms` (
     `name` varchar(255) NOT NULL DEFAULT '',
     `header` longtext,
     `icon` varchar(255) NOT NULL DEFAULT '',
+    `description` longtext,
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
