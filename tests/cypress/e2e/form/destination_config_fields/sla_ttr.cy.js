@@ -41,7 +41,7 @@ describe('SLA TTR configuration', () => {
         cy.findByRole('button', {'name': "Add a new question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
@@ -58,7 +58,7 @@ describe('SLA TTR configuration', () => {
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create" }).click();
         cy.findByRole('button', { 'name': "Add ticket" }).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can use all possibles configuration options', () => {
@@ -74,6 +74,7 @@ describe('SLA TTR configuration', () => {
         // Switch to "From template"
         cy.get('@sla_ttr_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@sla_ttr_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific SLA"
@@ -85,6 +86,7 @@ describe('SLA TTR configuration', () => {
         });
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@sla_ttr_dropdown').should('have.text', 'Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = 'SLA TTR - ' + slm_id;
@@ -101,6 +103,7 @@ describe('SLA TTR configuration', () => {
             cy.get('@config').getDropdownByLabelText('Select an SLA...').selectDropdownValue(sla_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to preview
         cy.findByRole('tab', { 'name': "Form" }).click();

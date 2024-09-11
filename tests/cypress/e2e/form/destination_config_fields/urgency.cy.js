@@ -47,7 +47,7 @@ describe('Urgency configuration', () => {
         // Go to destination tab
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can use all possibles configuration options', () => {
@@ -67,6 +67,7 @@ describe('Urgency configuration', () => {
         // Switch to "From template"
         cy.get('@urgency_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@urgency_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific type"
@@ -75,6 +76,7 @@ describe('Urgency configuration', () => {
         cy.get('@specific_urgency_dropdown').selectDropdownValue('High');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@urgency_dropdown').should('have.text', 'Specific urgency');
         cy.get('@specific_urgency_dropdown').should('have.text', 'High');
 
@@ -84,6 +86,7 @@ describe('Urgency configuration', () => {
         cy.get('@specific_answer_type_dropdown').selectDropdownValue('My urgency question');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@urgency_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My urgency question');
     });

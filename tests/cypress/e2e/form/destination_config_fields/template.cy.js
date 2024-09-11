@@ -62,7 +62,7 @@ describe('Template configuration', () => {
         // Go to destination tab
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can use all possibles configuration options', () => {
@@ -87,6 +87,7 @@ describe('Template configuration', () => {
             cy.get('@specific_template_id_dropdown').selectDropdownValue(ticket_template_name);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@template_dropdown').should('have.text', 'Specific template');
             cy.get('@specific_template_id_dropdown').should('have.text', ticket_template_name);
         });

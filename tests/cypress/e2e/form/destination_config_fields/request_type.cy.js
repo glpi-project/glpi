@@ -42,12 +42,12 @@ describe('Request type configuration', () => {
         cy.focused().type("My request type question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Request type');
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can use all possibles configuration options', () => {
@@ -67,6 +67,7 @@ describe('Request type configuration', () => {
         // Switch to "From template"
         cy.get('@request_type_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@request_type_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific request type"
@@ -75,6 +76,7 @@ describe('Request type configuration', () => {
         cy.get('@specific_request_type_dropdown').selectDropdownValue('Request');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@request_type_dropdown').should('have.text', 'Specific request type');
         cy.get('@specific_request_type_dropdown').should('have.text', 'Request');
 
@@ -84,6 +86,7 @@ describe('Request type configuration', () => {
         cy.get('@specific_answer_type_dropdown').selectDropdownValue('My request type question');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@request_type_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My request type question');
     });
