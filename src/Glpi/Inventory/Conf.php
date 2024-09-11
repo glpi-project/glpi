@@ -384,7 +384,6 @@ class Conf extends CommonGLPI
             echo '</div>';
             echo "</td>";
             echo "</tr>";
-
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='auth'>" . __s('Authorization header') . "</label>";
@@ -392,18 +391,56 @@ class Conf extends CommonGLPI
             echo "<td>";
             Dropdown::showFromArray('auth_required', [
                 'none' => __('None'),
-                'client_credentials' => __('OAuth - Client credentials')
+                'client_credentials' => __('OAuth - Client credentials'),
+                'basic_authentification' => __('Basic Authentification'),
             ], [
                 'value' => $config['auth_required'] ?? 'none'
             ]);
             echo "</td></tr>";
+            echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
+            echo "<td>";
+            echo "<label for='basic_auth_login'>" . __s('Login') . "</label>";
+            echo "</td>";
+            echo "<td>";
+            echo Html::input("basic_auth_login", [
+                "value" => $config["basic_auth_login"]
+            ]);
+            echo "</td>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
+            echo "<td>";
+            echo "<label for='basic_auth_password'>" . __s('Password') . "</label>";
+            echo "</td>";
+            echo "<td>";
+            echo Html::input("basic_auth_password", [
+                "value" => $config["basic_auth_password"],
+                "type" => "password"
+            ]);
+            echo "</td>";
+            echo "</tr>";
+            echo Html::scriptBlock("
+                function toggleDisplayLoginInputs(select) {
+                    let displayedInputs = false;
+                    const selectedValue = $(select).val();
+                    if (selectedValue == 'basic_authentification') {
+                        displayedInputs = true;
+                    }
+                    $('#basic_auth_login_row').toggle(displayedInputs);
+                    $('#basic_auth_password_row').toggle(displayedInputs);
+                }
 
+                const selectAuthHeader = $(`select[name='auth_required']`);
+                selectAuthHeader.change(function() {
+                    toggleDisplayLoginInputs(this);
+                });
+
+                toggleDisplayLoginInputs(selectAuthHeader);
+            ");
             echo "<tr>";
             echo "<th colspan='4'>";
             echo __s('Import options');
             echo "</th>";
             echo "</tr>";
-
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_volume'>";
@@ -1228,6 +1265,8 @@ class Conf extends CommonGLPI
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
             'auth_required'                  => 'none',
+            'basic_auth_login'                     => '',
+            'basic_auth_password'                  => ''
         ];
     }
 
