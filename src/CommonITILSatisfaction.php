@@ -430,6 +430,37 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             ]
         ];
 
+        $sql = "WITH RECURSIVE entity_tree AS (
+                SELECT
+                    id,
+                    entities_id,
+                    inquest_duration
+                FROM
+                    glpi_entities
+                WHERE
+                    inquest_config != -2
+                UNION ALL
+                SELECT
+                    e.id,
+                    e.entities_id,
+                    et.inquest_duration
+                FROM
+                    glpi_entities e
+                INNER JOIN
+                    entity_tree et
+                    ON e.entities_id = et.id
+                WHERE
+                    e.inquest_config = -2
+            )
+            SELECT
+                id AS entity_id,
+                inquest_duration
+            FROM
+                entity_tree
+        ";
+
+        $subquery = new QueryExpression("($sql) AS durations");
+
         $tab[] = [
             'id'                 => 72 + $base_id,
             'table'              => $table,
@@ -444,10 +475,10 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'usehaving'          => true,
             'nometa'             => true,
             'computation'        => QueryFunction::if(
-                condition: ['glpi_entities.inquest_duration' => ['>', 0]],
+                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = glpi_entities.id AND durations.inquest_duration > 0)"),
                 true_expression: QueryFunction::dateAdd(
                     date: "$table.date_begin",
-                    interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = glpi_entities.id)"),
                     interval_unit: 'DAY',
                 ),
                 false_expression: new QueryExpression($DB::quoteValue(''))

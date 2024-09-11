@@ -41,6 +41,7 @@ use DBConnection;
 use DbTestCase;
 use Document;
 use Document_Item;
+use Entity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -4648,9 +4649,28 @@ class SearchTest extends DbTestCase
         $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
         $user_id = $_SESSION['glpiID'];
 
-        $this->updateItem(\Entity::class, $entity_root_id, ['inquest_duration' => 0]);
-        $this->updateItem(\Entity::class, $entity_child_1_id, ['inquest_duration' => 2]);
-        $this->updateItem(\Entity::class, $entity_child_2_id, ['inquest_duration' => 4]);
+        $this->updateItem(\Entity::class, $entity_root_id, [
+            'inquest_config'   => 1,
+            'inquest_duration' => 0
+        ]);
+        $this->updateItem(\Entity::class, $entity_child_1_id, [
+            'inquest_config'   => 1,
+            'inquest_duration' => 2
+        ]);
+        $this->updateItem(\Entity::class, $entity_child_2_id, [
+            'inquest_config'   => 1,
+            'inquest_duration' => 4
+        ]);
+        // Create sub entity for child 2
+        $entity_child_2_1_id = $this->createItem(\Entity::class, [
+            'name'         => '_test_child_2_1',
+            'entities_id'  => $entity_child_2_id
+        ])->getID();
+        // Create sub sub entity for child 2
+        $entity_child_2_1_1_id = $this->createItem(\Entity::class, [
+            'name'         => '_test_child_2_1_1',
+            'entities_id'  => $entity_child_2_1_id
+        ])->getID();
 
         // Create closed tickets
         $tickets = $this->createItems(\Ticket::class, [
@@ -4677,7 +4697,23 @@ class SearchTest extends DbTestCase
                 'solvedate' => $_SESSION['glpi_currenttime'],
                 'status' => \CommonITILObject::CLOSED,
                 'users_id_recipient' => $user_id,
-            ]
+            ],
+            [
+                'entities_id' => $entity_child_2_1_id,
+                'name' => __FUNCTION__ . ' 4',
+                'content' => __FUNCTION__ . ' 4 content',
+                'solvedate' => $_SESSION['glpi_currenttime'],
+                'status' => \CommonITILObject::CLOSED,
+                'users_id_recipient' => $user_id,
+            ],
+            [
+                'entities_id' => $entity_child_2_1_1_id,
+                'name' => __FUNCTION__ . ' 5',
+                'content' => __FUNCTION__ . ' 5 content',
+                'solvedate' => $_SESSION['glpi_currenttime'],
+                'status' => \CommonITILObject::CLOSED,
+                'users_id_recipient' => $user_id,
+            ],
         ]);
 
         // Add satisfactions
@@ -4694,6 +4730,16 @@ class SearchTest extends DbTestCase
             ],
             [
                 'tickets_id' => $tickets[2]->getID(),
+                'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'tickets_id' => $tickets[3]->getID(),
+                'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'tickets_id' => $tickets[4]->getID(),
                 'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
                 'date_begin' => $_SESSION['glpi_currenttime'],
             ],
@@ -4737,6 +4783,14 @@ class SearchTest extends DbTestCase
             ],
             [
                 $tickets[2]->getID(),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+            ],
+            [
+                $tickets[3]->getID(),
+                date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
+            ],
+            [
+                $tickets[4]->getID(),
                 date('Y-m-d H:i:s', strtotime('+4 days', strtotime($_SESSION['glpi_currenttime']))),
             ],
         ];
