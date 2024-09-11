@@ -41,8 +41,14 @@ final class ConfigurationConstants
     {
     }
 
-    public function computeConstants(): void
+    public function computeConstants(?string $env = null): void
     {
+        if ($env !== null) {
+            // Force the `GLPI_ENVIRONMENT_TYPE` constant.
+            // The value defined in the server env variables will be ignored.
+            define('GLPI_ENVIRONMENT_TYPE', $env);
+        }
+
         // Define GLPI_* constants that can be customized by admin.
         //
         // Use a self-invoking anonymous function to:
