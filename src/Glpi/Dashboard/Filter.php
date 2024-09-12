@@ -47,6 +47,7 @@ use Glpi\Dashboard\Filters\{
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
+    GroupRequesterFilter,
     GroupTechFilter,
     UserTechFilter,
     DatesModFilter
@@ -97,6 +98,7 @@ class Filter extends \CommonDBChild
             RequestTypeFilter::class,
             StateFilter::class,
             TicketTypeFilter::class,
+            GroupRequesterFilter::class,
             GroupTechFilter::class,
             UserTechFilter::class,
         ];
