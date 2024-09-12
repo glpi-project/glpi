@@ -2043,7 +2043,7 @@ class InventoryTest extends InventoryTestCase
             } else {
                 $this->assertSame('NetworkEquipment', $port['itemtype']);
                 $this->assertSame($equipments_id, $port['items_id']);
-                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true), );
+                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true));
                 $this->assertMatchesRegularExpression(
                     '/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i',
                     $port['mac']
