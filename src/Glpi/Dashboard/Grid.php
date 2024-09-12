@@ -44,6 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Html;
+use Item_Devices;
 use Plugin;
 use Ramsey\Uuid\Uuid;
 use Reminder;
@@ -1181,7 +1182,7 @@ HTML;
                 }
             }
 
-            foreach ($CFG_GLPI['itemdevices'] as $itemtype) {
+            foreach (Item_Devices::getDeviceTypes() as $itemtype) {
                 $fk_itemtype = $itemtype::getDeviceType();
                 $label = sprintf(
                     __("Number of %s by type"),

@@ -1735,7 +1735,7 @@ $polymorphic_types_mapping = [
     Socket::class                  => $CFG_GLPI['socket_types'],
     Item_Plug::class               => $CFG_GLPI['plug_types'],
 ];
-foreach ($CFG_GLPI['itemdevices'] as $itemdevice_itemtype) {
+foreach (Item_Devices::getDeviceTypes() as $itemdevice_itemtype) {
     $source_itemtypes = $itemdevice_itemtype::itemAffinity();
     if (in_array('*', $source_itemtypes)) {
         $source_itemtypes = $CFG_GLPI['itemdevices_types'];

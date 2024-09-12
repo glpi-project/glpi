@@ -432,29 +432,19 @@ class Item_Devices extends CommonDBRelation
 
     /**
      * Get all the kind of devices available inside the system.
-     * This method is equivalent to getItemAffinities('')
      *
-     * @return array of the types of Item_Device* available
+     * @return array
+     * @phpstan-return class-string<Item_Devices>[]
      **/
     public static function getDeviceTypes()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        $types = [];
 
-       // If the size of $CFG_GLPI['item_device_types'] and $CFG_GLPI['device_types'] then,
-       // there is new device_types and we must update item_device_types !
-        if (
-            !isset($CFG_GLPI['item_device_types'])
-            || (count($CFG_GLPI['item_device_types']) != count($CFG_GLPI['device_types']))
-        ) {
-            $CFG_GLPI['item_device_types'] = [];
-
-            foreach (CommonDevice::getDeviceTypes() as $deviceType) {
-                $CFG_GLPI['item_device_types'][] = $deviceType::getItem_DeviceType();
-            }
+        foreach (CommonDevice::getDeviceTypes() as $device_class) {
+            $types[] = $device_class::getItem_DeviceType();
         }
 
-        return $CFG_GLPI['item_device_types'];
+        return $types;
     }
 
 
@@ -469,23 +459,21 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getItemAffinities($itemtype)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
+        $result = [];
 
-        $items_affinities = $GLPI_CACHE->get('item_device_affinities', ['' => static::getDeviceTypes()]);
+        foreach (CommonDevice::getDeviceTypes() as $device_class) {
+            $item_device_class = $device_class::getItem_DeviceType();
+            $item_device_affinities = $item_device_class::itemAffinity();
 
-        if (!isset($items_affinities[$itemtype])) {
-            $afffinities = [];
-            foreach ($items_affinities[''] as $item_id => $item_device) {
-                if (in_array($itemtype, $item_device::itemAffinity()) || in_array('*', $item_device::itemAffinity())) {
-                    $afffinities[$item_id] = $item_device;
-                }
+            if (
+                in_array($itemtype, $item_device_affinities, true)
+                || in_array('*', $item_device_affinities, true)
+            ) {
+                $result[] = $item_device_class;
             }
-            $items_affinities[$itemtype] = $afffinities;
-            $GLPI_CACHE->set('item_device_affinities', $items_affinities);
         }
 
-        return $items_affinities[$itemtype];
+        return $result;
     }
 
 
