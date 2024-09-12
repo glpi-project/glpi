@@ -119,48 +119,103 @@ class Group extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_groups_id%');
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /**  @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
-        if (!$withtemplate && self::canView()) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case 'Group':
-                    /** @var Group $item */
-                    $ong = [];
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['groups_id' => $item->getID()]
-                        );
+        if ($withtemplate || !self::canView()) {
+            return '';
+        }
+
+        $ong = [];
+        switch (get_class($item)) {
+            case Group::class:
+                $nb = 0;
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = countElementsInTable(
+                        $this->getTable(),
+                        ['groups_id' => $item->getID()]
+                    );
+                }
+                $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    if ($item->getField('is_itemgroup')) {
+                        $total_linkgroups = 0;
+                        $subqueries = [];
+
+                        foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
+                            if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
+                                $subqueries[] = new \QuerySubQuery([
+                                    'SELECT' => ['id'],
+                                    'FROM'   => $itemtype_linked::getTable(),
+                                    'WHERE'  => ['groups_id' => $item->getID()]
+                                ]);
+                            }
+                        }
+
+                        if (!empty($subqueries)) {
+                            $union = new \QueryUnion($subqueries, false, 'combined_results');
+                            $iterator = $DB->request([
+                                'SELECT'   => ['id'],
+                                'FROM'     => $union
+                            ]);
+                            $total_linkgroups = count($iterator);
+                        }
+                        $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
                     }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+                    if ($item->getField('is_assign')) {
+                        $total_tech_linkgroups = 0;
+                        $subqueries = [];
 
+                        foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
+                            if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id_tech')) {
+                                $subqueries[] = new \QuerySubQuery([
+                                    'SELECT' => ['id'],
+                                    'FROM'   => $itemtype_linked::getTable(),
+                                    'WHERE'  => ['groups_id_tech' => $item->getID()]
+                                ]);
+                            }
+                        }
+
+                        if (!empty($subqueries)) {
+                            $union = new \QueryUnion($subqueries, false, 'combined_results');
+                            $iterator = $DB->request([
+                                'SELECT'   => ['id'],
+                                'FROM'     => $union
+                            ]);
+                            $total_tech_linkgroups = count($iterator);
+                        }
+                        $ong[2] = self::createTabEntry(__('Managed items'), $total_tech_linkgroups);
+                    }
+                } else {
                     if ($item->getField('is_itemgroup')) {
                         $ong[1] = __('Used items');
                     }
                     if ($item->getField('is_assign')) {
                         $ong[2] = __('Managed items');
                     }
-                    if (
-                        $item->getField('is_usergroup')
-                        && Group::canUpdate()
-                        && Session::haveRight("user", User::UPDATEAUTHENT)
-                        && AuthLDAP::useAuthLdap()
-                    ) {
-                        $ong[3] = __('LDAP directory link');
-                    }
-                    return $ong;
-            }
+                }
+
+                if (
+                    $item->getField('is_usergroup')
+                    && Group::canUpdate()
+                    && Session::haveRight("user", User::UPDATEAUTHENT)
+                    && AuthLDAP::useAuthLdap()
+                ) {
+                    $ong[3] = __('LDAP directory link');
+                }
         }
-        return '';
+
+        return $ong;
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         switch ($item->getType()) {
             case 'Group':
                 /** @var Group $item */
