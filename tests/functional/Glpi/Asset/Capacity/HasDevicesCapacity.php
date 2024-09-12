@@ -40,6 +40,7 @@ use DeviceHardDrive;
 use DisplayPreference;
 use Entity;
 use Item_DeviceHardDrive;
+use Item_Devices;
 use Log;
 
 class HasDevicesCapacity extends DbTestCase
@@ -99,6 +100,11 @@ class HasDevicesCapacity extends DbTestCase
                         $this->array($CFG_GLPI[$config_key])->notContains($classname);
                     }
                 }
+            }
+            if ($has_capacity) {
+                $this->array(Item_Devices::getItemAffinities($classname))->isNotEmpty();
+            } else {
+                $this->array(Item_Devices::getItemAffinities($classname))->isEmpty();
             }
 
             // Check that the corresponding tab is present on items
