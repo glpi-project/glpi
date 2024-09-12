@@ -126,7 +126,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertIsArray($record);
         $this->assertSame($expected, $record);
 
-       //remote management
+        //remote management
         $mgmt = new \Item_RemoteManagement();
         $iterator = $mgmt->getFromItem($computer);
         $this->assertCount(1, $iterator);
@@ -843,7 +843,7 @@ class InventoryTest extends InventoryTestCase
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -1104,7 +1104,7 @@ class InventoryTest extends InventoryTestCase
             'real_capacity' => $capacities[0] ?? 50570
         ];
 
-       //hack to replace expected fkeys
+        //hack to replace expected fkeys
         foreach (array_keys($expected) as $key) {
             if (isForeignKeyField($key)) {
                 $expected[$key] = $battery[$key];
@@ -1123,7 +1123,7 @@ class InventoryTest extends InventoryTestCase
 
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
         $this->assertCount(7, $metadata);
         $this->assertSame('glpixps-2018-07-09-09-07-13', $metadata['deviceid']);
@@ -1893,13 +1893,13 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame('netinventory', $metadata['action']);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
-       //no agent with deviceid equals to "foo"
+        //no agent with deviceid equals to "foo"
         $this->assertCount(0, $agents);
 
-       //get model, manufacturer, ...
+        //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->assertIsArray($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -2043,7 +2043,7 @@ class InventoryTest extends InventoryTestCase
             } else {
                 $this->assertSame('NetworkEquipment', $port['itemtype']);
                 $this->assertSame($equipments_id, $port['items_id']);
-                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true),);
+                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true), );
                 $this->assertMatchesRegularExpression(
                     '/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i',
                     $port['mac']
@@ -2576,7 +2576,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             foreach ($expecteds as $type => $expected) {
                 $component = array_values($components[$type]);
-               //hack to replace expected fkeys
+                //hack to replace expected fkeys
                 foreach ($expected as $i => &$row) {
                     foreach (array_keys($row) as $key) {
                         if (isForeignKeyField($key)) {
@@ -2682,12 +2682,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $i = 0;
-       /*foreach ($unmanageds as $unmanaged) {
-         foreach ($expecteds[$i] as $key => $value) {
-            $this->>assertEquals($value, $unmanaged[$key]);
-         }
-         ++$i;
-       }*/
+        /*foreach ($unmanageds as $unmanaged) {
+          foreach ($expecteds[$i] as $key => $value) {
+             $this->>assertEquals($value, $unmanaged[$key]);
+          }
+          ++$i;
+        }*/
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
@@ -3560,7 +3560,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $_SESSION["glpi_currenttime"] = $date_now;
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
 
         $this->assertCount(5, $metadata);
@@ -3571,14 +3571,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame('netinventory', $metadata['action']);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $this->assertSame('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51', $inventory->getAgent()->fields['deviceid']);
         $this->assertSame('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51', $inventory->getAgent()->fields['name']);
         $this->assertSame('NetworkEquipment', $inventory->getAgent()->fields['itemtype']);
         $this->assertSame($agenttype['id'], $inventory->getAgent()->fields['agenttypes_id']);
 
-       //get model, manufacturer, ...
+        //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->assertIsArray($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -3663,7 +3663,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->assertIsArray($row);
             $this->assertSame($expected_eq, $row, print_r($row, true) . print_r($expected_eq, true));
 
-           //check network ports
+            //check network ports
             $expected_count = ($first ? 4 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
@@ -3752,7 +3752,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 } else {
                     $this->assertSame('NetworkEquipment', $port['itemtype']);
                     $this->assertSame($equipments_id, $port['items_id']);
-                   //$this->assertSame('NetworkPortAggregate', print_r($port, true), $port['instantiation_type']);
+                    //$this->assertSame('NetworkPortAggregate', print_r($port, true), $port['instantiation_type']);
                     $this->assertMatchesRegularExpression(
                         '/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i',
                         $port['mac']
@@ -3761,7 +3761,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 }
                 ++$i;
 
-               //check for ips
+                //check for ips
                 $ip_iterator = $DB->request([
                     'SELECT'       => [
                         \IPAddress::getTable() . '.name',
@@ -3784,7 +3784,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     ]
                 ]);
 
-               //$this->assertCount(count($ips[$port['name']] ?? ['one' => 'one']), $ip_iterator);
+                //$this->assertCount(count($ips[$port['name']] ?? ['one' => 'one']), $ip_iterator);
                 if ($port['mac'] == '58:ac:78:59:45:fb') {
                     foreach ($ip_iterator as $ip) {
                         $this->assertIsArray($ips[$port['name']]);
@@ -3793,7 +3793,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 }
             }
 
-           //check for components
+            //check for components
             $components = [];
             $allcount = 0;
             foreach (\Item_Devices::getItemAffinities('NetworkEquipment') as $link_type) {
@@ -3860,7 +3860,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             foreach ($expecteds as $type => $expected) {
                 $component = array_values($components[$type]);
-               //hack to replace expected fkeys
+                //hack to replace expected fkeys
                 foreach ($expected as $i => &$row) {
                     foreach (array_keys($row) as $key) {
                         if (isForeignKeyField($key)) {
@@ -3903,7 +3903,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ++$i;
         }
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->assertCount($expected_eq_count + count($unmanageds), $found);
@@ -4230,7 +4230,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -6508,7 +6508,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
-    
     /**
      * Test that fields are correctly copied from computer to monitor on inventory.
      */
