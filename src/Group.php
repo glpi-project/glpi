@@ -144,32 +144,52 @@ class Group extends CommonTreeDropdown
 
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     if ($item->getField('is_itemgroup')) {
-                        $request = 'SELECT id FROM (';
+                        $total_linkgroups = 0;
                         $subqueries = [];
+
                         foreach ($CFG_GLPI['linkgroup_types'] as $itemtype_linked) {
                             if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id')) {
-                                $subqueries[] = "SELECT id FROM " . $itemtype_linked::getTable() . " WHERE groups_id = " . $item->getID();
+                                $subqueries[] = new \QuerySubQuery([
+                                    'SELECT' => ['id'],
+                                    'FROM'   => $itemtype_linked::getTable(),
+                                    'WHERE'  => ['groups_id' => $item->getID()]
+                                ]);
                             }
                         }
-                        $request .= implode(' UNION ALL ', $subqueries);
-                        $request .= ') AS combined_results';
-                        $iterator = $DB->request($request);
-                        $total_linkgroups = count($iterator);
 
-                        $ong[1] = self::createTabEntry(__('Used items'), count($iterator));
+                        if (!empty($subqueries)) {
+                            $union = new \QueryUnion($subqueries, false, 'combined_results');
+                            $iterator = $DB->request([
+                                'SELECT'   => ['id'],
+                                'FROM'     => $union
+                            ]);
+                            $total_linkgroups = count($iterator);
+                        }
+                        $ong[1] = self::createTabEntry(__('Used items'), $total_linkgroups);
                     }
                     if ($item->getField('is_assign')) {
-                        $request = 'SELECT id FROM (';
+                        $total_tech_linkgroups = 0;
                         $subqueries = [];
+
                         foreach ($CFG_GLPI['linkgroup_tech_types'] as $itemtype_linked) {
                             if ($DB->fieldExists($itemtype_linked::getTable(), 'groups_id_tech')) {
-                                $subqueries[] = "SELECT id FROM " . $itemtype_linked::getTable() . " WHERE groups_id_tech = " . $item->getID();
+                                $subqueries[] = new \QuerySubQuery([
+                                    'SELECT' => ['id'],
+                                    'FROM'   => $itemtype_linked::getTable(),
+                                    'WHERE'  => ['groups_id_tech' => $item->getID()]
+                                ]);
                             }
                         }
-                        $request .= implode(' UNION ALL ', $subqueries);
-                        $request .= ') AS combined_results';
-                        $iterator = $DB->request($request);
-                        $ong[2] = self::createTabEntry(__('Managed items'), count($iterator));
+
+                        if (!empty($subqueries)) {
+                            $union = new \QueryUnion($subqueries, false, 'combined_results');
+                            $iterator = $DB->request([
+                                'SELECT'   => ['id'],
+                                'FROM'     => $union
+                            ]);
+                            $total_tech_linkgroups = count($iterator);
+                        }
+                        $ong[2] = self::createTabEntry(__('Managed items'), $total_tech_linkgroups);
                     }
                 } else {
                     if ($item->getField('is_itemgroup')) {
