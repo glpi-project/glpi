@@ -3445,7 +3445,7 @@ HTML;
                     "G" => intval($matches[2]),
                     "B" => intval($matches[3])
                 ];
-                $alpha = str_pad(dechex((int)round($matches[4] * 255)), 2, '0', STR_PAD_LEFT);
+                $alpha = isset($matches[4]) ? str_pad(dechex((int)round(floatval($matches[4]) * 255)), 2, '0', STR_PAD_LEFT) : '';
                 $color = Color::rgbToHex($rgb_color) . $alpha;
             }
 
