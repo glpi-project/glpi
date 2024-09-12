@@ -91,22 +91,22 @@ final class QuestionTypeUrgencyTest extends DbTestCase
         // Allow the three first urgency levels
         $CFG_GLPI['urgency_mask'] = (1 << 1) | (1 << 2) | (1 << 3);
         $this->assertEquals(
-            array_filter(
-                $urgency_levels,
-                fn($level) => $level <= 3,
-                ARRAY_FILTER_USE_KEY
-            ),
+            [
+                1 => $urgency_levels[1],
+                2 => $urgency_levels[2],
+                3 => $urgency_levels[3],
+            ],
             $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
         );
 
         // Allow the two last urgency levels
         $CFG_GLPI['urgency_mask'] = (1 << 3) | (1 << 4) | (1 << 5);
         $this->assertEquals(
-            array_filter(
-                $urgency_levels,
-                fn($level) => $level >= 3,
-                ARRAY_FILTER_USE_KEY
-            ),
+            [
+                3 => $urgency_levels[3],
+                4 => $urgency_levels[4],
+                5 => $urgency_levels[5],
+            ],
             $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
         );
     }
