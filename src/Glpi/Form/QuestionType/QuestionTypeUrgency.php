@@ -64,6 +64,32 @@ final class QuestionTypeUrgency extends AbstractQuestionType
         return 0;
     }
 
+    /**
+     * Retrieve available urgency levels
+     *
+     * @return array
+     */
+    private function getUrgencyLevels(): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        // Get the urgency levels
+        $urgency_levels = array_combine(
+            range(1, 5),
+            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+        );
+
+        // Filter out the urgency levels that are not enabled
+        $urgency_levels = array_filter(
+            $urgency_levels,
+            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            ARRAY_FILTER_USE_KEY
+        );
+
+        return $urgency_levels;
+    }
+
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
@@ -87,10 +113,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'urgency_levels'     => array_combine(
-                range(1, 5),
-                array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
-            ),
+            'urgency_levels'     => $this->getUrgencyLevels(),
         ]);
     }
 
@@ -117,10 +140,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'value'              => $this->getDefaultValue($question),
             'question'           => $question,
-            'urgency_levels'     => array_combine(
-                range(1, 5),
-                array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
-            ),
+            'urgency_levels'     => $this->getUrgencyLevels(),
             'label' => $question->fields['name'],
         ]);
     }
