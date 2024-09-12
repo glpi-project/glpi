@@ -113,6 +113,9 @@ describe('SLA TTR configuration', () => {
         ;
 
         // Fill form
+        cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
+
+        // Submit form
         cy.findByRole('button', { 'name': 'Send form' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
