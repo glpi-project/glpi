@@ -41,6 +41,7 @@ describe('Template configuration', () => {
 
         // Add a default question
         cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
 
         // Create a ticket template
@@ -101,6 +102,10 @@ describe('Template configuration', () => {
             .click()
         ;
 
+        // Fill form
+        cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
+
+        // Submit form
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
