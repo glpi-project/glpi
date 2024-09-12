@@ -1382,12 +1382,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	// identifier: nullCoalesce.property
-	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(array\\) on left side of \\?\\? is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanOr.alwaysFalse
 	'message' => '#^Result of \\|\\| is always false\\.$#',
 	'count' => 2,
