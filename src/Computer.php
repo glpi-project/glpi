@@ -199,6 +199,14 @@ class Computer extends CommonDBTM
             }
         }
 
+        // Update state of attached items
+        if (
+            ($CFG_GLPI['state_autoupdate_mode'] < 0)
+            && !isset($changes['states_id'])
+        ) {
+            $changes['states_id'] = $this->fields['states_id'];
+        }
+
         if (count($changes)) {
             $update_done = false;
             $is_input_dynamic = (bool) ($this->input['is_dynamic'] ?? false);

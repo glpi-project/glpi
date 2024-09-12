@@ -6508,6 +6508,94 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
+    public function testDefaultStatesCopyOnItems()
+    {
+        global $DB, $CFG_GLPI;
+
+        $CFG_GLPI['state_autoupdate_mode'] = -1;
+
+        $this->login();
+
+        //create default states to use
+        $default_states = new \State();
+        $default_states_id = $default_states->add([
+            'name' => 'Has been inventoried'
+        ]);
+        $this->assertGreaterThan(0, $default_states_id);
+
+        $other_state = new \State();
+        $other_states_id = $other_state->add([
+            'name' => 'Another states'
+        ]);
+        $this->assertGreaterThan(0, $other_states_id);
+
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'states_id_default' => $default_states_id,
+            ]
+        );
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $agent = $agents->current();
+        $this->assertGreaterThan(0, $agent['items_id']);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->assertGreaterThan(0, $computers_id);
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //check created monitor
+        $criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => []
+        ];
+
+        $monitor_criteria = $criteria;
+        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+        $iterator = $DB->request($monitor_criteria);
+        $monitor = new \Monitor();
+        $this->assertTrue($monitor->getFromDB($iterator->current()['items_id']));
+        $this->assertCount(1, $iterator);
+        $monitor_id = $monitor->getID();
+
+        //check default states has been set
+        $this->assertSame($default_states_id, $computer->fields['states_id']);
+        $this->assertSame($default_states_id, $monitor->fields['states_id']);
+
+        //update states in database to not add lock
+        $query = "UPDATE `glpi_monitors`
+                SET `states_id` = $other_states_id
+                WHERE `glpi_monitors`.`id` = $monitor_id";
+        $this->assertTrue($DB->doQuery($query));
+        $this->assertTrue($monitor->getFromDB($monitor_id));
+        $this->assertSame($other_states_id, $monitor->fields['states_id']);
+
+        //redo inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //reload computer
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertTrue($monitor->getFromDB($monitor_id));
+
+        //check is same on update
+        $this->assertSame($default_states_id, $computer->fields['states_id']);
+        $this->assertSame($default_states_id, $monitor->fields['states_id']);
+    }
 
     public function testOtherSerialFromTag()
     {

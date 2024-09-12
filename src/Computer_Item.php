@@ -153,7 +153,7 @@ class Computer_Item extends CommonDBRelation
 
             if (
                 ($CFG_GLPI["state_autoupdate_mode"] < 0)
-                || ($comp->fields['states_id'] != $item->getField('states_id'))
+                && ($comp->fields['states_id'] != $item->getField('states_id'))
             ) {
                 $updates['states_id'] = $comp->fields['states_id'];
                 Session::addMessageAfterRedirect(
