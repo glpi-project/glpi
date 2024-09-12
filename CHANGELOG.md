@@ -282,6 +282,7 @@ The present file will list all changes made to the project; according to the
 - `$LANG` global variable.
 - `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
 - `$SECURITY_STRATEGY` global variable.
+- Usage of `$CFG_GLPI['itemdevices']` configuration entry.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.

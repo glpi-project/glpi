@@ -133,19 +133,13 @@ class HasDevicesCapacity extends AbstractCapacity
         $this->registerToTypeConfig('itemdevices_itemaffinity', $classname);
 
         // Add support of devices that have their own config entry defined
-        foreach ($CFG_GLPI['itemdevices'] as $item_device_class) {
+        foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
             // see `Item_Devices::itemAffinity()`
             $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
             if (array_key_exists($key, $CFG_GLPI)) {
                 $this->registerToTypeConfig($key, $classname);
             }
         }
-
-        // Clear the item device affinities cache
-        // TODO Could we remove this cache entry ?
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $GLPI_CACHE->delete('item_device_affinities');
 
         CommonGLPI::registerStandardTab($classname, Item_Devices::class, 15);
     }
@@ -155,16 +149,7 @@ class HasDevicesCapacity extends AbstractCapacity
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        foreach ($CFG_GLPI['itemdevices'] as $item_device_class) {
-            if (!is_a($item_device_class, Item_Devices::class, true)) {
-                // Invalid type registered by a plugin.
-                trigger_error(
-                    sprintf('Invalid device type `%s`.', $item_device_class),
-                    E_USER_WARNING
-                );
-                continue;
-            }
-
+        foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
             //Delete related items
             $item_device = new $item_device_class();
             $item_device->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
@@ -181,7 +166,7 @@ class HasDevicesCapacity extends AbstractCapacity
         // Must be done after display preferences cleaning, as the SO list depends on these config entries
         $this->unregisterFromTypeConfig('itemdevices_types', $classname);
         $this->unregisterFromTypeConfig('itemdevices_itemaffinity', $classname);
-        foreach ($CFG_GLPI['itemdevices'] as $item_device_class) {
+        foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
             // see `Item_Devices::itemAffinity()`
             $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
             if (array_key_exists($key, $CFG_GLPI)) {

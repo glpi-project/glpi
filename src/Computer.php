@@ -255,7 +255,7 @@ class Computer extends CommonDBTM
 
             if (count($changes) > 0) {
                // Propagates the changes to linked devices
-                foreach ($CFG_GLPI['itemdevices'] as $device) {
+                foreach (Item_Devices::getDeviceTypes() as $device) {
                     $item = new $device();
                     $devices_result = $DB->request(
                         [

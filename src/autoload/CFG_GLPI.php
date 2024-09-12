@@ -264,6 +264,14 @@ $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPort
     'NetworkPortFiberchannel'
 ];
 
+$CFG_GLPI["contract_types"]               = [
+    'Computer', 'Monitor', 'NetworkEquipment',
+    'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
+    'Software', 'SoftwareLicense', 'Certificate',
+    'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
+    'DatabaseInstance',
+];
+
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
     'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
     'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
@@ -277,11 +285,10 @@ $CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
     'Peripheral','Phone','Printer', 'PassiveDCEquipment'
 ];
 
-$CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
     $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
     $CFG_GLPI['state_types'][] = 'Item_' . $dtype;
-    $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
+    $CFG_GLPI["contract_types"][] = 'Item_' . $dtype;
 }
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
@@ -329,16 +336,6 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
     'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
     'Domain', 'KnowbaseItem'
 ];
-
-$CFG_GLPI["contract_types"]               = array_merge(
-    ['Computer', 'Monitor', 'NetworkEquipment',
-        'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-        'Software', 'SoftwareLicense', 'Certificate',
-        'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-        'DatabaseInstance'
-    ],
-    $CFG_GLPI['itemdevices']
-);
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
