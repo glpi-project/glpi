@@ -459,6 +459,14 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getItemAffinities($itemtype)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!in_array($itemtype, $CFG_GLPI['itemdevices_types'], true)) {
+            // Itemtype does not support devices.
+            return [];
+        }
+
         $result = [];
 
         foreach (CommonDevice::getDeviceTypes() as $device_class) {
