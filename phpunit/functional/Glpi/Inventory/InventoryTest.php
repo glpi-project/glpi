@@ -6508,11 +6508,28 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
-    public function testDefaultStatesCopyOnItems()
+    
+    /**
+     * Test that fields are correctly copied from computer to monitor on inventory.
+     */
+    public function testFieldsCopyOnItems(): void
     {
         global $DB, $CFG_GLPI;
 
-        $CFG_GLPI['state_autoupdate_mode'] = -1;
+        $CFG_GLPI['is_contact_autoupdate']  = 1;
+        $CFG_GLPI['is_user_autoupdate']     = 1;
+        $CFG_GLPI['is_group_autoupdate']    = 1;
+        $CFG_GLPI['state_autoupdate_mode']  = -1;
+        $CFG_GLPI['is_location_autoupdate'] = 1;
+
+        $fields_to_check = [
+            'contact',
+            'contact_num',
+            'users_id',
+            'groups_id',
+            'states_id',
+            'locations_id',
+        ];
 
         $this->login();
 
@@ -6574,12 +6591,25 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check default states has been set
         $this->assertSame($default_states_id, $computer->fields['states_id']);
-        $this->assertSame($default_states_id, $monitor->fields['states_id']);
 
-        //update states in database to not add lock
-        $this->assertTrue($monitor->update(['id' => $monitor_id, 'states_id' => $other_states_id]));
+        foreach ($fields_to_check as $field) {
+            $this->assertSame($computer->fields[$field], $monitor->fields[$field]);
+        }
+
+        //update fields
+        $input = [
+            'contact'      => $this->getUniqueString(),
+            'contact_num'  => $this->getUniqueString(),
+            'users_id'     => $this->getUniqueInteger(),
+            'groups_id'    => $this->getUniqueInteger(),
+            'states_id'    => $this->getUniqueInteger(),
+            'locations_id' => $this->getUniqueInteger(),
+        ];
+        $this->assertTrue($monitor->update(array_merge($input, ['id' => $monitor_id])));
         $this->assertTrue($monitor->getFromDB($monitor_id));
-        $this->assertSame($other_states_id, $monitor->fields['states_id']);
+        foreach ($fields_to_check as $field) {
+            $this->assertSame($input[$field], $monitor->fields[$field]);
+        }
 
         // Delete lock
         $lock = new Lockedfield();
@@ -6598,7 +6628,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check is same on update
         $this->assertSame($default_states_id, $computer->fields['states_id']);
-        $this->assertSame($default_states_id, $monitor->fields['states_id']);
+        foreach ($fields_to_check as $field) {
+            $this->assertSame($computer->fields[$field], $monitor->fields[$field]);
+        }
     }
 
     public function testOtherSerialFromTag()

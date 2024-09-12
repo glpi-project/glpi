@@ -160,51 +160,28 @@ class Computer extends CommonDBTM
         global $CFG_GLPI, $DB;
 
         $changes = [];
-        $update_count = count($this->updates ?? []);
         $input = Toolbox::addslashes_deep($this->fields);
-        for ($i = 0; $i < $update_count; $i++) {
-           // Update contact of attached items
-            if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {
-                $changes['contact_num'] = $input['contact_num'];
-            }
-            if ($this->updates[$i] == 'contact' && $CFG_GLPI['is_contact_autoupdate']) {
-                $changes['contact'] = $input['contact'];
-            }
-           // Update users and groups of attached items
-            if (
-                $this->updates[$i] == 'users_id'
-                && $CFG_GLPI['is_user_autoupdate']
-            ) {
-                $changes['users_id'] = $input['users_id'];
-            }
-            if (
-                $this->updates[$i] == 'groups_id'
-                && $CFG_GLPI['is_group_autoupdate']
-            ) {
-                $changes['groups_id'] = $input['groups_id'];
-            }
-           // Update state of attached items
-            if (
-                ($this->updates[$i] == 'states_id')
-                && ($CFG_GLPI['state_autoupdate_mode'] < 0)
-            ) {
-                $changes['states_id'] = $input['states_id'];
-            }
-           // Update loction of attached items
-            if (
-                $this->updates[$i] == 'locations_id'
-                && $CFG_GLPI['is_location_autoupdate']
-            ) {
-                $changes['locations_id'] = $input['locations_id'];
-            }
+        // Update contact of attached items
+        if ($CFG_GLPI['is_contact_autoupdate']) {
+            $changes['contact_num'] = $input['contact_num'];
         }
-
+        if ($CFG_GLPI['is_contact_autoupdate']) {
+            $changes['contact'] = $input['contact'];
+        }
+        // Update users and groups of attached items
+        if ($CFG_GLPI['is_user_autoupdate']) {
+            $changes['users_id'] = $input['users_id'];
+        }
+        if ($CFG_GLPI['is_group_autoupdate']) {
+            $changes['groups_id'] = $input['groups_id'];
+        }
         // Update state of attached items
-        if (
-            ($CFG_GLPI['state_autoupdate_mode'] < 0)
-            && !isset($changes['states_id'])
-        ) {
-            $changes['states_id'] = $this->fields['states_id'];
+        if ($CFG_GLPI['state_autoupdate_mode'] < 0) {
+            $changes['states_id'] = $input['states_id'];
+        }
+        // Update loction of attached items
+        if ($CFG_GLPI['is_location_autoupdate']) {
+            $changes['locations_id'] = $input['locations_id'];
         }
 
         if (count($changes)) {
@@ -226,8 +203,8 @@ class Computer extends CommonDBTM
                 );
                 $item      = new $type();
                 foreach ($items_result as $data) {
-                     $tID = $data['items_id'];
-                     $item->getFromDB($tID);
+                    $tID = $data['items_id'];
+                    $item->getFromDB($tID);
                     if (!$item->getField('is_global')) {
                         $item_input = $changes;
                         $item_input['id'] = $item->getID();
