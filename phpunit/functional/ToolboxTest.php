@@ -1039,6 +1039,30 @@ HTML;
                 'bg_color' => "#000000",
                 'offset'   => 50,
                 'fg_color' => '#808080',
+            ], [
+                'bg_color' => "rgba(255, 255, 255, 1)",
+                'offset'   => 40,
+                'fg_color' => '#999999',
+            ], [
+                'bg_color' => "rgba(255, 255, 255, 1)",
+                'offset'   => 50,
+                'fg_color' => '#808080',
+            ], [
+                'bg_color' => "rgba(0, 0, 0, 1)",
+                'offset'   => 40,
+                'fg_color' => '#666666',
+            ], [
+                'bg_color' => "rgba(0, 0, 0, 1)",
+                'offset'   => 50,
+                'fg_color' => '#808080',
+            ], [
+                'bg_color' => "rgba(0, 0, 0, 0.5)",
+                'offset'   => 40,
+                'fg_color' => '#666666',
+            ], [
+                'bg_color' => "rgba(0, 0, 0, 0.5)",
+                'offset'   => 50,
+                'fg_color' => '#808080',
             ],
         ];
     }

@@ -3445,7 +3445,8 @@ HTML;
                     "G" => intval($matches[2]),
                     "B" => intval($matches[3])
                 ];
-                $color = Color::rgbToHex($rgb_color);
+                $alpha = str_pad(dechex((int)round($matches[4] * 255)), 2, '0', STR_PAD_LEFT);
+                $color = Color::rgbToHex($rgb_color) . $alpha;
             }
 
             $color = str_replace("#", "", $color);
