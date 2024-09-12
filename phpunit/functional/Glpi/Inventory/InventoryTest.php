@@ -6577,12 +6577,16 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($default_states_id, $monitor->fields['states_id']);
 
         //update states in database to not add lock
-        $query = "UPDATE `glpi_monitors`
-                SET `states_id` = $other_states_id
-                WHERE `glpi_monitors`.`id` = $monitor_id";
-        $this->assertTrue($DB->doQuery($query));
+        $this->assertTrue($monitor->update(['id' => $monitor_id, 'states_id' => $other_states_id]));
         $this->assertTrue($monitor->getFromDB($monitor_id));
         $this->assertSame($other_states_id, $monitor->fields['states_id']);
+
+        // Delete lock
+        $lock = new Lockedfield();
+        $this->assertTrue($lock->deleteByCriteria([
+            'itemtype' => 'Monitor',
+            'items_id' => $monitor_id,
+        ]));
 
         //redo inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
