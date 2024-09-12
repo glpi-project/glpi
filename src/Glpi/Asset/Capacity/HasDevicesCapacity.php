@@ -137,7 +137,7 @@ class HasDevicesCapacity extends AbstractCapacity
             // see `Item_Devices::itemAffinity()`
             $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
             if (array_key_exists($key, $CFG_GLPI)) {
-                $CFG_GLPI[$key][] = $classname;
+                $this->registerToTypeConfig($key, $classname);
             }
         }
 
@@ -152,10 +152,10 @@ class HasDevicesCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from types
-        $this->unregisterFromTypeConfig('itemdevices_types', $classname);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        foreach (Item_Devices::getItemAffinities($classname) as $item_device_class) {
+        foreach ($CFG_GLPI['itemdevices'] as $item_device_class) {
             if (!is_a($item_device_class, Item_Devices::class, true)) {
                 // Invalid type registered by a plugin.
                 trigger_error(
@@ -176,5 +176,17 @@ class HasDevicesCapacity extends AbstractCapacity
         // Clean display preferences
         $devices_search_options = Item_Devices::rawSearchOptionsToAdd($classname);
         $this->deleteDisplayPreferences($classname, $devices_search_options);
+
+        // Unregister from types
+        // Must be done after display preferences cleaning, as the SO list depends on these config entries
+        $this->unregisterFromTypeConfig('itemdevices_types', $classname);
+        $this->unregisterFromTypeConfig('itemdevices_itemaffinity', $classname);
+        foreach ($CFG_GLPI['itemdevices'] as $item_device_class) {
+            // see `Item_Devices::itemAffinity()`
+            $key = str_replace('_', '', strtolower($item_device_class)) . '_types';
+            if (array_key_exists($key, $CFG_GLPI)) {
+                $this->unregisterFromTypeConfig($key, $classname);
+            }
+        }
     }
 }
