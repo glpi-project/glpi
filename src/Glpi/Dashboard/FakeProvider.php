@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
+use CommonDevice;
 use Group;
 use Session;
 use Stat;
@@ -102,8 +103,8 @@ final class FakeProvider extends Provider
             'Location' => 12,
         ];
 
-        foreach ($CFG_GLPI['itemdevices'] as $item_device_type) {
-            $device_type = $item_device_type::getDeviceType();
+        foreach (CommonDevice::getDeviceTypes() as $device_type) {
+            $item_device_type = $device_type::getItem_DeviceType();
 
             // Generate an obscure, but static number for the items and device types.
             $values[$item_device_type] = self::getObscureNumberForString($item_device_type, 7500);

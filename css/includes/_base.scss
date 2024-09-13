@@ -421,3 +421,8 @@ body .toast {
 .tooltip {
     --tblr-tooltip-color: var(--tblr-body-color);
 }
+
+body pre {
+    background-color: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
+}

@@ -458,12 +458,8 @@ class Config extends CommonDBTM
 
         $canedit = static::canUpdate();
         $item_devices_types = [];
-        foreach ($CFG_GLPI['itemdevices'] as $key => $itemtype) {
-            if (is_subclass_of($itemtype, CommonDBTM::class)) {
-                $item_devices_types[$itemtype] = $itemtype::getTypeName();
-            } else {
-                unset($CFG_GLPI['itemdevices'][$key]);
-            }
+        foreach (Item_Devices::getDeviceTypes() as $itemtype) {
+            $item_devices_types[$itemtype] = $itemtype::getTypeName();
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/assets_setup.html.twig', [
