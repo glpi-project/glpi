@@ -40,11 +40,26 @@ Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
 Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory");
 
 $conf = new Conf();
+$glpikey = new GLPIKey();
 
 if (isset($_FILES['inventory_files'])) {
     $conf->displayImportFiles($_FILES);
 } elseif (isset($_POST['update'])) {
     unset($_POST['update']);
+    if (
+        (
+            !$_POST['basic_auth_password'] ||
+            !$_POST['basic_auth_login']
+        ) && $_POST['auth_required'] === Conf::BASIC_AUTH
+    ) {
+        Session::addMessageAfterRedirect(
+            "Basic Authentication is active. The login and/or password fields are missing.",
+            false,
+            ERROR
+        );
+        Html::back();
+    }
+    $_POST['basic_auth_password'] = $glpikey->encrypt($_POST['basic_auth_password']);
     $conf->saveConf($_POST);
     Session::addMessageAfterRedirect(
         __s('Configuration has been updated'),

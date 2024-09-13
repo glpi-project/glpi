@@ -58,6 +58,7 @@ use NetworkPortType;
 use Session;
 use State;
 use Toolbox;
+use GLPIKey;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
@@ -108,6 +109,10 @@ class Conf extends CommonGLPI
     public const STALE_AGENT_ACTION_STATUS = 1;
 
     public const STALE_AGENT_ACTION_TRASHBIN = 2;
+
+    public const CLIENT_CREDENTIALS = 'client_credentials';
+
+    public const BASIC_AUTH = 'basic_auth';
 
     public static $rightname = 'inventory';
 
@@ -344,7 +349,9 @@ class Conf extends CommonGLPI
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
+        $glpikey = new GLPIKey();
         $config = \Config::getConfigurationValues('inventory');
+        $config['basic_auth_password'] = $glpikey->decrypt($config['basic_auth_password']);
         $canedit = \Config::canUpdate();
         $rand = mt_rand();
 
@@ -391,30 +398,36 @@ class Conf extends CommonGLPI
             echo "<td>";
             Dropdown::showFromArray('auth_required', [
                 'none' => __('None'),
-                'client_credentials' => __('OAuth - Client credentials'),
-                'basic_authentification' => __('Basic Authentification'),
+                self::CLIENT_CREDENTIALS => __('OAuth - Client credentials'),
+                self::BASIC_AUTH => __('Basic Authentication'),
             ], [
                 'value' => $config['auth_required'] ?? 'none'
             ]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
             echo "<td>";
-            echo "<label for='basic_auth_login'>" . __s('Login') . "</label>";
+            echo "<label for='basic_auth_login'>"
+                . __('Login') .
+                "<span class='required'>*</span>
+                </label>";
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"]
+                "value" => $config["basic_auth_login"],
             ]);
             echo "</td>";
             echo "</tr>";
             echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
             echo "<td>";
-            echo "<label for='basic_auth_password'>" . __s('Password') . "</label>";
+            echo "<label for='basic_auth_password'>"
+                . __('Password') .
+                "<span class='required'>*</span>
+                </label>";
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_password", [
                 "value" => $config["basic_auth_password"],
-                "type" => "password"
+                "type" => "password",
             ]);
             echo "</td>";
             echo "</tr>";
@@ -422,7 +435,7 @@ class Conf extends CommonGLPI
                 function toggleDisplayLoginInputs(select) {
                     let displayedInputs = false;
                     const selectedValue = $(select).val();
-                    if (selectedValue == 'basic_authentification') {
+                    if (selectedValue == '" . self::BASIC_AUTH . "') {
                         displayedInputs = true;
                     }
                     $('#basic_auth_login_row').toggle(displayedInputs);
