@@ -40,6 +40,7 @@ use ReflectionProperty;
 
 class Common
 {
+
    //Global headers
     /**
      * "Content-Type" HTTP header
@@ -126,6 +127,12 @@ class Common
      * @var string
      */
     protected $authorization;
+
+    /**
+     * Define HTTP Authorization Header Authorization type
+     * @var string
+     */
+    protected $www_authenticate;
 
     public function getRequireds(): array
     {

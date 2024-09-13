@@ -38,11 +38,13 @@ namespace Glpi\Agent\Communication;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Inventory\Conf;
 use Glpi\Application\ErrorHandler;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Toolbox;
+use GLPIKey;
 
 /**
  * Handle agent requests
@@ -207,7 +209,7 @@ abstract class AbstractRequest
     public function handleRequest($data): bool
     {
         $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
-        if ($auth_required === 'client_credentials') {
+        if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
                 $client = Server::validateAccessToken($request);
@@ -223,9 +225,28 @@ abstract class AbstractRequest
             }
         }
 
-        /*if ($auth_required === 'basic_authentification') {
-
-        }*/
+        if ($auth_required === Conf::BASIC_AUTH) {
+            $authorization = $this->headers->getHeader('Authorization');
+            if (!$authorization) {
+                $this->setMode(self::JSON_MODE);
+                $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
+                $this->addError('Authorization header required to send an inventory', 401);
+                return false;
+            } else {
+                $glpikey = new GLPIKey();
+                $loginAgent = \Config::getConfigurationValue('inventory', 'basic_auth_login');
+                $passwordAgent = \Config::getConfigurationValue('inventory', 'basic_auth_password');
+                $authData = base64_decode(substr($authorization, 6));
+                list($loginUser, $passwordUser) = explode(':', $authData, 2);
+                if (
+                    $loginUser !== $loginAgent ||
+                    $passwordUser !== $glpikey->decrypt($passwordAgent)
+                ) {
+                    $this->setMode(self::JSON_MODE);
+                    $this->addError('Acces denied. Login or password is wrong.', 401);
+                }
+            }
+        }
 
         // Some network inventories may request may contains lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
