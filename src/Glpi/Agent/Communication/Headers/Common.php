@@ -40,7 +40,6 @@ use ReflectionProperty;
 
 class Common
 {
-
    //Global headers
     /**
      * "Content-Type" HTTP header
