@@ -181,4 +181,9 @@ if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?
 // Manage entity change
 if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
     Session::changeActiveEntities($_REQUEST["force_entity"], true);
+} elseif (Session::shouldReloadActiveEntities()) {
+    Session::changeActiveEntities(
+        $_SESSION["glpiactive_entity"],
+        $_SESSION["glpiactive_entity_recursive"]
+    );
 }
