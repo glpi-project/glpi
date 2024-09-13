@@ -45,8 +45,7 @@ if (isset($_FILES['inventory_files'])) {
     $conf->displayImportFiles($_FILES);
 } elseif (isset($_POST['update'])) {
     unset($_POST['update']);
-    $conf_is_success = $conf->saveConf($_POST);
-    if ($conf_is_success) {
+    if ($conf->saveConf($_POST)) {
         Session::addMessageAfterRedirect(
             __s('Configuration has been updated'),
             false,
