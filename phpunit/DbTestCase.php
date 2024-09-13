@@ -119,7 +119,7 @@ class DbTestCase extends \GLPITestCase
     {
         $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
         $this->assertTrue($object->getFromDB($id));
-        $this->assertEquals($id, $object->getField('id'));
+        $this->assertEquals($id, $object->getID());
 
         if (count($input)) {
             foreach ($input as $k => $v) {
@@ -199,7 +199,8 @@ class DbTestCase extends \GLPITestCase
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $id = $item->add($input);
+        $item->add($input);
+        $id = $item->getID();
         $this->assertIsInt($id);
         $this->assertGreaterThan(0, $id);
 

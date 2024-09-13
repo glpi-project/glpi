@@ -42,12 +42,12 @@ describe('Content configuration', () => {
         cy.focused().type("What is your name ?");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     // Configuration test is already covered by the forms tags tests, no need to redo it here

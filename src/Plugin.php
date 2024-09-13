@@ -2964,15 +2964,12 @@ TWIG;
             // see `DbUtils::fixItemtypeCase()`
             sprintf('itemtype-case-mapping-%s', $plugin_key),
 
-            // Hookable using `$CFG_GLPI['*_types']` and `$CFG_GLPI['itemdevices_itemaffinity']`.
-            'item_device_affinities',
-
             // Will be stale as long as a plugin adds/remove a custom right.
             'all_possible_rights',
         ];
 
         foreach (array_keys($CFG_GLPI['languages']) as $language) {
-            // Hookable using `$CFG_GLPI['itemdevices']`, `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
+            // Hookable using `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }

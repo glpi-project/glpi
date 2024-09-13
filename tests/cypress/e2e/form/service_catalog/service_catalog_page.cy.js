@@ -33,27 +33,29 @@
 
 describe('Service catalog page', () => {
     beforeEach(() => {
-        // Create at least one form to make sure the list is not empty.
-        cy.createFormWithAPI({
-            'name': "Test form for service_catalog_page.cy.js",
-            'header': "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste, itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem.",
-            'is_active': true,
-        });
-
         cy.login();
         cy.changeProfile('Self-Service', true);
 
     });
 
     it('can pick a form in the service catalog', () => {
+        const form_name = "Test form for service_catalog_page.cy.js " + (new Date()).getTime();
+
+        // Create at least one form to make sure the list is not empty.
+        cy.createFormWithAPI({
+            'name': form_name,
+            'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            'is_active': true,
+        });
+
         cy.visit('/ServiceCatalog');
         cy.injectAndCheckA11y();
-        cy.findByRole('region', {'name': 'Test form for service_catalog_page.cy.js'}).as('form');
+        cy.findByRole('region', {'name': form_name}).as('form');
 
         // Validate that the form is displayed correctly.
         cy.get('@form').within(() => {
-            cy.findByText("Test form for service_catalog_page.cy.js").should('exist');
-            cy.findByText("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste, itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem.").should('exist');
+            cy.findByText(form_name).should('exist');
+            cy.findByText("Lorem ipsum dolor sit amet, consectetur adipisicing elit.").should('exist');
         });
 
         // Go to form

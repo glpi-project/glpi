@@ -42,12 +42,12 @@ describe('Title configuration', () => {
         cy.focused().type("What is your name ?");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully added');
+        cy.checkAndCloseAlert('Item successfully added');
     });
 
     it('can configure the title field', () => {
@@ -55,6 +55,7 @@ describe('Title configuration', () => {
         cy.get("@title_field").clear();
         cy.get("@title_field").type("My specific form name");
         cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
         cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
         cy.get("@title_field").contains("My specific form name");
     });

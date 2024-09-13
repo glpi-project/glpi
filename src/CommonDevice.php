@@ -62,14 +62,30 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @since 0.85
      *
-     * @return array Array of the types of CommonDevice available
+     * @return array
+     * @phpstan-return class-string<CommonDevice>[]
      **/
     public static function getDeviceTypes()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        return $CFG_GLPI['device_types'];
+        $valid_types = [];
+
+        foreach ($CFG_GLPI['device_types'] as $device_class) {
+            if (!is_a($device_class, self::class, true)) {
+                // Invalid type registered by a plugin.
+                trigger_error(
+                    sprintf('Invalid device type `%s`.', $device_class),
+                    E_USER_WARNING
+                );
+                continue;
+            }
+
+            $valid_types[] = $device_class;
+        }
+
+        return $valid_types;
     }
 
     /**
