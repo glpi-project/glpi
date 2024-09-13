@@ -226,24 +226,32 @@ abstract class AbstractRequest
         }
 
         if ($auth_required === Conf::BASIC_AUTH) {
-            $authorization = $this->headers->getHeader('Authorization');
-            if (!$authorization) {
+            $authorization_header = $this->headers->getHeader('Authorization');
+            if (is_null($authorization_header)) {
                 $this->setMode(self::JSON_MODE);
                 $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
             } else {
-                $glpikey = new GLPIKey();
-                $loginAgent = \Config::getConfigurationValue('inventory', 'basic_auth_login');
-                $passwordAgent = \Config::getConfigurationValue('inventory', 'basic_auth_password');
-                $authData = base64_decode(substr($authorization, 6));
-                list($loginUser, $passwordUser) = explode(':', $authData, 2);
-                if (
-                    $loginUser !== $loginAgent ||
-                    $passwordUser !== $glpikey->decrypt($passwordAgent)
-                ) {
+                $allowed = false;
+                // if Authorization start with 'Basic'
+                if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
+                    $inventory_login = \Config::getConfigurationValue('inventory', 'basic_auth_login');
+                    $inventory_password = (new GLPIKey())
+                        ->decrypt(\Config::getConfigurationValue('inventory', 'basic_auth_password'));
+                    $agent_credential = base64_decode($matches[1]);
+                    list($agent_login, $agent_password) = explode(':', $agent_credential, 2);
+                    if (
+                        $inventory_login == $agent_login &&
+                        $inventory_password == $agent_password
+                    ) {
+                        $allowed = true;
+                    }
+                }
+                if (!$allowed) {
                     $this->setMode(self::JSON_MODE);
-                    $this->addError('Acces denied. Login or password is wrong.', 401);
+                    $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
+                    return false;
                 }
             }
         }
