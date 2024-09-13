@@ -1153,21 +1153,18 @@ class Conf extends CommonGLPI
         }
 
         if (
-            (
-                !$values['basic_auth_password'] ||
-                !$values['basic_auth_login']
-            ) && $values['auth_required'] === Conf::BASIC_AUTH
+                $values['auth_required'] === Conf::BASIC_AUTH &&
+                !empty($values['basic_auth_password']) &&
+                !empty($values['basic_auth_login'])
         ) {
+            $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
+        } else {
             Session::addMessageAfterRedirect(
                 __s("Basic Authentication is active. The login and/or password fields are missing."),
                 false,
                 ERROR
             );
             return false;
-        }
-
-        if (!is_null($values['basic_auth_password'])) {
-            $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
         }
 
         $to_process = [];
