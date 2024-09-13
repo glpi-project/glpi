@@ -349,9 +349,7 @@ class Conf extends CommonGLPI
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        $glpikey = new GLPIKey();
         $config = \Config::getConfigurationValues('inventory');
-        $config['basic_auth_password'] = $glpikey->decrypt($config['basic_auth_password']);
         $canedit = \Config::canUpdate();
         $rand = mt_rand();
 
@@ -406,10 +404,10 @@ class Conf extends CommonGLPI
             echo "</td></tr>";
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
             echo "<td>";
-            echo "<label for='basic_auth_login'>"
-                . __('Login') .
-                "<span class='required'>*</span>
-                </label>";
+            echo "<label for='basic_auth_login'>";
+            echo __s('Login');
+            echo "<span class='required'>*</span>";
+            echo "</label>";
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_login", [
@@ -419,14 +417,14 @@ class Conf extends CommonGLPI
             echo "</tr>";
             echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
             echo "<td>";
-            echo "<label for='basic_auth_password'>"
-                . __('Password') .
-                "<span class='required'>*</span>
-                </label>";
+            echo "<label for='basic_auth_password'>";
+            echo __s('Password');
+            echo "<span class='required'>*</span>";
+            echo "</label>";
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_password", [
-                "value" => $config["basic_auth_password"],
+                "value" => (new GLPIKey())->decrypt($config['basic_auth_password']),
                 "type" => "password",
             ]);
             echo "</td>";
@@ -1152,6 +1150,24 @@ class Conf extends CommonGLPI
         ) {
             // keep only the "All" value
             $values['stale_agents_status_condition'] = ['all'];
+        }
+
+        if (
+            (
+                !$values['basic_auth_password'] ||
+                !$values['basic_auth_login']
+            ) && $values['auth_required'] === Conf::BASIC_AUTH
+        ) {
+            Session::addMessageAfterRedirect(
+                __s("Basic Authentication is active. The login and/or password fields are missing."),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (!is_null($values['basic_auth_password'])) {
+            $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
         }
 
         $to_process = [];
