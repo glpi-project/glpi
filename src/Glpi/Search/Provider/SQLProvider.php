@@ -6067,7 +6067,7 @@ final class SQLProvider implements SearchProviderInterface
                                 if ($html_output) {
                                     $plaintext = \htmlspecialchars($plaintext);
                                 }
-                                $plaintext = nl2br($$plaintext);
+                                $plaintext = nl2br($plaintext);
                             }
 
                             if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
