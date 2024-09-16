@@ -2019,13 +2019,13 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns object\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns CommonDBTM\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns object\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns CommonDBTM\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
