@@ -45,7 +45,7 @@
 
 <div class="accordion open accordion-flush" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
-   {{ call_plugin_hook('pre_item_accordion_section', {"item": item, 'options': params}) }}
+   {{ call_plugin_hook('pre_itil_info_section', {"item": item, 'options': params}) }}
    <section class="accordion-item" aria-label="{{ item.getTypeName(1) }}">
       <h2 class="accordion-header" id="heading-main-item">
          <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="true" aria-controls="ticket-main">
@@ -482,7 +482,7 @@
       </div>
    </section>
 
-   {{ call_plugin_hook('post_item_accordion_section', {"item": item, 'options': params}) }}
+   {{ call_plugin_hook('post_itil_info_section', {"item": item, 'options': params}) }}
 
     <span class="d-none d-md-block">
         <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
