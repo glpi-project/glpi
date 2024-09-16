@@ -54,7 +54,7 @@ class KnowbaseItemParameters extends AbstractParameters
             'id'     => $kbi_id,
             'name'   => 'kbi_testGetValues',
             'answer' => "test answer' \"testGetValues",
-            'link'   => "<a  href='/glpi/front/knowbaseitem.form.php?id=$kbi_id'  title=\"kbi_testGetValues\">kbi_testGetValues</a>",
+            'link'   => '<a href="/glpi/front/knowbaseitem.form.php?id=' . $kbi_id . '" title="kbi_testGetValues">kbi_testGetValues</a>',
         ]);
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());

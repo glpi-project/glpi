@@ -266,7 +266,7 @@ class FormTest extends DbTestCase
         $this->assertCount(1, $form->getComments());
 
         $id = $form->getID();
-        $this->hasSessionMessages(INFO, ["Item successfully updated: <a  href='/glpi/front/form/form.form.php?id=$id'  title=\"Form with first section\">Form with first section</a>"]);
+        $this->hasSessionMessages(INFO, ['Item successfully updated: <a href="/glpi/front/form/form.form.php?id=' . $id . '" title="Form with first section">Form with first section</a>']);
     }
 
     public function testGetSectionsOnEmptyForm(): void
