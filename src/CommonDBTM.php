@@ -3451,98 +3451,104 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getComments()
     {
-
         $comment = "";
         $toadd   = [];
         if ($this->isField('completename')) {
-            $toadd[] = ['name'  => __('Complete name'),
-                'value' => nl2br((string) $this->getField('completename'))
+            $toadd[] = [
+                'name'  => __s('Complete name'),
+                'value' => htmlspecialchars((string) $this->getField('completename')),
             ];
         }
 
         if ($this->isField('serial')) {
-            $toadd[] = ['name'  => __('Serial number'),
-                'value' => nl2br((string) $this->getField('serial'))
+            $toadd[] = [
+                'name'  => __s('Serial number'),
+                'value' => htmlspecialchars((string) $this->getField('serial')),
             ];
         }
 
         if ($this->isField('otherserial')) {
-            $toadd[] = ['name'  => __('Inventory number'),
-                'value' => nl2br((string) $this->getField('otherserial'))
+            $toadd[] = [
+                'name'  => __s('Inventory number'),
+                'value' => htmlspecialchars((string) $this->getField('otherserial')),
             ];
         }
 
         if ($this->isField('states_id') && $this->getType() != 'State') {
-            $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
-            if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => __('Status'),
-                    'value' => $tmp
+            $name = Dropdown::getDropdownName('glpi_states', $this->fields['states_id']);
+            if (strlen($name) > 0) {
+                $toadd[] = [
+                    'name'  => __s('Status'),
+                    'value' => htmlspecialchars($name),
                 ];
             }
         }
 
         if ($this->isField('locations_id') && $this->getType() != 'Location') {
-            $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
-            if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => Location::getTypeName(1),
-                    'value' => $tmp
+            $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
+            if (strlen($name) > 0) {
+                $toadd[] = [
+                    'name'  => htmlspecialchars(Location::getTypeName(1)),
+                    'value' => htmlspecialchars($name),
                 ];
             }
         }
 
         if ($this->isField('users_id')) {
-            $tmp = getUserName($this->getField('users_id'));
-            if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => User::getTypeName(1),
-                    'value' => $tmp
+            $name = getUserName($this->fields['users_id']);
+            if (strlen($name) > 0) {
+                $toadd[] = [
+                    'name'  => htmlspecialchars(User::getTypeName(1)),
+                    'value' => htmlspecialchars($name),
                 ];
             }
         }
 
-        if (
-            $this->isField('groups_id')
-            && ($this->getType() != 'Group')
-        ) {
+        if ($this->isField('groups_id') && $this->getType() != 'Group') {
             $groups = $this->fields['groups_id'];
             if (!is_array($groups)) {
                 $groups = [$groups];
             }
             foreach ($groups as $group) {
-                $tmp = Dropdown::getDropdownName("glpi_groups", $group);
-                if ($tmp !== '' && $tmp !== '&nbsp;') {
+                $name = Dropdown::getDropdownName("glpi_groups", $group);
+                if (strlen($name) > 0) {
                     $toadd[] = [
-                        'name'  => Group::getTypeName(1),
-                        'value' => $tmp
+                        'name'  => htmlspecialchars(Group::getTypeName(1)),
+                        'value' => htmlspecialchars($name),
                     ];
                 }
             }
         }
 
         if ($this->isField('users_id_tech')) {
-            $tmp = getUserName($this->getField('users_id_tech'));
-            if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => __('Technician in charge'),
-                    'value' => $tmp
+            $name = getUserName($this->fields['users_id_tech']);
+            if (strlen($name) > 0) {
+                $toadd[] = [
+                    'name'  => htmlspecialchars(__('Technician in charge')),
+                    'value' => htmlspecialchars($name),
                 ];
             }
         }
 
         if ($this->isField('contact')) {
-            $toadd[] = ['name'  => __('Alternate username'),
-                'value' => nl2br((string) $this->getField('contact'))
+            $toadd[] = [
+                'name'  => __s('Alternate username'),
+                'value' => htmlspecialchars((string) $this->getField('contact')),
             ];
         }
 
         if ($this->isField('contact_num')) {
-            $toadd[] = ['name'  => __('Alternate username number'),
-                'value' => nl2br((string) $this->getField('contact_num'))
+            $toadd[] = [
+                'name'  => __s('Alternate username number'),
+                'value' => htmlspecialchars((string) $this->getField('contact_num')),
             ];
         }
 
         if (Infocom::canApplyOn($this)) {
             $infocom = new Infocom();
             if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-                $toadd[] = ['name'  => __('Warranty expiration date'),
+                $toadd[] = [
+                    'name'  => __s('Warranty expiration date'),
                     'value' => Infocom::getWarrantyExpir(
                         $infocom->fields["warranty_date"],
                         $infocom->fields["warranty_duration"],
@@ -3553,20 +3559,18 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if (
-            ($this instanceof CommonDropdown)
-            && $this->isField('comment')
-        ) {
-            $toadd[] = ['name'  => __('Comments'),
-                'value' => nl2br((string) $this->getField('comment'))
+        if ($this instanceof CommonDropdown && $this->isField('comment')) {
+            $toadd[] = [
+                'name'  => __s('Comments'),
+                'value' => nl2br(htmlspecialchars((string) $this->getField('comment'))),
             ];
         }
 
         if (count($toadd)) {
             foreach ($toadd as $data) {
-               // Do not use SPAN here
+                // Do not use SPAN here
                 $comment .= sprintf(
-                    __('%1$s: %2$s') . "<br>",
+                    __s('%1$s: %2$s') . "<br>",
                     "<strong>" . $data['name'],
                     "</strong>" . $data['value']
                 );
