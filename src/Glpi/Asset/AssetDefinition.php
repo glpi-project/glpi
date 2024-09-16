@@ -48,7 +48,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchOption;
 use Profile;
 use ProfileRight;
-use RuleDictionnaryDropdownCollection;
 use Session;
 
 final class AssetDefinition extends CommonDBTM
@@ -861,6 +860,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      *
      * @param bool $with_namespace
      * @return string
+     * @phpstan-return class-string<\Glpi\Asset\Asset>
      */
     public function getAssetClassName(bool $with_namespace = true): string
     {
@@ -877,7 +877,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset model class name.
      *
      * @param bool $with_namespace
-     * @return class-string<CommonDBTM>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\AssetModel>
      */
     public function getAssetModelClassName(bool $with_namespace = true): string
     {
@@ -888,7 +889,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset type class name.
      *
      * @param bool $with_namespace
-     * @return class-string<CommonDBTM>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\AssetType>
      */
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
@@ -899,7 +901,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset model dictionary class name.
      *
      * @param bool $with_namespace
-     * @return class-string<RuleDictionnaryDropdownCollection>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModel>
      */
     public function getAssetModelDictionaryClassName(bool $with_namespace = true): string
     {
@@ -914,7 +917,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset model dictionary collection class name.
      *
      * @param bool $with_namespace
-     * @return class-string<RuleDictionnaryDropdownCollection>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModelCollection>
      */
     public function getAssetModelDictionaryCollectionClassName(bool $with_namespace = true): string
     {
@@ -929,7 +933,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset type dictionary class name.
      *
      * @param bool $with_namespace
-     * @return class-string<RuleDictionnaryDropdownCollection>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryType>
      */
     public function getAssetTypeDictionaryClassName(bool $with_namespace = true): string
     {
@@ -944,7 +949,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Get the definition's concrete asset type dictionary collection class name.
      *
      * @param bool $with_namespace
-     * @return class-string<RuleDictionnaryDropdownCollection>
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryTypeCollection>
      */
     public function getAssetTypeDictionaryCollectionClassName(bool $with_namespace = true): string
     {

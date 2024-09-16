@@ -2,72 +2,6 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on object\\|false\\.$#',
-	'count' => 6,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: staticProperty.nonObject
-	'message' => '#^Cannot access static property \\$rightname on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method add\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method check\\(\\) on object\\|false\\.$#',
-	'count' => 5,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method delete\\(\\) on object\\|false\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method getLinkURL\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method redirectToList\\(\\) on object\\|false\\.$#',
-	'count' => 3,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method restore\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: method.nonObject
-	'message' => '#^Cannot call method update\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: staticMethod.nonObject
-	'message' => '#^Cannot call static method displayFullPageForItem\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	// identifier: staticMethod.nonObject
-	'message' => '#^Cannot call static method getDefinition\\(\\) on object\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanOr.alwaysFalse
 	'message' => '#^Result of \\|\\| is always false\\.$#',
 	'count' => 1,
@@ -2001,7 +1935,7 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns Glpi\\\\Asset\\\\Asset\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
@@ -2019,13 +1953,13 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns CommonDBTM\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns Glpi\\\\Asset\\\\AssetModel\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns CommonDBTM\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
