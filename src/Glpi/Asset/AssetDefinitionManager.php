@@ -458,58 +458,21 @@ PHP
 
     private function loadConcreteModelDictionaryClass(AssetDefinition $definition): void
     {
-        $model_class = $definition->getAssetModelClassName();
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use RuleDictionnaryDropdown;
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryModel;
 
-final class RuleDictionary{$definition->getAssetModelClassName(false)} extends RuleDictionnaryDropdown
+final class {$definition->getAssetModelDictionaryClassName(false)} extends RuleDictionaryModel
 {
-    public function getCriterias()
-    {
-        static \$criterias = [];
-
-        if (count(\$criterias)) {
-            return \$criterias;
-        }
-
-        \$criterias['name']['field']         = 'name';
-        \$criterias['name']['name']          =  _n('Model', 'Models', 1);
-        \$criterias['name']['table']         = '{$model_class::getTable()}';
-
-        \$criterias['manufacturer']['field'] = 'name';
-        \$criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
-        \$criterias['manufacturer']['table'] = 'glpi_manufacturers';
-
-        return \$criterias;
-    }
-
-    public function getActions()
-    {
-        \$actions                          = [];
-        \$actions['name']['name']          = _n('Model', 'Models', 1);
-        \$actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
-
-        return \$actions;
-    }
-    
-    public static function getSearchURL(\$full = true)
-    {
-        /** @var array \$CFG_GLPI */
-        global \$CFG_GLPI;
-        return (\$full ? \$CFG_GLPI['root_doc'] : '') . '/front/asset/ruledictionarymodel.php?class={$definition->fields['system_name']}';
-    }
-
-    public static function getFormURL(\$full = true)
-    {
-        /** @var array \$CFG_GLPI */
-        global \$CFG_GLPI;
-        return (\$full ? \$CFG_GLPI['root_doc'] : '') . '/front/asset/ruledictionarymodel.form.php?class={$definition->fields['system_name']}';
-    }
+    protected static AssetDefinition \$definition;
 }
 PHP
         );
+
+        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteTypeDictionaryClass(AssetDefinition $definition): void
@@ -517,93 +480,55 @@ PHP
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use RuleDictionnaryDropdown;
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryType;
 
-final class RuleDictionary{$definition->getAssetTypeClassName(false)} extends RuleDictionnaryDropdown
+final class {$definition->getAssetTypeDictionaryClassName(false)} extends RuleDictionaryType
 {
-    public function getCriterias()
-    {
-        static \$criterias = [];
-
-        if (count(\$criterias)) {
-            return \$criterias;
-        }
-
-        \$criterias['name']['field'] = 'name';
-        \$criterias['name']['name']  = _n('Type', 'Types', 1);
-        \$criterias['name']['table'] = '{$definition->getAssetTypeClassName()::getTable()}';
-
-        return \$criterias;
-    }
-
-    public function getActions()
-    {
-        \$actions                          = [];
-        \$actions['name']['name']          = _n('Type', 'Types', 1);
-        \$actions['name']['force_actions'] = ['append_regex_result', 'assign','regex_result'];
-
-        return \$actions;
-    }
-    
-    public static function getSearchURL(\$full = true)
-    {
-        /** @var array \$CFG_GLPI */
-        global \$CFG_GLPI;
-        return (\$full ? \$CFG_GLPI['root_doc'] : '') . '/front/asset/ruledictionarytype.php?class={$definition->fields['system_name']}';
-    }
-
-    public static function getFormURL(\$full = true)
-    {
-        /** @var array \$CFG_GLPI */
-        global \$CFG_GLPI;
-        return (\$full ? \$CFG_GLPI['root_doc'] : '') . '/front/asset/ruledictionarytype.form.php?class={$definition->fields['system_name']}';
-    }
+    protected static AssetDefinition \$definition;
 }
 PHP
         );
+
+        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteModelDictionaryCollectionClass(AssetDefinition $definition): void
     {
-        $model_class = $definition->getAssetModelClassName();
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use RuleDictionnaryDropdownCollection;
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryModelCollection;
 
-final class RuleDictionary{$definition->getAssetModelClassName(false)}Collection extends RuleDictionnaryDropdownCollection
+final class {$definition->getAssetModelDictionaryCollectionClassName(false)} extends RuleDictionaryModelCollection
 {
-    public \$item_table  = '{$model_class::getTable()}';
-    public \$menu_option = "model.{$definition->fields['system_name']}";
-
-    public function getTitle()
-    {
-        return sprintf(__('Dictionary of %s'), '{$model_class::getTypeName()}');
-    }
+    protected static AssetDefinition \$definition;
 }
 PHP
         );
+
+        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryCollectionClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteTypeDictionaryCollectionClass(AssetDefinition $definition): void
     {
-        $type_class = $definition->getAssetTypeClassName();
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use RuleDictionnaryDropdownCollection;
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryTypeCollection;
 
-final class RuleDictionary{$definition->getAssetTypeClassName(false)}Collection extends RuleDictionnaryDropdownCollection
+final class {$definition->getAssetTypeDictionaryCollectionClassName(false)} extends RuleDictionaryTypeCollection
 {
-    public \$item_table  = '{$type_class::getTable()}';
-    public \$menu_option = "model.{$definition->fields['system_name']}";
-
-    public function getTitle()
-    {
-        return sprintf(__('Dictionary of %s'), '{$type_class::getTypeName()}');
-    }
+    protected static AssetDefinition \$definition;
 }
 PHP
         );
+
+        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryCollectionClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

@@ -896,6 +896,21 @@ TWIG, ['name' => $name, 'value' => $value]);
     }
 
     /**
+     * Get the definition's concrete asset model dictionary class name.
+     *
+     * @param bool $with_namespace
+     * @return class-string<RuleDictionnaryDropdownCollection>
+     */
+    public function getAssetModelDictionaryClassName(bool $with_namespace = true): string
+    {
+        $classname = 'RuleDictionary' . $this->getAssetModelClassName(false);
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
+    }
+
+    /**
      * Get the definition's concrete asset model dictionary collection class name.
      *
      * @param bool $with_namespace
@@ -903,7 +918,22 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public function getAssetModelDictionaryCollectionClassName(bool $with_namespace = true): string
     {
-        $classname = 'RuleDictionary' . $this->getAssetModelClassName(false) . 'Collection';
+        $classname = $this->getAssetModelDictionaryClassName(false) . 'Collection';
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
+    }
+
+    /**
+     * Get the definition's concrete asset type dictionary class name.
+     *
+     * @param bool $with_namespace
+     * @return class-string<RuleDictionnaryDropdownCollection>
+     */
+    public function getAssetTypeDictionaryClassName(bool $with_namespace = true): string
+    {
+        $classname = 'RuleDictionary' . $this->getAssetTypeClassName(false);
         if ($with_namespace) {
             $classname = 'Glpi\\CustomAsset\\' . $classname;
         }
@@ -918,7 +948,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public function getAssetTypeDictionaryCollectionClassName(bool $with_namespace = true): string
     {
-        $classname = 'RuleDictionary' . $this->getAssetTypeClassName(false) . 'Collection';
+        $classname = $this->getAssetTypeDictionaryClassName(false) . 'Collection';
         if ($with_namespace) {
             $classname = 'Glpi\\CustomAsset\\' . $classname;
         }
