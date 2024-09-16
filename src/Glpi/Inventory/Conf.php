@@ -622,7 +622,7 @@ class Conf extends CommonGLPI
                 echo \Rule::createTabEntry(sprintf(
                     "<a href='%s'>%s</a>",
                     $rules::getSearchURL(),
-                    $collection->getTitle()
+                    \htmlspecialchars($collection->getTitle())
                 ), 0, \Rule::getType());
                 echo "</td>";
             }
@@ -634,7 +634,7 @@ class Conf extends CommonGLPI
             echo \NetworkPort::createTabEntry(sprintf(
                 "<a href='%s'>%s</a>",
                 NetworkPortType::getSearchURL(),
-                NetworkPortType::getTypeName()
+                \htmlspecialchars(NetworkPortType::getTypeName())
             ), 0, \NetworkPort::getType());
             echo "</td>";
             echo "</tr>";
