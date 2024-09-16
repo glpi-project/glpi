@@ -3597,4 +3597,59 @@ class RuleTicketTest extends DbTestCase
         // Check if the location "Test location" is assigned
         $this->assertEquals($location2->getID(), $ticket->fields['locations_id']);
     }
+
+    /**
+     * Test writer criterion in rules.
+     */
+    public function testWriterCriterion()
+    {
+        $this->login();
+
+        $user_id = (int) getItemByTypeName('User', '_test_user', true);
+
+        $requesttypes_id = $this->createItem('RequestType', [
+            'name' => 'requesttype_' . __METHOD__,
+        ])->getID();
+
+        // Create rule
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test writer criterion',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'users_id_recipient',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $user_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'requesttypes_id',
+            'value'       => $requesttypes_id,
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+        // Check ticket that trigger rule on creation
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add($ticket_input = [
+            'name'             => __METHOD__,
+            'content'          => __METHOD__,
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+        $this->assertEquals($user_id, (int)$ticket->getField('users_id_recipient'));
+        $this->assertEquals($requesttypes_id, (int)$ticket->getField('requesttypes_id'));
+    }
 }
