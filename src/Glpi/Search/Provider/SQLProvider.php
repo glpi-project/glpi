@@ -6058,16 +6058,12 @@ final class SQLProvider implements SearchProviderInterface
                             $plaintext = '';
                             if (isset($so['htmltext']) && $so['htmltext']) {
                                 if ($html_output) {
-                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true);
                                 } else {
-                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], true, true, $html_output);
+                                    $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], true, true);
                                 }
                             } else {
-                                $plaintext = \htmlspecialchars($data[$ID][$k]['name']);
-                                if ($html_output) {
-                                    $plaintext = \htmlspecialchars($plaintext);
-                                }
-                                $plaintext = nl2br($plaintext);
+                                $plaintext = $data[$ID][$k]['name'];
                             }
 
                             if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
@@ -6087,7 +6083,7 @@ final class SQLProvider implements SearchProviderInterface
                                     )
                                 );
                             } else {
-                                $out .= $plaintext;
+                                $out .= \htmlspecialchars($plaintext);
                             }
                         }
                     }

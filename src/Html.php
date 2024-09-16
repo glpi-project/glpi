@@ -201,7 +201,8 @@ class Html
     }
 
     /**
-     *  Resume text for followup
+     * Cut a text if longer than than the expected length.
+     * This method always encodes the HTML special chars of the provided text.
      *
      * @param string  $string  string to resume
      * @param integer $length  resume length (default 255)
@@ -210,11 +211,13 @@ class Html
      **/
     public static function resume_text($string, $length = 255)
     {
-        if (Toolbox::strlen($string) > $length) {
-            $string = Toolbox::substr($string, 0, $length) . "&nbsp;(...)";
+        $append = '';
+        if (mb_strlen($string, 'UTF-8') > $length) {
+            $string = mb_substr($string, 0, $length, 'UTF-8');
+            $append = '&nbsp;(...)';
         }
 
-        return $string;
+        return \htmlspecialchars($string) . $append;
     }
 
     /**
