@@ -4815,9 +4815,19 @@ JS;
         }
         $select = '';
         if (isset($options['multiple']) && $options['multiple']) {
+            $input_options = [];
+            if (isset($options['disabled'])) {
+                $input_options['disabled'] = $options['disabled'];
+            }
+
             $original_field_name = str_ends_with($name, '[]') ? substr($name, 0, -2) : $name;
             $original_field_name = htmlspecialchars($original_field_name);
-            $select .= "<input type='hidden' name='$original_field_name' value=''>";
+
+            $select .= sprintf(
+                '<input type="hidden" name="%1$s" value="" %2$s>',
+                $original_field_name,
+                self::parseAttributes($input_options)
+            );
         }
         $select .= sprintf(
             '<select name="%1$s" %2$s>',
