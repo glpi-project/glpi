@@ -37,6 +37,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\Firewall;
 use Glpi\Http\FirewallInterface;
+use Glpi\Log\LegacyGlobalLogger;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -65,6 +66,13 @@ return static function (ContainerConfigurator $container): void {
         ->lazy()
     ;
 
+    /**
+     * Override Symfony's logger.
+     * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
+     */
+    $services->set('logger', LegacyGlobalLogger::class);
+
+    // Development-only
     if ($container->env() === 'development') {
         $container->extension('web_profiler', [
             'toolbar' => true,
