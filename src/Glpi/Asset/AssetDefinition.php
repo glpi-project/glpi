@@ -860,6 +860,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      *
      * @param bool $with_namespace
      * @return string
+     * @phpstan-return class-string<\Glpi\Asset\Asset>
      */
     public function getAssetClassName(bool $with_namespace = true): string
     {
@@ -877,6 +878,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      *
      * @param bool $with_namespace
      * @return string
+     * @phpstan-return class-string<\Glpi\Asset\AssetModel>
      */
     public function getAssetModelClassName(bool $with_namespace = true): string
     {
@@ -888,10 +890,75 @@ TWIG, ['name' => $name, 'value' => $value]);
      *
      * @param bool $with_namespace
      * @return string
+     * @phpstan-return class-string<\Glpi\Asset\AssetType>
      */
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
         return $this->getAssetClassName($with_namespace) . 'Type';
+    }
+
+    /**
+     * Get the definition's concrete asset model dictionary class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModel>
+     */
+    public function getAssetModelDictionaryClassName(bool $with_namespace = true): string
+    {
+        $classname = 'RuleDictionary' . $this->getAssetModelClassName(false);
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
+    }
+
+    /**
+     * Get the definition's concrete asset model dictionary collection class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModelCollection>
+     */
+    public function getAssetModelDictionaryCollectionClassName(bool $with_namespace = true): string
+    {
+        $classname = $this->getAssetModelDictionaryClassName(false) . 'Collection';
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
+    }
+
+    /**
+     * Get the definition's concrete asset type dictionary class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryType>
+     */
+    public function getAssetTypeDictionaryClassName(bool $with_namespace = true): string
+    {
+        $classname = 'RuleDictionary' . $this->getAssetTypeClassName(false);
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
+    }
+
+    /**
+     * Get the definition's concrete asset type dictionary collection class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryTypeCollection>
+     */
+    public function getAssetTypeDictionaryCollectionClassName(bool $with_namespace = true): string
+    {
+        $classname = $this->getAssetTypeDictionaryClassName(false) . 'Collection';
+        if ($with_namespace) {
+            $classname = 'Glpi\\CustomAsset\\' . $classname;
+        }
+        return $classname;
     }
 
     /**

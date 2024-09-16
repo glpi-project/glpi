@@ -193,6 +193,10 @@ final class AssetDefinitionManager
             $CFG_GLPI[$config_key][] = $asset_class_name;
         }
 
+        // Add type and model to dictionnary config entry
+        $CFG_GLPI['dictionnary_types'][] = $definition->getAssetTypeClassName();
+        $CFG_GLPI['dictionnary_types'][] = $definition->getAssetModelClassName();
+
         // Bootstrap capacities
         foreach ($capacities as $capacity) {
             if ($definition->hasCapacityEnabled($capacity)) {
@@ -229,6 +233,10 @@ final class AssetDefinitionManager
     public function autoloadAssetClass(string $classname): void
     {
         $patterns = [
+            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
+            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
+            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)Model$/' => 'loadConcreteModelDictionaryClass',
+            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)Type$/' => 'loadConcreteTypeDictionaryClass',
             '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
             '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
             '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/' => 'loadConcreteClass',
@@ -445,6 +453,82 @@ PHP
         );
 
         $reflected_class = new ReflectionClass($definition->getAssetTypeClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    private function loadConcreteModelDictionaryClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryModel;
+
+final class {$definition->getAssetModelDictionaryClassName(false)} extends RuleDictionaryModel
+{
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    private function loadConcreteTypeDictionaryClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryType;
+
+final class {$definition->getAssetTypeDictionaryClassName(false)} extends RuleDictionaryType
+{
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    private function loadConcreteModelDictionaryCollectionClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryModelCollection;
+
+final class {$definition->getAssetModelDictionaryCollectionClassName(false)} extends RuleDictionaryModelCollection
+{
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryCollectionClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    private function loadConcreteTypeDictionaryCollectionClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetDefinition;
+use Glpi\\Asset\\RuleDictionaryTypeCollection;
+
+final class {$definition->getAssetTypeDictionaryCollectionClassName(false)} extends RuleDictionaryTypeCollection
+{
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryCollectionClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

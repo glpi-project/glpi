@@ -77,7 +77,7 @@ if (isset($_POST["add_action"])) {
         "setup",
         sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
     );
-    Html::redirect($_SERVER['HTTP_REFERER'] . "?id=$newID");
+    Html::redirect($rule->getFormURLWithID($newID));
 } else if (isset($_POST["purge"])) {
     $rulecollection->checkGlobal(PURGE);
     $rulecollection->deleteRuleOrder($_POST["ranking"]);

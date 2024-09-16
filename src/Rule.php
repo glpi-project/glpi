@@ -508,6 +508,37 @@ class Rule extends CommonDBTM
             }
         }
 
+        $asset_definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($asset_definitions as $definition) {
+            $model_dictionary_collection = $definition->getAssetModelDictionaryCollectionClassName();
+            $model_dictionary = $model_dictionary_collection::getRuleClassName();
+            $model_entry = [
+                'title' => $definition->getAssetModelClassName()::getTypeName(Session::getPluralNumber()),
+                'page'  => $model_dictionary::getSearchURL(false),
+                'links' => [
+                    'search' => $model_dictionary::getSearchURL(false)
+                ]
+            ];
+            if ($model_dictionary::canCreate()) {
+                $model_entry['links']['add'] = $model_dictionary::getFormURL(false);
+            }
+            $menu['dictionnary']['options']['model.' . $definition->fields['system_name']] = $model_entry;
+
+            $type_dictionary_collection = $definition->getAssetTypeDictionaryCollectionClassName();
+            $type_dictionary = $type_dictionary_collection::getRuleClassName();
+            $type_entry = [
+                'title' => $definition->getAssetTypeClassName()::getTypeName(Session::getPluralNumber()),
+                'page'  => $type_dictionary::getSearchURL(false),
+                'links' => [
+                    'search' => $type_dictionary::getSearchURL(false)
+                ]
+            ];
+            if ($type_dictionary::canCreate()) {
+                $type_entry['links']['add'] = $type_dictionary::getFormURL(false);
+            }
+            $menu['dictionnary']['options']['type.' . $definition->fields['system_name']] = $type_entry;
+        }
+
         if (count($menu)) {
             $menu['is_multi_entries'] = true;
             return $menu;

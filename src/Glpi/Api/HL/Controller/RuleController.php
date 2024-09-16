@@ -311,7 +311,7 @@ final class RuleController extends AbstractController
             /** @var \RuleCollection $instance */
             $instance = new $collection();
             if ($instance->canList()) {
-                $rule_class = $instance->getRuleClassName();
+                $rule_class = $instance::getRuleClassName();
                 if (str_starts_with($rule_class, 'Rule')) {
                     // Only handle rules from the core in the global namespace here
                     $visible_collections[] = [
