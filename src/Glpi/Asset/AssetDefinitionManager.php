@@ -53,7 +53,7 @@ final class AssetDefinitionManager
     /**
      * Definitions cache.
      */
-    private ?array $definitions_data;
+    private ?array $definitions_data = null;
 
     /**
      * List of available capacities.
@@ -97,6 +97,16 @@ final class AssetDefinitionManager
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Unset the singleton instance
+     *
+     * @return void
+     */
+    public static function unsetInstance(): void
+    {
+        self::$instance = null;
     }
 
     /**
@@ -339,7 +349,7 @@ final class AssetDefinitionManager
      */
     public function getDefinitions(bool $only_active = false): array
     {
-        if (!isset($this->definitions_data)) {
+        if ($this->definitions_data === null) {
             $this->definitions_data = getAllDataFromTable(AssetDefinition::getTable());
         }
 

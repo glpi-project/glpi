@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -440,5 +441,6 @@ class GLPITestCase extends TestCase
         // Statics values
         Log::$use_queue = false;
         CommonDBTM::clearSearchOptionCache();
+        AssetDefinitionManager::unsetInstance();
     }
 }
