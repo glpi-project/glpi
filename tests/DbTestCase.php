@@ -351,15 +351,19 @@ class DbTestCase extends \GLPITestCase
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
+        // Clear definition cache
+        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
+
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryCollectionClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryCollectionClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
-
-        // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
 
         return $definition;
     }
