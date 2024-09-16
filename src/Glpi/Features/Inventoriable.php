@@ -130,8 +130,8 @@ trait Inventoriable
 
             echo sprintf(
                 "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
-                $href,
-                $title
+                \htmlspecialchars($href),
+                \htmlspecialchars($title)
             );
 
             if (static::class == RefusedEquipment::class) {

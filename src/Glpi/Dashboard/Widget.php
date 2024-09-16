@@ -1657,6 +1657,9 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
+        $p['label'] = $p['label'] ?? \htmlspecialchars($p['label']);
+        $p['url'] = \strip_tags($p['url']);
+
         $id = "search-table-" . $p['rand'];
 
         $color = new Color($p['color']);
