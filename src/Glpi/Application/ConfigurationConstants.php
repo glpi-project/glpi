@@ -43,7 +43,7 @@ final class ConfigurationConstants
 
     public function computeConstants(?string $env = null): void
     {
-        if ($env !== null && !defined('GLPI_ENVIRONMENT_TYPE')) {
+        if ($env !== null) {
             // Force the `GLPI_ENVIRONMENT_TYPE` constant.
             // The value defined in the server env variables will be ignored.
             define('GLPI_ENVIRONMENT_TYPE', $env);

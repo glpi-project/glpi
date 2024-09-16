@@ -889,7 +889,7 @@ trait PlanningEvent
                  $out .= "&amp;forcetab=" . $itemtype . "$1";
             }
             $out .= "'>";
-            $out .= \htmlspecialchars(Html::resume_text($val["name"], 80)) . '</a>';
+            $out .= Html::resume_text($val["name"], 80) . '</a>';
 
             return $out;
         }
@@ -1104,7 +1104,7 @@ trait PlanningEvent
                     $users[] = sprintf(
                         '<a href="%s">%s</a>',
                         User::getFormURLWithID($user_id),
-                        \htmlspecialchars(getUserName($user_id, 1))
+                        getUserName($user_id, 1)
                     );
                 }
                 return implode(', ', $users);

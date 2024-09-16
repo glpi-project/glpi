@@ -5626,7 +5626,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
-                           href='" . \ReservationItem::getFormURLWithID($data['refID']) . "' >" . \htmlspecialchars($text) . "</a>";
+                           href='" . \ReservationItem::getFormURLWithID($data['refID']) . "' >" . $text . "</a>";
                     }
                     return $text;
 
@@ -6026,14 +6026,16 @@ final class SQLProvider implements SearchProviderInterface
                                 foreach ($chunks as $key => $element_name) {
                                     $class = $key === array_key_last($chunks) ? '' : 'class="text-muted"';
                                     $separator = $key === array_key_last($chunks) ? '' : ' &gt; ';
-                                    $completename .= sprintf('<span %s>%s</span>%s', $class, $element_name, $separator);
+                                    $completename .= sprintf('<span %s>%s</span>%s', $class, \htmlspecialchars($element_name), $separator);
                                 }
                                 $name = $completename;
+                            } else {
+                                $name = \htmlspecialchars($name);
                             }
 
                             $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_" .
                                 $data[$ID][$k]['id'] . "' href='$page'>" .
-                                \htmlspecialchars($name) . "</a>";
+                                $name . "</a>";
                         }
                     }
                     return $out;
@@ -6061,7 +6063,11 @@ final class SQLProvider implements SearchProviderInterface
                                     $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], true, true, $html_output);
                                 }
                             } else {
-                                $plaintext = nl2br($data[$ID][$k]['name']);
+                                $plaintext = \htmlspecialchars($data[$ID][$k]['name']);
+                                if ($html_output) {
+                                    $plaintext = \htmlspecialchars($plaintext);
+                                }
+                                $plaintext = nl2br($$plaintext);
                             }
 
                             if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
@@ -6072,7 +6078,6 @@ final class SQLProvider implements SearchProviderInterface
                                     'autoclose'     => false,
                                     'onclick'       => true,
                                 ];
-                                $plaintext = \htmlspecialchars($plaintext);
                                 $out .= sprintf(
                                     __('%1$s %2$s'),
                                     "<span id='text$rand'>" . \Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
@@ -6082,7 +6087,7 @@ final class SQLProvider implements SearchProviderInterface
                                     )
                                 );
                             } else {
-                                $out .= \htmlspecialchars($plaintext);
+                                $out .= $plaintext;
                             }
                         }
                     }
@@ -6158,7 +6163,7 @@ final class SQLProvider implements SearchProviderInterface
                     return (empty($out) ? '' : $out);
 
                 case "weblink":
-                    $orig_link = \htmlspecialchars(trim((string)$data[$ID][0]['name']));
+                    $orig_link = trim((string)$data[$ID][0]['name']);
                     if (!empty($orig_link) && \Toolbox::isValidWebUrl($orig_link)) {
                         // strip begin of link
                         $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
@@ -6166,7 +6171,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (\Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                             $link = \Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                         }
-                        return "<a href=\"" . \Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
+                        return "<a href=\"" . \htmlspecialchars(\Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>" . \htmlspecialchars($link) . "</a>";
                     }
                     return '';
 
@@ -6373,17 +6378,6 @@ HTML;
 
                         $append_specific($specific, $tmpdata, $out);
                     }
-//                    dd([
-//                        'isset($table) && isset($field)' => isset($table) && isset($field),
-//                        '$out' => $out,
-//                        '$itemtype,' => $itemtype,
-//                        '$ID,' => $ID,
-//                        'array $data,' => $data,
-//                        '$meta = 0,' => $meta,
-//                        'array $addobjectparams = [],' => $addobjectparams,
-//                        '$orig_itemtype = null' => $orig_itemtype,
-//                        '$aggregate' => $aggregate,
-//                    ]);
                 }
             }
         }
