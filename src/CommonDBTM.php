@@ -1385,51 +1385,79 @@ class CommonDBTM extends CommonGLPI
      * Get the link to an item
      *
      * @param array $options array of options
-     *    - comments     : boolean / display comments
-     *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display additionals information
-     *    - linkoption   : string  / additional options to add to <a>
-     *    - icon         : boolean  / display item icon next to label
+     *    - comments    : boolean / display comments
+     *    - complete    : boolean / display completename instead of name
+     *    - additional  : boolean / display additionals information
+     *    - class       : string  / CSS class to add to the link
+     *    - icon        : boolean / display item icon next to label
+     *    - forceid     : boolean  override config and display item's ID (false by default)
      *
      * @return string HTML link
      **/
     public function getLink($options = [])
     {
-
         $p = [
-            'linkoption' => '',
+            'class'      => '',
+            'comments'   => false,
+            'complete'   => false,
+            'additional' => false,
+            'icon'       => false,
+            'forceid'    => false,
         ];
-
-        if (isset($options['linkoption'])) {
-            $p['linkoption'] = $options['linkoption'];
+        if (array_key_exists('linkoption', $options)) {
+            trigger_error('`linkoption` option is now ignored in `CommonDBTM::getLink()`.', E_USER_WARNING);
         }
-        if (isset($options['icon'])) {
-            $p['icon'] = $options['icon'];
+        foreach ($options as $key => $val) {
+            $p[$key] = $val;
         }
 
         if (!isset($this->fields['id'])) {
             return '';
         }
 
-        if (
-            $this->no_form_page
-            || !$this->can($this->fields['id'], READ)
-        ) {
-            return $this->getNameID($options);
+        $label = $this->getNameID(['complete' => $p['complete'], 'additional' => $p['additional']]);
+
+        $comment = $p['comments']
+            ? $this->getComments()
+            : '';
+
+        $link_url = !$this->no_form_page && $this->can($this->fields['id'], READ)
+            ? $this->getLinkURL()
+            : '';
+
+        $link_title = $link_url !== ''
+            ? $this->getName(['complete' => true])
+            : '';
+
+
+        $icon = $p['icon']
+            ? $this->getIcon()
+            : '';
+
+        $html = '';
+        if ($link_url !== '') {
+            $html .= sprintf(
+                '<a href="%s" title="%s"%s>',
+                htmlspecialchars($link_url),
+                htmlspecialchars($link_title),
+                $p['class'] !== '' ? sprintf(' class="%s"', htmlspecialchars($p['class'])) : '',
+            );
+        }
+        if ($icon !== '') {
+            $html .= sprintf(
+                '<i class="%s"></i> ',
+                htmlspecialchars($icon)
+            );
+        }
+        $html .= htmlspecialchars($label);
+        if ($comment !== '') {
+            $html .= ' - ' . $comment; // Comment tooltip is already HTML encoded.
+        }
+        if ($link_url !== '') {
+            $html .= '</a>';
         }
 
-        $link = $this->getLinkURL();
-
-        $label = $this->getNameID($options);
-        $title = '';
-        if (!preg_match('/title=/', $p['linkoption'])) {
-            $thename = $this->getName(['complete' => true]);
-            if ($thename != NOT_AVAILABLE) {
-                $title = ' title="' . htmlspecialchars($thename) . '"';
-            }
-        }
-
-        return "<a " . $p['linkoption'] . " href='$link' $title>$label</a>";
+        return $html;
     }
 
 
@@ -3634,8 +3662,6 @@ class CommonDBTM extends CommonGLPI
      * Get the name of the object
      *
      * @param array $options array of options
-     *    - comments     : boolean / display comments
-     *    - icon         : boolean / display icon
      *    - complete     : boolean / display completename instead of name
      *    - additional   : boolean / display aditionals information
      *
@@ -3643,18 +3669,25 @@ class CommonDBTM extends CommonGLPI
      *
      * @see CommonDBTM::getRawCompleteName
      * @see CommonDBTM::getFriendlyName
+     *
+     * @since 11.0 `comments` option has been removed
+     * @since 11.0 `icon` option has been removed
      **/
     public function getName($options = [])
     {
-
         $p = [
-            'comments'   => false,
             'complete'   => false,
             'additional' => false,
-            'icon'       => false,
         ];
 
         if (is_array($options)) {
+            if (array_key_exists('comments', $options)) {
+                trigger_error('`comments` options is now ignored in CommonDBTM::getName().', E_USER_WARNING);
+            }
+            if (array_key_exists('icon', $options)) {
+                trigger_error('`icon` options is now ignored in CommonDBTM::getName().', E_USER_WARNING);
+            }
+
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
@@ -3677,23 +3710,6 @@ class CommonDBTM extends CommonGLPI
                 $post = $this->getPostAdditionalInfosForName();
                 if (!empty($post)) {
                     $name = sprintf(__('%1$s - %2$s'), $name, $post);
-                }
-            }
-            if ($p['comments']) {
-                $comment = $this->getComments();
-                if (!empty($comment)) {
-                    $name = sprintf(__('%1$s - %2$s'), $name, $comment);
-                }
-            }
-
-            if ($p['icon']) {
-                $icon = $this->getIcon();
-                if (!empty($icon)) {
-                    $name = sprintf(
-                        '<i class="%s"></i> %s',
-                        htmlspecialchars($icon),
-                        htmlspecialchars($name)
-                    );
                 }
             }
             return $name;
@@ -3734,24 +3750,32 @@ class CommonDBTM extends CommonGLPI
      * @see CommonDBTM::getName
      *
      * @param array $options array of options
-     *    - comments     : boolean / display comments
-     *    - icon         : boolean / display icon
      *    - complete     : boolean / display completename instead of name
      *    - additional   : boolean / display aditionals information
      *    - forceid      : boolean  override config and display item's ID (false by default)
      *
      * @return string name of the object in the current language
+     *
+     * @since 11.0 `comments` option has been removed
+     * @since 11.0 `icon` option has been removed
      **/
     public function getNameID($options = [])
     {
 
         $p = [
-            'forceid'  => false,
-            'comments' => false,
-            'icon'     => false,
+            'complete'   => false,
+            'additional' => false,
+            'forceid'    => false,
         ];
 
         if (is_array($options)) {
+            if (array_key_exists('comments', $options)) {
+                trigger_error('`comments` options is now ignored in CommonDBTM::getName().', E_USER_WARNING);
+            }
+            if (array_key_exists('icon', $options)) {
+                trigger_error('`icon` options is now ignored in CommonDBTM::getName().', E_USER_WARNING);
+            }
+
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
@@ -3765,21 +3789,10 @@ class CommonDBTM extends CommonGLPI
                 && $_SESSION['glpiis_ids_visible']
             )
         ) {
-            $addcomment = $p['comments'];
-
-           // unset comment
-            $p['comments'] = false;
             $name = $this->getName($p);
 
-           //TRANS: %1$s is a name, %2$s is ID
+            //TRANS: %1$s is a name, %2$s is ID
             $name = sprintf(__('%1$s (%2$s)'), $name, $this->getField('id'));
-
-            if ($addcomment) {
-                $comment = $this->getComments();
-                if (!empty($comment)) {
-                    $name = sprintf(__('%1$s - %2$s'), $name, $comment);
-                }
-            }
 
             return $name;
         }
