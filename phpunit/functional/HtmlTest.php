@@ -121,13 +121,21 @@ class HtmlTest extends \GLPITestCase
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
          'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
         $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show i&nbsp;(...)';
+         'If the string is not truncated, well... We&#039;re wrong and got a very serious issue in our codebase!' .
+         'And if the string has been correctly truncated, well... All is ok then, let&#039;s show i&nbsp;(...)';
         $this->assertSame($expected, \Html::resume_text($origin));
 
         $origin = 'A string that is longer than 10 characters.';
         $expected = 'A string t&nbsp;(...)';
         $this->assertSame($expected, \Html::resume_text($origin, 10));
+
+        $origin = 'A string that contains HTML special chars like >, < and &, and some text that should be truncated.';
+        $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, a&nbsp;(...)';
+        $this->assertSame($expected, \Html::resume_text($origin, 60));
+
+        $origin = 'A string that contains HTML special chars like >, < and &, and some text that should NOT be truncated.';
+        $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, and some text that should NOT be truncated.';
+        $this->assertSame($expected, \Html::resume_text($origin, 1500));
     }
 
     public function testFormatNumber()

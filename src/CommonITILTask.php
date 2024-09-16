@@ -1883,7 +1883,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
                     // Task description
                     $href = $parent_item::getFormURLWithID($parent_item->fields['id']);
-                    $link_title = Html::resume_text(RichText::getTextFromHtml($task->fields['content'], false, true, true), 50);
+                    $link_title = Html::resume_text(RichText::getTextFromHtml($task->fields['content'], false, true), 50);
                     $row['values'][] = [
                         'content' => "<a href='$href'>$link_title</a>"
                     ];
@@ -1956,7 +1956,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             printf(
                 __('%1$s %2$s'),
                 $link,
-                Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true, true), 50)
+                Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
             );
 
             echo "</a>";

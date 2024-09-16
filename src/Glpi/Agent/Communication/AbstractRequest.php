@@ -389,15 +389,14 @@ abstract class AbstractRequest
         }
         $this->http_response_code = $code;
         if (!empty($message)) {
+            $message = mb_strlen($message, 'UTF-8') < 250 ? $message : mb_substr($message, 0, 250, 'UTF-8');
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
                     'status' => 'error',
-                    'message' => \Html::resume_text($message, 250),
+                    'message' => $message,
                     'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
-                $message = \Html::resume_text($message, 250);
-
                 $this->addToResponse([
                     'ERROR' => [
                         'content'    => $message,
