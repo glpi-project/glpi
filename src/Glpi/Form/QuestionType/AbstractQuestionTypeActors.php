@@ -130,7 +130,11 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             {
                 'multiple': false,
                 'init': init,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label,
+                'specific_tags': is_multiple_actors ? {
+                    'disabled': 'disabled'
+                } : {}
             }
         ]) %}
         {% set actors_dropdown_multiple = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
@@ -139,7 +143,11 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             {
                 'multiple': true,
                 'init': init,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label,
+                'specific_tags': not is_multiple_actors ? {
+                    'disabled': 'disabled'
+                } : {}
             }
         ]) %}
 
@@ -179,7 +187,8 @@ TWIG;
             'init'               => $question != null,
             'values'             => $this->getDefaultValue($question, $this->isMultipleActors($question)),
             'allowed_types'      => $this->getAllowedActorTypes(),
-            'is_multiple_actors' => $this->isMultipleActors($question)
+            'is_multiple_actors' => $this->isMultipleActors($question),
+            'aria_label'         => __('Select an actor...')
         ]);
     }
 
@@ -205,12 +214,15 @@ TWIG;
             <script>
                 function handleMultipleActorsCheckbox_{{ rand }}(input) {
                     const is_checked = $(input).is(':checked');
-                    const selects = $(input).closest('div[data-glpi-form-editor-question]')
+                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
                         .find('div .actors-dropdown');
 
                     {# Disable all selects and toggle their visibility, then enable the right ones #}
                     selects.toggleClass('d-none').find('select').prop('disabled', is_checked)
                         .filter('[multiple]').prop('disabled', !is_checked);
+
+                    {# Handle hidden input for multiple actors #}
+                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
                 }
             </script>
 TWIG;
