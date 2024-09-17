@@ -77,6 +77,10 @@ abstract class AbstractCapacity implements CapacityInterface
         return [];
     }
 
+    /**
+     * @param class-string<Asset> $classname
+     * @return bool
+     */
     public function isUsed(string $classname): bool
     {
         return $classname::getDefinition()->hasCapacityEnabled($this);
@@ -160,13 +164,15 @@ abstract class AbstractCapacity implements CapacityInterface
      * Count the number of assets for the given asset definition.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param array<string, mixed>            $where_clause
+     *
      * @return int
      */
-    protected function countAssets(string $classname): int
+    protected function countAssets(string $classname, array $where_clause = []): int
     {
         return countElementsInTable(
             Asset::getTable(),
-            [
+            $where_clause + [
                 AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id']
             ]
         );

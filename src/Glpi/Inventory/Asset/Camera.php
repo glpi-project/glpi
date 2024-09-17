@@ -148,11 +148,6 @@ class Camera extends Device
         }
     }
 
-    public function checkConf(Conf $conf): bool
-    {
-        return true;
-    }
-
     public function getItemtype(): string
     {
         return \Item_DeviceCamera::class;

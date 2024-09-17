@@ -104,6 +104,8 @@ class Hooks
     const SHOW_ITEM_STATS           = 'show_item_stats';
 
    // Item hooks expecting an array parameter (available keys: item, options)
+    const PRE_ITIL_INFO_SECTION   = 'pre_itil_info_section';
+    const POST_ITIL_INFO_SECTION  = 'post_itil_info_section';
     const ITEM_TRANSFER           = 'item_transfer';
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';

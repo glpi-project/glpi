@@ -62,11 +62,6 @@ class Sensor extends Device
         return $this->data;
     }
 
-    public function checkConf(Conf $conf): bool
-    {
-        return true;
-    }
-
     public function getItemtype(): string
     {
         return \Item_DeviceSensor::class;

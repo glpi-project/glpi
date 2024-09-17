@@ -130,8 +130,8 @@ trait Inventoriable
 
             echo sprintf(
                 "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
-                $href,
-                $title
+                \htmlspecialchars($href),
+                \htmlspecialchars($title)
             );
 
             if (static::class == RefusedEquipment::class) {
@@ -284,6 +284,7 @@ JAVASCRIPT;
                     $itemtype_ids[$relation_data['itemtype_peripheral']][] = $relation_data['items_id_peripheral'];
                 }
                 foreach ($itemtype_ids as $itemtype => $ids) {
+                    /** @phpstan-ignore-next-line  */
                     if (count($ids) > 0) {
                         $conditions['OR'][] = [
                             'itemtype' => $itemtype,

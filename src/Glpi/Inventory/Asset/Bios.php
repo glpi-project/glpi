@@ -77,11 +77,6 @@ class Bios extends Device
         parent::handle();
     }
 
-    public function checkConf(Conf $conf): bool
-    {
-        return true;
-    }
-
     public function getItemtype(): string
     {
         return \Item_DeviceFirmware::class;

@@ -161,7 +161,9 @@ class Antivirus extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->import_antivirus == 1;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        return $conf->import_antivirus == 1 && in_array($this->item::class, $CFG_GLPI['itemantivirus_types']);
     }
 
     public function getItemtype(): string

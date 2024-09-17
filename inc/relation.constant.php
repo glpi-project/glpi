@@ -137,6 +137,7 @@ $RELATION = [
         'glpi_printers'          => 'autoupdatesystems_id',
         'glpi_refusedequipments' => 'autoupdatesystems_id',
         'glpi_unmanageds'        => 'autoupdatesystems_id',
+        'glpi_assets_assets'     => 'autoupdatesystems_id',
     ],
 
     'glpi_budgets' => [

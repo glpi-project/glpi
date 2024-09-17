@@ -122,7 +122,7 @@ class Monitor extends InventoryAsset
             ],
             'WHERE'     => [
                 'itemtype_peripheral'           => 'Monitor',
-                'itemtype_asset'                => 'Computer',
+                'itemtype_asset'                => $this->item::class,
                 'items_id_asset'                => $this->item->getID(),
                 'entities_id'                   => $this->entities_id,
                 $relation_table . '.is_dynamic' => 1,
@@ -192,7 +192,7 @@ class Monitor extends InventoryAsset
         if (count($db_monitors) == 0) {
             foreach ($monitors as $monitors_id) {
                 $input = [
-                    'itemtype_asset' => \Computer::class,
+                    'itemtype_asset' => $this->item::class,
                     'items_id_asset' => $this->item->fields['id'],
                     'itemtype_peripheral' => \Monitor::class,
                     'items_id_peripheral' => $monitors_id,
@@ -232,12 +232,15 @@ class Monitor extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
-        return $conf->import_monitor == 1;
+        return $conf->import_monitor == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }
 
     public function getItemtype(): string
     {
+        //FIXME: check if this is correct - should be the same as Peripheral::getItemtype()
         return Asset_PeripheralAsset::class;
     }
 }

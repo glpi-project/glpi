@@ -457,7 +457,10 @@ abstract class InventoryAsset
         return $input;
     }
 
-    abstract public function getItemtype(): string;
+    public function getItemtype(): string
+    {
+        return $this->item::class;
+    }
 
     final protected function cleanName(string $string): string
     {

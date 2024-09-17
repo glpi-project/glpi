@@ -107,7 +107,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
         $asset = self::getItemFromArray(self::$itemtype_1, self::$items_id_1, $input);
         if (
-            self::isAlreadyConnected($asset, $peripheral)
+            !($asset instanceof CommonDBTM)
+            || self::isAlreadyConnected($asset, $peripheral)
             || !(in_array($asset::class, self::getPeripheralHostItemtypes(), true))
         ) {
            // no duplicates

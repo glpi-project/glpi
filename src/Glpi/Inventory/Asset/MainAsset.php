@@ -103,14 +103,14 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return string
      */
-    abstract protected function getModelsFieldName();
+    abstract protected function getModelsFieldName(): string;
 
     /**
      * Get model foreign key field name
      *
      * @return string
      */
-    abstract protected function getTypesFieldName();
+    abstract protected function getTypesFieldName(): string;
 
     public function prepare(): array
     {

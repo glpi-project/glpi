@@ -1032,7 +1032,9 @@ class Software extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->import_software == 1;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        return $conf->import_software == 1 && in_array($this->item::class, $CFG_GLPI['software_types']);
     }
 
     public function getItemtype(): string
