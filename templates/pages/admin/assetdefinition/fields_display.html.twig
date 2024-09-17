@@ -43,13 +43,13 @@
                 %field_label%
                 <i class="ti ti-grip-vertical"></i>
             </label>
-            <div class="col-xxl-7 field-container">
+            <div class="col-xxl-7 field-container btn-group shadow-none">
                 <input type="text" disabled class="form-control" />
+                <button type="button" class="btn btn-ghost-secondary btn-sm remove-field" title="{{ __("Remove") }}">
+                    <i class="ti ti-x"></i>
+                </button>
             </div>
         </div>
-        <button type="button" class="btn btn-ghost-secondary btn-sm ms-2 remove-field" title="{{ __("Remove") }}">
-            <i class="ti ti-x"></i>
-        </button>
     </div>
 {% endmacro %}
 {% import _self as my_draggable_macros %}
