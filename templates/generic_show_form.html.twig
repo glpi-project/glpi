@@ -69,6 +69,10 @@
     {# Remove fields that don't apply #}
     {% set field_order = field_order|filter((f) => f starts with '_' or item.isField(f)) %}
 
+    {# Exclude specified fields #}
+    {% set fields_excluded = fields_excluded|default([]) %}
+    {% set field_order = field_order|filter((f) => f not in fields_excluded) %}
+
    <div class="card-body d-flex flex-wrap">
       <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
