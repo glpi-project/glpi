@@ -618,23 +618,26 @@ final class AssetDefinition extends AbstractDefinition
 
     private function getAllFields(): array
     {
+        $type_class = $this->getAssetTypeClassName();
+        $model_class = $this->getAssetModelClassName();
         $fields = [
             'name'             => __('Name'),
-            'comment'          => __('Comment'),
-            'serial'           => __('Serial'),
-            'otherserial'      => __('Inventory number'),
-            'contact'          => __('Alternate username'),
+            'states_id'        => State::getTypeName(),
+            'locations_id'     => Location::getTypeName(),
+            $type_class::getForeignKeyField() => $type_class::getTypeName(),
+            'users_id_tech'    => __('Technician in charge'),
+            'manufacturers_id' => Manufacturer::getTypeName(),
+            'groups_id_tech'   => __('Group in charge'),
+            $model_class::getForeignKeyField() => $model_class::getTypeName(),
             'contact_num'      => __('Alternate username number'),
+            'serial'           => __('Serial'),
+            'contact'          => __('Alternate username'),
+            'otherserial'      => __('Inventory number'),
             'users_id'         => User::getTypeName(),
             'groups_id'        => Group::getTypeName(),
-            'users_id_tech'    => __('Technician in charge'),
-            'groups_id_tech'   => __('Group in charge'),
-            'locations_id'     => Location::getTypeName(),
-            'manufacturers_id' => Manufacturer::getTypeName(),
-            'states_id'        => State::getTypeName(),
+            'comment'          => __('Comment'),
         ];
 
-        // TODO add assets_assetmodels_id and assets_assettypes_id
         // TODO add custom fields
 
         return $fields;
