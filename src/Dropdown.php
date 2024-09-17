@@ -611,36 +611,36 @@ class Dropdown
                             if (!empty($data["phone"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . Phone::getTypeName(1),
-                                    "</span>" . $data['phone']
+                                    "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
+                                    "</span>" . htmlspecialchars($data['phone'])
                                 );
                             }
                             if (!empty($data["phone2"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('Phone 2'),
-                                    "</span>" . $data['phone2']
+                                    "<span class='b'>" . __s('Phone 2'),
+                                    "</span>" . htmlspecialchars($data['phone2'])
                                 );
                             }
                             if (!empty($data["mobile"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('Mobile phone'),
-                                    "</span>" . $data['mobile']
+                                    "<span class='b'>" . __s('Mobile phone'),
+                                    "</span>" . htmlspecialchars($data['mobile'])
                                 );
                             }
                             if (!empty($data["fax"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('Fax'),
-                                    "</span>" . $data['fax']
+                                    "<span class='b'>" . __s('Fax'),
+                                    "</span>" . htmlspecialchars($data['fax'])
                                 );
                             }
                             if (!empty($data["email"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . _n('Email', 'Emails', 1),
-                                    "</span>" . $data['email']
+                                    "</span>" . htmlspecialchars($data['email'])
                                 );
                             }
                         }
@@ -651,22 +651,22 @@ class Dropdown
                             if (!empty($data["phonenumber"])) {
                                  $comment .= "<br>" . sprintf(
                                      __('%1$s: %2$s'),
-                                     "<span class='b'>" . Phone::getTypeName(1),
-                                     "</span>" . $data['phonenumber']
+                                     "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
+                                     "</span>" . htmlspecialchars($data['phonenumber'])
                                  );
                             }
                             if (!empty($data["fax"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('Fax'),
-                                    "</span>" . $data['fax']
+                                    "<span class='b'>" . __s('Fax'),
+                                    "</span>" . htmlspecialchars($data['fax'])
                                 );
                             }
                             if (!empty($data["email"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . _n('Email', 'Emails', 1),
-                                    "</span>" . $data['email']
+                                    "<span class='b'>" . _sn('Email', 'Emails', 1),
+                                    "</span>" . htmlspecialchars($data['email'])
                                 );
                             }
                         }
@@ -690,7 +690,7 @@ class Dropdown
                             if (!empty($data['locations_id'])) {
                                  $comment .= "<br>" . sprintf(
                                      __('%1$s: %2$s'),
-                                     "<span class='b'>" . Location::getTypeName(1) . "</span>",
+                                     "<span class='b'>" . htmlspecialchars(Location::getTypeName(1)) . "</span>",
                                      self::getDropdownName(
                                          "glpi_locations",
                                          $data["locations_id"],
@@ -702,7 +702,7 @@ class Dropdown
                             if (!empty($data['budgettypes_id'])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . _n('Type', 'Types', 1) . "</span>",
+                                    "<span class='b'>" . _sn('Type', 'Types', 1) . "</span>",
                                     self::getDropdownName(
                                         "glpi_budgettypes",
                                         $data["budgettypes_id"],
@@ -714,14 +714,14 @@ class Dropdown
                             if (!empty($data['begin_date'])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('Start date') . "</span>",
+                                    "<span class='b'>" . __s('Start date') . "</span>",
                                     Html::convDateTime($data["begin_date"])
                                 );
                             }
                             if (!empty($data['end_date'])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . __('End date') . "</span>",
+                                    "<span class='b'>" . __s('End date') . "</span>",
                                     Html::convDateTime($data["end_date"])
                                 );
                             }
@@ -1359,6 +1359,8 @@ JAVASCRIPT;
 
         echo "<div class='container-fluid text-start'>";
         echo "<div class='mb-3 row'>";
+
+        $title = htmlspecialchars($title);
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
@@ -2272,21 +2274,21 @@ JAVASCRIPT;
         if ($param['readonly']) {
             $to_display = [];
             foreach ($param['values'] as $value) {
-                $output .= "<input type='hidden' name='$field_name' value='$value'>";
+                $output .= "<input type='hidden' name='" . htmlspecialchars($field_name) . "' value='" . htmlspecialchars($value) . "'>";
                 if (isset($elements[$value])) {
-                    $to_display[] = $elements[$value];
+                    $to_display[] = htmlspecialchars($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' . htmlspecialchars($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected
-                $output .= "<input type='hidden' name='$original_field_name' value=''>";
+                $output .= "<input type='hidden' name='" . htmlspecialchars($original_field_name) . "' value=''>";
             }
-            $output  .= "<select name='$field_name' id='$field_id'";
+            $output  .= "<select name='" . htmlspecialchars($field_name) . "' id='" . htmlspecialchars($field_id) . "'";
 
             if ($param['width'] !== '') {
-                $output .= " style='width: " . $param['width'] . "'";
+                $output .= " style='width: " . htmlspecialchars($param['width']) . "'";
             }
 
             if ($param['tooltip']) {
@@ -2298,11 +2300,11 @@ JAVASCRIPT;
             }
 
             if (!empty($param["on_change"])) {
-                $output .= " onChange='" . $param["on_change"] . "'";
+                $output .= " onChange='" . htmlspecialchars($param["on_change"]) . "'";
             }
 
             if ((is_int($param["size"])) && ($param["size"] > 0)) {
-                $output .= " size='" . $param["size"] . "'";
+                $output .= " size='" . htmlspecialchars($param["size"]) . "'";
             }
 
             if ($param["multiple"]) {
@@ -2363,7 +2365,7 @@ JAVASCRIPT;
 
                     foreach ($val as $key2 => $val2) {
                         if (!isset($param['used'][$key2])) {
-                            $output .= "<option value='" . $key2 . "'";
+                            $output .= "<option value='" . htmlspecialchars($key2) . "'";
                            // Do not use in_array : trouble with 0 and empty value
                             foreach ($param['values'] as $value) {
                                 if (strcmp($key2, $value) === 0) {
@@ -2403,7 +2405,7 @@ JAVASCRIPT;
             }
 
             if ($param['other'] !== false) {
-                $output .= "<option value='$other_select_option'";
+                $output .= "<option value='" . htmlspecialchars($other_select_option) . "'";
                 if (is_string($param['other'])) {
                     $output .= " selected";
                 }
@@ -2412,9 +2414,9 @@ JAVASCRIPT;
 
             $output .= "</select>";
             if ($param['other'] !== false) {
-                $output .= "<input name='$other_select_option' id='$other_select_option' type='text'";
+                $output .= "<input name='" . htmlspecialchars($other_select_option) . "' id='" . htmlspecialchars($other_select_option) . "' type='text'";
                 if (is_string($param['other'])) {
-                    $output .= " value=\"" . $param['other'] . "\"";
+                    $output .= " value=\"" . htmlspecialchars($param['other']) . "\"";
                 } else {
                     $output .= " style=\"display: none\"";
                 }
@@ -2437,7 +2439,7 @@ JAVASCRIPT;
            // Hack for All / None because select2 does not provide it
             $select   = __('All');
             $deselect = __('None');
-            $output  .= "<div class='invisible' id='selectallbuttons_$field_id'>";
+            $output  .= "<div class='invisible' id='selectallbuttons_" . htmlspecialchars($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
             $output  .= "<a class='btn btn-sm' " .
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select" .
@@ -2575,10 +2577,10 @@ JAVASCRIPT;
                // Templates edition
                 if (!empty($params['withtemplate'])) {
                     echo "<input type='hidden' name='is_global' value='" .
-                      $params['management_restrict'] . "'>";
-                    echo (!$params['management_restrict'] ? __('Unit management') : __('Global management'));
+                        htmlspecialchars($params['management_restrict']) . "'>";
+                    echo (!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
-                    echo (!$params['value'] ? __('Unit management') : __('Global management'));
+                    echo (!$params['value'] ? __s('Unit management') : __s('Global management'));
                 }
             }
         }
