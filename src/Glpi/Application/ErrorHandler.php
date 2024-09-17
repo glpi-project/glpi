@@ -328,7 +328,7 @@ class ErrorHandler
     {
         $this->outputDebugMessage(
             sprintf('SQL Error "%s"', $error_code),
-            sprintf('%s in query "%s"', \htmlspecialchars($error_message), preg_replace('/\\n/', ' ', $query)),
+            sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
             self::ERROR_LEVEL_MAP[E_USER_ERROR]
         );
     }
@@ -391,7 +391,7 @@ class ErrorHandler
 
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
         if (!$quiet) {
-            $this->outputDebugMessage($error_type, \htmlspecialchars($error_description), $log_level);
+            $this->outputDebugMessage($error_type, $error_description, $log_level);
         }
     }
 
