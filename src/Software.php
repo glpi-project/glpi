@@ -724,7 +724,7 @@ class Software extends CommonDBTM
             $paramsselsoft
         );
 
-        echo "<span id='show_" . $myname . $rand . "'>&nbsp;</span>\n";
+        echo "<span id='show_" . htmlspecialchars($myname . $rand) . "'>&nbsp;</span>\n";
 
         return $rand;
     }
