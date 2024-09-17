@@ -3155,7 +3155,7 @@ JAVASCRIPT;
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlspecialchars($this->fields["name"]));
             echo "<input type='hidden' name='name' value='" . htmlspecialchars($this->fields["name"]) . "'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
+            echo "<input type='hidden' name='id' value='" . htmlspecialchars($this->fields["id"]) . "'>";
             echo "</th></tr>";
 
             $surnamerand = mt_rand();

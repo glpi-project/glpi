@@ -179,7 +179,7 @@ class UserEmail extends CommonDBChild
         $field_name = htmlspecialchars($field_name . "[$id]");
         $result .= "<div class='d-flex align-items-center'>";
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
-             value='" . $this->getID() . "'";
+             value='" . htmlspecialchars($this->getID()) . "'";
         if (!$canedit) {
             $result .= " disabled";
         }
