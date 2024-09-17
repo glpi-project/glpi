@@ -80,8 +80,8 @@ class DisplayPreference extends CommonDBTM
     {
         switch ($ma->getAction()) {
             case 'reset_to_default':
-                $msg = __('This will reset the columns to the defaults for a new installation.');
-                $msg2 = __('This will only work for types from GLPI itself or enabled plugins that support this action.');
+                $msg = __s('This will reset the columns to the defaults for a new installation.');
+                $msg2 = __s('This will only work for types from GLPI itself or enabled plugins that support this action.');
                 echo '<div class="alert alert-info">' . $msg . '<br>' . $msg2 . '</div>';
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
