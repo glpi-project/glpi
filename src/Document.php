@@ -364,14 +364,10 @@ class Document extends CommonDBTM
         if ($ID > 0) {
             $this->check($ID, READ);
         }
-        $showuserlink = 0;
-        if (Session::haveRight('user', READ)) {
-            $showuserlink = 1;
-        }
 
         TemplateRenderer::getInstance()->display('pages/management/document.html.twig', [
             'item'  => $this,
-            'uploader' => $this->fields['users_id'] > 0 ? getUserName($this->fields["users_id"], $showuserlink) : '',
+            'uploader' => $this->fields['users_id'] > 0 ? getUserLink($this->fields["users_id"]) : '',
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
                 'canedit' => $this->canUpdateItem(),

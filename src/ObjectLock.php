@@ -112,11 +112,18 @@ class ObjectLock extends CommonDBTM
         $ret = false;
         $new_lock = false;
         $showAskUnlock = false;
-        $user_data = [];
+        $user_data = [
+            'name' => null,
+            'comment' => null,
+        ];
         $autolock = $this->isAutolockReadonlyMode();
 
-        if (isset($this->fields['users_id']) && $this->fields['users_id'] > 0) {
-            $user_data = getUserName($this->fields['users_id'], 2);
+        $user = new User();
+        if (isset($this->fields['users_id']) && $this->fields['users_id'] > 0 && $user->getFromDB($this->fields['users_id'])) {
+            $user_data = [
+                'name' => $user->getName(),
+                'comment' => $user->getInfoCard(),
+            ];
             // should get locking user info
             $useremail = new UserEmail();
             $showAskUnlock = $useremail->getFromDBByCrit([

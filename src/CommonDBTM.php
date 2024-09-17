@@ -4911,11 +4911,14 @@ class CommonDBTM extends CommonGLPI
                             return $searchoptions['emptylabel'];
                         }
 
+                        $user = new User();
                         if ($searchoptions['table'] == 'glpi_users') {
+                            if (!$user->getFromDB($value)) {
+                                return '';
+                            }
                             if ($param['comments']) {
-                                $tmp = getUserName($value, 2);
-                                return $tmp['name'] . '&nbsp;' . Html::showToolTip(
-                                    $tmp['comment'],
+                                return $user->getLink() . '&nbsp;' . Html::showToolTip(
+                                    $user->getInfoCard(),
                                     ['display' => false]
                                 );
                             }

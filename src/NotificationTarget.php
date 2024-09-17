@@ -607,9 +607,7 @@ class NotificationTarget extends CommonDBChild
                     $user->getField('name'),
                     $user->getField('realname'),
                     $user->getField('firstname'),
-                    0,
-                    0,
-                    true
+                    force_config: true
                 );
             }
            // It is a GLPI user :

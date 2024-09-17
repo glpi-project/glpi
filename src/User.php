@@ -1807,6 +1807,38 @@ class User extends CommonDBTM
         return '';
     }
 
+    /**
+     * Get the user info card HTML.
+     *
+     * @return string
+     */
+    public function getInfoCard(): string
+    {
+        $user_params = [
+            'id'                  => $this->getID(),
+            'user_name'           => $this->getName(),
+            'email'               => UserEmail::getDefaultForUser($this->getID()),
+            'phone'               => $this->fields["phone"],
+            'phone2'              => $this->fields["phone2"],
+            'mobile'              => $this->fields["mobile"],
+            'locations_id'        => $this->fields['locations_id'],
+            'usertitles_id'       => $this->fields['usertitles_id'],
+            'usercategories_id'   => $this->fields['usercategories_id'],
+            'registration_number' => $this->fields['registration_number'],
+        ];
+
+        if (Session::haveRight('user', READ)) {
+             $user_params['login'] = $this->fields['name'];
+        }
+        if (!empty($this->fields["groups_id"])) {
+            $user_params['groups_id'] = $this->fields["groups_id"];
+        }
+        return TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
+            'user'                 => $user_params,
+            'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',
+        ]);
+    }
+
 
     /**
      * Function that tries to load the user membership from LDAP
@@ -4814,18 +4846,27 @@ JAVASCRIPT;
         $default = '';
         $valuesnames = [];
 
+        $tooltip_url     = '';
+        $tooltip_content = '';
+
         if (!$p['multiple']) {
-            /** @var array $user */
-            $user = getUserName($p['value'], 2, true);
+            $user_name = '';
+
+            $user = new User();
+            if ($p['value'] >= 0 && $user->getFromDB($p['value'])) {
+                $user_name       = $user->getName();
+                $tooltip_url     = $user->getLinkURL();
+                $tooltip_content = $user->getInfoCard();
+            }
 
             if ($p['readonly']) {
-                return '<span class="form-control" readonly>' . $user["name"] . '</span>';
+                return '<span class="form-control" readonly>' . htmlspecialchars($user_name) . '</span>';
             }
 
             if ($p['value'] === 'myself') {
                 $default = __("Myself");
             } else if (!empty($p['value']) && ($p['value'] > 0)) {
-                $default = $user["name"];
+                $default = $user_name;
             } else {
                 if ($p['all']) {
                     $default = __('All');
@@ -4837,9 +4878,7 @@ JAVASCRIPT;
             // get multiple values name
             foreach ($p['values'] as $value) {
                 if (!empty($value) && ($value > 0)) {
-                    /** @var array $user */
-                    $user = getUserName($value, 2);
-                    $valuesnames[] = $user["name"];
+                    $valuesnames[] = getUserName($value);
                 } else {
                     unset($p['values'][$value]);
                 }
@@ -4905,13 +4944,13 @@ JAVASCRIPT;
             $comment_id = Html::cleanId("comment_" . $p['name'] . $p['rand']);
             $link_id = Html::cleanId("comment_link_" . $p["name"] . $p['rand']);
             if (!$view_users) {
-                $user["link"] = '';
-            } else if (empty($user["link"])) {
-                $user["link"] = $CFG_GLPI['root_doc'] . "/front/user.php";
+                $tooltip_url = '';
+            } else if ($tooltip_url === '') {
+                $tooltip_url = $CFG_GLPI['root_doc'] . "/front/user.php";
             }
 
-            if (empty($user['comment'])) {
-                $user['comment'] = Toolbox::ucfirst(
+            if ($tooltip_content === '') {
+                $tooltip_content = Toolbox::ucfirst(
                     sprintf(
                         __s('Show %1$s'),
                         self::getTypeName(Session::getPluralNumber())
@@ -4936,10 +4975,10 @@ JAVASCRIPT;
                 false
             );
 
-            $icons .= Html::showToolTip($user["comment"], [
+            $icons .= Html::showToolTip($tooltip_content, [
                 'contentid' => $comment_id,
                 'display'   => false,
-                'link'      => $user["link"],
+                'link'      => $tooltip_url,
                 'linkid'    => $link_id
             ]);
             $icons .= '</div>';

@@ -650,7 +650,6 @@ class Item_SoftwareVersion extends CommonDBRelation
             $softwares_id  = $data['sID'];
             $soft          = new Software();
             $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = User::canView();
             $title         = $soft->fields["name"];
 
             if ($crit === "id") {
@@ -763,12 +762,11 @@ class Item_SoftwareVersion extends CommonDBRelation
                 echo "<td>" . $data['location'] . "</td>";
                 echo "<td>" . $data['state'] . "</td>";
                 echo "<td>" . $data['groupe'] . "</td>";
-                echo "<td>" . formatUserName(
+                echo "<td>" . formatUserLink(
                     $data['userid'],
                     $data['username'],
                     $data['userrealname'],
                     $data['userfirstname'],
-                    $linkUser
                 ) . "</td>";
 
                 $lics = Item_SoftwareLicense::getLicenseForInstallation(
