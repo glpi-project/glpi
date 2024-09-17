@@ -908,12 +908,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Computer\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -1230,12 +1224,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method DCRoom\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DCRoom.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
 $ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
@@ -1962,12 +1950,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
-];
-$ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on CommonDBTM\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset_PeripheralAsset.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.notFound
@@ -3650,12 +3632,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Monitor\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -3684,12 +3660,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
 	// identifier: if.alwaysTrue
@@ -3920,12 +3890,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason_Item.php',
 ];
 $ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
 	// identifier: instanceof.alwaysFalse
 	'message' => '#^Instanceof between static\\(Peripheral\\) and PDU will always evaluate to false\\.$#',
 	'count' => 1,
@@ -3954,12 +3918,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
 ];
 $ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
@@ -4068,12 +4026,6 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.notFound
@@ -4224,12 +4176,6 @@ $ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RefusedEquipment.php',
 ];
 $ignoreErrors[] = [
 	// identifier: method.notFound
@@ -4782,12 +4728,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between null and true will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	// identifier: greater.alwaysTrue
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
 	// identifier: identical.alwaysFalse

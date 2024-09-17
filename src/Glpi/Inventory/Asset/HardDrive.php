@@ -73,7 +73,7 @@ class HardDrive extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_harddrive == 1;
+        return $conf->component_harddrive == 1 && parent::checkConf($conf);
     }
 
     public function getItemtype(): string

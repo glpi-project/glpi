@@ -689,6 +689,7 @@ function loadDataset()
     $_SESSION['glpiactive_entity']   = 0;
     $_SESSION['glpiactiveentities']  = [0];
     $_SESSION['glpiactiveentities_string'] = "'0'";
+    $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
     $CFG_GLPI['root_doc']            = '/glpi';
 
     $DB->beginTransaction();

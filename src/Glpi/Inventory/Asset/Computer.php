@@ -49,9 +49,4 @@ class Computer extends MainAsset
     {
         return ComputerType::getForeignKeyField();
     }
-
-    public function getItemtype(): string
-    {
-        return \Computer::class;
-    }
 }

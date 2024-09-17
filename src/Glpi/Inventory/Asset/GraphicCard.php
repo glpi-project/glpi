@@ -71,7 +71,7 @@ class GraphicCard extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_graphiccard == 1;
+        return $conf->component_graphiccard == 1 && parent::checkConf($conf);
     }
 
     public function getItemtype(): string
