@@ -154,9 +154,9 @@ class UserEmail extends CommonDBChild
     {
 
         return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+$child_count_js_var+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . $field_name .
-             "[-'+$child_count_js_var+']\'>";
+             " value=\'-'+" . htmlspecialchars($child_count_js_var) . "+'\'>&nbsp;" .
+             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlspecialchars($field_name) .
+             "[-'+" . htmlspecialchars($child_count_js_var) . "+']\'>";
     }
 
 
@@ -176,7 +176,7 @@ class UserEmail extends CommonDBChild
             $value = htmlspecialchars($this->fields['email'] ?? '');
         }
         $result = "";
-        $field_name = $field_name . "[$id]";
+        $field_name = htmlspecialchars($field_name . "[$id]");
         $result .= "<div class='d-flex align-items-center'>";
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . $this->getID() . "'";
