@@ -377,8 +377,8 @@ class Database extends CommonDBChild
 
         if ($canedit) {
             echo "<div class='center firstbloc'>" .
-            "<a class='btn btn-primary' href='" . static::getFormURL() . "?databaseinstances_id=$ID'>";
-            echo __('Add a database');
+            "<a class='btn btn-primary' href='" . htmlspecialchars(static::getFormURL()) . "?databaseinstances_id=$ID'>";
+            echo __s('Add a database');
             echo "</a></div>\n";
         }
 
@@ -406,15 +406,15 @@ class Database extends CommonDBChild
         );
 
         if (empty($databases)) {
-            echo "<tr><th>" . __('No database') . "</th></tr>";
+            echo "<tr><th>" . __s('No database') . "</th></tr>";
         } else {
-            echo "<tr class='noHover'><th colspan='10'>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>";
+            echo "<tr class='noHover'><th colspan='10'>" . htmlspecialchars(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";
 
-            $header = "<tr><th>" . __('Name') . "</th>";
-            $header .= "<th>" . sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')) . "</th>";
-            $header .= "<th>" . __('Is active') . "</th>";
-            $header .= "<th>" . __('Has backup') . "</th>";
-            $header .= "<th>" . __('Is dynamic') . "</th>";
+            $header = "<tr><th>" . __s('Name') . "</th>";
+            $header .= "<th>" . sprintf(__('%1$s (%2$s)'), __s('Size'), __s('Mio')) . "</th>";
+            $header .= "<th>" . __s('Is active') . "</th>";
+            $header .= "<th>" . __s('Has backup') . "</th>";
+            $header .= "<th>" . __s('Is dynamic') . "</th>";
             $header .= "</tr>";
             echo $header;
 
@@ -452,9 +452,10 @@ class Database extends CommonDBChild
     public static function getAdditionalMenuLinks()
     {
         $links = [];
+        $label = htmlspecialchars(DatabaseInstance::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
-            $insts = "<i class=\"ti ti-database-import\" title=\"" . DatabaseInstance::getTypeName(Session::getPluralNumber()) .
-            "\"></i><span class='d-none d-xxl-block'>" . DatabaseInstance::getTypeName(Session::getPluralNumber()) . "</span>";
+            $insts = "<i class=\"ti ti-database-import\" title=\"$label\"" .
+            "></i><span class='d-none d-xxl-block'>$label</span>";
             $links[$insts] = DatabaseInstance::getSearchURL(false);
         }
         if (count($links)) {
