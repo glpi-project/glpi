@@ -5095,7 +5095,7 @@ JAVASCRIPT;
                                 ]
                             )
                         );
-                         echo htmlspecialchars($name);
+                         echo $name;
                     } else {
                         echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
                     }
