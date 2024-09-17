@@ -184,7 +184,7 @@ class User extends CommonDBTM
             && (Profile::getDefault() == 0)
         ) {
             echo "<div class='tab_cadre_fixe warning'>" .
-                __('You must define a default profile to create a new user') . "</div>";
+                __s('You must define a default profile to create a new user') . "</div>";
         }
 
         return false;
@@ -299,7 +299,7 @@ class User extends CommonDBTM
      * Load minimal session for user.
      *
      * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursivly or not
+     * @param boolean $is_recursive Whether to load entities recursively or not
      *
      * @return void
      *
@@ -2543,7 +2543,7 @@ class User extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Download user VCard');
-            $vcard_url = self::getFormURLWithID($ID) . "&amp;getvcard=1";
+            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
@@ -2555,7 +2555,7 @@ HTML;
             $toolbar[] = $vcard_btn;
 
             $error_message = null;
-            $impersonate_form = self::getFormURLWithID($ID);
+            $impersonate_form = htmlspecialchars(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
                 $csrf_token = Session::getNewCSRFToken();
@@ -2586,6 +2586,7 @@ HTML;
 JAVASCRIPT;
                 $toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
             } elseif ($error_message !== null) {
+                $error_message = htmlspecialchars($error_message);
                 $impersonate_btn = <<<HTML
                <button type="button" name="impersonate" value="1"
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
@@ -2663,10 +2664,10 @@ HTML;
             ($this->fields["authtype"] == Auth::DB_GLPI)
         ) {
            //display login field for new records, or if this is not external auth
-            echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
+            echo "<td><input name='name' id='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
         } else {
             echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
+            echo "<input type='hidden' name='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
         }
 
         if (!$simplified_form && !empty($this->fields["name"])) {
@@ -2675,7 +2676,7 @@ HTML;
             echo self::getPictureForUser($ID);
 
             echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
-            echo "<input type='checkbox' name='_blank_picture'>&nbsp;" . __('Clear');
+            echo "<input type='checkbox' name='_blank_picture'>&nbsp;" . __s('Clear');
             echo "</td>";
         } else {
             echo "<td rowspan='7'></td>";
@@ -2690,7 +2691,7 @@ HTML;
             && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])
         ) {
             $syncrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __s('Synchronization field') . "</label></td><td>";
             if (
                 self::canUpdate()
                 && (!$extauth || empty($ID))
@@ -2715,7 +2716,7 @@ HTML;
         }
 
         $surnamerand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
+        echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td><td>";
         echo Html::input(
             'realname',
             [
@@ -2726,7 +2727,7 @@ HTML;
         echo "</td></tr>";
 
         $firstnamerand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
+        echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
         echo Html::input(
             'firstname',
             [
@@ -2766,19 +2767,19 @@ JAVASCRIPT;
             && $caneditpassword
         ) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='password_field'><label for='password'>" . __('Password') . "</label></td>";
+            echo "<td class='password_field'><label for='password'>" . __s('Password') . "</label></td>";
             echo "<td class='password_field'><input id='password' type='password' name='password' value='' size='20'
                     autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'></td>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='password_field'><label for='password2'>" . __('Password confirmation') . "</label></td>";
+            echo "<td class='password_field'><label for='password2'>" . __s('Password confirmation') . "</label></td>";
             echo "<td class='password_field'><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
             if ($CFG_GLPI["use_password_security"]) {
                 echo "<tr class='tab_bg_1'>";
                 echo "<td rowspan='2'>";
-                echo __('Password security policy');
+                echo __s('Password security policy');
                 echo "</td>";
                 echo "<td rowspan='2'>";
                 Config::displayPasswordSecurityChecks();
@@ -2792,7 +2793,7 @@ JAVASCRIPT;
 
         if ((!$simplified_form) && ($DB->use_timezones || Session::haveRight("config", READ))) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
+            echo "<td><label for='timezone'>" . __s('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
                 $timezones = $DB->getTimezones();
                 Dropdown::showFromArray(
@@ -2806,9 +2807,9 @@ JAVASCRIPT;
                 );
             } else if (Session::haveRight("config", READ)) {
                // Display a warning but only if user is more or less an admin
-                echo __('Timezone usage has not been activated.')
+                echo __s('Timezone usage has not been activated.')
                 . ' '
-                . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
+                . sprintf(__s('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
             echo "</td></tr>";
         }
@@ -2816,13 +2817,13 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         if (!GLPI_DEMO_MODE) {
             $activerand = mt_rand();
-            echo "<td><label for='dropdown_is_active$activerand'>" . __('Active') . "</label></td><td>";
+            echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
             Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
             echo "</td>";
         } else {
             echo "<td colspan='2'></td>";
         }
-        echo "<td>" . _n('Email', 'Emails', Session::getPluralNumber());
+        echo "<td>" . _sn('Email', 'Emails', Session::getPluralNumber());
         UserEmail::showAddEmailButton($this);
         echo "</td><td>";
         UserEmail::showForUser($this);
@@ -2832,7 +2833,7 @@ JAVASCRIPT;
         if ((!$simplified_form) && (!GLPI_DEMO_MODE)) {
             $sincerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='showdate$sincerand'>" . __('Valid since') . "</label></td><td>";
+            echo "<td><label for='showdate$sincerand'>" . __s('Valid since') . "</label></td><td>";
             Html::showDateTimeField("begin_date", ['value'       => $this->fields["begin_date"],
                 'rand'        => $sincerand,
                 'maybeempty'  => true
@@ -2840,7 +2841,7 @@ JAVASCRIPT;
             echo "</td>";
 
             $untilrand = mt_rand();
-            echo "<td><label for='showdate$untilrand'>" . __('Valid until') . "</label></td><td>";
+            echo "<td><label for='showdate$untilrand'>" . __s('Valid until') . "</label></td><td>";
             Html::showDateTimeField("end_date", ['value'       => $this->fields["end_date"],
                 'rand'        => $untilrand,
                 'maybeempty'  => true
@@ -2850,7 +2851,7 @@ JAVASCRIPT;
 
         $phonerand = mt_rand();
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
+        echo "<td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
         echo Html::input(
             'phone',
             [
@@ -2863,28 +2864,28 @@ JAVASCRIPT;
        //don't display is creation of a new user'
         if (!empty($ID)) {
             if (Session::haveRight(self::$rightname, self::READAUTHENT)) {
-                echo "<td>" . __('Authentication') . "</td><td>";
+                echo "<td>" . __s('Authentication') . "</td><td>";
                 echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
                 if (!empty($this->fields["date_sync"])) {
                     //TRANS: %s is the date of last sync
                     echo '<br>' . sprintf(
-                        __('Last synchronization on %s'),
+                        __s('Last synchronization on %s'),
                         Html::convDateTime($this->fields["date_sync"])
                     );
                 }
                 if (!empty($this->fields["user_dn"])) {
                   //TRANS: %s is the user dn
-                    echo '<br>' . sprintf(__('%1$s: %2$s'), __('User DN'), $this->fields["user_dn"]);
+                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlspecialchars($this->fields["user_dn"]));
                 }
                 if ($this->fields['is_deleted_ldap']) {
-                    echo '<br>' . __('User missing in LDAP directory');
+                    echo '<br>' . __s('User missing in LDAP directory');
                 }
                 if ($this->fields['2fa'] !== null) {
-                    echo '<br>' . __('2FA enabled');
+                    echo '<br>' . __s('2FA enabled');
                     if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
                         echo "<button type='submit' name='disable_2fa' class='btn btn-outline-danger btn-sm ms-1' data-bs-toggle='tooltip' title='"
-                            . __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.') . "'>"
-                            . __('Disable')
+                            . __s('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.') . "'>"
+                            . __s('Disable')
                             . "</button>";
                     }
                 }
@@ -2901,7 +2902,7 @@ JAVASCRIPT;
 
         $mobilerand = mt_rand();
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
+        echo "<td><label for='textfield_mobile$mobilerand'>" . __s('Mobile phone') . "</label></td><td>";
         echo Html::input(
             'mobile',
             [
@@ -2913,7 +2914,7 @@ JAVASCRIPT;
         echo "<td>";
         if (!$simplified_form) {
             $catrand = mt_rand();
-            echo "<label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
+            echo "<label for='dropdown_usercategories_id$catrand'>" . _sn('Category', 'Categories', 1) . "</label></td><td>";
             UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
         }
         echo "</td></tr>";
@@ -2921,7 +2922,7 @@ JAVASCRIPT;
         if (!$simplified_form) {
             $phone2rand = mt_rand();
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
+            echo "<td><label for='textfield_phone2$phone2rand'>" .  __s('Phone 2') . "</label></td><td>";
             echo Html::input(
                 'phone2',
                 [
@@ -2930,13 +2931,13 @@ JAVASCRIPT;
                 ]
             );
             echo "</td>";
-            echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
+            echo "<td rowspan='4' class='middle'><label for='comment'>" . __s('Comments') . "</label></td>";
             echo "<td class='center middle' rowspan='4'>";
-            echo "<textarea class='form-control' id='comment' name='comment' >" . $this->fields["comment"] . "</textarea>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlspecialchars($this->fields["comment"]) . "</textarea>";
             echo "</td></tr>";
 
             $admnumrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _sx('user', 'Administrative number') . "</label></td><td>";
             echo Html::input(
                 'registration_number',
                 [
@@ -2947,7 +2948,7 @@ JAVASCRIPT;
             echo "</td></tr>";
 
             $titlerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _x('person', 'Title') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _sx('person', 'Title') . "</label></td><td>";
             UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
             echo "</td></tr>";
         }
@@ -2955,7 +2956,7 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
             $locrand = mt_rand();
-            echo "<td><label for='dropdown_locations_id$locrand'>" . Location::getTypeName(1) . "</label></td><td>";
+            echo "<td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
             $entities = $this->getEntities();
             if (count($entities) <= 0) {
                 $entities = -1;
@@ -2972,19 +2973,19 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='2'>" . _n('Authorization', 'Authorizations', 1) . "</th>";
             $recurrand = mt_rand();
-            echo "<td><label for='dropdown__is_recursive$recurrand'>" .  __('Recursive') . "</label></td><td>";
+            echo "<td><label for='dropdown__is_recursive$recurrand'>" .  __s('Recursive') . "</label></td><td>";
             Dropdown::showYesNo("_is_recursive", 0, -1, ['rand' => $recurrand]);
             echo "</td></tr>";
             $profilerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  Profile::getTypeName(1) . "</label></td><td>";
+            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlspecialchars(Profile::getTypeName(1)) . "</label></td><td>";
             Profile::dropdownUnder(['name'  => '_profiles_id',
                 'rand'  => $profilerand,
                 'value' => Profile::getDefault()
             ]);
 
             $entrand = mt_rand();
-            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  Entity::getTypeName(1) . "</label></td><td>";
+            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlspecialchars(Entity::getTypeName(1)) . "</label></td><td>";
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
                 'rand'                => $entrand,
@@ -2996,7 +2997,7 @@ JAVASCRIPT;
             if ($higherrights || $ismyself) {
                 $profilerand = mt_rand();
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='dropdown_profiles_id$profilerand'>" .  __('Default profile') . "</label></td><td>";
+                echo "<td><label for='dropdown_profiles_id$profilerand'>" .  __s('Default profile') . "</label></td><td>";
 
                 $options   = Dropdown::getDropdownArrayNames(
                     'glpi_profiles',
@@ -3014,7 +3015,7 @@ JAVASCRIPT;
             }
             if ($higherrights) {
                 $entrand = mt_rand();
-                echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __('Default entity') . "</label></td><td>";
+                echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __s('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
                 Entity::dropdown(['value'  => $this->fields["entities_id"],
                     'rand'   => $entrand,
@@ -3024,7 +3025,7 @@ JAVASCRIPT;
 
                 $grouprand = mt_rand();
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __('Default group') . "</label></td><td>";
+                echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __s('Default group') . "</label></td><td>";
 
                 $options = [];
                 foreach (Group_User::getUserGroups($this->fields['id']) as $group) {
@@ -3042,7 +3043,7 @@ JAVASCRIPT;
 
                 echo "</td>";
                 $userrand = mt_rand();
-                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Supervisor') . "</label></td><td>";
+                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __s('Supervisor') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
                     'value'         => $this->fields["users_id_supervisor"],
@@ -3063,7 +3064,7 @@ JAVASCRIPT;
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
+                echo "<td><label for='nickname$rand'> " . __s('Nickname') . "</label></td>";
                 echo "<td>";
                 if ($this->can($ID, UPDATE)) {
                     echo Html::input('nickname', [
@@ -3077,7 +3078,7 @@ JAVASCRIPT;
             }
 
             if ($caneditpassword) {
-                echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
+                echo "<tr class='tab_bg_1'><th colspan='4'>" . __s('Remote access keys') . "</th></tr>";
 
                 echo "<tr class='tab_bg_1'><td>";
                 echo __("API token");
@@ -3090,7 +3091,7 @@ JAVASCRIPT;
                      ]);
                      echo "</div>";
                      echo "(" . sprintf(
-                         __('generated on %s'),
+                         __s('generated on %s'),
                          Html::convDateTime($this->fields["api_token_date"])
                      ) . ")";
                 }
@@ -3150,15 +3151,15 @@ JAVASCRIPT;
                            && !empty($this->fields["password"])));
 
             echo "<div class='center'>";
-            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . $target . "' autocomplete='off'>";
+            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . htmlspecialchars($target) . "' autocomplete='off'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
-            echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
+            echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlspecialchars($this->fields["name"]));
+            echo "<input type='hidden' name='name' value='" . htmlspecialchars($this->fields["name"]) . "'>";
+            echo "<input type='hidden' name='id' value='" . htmlspecialchars($this->fields["id"]) . "'>";
             echo "</th></tr>";
 
             $surnamerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td><td>";
 
             if (
                 $extauth
@@ -3178,7 +3179,7 @@ JAVASCRIPT;
             echo "</td>";
 
             if (!empty($this->fields["name"])) {
-                echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
+                echo "<td rowspan='7'>" . _sn('Picture', 'Pictures', 1) . "</td>";
                 echo "<td rowspan='7'>";
                 echo self::getPictureForUser($ID);
 
@@ -3193,13 +3194,13 @@ JAVASCRIPT;
             }
 
             $firstnamerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
             if (
                 $extauth
                 && isset($authtype['firstname_field'])
                 && !empty($authtype['firstname_field'])
             ) {
-                echo $this->fields["firstname"];
+                echo htmlspecialchars($this->fields["firstname"]);
             } else {
                 echo Html::input(
                     'firstname',
@@ -3216,11 +3217,11 @@ JAVASCRIPT;
                 && $this->fields['auths_id']
                 && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])
             ) {
-                echo "<tr class='tab_bg_1'><td>" . __('Synchronization field') . "</td><td>";
+                echo "<tr class='tab_bg_1'><td>" . __s('Synchronization field') . "</td><td>";
                 if (empty($this->fields['sync_field'])) {
                     echo Dropdown::EMPTY_VALUE;
                 } else {
-                    echo $this->fields['sync_field'];
+                    echo htmlspecialchars($this->fields['sync_field']);
                 }
                 echo "</td></tr>";
             } else {
@@ -3256,13 +3257,13 @@ JAVASCRIPT;
                 && Session::haveRight("password_update", "1")
             ) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='password'>" . __('Password') . "</label></td>";
+                echo "<td><label for='password'>" . __s('Password') . "</label></td>";
                 echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'>";
                 echo "</td>";
                 echo "</tr>";
 
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
+                echo "<td><label for='password2'>" . __s('Password confirmation') . "</label></td>";
                 echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password' class='form-control'>";
                 echo "</td></tr>";
 
@@ -3284,7 +3285,7 @@ JAVASCRIPT;
 
             if ($DB->use_timezones || Session::haveRight("config", READ)) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
+                echo "<td><label for='timezone'>" . __s('Time zone') . "</label></td><td>";
                 if ($DB->use_timezones) {
                     $timezones = $DB->getTimezones();
                     Dropdown::showFromArray(
@@ -3298,9 +3299,9 @@ JAVASCRIPT;
                     );
                 } else if (Session::haveRight("config", READ)) {
                    // Display a warning but only if user is more or less an admin
-                    echo __('Timezone usage has not been activated.')
+                    echo __s('Timezone usage has not been activated.')
                     . ' '
-                    . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
+                    . sprintf(__s('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
                 }
                 echo "</td>";
                 if (
@@ -3313,13 +3314,13 @@ JAVASCRIPT;
             }
 
             $phonerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
 
             if (
                 $extauth
                 && isset($authtype['phone_field']) && !empty($authtype['phone_field'])
             ) {
-                echo $this->fields["phone"];
+                echo htmlspecialchars($this->fields["phone"]);
             } else {
                 echo Html::input(
                     'phone',
@@ -3330,7 +3331,7 @@ JAVASCRIPT;
                 );
             }
             echo "</td>";
-            echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
+            echo "<td class='top'>" . _sn('Email', 'Emails', Session::getPluralNumber());
             UserEmail::showAddEmailButton($this);
             echo "</td><td>";
             UserEmail::showForUser($this);
@@ -3338,13 +3339,13 @@ JAVASCRIPT;
             echo "</tr>";
 
             $mobilerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_mobile$mobilerand'>" . __s('Mobile phone') . "</label></td><td>";
 
             if (
                 $extauth
                 && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])
             ) {
-                echo $this->fields["mobile"];
+                echo htmlspecialchars($this->fields["mobile"]);
             } else {
                 echo Html::input(
                     'mobile',
@@ -3358,7 +3359,7 @@ JAVASCRIPT;
 
             if (count($_SESSION['glpiprofiles']) > 1) {
                 $profilerand = mt_rand();
-                echo "<td><label for='dropdown_profiles_id$profilerand'>" . __('Default profile') . "</label></td><td>";
+                echo "<td><label for='dropdown_profiles_id$profilerand'>" . __s('Default profile') . "</label></td><td>";
 
                 $options = Dropdown::getDropdownArrayNames(
                     'glpi_profiles',
@@ -3379,13 +3380,13 @@ JAVASCRIPT;
             echo "</tr>";
 
             $phone2rand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_phone2$phone2rand'>" .  __s('Phone 2') . "</label></td><td>";
 
             if (
                 $extauth
                 && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])
             ) {
-                echo $this->fields["phone2"];
+                echo htmlspecialchars($this->fields["phone2"]);
             } else {
                 echo Html::input(
                     'phone2',
@@ -3403,7 +3404,7 @@ JAVASCRIPT;
                 && (count($_SESSION['glpiactiveentities']) > 1)
             ) {
                 $entrand = mt_rand();
-                echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
+                echo "<td><label for='dropdown_entities_id$entrand'>" . __s('Default entity') . "</td><td>";
                 Entity::dropdown(['value'  => $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities
@@ -3414,7 +3415,7 @@ JAVASCRIPT;
             echo "</td></tr>";
 
             $admnumrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _sx('user', 'Administrative number') . "</label></td><td>";
             if (
                 $extauth
                 && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
@@ -3432,7 +3433,7 @@ JAVASCRIPT;
             echo "</td><td colspan='2'></td></tr>";
 
             $locrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . Location::getTypeName(1) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
             Location::dropdown(['value'  => $this->fields['locations_id'],
                 'rand'   => $locrand,
                 'entity' => $entities
@@ -3440,7 +3441,7 @@ JAVASCRIPT;
 
             if (Config::canUpdate()) {
                 $moderand = mt_rand();
-                echo "<td><label for='dropdown_use_mode$moderand'>" . __('Use GLPI in mode') . "</label></td><td>";
+                echo "<td><label for='dropdown_use_mode$moderand'>" . __s('Use GLPI in mode') . "</label></td><td>";
                 $modes = [
                     Session::NORMAL_MODE => __('Normal'),
                     Session::DEBUG_MODE  => __('Debug'),
@@ -3459,7 +3460,7 @@ JAVASCRIPT;
                 && Session::getCurrentInterface() == "central"
             ) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
+                echo "<td><label for='nickname$rand'> " . __s('Nickname') . "</label></td>";
                 echo "<td>";
                 echo Html::input('nickname', [
                     'value' => $this->fields['nickname']
@@ -3468,10 +3469,10 @@ JAVASCRIPT;
                 echo "</tr>";
             }
 
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . __s('Remote access keys') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
-            echo __("API token");
+            echo __s("API token");
             echo "</td><td colspan='2'>";
             if (!empty($this->fields["api_token"])) {
                 echo "<div class='copy_to_clipboard_wrapper'>";
@@ -3481,7 +3482,7 @@ JAVASCRIPT;
                 ]);
                  echo "</div>";
                  echo "(" . sprintf(
-                     __('generated on %s'),
+                     __s('generated on %s'),
                      Html::convDateTime($this->fields["api_token_date"])
                  ) . ")";
             }
@@ -3489,7 +3490,7 @@ JAVASCRIPT;
             Html::showCheckbox(['name'  => '_reset_api_token',
                 'title' => __('Regenerate')
             ]);
-            echo "&nbsp;&nbsp;" . __('Regenerate');
+            echo "&nbsp;&nbsp;" . __s('Regenerate');
             echo "</td></tr>";
 
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
@@ -4912,7 +4913,7 @@ JAVASCRIPT;
             if (empty($user['comment'])) {
                 $user['comment'] = Toolbox::ucfirst(
                     sprintf(
-                        __('Show %1$s'),
+                        __s('Show %1$s'),
                         self::getTypeName(Session::getPluralNumber())
                     )
                 );
@@ -4955,7 +4956,7 @@ JAVASCRIPT;
                 $CFG_GLPI["root_doc"] .
                                                       "/front/ldap.import.php?entity=" .
                                                       $_SESSION['glpiactive_entity'],
-                ['title'   => __('Import a user'),
+                ['title'   => __s('Import a user'),
                     'display' => false
                 ]
             );
@@ -4998,9 +4999,9 @@ JAVASCRIPT;
         echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>\n";
 
         echo "<table class='tab_cadre'>\n";
-        echo "<tr><th colspan='4'>" . __('Automatically add a user of an external source') . "</th></tr>\n";
+        echo "<tr><th colspan='4'>" . __s('Automatically add a user of an external source') . "</th></tr>\n";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Login') . "</td>\n";
+        echo "<tr class='tab_bg_1'><td>" . __s('Login') . "</td>\n";
         echo "<td><input type='text' name='login' class='form-control'></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -5765,7 +5766,7 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__s('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
+        Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,
@@ -6781,7 +6782,7 @@ JAVASCRIPT;
 
         echo "<tr class='tab_bg_1'>";
         $surnamerand = mt_rand();
-        echo "<td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td>";
+        echo "<td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td>";
         echo "<td>";
         echo Html::input(
             'realname',
@@ -6792,7 +6793,7 @@ JAVASCRIPT;
         );
         echo "</td>";
 
-        echo "<td rowspan='3'>" . _n('Picture', 'Pictures', 1) . "</td>";
+        echo "<td rowspan='3'>" . _sn('Picture', 'Pictures', 1) . "</td>";
         echo "<td rowspan='3'>";
         echo self::getPictureForUser($ID);
 
@@ -6802,7 +6803,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         $firstnamerand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
+        echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
         echo Html::input(
             'firstname',
             [
@@ -6814,9 +6815,9 @@ JAVASCRIPT;
 
         echo "<tr><td colspan='2'>";
         echo "<span>";
-        echo  __("This is a special user used for automated actions. ");
+        echo  __s("This is a special user used for automated actions. ");
         echo '<br>';
-        echo  __("You can set its name to your organisation's name. ");
+        echo  __s("You can set its name to your organisation's name. ");
         echo "</span>";
         echo "</td></tr>";
 
@@ -7039,7 +7040,8 @@ JAVASCRIPT;
 
         return $user;
     }
-        /**
+
+    /**
      * Get name of the user with ID
      *
      * @param integer $ID   ID of the user.
