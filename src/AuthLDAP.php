@@ -437,8 +437,8 @@ class AuthLDAP extends CommonDBTM
                             ['method' => self::IDENTIFIER_LOGIN,
                                 'value'  => $id
                             ],
-                            $_SESSION['ldap_import']['mode'],
-                            $_SESSION['ldap_import']['authldaps_id'],
+                            $_REQUEST['mode'],
+                            $_REQUEST['authldaps_id'],
                             true
                         )
                     ) {
@@ -1659,167 +1659,91 @@ TWIG, $twig_params);
      */
     public static function showLdapUsers()
     {
-        $values = [
+        $values = array_replace([
             'order' => 'DESC',
             'start' => 0,
-        ];
+        ], $_REQUEST);
 
-        foreach ($_SESSION['ldap_import'] as $option => $value) {
-            $values[$option] = $value;
-        }
-
-        $rand          = mt_rand();
         $results       = [];
         $limitexceeded = false;
         $ldap_users    = self::getUsers($values, $results, $limitexceeded);
+        $total_results = count($ldap_users);
 
         $config_ldap   = new AuthLDAP();
         $config_ldap->getFromDB($values['authldaps_id']);
 
-        if (is_array($ldap_users)) {
-            $numrows = count($ldap_users);
+        echo "<div class='card p-3 mt-3'>";
+        self::displaySizeLimitWarning($limitexceeded);
 
-            if ($numrows > 0) {
-                echo "<div class='card'>";
-                self::displaySizeLimitWarning($limitexceeded);
-
-                Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
-
-                // delete end
-                array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
-                // delete begin
-                if ($values['start'] > 0) {
-                    array_splice($ldap_users, 0, $values['start']);
-                }
-
-                if ($_SESSION['ldap_import']['mode']) {
-                    $textbutton  = _x('button', 'Synchronize');
-                    $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
-                } else {
-                    $textbutton  = _x('button', 'Import');
-                    $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
-                }
-
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'    => min(count($ldap_users), $_SESSION['glpilist_limit']),
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'specific_actions' => [$form_action => $textbutton]
-                ];
-                echo "<div class='ms-2 ps-1 d-flex mb-2'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                echo "<table class='table card-table'>";
-                echo "<thead>";
-                echo "<tr>";
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-                $num = 0;
-                if ($config_ldap->isSyncFieldEnabled()) {
-                    echo Search::showHeaderItem(
-                        Search::HTML_OUTPUT,
-                        __('Synchronization field'),
-                        $num,
-                        $_SERVER['PHP_SELF'] .
-                        "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                    );
-                }
-                echo Search::showHeaderItem(
-                    Search::HTML_OUTPUT,
-                    User::getTypeName(Session::getPluralNumber()),
-                    $num,
-                    $_SERVER['PHP_SELF'] .
-                    "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                );
-                echo "<th>" . __('Last update in the LDAP directory') . "</th>";
-                if ($_SESSION['ldap_import']['mode']) {
-                     echo "<th>" . __('Last update in GLPI') . "</th>";
-                }
-                echo "</tr>";
-                echo "</thead>";
-
-                foreach ($ldap_users as $userinfos) {
-                    echo "<tr>";
-                    //Need to use " instead of ' because it doesn't work with names with ' inside !
-                    echo "<td>";
-                    echo Html::getMassiveActionCheckBox(__CLASS__, $userinfos['uid']);
-                    echo "</td>";
-                    if ($config_ldap->isSyncFieldEnabled()) {
-                        echo "<td>" . $userinfos['uid'] . "</td>";
-                    }
-                    echo "<td>";
-                    if (isset($userinfos['id']) && User::canView()) {
-                        echo "<a href='" . $userinfos['link'] . "'>" . $userinfos['name'] . "</a>";
-                    } else {
-                        echo $userinfos['link'];
-                    }
-                    echo "</td>";
-
-                    if ($userinfos['stamp'] != '') {
-                         echo "<td>" . Html::convDateTime(date("Y-m-d H:i:s", $userinfos['stamp'])) . "</td>";
-                    } else {
-                        echo "<td>&nbsp;</td>";
-                    }
-                    if ($_SESSION['ldap_import']['mode']) {
-                        if ($userinfos['date_sync'] != '') {
-                            echo "<td>" . Html::convDateTime($userinfos['date_sync']) . "</td>";
-                        }
-                    }
-                    echo "</tr>";
-                }
-                echo "<tfoot>";
-                echo "<tr>";
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-                $num = 0;
-
-                if ($config_ldap->isSyncFieldEnabled()) {
-                    echo Search::showHeaderItem(
-                        Search::HTML_OUTPUT,
-                        __('Synchronization field'),
-                        $num,
-                        $_SERVER['PHP_SELF'] .
-                        "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                    );
-                }
-                echo Search::showHeaderItem(
-                    Search::HTML_OUTPUT,
-                    User::getTypeName(Session::getPluralNumber()),
-                    $num,
-                    $_SERVER['PHP_SELF'] .
-                    "?order=" . ($values['order'] == "DESC" ? "ASC" : "DESC")
-                );
-                echo "<th>" . __('Last update in the LDAP directory') . "</th>";
-                if ($_SESSION['ldap_import']['mode']) {
-                     echo "<th>" . __('Last update in GLPI') . "</th>";
-                }
-                echo "</tr>";
-                echo "</tfoot>";
-                echo "</table>";
-
-                $massiveactionparams['ontop'] = false;
-                echo "<div class='ms-2 ps-1 mt-2 d-flex'>";
-                Html::showMassiveActions($massiveactionparams);
-                echo "</div>";
-
-                Html::closeForm();
-
-                Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
-
-                echo "</div>";
-            } else {
-                echo "<div class='center b'>" .
-                  ($_SESSION['ldap_import']['mode'] ? __('No user to be synchronized')
-                                                   : __('No user to be imported')) . "</div>";
-            }
-        } else {
-            echo "<div class='center b'>" .
-               ($_SESSION['ldap_import']['mode'] ? __('No user to be synchronized')
-                                                : __('No user to be imported')) . "</div>";
+        // delete end
+        array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
+        // delete begin
+        if ($values['start'] > 0) {
+            array_splice($ldap_users, 0, $values['start']);
         }
+
+        if ($values['mode']) {
+            $textbutton  = _x('button', 'Synchronize');
+            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
+        } else {
+            $textbutton  = _x('button', 'Import');
+            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
+        }
+
+        $entries = [];
+        foreach ($ldap_users as $userinfos) {
+            $entry = [
+                'id' => $userinfos['uid']
+            ];
+            if ($config_ldap->isSyncFieldEnabled()) {
+                $entry['sync_field'] = $userinfos['uid'];
+            }
+            if (isset($userinfos['id']) && User::canView()) {
+                $entry['user'] = "<a href='" . htmlspecialchars($userinfos['link']) . "'>" . htmlspecialchars($userinfos['name']) . "</a>";
+            } else {
+                $entry['user'] = $userinfos['link'];
+            }
+
+            $date_mod = '';
+            if ($userinfos['stamp'] !== '') {
+                $date_mod = date("Y-m-d H:i:s", $userinfos['stamp']);
+            }
+            if ($values['mode'] && $userinfos['date_sync'] !== '') {
+                $date_mod = $userinfos['date_sync'];
+            }
+            $entry['date_mod'] = $date_mod;
+            $entries[] = $entry;
+        }
+
+        $columns = [];
+        if ($config_ldap->isSyncFieldEnabled()) {
+            $columns['sync_field'] = __('Synchronization field');
+        }
+        $columns['user'] = User::getTypeName(1);
+        $columns['date_mod'] = $values['mode'] ? __('Last update in GLPI') : __('Last update in the LDAP directory');
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => false,
+            'nofilter' => true,
+            'nosort' => true,
+            'start' => $values['start'],
+            'limit' => $_SESSION['glpilist_limit'],
+            'columns' => $columns,
+            'formatters' => [
+                'user' => 'raw_html',
+                'date_mod' => 'datetime'
+            ],
+            'entries' => $entries,
+            'total_number' => $total_results,
+            'filtered_number' => $total_results,
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'specific_actions' => [$form_action => $textbutton]
+            ]
+        ]);
+        echo "</div>";
     }
 
     /**
@@ -3667,153 +3591,122 @@ TWIG, $twig_params);
     }
 
     /**
-     * Manage values stored in session
-     *
-     * @param array   $options Options
-     * @param boolean $delete  (false by default)
-     *
+     * Sets the default values for the LDAP import if not already set.
      * @return void
      */
-    public static function manageValuesInSession($options = [], $delete = false)
+    public static function manageRequestValues(): void
     {
-        $fields = [
-            'action', 'authldaps_id', 'basedn', 'begin_date', 'criterias',  'end_date',
-            'entities_id', 'interface', 'ldap_filter', 'mode'
-        ];
-
-       //If form accessed via modal, do not show expert mode link
-       // Manage new value is set : entity or mode
-        if (
-            isset($options['entity'])
-            || isset($options['mode'])
-        ) {
-            if (isset($options['_in_modal']) && $options['_in_modal']) {
-               //If coming form the helpdesk form : reset all criterias
-                $_SESSION['ldap_import']['_in_modal']      = 1;
-                $_SESSION['ldap_import']['no_expert_mode'] = 1;
-                $_SESSION['ldap_import']['action']         = 'show';
-                $_SESSION['ldap_import']['interface']      = self::SIMPLE_INTERFACE;
-                $_SESSION['ldap_import']['mode']           = self::ACTION_IMPORT;
+        //If form accessed via modal, do not show expert mode link
+        // Manage new value is set : entity or mode
+        if (isset($_REQUEST['entity']) || isset($_REQUEST['mode'])) {
+            if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+                //If coming form the helpdesk form : reset all criterias
+                $_REQUEST['no_expert_mode'] = 1;
+                $_REQUEST['action'] = 'show';
+                $_REQUEST['interface'] = self::SIMPLE_INTERFACE;
+                $_REQUEST['mode'] = self::ACTION_IMPORT;
             } else {
-                $_SESSION['ldap_import']['_in_modal']      = 0;
-                $_SESSION['ldap_import']['no_expert_mode'] = 0;
+                $_REQUEST['_in_modal'] = 0;
+                $_REQUEST['no_expert_mode'] = 0;
             }
         }
 
-        if (!$delete) {
-            if (!isset($_SESSION['ldap_import']['entities_id'])) {
-                $options['entities_id'] = $_SESSION['glpiactive_entity'];
-            }
+        $_REQUEST['mode'] = (int) ($_REQUEST['mode'] ?? self::ACTION_IMPORT);
 
-            if (isset($options['toprocess'])) {
-                $_SESSION['ldap_import']['action'] = 'process';
-            }
+        $_REQUEST['entities_id'] ??= $_SESSION['glpiactive_entity'];
+        if (isset($_REQUEST['toprocess'])) {
+            $_REQUEST['action'] = 'process';
+        }
 
-            if (isset($options['change_directory'])) {
-                $options['ldap_filter'] = '';
-            }
+        if (isset($_REQUEST['change_directory'])) {
+            $_REQUEST['ldap_filter'] = '';
+        }
 
-            if (!isset($_SESSION['ldap_import']['authldaps_id'])) {
-                $_SESSION['ldap_import']['authldaps_id'] = NOT_AVAILABLE;
-            }
+        $_REQUEST['authldaps_id'] ??= NOT_AVAILABLE;
 
-            if (
-                (!Config::canUpdate()
+        if (
+            (!Config::canUpdate()
                 && !Entity::canUpdate())
-                || (!isset($_SESSION['ldap_import']['interface'])
-                && !isset($options['interface']))
-            ) {
-                $options['interface'] = self::SIMPLE_INTERFACE;
-            }
+            || !isset($_REQUEST['interface'])
+        ) {
+            $_REQUEST['interface'] = self::SIMPLE_INTERFACE;
+        }
 
-            foreach ($fields as $field) {
-                if (isset($options[$field])) {
-                    $_SESSION['ldap_import'][$field] = $options[$field];
-                }
-            }
+        if (
+            isset($_REQUEST['begin_date'])
+            && ($_REQUEST['begin_date'] === 'NULL')
+        ) {
+            $_REQUEST['begin_date'] = '';
+        }
+        if (
+            isset($_REQUEST['end_date'])
+            && ($_REQUEST['end_date'] === 'NULL')
+        ) {
+            $_REQUEST['end_date'] = '';
+        }
+        $_REQUEST['criterias'] ??= [];
+
+        $authldap = new self();
+        //Filter computation
+        if ($_REQUEST['interface'] === self::SIMPLE_INTERFACE) {
+            $entity = new Entity();
+
             if (
-                isset($_SESSION['ldap_import']['begin_date'])
-                && ($_SESSION['ldap_import']['begin_date'] === 'NULL')
+                $entity->getFromDB($_REQUEST['entities_id'])
+                && ($entity->getField('authldaps_id') > 0)
             ) {
-                $_SESSION['ldap_import']['begin_date'] = '';
-            }
-            if (
-                isset($_SESSION['ldap_import']['end_date'])
-                && ($_SESSION['ldap_import']['end_date'] === 'NULL')
-            ) {
-                $_SESSION['ldap_import']['end_date'] = '';
-            }
-            if (!isset($_SESSION['ldap_import']['criterias'])) {
-                $_SESSION['ldap_import']['criterias'] = [];
-            }
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
 
-            $authldap = new self();
-           //Filter computation
-            if ($_SESSION['ldap_import']['interface'] === self::SIMPLE_INTERFACE) {
-                $entity = new Entity();
-
-                if (
-                    $entity->getFromDB($_SESSION['ldap_import']['entities_id'])
-                    && ($entity->getField('authldaps_id') > 0)
-                ) {
-                    $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-
-                    if ($_SESSION['ldap_import']['authldaps_id'] === NOT_AVAILABLE) {
-                       // authldaps_id wasn't submitted by the user -> take entity config
-                        $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
-                    }
-
-                    $_SESSION['ldap_import']['basedn']       = $entity->getField('ldap_dn');
-
-                   // No dn specified in entity : use standard one
-                    if (empty($_SESSION['ldap_import']['basedn'])) {
-                        $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-                    }
-
-                    if ($entity->getField('entity_ldapfilter') !== NOT_AVAILABLE) {
-                        $_SESSION['ldap_import']['entity_filter']
-                        = $entity->getField('entity_ldapfilter');
-                    }
-                } else {
-                    if (
-                        $_SESSION['ldap_import']['authldaps_id'] === NOT_AVAILABLE
-                        || !$_SESSION['ldap_import']['authldaps_id']
-                    ) {
-                        $_SESSION['ldap_import']['authldaps_id'] = self::getDefault();
-                    }
-
-                    if ($_SESSION['ldap_import']['authldaps_id'] > 0) {
-                        $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-                        $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-                    }
+                if ($_REQUEST['authldaps_id'] === NOT_AVAILABLE) {
+                    // authldaps_id wasn't submitted by the user -> take entity config
+                    $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 }
 
-                if ($_SESSION['ldap_import']['authldaps_id'] > 0) {
-                    $_SESSION['ldap_import']['ldap_filter'] = self::buildLdapFilter($authldap);
+                $_REQUEST['basedn']       = $entity->getField('ldap_dn');
+
+                // No dn specified in entity : use standard one
+                $_REQUEST['basedn'] ??= $authldap->getField('basedn');
+
+                if ($entity->getField('entity_ldapfilter') !== NOT_AVAILABLE) {
+                    $_REQUEST['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
             } else {
                 if (
-                    $_SESSION['ldap_import']['authldaps_id'] === NOT_AVAILABLE
-                    || !$_SESSION['ldap_import']['authldaps_id']
+                    $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                    || !$_REQUEST['authldaps_id']
                 ) {
-                    $_SESSION['ldap_import']['authldaps_id'] = self::getDefault();
-
-                    if ($_SESSION['ldap_import']['authldaps_id'] > 0) {
-                        $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-                        $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-                    }
+                    $_REQUEST['authldaps_id'] = self::getDefault();
                 }
-                if (
-                    !isset($_SESSION['ldap_import']['ldap_filter'])
-                    || $_SESSION['ldap_import']['ldap_filter'] === ''
-                ) {
-                    $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-                    $_SESSION['ldap_import']['basedn']      = $authldap->getField('basedn');
-                    $_SESSION['ldap_import']['ldap_filter'] = self::buildLdapFilter($authldap);
+
+                if ($_REQUEST['authldaps_id'] > 0) {
+                    $authldap->getFromDB($_REQUEST['authldaps_id']);
+                    $_REQUEST['basedn'] = $authldap->getField('basedn');
                 }
             }
-        } else { // Unset all values in session
-            unset($_SESSION['ldap_import']);
+
+            if ($_REQUEST['authldaps_id'] > 0) {
+                $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
+            }
+        } else {
+            if (
+                $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                || !$_REQUEST['authldaps_id']
+            ) {
+                $_REQUEST['authldaps_id'] = self::getDefault();
+
+                if ($_REQUEST['authldaps_id'] > 0) {
+                    $authldap->getFromDB($_REQUEST['authldaps_id']);
+                    $_REQUEST['basedn'] = $authldap->getField('basedn');
+                }
+            }
+            if (
+                !isset($_REQUEST['ldap_filter'])
+                || $_REQUEST['ldap_filter'] === ''
+            ) {
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
+                $_REQUEST['basedn']      = $authldap->getField('basedn');
+                $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
+            }
         }
     }
 
@@ -3827,212 +3720,14 @@ TWIG, $twig_params);
     public static function showUserImportForm(AuthLDAP $authldap)
     {
         // Get data related to entity (directory and ldap filter)
-        $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
+        $authldap->getFromDB($_REQUEST['authldaps_id']);
 
-        echo "<form method='post' action='" . $_SERVER['PHP_SELF'] . "'>";
-
-        echo "<h2 class='center mb-3'>" . ($_SESSION['ldap_import']['mode'] ? __('Synchronizing already imported users')
-                                                      : __('Import new users'));
-
-        // Expert interface allow user to override configuration.
-        // If not coming from the ticket form, then give expert/simple link
-        if (
-            (Config::canUpdate()
-            || Entity::canUpdate())
-            && (!isset($_SESSION['ldap_import']['no_expert_mode'])
-              || $_SESSION['ldap_import']['no_expert_mode'] != 1)
-        ) {
-            echo "<a class='float-end btn btn-secondary' href='" . $_SERVER['PHP_SELF'] . "?action=" .
-              $_SESSION['ldap_import']['action'] . "&amp;mode=" . $_SESSION['ldap_import']['mode'];
-
-            if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
-                echo "&amp;interface=" . self::EXPERT_INTERFACE . "'>" . __('Expert mode') . "</a>";
-            } else {
-                echo "&amp;interface=" . self::SIMPLE_INTERFACE . "'>" . __('Simple mode') . "</a>";
-            }
-        } else {
-            $_SESSION['ldap_import']['interface'] = self::SIMPLE_INTERFACE;
-        }
-        echo "</h2>";
-
-        echo "<div class='card'>";
-        echo "<table class='table card-table'>";
-
-        switch ($_SESSION['ldap_import']['interface']) {
-            case self::EXPERT_INTERFACE:
-               //If more than one directory configured
-               //Display dropdown ldap servers
-                if (
-                    ($_SESSION['ldap_import']['authldaps_id'] !=  NOT_AVAILABLE)
-                    && ($_SESSION['ldap_import']['authldaps_id'] > 0)
-                ) {
-                    if (self::getNumberOfServers() > 1) {
-                        $rand = mt_rand();
-                        echo "<tr><td class='text-end'><label for='dropdown_authldaps_id$rand'>" . __('LDAP directory choice') . "</label></td>";
-                        echo "<td colspan='3'>";
-                        self::dropdown(['name'                 => 'authldaps_id',
-                            'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                            'condition'            => ['is_active' => 1],
-                            'display_emptychoice'  => false,
-                            'rand'                 => $rand
-                        ]);
-                        echo "&nbsp;<input class='btn btn-secondary' type='submit' name='change_directory'
-                        value=\"" . _sx('button', 'Change') . "\">";
-                        echo "</td></tr>";
-                    }
-
-                    echo "<tr><td style='width: 250px' class='text-end'><label for='basedn'>" . __('BaseDN') . "</label></td><td colspan='3'>";
-                    echo "<input type='text' class='form-control' id='basedn' name='basedn' value=\"" . htmlspecialchars($_SESSION['ldap_import']['basedn'], ENT_QUOTES) .
-                     "\" " . (!$_SESSION['ldap_import']['basedn'] ? "disabled" : "") . ">";
-                    echo "</td></tr>";
-
-                    echo "<tr><td class='text-end'><label for='ldap_filter'>" . __('Search filter for users') . "</label></td><td colspan='3'>";
-                    echo "<input type='text' class='form-control' id='ldap_filter' name='ldap_filter' value=\"" .
-                      htmlspecialchars($_SESSION['ldap_import']['ldap_filter'], ENT_QUOTES) . "\">";
-                    echo "</td></tr>";
-                }
-                break;
-
-           //case self::SIMPLE_INTERFACE :
-            default:
-                if (self::getNumberOfServers() > 1) {
-                    $rand = mt_rand();
-                    echo "<tr><td style='width: 250px' class='text-end'>
-                  <label for='dropdown_authldaps_id$rand'>" . __('LDAP directory choice') . "</label>
-               </td>";
-                    echo "<td>";
-                    self::dropdown([
-                        'name'                 => 'authldaps_id',
-                        'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                        'condition'            => ['is_active' => 1],
-                        'display_emptychoice'  => false,
-                        'rand'                 => $rand
-                    ]);
-                    echo "&nbsp;<input class='btn btn-secondary' type='submit' name='change_directory'
-                     value=\"" . _sx('button', 'Change') . "\">";
-                    echo "</td></tr>";
-                }
-
-               //If multi-entity mode and more than one entity visible
-               //else no need to select entity
-                if (
-                    Session::isMultiEntitiesMode()
-                    && (count($_SESSION['glpiactiveentities']) > 1)
-                ) {
-                    echo "<tr><td class='text-end'>" . __('Select the desired entity') . "</td>" .
-                    "<td>";
-                    Entity::dropdown([
-                        'value'       => $_SESSION['ldap_import']['entities_id'],
-                        'entity'      => $_SESSION['glpiactiveentities'],
-                        'on_change'    => 'this.form.submit()'
-                    ]);
-                    echo "</td></tr>";
-                } else {
-                   //Only one entity is active, store it
-                    echo "<tr><td><input type='hidden' name='entities_id' value='" .
-                              $_SESSION['glpiactive_entity'] . "'></td></tr>";
-                }
-
-                if (
-                    !empty($_SESSION['ldap_import']['begin_date'])
-                    || !empty($_SESSION['ldap_import']['end_date'])
-                ) {
-                    $enabled = 1;
-                } else {
-                    $enabled = 0;
-                }
-                Dropdown::showAdvanceDateRestrictionSwitch($enabled);
-
-                echo "<table class='table card-table'>";
-
-                if (
-                    ($_SESSION['ldap_import']['authldaps_id'] !==  NOT_AVAILABLE)
-                    && ($_SESSION['ldap_import']['authldaps_id'] > 0)
-                ) {
-                    $field_counter = 0;
-                    $fields        = ['login_field'     => __('Login'),
-                        'sync_field'      => __('Synchronization field') . ' (' . $authldap->fields['sync_field'] . ')',
-                        'email1_field'    => _n('Email', 'Emails', 1),
-                        'email2_field'    => sprintf(
-                            __('%1$s %2$s'),
-                            _n('Email', 'Emails', 1),
-                            '2'
-                        ),
-                        'email3_field'    => sprintf(
-                            __('%1$s %2$s'),
-                            _n('Email', 'Emails', 1),
-                            '3'
-                        ),
-                        'email4_field'    => sprintf(
-                            __('%1$s %2$s'),
-                            _n('Email', 'Emails', 1),
-                            '4'
-                        ),
-                        'realname_field'  => __('Surname'),
-                        'firstname_field' => __('First name'),
-                        'phone_field'     => _x('ldap', 'Phone'),
-                        'phone2_field'    => __('Phone 2'),
-                        'mobile_field'    => __('Mobile phone'),
-                        'title_field'     => _x('person', 'Title'),
-                        'category_field'  => _n('Category', 'Categories', 1),
-                        'picture_field'   => _n('Picture', 'Pictures', 1)
-                    ];
-                    $available_fields = [];
-                    foreach ($fields as $field => $label) {
-                        if (isset($authldap->fields[$field]) && ($authldap->fields[$field] !== '')) {
-                            $available_fields[$field] = $label;
-                        }
-                    }
-                    echo "<tr><td colspan='4' class='border-bottom-0'><h4>" . __('Search criteria for users') . "</h4></td></tr>";
-                    foreach ($available_fields as $field => $label) {
-                        if ($field_counter === 0) {
-                            echo "<tr>";
-                        }
-                        echo "<td style='width: 250px' class='text-end'><label for='criterias$field'>$label</label></td><td>";
-                        $field_counter++;
-                        $field_value = '';
-                        if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                            $field_value = htmlspecialchars($_SESSION['ldap_import']['criterias'][$field]);
-                        }
-                        echo "<input type='text' class='form-control' id='criterias$field' name='criterias[$field]' value='$field_value'>";
-                        echo "</td>";
-                        if ($field_counter === 2) {
-                            echo "</tr>";
-                            $field_counter = 0;
-                        }
-                    }
-                    if ($field_counter > 0) {
-                        while ($field_counter < 2) {
-                            echo "<td colspan='2'></td>";
-                            $field_counter++;
-                        }
-                        $field_counter = 0;
-                        echo "</tr>";
-                    }
-                }
-                break;
-        }
-
-        if (
-            ($_SESSION['ldap_import']['authldaps_id'] !==  NOT_AVAILABLE)
-            && ($_SESSION['ldap_import']['authldaps_id'] > 0)
-        ) {
-            if ($_SESSION['ldap_import']['authldaps_id']) {
-                echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-                echo "<input class='btn btn-primary' type='submit' name='search' value=\"" .
-                   _sx('button', 'Search') . "\">";
-                echo "</td></tr>";
-            } else {
-                echo "<tr class='tab_bg_2'><" .
-                 "td colspan='4' class='center'>" . __('No directory selected') . "</td></tr>";
-            }
-        } else {
-            echo "<tr class='tab_bg_2'><td colspan='4' class='center'>" .
-                __('No directory associated to entity: impossible search') . "</td></tr>";
-        }
-        echo "</table>";
-        echo "</div>";
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/admin/ldap.user_criteria.html.twig', [
+            'has_multiple_servers' => self::getNumberOfServers() > 1,
+            'authldap'             => $authldap,
+            'can_use_expert_interface' => (Config::canUpdate() || Entity::canUpdate())
+                && (!isset($_REQUEST['no_expert_mode']) || (int) $_REQUEST['no_expert_mode'] !== 1),
+        ]);
     }
 
     /**
@@ -4055,14 +3750,13 @@ TWIG, $twig_params);
     public static function buildLdapFilter(AuthLDAP $authldap)
     {
         // Build search filter
-        $counter = 0;
         $filter  = '';
 
         if (
-            !empty($_SESSION['ldap_import']['criterias'])
-            && ($_SESSION['ldap_import']['interface'] === self::SIMPLE_INTERFACE)
+            !empty($_REQUEST['criterias'])
+            && ($_REQUEST['interface'] === self::SIMPLE_INTERFACE)
         ) {
-            foreach ($_SESSION['ldap_import']['criterias'] as $criteria => $value) {
+            foreach ($_REQUEST['criterias'] as $criteria => $value) {
                 if ($value !== '') {
                     $begin = 0;
                     $end   = 0;
@@ -4078,7 +3772,6 @@ TWIG, $twig_params);
                      // no Toolbox::substr, to be consistent with strlen result
                         $value = substr($value, $begin, $length - $end - $begin);
                     }
-                    $counter++;
                     $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . $value . ($end ? '' : '*') . ')';
                 }
             }
@@ -4087,14 +3780,12 @@ TWIG, $twig_params);
         }
 
         // If time restriction
-        $begin_date = (!empty($_SESSION['ldap_import']['begin_date'])
-                        ? $_SESSION['ldap_import']['begin_date'] : null);
-        $end_date   = (!empty($_SESSION['ldap_import']['end_date'])
-                        ? $_SESSION['ldap_import']['end_date'] : null);
+        $begin_date = $_REQUEST['begin_date'] ?? null;
+        $end_date   = $_REQUEST['end_date'] ?? null;
         $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
         $ldap_condition = $authldap->getField('condition');
         // Add entity filter and filter filled in directory's configuration form
-        return  "(&" . ($_SESSION['ldap_import']['entity_filter'] ?? '') . " $filter $ldap_condition)";
+        return  "(&" . ($_REQUEST['entity_filter'] ?? '') . " $filter $ldap_condition)";
     }
 
     /**
@@ -4362,47 +4053,6 @@ TWIG, $twig_params);
             $ldaps[] = $data['id'];
         }
         return $ldaps;
-    }
-
-    /**
-     * Show date restriction form
-     *
-     * @param array $options Options
-     *
-     * @return void
-     */
-    public static function showDateRestrictionForm($options = [])
-    {
-        echo "<table class='table'>";
-        echo "<tr>";
-
-        $enabled = ($options['enabled'] ?? false);
-        if (!$enabled) {
-            echo "<td colspan='4'>";
-            echo "<a href='#' class='btn btn-outline-secondary' onClick='activateRestriction()'>
-            <i class='fas fa-toggle-off me-1'></i>
-            " . __('Enable filtering by date') . "
-         </a>";
-            echo "</td></tr>";
-        }
-        if ($enabled) {
-            echo "<td style='width: 250px' class='text-end border-bottom-0'>" . __('View updated users') . "</td>";
-            echo "<td class='border-bottom-0'>" . __('from') . "";
-            $begin_date = ($_SESSION['ldap_import']['begin_date'] ?? '');
-            Html::showDateTimeField("begin_date", ['value'    => $begin_date]);
-            echo "</td>";
-            echo "<td class='border-bottom-0'>" . __('to') . "";
-            $end_date = ($_SESSION['ldap_import']['end_date'] ?? date('Y-m-d H:i:s', time() - DAY_TIMESTAMP));
-            Html::showDateTimeField("end_date", ['value'    => $end_date]);
-            echo "</td></tr>";
-            echo "<tr><td colspan='4'>";
-            echo "<a href='#' class='btn btn-outline-secondary' onClick='deactivateRestriction()'>
-            <i class='fas fa-toggle-on me-1'></i>
-            " . __('Disable filtering by date') . "
-         </a>";
-            echo "</td></tr>";
-        }
-        echo "</table>";
     }
 
     public function cleanDBonPurge()
@@ -4733,7 +4383,8 @@ TWIG, $twig_params);
                 $values['authldaps_id'],
                 $user_sync_field
             );
-            if (isset($_SESSION['ldap_import']) && !$_SESSION['ldap_import']['mode'] && $user) {
+            if ($values['mode'] !== self::ACTION_IMPORT && $user) {
+                // Not importing and the user already exists
                 continue;
             }
             $user_to_add['link'] = $userinfos["user"];

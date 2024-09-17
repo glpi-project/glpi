@@ -39,12 +39,6 @@ Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");
 
-if (isset($_SESSION["ldap_sortorder"])) {
-    unset($_SESSION["ldap_sortorder"]);
-}
-
-AuthLDAP::manageValuesInSession([], true);
-
 echo TemplateRenderer::getInstance()->render(
     'pages/admin/ldap.users.html.twig'
 );
