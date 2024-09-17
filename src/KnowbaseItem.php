@@ -45,6 +45,7 @@ use Glpi\Search\SearchEngine;
  **/
 class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 {
+    use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
 
     public static $browse_default = true;
@@ -61,6 +62,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static $rightname   = 'knowbase';
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Entity_KnowbaseItem::class,
+            Group_KnowbaseItem::class,
+            KnowbaseItem_Profile::class,
+            KnowbaseItem_User::class,
+            Document_Item::class,
+            Infocom::class,
+            KnowbaseItem_Item::class,
+            KnowbaseItemTranslation::class,
+        ];
+    }
 
     public static function getTypeName($nb = 0)
     {

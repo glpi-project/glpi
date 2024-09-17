@@ -130,10 +130,12 @@ class Group extends CommonTreeDropdown
                     $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::class);
 
                     if ($item->getField('is_itemgroup')) {
-                        $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
+                        $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_NORMAL]);
+                        $ong[1] = self::createTabEntry(__('Used items'), $count, $item::class, 'ti ti-package');
                     }
                     if ($item->getField('is_assign')) {
-                        $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
+                        $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_TECH]);
+                        $ong[2] = self::createTabEntry(__('Managed items'), $count, $item::class, 'ti ti-package');
                     }
                     if (
                         $item->getField('is_usergroup')
@@ -147,6 +149,7 @@ class Group extends CommonTreeDropdown
                     return $ong;
             }
         }
+
         return '';
     }
 
