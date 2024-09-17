@@ -52,7 +52,6 @@
         </div>
     </div>
 {% endmacro %}
-{% import _self as my_draggable_macros %}
 
 {% set params = {} %}
 {# do not display delete button #}
@@ -65,7 +64,7 @@
 
     <div class="grid gap-3" id="sortable-fields">
         {% for field in fields_display %}
-            {{ my_draggable_macros.draggable_field(field['key'], all_fields[field['key']])|raw }}
+            {{ _self.draggable_field(field['key'], all_fields[field['key']])|raw }}
         {% endfor %}
     </div>
 
