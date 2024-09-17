@@ -3395,7 +3395,7 @@ JS
      * @FIXME Make it final in GLPI 11.0.
      * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
      */
-    public static function initRules($reset = true, $with_plugins = true, $check = false): bool
+    public function initRules($reset = true, $with_plugins = true, $check = false): bool
     {
         $self = new static();
 
