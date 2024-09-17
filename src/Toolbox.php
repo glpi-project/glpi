@@ -1838,7 +1838,7 @@ class Toolbox
     }
 
     /**
-     * Retuns available mail servers protocols.
+     * Returns available mail servers protocols.
      *
      * For each returned element:
      *  - key is type used in connection string;
@@ -2033,7 +2033,7 @@ class Toolbox
     /**
      * Clean integer string value (strip all chars not - and spaces )
      *
-     * @since versin 0.83.5
+     * @since version 0.83.5
      *
      * @param string  $integer  integer string
      *

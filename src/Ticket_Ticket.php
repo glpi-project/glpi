@@ -58,7 +58,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
             case 'add':
                 Toolbox::deprecated('Ticket_Ticket "add" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
                 Ticket_Ticket::dropdownLinks('link');
-                printf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID'));
+                printf(htmlspecialchars(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')));
                 echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
                 echo "<br><br>";
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
