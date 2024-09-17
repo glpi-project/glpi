@@ -1150,7 +1150,7 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
-        if ($values['auth_required'] === Conf::BASIC_AUTH) {
+        if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
             if (
                     !empty($values['basic_auth_password']) &&
                     !empty($values['basic_auth_login'])
