@@ -845,10 +845,9 @@ class Domain extends CommonDBTM
     {
         $links = [];
         if (static::canManageRecords()) {
-            $rooms = "<i class='fa fa-clipboard-list pointer' title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) . "\"></i>
-            <span class='d-none d-xxl-block ps-1'>
-               " . DomainRecord::getTypeName(Session::getPluralNumber()) . "
-            </span>";
+            $label = htmlspecialchars(DomainRecord::getTypeName(Session::getPluralNumber()));
+            $rooms = "<i class='fa fa-clipboard-list pointer' title=\"$label\"></i>
+            <span class='d-none d-xxl-block ps-1'>$label</span>";
             $links[$rooms] = DomainRecord::getSearchURL(false);
         }
         if (count($links)) {
