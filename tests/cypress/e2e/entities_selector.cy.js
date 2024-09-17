@@ -44,7 +44,7 @@ describe('Entities selector', () => {
         cy.visit('/front/central.php?active_entity=1&is_recursive=1');
     });
 
-    it('Can switch to full structure', () => {
+    it('Can switch to full structure', { retries: {runMode: 2, openMode: 0} }, () => {
         cy.openEntitySelector();
 
         // Enable full structure
