@@ -518,7 +518,7 @@ class Appliance extends CommonDBTM
         switch ($ma->getAction()) {
             case 'add_item':
                 Appliance::dropdown();
-                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                echo Html::submit(_sx('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

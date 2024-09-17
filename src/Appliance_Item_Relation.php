@@ -194,8 +194,8 @@ class Appliance_Item_Relation extends CommonDBRelation
             $itemtype = $row['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($row['items_id']);
-            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . $item::getTypeName(1) . "'></i>" .
-                        "&nbsp;" . $item::getTypeName(1) .
+            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlspecialchars($item::getTypeName(1)) . "'></i>" .
+                        "&nbsp;" . htmlspecialchars($item::getTypeName(1)) .
                         "&nbsp;-&nbsp;" . $item->getLink();
         }
 
@@ -227,8 +227,8 @@ class Appliance_Item_Relation extends CommonDBRelation
 
         return "<ul>$relations_str</ul>
          <span class='cursor-pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
-            <i class='ti ti-plus' title='" . __('New relation') . "'></i>
-            <span class='sr-only'>" . __('New relation') . "</span>
+            <i class='ti ti-plus' title='" . __s('New relation') . "'></i>
+            <span class='sr-only'>" . __s('New relation') . "</span>
          </span>
       </td>";
     }
@@ -264,7 +264,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                 ])
                 . "</p>
                 <input type='hidden' name='appliances_items_id'>
-                " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
+                " . Html::submit(_sx('button', "Add"), ['name' => 'add']) . "
             " . Html::closeForm(false));
 
             $crsf_token = Session::getNewCSRFToken();
@@ -275,7 +275,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                var appliances_items_id = $(this).data('appliances-items-id');
 
                glpi_html_dialog({
-                  title: _x('button', "Add an item"),
+                  title: _sx('button', "Add an item"),
                   body: {$modal_html},
                   id: 'add_relation_dialog',
                   show: function() {
