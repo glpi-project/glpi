@@ -35,12 +35,12 @@
 
 {% set all_fields = all_fields ?? {} %}
 
-{% macro draggable_field() %}
+{% macro draggable_field(field_key, field_label) %}
     <div class="g-col-6 sortable-field d-flex align-items-center p-1">
-        <input type="hidden" name="fields_display[]" value="%field_key%" />
+        <input type="hidden" name="fields_display[]" value="{{ field_key }}" />
         <div class="form-field row flex-grow-1">
             <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
-                %field_label%
+                {{ field_label }}
                 <i class="ti ti-grip-vertical"></i>
             </label>
             <div class="col-xxl-7 field-container btn-group shadow-none">
@@ -65,10 +65,7 @@
 
     <div class="grid gap-3" id="sortable-fields">
         {% for field in fields_display %}
-            {{ my_draggable_macros.draggable_field()|replace({
-                '%field_key%': field['key'],
-                '%field_label%': all_fields[field['key']]
-            })|raw }}
+            {{ my_draggable_macros.draggable_field(field['key'], all_fields[field['key']])|raw }}
         {% endfor %}
     </div>
 
