@@ -1383,7 +1383,7 @@ HTML;
      *
      * @since  9.2
      *
--    * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
      * @return array the menu array
      */
     public static function generateMenuSession($force = false)
