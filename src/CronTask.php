@@ -855,7 +855,7 @@ class CronTask extends CommonDBTM
                 );
                 if ($crontask->getNeedToRun($mode, $name)) {
                     $_SESSION["glpicronuserrunning"] = "cron_" . $crontask->fields['name'];
-                    $_SESSION["glpiactive_entity"]   = 0;
+                    Session::loadEntity(0, true);
                     $_SESSION["glpigroups"]          = [];
                     $_SESSION["glpiname"]            = "cron";
 
