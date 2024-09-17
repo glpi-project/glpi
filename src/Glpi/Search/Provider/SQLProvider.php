@@ -5078,11 +5078,6 @@ final class SQLProvider implements SearchProviderInterface
                         $count_display = 0;
                         $added         = [];
 
-                        $showuserlink = 0;
-                        if (Session::haveRight('user', READ)) {
-                            $showuserlink = 1;
-                        }
-
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
                                 (isset($data[$ID][$k]['name']) && ($data[$ID][$k]['name'] > 0))
@@ -5092,11 +5087,8 @@ final class SQLProvider implements SearchProviderInterface
                                     $out .= \Search::LBBR;
                                 }
 
-                                if ($itemtype == 'Ticket') {
-                                    if (
-                                        isset($data[$ID][$k]['name'])
-                                        && $data[$ID][$k]['name'] > 0
-                                    ) {
+                                if (isset($data[$ID][$k]['name']) && $data[$ID][$k]['name'] > 0) {
+                                    if ($itemtype == 'Ticket') {
                                         if (
                                             Session::getCurrentInterface() == 'helpdesk'
                                             && $orig_id == 5 // -> Assigned user
@@ -5107,24 +5099,27 @@ final class SQLProvider implements SearchProviderInterface
                                         ) {
                                             $out .= $anon_name;
                                         } else {
-                                            $userdata = getUserName($data[$ID][$k]['name'], 2);
-                                            $tooltip  = "";
-                                            if (Session::haveRight('user', READ)) {
-                                                $tooltip = \Html::showToolTip(
-                                                    $userdata["comment"],
-                                                    ['link'    => $userdata["link"],
-                                                        'display' => false
-                                                    ]
-                                                );
+                                            $user = new \User();
+                                            if ($user->getFromDB($data[$ID][$k]['name'])) {
+                                                $tooltip = "";
+                                                if (Session::haveRight('user', READ)) {
+                                                    $tooltip = \Html::showToolTip(
+                                                        $user->getInfoCard(),
+                                                        [
+                                                            'link'    => $user->getLinkURL(),
+                                                            'display' => false
+                                                        ]
+                                                    );
+                                                }
+                                                $out .= sprintf(__s('%1$s %2$s'), htmlspecialchars($user->getName()), $tooltip);
                                             }
-                                            $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                                         }
 
                                         $count_display++;
+                                    } else {
+                                        $out .= getUserLink($data[$ID][$k]['name']);
+                                        $count_display++;
                                     }
-                                } else {
-                                    $out .= getUserName($data[$ID][$k]['name'], $showuserlink);
-                                    $count_display++;
                                 }
 
                                 // Manage alternative_email for tickets_users
@@ -5149,27 +5144,30 @@ final class SQLProvider implements SearchProviderInterface
                         return $out;
                     }
                     if ($itemtype != 'User') {
-                        $toadd = '';
-                        if (
-                            ($itemtype == 'Ticket')
-                            && ($data[$ID][0]['id'] > 0)
-                        ) {
-                            $userdata = getUserName($data[$ID][0]['id'], 2);
-                            $toadd    = \Html::showToolTip(
-                                $userdata["comment"],
-                                ['link'    => $userdata["link"],
-                                    'display' => false
-                                ]
+                        $out = '';
+                        if ($data[$ID][0]['id'] > 0) {
+                            $toadd = '';
+                            if ($itemtype == 'Ticket') {
+                                $user = new \User();
+                                if (Session::haveRight('user', READ) && $user->getFromDB($data[$ID][0]['id'])) {
+                                    $toadd    = \Html::showToolTip(
+                                        $user->getInfoCard(),
+                                        [
+                                            'link'    => $user->getLinkURL(),
+                                            'display' => false
+                                        ]
+                                    );
+                                }
+                            }
+                            $userlink = formatUserLink(
+                                $data[$ID][0]['id'],
+                                $data[$ID][0]['name'],
+                                $data[$ID][0]['realname'],
+                                $data[$ID][0]['firstname'],
                             );
+                            $out = sprintf(__s('%1$s %2$s'), $userlink, $toadd);
                         }
-                        $usernameformat = formatUserName(
-                            $data[$ID][0]['id'],
-                            $data[$ID][0]['name'],
-                            $data[$ID][0]['realname'],
-                            $data[$ID][0]['firstname'],
-                            1
-                        );
-                        return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
+                        return $out;
                     }
 
                     if ($html_output) {

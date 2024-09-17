@@ -4677,9 +4677,8 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $userdata = getUserName($d["users_id"], 2);
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        $userdata['name'];
+                                        htmlspecialchars(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -5082,15 +5081,16 @@ JAVASCRIPT;
                 && count($job->users[CommonITILActor::REQUESTER])
             ) {
                 foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
-                    if ($d["users_id"] > 0) {
-                        $userdata = getUserName($d["users_id"], 2);
-                        $name     = "<span class='b'>" . $userdata['name'] . "</span>";
+                    $user = new User();
+                    if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
+                        $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
                         $name     = sprintf(
                             __('%1$s %2$s'),
                             $name,
                             Html::showToolTip(
-                                $userdata["comment"],
-                                ['link'    => $userdata["link"],
+                                $user->getInfoCard(),
+                                [
+                                    'link'    => $user->getLinkURL(),
                                     'display' => false
                                 ]
                             )

@@ -954,10 +954,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $writer_link = '';
         if ($this->fields["users_id"]) {
-            $writer_link = getUserName(
-                $this->fields["users_id"],
-                $linkusers_id ? 1 : 0 // Integer because true may be 2 and getUserName return array
-            );
+            $writer_link = getUserLink($this->fields["users_id"]);
         }
 
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
@@ -1607,14 +1604,10 @@ TWIG, $twig_params);
                     echo Search::showItem($output_type, htmlspecialchars(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
                 }
 
-                $showuserlink = 0;
-                if (Session::haveRight('user', READ)) {
-                    $showuserlink = 1;
-                }
                 if ($showwriter) {
                     echo Search::showItem(
                         $output_type,
-                        getUserName($data["users_id"], $showuserlink),
+                        getUserLink($data["users_id"]),
                         $item_num,
                         $row_num
                     );

@@ -350,12 +350,11 @@ class Profile_User extends CommonDBRelation
 
         $entries = [];
         foreach ($iterator as $data) {
-            $username = formatUserName(
+            $username = formatUserLink(
                 $data["id"],
                 $data["name"],
                 $data["realname"],
                 $data["firstname"],
-                1
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                 $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
@@ -537,12 +536,11 @@ TWIG, $avatar_params) . $username;
             if (!isset($entity_names[$data['entity']])) {
                 $entity_names[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
             }
-            $username = formatUserName(
+            $username = formatUserLink(
                 $data["id"],
                 $data["name"],
                 $data["realname"],
                 $data["firstname"],
-                1
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                 $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");

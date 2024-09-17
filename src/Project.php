@@ -1288,14 +1288,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
            // Fourth Column
             $fourth_col = "";
 
-            if ($item->fields["users_id"]) {
-                $userdata    = getUserName($item->fields["users_id"], 2);
+            $user = new User();
+            if ($item->fields["users_id"] && $user->getFromDB($item->fields["users_id"])) {
                 $fourth_col .= sprintf(
                     __('%1$s %2$s'),
-                    "<span class='b'>" . $userdata['name'] . "</span>",
+                    "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>",
                     Html::showToolTip(
-                        $userdata["comment"],
-                        ['link'    => $userdata["link"],
+                        $user->getInfoCard(),
+                        [
+                            'link'    => $user->getLinkURL(),
                             'display' => false
                         ]
                     )

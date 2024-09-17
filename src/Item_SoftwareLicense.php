@@ -787,7 +787,6 @@ JAVASCRIPT;
             $soft       = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $linkUser   = User::canView();
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
@@ -863,12 +862,11 @@ JAVASCRIPT;
                 echo "<td>" . $data['location'] . "</td>";
                 echo "<td>" . $data['state'] . "</td>";
                 echo "<td>" . $data['groupe'] . "</td>";
-                echo "<td>" . formatUserName(
+                echo "<td>" . formatUserLink(
                     $data['userid'],
                     $data['username'],
                     $data['userrealname'],
                     $data['userfirstname'],
-                    $linkUser
                 ) . "</td>";
                 echo "</tr>\n";
 
