@@ -2543,7 +2543,7 @@ class User extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Download user VCard');
-            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&amp;getvcard=1");
+            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
@@ -2875,7 +2875,7 @@ JAVASCRIPT;
                 }
                 if (!empty($this->fields["user_dn"])) {
                   //TRANS: %s is the user dn
-                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), $this->fields["user_dn"]);
+                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlspecialchars($this->fields["user_dn"]));
                 }
                 if ($this->fields['is_deleted_ldap']) {
                     echo '<br>' . __s('User missing in LDAP directory');
