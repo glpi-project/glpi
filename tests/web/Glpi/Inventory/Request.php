@@ -40,7 +40,7 @@ use Psr\Http\Client\RequestExceptionInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
-class Request extends \GLPITestCase
+class Request extends \DBTestCase
 {
     private $http_client;
     private $base_uri;
@@ -191,6 +191,33 @@ XML
 
     public function testPrologRequest()
     {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                '<REQUEST>' .
+                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                  '<QUERY>PROLOG</QUERY>' .
+                '</REQUEST>'
+            ]
+        );
+        $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+    }
+
+    public function testAuthBasic()
+    {
+        $basic_auth_password = "a_password";
+        $basic_auth_login = "a_login";
+
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH, 'basic_auth_login' => $basic_auth_login, 'basic_auth_password' => $basic_auth_password]))->isTrue();
+        $this->logout();
+
         $res = $this->http_client->request(
             'POST',
             $this->base_uri . 'front/inventory.php',
