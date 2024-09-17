@@ -622,19 +622,19 @@ final class AssetDefinition extends AbstractDefinition
         $model_class = $this->getAssetModelClassName();
         $fields = [
             'name'             => __('Name'),
-            'states_id'        => State::getTypeName(),
-            'locations_id'     => Location::getTypeName(),
-            $type_class::getForeignKeyField() => $type_class::getTypeName(),
+            'states_id'        => State::getTypeName(1),
+            'locations_id'     => Location::getTypeName(1),
+            $type_class::getForeignKeyField() => $type_class::getTypeName(1),
             'users_id_tech'    => __('Technician in charge'),
-            'manufacturers_id' => Manufacturer::getTypeName(),
+            'manufacturers_id' => Manufacturer::getTypeName(1),
             'groups_id_tech'   => __('Group in charge'),
-            $model_class::getForeignKeyField() => $model_class::getTypeName(),
+            $model_class::getForeignKeyField() => $model_class::getTypeName(1),
             'contact_num'      => __('Alternate username number'),
             'serial'           => __('Serial'),
             'contact'          => __('Alternate username'),
             'otherserial'      => __('Inventory number'),
-            'users_id'         => User::getTypeName(),
-            'groups_id'        => Group::getTypeName(),
+            'users_id'         => User::getTypeName(1),
+            'groups_id'        => Group::getTypeName(1),
             'comment'          => __('Comment'),
         ];
 
