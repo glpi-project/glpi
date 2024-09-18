@@ -505,19 +505,7 @@ class Session
                 $active
             );
             $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
-            if ($is_recursive) {
-                //TRANS: %s is the entity name
-                $_SESSION["glpiactive_entity_name"]      = sprintf(
-                    __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_name"],
-                    __('tree structure')
-                );
-                 $_SESSION["glpiactive_entity_shortname"] = sprintf(
-                     __('%1$s (%2$s)'),
-                     $_SESSION["glpiactive_entity_shortname"],
-                     __('tree structure')
-                 );
-            } elseif ($ID == "all") {
+            if ($ID == "all") {
                 //TRANS: %s is the entity name
                 $_SESSION["glpiactive_entity_name"]      = sprintf(
                     __('%1$s (%2$s)'),
@@ -529,6 +517,18 @@ class Session
                     $_SESSION["glpiactive_entity_shortname"],
                     __('full structure')
                 );
+            } elseif ($is_recursive) {
+                //TRANS: %s is the entity name
+                $_SESSION["glpiactive_entity_name"]      = sprintf(
+                    __('%1$s (%2$s)'),
+                    $_SESSION["glpiactive_entity_name"],
+                    __('tree structure')
+                );
+                 $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                     __('%1$s (%2$s)'),
+                     $_SESSION["glpiactive_entity_shortname"],
+                     __('tree structure')
+                 );
             }
 
             if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
