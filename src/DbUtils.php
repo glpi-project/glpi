@@ -1392,7 +1392,7 @@ final class DbUtils
                         }
                         $acomment .= $country;
                     }
-                    if (trim($acomment != '')) {
+                    if (trim($acomment) != '') {
                         $comment .= "<span class='b'>&nbsp;" . __('Address:') . "</span> " . $acomment . "<br/>";
                     }
                 }
