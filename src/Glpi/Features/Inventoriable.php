@@ -66,7 +66,7 @@ trait Inventoriable
     /**
      * Get inventory file name.
      *
-     * @param bool $prepend_dir_path Indicated wether the GLPI_INVENTORY_DIR have to be prepend to returned value.
+     * @param bool $prepend_dir_path Indicated whether the GLPI_INVENTORY_DIR have to be prepended to returned value.
      *
      * @return string|null
      */
@@ -111,7 +111,7 @@ trait Inventoriable
         }
 
         echo '<tr>';
-        echo '<th colspan="4">' . __('Inventory information');
+        echo '<th colspan="4">' . __s('Inventory information');
 
         $agent = $this->getInventoryAgent();
 
@@ -124,8 +124,8 @@ trait Inventoriable
             );
             $title = sprintf(
              //TRANS: parameter is the name of the asset
-                __('Download "%1$s" inventory file'),
-                $this->getName()
+                __s('Download "%1$s" inventory file'),
+                htmlspecialchars($this->getName())
             );
 
             echo sprintf(
@@ -138,13 +138,13 @@ trait Inventoriable
                 echo sprintf(
                     "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
                     $CFG_GLPI['root_doc'] . '/front/inventory.php?refused=' . $this->fields['id'],
-                    __('Try a reimport from stored inventory file')
+                    __s('Try a reimport from stored inventory file')
                 );
             }
         } else {
             echo sprintf(
                 "<span style='float: right;'><i class='fas fa-ban'></i> <span class='sr-only'>%s</span></span>",
-                __('Inventory file missing')
+                __s('Inventory file missing')
             );
         }
 
@@ -153,7 +153,7 @@ trait Inventoriable
 
         if ($agent === null) {
             echo '<tr class="tab_bg_1">';
-            echo '<td colspan="4">' . __('Agent information is not available.') . '</td>';
+            echo '<td colspan="4">' . __s('Agent information is not available.') . '</td>';
             echo "</tr>";
         } else {
             $this->displayAgentInformation();
@@ -179,40 +179,41 @@ trait Inventoriable
         global $CFG_GLPI;
 
         echo '<tr class="tab_bg_1">';
-        echo '<td>' . Agent::getTypeName(1) . '</td>';
+        echo '<td>' . htmlspecialchars(Agent::getTypeName(1)) . '</td>';
         echo '<td>' . $this->agent->getLink() . '</td>';
 
-        echo '<td>' . __('Useragent') . '</td>';
-        echo '<td>' . $this->agent->fields['useragent'] . '</td>';
+        echo '<td>' . __s('Useragent') . '</td>';
+        echo '<td>' . htmlspecialchars($this->agent->fields['useragent']) . '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
-        echo '<td>' . __('Inventory tag') . '</td>';
-        echo '<td>' . $this->agent->fields['tag'] . '</td>';
-        echo '<td>' . __('Last inventory') . '</td>';
+        echo '<td>' . __s('Inventory tag') . '</td>';
+        echo '<td>' . htmlspecialchars($this->agent->fields['tag']) . '</td>';
+        echo '<td>' . __s('Last inventory') . '</td>';
         echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
-        echo '<td>' . __('Agent status');
+        echo '<td>' . __s('Agent status');
         echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
-        echo '<td id="agent_status">' . __('Unknown') . '</td>';
-        echo '<td>' .  __('Request inventory');
+        echo '<td id="agent_status">' . __s('Unknown') . '</td>';
+        echo '<td>' .  __s('Request inventory');
         echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
-        echo '<td id="inventory_status">' . __('None') . '</td>';
+        echo '<td id="inventory_status">' . __s('None') . '</td>';
         echo '</tr>';
 
         $status = Agent::ACTION_STATUS;
         $inventory = Agent::ACTION_INVENTORY;
+        $agents_id = (int)$this->agent->fields['id'];
         $js = <<<JAVASCRIPT
          $(function() {
             $('#update-status').on('click', function() {
                $.post({
                   url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
                   timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$status}', 'id': '{$this->agent->fields['id']}'},
+                  data: {'action': '{$status}', 'id': '{$agents_id}'},
                   success: function(json) {
                      $('#agent_status').html(json.answer);
                   }
@@ -223,7 +224,7 @@ trait Inventoriable
                $.post({
                   url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
                   timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$inventory}', 'id': '{$this->agent->fields['id']}'},
+                  data: {'action': '{$inventory}', 'id': '{$agents_id}'},
                   success: function(json) {
                      $('#inventory_status').html(json.answer);
                   }
