@@ -114,7 +114,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             Session::loadLanguage('', false);
 
             if (!isCommandLine()) {
-                // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
                 $debug_mode = $_SESSION['glpi_use_mode'];
                 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 

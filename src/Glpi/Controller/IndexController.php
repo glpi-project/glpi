@@ -81,7 +81,7 @@ final class IndexController extends AbstractController
                 Session::setPath();
                 Session::start();
                 Session::loadLanguage('', false);
-                // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
                 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
                 // no translation
