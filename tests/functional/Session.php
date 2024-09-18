@@ -854,7 +854,8 @@ class Session extends \DbTestCase
         $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
     }
 
-    public function testActiveEntityNameForFullStructure(): void {
+    public function testActiveEntityNameForFullStructure(): void
+    {
         $this->login();
         \Session::changeActiveEntities("all");
         $this->string($_SESSION["glpiactive_entity_name"])->isEqualTo("Root entity (full structure)");
