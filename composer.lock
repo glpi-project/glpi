@@ -9092,16 +9092,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.7.3",
+            "version": "0.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "a076482b057a727a9dcf155af40dac6c26a7b7c6"
+                "reference": "65a09a93350da6fa67d423dd94e4cb4023a17e20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/a076482b057a727a9dcf155af40dac6c26a7b7c6",
-                "reference": "a076482b057a727a9dcf155af40dac6c26a7b7c6",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/65a09a93350da6fa67d423dd94e4cb4023a17e20",
+                "reference": "65a09a93350da6fa67d423dd94e4cb4023a17e20",
                 "shasum": ""
             },
             "require": {
@@ -9144,7 +9144,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2024-06-20T08:36:22+00:00"
+            "time": "2024-09-18T06:58:02+00:00"
         },
         {
             "name": "mikey179/vfsstream",
