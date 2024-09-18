@@ -84,7 +84,15 @@ final class UrgencyFieldTest extends DbTestCase
 
     public function testSpecificUrgency(): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        // Allow all urgency levels
+        $CFG_GLPI['urgency_mask'] = array_reduce(range(1, 5), fn($mask, $level) => $mask | (1 << $level), 0);
+
         $high_urgency = 4;
+        $medium_urgency = 3;
+        $low_urgency = 2;
 
         $form = $this->createAndGetFormWithTwoUrgencyQuestions();
         $this->setUrgencyConfig($form, new UrgencyFieldConfig(
@@ -95,6 +103,23 @@ final class UrgencyFieldTest extends DbTestCase
         $ticket = $this->sendFormAndGetCreatedTicket($form);
 
         $this->assertEquals($high_urgency, $ticket->fields['urgency']);
+
+        // Allow only the three first urgency levels
+        $CFG_GLPI['urgency_mask'] = (1 << 1) | (1 << 2) | (1 << 3);
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form);
+
+        // The high urgency is not allowed, the default value should be used
+        $this->assertEquals($medium_urgency, $ticket->fields['urgency']);
+
+        $this->setUrgencyConfig($form, new UrgencyFieldConfig(
+            strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
+            specific_urgency_value: $low_urgency,
+        ));
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form);
+
+        $this->assertEquals($low_urgency, $ticket->fields['urgency']);
     }
 
     public function testUrgencyFromFirstQuestion(): void
