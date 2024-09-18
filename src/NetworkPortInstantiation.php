@@ -716,7 +716,7 @@ TWIG, $twig_params);
             $params
         );
 
-        echo "<span id='show_" . $p['name'] . "$rand'>&nbsp;</span>";
+        echo "<span id='show_" . htmlspecialchars($p['name']) . "$rand'>&nbsp;</span>";
 
         return $rand;
     }
