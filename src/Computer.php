@@ -164,9 +164,7 @@ class Computer extends CommonDBTM
         // Update contact of attached items
         if ($CFG_GLPI['is_contact_autoupdate']) {
             $changes['contact_num'] = $input['contact_num'];
-        }
-        if ($CFG_GLPI['is_contact_autoupdate']) {
-            $changes['contact'] = $input['contact'];
+            $changes['contact']     = $input['contact'];
         }
         // Update users and groups of attached items
         if ($CFG_GLPI['is_user_autoupdate']) {
