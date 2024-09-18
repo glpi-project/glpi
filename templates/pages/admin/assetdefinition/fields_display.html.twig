@@ -41,7 +41,7 @@
         <div class="form-field row flex-grow-1">
             <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
                 {{ field_label }}
-                <i class="ti ti-grip-vertical"></i>
+                <i class="ti ti-grip-vertical sort-handle"></i>
             </label>
             <div class="col-xxl-7 field-container btn-group shadow-none">
                 <input type="text" disabled class="form-control" />
@@ -62,7 +62,7 @@
 {% block form_fields %}
     <input type="hidden" name="_update_fields_display" value="1" />
 
-    <div class="grid gap-3" id="sortable-fields">
+    <div class="grid gap-3 user-select-none" id="sortable-fields">
         {% for field in fields_display %}
             {{ _self.draggable_field(field['key'], all_fields[field['key']])|raw }}
         {% endfor %}
@@ -80,12 +80,6 @@
             </button>
         </div>
     </div>
-
-    <style>
-        .sortable-dragging {
-            display: none !important; /* d-flex has an important rule */
-        }
-    </style>
 
     <script>
         $(() => {
