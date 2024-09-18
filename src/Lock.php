@@ -1289,7 +1289,7 @@ TWIG);
                 ];
 
                 echo __s('Select the type of the item that must be unlock');
-                echo "<br><br>\n";
+                echo "<br><br>";
 
                 Dropdown::showFromArray(
                     'attached_item',
@@ -1307,8 +1307,8 @@ TWIG);
                 $lockedfield = new Lockedfield();
                 $fields = $lockedfield->getFieldsToLock($related_itemtype);
 
-                echo __('Select fields of the item that must be unlock');
-                echo "<br><br>\n";
+                echo __s('Select fields of the item that must be unlock');
+                echo "<br><br>";
                 Dropdown::showFromArray(
                     'attached_fields',
                     $fields,
