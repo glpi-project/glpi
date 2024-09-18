@@ -311,7 +311,7 @@ class Html
                      //TRANS: %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
                      //       %4$d number of minutes, %5$d number of seconds
                      return sprintf(
-                         __('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
+                         __s('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
                          $sign,
                          $units['day'],
                          $units['hour'],
@@ -322,7 +322,7 @@ class Html
               //TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
               //        %4$d number of minutes
                 return sprintf(
-                    __('%1$s%2$d days %3$d hours %4$d minutes'),
+                    __s('%1$s%2$d days %3$d hours %4$d minutes'),
                     $sign,
                     $units['day'],
                     $units['hour'],
@@ -340,7 +340,7 @@ class Html
                //TRANS:  %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes,
                //        %4$d number of seconds
                 return sprintf(
-                    __('%1$s%2$d hours %3$d minutes %4$d seconds'),
+                    __s('%1$s%2$d hours %3$d minutes %4$d seconds'),
                     $sign,
                     $units['hour'],
                     $units['minute'],
@@ -348,14 +348,14 @@ class Html
                 );
             }
            //TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes
-            return sprintf(__('%1$s%2$d hours %3$d minutes'), $sign, $units['hour'], $units['minute']);
+            return sprintf(__s('%1$s%2$d hours %3$d minutes'), $sign, $units['hour'], $units['minute']);
         }
 
         if ($units['minute'] > 0) {
             if ($display_sec) {
                //TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number of seconds
                 return sprintf(
-                    __('%1$s%2$d minutes %3$d seconds'),
+                    __s('%1$s%2$d minutes %3$d seconds'),
                     $sign,
                     $units['minute'],
                     $units['second']
@@ -363,7 +363,7 @@ class Html
             }
            //TRANS: %1$s is the sign (-or empty), %2$d number of minutes
             return sprintf(
-                _n('%1$s%2$d minute', '%1$s%2$d minutes', $units['minute']),
+                _sn('%1$s%2$d minute', '%1$s%2$d minutes', $units['minute']),
                 $sign,
                 $units['minute']
             );
@@ -372,7 +372,7 @@ class Html
         if ($display_sec) {
            //TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
             return sprintf(
-                _n('%1$s%2$s second', '%1$s%2$s seconds', $units['second']),
+                _sn('%1$s%2$s second', '%1$s%2$s seconds', $units['second']),
                 $sign,
                 $units['second']
             );
@@ -588,7 +588,7 @@ class Html
 
         if ($ref_title != "") {
             echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
-            $ref_title
+            " . htmlspecialchars($ref_title) . "
          </span>";
         }
 
@@ -2600,7 +2600,7 @@ HTML;
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
-            $out .= "<span>" . $p['title'] . "</span>";
+            $out .= "<span>" . htmlspecialchars($p['title']) . "</span>";
             $out .= "</a>";
 
             if (
@@ -3944,7 +3944,7 @@ JAVASCRIPT
        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
-            $out .= "<tr><th colspan='6'>$title</th></tr>";
+            $out .= "<tr><th colspan='6'>" . htmlspecialchars($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
@@ -4321,6 +4321,8 @@ JAVASCRIPT
             $link .= " onclick=\"$action\" ";
         }
 
+        // Ensure $btlabel is properly escaped
+        $btlabel = htmlspecialchars($btlabel);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
