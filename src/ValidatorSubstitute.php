@@ -188,7 +188,7 @@ final class ValidatorSubstitute extends CommonDBTM
 
         if (isset($input['substitutes'])) {
             if (in_array($input['users_id'], $input['substitutes'])) {
-                Session::addMessageAfterRedirect(__('A user cannot be their own substitute.'), true, ERROR);
+                Session::addMessageAfterRedirect(__s('A user cannot be their own substitute.'), true, ERROR);
                 return false;
             }
 

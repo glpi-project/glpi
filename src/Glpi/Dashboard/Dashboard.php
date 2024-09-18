@@ -130,7 +130,7 @@ class Dashboard extends \CommonDBTM
 
 
     /**
-     * Return the title of the current dasbhoard
+     * Return the title of the current dashboard
      *
      * @return string
      */
@@ -209,10 +209,10 @@ class Dashboard extends \CommonDBTM
     /**
      * Save the current dashboard instance to DB
      *
-     * @param string $title label of the dasbhoard, will be suglified to have a corresponding key
-     * @param string $context of the dasbhoard, filter the dasboard collection by a key
+     * @param string $title label of the dashboard, will be suglified to have a corresponding key
+     * @param string $context of the dashboard, filter the dashboard collection by a key
      * @param array $items cards for the dashboard
-     * @param array $rights for the dasbhoard
+     * @param array $rights for the dashboard
      *
      * @return string
      */

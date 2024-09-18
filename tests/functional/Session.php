@@ -1165,4 +1165,60 @@ class Session extends \DbTestCase
          ->withMessage('Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.')
          ->exists();
     }
+
+    public function testShouldReloadActiveEntities(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        // Create a new entity
+        $entity_id = $this->createItem(\Entity::class, [
+            'name'        => __METHOD__,
+            'entities_id' => $ent1
+        ])->getID();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, true))->isTrue();
+
+        // The entity goes out of scope -> reloaded TRUE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent0
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isTrue();
+
+        $this->boolean(\Session::changeActiveEntities($ent2, true))->isTrue();
+
+        // The entity enters the scope -> reloaded TRUE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent2
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isTrue();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, true))->isTrue();
+
+        // The entity remains out of scope -> reloaded FALSE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent0
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, false))->isTrue();
+
+        // The entity remains out of scope -> reloaded FALSE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent1
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+
+        // See all entities -> reloaded FALSE
+        $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
+
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent2
+        ]);
+
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+    }
 }

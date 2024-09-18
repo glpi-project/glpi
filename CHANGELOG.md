@@ -200,6 +200,9 @@ The present file will list all changes made to the project; according to the
 - `Transfer::transferSupplierContacts()` method is now private.
 - `Transfer::transferTaskCategory()` method is now private.
 - `Transfer::transferTickets()` method is now private.
+- `linkoption` option has been removed from `CommonDBTM::getLink()`.
+- `comments` and `icon` options have been removed from `CommonDBTM::getName()`.
+- `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.

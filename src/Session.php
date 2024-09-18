@@ -394,6 +394,33 @@ class Session
 
 
     /**
+     * Check if active entities should be reloaded.
+     *
+     * @return bool true if active entities should be reloaded, false otherwise
+     */
+    public static function shouldReloadActiveEntities(): bool
+    {
+        if (!array_key_exists('glpiactive_entity', $_SESSION)) {
+            return false;
+        }
+        $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
+        if (count($glpiactiveentities)) {
+            $glpiactive_entity = $_SESSION['glpiactive_entity'];
+            $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
+            $entities = [$glpiactive_entity];
+            if ($glpiactive_entity_recursive) {
+                $entities = getSonsOf("glpi_entities", $glpiactive_entity);
+            }
+
+            return count($entities) !== count($glpiactiveentities)
+                || array_diff($entities, $glpiactiveentities) !== []
+                || array_diff($glpiactiveentities, $entities) !== [];
+        }
+        return false;
+    }
+
+
+    /**
      * Change active entity to the $ID one. Update glpiactiveentities session variable.
      * Reload groups related to this entity.
      *
@@ -430,6 +457,7 @@ class Session
                         }
                     }
                 }
+                $is_recursive = true;
             } else {
                 $ID = (int)$ID;
 
@@ -1449,7 +1477,7 @@ class Session
 
 
     /**
-     * Have I one right of array $rights to module $module (conpare to session variable)
+     * Have I one right of array $rights to module $module (compare to session variable)
      *
      * @param string    $module Module to check
      * @param integer[] $rights Rights to check
@@ -1774,13 +1802,13 @@ class Session
     /**
      * Get new IDOR token
      * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
-     * So, we avoid IDOR request where an attacker asks for an another itemtype
-     * than the originaly intended
+     * So, we avoid IDOR request where an attacker asks for another itemtype
+     * than the originally intended
      *
      * @since 9.5.3
      *
      * @param string $itemtype
-     * @param array  $add_params more criteria to check validy of idor tokens
+     * @param array  $add_params more criteria to check validity of IDOR tokens
      *
      * @return string
      **/
@@ -1845,7 +1873,7 @@ class Session
                 }
             }
 
-           // check all stored data for the idor token are present (and identical) in the posted data
+           // check all stored data for the IDOR token are present (and identical) in the posted data
             $match_expected = function ($expected, $given) use (&$match_expected) {
                 if (is_array($expected)) {
                     if (!is_array($given)) {
@@ -2261,7 +2289,7 @@ class Session
      * Load given entity.
      *
      * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursivly or not
+     * @param boolean $is_recursive Whether to load entities recursively or not
      *
      * @return void
      */

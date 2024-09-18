@@ -1485,4 +1485,140 @@ HTML,
             $this->assertEqualsCanonicalizing($value['articles'], $names);
         }
     }
+
+    public function testClone()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $entity = new \Entity();
+        $entity->getFromDBByCrit(['name' => '_test_root_entity']);
+
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
+
+       // Test item cloning
+        $knowbaseitem = new \KnowbaseItem();
+        $this->assertGreaterThan(
+            0,
+            $id = $knowbaseitem->add([
+                'name'   => 'Test clone knowbaseitem',
+                'answer' => 'Test clone knowbaseitem',
+                'is_faq' => false
+            ])
+        );
+
+        //add target
+        $tentity = new \Entity();
+        $this->assertGreaterThan(
+            0,
+            $eid = $tentity->add([
+                'name'  => 'Test kb clone',
+            ])
+        );
+        $kbentity = new \Entity_KnowbaseItem();
+        $this->assertGreaterThan(
+            0,
+            $kbentity->add([
+                'entities_id'  => $eid,
+                'knowbaseitems_id'  => $id
+            ])
+        );
+
+        //add associated elements
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $cid = $computer->add([
+                'name'  => 'Test kb clone Cpt',
+                'entities_id'  => $entity->fields['id']
+            ])
+        );
+        $linked_item = new \KnowbaseItem_Item();
+        $this->assertGreaterThan(
+            0,
+            $linked_item->add([
+                'itemtype'  => 'Computer',
+                'items_id'  => $cid,
+                'knowbaseitems_id'  => $id
+            ])
+        );
+
+        //add document
+        $document = new \Document();
+        $docid = (int)$document->add(['name' => 'Test link document']);
+        $this->assertGreaterThan(0, $docid);
+
+        $docitem = new \Document_Item();
+        $this->assertGreaterThan(
+            0,
+            $docitem->add([
+                'documents_id' => $docid,
+                'itemtype'     => 'KnowbaseItem',
+                'items_id'     => $id
+            ])
+        );
+
+       //clone!
+        $kbitem = new \KnowbaseItem();
+        $this->assertTrue($kbitem->getFromDB($id));
+        $added = $kbitem->clone();
+        $this->assertGreaterThan(0, (int)$added);
+        $this->assertNotEquals($kbitem->fields['id'], $added);
+
+        $clonedKbitem = new \KnowbaseItem();
+        $this->assertTrue($clonedKbitem->getFromDB($added));
+
+        $fields = $kbitem->fields;
+
+        // Check the knowbaseitem values. Id and dates must be different, everything else must be equal
+        foreach ($fields as $k => $v) {
+            switch ($k) {
+                case 'id':
+                    $this->assertNotEquals($kbitem->getField($k), $clonedKbitem->getField($k));
+                    break;
+                case 'date_mod':
+                case 'date_creation':
+                    $dateClone = new \DateTime($clonedKbitem->getField($k));
+                    $expectedDate = new \DateTime($date);
+                    $this->assertEquals($expectedDate, $dateClone);
+                    break;
+                case 'name':
+                    $this->assertEquals("{$kbitem->getField($k)} (copy)", $clonedKbitem->getField($k));
+                    break;
+                default:
+                    $this->assertEquals($kbitem->getField($k), $clonedKbitem->getField($k));
+            }
+        }
+
+        //check relations
+        $relations = [
+            \Entity_KnowbaseItem::class => 1,
+            \KnowbaseItem_Item::class => 1,
+        ];
+
+        foreach ($relations as $relation => $expected) {
+            $this->assertSame(
+                $expected,
+                countElementsInTable(
+                    $relation::getTable(),
+                    [
+                        'knowbaseitems_id'  => $clonedKbitem->fields['id'],
+                    ]
+                )
+            );
+        }
+
+        //check document
+        $this->assertSame(
+            1,
+            countElementsInTable(
+                \Document_Item::getTable(),
+                [
+                    'itemtype'      => 'KnowbaseItem',
+                    'items_id'      => $clonedKbitem->fields['id'],
+                ]
+            )
+        );
+    }
 }

@@ -84,6 +84,11 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         // Manage entity change
         if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
             Session::changeActiveEntities($_REQUEST["force_entity"], true);
+        } elseif (Session::shouldReloadActiveEntities()) {
+            Session::changeActiveEntities(
+                $_SESSION["glpiactive_entity"],
+                $_SESSION["glpiactive_entity_recursive"]
+            );
         }
 
         // The user's current groups are stored in his session

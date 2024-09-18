@@ -618,6 +618,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $criterias['itilcategories_id_code']['field']           = 'code';
         $criterias['itilcategories_id_code']['name']            = __('Code representing the ITIL category');
 
+        $criterias['users_id_recipient']['table']             = 'glpi_users';
+        $criterias['users_id_recipient']['field']             = 'name';
+        $criterias['users_id_recipient']['name']              = __('Writer');
+        $criterias['users_id_recipient']['linkfield']         = 'users_id_recipient';
+        $criterias['users_id_recipient']['type']              = 'dropdown_users';
+
         $criterias['_users_id_requester']['table']            = 'glpi_users';
         $criterias['_users_id_requester']['field']            = 'name';
         $criterias['_users_id_requester']['name']             = _n('Requester', 'Requesters', 1);

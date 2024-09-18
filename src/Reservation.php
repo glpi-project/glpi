@@ -912,13 +912,13 @@ JAVASCRIPT;
 
         // js vars
         $rand   = mt_rand();
-        $ID     = $ri->fields['id'];
+        $ID     = (int)$ri->fields['id'];
 
         echo "<br>";
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
-        $defaultDate = $_REQUEST['defaultDate'] ?? date('Y-m-d');
+        $defaultDate = htmlspecialchars($_REQUEST['defaultDate'] ?? date('Y-m-d'));
         $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {

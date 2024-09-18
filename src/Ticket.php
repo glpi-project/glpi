@@ -2005,11 +2005,10 @@ class Ticket extends CommonITILObject
     /**
      * Overloaded from commonDBTM
      *
-     * @param $type string of object to add
-     *
      * @param string $type itemtype of object to add
+     *
      * @return boolean
-     **@since 0.83
+     * @since 0.83
      *
      */
     public function canAddItem(string $type): bool
@@ -2244,33 +2243,33 @@ class Ticket extends CommonITILObject
                     'rand'         => $rand
                 ];
                 echo "<table class='mx-auto'><tr>";
-                echo "<td><label for='dropdown__mergeticket$rand'>" . Ticket::getTypeName(1) . "</label></td><td colspan='3'>";
+                echo "<td><label for='dropdown__mergeticket$rand'>" . htmlspecialchars(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
                 Ticket::dropdown($mergeparam);
-                echo "</td></tr><tr><td><label for='with_followups'>" . __('Merge followups') . "</label></td><td>";
+                echo "</td></tr><tr><td><label for='with_followups'>" . __s('Merge followups') . "</label></td><td>";
                 Html::showCheckbox([
                     'name'    => 'with_followups',
                     'id'      => 'with_followups',
                     'checked' => true
                 ]);
-                echo "</td><td><label for='with_documents'>" . __('Merge documents') . "</label></td><td>";
+                echo "</td><td><label for='with_documents'>" . __s('Merge documents') . "</label></td><td>";
                 Html::showCheckbox([
                     'name'    => 'with_documents',
                     'id'      => 'with_documents',
                     'checked' => true
                 ]);
-                echo "</td></tr><tr><td><label for='with_tasks'>" . __('Merge tasks') . "<label></td><td>";
+                echo "</td></tr><tr><td><label for='with_tasks'>" . __s('Merge tasks') . "<label></td><td>";
                 Html::showCheckbox([
                     'name'    => 'with_tasks',
                     'id'      => 'with_tasks',
                     'checked' => true
                 ]);
-                echo "</td><td><label for='with_actors'>" . __('Merge actors') . "</label></td><td>";
+                echo "</td><td><label for='with_actors'>" . __s('Merge actors') . "</label></td><td>";
                 Html::showCheckbox([
                     'name'    => 'with_actors',
                     'id'      => 'with_actors',
                     'checked' => true
                 ]);
-                echo "</td></tr><tr><td><label for='dropdown_link_type$rand'>" . __('Link type') . "</label></td><td colspan='3'>";
+                echo "</td></tr><tr><td><label for='dropdown_link_type$rand'>" . __s('Link type') . "</label></td><td colspan='3'>";
                 Dropdown::showFromArray('link_type', [
                     0                                                   => __('None'),
                     CommonITILObject_CommonITILObject::LINK_TO          => __('Linked to'),
@@ -2305,7 +2304,7 @@ class Ticket extends CommonITILObject
                 echo '<div class="horizontal-form">';
 
                 echo '<div class="form-row">';
-                $label = SolutionTemplate::getTypeName(1);
+                $label = htmlspecialchars(SolutionTemplate::getTypeName(1));
                 echo "<label for='solution_template'>$label</label>";
                 SolutionTemplate::dropdown([
                     'name'     => "solution_template",
@@ -2337,7 +2336,7 @@ JAVASCRIPT;
                 echo '</div>'; // .form-row
 
                 echo '<div class="form-row">';
-                $label = SolutionType::getTypeName(1);
+                $label = htmlspecialchars(SolutionType::getTypeName(1));
                 echo "<label for='solutiontypes_id'>$label</label>";
                 SolutionType::dropdown([
                     'name'  => 'solutiontypes_id',
@@ -2346,7 +2345,7 @@ JAVASCRIPT;
                 echo '</div>'; // .form-row
 
                 echo '<div class="form-row-vertical">';
-                $label = __('Description');
+                $label = __s('Description');
 
                 echo "<label for='content'>";
                 echo "$label&nbsp;&nbsp;";
@@ -3648,7 +3647,7 @@ JAVASCRIPT;
          <i class='fas fa-plus'></i>
       </a>";
 
-       // add an additionnal observer on anchor click
+       // add an additional observer on anchor click
         Ajax::updateItemOnEvent(
             "addObserver$rand",
             "observer_$rand",
@@ -3657,7 +3656,7 @@ JAVASCRIPT;
             ['click']
         );
 
-       // div for an additionnal observer
+       // div for an additional observer
         echo "<div class='actor_single' id='observer_$rand'></div>";
     }
 
@@ -4957,9 +4956,9 @@ JAVASCRIPT;
 
             echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
            //TRANS: %d is the number of new tickets
-            echo "<tr><th colspan='12'>" . sprintf(_n('%d new ticket', '%d new tickets', $number), $number);
+            echo "<tr><th colspan='12'>" . sprintf(_sn('%d new ticket', '%d new tickets', $number), $number);
             echo "<a href='" . Ticket::getSearchURL() . "?" .
-                Toolbox::append_params($options, '&amp;') . "'>" . __('Show all') . "</a>";
+                Toolbox::append_params($options, '&amp;') . "'>" . __s('Show all') . "</a>";
             echo "</th></tr>";
 
             self::commonListHeader(Search::HTML_OUTPUT);
@@ -4972,7 +4971,7 @@ JAVASCRIPT;
         } else {
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe' style='min-width: 85%'>";
-            echo "<tr><th>" . __('No ticket found.') . "</th></tr>";
+            echo "<tr><th>" . __s('No ticket found.') . "</th></tr>";
             echo "</table>";
             echo "</div><br>";
         }
@@ -5031,9 +5030,9 @@ JAVASCRIPT;
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                     echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
+                    echo "<tr class='tab_bg_1'><th>" . __s('Last tickets') . "</th></tr>";
                     echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups') . "&nbsp;";
+                    echo __s('Child groups') . "&nbsp;";
                     Dropdown::showYesNo(
                         'tree',
                         $tree,
@@ -5068,7 +5067,7 @@ JAVASCRIPT;
         $rand = mt_rand();
         if ($job->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
-            $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
            // $rand    = mt_rand();
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -5098,7 +5097,7 @@ JAVASCRIPT;
                         );
                          echo $name;
                     } else {
-                        echo $d['alternative_email'] . "&nbsp;";
+                        echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -5128,27 +5127,27 @@ JAVASCRIPT;
                     }
                 }
             } else {
-                echo __('General');
+                echo __s('General');
             }
             echo "<td>";
 
-            $link = "<a id='ticket" . $job->fields["id"] . $rand . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
+            $link = "<a id='ticket" . htmlspecialchars($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
             if ($forcetab != '') {
                 $link .= "&amp;forcetab=" . $forcetab;
             }
             $link   .= "'>";
-            $link   .= "<span class='b'>" . $job->getNameID() . "</span></a>";
+            $link   .= "<span class='b'>" . htmlspecialchars($job->getNameID()) . "</span></a>";
             $link    = sprintf(
-                __('%1$s (%2$s)'),
+                __s('%1$s (%2$s)'),
                 $link,
                 sprintf(
-                    __('%1$s - %2$s'),
+                    __s('%1$s - %2$s'),
                     $job->numberOfFollowups($showprivate),
                     $job->numberOfTasks($showprivate)
                 )
             );
-            $link    = printf(
-                __('%1$s %2$s'),
+            $link    = sprintf(
+                __s('%1$s %2$s'),
                 $link,
                 Html::showToolTip(
                     RichText::getEnhancedHtml($job->fields['content']),
@@ -5157,13 +5156,14 @@ JAVASCRIPT;
                     ]
                 )
             );
+            echo $link;
             echo "</td>";
 
            // Finish Line
             echo "</tr>";
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No ticket in progress.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No ticket in progress.') . "</i></td></tr>";
         }
     }
 

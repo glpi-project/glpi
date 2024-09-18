@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2a1aacb3c8502970d63d335812826ee9",
+    "content-hash": "2d750c7de90d525503a91f9772069f6d",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -7168,20 +7168,20 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.30.0",
+            "version": "v1.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "0424dff1c58f028c451efff2045f5d92410bd540"
+                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/0424dff1c58f028c451efff2045f5d92410bd540",
-                "reference": "0424dff1c58f028c451efff2045f5d92410bd540",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/a3cc8b044a6ea513310cbd48ef7333b384945638",
+                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=7.2"
             },
             "provide": {
                 "ext-ctype": "*"
@@ -7227,7 +7227,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.30.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.31.0"
             },
             "funding": [
                 {
@@ -7243,7 +7243,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-31T15:07:36+00:00"
+            "time": "2024-09-09T11:45:10+00:00"
         },
         {
             "name": "symfony/polyfill-iconv",
@@ -7420,7 +7420,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=7.2"
             },
             "type": "library",
             "extra": {
@@ -8446,22 +8446,22 @@
         },
         {
             "name": "twig/markdown-extra",
-            "version": "v3.10.0",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/markdown-extra.git",
-                "reference": "e4bf2419df819dcf9dc7a0b25dd8cd1092cbd86d"
+                "reference": "25f23c02936f8c7157a8413154c06a462c9c20d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/markdown-extra/zipball/e4bf2419df819dcf9dc7a0b25dd8cd1092cbd86d",
-                "reference": "e4bf2419df819dcf9dc7a0b25dd8cd1092cbd86d",
+                "url": "https://api.github.com/repos/twigphp/markdown-extra/zipball/25f23c02936f8c7157a8413154c06a462c9c20d3",
+                "reference": "25f23c02936f8c7157a8413154c06a462c9c20d3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/deprecation-contracts": "^2.5|^3",
-                "twig/twig": "^3.0"
+                "twig/twig": "^3.13|^4.0"
             },
             "require-dev": {
                 "erusev/parsedown": "^1.7",
@@ -8502,7 +8502,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/twigphp/markdown-extra/tree/v3.10.0"
+                "source": "https://github.com/twigphp/markdown-extra/tree/v3.13.0"
             },
             "funding": [
                 {
@@ -8514,27 +8514,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-11T07:35:57+00:00"
+            "time": "2024-09-03T20:17:35+00:00"
         },
         {
             "name": "twig/string-extra",
-            "version": "v3.10.0",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/string-extra.git",
-                "reference": "cd76ed8ae081bcd4fddf549e92e20c5df76c358a"
+                "reference": "148e869d87cf4bea9d97896ab49e048e4add3310"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/string-extra/zipball/cd76ed8ae081bcd4fddf549e92e20c5df76c358a",
-                "reference": "cd76ed8ae081bcd4fddf549e92e20c5df76c358a",
+                "url": "https://api.github.com/repos/twigphp/string-extra/zipball/148e869d87cf4bea9d97896ab49e048e4add3310",
+                "reference": "148e869d87cf4bea9d97896ab49e048e4add3310",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/string": "^5.4|^6.4|^7.0",
                 "symfony/translation-contracts": "^1.1|^2|^3",
-                "twig/twig": "^3.0"
+                "twig/twig": "^3.13|^4.0"
             },
             "require-dev": {
                 "symfony/phpunit-bridge": "^6.4|^7.0"
@@ -8569,7 +8569,7 @@
                 "unicode"
             ],
             "support": {
-                "source": "https://github.com/twigphp/string-extra/tree/v3.10.0"
+                "source": "https://github.com/twigphp/string-extra/tree/v3.13.0"
             },
             "funding": [
                 {
@@ -8581,28 +8581,28 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-11T07:35:57+00:00"
+            "time": "2024-09-03T13:08:40+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v3.10.3",
+            "version": "v3.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "67f29781ffafa520b0bbfbd8384674b42db04572"
+                "reference": "126b2c97818dbff0cdf3fbfc881aedb3d40aae72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/67f29781ffafa520b0bbfbd8384674b42db04572",
-                "reference": "67f29781ffafa520b0bbfbd8384674b42db04572",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/126b2c97818dbff0cdf3fbfc881aedb3d40aae72",
+                "reference": "126b2c97818dbff0cdf3fbfc881aedb3d40aae72",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.5",
+                "php": ">=8.0.2",
                 "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/polyfill-ctype": "^1.8",
                 "symfony/polyfill-mbstring": "^1.3",
-                "symfony/polyfill-php80": "^1.22"
+                "symfony/polyfill-php81": "^1.29"
             },
             "require-dev": {
                 "psr/container": "^1.0|^2.0",
@@ -8648,7 +8648,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.10.3"
+                "source": "https://github.com/twigphp/Twig/tree/v3.14.0"
             },
             "funding": [
                 {
@@ -8660,7 +8660,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-16T10:04:27+00:00"
+            "time": "2024-09-09T17:55:12+00:00"
         },
         {
             "name": "wapmorgan/unified-archive",
@@ -9092,16 +9092,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.7.3",
+            "version": "0.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "a076482b057a727a9dcf155af40dac6c26a7b7c6"
+                "reference": "65a09a93350da6fa67d423dd94e4cb4023a17e20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/a076482b057a727a9dcf155af40dac6c26a7b7c6",
-                "reference": "a076482b057a727a9dcf155af40dac6c26a7b7c6",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/65a09a93350da6fa67d423dd94e4cb4023a17e20",
+                "reference": "65a09a93350da6fa67d423dd94e4cb4023a17e20",
                 "shasum": ""
             },
             "require": {
@@ -9144,7 +9144,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2024-06-20T08:36:22+00:00"
+            "time": "2024-09-18T06:58:02+00:00"
         },
         {
             "name": "mikey179/vfsstream",
