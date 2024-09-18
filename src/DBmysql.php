@@ -56,9 +56,6 @@ class DBmysql
         '>'  => '&gt;',
     ];
 
-    private const MARIADB = "mariadb";
-    private const MYSQL = "mysql";
-
     //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
     //! Database User
@@ -219,13 +216,6 @@ class DBmysql
     private $last_query_warnings = [];
 
     /**
-     * DBMS type
-     *
-     * @var array
-     */
-    private $dbms_type = null;
-
-    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param integer $choice host number (default NULL)
@@ -237,22 +227,6 @@ class DBmysql
         $this->connect($choice);
     }
 
-    /**
-     * Sets the DBMS type based on the server information.
-     *
-     * @return void
-     */
-    public function setDbms()
-    {
-        if (is_null($this->dbms_type)) {
-            $server_info = $this->dbh->server_info;
-            if (strpos($server_info, 'MariaDB') !== false) {
-                $this->dbms_type = self::MARIADB;
-            } elseif (strpos($server_info, 'MySQL') !== false) {
-                $this->dbms_type = self::MYSQL;
-            }
-        }
-    }
     /**
      * Connect using current database settings
      * Use dbhost, dbuser, dbpassword and dbdefault
@@ -320,8 +294,6 @@ class DBmysql
             $this->connected = true;
 
             $this->setTimezone($this->guessTimezone());
-
-            $this->setDbms();
         }
     }
 
@@ -789,15 +761,9 @@ class DBmysql
                 'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
-                ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+                ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]]
             ],
         ];
-
-        if ($this->dbms_type == self::MARIADB) {
-            // dot not trigger if utf8mb4_bin is used for longtext
-            // Mariadb use an alias JSON => longtext utf8mb4_bin
-            $columns_query['WHERE'][] = ['NOT' => ['information_schema.columns.data_type' => 'longtext', 'information_schema.columns.collation_name' => 'utf8mb4_bin']];
-        }
 
         if ($exclude_plugins) {
             $tables_query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
