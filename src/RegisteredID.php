@@ -70,6 +70,8 @@ class RegisteredID extends CommonDBChild
      **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var): string
     {
+        $field_name = htmlspecialchars($field_name);
+        $child_count_js_var = htmlspecialchars($child_count_js_var);
         $result  = "<select name=\'" . $field_name . "_type[-'+$child_count_js_var+']\'>";
         $result .= "<option value=\'\'>" . Dropdown::EMPTY_VALUE . "</option>";
         foreach (self::getRegisteredIDTypes() as $name => $label) {
@@ -92,21 +94,20 @@ class RegisteredID extends CommonDBChild
         }
         $value             = htmlspecialchars($value);
         $result            = "";
-        $main_field        = $field_name . "[$id]";
-        $type_field        = $field_name . "_type[$id]";
+        $main_field        = htmlspecialchars($field_name . "[$id]");
+        $type_field        = htmlspecialchars($field_name . "_type[$id]");
         $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
             $result .= "<select name='$type_field' class='form-select w-auto d-inline'>";
             $result .= "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
             foreach ($registeredIDTypes as $name => $label) {
-                $name = htmlspecialchars($name);
-                $label = htmlspecialchars($label);
-                $result .= "<option value='$name'";
-                if ($this->fields['device_type'] === $name) {
-                    $result .= " selected";
-                }
-                $result .= ">$label</option>";
+                $result .= sprintf(
+                    "<option value='%s'%s>%s</option>",
+                    htmlspecialchars($name),
+                    $this->fields['device_type'] === $name ? " selected" : "",
+                    htmlspecialchars($label)
+                );
             }
             $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value' class='form-control'>\n";
         } else {

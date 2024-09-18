@@ -4647,12 +4647,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#2 \\$allowlist \\(null\\) of method Toolbox\\:\\:isUrlSafe\\(\\) is incompatible with type array\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.defaultValue
 	'message' => '#^Default value of the parameter \\#2 \\$level \\(string\\) of method Toolbox\\:\\:log\\(\\) is incompatible with type int\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
