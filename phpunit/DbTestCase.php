@@ -293,6 +293,7 @@ class DbTestCase extends \GLPITestCase
      * Helper methods to quickly create many items of the same type.
      *
      * @param array[] $names
+     * @return CommonDBTM[]
      */
     protected function createItemsWithNames(string $itemtype, array $names): array
     {
@@ -306,6 +307,7 @@ class DbTestCase extends \GLPITestCase
      * Helper methods to quickly get the names of multiple items using their ids.
      *
      * @param int[] $ids
+     * @return string[]
      */
     protected function getItemsNames(string $itemtype, array $ids): array
     {
