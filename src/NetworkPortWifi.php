@@ -53,14 +53,14 @@ class NetworkPortWifi extends NetworkPortInstantiation
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         if (!$options['several']) {
-            echo "<tr class='tab_bg_1'>\n";
+            echo "<tr class='tab_bg_1'>";
             $this->showNetworkCardField($netport, $options, $recursiveItems);
             echo "<td>" . htmlspecialchars(WifiNetwork::getTypeName(1)) . "</td><td>";
             WifiNetwork::dropdown(['value'  => $this->fields["wifinetworks_id"]]);
             echo "</td>";
-            echo "</tr>\n";
+            echo "</tr>";
 
-            echo "<tr class='tab_bg_1'>\n";
+            echo "<tr class='tab_bg_1'>";
             echo "<td>" . __s('Wifi mode') . "</td>";
             echo "<td>";
 
@@ -70,7 +70,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
                 ['value' => $this->fields['mode']]
             );
 
-            echo "</td>\n";
+            echo "</td>";
             echo "<td>" . __s('Wifi protocol version') . "</td><td>";
 
             Dropdown::showFromArray(
@@ -79,12 +79,12 @@ class NetworkPortWifi extends NetworkPortInstantiation
                 ['value' => $this->fields['version']]
             );
 
-            echo "</td>\n";
-            echo "</tr>\n";
+            echo "</td>";
+            echo "</tr>";
 
-            echo "<tr class='tab_bg_1'>\n";
+            echo "<tr class='tab_bg_1'>";
             $this->showMacField($netport, $options);
-            echo "</tr>\n";
+            echo "</tr>";
         }
     }
 
