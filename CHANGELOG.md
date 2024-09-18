@@ -306,6 +306,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::showDebugInfo()`
 - `CommonDevice::title()`
 - `CommonDropdown::displayHeader()`
+- `CommonGLPI::$type` property.
 - `CommonGLPI::getAvailableDisplayOptions()`
 - `CommonGLPI::getDisplayOptions()`
 - `CommonGLPI::getDisplayOptionsLink()`

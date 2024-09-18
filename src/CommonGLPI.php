@@ -48,13 +48,6 @@ class CommonGLPI implements CommonGLPIInterface
     protected static $showTitleInNavigationHeader = false;
 
    /**
-    * GLPI Item type cache : set dynamically calling getType
-    *
-    * @var integer
-    */
-    protected $type                 = -1;
-
-   /**
     * Display list on Navigation Header
     *
     * @var boolean
