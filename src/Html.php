@@ -588,7 +588,7 @@ class Html
 
         if ($ref_title != "") {
             echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
-            $ref_title
+            " . htmlspecialchars($ref_title) . "
          </span>";
         }
 
@@ -2600,7 +2600,7 @@ HTML;
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
-            $out .= "<span>" . $p['title'] . "</span>";
+            $out .= "<span>" . htmlspecialchars($p['title']) . "</span>";
             $out .= "</a>";
 
             if (
@@ -3944,7 +3944,7 @@ JAVASCRIPT
        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
-            $out .= "<tr><th colspan='6'>$title</th></tr>";
+            $out .= "<tr><th colspan='6'>" . htmlspecialchars($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
@@ -4321,6 +4321,8 @@ JAVASCRIPT
             $link .= " onclick=\"$action\" ";
         }
 
+        // Ensure $btlabel is properly escaped
+        $btlabel = htmlspecialchars($btlabel);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
