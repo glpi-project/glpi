@@ -1952,13 +1952,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                    $item_link->getFormURLWithID($item_link->fields["id"]);
             $link .= "&amp;forcetab=" . htmlspecialchars($tab_name) . "$1";
             $link   .= "'>";
-            $link    = sprintf(__('%1$s'), $link);
             $link = sprintf(
-                __('%1$s %2$s'),
+                __s('%1$s %2$s'),
                 $link,
                 Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
             );
-            echo htmlspecialchars($link);
+            echo $link;
 
             echo "</a>";
             echo "</td>";

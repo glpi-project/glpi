@@ -321,9 +321,11 @@ abstract class CommonDBVisible extends CommonDBTM
                         $entname = sprintf(
                             __s('%1$s / %2$s'),
                             $entname,
-                            Dropdown::getDropdownName(
-                                'glpi_entities',
-                                $data['entities_id']
+                            htmlspecialchars(
+                                Dropdown::getDropdownName(
+                                    'glpi_entities',
+                                    $data['entities_id']
+                                )
                             )
                         );
                         if ($data['is_recursive']) {
@@ -392,9 +394,11 @@ abstract class CommonDBVisible extends CommonDBTM
                         $entname = sprintf(
                             __s('%1$s / %2$s'),
                             $entname,
-                            Dropdown::getDropdownName(
-                                'glpi_entities',
-                                $data['entities_id']
+                            htmlspecialchars(
+                                Dropdown::getDropdownName(
+                                    'glpi_entities',
+                                    $data['entities_id']
+                                )
                             )
                         );
                         if ($data['is_recursive']) {
