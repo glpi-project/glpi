@@ -2068,11 +2068,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            echo htmlspecialchars(Plugin::messageIncompatible(
                 'core',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
-            );
+            ));
         }
 
         return $compat;
@@ -2105,11 +2105,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            echo htmlspecialchars(Plugin::messageIncompatible(
                 'php',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
-            );
+            ));
         }
 
         return $compat;
@@ -2130,7 +2130,7 @@ class Plugin extends CommonDBTM
         $report = Config::checkExtensions($exts);
         if (count($report['missing'])) {
             foreach (array_keys($report['missing']) as $ext) {
-                echo self::messageMissingRequirement('ext', $ext) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('ext', $ext)) . '<br/>';
             }
             return false;
         }
@@ -2155,7 +2155,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-                echo self::messageMissingRequirement('glpiparam', $param) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('glpiparam', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2178,7 +2178,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!ini_get($param) || trim(ini_get($param)) == '') {
-                echo self::messageMissingRequirement('param', $param) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('param', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2201,7 +2201,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($plugins as $plugin) {
             if (!$this->isActivated($plugin)) {
-                echo self::messageMissingRequirement('plugin', $plugin) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('plugin', $plugin)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2827,7 +2827,7 @@ TWIG;
                 return true;
             case 'uninstall':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already installed') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already installed') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Uninstall'), [
                     'name'      => 'uninstall',
                 ]);
@@ -2835,7 +2835,7 @@ TWIG;
                 return true;
             case 'enable':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already installed') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already installed') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Enable'), [
                     'name'      => 'enable',
                 ]);
@@ -2843,7 +2843,7 @@ TWIG;
                 return true;
             case 'disable':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already enabled') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already enabled') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Disable'), [
                     'name'      => 'disable',
                 ]);
@@ -2851,7 +2851,7 @@ TWIG;
                 return true;
             case 'clean':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins ready to be cleaned') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins ready to be cleaned') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Clean'), [
                     'name'      => 'clean',
                 ]);
