@@ -264,7 +264,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                 ])
                 . "</p>
                 <input type='hidden' name='appliances_items_id'>
-                " . Html::submit(_sx('button', "Add"), ['name' => 'add']) . "
+                " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
             " . Html::closeForm(false));
 
             $crsf_token = Session::getNewCSRFToken();
@@ -275,7 +275,7 @@ class Appliance_Item_Relation extends CommonDBRelation
                var appliances_items_id = $(this).data('appliances-items-id');
 
                glpi_html_dialog({
-                  title: _sx('button', "Add an item"),
+                  title: _x('button', "Add an item"),
                   body: {$modal_html},
                   id: 'add_relation_dialog',
                   show: function() {

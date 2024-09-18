@@ -167,7 +167,7 @@ class Appliance_Item extends CommonDBRelation
             );
             echo "</td><td class='center' class='tab_bg_1'>";
             echo Html::hidden('appliances_id', ['value' => $ID]);
-            echo Html::submit(_sx('button', 'Add'), ['name' => 'add']);
+            echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
             echo "</td></tr>";
             echo "</table>";
             Html::closeForm();
