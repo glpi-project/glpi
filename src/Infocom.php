@@ -956,10 +956,10 @@ class Infocom extends CommonDBChild
         ])->current();
 
         $add    = "add";
-        $text   = __('Add');
+        $text   = __s('Add');
         if ($result['cpt'] > 0) {
             $add  = "";
-            $text = _x('button', 'Show');
+            $text = _sx('button', 'Show');
         } else if (!Infocom::canUpdate()) {
             return;
         }

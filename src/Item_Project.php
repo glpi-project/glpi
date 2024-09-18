@@ -106,10 +106,10 @@ class Item_Project extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . htmlspecialchars(Toolbox::getItemTypeFormURL(__CLASS__)) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add an item') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
             Dropdown::showSelectItemFromItemtypes(['itemtypes'
@@ -148,11 +148,11 @@ class Item_Project extends CommonDBRelation
             $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_bottom .= "</th>";
         }
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . __('Name') . "</th>";
-        $header_end .= "<th>" . __('Serial number') . "</th>";
-        $header_end .= "<th>" . __('Inventory number') . "</th></tr>";
+        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . __s('Name') . "</th>";
+        $header_end .= "<th>" . __s('Serial number') . "</th>";
+        $header_end .= "<th>" . __s('Inventory number') . "</th></tr>";
         echo $header_begin . $header_top . $header_end;
 
         $totalnb = 0;
@@ -176,7 +176,7 @@ class Item_Project extends CommonDBRelation
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                     }
                     $link     = $item::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
+                    $namelink = "<a href=\"" . $link . "\">" . htmlspecialchars($name) . "</a>";
 
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
@@ -185,7 +185,7 @@ class Item_Project extends CommonDBRelation
                         echo "</td>";
                     }
                     if ($prem) {
-                        $typename = $item->getTypeName($nb);
+                        $typename = htmlspecialchars($item->getTypeName($nb));
                         echo "<td class='center top' rowspan='$nb'>" .
                          (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
                         $prem = false;
@@ -195,10 +195,10 @@ class Item_Project extends CommonDBRelation
                     echo "<td class='center" .
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                     echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") .
+                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . htmlspecialchars($data["serial"]) . "" : "-") .
                     "</td>";
                     echo "<td class='center'>" .
-                      (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                      (isset($data["otherserial"]) ? "" . htmlspecialchars($data["otherserial"]) . "" : "-") . "</td>";
                     echo "</tr>";
                 }
                 $totalnb += $nb;
@@ -207,7 +207,7 @@ class Item_Project extends CommonDBRelation
         if ($totalnb > 0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='2'>" .
-               (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
+               (($totalnb > 0) ? sprintf(__s('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
             echo "</td><td colspan='4'>&nbsp;</td></tr> ";
         }
         echo "</table>";

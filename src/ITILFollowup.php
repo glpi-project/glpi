@@ -912,10 +912,10 @@ class ITILFollowup extends CommonDBChild
     public static function showMassiveActionAddFollowupForm()
     {
         echo "<table class='tab_cadre_fixe'>";
-        echo '<tr><th colspan=4>' . __('Add a new followup') . '</th></tr>';
+        echo '<tr><th colspan=4>' . __s('Add a new followup') . '</th></tr>';
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Source of followup') . "</td>";
+        echo "<td>" . __s('Source of followup') . "</td>";
         echo "<td>";
         RequestType::dropdown(
             [
@@ -927,7 +927,7 @@ class ITILFollowup extends CommonDBChild
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Description') . "</td>";
+        echo "<td>" . __s('Description') . "</td>";
         echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
         echo "</tr>";
 
