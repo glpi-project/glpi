@@ -96,7 +96,7 @@ class RegisteredID extends CommonDBChild
         $result            = "";
         $main_field        = htmlspecialchars($field_name . "[$id]");
         $type_field        = htmlspecialchars($field_name . "_type[$id]");
-        $registeredIDTypes = htmlspecialchars(self::getRegisteredIDTypes());
+        $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
             $result .= "<select name='$type_field' class='form-select w-auto d-inline'>";
