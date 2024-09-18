@@ -103,7 +103,6 @@ var GLPIPlanning  = {
             nowIndicator: true,
             now: options.now,// as we set the calendar as UTC, we need to reprecise the current datetime
             listDayAltFormat: false,
-            agendaEventMinHeight: 13,
             header: options.header,
             hiddenDays: hidden_days,
             locale: loadedLocales.length === 1 ? loadedLocales[0] : undefined,
