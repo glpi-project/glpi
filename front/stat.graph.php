@@ -88,12 +88,10 @@ switch ($_GET["type"]) {
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-        $link    = User::canView() ? 1 : 0;
-        $name    = $item->getAssignName($_GET["id"], 'User', $link);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             __s('Technician'),
-            $link ? $name : htmlspecialchars($name)
+            getUserLink($_GET["id"])
         );
         break;
 
@@ -101,12 +99,11 @@ switch ($_GET["type"]) {
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-        $link    = Supplier::canView() ? 1 : 0;
-        $name    = $item->getAssignName($_GET["id"], 'Supplier', $link);
+        $supplier = Supplier::getById($_GET["id"]);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             Supplier::getTypeName(1),
-            $link ? $name : htmlspecialchars($name)
+            $supplier !== false ? $supplier->getLink(['comments' => true]) : ''
         );
         break;
 
@@ -115,12 +112,10 @@ switch ($_GET["type"]) {
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-        $link    = User::canView() ? 1 : 0;
-        $name    = getUserName($_GET["id"], $link);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             User::getTypeName(1),
-            $link ? $name : htmlspecialchars($name)
+            getUserLink($_GET["id"])
         );
         break;
 

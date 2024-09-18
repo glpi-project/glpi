@@ -219,6 +219,8 @@ The present file will list all changes made to the project; according to the
 - `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 - `linkuser_types`, `linkgroup_types`, `linkuser_tech_types`, `linkgroup_tech_types` configuration entries have been merged in a unique `assignable_types` configuration entry.
 - Usage of the `front/dropdown.common.php` and the `dropdown.common.form.php` files. There is now a generic controller that will serve the search and form pages of any `Dropdown` class.
+- Usage of the `$link` parameter in `formatUserName()` and `DbUtils::formatUserName()`. Use `formatUserLink()` or `DbUtils::formatUserLink()` instead.
+- Usage of the `$link` parameter in `getUserName()` and `DbUtils::getUserName()`. Use `getUserLink()`, `DbUtils::getUserLink()`, or `User::getInfoCard()` instead.
 - `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
@@ -311,6 +313,7 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::showDislayOptions()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
+- `CommonITILObject::getAssignName()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
@@ -496,6 +499,7 @@ The present file will list all changes made to the project; according to the
 - `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
+- Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
 
 
 ## [10.0.17] unreleased

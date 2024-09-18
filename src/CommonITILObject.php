@@ -5542,35 +5542,6 @@ abstract class CommonITILObject extends CommonDBTM
         return Html::timestampToString($actiontime, false);
     }
 
-
-    /**
-     * @param $ID
-     * @param $itemtype
-     * @param $link      (default 0)
-     **/
-    public static function getAssignName($ID, $itemtype, $link = 0)
-    {
-
-        switch ($itemtype) {
-            case 'User':
-                if ($ID == 0) {
-                    return "";
-                }
-                return getUserName($ID, $link);
-
-            case 'Supplier':
-            case 'Group':
-                $item = new $itemtype();
-                if ($item->getFromDB($ID)) {
-                    if ($link) {
-                        return $item->getLink(['comments' => true]);
-                    }
-                    return $item->getNameID();
-                }
-                return "";
-        }
-    }
-
     /**
      * Form to add a solution to an ITIL object
      *
@@ -5960,12 +5931,11 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['users_id'],
-                'link' => formatUserName(
+                'link' => formatUserLink(
                     $line['users_id'],
                     $line['name'],
                     $line['realname'],
-                    $line['firstname'],
-                    1
+                    $line['firstname']
                 )
             ];
         }
@@ -6028,12 +5998,11 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['user_id'],
-                'link' => formatUserName(
+                'link' => formatUserLink(
                     $line['user_id'],
                     $line['name'],
                     $line['realname'],
                     $line['firstname'],
-                    1
                 )
             ];
         }
@@ -6444,7 +6413,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         $linkclass = new $this->userlinkclass();
         $linktable = $linkclass->getTable();
-        $showlink = User::canView();
 
         $ctable = $this->getTable();
         $criteria = [
@@ -6499,7 +6467,7 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['users_id'],
-                'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
+                'link' => formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']),
             ];
         }
         return $tab;
@@ -6519,7 +6487,6 @@ abstract class CommonITILObject extends CommonDBTM
         global $DB;
 
         $linktable = getTableForItemType($this->getType() . 'Task');
-        $showlink = User::canView();
 
         $ctable = $this->getTable();
         $criteria = [
@@ -6592,7 +6559,7 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['users_id'],
-                'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
+                'link' => formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']),
             ];
         }
         return $tab;
@@ -6906,18 +6873,21 @@ abstract class CommonITILObject extends CommonDBTM
            // eighth Column
             $eighth_col = "";
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
-                $userdata    = getUserName($d["users_id"], 2);
-                $eighth_col .= sprintf(
-                    __('%1$s %2$s'),
-                    "<span class='b'>" . $userdata['name'] . "</span>",
-                    Html::showToolTip(
-                        $userdata["comment"],
-                        ['link'    => $userdata["link"],
-                            'display' => false
-                        ]
-                    )
-                );
-                 $eighth_col .= "<br>";
+                $user = new User();
+                if ($user->getFromDB($d["users_id"])) {
+                    $eighth_col .= sprintf(
+                        __('%1$s %2$s'),
+                        "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>",
+                        Html::showToolTip(
+                            $user->getInfoCard(),
+                            [
+                                'link'    => $user->getLinkURL(),
+                                'display' => false
+                            ]
+                        )
+                    );
+                    $eighth_col .= "<br>";
+                }
             }
 
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
@@ -6930,6 +6900,7 @@ abstract class CommonITILObject extends CommonDBTM
             // ninth column
             $ninth_col = "";
             foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
+                $user = new User();
                 if (
                     Session::getCurrentInterface() == 'helpdesk'
                     && !empty($anon_name = User::getAnonymizedNameForUser(
@@ -6938,14 +6909,14 @@ abstract class CommonITILObject extends CommonDBTM
                     ))
                 ) {
                     $ninth_col .= $anon_name;
-                } else {
-                    $userdata   = getUserName($d["users_id"], 2);
+                } elseif ($user->getFromDB($d["users_id"])) {
                     $ninth_col .= sprintf(
                         __('%1$s %2$s'),
-                        "<span class='b'>" . $userdata['name'] . "</span>",
+                        "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>",
                         Html::showToolTip(
-                            $userdata["comment"],
-                            ['link'    => $userdata["link"],
+                            $user->getInfoCard(),
+                            [
+                                'link'    => $user->getLinkURL(),
                                 'display' => false
                             ]
                         )
@@ -7338,22 +7309,22 @@ abstract class CommonITILObject extends CommonDBTM
 
             $entry['requester'] = '';
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
-                if (!isset($user_cache[$d["users_id"]])) {
-                    $userdata = getUserName($d["users_id"], 2);
+                $user = new User();
+                if (!isset($user_cache[$d["users_id"]]) && $user->getFromDB($d["users_id"])) {
                     $user_value = sprintf(
-                        __('%1$s %2$s'),
-                        htmlspecialchars($userdata['name']),
+                        __s('%1$s %2$s'),
+                        htmlspecialchars($user->getName()),
                         Html::showToolTip(
-                            $userdata["comment"],
+                            $user->getInfoCard(),
                             [
-                                'link'    => $userdata["link"],
+                                'link'    => $user->getLinkURL(),
                                 'display' => false
                             ]
                         )
                     );
                     $user_cache[$d['users_id']] = $user_value;
                 }
-                $entry['requester'] .= $user_cache[$d['users_id']] . '<br>';
+                $entry['requester'] .= isset($user_cache[$d["users_id"]]) ? $user_cache[$d['users_id']] . '<br>' : '';
             }
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
                 if (!isset($group_cache[$d['groups_id']])) {
@@ -7367,11 +7338,22 @@ abstract class CommonITILObject extends CommonDBTM
                 if (Session::getCurrentInterface() === 'helpdesk' && !empty($anon_name = User::getAnonymizedNameForUser($d['users_id'], $item->getEntityID()))) {
                     $entry['assigned'] .= htmlspecialchars($anon_name) . '<br>';
                 } else {
-                    if (!isset($user_cache[$d['users_id']])) {
-                        $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
+                    $user = new User();
+                    if (!isset($user_cache[$d["users_id"]]) && $user->getFromDB($d["users_id"])) {
+                        $user_value = sprintf(
+                            __s('%1$s %2$s'),
+                            htmlspecialchars($user->getName()),
+                            Html::showToolTip(
+                                $user->getInfoCard(),
+                                [
+                                    'link'    => $user->getLinkURL(),
+                                    'display' => false
+                                ]
+                            )
+                        );
+                        $user_cache[$d['users_id']] = $user_value;
                     }
-                    $user_name = is_array($user_cache[$d['users_id']]) ? htmlspecialchars($user_cache[$d['users_id']]['name']) : $user_cache[$d['users_id']];
-                    $entry['assigned'] .= $user_name . '<br>';
+                    $entry['assigned'] .= isset($user_cache[$d["users_id"]]) ? $user_cache[$d['users_id']] . '<br>' : '';
                 }
             }
             foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
@@ -7440,10 +7422,22 @@ abstract class CommonITILObject extends CommonDBTM
                         $planned_infos .= htmlspecialchars(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
                         $planned_infos .= htmlspecialchars(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
                         if ($plan['users_id_tech']) {
-                            if (!isset($user_cache[$plan['users_id_tech']])) {
-                                $user_cache[$plan['users_id_tech']] = getUserName($plan['users_id_tech'], 2);
+                            $user = new User();
+                            if (!isset($user_cache[$plan["users_id_tech"]]) && $user->getFromDB($plan["users_id_tech"])) {
+                                $user_value = sprintf(
+                                    __s('%1$s %2$s'),
+                                    htmlspecialchars($user->getName()),
+                                    Html::showToolTip(
+                                        $user->getInfoCard(),
+                                        [
+                                            'link'    => $user->getLinkURL(),
+                                            'display' => false
+                                        ]
+                                    )
+                                );
+                                $user_cache[$plan['users_id']] = $user_value;
                             }
-                            $planned_infos .= htmlspecialchars(sprintf(__('By %s'), $user_cache[$plan['users_id_tech']]['name']));
+                            $planned_infos .= htmlspecialchars(sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]));
                         }
                         $planned_infos .= "<br>";
                     }

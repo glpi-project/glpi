@@ -60,36 +60,32 @@ if (
 
     switch ($_POST["itemtype"]) {
         case User::getType():
+            $link = null;
+            $comments = [];
             if ($_POST['value'] == 0) {
-                $tmpname = [
-                    'link'    => $CFG_GLPI['root_doc'] . "/front/user.php",
-                    'comment' => "",
-                ];
+                $link = $CFG_GLPI['root_doc'] . "/front/user.php";
             } else {
                 $user = new \User();
                 if (is_array($_POST["value"])) {
-                    $comments = [];
                     foreach ($_POST["value"] as $users_id) {
                         if ($user->getFromDB($users_id) && $user->canView()) {
-                            $username   = getUserName($users_id, 2);
-                            $comments[] = $username['comment'] ?? "";
+                            $comments[] = $user->getInfoCard();
                         }
                     }
-                    $tmpname = [
-                        'comment' => implode("<br>", $comments),
-                    ];
                     unset($_POST['withlink']);
                 } else {
                     if ($user->getFromDB($_POST['value']) && $user->canView()) {
-                        $tmpname = getUserName($_POST["value"], 2);
+                        $link = $user->getLinkURL();
+                        $comments[] = $user->getInfoCard();
                     }
                 }
             }
-            echo($tmpname["comment"] ?? '');
 
-            if (isset($_POST['withlink']) && isset($tmpname['link'])) {
+            echo(implode("<br>", $comments));
+
+            if (isset($_POST['withlink']) && $link !== null) {
                 echo "<script type='text/javascript' >\n";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
+                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
                 echo "</script>\n";
             }
             break;

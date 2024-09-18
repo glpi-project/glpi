@@ -1500,7 +1500,7 @@ final class DbUtils
                         }
                         $acomment .= $country;
                     }
-                    if (trim($acomment != '')) {
+                    if (trim($acomment) != '') {
                         $comment .= "<span class='b'>&nbsp;" . __('Address:') . "</span> " . $acomment . "<br/>";
                     }
                 }
@@ -1684,20 +1684,32 @@ final class DbUtils
 
 
     /**
-     * Format a user name
+     * Format a user name.
      *
-     * @param integer $ID           ID of the user.
-     * @param string|null  $login        login of the user
-     * @param string|null  $realname     realname of the user
-     * @param string|null  $firstname    firstname of the user
-     * @param integer $link         include link (only if $link==1) (default =0)
-     * @param integer $cut          limit string length (0 = no limit) (default =0)
-     * @param boolean $force_config force order and id_visible to use common config (false by default)
+     * @param integer       $ID           ID of the user.
+     * @param string|null   $login        login of the user
+     * @param string|null   $realname     realname of the user
+     * @param string|null   $firstname    firstname of the user
+     * @param integer       $link         include link
+     * @param integer       $cut          IGNORED PARAMETER
+     * @param boolean       $force_config force order and id_visible to use common config
      *
-     * @return string formatted username
+     * @return string
+     *
+     * @since 11.0 `$link` parameter is deprecated
+     * @since 11.0 `$cut` parameter is ignored
      */
-    public function formatUserName($ID, $login, $realname, $firstname, $link = 1, $cut = 0, $force_config = false)
+    public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
     {
+        if ((bool) $cut) {
+            trigger_error('`$cut` parameter is now ignored.', E_USER_WARNING);
+        }
+
+        if ((bool) $link) {
+            Toolbox::deprecated('`$link` parameter is deprecated. Use `formatUserLink()` instead.');
+            return $this->formatUserLink($ID, $login, $realname, $firstname);
+        }
+
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -1739,21 +1751,33 @@ final class DbUtils
             $formatted = sprintf(__('%1$s (%2$s)'), $formatted, $ID);
         }
 
-        $username = $formatted;
+        return $formatted;
+    }
 
-        if (
-            ($link == 1)
-            && ($ID > 0)
-        ) {
-            $username = sprintf(
-                '<a title="%s" href="%s">%s</a>',
-                htmlspecialchars($formatted),
-                User::getFormURLWithID($ID),
-                htmlspecialchars($formatted)
-            );
+    /**
+     * Format a user link.
+     *
+     * @param integer       $id           ID of the user.
+     * @param string|null   $login        login of the user
+     * @param string|null   $realname     realname of the user
+     * @param string|null   $firstname    firstname of the user
+     *
+     * @return string
+     */
+    public function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname): string
+    {
+        $username = $this->formatUserName($id, $login, $realname, $firstname);
+
+        if ($id <= 0 || !User::canView()) {
+            return htmlspecialchars($username);
         }
 
-        return $username;
+        return sprintf(
+            '<a title="%s" href="%s">%s</a>',
+            htmlspecialchars($username),
+            User::getFormURLWithID($id),
+            htmlspecialchars($username)
+        );
     }
 
 
@@ -1766,102 +1790,73 @@ final class DbUtils
      * @param $disable_anon   bool  disable anonymization of username.
      *
      * @return string[]|string username string (realname if not empty and name if realname is empty).
+     *
+     * @since 11.0 `$link` parameter is deprecated.
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $user = "";
+        $username   = "";
+        $user       = new User();
+        $valid_user = false;
+        $anon_name  = null;
+
+        if ($ID === 'myself') {
+            $username = __('Myself');
+        } else if ($ID === 'requester_manager') {
+            $username = __("Requester's manager");
+        } else if ($ID) {
+            $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+            if ($anon_name !== null) {
+                $username = $anon_name;
+            } elseif ($valid_user = $user->getFromDB($ID)) {
+                $username = $user->getName();
+            }
+        }
+
+        if ($link == 1) {
+            Toolbox::deprecated('Usage of `$link` parameter is deprecated. Use `getUserLink()` instead.');
+            return $valid_user
+                ? sprintf('<a title="%s" href="%s">%s</a>', htmlspecialchars($username), User::getFormURLWithID($ID), htmlspecialchars($username))
+                : htmlspecialchars($username);
+        }
+
         if ($link == 2) {
-            $user = ["name"    => "",
-                "link"    => "",
-                "comment" => ""
+            Toolbox::deprecated('Usage of `$link` parameter is deprecated. Use `User::getInforCard()` instead.');
+
+            return [
+                'name'    => $username,
+                'link'    => $valid_user ? $user->getLinkUrl() : '',
+                'comment' => $valid_user ? $user->getInfoCard() : '',
             ];
         }
 
-        if ($ID === 'myself') {
-            $name = __('Myself');
-            if (isset($user['name'])) {
-                $user['name'] = $name;
-            } else {
-                $user = $name;
-            }
-        } else if ($ID === 'requester_manager') {
-            $name = __("Requester's manager");
-            if (isset($user['name'])) {
-                $user['name'] = $name;
-            } else {
-                $user = $name;
-            }
-        } else if ($ID) {
-            $iterator = $DB->request([
-                'FROM' => 'glpi_users',
-                'WHERE' => ['id' => $ID]
-            ]);
+        return $username;
+    }
 
-            if ($link == 2) {
-                $user = ["name"    => "",
-                    "comment" => "",
-                    "link"    => ""
-                ];
-            }
+    /**
+     * Get link of the given user.
+     *
+     * @param int $id
+     *
+     * @return string
+     */
+    public function getUserLink(int $id): string
+    {
+        $username = $this->getUserName($id);
 
-            if (count($iterator) == 1) {
-                $data     = $iterator->current();
-
-                $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
-                if ($anon_name !== null) {
-                    $username = $anon_name;
-                } else {
-                    $username = $this->formatUserName(
-                        $data["id"],
-                        $data["name"],
-                        $data["realname"],
-                        $data["firstname"],
-                        $link
-                    );
-                }
-
-                if ($link == 2) {
-                    $user["name"]    = $username;
-                    $user["link"]    = User::getFormURLWithID($ID);
-                    $user['comment'] = '';
-
-                    $user_params = [
-                        'id'                 => $ID,
-                        'user_name'          => $username,
-                    ];
-
-                    if ($anon_name === null) {
-                        $user_params = array_merge($user_params, [
-                            'email'               => UserEmail::getDefaultForUser($ID),
-                            'phone'               => $data["phone"],
-                            'phone2'              => $data["phone2"],
-                            'mobile'              => $data["mobile"],
-                            'locations_id'        => $data['locations_id'],
-                            'usertitles_id'       => $data['usertitles_id'],
-                            'usercategories_id'   => $data['usercategories_id'],
-                            'registration_number' => $data['registration_number'],
-                        ]);
-
-                        if (Session::haveRight('user', READ)) {
-                             $user_params['login'] = $data['name'];
-                        }
-                        if (!empty($data["groups_id"])) {
-                            $user_params['groups_id'] = $data["groups_id"];
-                        }
-                        $user['comment'] = TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
-                            'user'                 => $user_params,
-                            'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',
-                        ]);
-                    }
-                } else {
-                    $user = $username;
-                }
-            }
+        if (!is_int($id) || $id <= 0 || !User::canView()) {
+            return htmlspecialchars($username);
         }
-        return $user;
+
+        return sprintf(
+            '<a title="%s" href="%s">%s</a>',
+            htmlspecialchars($username),
+            User::getFormURLWithID($id),
+            htmlspecialchars($username)
+        );
     }
 
     /**
