@@ -214,11 +214,11 @@ abstract class CommonDBVisible extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $ID      = $this->fields['id'];
+        $ID      = htmlspecialchars($this->fields['id']);
         $canedit = $this->canEdit($ID);
         $rand    = mt_rand();
         $nb      = $this->countVisibilities();
-        $str_type = strtolower($this::getType());
+        $str_type = htmlspecialchars(strtolower($this::getType()));
         $fk = static::getForeignKeyField();
 
         if ($canedit) {
@@ -227,7 +227,7 @@ abstract class CommonDBVisible extends CommonDBTM
             echo " method='post' action='" . static::getFormURL() . "'>";
             echo "<input type='hidden' name='{$fk}' value='$ID'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Add a target') . "</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . __s('Add a target') . "</tr>";
             echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
             $types   = ['Entity', 'Group', 'Profile', 'User'];
@@ -277,8 +277,8 @@ abstract class CommonDBVisible extends CommonDBTM
             $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_end    .= "</th>";
         }
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . _n('Recipient', 'Recipients', Session::getPluralNumber()) . "</th>";
+        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
+        $header_end .= "<th>" . _sn('Recipient', 'Recipients', Session::getPluralNumber()) . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -292,8 +292,8 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox($this::getType() . '_User', $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . User::getTypeName(1) . "</td>";
-                    echo "<td>" . getUserName($data['users_id']) . "</td>";
+                    echo "<td>" . htmlspecialchars(User::getTypeName(1)) . "</td>";
+                    echo "<td>" . htmlspecialchars(getUserName($data['users_id'])) . "</td>";
                     echo "</tr>";
                 }
             }
@@ -309,17 +309,17 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox('Group_' . $this::getType(), $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . Group::getTypeName(1) . "</td>";
+                    echo "<td>" . htmlspecialchars(Group::getTypeName(1)) . "</td>";
 
                     $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'], 1);
-                    $entname = sprintf(
+                    $entname = htmlspecialchars(sprintf(
                         __('%1$s %2$s'),
                         $names["name"],
                         Html::showToolTip($names["comment"], ['display' => false])
-                    );
+                    ));
                     if ($data['entities_id'] !== null) {
                         $entname = sprintf(
-                            __('%1$s / %2$s'),
+                            __s('%1$s / %2$s'),
                             $entname,
                             Dropdown::getDropdownName(
                                 'glpi_entities',
@@ -329,9 +329,9 @@ abstract class CommonDBVisible extends CommonDBTM
                         if ($data['is_recursive']) {
                              //TRANS: R for Recursive
                              $entname = sprintf(
-                                 __('%1$s %2$s'),
+                                 __s('%1$s %2$s'),
                                  $entname,
-                                 "<span class='b'>(" . __('R') . ")</span>"
+                                 "<span class='b'>(" . __s('R') . ")</span>"
                              );
                         }
                     }
@@ -351,15 +351,15 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox('Entity_' . $this::getType(), $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . Entity::getTypeName(1) . "</td>";
+                    echo "<td>" . htmlspecialchars(Entity::getTypeName(1)) . "</td>";
                     $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'], 1);
                     $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
-                    $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
+                    $entname = sprintf(__s('%1$s %2$s'), htmlspecialchars($names["name"]), $tooltip);
                     if ($data['is_recursive']) {
                         $entname = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $entname,
-                            "<span class='b'>(" . __('R') . ")</span>"
+                            "<span class='b'>(" . __s('R') . ")</span>"
                         );
                     }
                     echo "<td>" . $entname . "</td>";
@@ -383,14 +383,14 @@ abstract class CommonDBVisible extends CommonDBTM
                         }
                         echo "</td>";
                     }
-                    echo "<td>" . _n('Profile', 'Profiles', 1) . "</td>";
+                    echo "<td>" . _sn('Profile', 'Profiles', 1) . "</td>";
 
                     $names   = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                     $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
-                    $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
+                    $entname = sprintf(__s('%1$s %2$s'), htmlspecialchars($names["name"]), $tooltip);
                     if ($data['entities_id'] !== null) {
                         $entname = sprintf(
-                            __('%1$s / %2$s'),
+                            __s('%1$s / %2$s'),
                             $entname,
                             Dropdown::getDropdownName(
                                 'glpi_entities',
@@ -399,9 +399,9 @@ abstract class CommonDBVisible extends CommonDBTM
                         );
                         if ($data['is_recursive']) {
                             $entname = sprintf(
-                                __('%1$s %2$s'),
+                                __s('%1$s %2$s'),
                                 $entname,
-                                "<span class='b'>(" . __('R') . ")</span>"
+                                "<span class='b'>(" . __s('R') . ")</span>"
                             );
                         }
                     }

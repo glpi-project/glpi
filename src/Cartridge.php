@@ -81,7 +81,7 @@ class Cartridge extends CommonDBRelation
                 $input['maxpages'] = isset($input['maxpages']) ? (int) $input['maxpages'] : '';
 
                 echo "<input type='text' name='pages' value=\"" . $input['maxpages'] . "\" size='6'>";
-                echo "<br><br>" . Html::submit(_x('button', 'Update'), ['name' => 'massiveaction']);
+                echo "<br><br>" . Html::submit(_sx('button', 'Update'), ['name' => 'massiveaction']);
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);
@@ -646,7 +646,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     }
 
     /**
-     * count how many cartbridge unused for the cartridge item $tID
+     * count how many cartridge unused for the cartridge item $tID
      *
      * @param integer $tID cartridge item identifier.
      *

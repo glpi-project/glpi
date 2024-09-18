@@ -975,24 +975,24 @@ abstract class CommonITILValidation extends CommonDBChild
         }
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr>";
-        echo "<th colspan='3'>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
+        echo "<th colspan='3'>" . htmlspecialchars(self::getTypeName(Session::getPluralNumber())) . "</th>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Global approval status') . "</td>";
+        echo "<td>" . __s('Global approval status') . "</td>";
         echo "<td colspan='2'>";
         echo TicketValidation::getStatus($item->fields["global_validation"], true);
         echo "</td></tr>";
 
         echo "<tr>";
-        echo "<th colspan='2'>" . _x('item', 'State') . "</th>";
+        echo "<th colspan='2'>" . _sx('item', 'State') . "</th>";
         echo "<th colspan='2'>";
-        echo self::getValidationStats($tID);
+        echo htmlspecialchars(self::getValidationStats($tID));
         echo "</th>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Minimum validation required') . "</td>";
+        echo "<td>" . __s('Minimum validation required') . "</td>";
         if ($canadd) {
             echo "<td>";
             echo $item->getValueToSelect(
@@ -1024,14 +1024,14 @@ abstract class CommonITILValidation extends CommonDBChild
             'ORDER'  => 'submission_date DESC'
         ]);
 
-        $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
-            __('Request comments'), __('Approval status'),
-            __('Requested approver type'), __('Requested approver'),
+        $colonnes = ['', _sx('item', 'State'), __s('Request date'), __s('Approval requester'),
+            __s('Request comments'), __s('Approval status'),
+            __s('Requested approver type'), __s('Requested approver'),
         ];
         $nb_colonnes = count($colonnes);
 
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='" . $nb_colonnes . "'>" . __('Approvals for the ticket') .
+        echo "<tr class='noHover'><th colspan='" . $nb_colonnes . "'>" . __s('Approvals for the ticket') .
            "</th></tr>";
 
         if ($canadd) {
@@ -1044,7 +1044,7 @@ abstract class CommonITILValidation extends CommonDBChild
             ) {
                 echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
                 echo "<a class='btn btn-outline-secondary' href='javascript:viewAddValidation" . $tID . "$rand();'>";
-                echo __('Send an approval request') . "</a></td></tr>\n";
+                echo __s('Send an approval request') . "</a></td></tr>\n";
             }
         }
         if (count($iterator)) {
@@ -1068,19 +1068,19 @@ abstract class CommonITILValidation extends CommonDBChild
             foreach ($iterator as $row) {
                 $canedit = $this->canEdit($row["id"]);
                 Session::addToNavigateListItems($this->getType(), $row["id"]);
-                $bgcolor = self::getStatusColor($row['status']);
-                $status  = self::getStatus($row['status']);
+                $bgcolor = htmlspecialchars(self::getStatusColor($row['status']));
+                $status  = htmlspecialchars(self::getStatus($row['status']));
 
                 echo "<tr class='tab_bg_1'>";
 
                 echo "<td>";
                 if ($canedit) {
-                    echo "<span class='far fa-edit' style='cursor:pointer' title='" . __('Edit') . "' ";
-                    echo "onClick=\"viewEditValidation" . $item->fields['id'] . $row["id"] . "$rand();\"";
-                    echo " id='viewvalidation" . $this->fields[static::$items_id] . $row["id"] . "$rand'";
+                    echo "<span class='far fa-edit' style='cursor:pointer' title='" . __s('Edit') . "' ";
+                    echo "onClick=\"viewEditValidation" . ((int)$item->fields['id']) . ((int)$row["id"]) . "$rand();\"";
+                    echo " id='viewvalidation" . ((int)$this->fields[static::$items_id]) . ((int)$row["id"]) . "$rand'";
                     echo "></span>";
                     echo "\n<script type='text/javascript' >\n";
-                    echo "function viewEditValidation" . $item->fields['id'] . $row["id"] . "$rand() {\n";
+                    echo "function viewEditValidation" . ((int)$item->fields['id']) . ((int)$row["id"]) . "$rand() {\n";
                     $params = ['type'             => $this->getType(),
                         'parenttype'       => static::$itemtype,
                         static::$items_id  => $this->fields[static::$items_id],
@@ -1098,7 +1098,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
                 echo "<td><div style='background-color:" . $bgcolor . ";'>" . $status . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["submission_date"]) . "</td>";
-                echo "<td>" . getUserName($row["users_id"]) . "</td>";
+                echo "<td>" . htmlspecialchars(getUserName($row["users_id"])) . "</td>";
                 $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_submission . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["validation_date"]) . "</td>";
@@ -1114,10 +1114,10 @@ abstract class CommonITILValidation extends CommonDBChild
                         $target_name = $target->getName();
                     }
                 }
-                echo "<td>" . $type_name . "</td>";
-                echo "<td>" . $target_name . "</td>";
+                echo "<td>" . htmlspecialchars($type_name) . "</td>";
+                echo "<td>" . htmlspecialchars($target_name) . "</td>";
                 $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
-                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
+                echo "<td>" . ($is_answered ? htmlspecialchars(getUserName($row["users_id_validate"])) : '') . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1132,7 +1132,7 @@ abstract class CommonITILValidation extends CommonDBChild
                      $doc->getFromDB($docs_values['documents_id']);
                      $out  .= "<a ";
                      $out .= "href=\"" . Document::getFormURLWithID($docs_values['documents_id']) . "\">";
-                     $out .= $doc->getField('name') . "</a><br>";
+                     $out .= htmlspecialchars($doc->getField('name')) . "</a><br>";
                 }
                  echo "<td>" . $out . "</td>";
 
@@ -1142,7 +1142,7 @@ abstract class CommonITILValidation extends CommonDBChild
         } else {
            //echo "<div class='center b'>".__('No item found')."</div>";
             echo "<tr class='tab_bg_1 noHover'><th colspan='" . $nb_colonnes . "'>";
-            echo __('No item found') . "</th></tr>\n";
+            echo __s('No item found') . "</th></tr>\n";
         }
         echo "</table>";
 

@@ -48,7 +48,7 @@
  *            (May be disable using $disableAutoEntityForwarding)
  * - Log:    when we create, update or delete an item, we update its parent(s)'s histories to
  *           notify them of the creation, update or deletion
- * - Flying items : some items can be on the stock. For instance, before beeing plugged inside a
+ * - Flying items : some items can be on the stock. For instance, before being plugged inside a
  *                  computer, an Item_DeviceProcessor can be without any parent. It is now possible
  *                  to define such items and transfer them from parent to parent.
  *
@@ -637,13 +637,13 @@ abstract class CommonDBConnexity extends CommonDBTM
                                 $itemtype_2 = $itemtype::$itemtype_2;
                                 $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
                             }
-                            echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
+                            echo htmlspecialchars(sprintf(__('Select a peer for %s:'), $itemtype::getTypeName()));
                             Dropdown::showFromArray($peer_field, $values);
                             echo "<br>\n";
                         } else if (!$itemtype::$mustBeAttached_1) {
-                              echo "<input type='hidden' name='$peer_field' value='0'>";
+                              echo "<input type='hidden' name='" . htmlspecialchars($peer_field) . "' value='0'>";
                         } else if (!$itemtype::$mustBeAttached_2) {
-                            echo "<input type='hidden' name='$peer_field' value='1'>";
+                            echo "<input type='hidden' name='" . htmlspecialchars($peer_field) . "' value='1'>";
                         }
                     }
                 }
@@ -674,7 +674,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 }
                 $peertypes = array_unique($peertypes);
                 if (count($peertypes) == 0) {
-                    echo __('Unable to reaffect given elements!');
+                    echo __s('Unable to reaffect given elements!');
                     exit();
                 }
                 $options = [];

@@ -1484,7 +1484,7 @@ class Config extends CommonDBTM
      * @param boolean $fordebug display for debug (no html required) (false by default)
      * @param string  $version  Version to check (mainly from install), defaults to null
      *
-     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+     * @return integer 2: missing extension,  1: missing optional extension, 0: OK,
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
@@ -1508,7 +1508,7 @@ class Config extends CommonDBTM
             echo $message . "\n";
         } else {
             $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
-            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
+            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlspecialchars($message) . "' title='" . htmlspecialchars($message) . "'/>";
 
             if ($fordebug) {
                 echo $img . $message . "\n";
@@ -1979,7 +1979,7 @@ class Config extends CommonDBTM
             'class'   => 'purgelog_interval'
         ], $options);
 
-        $out = "<div class='{$options['class']}'>";
+        $out = "<div class='" . htmlspecialchars($options['class']) . "'>";
         $out .= Dropdown::showFromArray($name, $values, $options);
         $out .= "</div>";
 
