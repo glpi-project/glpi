@@ -162,36 +162,36 @@ abstract class LevelAgreement extends CommonDBChild
 
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
+        echo "<td>" . __s('Name') . "</td>";
         echo "<td>";
         echo Html::input("name", ['value' => $this->fields["name"]]);
-        echo "<td rowspan='" . $rowspan . "'>" . __('Comments') . "</td>";
+        echo "<td rowspan='" . $rowspan . "'>" . __s('Comments') . "</td>";
         echo "<td rowspan='" . $rowspan . "'>
-            <textarea class='form-control' rows='8' name='comment' >" . $this->fields["comment"] . "</textarea>";
+            <textarea class='form-control' rows='8' name='comment' >" . htmlspecialchars($this->fields["comment"]) . "</textarea>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('SLM') . "</td>";
+        echo "<td>" . __s('SLM') . "</td>";
         echo "<td>";
         echo $slm->getLink();
-        echo "<input type='hidden' name='slms_id' value='" . $this->fields['slms_id'] . "'>";
+        echo "<input type='hidden' name='slms_id' value='" . intval($this->fields['slms_id']) . "'>";
         echo "</td></tr>";
 
         if ($ID > 0) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Last update') . "</td>";
+            echo "<td>" . __s('Last update') . "</td>";
             echo "<td>" . ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : __('Never'));
+                                                : __s('Never'));
             echo "</td></tr>";
         }
 
-        echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . _sn('Type', 'Types', 1) . "</td>";
         echo "<td>";
         self::getTypeDropdown(['value' => $this->fields["type"]]);
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Maximum time') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
             'min'   => 0,
@@ -205,8 +205,8 @@ abstract class LevelAgreement extends CommonDBChild
                 'on_change' => 'appearhideendofworking()'
             ]
         );
-        echo "\n<script type='text/javascript' >\n";
-        echo "function appearhideendofworking() {\n";
+        echo "<script type='text/javascript' >";
+        echo "function appearhideendofworking() {";
         echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'
                   || $('#dropdown_definition_time$rand option:selected').val() == 'month') {
                $('#title_endworkingday').show();
@@ -215,14 +215,14 @@ abstract class LevelAgreement extends CommonDBChild
                $('#title_endworkingday').hide();
                $('#dropdown_endworkingday').hide();
             }";
-        echo "}\n";
-        echo "appearhideendofworking();\n";
-        echo "</script>\n";
+        echo "}";
+        echo "appearhideendofworking();";
+        echo "</script>";
 
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><div id='title_endworkingday'>" . __('End of working day') . "</div></td>";
+        echo "<td><div id='title_endworkingday'>" . __s('End of working day') . "</div></td>";
         echo "<td><div id='dropdown_endworkingday'>";
         Dropdown::showYesNo("end_of_working_day", $this->fields["end_of_working_day"]);
         echo "</div></td>";

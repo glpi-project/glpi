@@ -49,13 +49,13 @@ class Monitor extends CommonDBTM
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
         'Item_SoftwareVersion'
     ];
 
-    public static $rightname                   = 'monitor';
+    public static $rightname            = 'monitor';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array

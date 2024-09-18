@@ -187,9 +187,9 @@ class NetworkEquipment extends CommonDBTM
         $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
 
-       // RELATION : networking -> _port -> _wire -> _port -> device
+        // RELATION : networking -> _port -> _wire -> _port -> device
 
-       // Evaluate connection in the 2 ways
+        // Evaluate connection in the 2 ways
         foreach (
             ["networkports_id_1" => "networkports_id_2",
                 "networkports_id_2" => "networkports_id_1"
