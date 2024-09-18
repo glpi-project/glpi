@@ -311,7 +311,7 @@ class Html
                      //TRANS: %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
                      //       %4$d number of minutes, %5$d number of seconds
                      return sprintf(
-                         __s('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
+                         __('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
                          $sign,
                          $units['day'],
                          $units['hour'],
@@ -322,7 +322,7 @@ class Html
               //TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
               //        %4$d number of minutes
                 return sprintf(
-                    __s('%1$s%2$d days %3$d hours %4$d minutes'),
+                    __('%1$s%2$d days %3$d hours %4$d minutes'),
                     $sign,
                     $units['day'],
                     $units['hour'],
@@ -340,7 +340,7 @@ class Html
                //TRANS:  %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes,
                //        %4$d number of seconds
                 return sprintf(
-                    __s('%1$s%2$d hours %3$d minutes %4$d seconds'),
+                    __('%1$s%2$d hours %3$d minutes %4$d seconds'),
                     $sign,
                     $units['hour'],
                     $units['minute'],
@@ -348,14 +348,14 @@ class Html
                 );
             }
            //TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes
-            return sprintf(__s('%1$s%2$d hours %3$d minutes'), $sign, $units['hour'], $units['minute']);
+            return sprintf(__('%1$s%2$d hours %3$d minutes'), $sign, $units['hour'], $units['minute']);
         }
 
         if ($units['minute'] > 0) {
             if ($display_sec) {
                //TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number of seconds
                 return sprintf(
-                    __s('%1$s%2$d minutes %3$d seconds'),
+                    __('%1$s%2$d minutes %3$d seconds'),
                     $sign,
                     $units['minute'],
                     $units['second']
@@ -363,7 +363,7 @@ class Html
             }
            //TRANS: %1$s is the sign (-or empty), %2$d number of minutes
             return sprintf(
-                _sn('%1$s%2$d minute', '%1$s%2$d minutes', $units['minute']),
+                _n('%1$s%2$d minute', '%1$s%2$d minutes', $units['minute']),
                 $sign,
                 $units['minute']
             );
@@ -372,7 +372,7 @@ class Html
         if ($display_sec) {
            //TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
             return sprintf(
-                _sn('%1$s%2$s second', '%1$s%2$s seconds', $units['second']),
+                _n('%1$s%2$s second', '%1$s%2$s seconds', $units['second']),
                 $sign,
                 $units['second']
             );
