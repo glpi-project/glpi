@@ -1452,7 +1452,7 @@ class Change extends CommonITILObject
                 foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                     $user = new User();
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
-                         $name     = "<span class='b'>" . htmlspecialchars($userdata['name']) . "</span>";
+                         $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
                         if ($viewusers) {
                             $name = sprintf(
                                 __s('%1$s %2$s'),

@@ -81,7 +81,7 @@ class Cartridge extends CommonDBRelation
                 $input['maxpages'] = isset($input['maxpages']) ? (int) $input['maxpages'] : '';
 
                 echo "<input type='text' name='pages' value=\"" . $input['maxpages'] . "\" size='6'>";
-                echo "<br><br>" . Html::submit(_sx('button', 'Update'), ['name' => 'massiveaction']);
+                echo "<br><br>" . Html::submit(_x('button', 'Update'), ['name' => 'massiveaction']);
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

@@ -312,11 +312,11 @@ abstract class CommonDBVisible extends CommonDBTM
                     echo "<td>" . htmlspecialchars(Group::getTypeName(1)) . "</td>";
 
                     $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'], 1);
-                    $entname = htmlspecialchars(sprintf(
-                        __('%1$s %2$s'),
-                        $names["name"],
+                    $entname = sprintf(
+                        __s('%1$s %2$s'),
+                        htmlspecialchars($names["name"]),
                         Html::showToolTip($names["comment"], ['display' => false])
-                    ));
+                    );
                     if ($data['entities_id'] !== null) {
                         $entname = sprintf(
                             __s('%1$s / %2$s'),
