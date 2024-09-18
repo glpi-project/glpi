@@ -5766,7 +5766,7 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
+        Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,
@@ -5788,7 +5788,7 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfterRedirect(__s('The given email address will receive the informations required to define password.'));
+        Session::addMessageAfterRedirect(__s('The given email address will receive the information required to define password.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title'         => __('Password initialization'),

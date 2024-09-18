@@ -245,7 +245,7 @@ abstract class API
     /**
      * Init GLPI Session
      *
-     * @param array $params array with theses options :
+     * @param array $params array with those options :
      *    - a couple 'name' & 'password' : 2 parameters to login with user authentication
      *         OR
      *    - an 'user_token' defined in User Configuration
@@ -378,9 +378,9 @@ abstract class API
     /**
      * Change active entity to the entities_id one.
      *
-     * @param array $params array with theses options :
-     *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optionnal
-     *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optionnal
+     * @param array $params array with those options :
+     *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optional
+     *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optional
      *
      * @return bool|void success status or void when error response is send in case of error
      */
@@ -409,8 +409,8 @@ abstract class API
     /**
      * Return all the possible entity of the current logged user (and for current active profile)
      *
-     * @param array $params array with theses options :
-     *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optionnal
+     * @param array $params array with those options :
+     *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optional
      *
      * @return array of entities (with id and name)
      */
@@ -477,7 +477,7 @@ abstract class API
     /**
      * set a profile to active
      *
-     * @param array $params with theses options :
+     * @param array $params with those options :
      *    - profiles_id : identifier of profile to set
      *
      * @return boolean|void success status, or void when error response is send in case of error
@@ -565,24 +565,24 @@ abstract class API
      *
      * @param string  $itemtype itemtype (class) of object
      * @param integer $id       identifier of object
-     * @param array   $params   with theses options :
-     *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optionnal
-     *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optionnal
-     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
-     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
-     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
-     *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
-     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-     *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
-     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
-     *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
-     *    - 'with_documents':   Retrieve associated external documents. Optionnal.
-     *    - 'with_tickets':     Retrieve associated itil tickets. Optionnal.
-     *    - 'with_problems':    Retrieve associated itil problems. Optionnal.
-     *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
-     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
-     *    - 'with_logs':        Retrieve historical. Optionnal.
-     *    - 'add_keys_names':   Get friendly names. Optionnal.
+     * @param array   $params   with those options :
+     *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optional
+     *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optional
+     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optional
+     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
+     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optional.
+     *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optional.
+     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+     *    - 'with_networkports':Retrieve all network connections and advanced information. Optional.
+     *    - 'with_infocoms':    Retrieve financial and administrative information. Optional.
+     *    - 'with_contracts':   Retrieve associated contracts. Optional.
+     *    - 'with_documents':   Retrieve associated external documents. Optional.
+     *    - 'with_tickets':     Retrieve associated itil tickets. Optional.
+     *    - 'with_problems':    Retrieve associated itil problems. Optional.
+     *    - 'with_changes':     Retrieve associated itil changes. Optional.
+     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optional.
+     *    - 'with_logs':        Retrieve historical. Optional.
+     *    - 'add_keys_names':   Get friendly names. Optional.
      *
      * @return array    fields of found object
      */
@@ -1069,18 +1069,18 @@ abstract class API
      * Return a collection of rows of the desired itemtype
      *
      * @param class-string<CommonDBTM>  $itemtype   itemtype (class) of object
-     * @param array   $params     with theses options :
-     * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
-     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
-     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
+     * @param array   $params     with those options :
+     * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optional
+     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optional
+     * - 'only_id'          (default: false): keep only id in fields list. Optional
      * - 'range'            (default: 0-49): limit the list to start-end attributes
      * - 'sort'             (default: id): sort by the field.
      * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
      * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
-     * - 'is_deleted'       (default: false): show trashbin. Optionnal
+     * - 'is_deleted'       (default: false): show trashbin. Optional
      * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
-     * - 'with_networkports'(default: false): Retrieve all network connections and advanced informations. Optional.
-     * @param integer $totalcount output parameter who receive the total count of the query resulat.
+     * - 'with_networkports'(default: false): Retrieve all network connections and advanced information. Optional.
+     * @param integer $totalcount output parameter who receive the total count of the query result.
      *                            As this function paginate results (with a mysql LIMIT),
      *                            we can have the full range. (default 0)
      *
@@ -1362,29 +1362,29 @@ abstract class API
      *
      * Call self::getItem for each line of $items
      *
-     * @param array $params with theses options :
+     * @param array $params with those options :
      *    - items:               array containing lines with itemtype and items_id keys
      *                               Ex: [
      *                                      [itemtype => 'Ticket', id => 102],
      *                                      [itemtype => 'User',   id => 10],
      *                                      [itemtype => 'User',   id => 11],
      *                                   ]
-     *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optionnal
-     *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optionnal
-     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
-     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
-     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
-     *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
-     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-     *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
-     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
-     *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
-     *    - 'with_documents':    Retrieve associated external documents. Optionnal.
-     *    - 'with_tickets':      Retrieve associated itil tickets. Optionnal.
-     *    - 'with_problems':     Retrieve associated itil problems. Optionnal.
-     *    - 'with_changes':      Retrieve associated itil changes. Optionnal.
-     *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
-     *    - 'with_logs':         Retrieve historical. Optionnal.
+     *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optional
+     *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optional
+     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optional
+     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
+     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optional.
+     *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optional.
+     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+     *    - 'with_networkports': Retrieve all network connections and advanced information. Optional.
+     *    - 'with_infocoms':     Retrieve financial and administrative information. Optional.
+     *    - 'with_contracts':    Retrieve associated contracts. Optional.
+     *    - 'with_documents':    Retrieve associated external documents. Optional.
+     *    - 'with_tickets':      Retrieve associated itil tickets. Optional.
+     *    - 'with_problems':     Retrieve associated itil problems. Optional.
+     *    - 'with_changes':      Retrieve associated itil changes. Optional.
+     *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optional.
+     *    - 'with_logs':         Retrieve historical. Optional.
      *
      * @return array collection of glpi object's fields
      */
@@ -1556,16 +1556,16 @@ abstract class API
      * Expose the GLPI searchEngine
      *
      * @param string $itemtype itemtype (class) of object
-     * @param array  $params   with theses options :
+     * @param array  $params   with those options :
      *    - 'criteria': array of criterion object to filter search.
-     *        Optionnal.
+     *        Optional.
      *        Each criterion object must provide :
-     *           - link: (optionnal for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+     *           - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
      *           - field: id of searchoptions.
      *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
      *           - value : value to search.
-     *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
-     *                                  Optionnal.
+     *    - 'metacriteria' (optional): array of metacriterion object to filter search.
+     *                                  Optional.
      *                                  A meta search is a link with another itemtype
      *                                  (ex: Computer with software).
      *         Each metacriterion object must provide :
@@ -1574,16 +1574,16 @@ abstract class API
      *            - field: id of searchoptions.
      *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
      *            - value : value to search.
-     *    - 'sort' :  id of searchoption to sort by (default 1). Optionnal.
-     *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optionnal.
+     *    - 'sort' :  id of searchoption to sort by (default 1). Optional.
+     *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.
      *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-199. (default 0-49)
-     *                Optionnal.
+     *                Optional.
      *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
      *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
-     *                      Optionnal.
+     *                      Optional.
      *    - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
      *
-     * @return array|void array of raw rows from Search class, or void when error response is send in case of error
+     * @return array|void array of raw rows from Search class, or void when error response is sent in case of error
      */
     protected function searchItems($itemtype, $params = [])
     {
@@ -1814,7 +1814,7 @@ abstract class API
      * Add an object to GLPI
      *
      * @param string $itemtype itemtype (class) of object
-     * @param array  $params   with theses options :
+     * @param array  $params   with those options :
      *    - 'input' : object with fields of itemtype to be inserted.
      *                You can add several items in one action by passing array of input object.
      *                Mandatory.
@@ -1939,7 +1939,7 @@ abstract class API
      * Update an object to GLPI
      *
      * @param string $itemtype itemtype (class) of object
-     * @param array  $params   with theses options :
+     * @param array  $params   with those options :
      *    - 'input' : Array of objects with fields of itemtype to be updated.
      *                Mandatory.
      *                You must provide in each object a key named 'id' to identify item to update.
@@ -2048,14 +2048,14 @@ abstract class API
      * Delete one or more objects in GLPI
      *
      * @param string $itemtype itemtype (class) of object
-     * @param array  $params   with theses options :
+     * @param array  $params   with those options :
      *    - 'input' : Array of objects with fields of itemtype to be updated.
      *                Mandatory.
      *                You must provide in each object a key named 'id' to identify item to delete.*
      *    - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
-     *                      Optionnal.
+     *                      Optional.
      *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
-     *                  Optionnal.
+     *                  Optional.
      *
      * @return boolean|boolean[]|void success status, or void when error response is send in case of error
      */
@@ -2188,7 +2188,7 @@ abstract class API
                 $this->returnError($e->getMessage());
             }
             return [
-                __('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.')
+                __('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.')
             ];
         } else {
             $password = isset($params['password']) ? $params['password'] : '';
