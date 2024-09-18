@@ -2588,7 +2588,7 @@ HTML;
                     ]
                 );
             }
-            $out .= "<a role=\"button\" title='" . __('Massive actions') . "'
+            $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='btn btn-sm btn-primary me-2' ";
             if (is_array($p['confirm'] || strlen($p['confirm']))) {
@@ -3864,7 +3864,7 @@ JAVASCRIPT
             $params['id'] = $link_id;
         }
 
-        $text = __('Available variables') . ' <i class="fas fa-question-circle"></i>';
+        $text = __s('Available variables') . ' <i class="fas fa-question-circle"></i>';
 
         echo Html::link($text, $link, $params);
     }
@@ -3967,7 +3967,7 @@ JAVASCRIPT
        // Print the "where am I?"
         $out .= "<td width='50%' class='tab_bg_2 b'>";
        //TRANS: %1$d, %2$d, %3$d are page numbers
-        $out .= sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+        $out .= sprintf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         $out .= "</td>\n";
 
        // Forward and fast forward button
@@ -4050,7 +4050,7 @@ JAVASCRIPT
             }
             echo "</table>";
         } else {
-            echo __('Empty array');
+            echo __s('Empty array');
         }
     }
 
@@ -4182,7 +4182,7 @@ JAVASCRIPT
 
         echo "<td width='20%' class='b'>";
        //TRANS: %1$d, %2$d, %3$d are page numbers
-        printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+        printf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         echo "</td>";
 
        // Forward and fast forward button
@@ -4224,11 +4224,11 @@ JAVASCRIPT
         $out = '';
         if ($action) {
             $out .= "<form method='POST' action=\"$action\">";
-            $out .= "<span class='responsive_hidden'>" . __('Display (number of items)') . "</span>&nbsp;";
+            $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
             $out .= Dropdown::showListLimit("submit()", false);
         } else {
             $out .= "<form method='POST' action =''>\n";
-            $out .= "<span class='responsive_hidden'>" . __('Display (number of items)') . "</span>&nbsp;";
+            $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
             $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"$additional_params\")", false);
         }
         $out .= Html::closeForm(false);
@@ -5224,7 +5224,7 @@ HTML;
 
             if ($p['showtitle']) {
                 $display .= "<b>";
-                $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
+                $display .= sprintf(__s('%1$s (%2$s)'), __s('File(s)'), Document::getMaxUploadSize());
                 $display .= DocumentType::showAvailableTypesLink([
                     'display' => false,
                     'rand'    => $p['rand']
