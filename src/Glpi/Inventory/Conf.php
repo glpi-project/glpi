@@ -1164,7 +1164,9 @@ class Conf extends CommonGLPI
                 );
                 return false;
             }
-        } else {
+        }
+
+        if (isset($values['auth_required']) && $values['auth_required'] !== Conf::BASIC_AUTH) {
             $values['basic_auth_login'] = null;
             $values['basic_auth_password'] = null;
         }
