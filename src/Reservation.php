@@ -918,7 +918,7 @@ JAVASCRIPT;
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
-        $defaultDate = htmlspecialchars($_REQUEST['defaultDate']) ?? date('Y-m-d');
+        $defaultDate = htmlspecialchars($_REQUEST['defaultDate'] ?? date('Y-m-d'));
         $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {
