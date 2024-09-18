@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
+use Glpi\Exception\Access\RequiresHttpsException;
+use Glpi\Exception\Access\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 
@@ -1019,13 +1021,7 @@ class Session
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
         if ($is_https_request === false && $cookie_secure === true) {
-            TemplateRenderer::getInstance()->display(
-                'pages/https_only.html.twig',
-                [
-                    'secured_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-                ]
-            );
-            exit();
+            throw new RequiresHttpsException();
         }
     }
 
@@ -1047,7 +1043,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            Html::redirectToLogin('error=3');
+            throw new SessionExpiredException();
         }
 
         $user_id    = self::getLoginUserID();
