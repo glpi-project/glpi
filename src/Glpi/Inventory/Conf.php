@@ -1164,6 +1164,9 @@ class Conf extends CommonGLPI
                 );
                 return false;
             }
+        } else {
+            $values['basic_auth_login'] = null;
+            $values['basic_auth_password'] = null;
         }
 
         $to_process = [];

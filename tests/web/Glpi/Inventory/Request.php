@@ -215,15 +215,47 @@ XML
 
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
-        $this->boolean($conf->saveConf(['auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH, 'basic_auth_login' => $basic_auth_login, 'basic_auth_password' => $basic_auth_password]))->isTrue();
+        $this->boolean($conf->saveConf(
+            [
+                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
+                'basic_auth_login' => $basic_auth_login,
+                'basic_auth_password' => $basic_auth_password
+            ]
+        ))->isTrue();
         $this->logout();
 
+        //first call should be unauthorized and return 401
+        $this->exception(
+            function () {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                          '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                          '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>'
+                    ]
+                );
+            }
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(401);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+
+        //second attempt should be authorized
         $res = $this->http_client->request(
             'POST',
             $this->base_uri . 'front/inventory.php',
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
+                    'Authorization' => 'Basic ' . base64_encode($basic_auth_login . ":" . $basic_auth_password)
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
@@ -233,5 +265,137 @@ XML
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+    }
+
+    public function testAuthWithoutBasic()
+    {
+        $basic_auth_password = "a_password";
+        $basic_auth_login = "a_login";
+
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(
+            [
+                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
+                'basic_auth_login' => $basic_auth_login,
+                'basic_auth_password' => $basic_auth_password
+            ]
+        ))->isTrue();
+        $this->logout();
+
+        //first call should be unauthorized and return 401
+        $this->exception(
+            function () {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                          '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                          '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>'
+                    ]
+                );
+            }
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(401);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+
+        //second attempt should be unauthorized and return 401
+        $this->exception(
+            function () {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml',
+                            'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password)
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                          '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                          '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>'
+                    ]
+                );
+            }
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(401);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+    }
+
+    public function testAuthWithBadLogin()
+    {
+        $basic_auth_password = "a_password";
+        $basic_auth_login = "a_login";
+
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(
+            [
+                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
+                'basic_auth_login' => $basic_auth_login,
+                'basic_auth_password' => $basic_auth_password
+            ]
+        ))->isTrue();
+        $this->logout();
+
+        //first call should be unauthorized and return 401
+        $this->exception(
+            function () {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                          '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                          '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>'
+                    ]
+                );
+            }
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(401);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+
+        //second attempt should be unauthorized and return 401
+        $this->exception(
+            function () {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml',
+                            'Authorization' => base64_encode("Basic wrong_login:wrong_password")
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                          '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                          '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>'
+                    ]
+                );
+            }
+        );
+        $this->object($this->exception)->isInstanceOf(RequestException::class);
+        $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
+        $this->integer($response->getStatusCode())->isEqualTo(401);
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
     }
 }
