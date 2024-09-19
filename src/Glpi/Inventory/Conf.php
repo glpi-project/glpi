@@ -396,8 +396,8 @@ class Conf extends CommonGLPI
             echo "<td>";
             Dropdown::showFromArray('auth_required', [
                 'none' => __('None'),
-                self::CLIENT_CREDENTIALS => __('OAuth - Client credentials'),
-                self::BASIC_AUTH => __('Basic Authentication'),
+                self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
+                self::BASIC_AUTH => __s('Basic Authentication'),
             ], [
                 'value' => $config['auth_required'] ?? 'none'
             ]);
