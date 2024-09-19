@@ -579,6 +579,8 @@ class Computer extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
+        $tab = array_merge($tab, ComputerModel::rawSearchOptionsToAdd());
+
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
