@@ -397,6 +397,7 @@ class Conf extends CommonGLPI
                 'value' => $config['auth_required'] ?? 'none'
             ]);
             echo "</td></tr>";
+
             echo "<tr>";
             echo "<th colspan='4'>";
             echo __s('Import options');
