@@ -3663,7 +3663,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $options array of options
      *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display aditionals information
+     *    - additional   : boolean / display additional information
      *
      * @return string name of the object in the current language
      *
@@ -4412,7 +4412,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Build an unicity error message
      *
-     * @param array $msgs    the string not transleted to be display on the screen, or to be sent in a notification
+     * @param array $msgs    the string not translated to be display on the screen, or to be sent in a notification
      * @param array $unicity the unicity criterion that failed to match
      * @param array $doubles the items that are already present in DB
      *
@@ -5482,7 +5482,7 @@ TWIG, $twig_params);
      * @since 9.2
      *
      * @param array $input   Input data
-     * @param array $options array with theses keys
+     * @param array $options array with those keys
      *                        - force_update (default false) update the content field of the object
      *                        - content_field (default content) the field who receive the main text
      *                                                          (with images)

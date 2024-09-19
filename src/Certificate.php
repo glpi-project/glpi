@@ -574,18 +574,11 @@ class Certificate extends CommonDBTM
 
         switch ($ma->getAction()) {
             case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
-                Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
-                    'itemtype_name' => 'typeitem',
-                    'itemtypes'     => self::getTypes(true),
-                    'checkright'   => true
-                ]);
-                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-                return true;
             case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
                 Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                     'itemtype_name' => 'typeitem',
                     'itemtypes'     => self::getTypes(true),
-                    'checkright'    => true
+                    'checkright'   => true
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;

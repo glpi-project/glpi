@@ -409,7 +409,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Handle the task duration and planned duration logic.
      *
-     * This function ensures a bi-directional link between the task duration and the planned duration.
+     * This function ensures a bidirectional link between the task duration and the planned duration.
      * These two fields can be a bit redundant when task planning is enabled.
      *
      * @param array $input The input array, passed by reference.
@@ -1607,7 +1607,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if ($who <= 0) { // show tech for "show all and show group"
             $html .= "<br>";
            //TRANS: %s is user name
-            $html .= sprintf(__('By %s'), getUserName($val["users_id_tech"]));
+            $html .= sprintf(__s('By %s'), getUserName($val["users_id_tech"]));
         }
 
         $html .= "</a>";
@@ -1626,7 +1626,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 )
             ) {
                 $recall = "<span class='b'>" . sprintf(
-                    __('Recall on %s'),
+                    __s('Recall on %s'),
                     Html::convDateTime($pr->fields['when'])
                 ) .
                       "<span>";
@@ -1639,12 +1639,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $html .= "</span>";
         }
         $html .= "<div>";
-        $html .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
+        $html .= htmlspecialchars(sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])));
         $html .= "</div>";
 
        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
         $content = $val['content'];
-        $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
+        $html .= "<div class='event-description rich_text_container'>" . htmlspecialchars($content) . "</div>";
         $html .= $recall;
 
         $parent->getFromDB($val[$parent->getForeignKeyField()]);
@@ -1944,20 +1944,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          </td>";
 
             echo "<td>";
-            echo $item_link->fields['name'];
+            echo htmlspecialchars($item_link->fields['name']);
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='" . strtolower($item_link->getType()) . "ticket" . $item_link->fields["id"] . $rand . "' href='" .
+            $link = "<a id='" . htmlspecialchars(strtolower($item_link->getType())) . "ticket" . htmlspecialchars($item_link->fields["id"] . $rand) . "' href='" .
                    $item_link->getFormURLWithID($item_link->fields["id"]);
-            $link .= "&amp;forcetab=" . $tab_name . "$1";
+            $link .= "&amp;forcetab=" . htmlspecialchars($tab_name) . "$1";
             $link   .= "'>";
-            $link    = sprintf(__('%1$s'), $link);
-            printf(
-                __('%1$s %2$s'),
+            $link = sprintf(
+                __s('%1$s %2$s'),
                 $link,
                 Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
             );
+            echo $link;
 
             echo "</a>";
             echo "</td>";
@@ -1966,7 +1966,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             echo "</tr>";
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No tasks do to.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No tasks do to.') . "</i></td></tr>";
         }
     }
 

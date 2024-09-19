@@ -799,9 +799,10 @@ abstract class CommonDBChild extends CommonDBConnexity
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = $this->getName();
+            $value = htmlspecialchars($this->getName());
         }
-        $field_name = $field_name . "[$id]";
+        $field_name = htmlspecialchars($field_name . "[$id]");
+
         if ($canedit) {
             $out = "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
         } else {
@@ -826,7 +827,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @todo study if we cannot use these methods for the user emails
      * @see showChildsForItemForm(CommonDBTM $item, $field_name)
      *
-     * @param CommonDBTM   $item        the item on which to add the current CommenDBChild
+     * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
      * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
      * @param boolean      $display     true display or false to return the button HTML code
@@ -862,10 +863,10 @@ abstract class CommonDBChild extends CommonDBConnexity
 
         if ($canedit) {
             $lower_name         = strtolower(get_called_class());
-            $child_count_js_var = 'nb' . $lower_name . 's';
-            $div_id             = "add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id;
+            $child_count_js_var = htmlspecialchars('nb' . $lower_name . 's');
+            $div_id             = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
-           // Beware : -1 is for the first element added ...
+            // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
             $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
               " title=\"" . __s('Add') . "\"" .
@@ -922,7 +923,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
 
         $lower_name = strtolower(get_called_class());
-        $div_id     = "add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id;
+        $div_id     = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
         $query = [
             'FROM'   => static::getTable(),

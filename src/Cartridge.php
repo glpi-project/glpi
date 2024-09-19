@@ -646,7 +646,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     }
 
     /**
-     * count how many cartbridge unused for the cartridge item $tID
+     * count how many cartridge unused for the cartridge item $tID
      *
      * @param integer $tID cartridge item identifier.
      *
