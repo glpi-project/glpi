@@ -167,7 +167,7 @@
         "psr-4": {
             "Glpi\\Tools\\": "tools/src/",
             "Glpi\\Tests\\": "tests/src/",
-            "Glpi\\PHPUNit\\Tests\\": "phpunit/src/"
+            "Glpi\\PHPUnit\\Tests\\": "phpunit/src/"
         },
         "files": ["tests/src/autoload/functions.php"]
     },
