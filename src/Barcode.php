@@ -4,10 +4,11 @@ class Barcode extends CommonDropdown
 {
     public static function generateQRCode(CommonDBTM $item)
     {
+        global $CFG_GLPI;
         $barcode = new \Com\Tecnick\Barcode\Barcode();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
-            $_SERVER['SERVER_NAME'] . $item->getLinkURL(),
+            $CFG_GLPI["url_base"] . $item->getLinkURL(),
             -2,
             -2,
             'black',
@@ -19,11 +20,11 @@ class Barcode extends CommonDropdown
     public static function renderQRCode(CommonDBTM $item)
     {
         global $CFG_GLPI;
-        $lowercaseArray = array_map('strtolower', $CFG_GLPI["asset_types"]);
+        $lowercase_array = array_map('strtolower', $CFG_GLPI["asset_types"]);
         if (
             in_array(
                 strtolower($item::$rightname),
-                $lowercaseArray
+                $lowercase_array
             )
         ) {
             $qrcode = self::generateQRCode($item);

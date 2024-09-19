@@ -58,7 +58,6 @@ use NetworkPortType;
 use Session;
 use State;
 use Toolbox;
-use GLPIKey;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
@@ -109,10 +108,6 @@ class Conf extends CommonGLPI
     public const STALE_AGENT_ACTION_STATUS = 1;
 
     public const STALE_AGENT_ACTION_TRASHBIN = 2;
-
-    public const CLIENT_CREDENTIALS = 'client_credentials';
-
-    public const BASIC_AUTH = 'basic_auth';
 
     public static $rightname = 'inventory';
 
@@ -389,6 +384,7 @@ class Conf extends CommonGLPI
             echo '</div>';
             echo "</td>";
             echo "</tr>";
+
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='auth'>" . __s('Authorization header') . "</label>";
@@ -396,62 +392,17 @@ class Conf extends CommonGLPI
             echo "<td>";
             Dropdown::showFromArray('auth_required', [
                 'none' => __('None'),
-                self::CLIENT_CREDENTIALS => __('OAuth - Client credentials'),
-                self::BASIC_AUTH => __('Basic Authentication'),
+                'client_credentials' => __('OAuth - Client credentials')
             ], [
                 'value' => $config['auth_required'] ?? 'none'
             ]);
             echo "</td></tr>";
-            echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
-            echo "<td>";
-            echo "<label for='basic_auth_login'>";
-            echo __s('Login');
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"],
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
-            echo "<td>";
-            echo "<label for='basic_auth_password'>";
-            echo __s('Password');
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_password", [
-                "value" => (new GLPIKey())->decrypt($config['basic_auth_password']),
-                "type" => "password",
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo Html::scriptBlock("
-                function toggleDisplayLoginInputs(select) {
-                    let displayedInputs = false;
-                    const selectedValue = $(select).val();
-                    if (selectedValue == '" . self::BASIC_AUTH . "') {
-                        displayedInputs = true;
-                    }
-                    $('#basic_auth_login_row').toggle(displayedInputs);
-                    $('#basic_auth_password_row').toggle(displayedInputs);
-                }
-
-                const selectAuthHeader = $(`select[name='auth_required']`);
-                selectAuthHeader.change(function() {
-                    toggleDisplayLoginInputs(this);
-                });
-
-                toggleDisplayLoginInputs(selectAuthHeader);
-            ");
             echo "<tr>";
             echo "<th colspan='4'>";
             echo __s('Import options');
             echo "</th>";
             echo "</tr>";
+
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_volume'>";
@@ -1152,21 +1103,6 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
-        if (
-                $values['auth_required'] === Conf::BASIC_AUTH &&
-                !empty($values['basic_auth_password']) &&
-                !empty($values['basic_auth_login'])
-        ) {
-            $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
-        } else {
-            Session::addMessageAfterRedirect(
-                __s("Basic Authentication is active. The login and/or password fields are missing."),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
@@ -1291,8 +1227,6 @@ class Conf extends CommonGLPI
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
             'auth_required'                  => 'none',
-            'basic_auth_login'                     => '',
-            'basic_auth_password'                  => ''
         ];
     }
 
