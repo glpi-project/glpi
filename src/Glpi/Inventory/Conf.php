@@ -391,7 +391,7 @@ class Conf extends CommonGLPI
             echo "</tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo "<label for='auth'>" . __s('Authorization header') . "</label>";
+            echo CommonGLPI::createTabEntry(__s('Authorization header'), 0, null, 'ti ti-cloud-lock');
             echo "</td>";
             echo "<td>";
             Dropdown::showFromArray('auth_required', [
@@ -405,7 +405,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
             echo "<td>";
             echo "<label for='basic_auth_login'>";
-            echo __s('Login');
+            echo CommonGLPI::createTabEntry(__s('Login'), 0, null, 'ti ti-abc');
             echo "<span class='required'>*</span>";
             echo "</label>";
             echo "</td>";
@@ -418,7 +418,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
             echo "<td>";
             echo "<label for='basic_auth_password'>";
-            echo __s('Password');
+            echo CommonGLPI::createTabEntry(__s('Password'), 0, null, 'ti ti-password');
             echo "<span class='required'>*</span>";
             echo "</label>";
             echo "</td>";

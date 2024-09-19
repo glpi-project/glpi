@@ -267,7 +267,7 @@ XML
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
     }
 
-    public function testAuthWithoutBasic()
+    public function testAuthBasicMalformed()
     {
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
@@ -316,6 +316,7 @@ XML
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml',
+                            //deliberate omission of "Basic "
                             'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password)
                         ],
                         'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
@@ -333,7 +334,7 @@ XML
         $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
     }
 
-    public function testAuthWithBadLogin()
+    public function testAuthBasicWithFakeCredential()
     {
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
