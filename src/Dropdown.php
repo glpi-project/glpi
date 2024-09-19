@@ -50,6 +50,18 @@ class Dropdown
     const EMPTY_VALUE = '-----';
 
     /**
+     * List of standard itemtypes options
+     * @var array|null
+     */
+    private static $standard_itemtypes_options = null;
+
+    /**
+     * List of devices itemtypes options
+     * @var array|null
+     */
+    private static $devices_itemtypes_options = null;
+
+    /**
      * Print out an HTML "<select>" for a dropdown with preselected value
      *
      * @param string $itemtype  itemtype used for create dropdown
@@ -1096,35 +1108,30 @@ JAVASCRIPT;
      **/
     public static function getDeviceItemTypes()
     {
-        static $optgroup = null;
-
         if (!Session::haveRight('device', READ)) {
             return [];
         }
 
-        if (is_null($optgroup)) {
+        if (self::$devices_itemtypes_options === null) {
             $devices = [];
             foreach (CommonDevice::getDeviceTypes() as $device_type) {
                 $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
             }
             asort($devices);
-            $optgroup = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
+            self::$devices_itemtypes_options = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
         }
-        return $optgroup;
+        return self::$devices_itemtypes_options;
     }
 
 
     /**
      * Get the dropdown list name the user is allowed to edit
      *
-     * @var boolean $force Force to rebuild the list of dropdowns
      * @return array (group of dropdown) of array (itemtype => localized name)
      **/
-    public static function getStandardDropdownItemTypes(bool $force = false)
+    public static function getStandardDropdownItemTypes()
     {
-        static $optgroup = null;
-
-        if ($force || is_null($optgroup)) {
+        if (self::$standard_itemtypes_options === null) {
             $optgroup = [
                 __('Common') => [
                     'Location' => null,
@@ -1343,8 +1350,10 @@ JAVASCRIPT;
                     unset($optgroup[$label]);
                 }
             }
+
+            self::$standard_itemtypes_options = $optgroup;
         }
-        return $optgroup;
+        return self::$standard_itemtypes_options;
     }
 
 
@@ -4472,5 +4481,11 @@ JAVASCRIPT;
         return ($json === true)
          ? json_encode($return)
          : $return;
+    }
+
+    public static function resetItemtypesStaticCache(): void
+    {
+        self::$devices_itemtypes_options  = null;
+        self::$standard_itemtypes_options = null;
     }
 }

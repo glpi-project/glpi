@@ -64,17 +64,17 @@ class DropdownDefinitionManager extends DbTestCase
     public function testStandardDropdownRegistration(): void
     {
         $definition = $this->initDropdownDefinition();
-        $class = $definition->getCustomObjectClassName();
+        $class = $definition->getDropdownClassName();
+
+        \Dropdown::resetItemtypesStaticCache();
 
         $this->login();
-        $dropdowns = \Dropdown::getStandardDropdownItemTypes(true);
+        $dropdowns = \Dropdown::getStandardDropdownItemTypes();
         $has_dropdown = false;
         foreach ($dropdowns as $items) {
-            foreach ($items as $c => $n) {
-                if ($c === $class) {
-                    $has_dropdown = true;
-                    break 2;
-                }
+            if (in_array($class, array_keys($items))) {
+                $has_dropdown = true;
+                break;
             }
         }
         $this->boolean($has_dropdown)->isTrue();

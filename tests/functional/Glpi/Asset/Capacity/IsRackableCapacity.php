@@ -56,20 +56,20 @@ class IsRackableCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\IsRackableCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_3  = $definition_3->getCustomObjectClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_capacity_mapping = [
             $classname_1 => true,
@@ -111,14 +111,14 @@ class IsRackableCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\IsRackableCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
@@ -242,14 +242,14 @@ class IsRackableCapacity extends DbTestCase
             capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
         );
 
-        $asset = $this->createItem($definition->getCustomObjectClassName(), [
+        $asset = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
 
         // Check that the capacity can be disabled
         $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
-        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isFalse();
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
 
         // Create a relation with a rack
         $racks_id = $this->createItem(Rack::class, [
@@ -260,7 +260,7 @@ class IsRackableCapacity extends DbTestCase
         $this->createItem(
             Item_Rack::class,
             [
-                'itemtype' => $definition->getCustomObjectClassName(),
+                'itemtype' => $definition->getAssetClassName(),
                 'items_id' => $asset->getID(),
                 'position' => 1,
                 'racks_id' => $racks_id,
@@ -268,7 +268,7 @@ class IsRackableCapacity extends DbTestCase
         );
 
         // Check that the capacity can't be safely disabled
-        $this->boolean($capacity->isUsed($definition->getCustomObjectClassName()))->isTrue();
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
     }
 
     public function testGetCapacityUsageDescription(): void
@@ -282,21 +282,21 @@ class IsRackableCapacity extends DbTestCase
         $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
 
         // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
             ->isEqualTo('Used by 0 of 0 assets');
 
         // Create assets
-        $asset1 = $this->createItem($definition->getCustomObjectClassName(), [
+        $asset1 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
-        $asset2 = $this->createItem($definition->getCustomObjectClassName(), [
+        $asset2 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset 2',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
             ->isEqualTo('Used by 0 of 2 assets');
 
         // Create a relation with a rack
@@ -306,26 +306,26 @@ class IsRackableCapacity extends DbTestCase
             'number_units' => 40
         ]);
         $this->createItem(Item_Rack::class, [
-            'itemtype' => $definition->getCustomObjectClassName(),
+            'itemtype' => $definition->getAssetClassName(),
             'items_id' => $asset1->getID(),
             'racks_id' => $rack->getID(),
             'position' => 1
         ]);
 
         // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
             ->isEqualTo('Used by 1 of 2 assets');
 
         // Create an item linked to the second subject
         $this->createItem(Item_Rack::class, [
-            'itemtype' => $definition->getCustomObjectClassName(),
+            'itemtype' => $definition->getAssetClassName(),
             'items_id' => $asset2->getID(),
             'racks_id' => $rack->getID(),
             'position' => 2
         ]);
 
         // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getCustomObjectClassName()))
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
             ->isEqualTo('Used by 2 of 2 assets');
     }
 }

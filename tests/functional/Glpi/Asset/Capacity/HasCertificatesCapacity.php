@@ -64,20 +64,20 @@ class HasCertificatesCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_3  = $definition_3->getCustomObjectClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_certificates_mapping = [
             $classname_1 => true,
@@ -136,14 +136,14 @@ class HasCertificatesCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,

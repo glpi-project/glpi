@@ -34,7 +34,6 @@
 
 namespace Glpi\Dropdown;
 
-use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
 use ReflectionClass;
 
@@ -79,32 +78,47 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         $standard_dropdowns = \Dropdown::getStandardDropdownItemTypes();
         $core_dropdowns = [];
         foreach ($standard_dropdowns as $optgroup) {
-            foreach ($optgroup as $c => $n) {
-                if (!is_subclass_of($c, Dropdown::class) && !isPluginItemType($c)) {
+            foreach (array_keys($optgroup) as $classname) {
+                if (!is_subclass_of($classname, Dropdown::class) && !isPluginItemType($classname)) {
                     // Dropdown is not a custom one or from a plugin
-                    $core_dropdowns[] = $c;
+                    $core_dropdowns[] = $classname;
                 }
             }
         }
 
-        // Remove namespaces from class names (Not sure how they would map in the future if all dropdowns moved to use the generic dropdown classes)
-        return array_map(static fn($c) => substr($c, strrpos($c, '\\') + 1), $core_dropdowns);
+        return $core_dropdowns;
     }
 
-    protected function loadConcreteClass(AbstractDefinition $definition): void
+    public function autoloadClass(string $classname): void
+    {
+        $ns = static::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+        $pattern = '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/';
+
+        if (preg_match($pattern, $classname) === 1) {
+            $system_name = preg_replace($pattern, '$1', $classname);
+            $definition  = $this->getDefinition($system_name);
+
+            if ($definition === null) {
+                return;
+            }
+
+            $this->loadConcreteClass($definition);
+        }
+    }
+
+    private function loadConcreteClass(DropdownDefinition $definition): void
     {
         $rightname = $definition->getCustomObjectRightname();
-        $parent_class = $definition->fields['is_tree'] ? 'TreeDropdown' : 'Dropdown';
 
         // Static properties must be defined in each concrete class otherwise they will be shared
         // accross all concrete classes, and so would be overriden by the values from the last loaded class.
         eval(<<<PHP
 namespace Glpi\\CustomDropdown;
 
-use Glpi\\Dropdown\\{$parent_class};
+use Glpi\\Dropdown\\Dropdown;
 use Glpi\\Dropdown\\DropdownDefinition;
 
-final class {$definition->getCustomObjectClassName(false)} extends {$parent_class} {
+final class {$definition->getDropdownClassName(false)} extends Dropdown {
     protected static DropdownDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
@@ -114,7 +128,7 @@ PHP
         // Set the definition of the concrete class using reflection API.
         // It permits to directly store a pointer to the definition on the object without having
         // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getCustomObjectClassName());
+        $reflected_class = new ReflectionClass($definition->getDropdownClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

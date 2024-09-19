@@ -287,7 +287,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         return $this->capacities[$classname] ?? null;
     }
 
-    protected function loadConcreteClass(AbstractDefinition $definition): void
+    private function loadConcreteClass(AssetDefinition $definition): void
     {
         $rightname = $definition->getCustomObjectRightname();
 
@@ -299,7 +299,7 @@ namespace Glpi\\CustomAsset;
 use Glpi\\Asset\\Asset;
 use Glpi\\Asset\\AssetDefinition;
 
-final class {$definition->getCustomObjectClassName(false)} extends Asset {
+final class {$definition->getAssetClassName(false)} extends Asset {
     protected static AssetDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
@@ -309,7 +309,7 @@ PHP
         // Set the definition of the concrete class using reflection API.
         // It permits to directly store a pointer to the definition on the object without having
         // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getCustomObjectClassName());
+        $reflected_class = new ReflectionClass($definition->getAssetClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 

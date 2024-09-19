@@ -35,10 +35,12 @@
 namespace Glpi\Dropdown;
 
 use CommonGLPI;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\CustomObject\AbstractDefinition;
 use Session;
 
+/**
+ * @extends AbstractDefinition<\Glpi\Dropdown\Dropdown>
+ */
 final class DropdownDefinition extends AbstractDefinition
 {
     public static function getTypeName($nb = 0)
@@ -59,6 +61,18 @@ final class DropdownDefinition extends AbstractDefinition
     public static function getDefinitionManagerClass(): string
     {
         return DropdownDefinitionManager::class;
+    }
+
+    /**
+     * Get the definition's concrete dropdown class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Dropdown\Dropdown>
+     */
+    public function getDropdownClassName(bool $with_namespace = true): string
+    {
+        return $this->getCustomObjectClassName($with_namespace);
     }
 
     public function getCustomObjectRightname(): string
@@ -110,7 +124,7 @@ final class DropdownDefinition extends AbstractDefinition
         if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
-                    // 2 is reserved for "Fields" form
+                    // 1 is reserved for "Fields" form
                     break;
                 case 2:
                     $item->showProfilesForm();
@@ -134,42 +148,28 @@ final class DropdownDefinition extends AbstractDefinition
         return parent::prepareInputForAdd($input);
     }
 
-    public function post_updateItem($history = true)
+    public function post_addItem()
     {
-        /**
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var \DBmysql $DB
-         */
-        global $GLPI_CACHE, $DB;
-
-        parent::post_updateItem($history);
-
-        if (isset($this->input['is_tree']) && $this->input['is_tree'] && !$this->oldvalues['is_tree']) {
-            // If switching from non-tree to tree dropdown, the related caches should be cleared (only an issue if it was a tree dropdown at some point before)
-            $it = $DB->request([
-                'SELECT' => ['id'],
-                'FROM' => 'glpi_dropdowns_dropdowns',
-                'WHERE' => ['dropdowns_dropdowndefinitions_id' => $this->getID()],
+        // Add default display preferences for the new definition
+        $prefs = [
+            14, // Name
+        ];
+        $pref = new \DisplayPreference();
+        foreach ($prefs as $field) {
+            $pref->add([
+                'itemtype' => $this->getDropdownClassName(),
+                'num'      => $field,
+                'users_id' => 0,
             ]);
-            foreach ($it as $data) {
-                $GLPI_CACHE->delete('ancestors_cache_glpi_dropdowns_dropdowns_' . $data['id']);
-                $GLPI_CACHE->delete('sons_cache_glpi_dropdowns_dropdowns_' . $data['id']);
-            }
-            $DB->update(
-                'glpi_dropdowns_dropdowns',
-                [
-                    'ancestors_cache' => null,
-                    'sons_cache' => null,
-                ],
-                ['dropdowns_dropdowndefinitions_id' => $this->getID()]
-            );
         }
+
+        parent::post_addItem();
     }
 
     public function cleanDBonPurge()
     {
         $related_classes = [
-            $this->getCustomObjectClassName(),
+            $this->getDropdownClassName(),
         ];
         foreach ($related_classes as $classname) {
             (new $classname())->deleteByCriteria(
@@ -178,20 +178,5 @@ final class DropdownDefinition extends AbstractDefinition
                 history: false
             );
         }
-    }
-
-    protected function displayMainForm(int $item_count, $options = []): void
-    {
-        $definition_manager = self::getDefinitionManagerClass()::getInstance();
-        TemplateRenderer::getInstance()->display(
-            'pages/admin/dropdowndefinition/main.html.twig',
-            [
-                'item'                  => $this,
-                'params'                => $options,
-                'has_rights_enabled'    => $this->hasRightsEnabled(),
-                'reserved_system_names' => $definition_manager->getReservedSystemNames(),
-                'item_count'           => $item_count,
-            ]
-        );
     }
 }

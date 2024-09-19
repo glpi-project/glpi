@@ -4141,10 +4141,10 @@ class SearchTest extends DbTestCase
         $document_3 = $this->createTxtDocument();
 
         $definition_1  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
-        $asset_class_1 = $definition_1->getCustomObjectClassName();
+        $asset_class_1 = $definition_1->getAssetClassName();
 
         $definition_2  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
-        $asset_class_2 = $definition_2->getCustomObjectClassName();
+        $asset_class_2 = $definition_2->getAssetClassName();
 
         // Assets for first class
         $asset_1_1 = $this->createItem(

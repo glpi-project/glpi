@@ -1923,21 +1923,9 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns Glpi\\\\Asset\\\\Asset\\.$#',
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$definition$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$profiles$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -2274,6 +2262,12 @@ $ignoreErrors[] = [
 	'message' => '#^Static method Glpi\\\\Dashboard\\\\Provider\\:\\:getSearchOptionID\\(\\) is unused\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	// identifier: return.type
+	'message' => '#^Method Glpi\\\\Dropdown\\\\Dropdown\\:\\:getById\\(\\) should return static\\(Glpi\\\\Dropdown\\\\Dropdown\\)\\|false but returns object\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	// identifier: method.nonObject

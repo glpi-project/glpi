@@ -354,8 +354,8 @@ class DbTestCase extends \GLPITestCase
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
         // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
+        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), []);
 
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
@@ -401,13 +401,13 @@ class DbTestCase extends \GLPITestCase
         );
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
+        // Clear definition cache
+        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Dropdown\DropdownDefinitionManager::getInstance(), []);
+
         $manager = \Glpi\Dropdown\DropdownDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
-
-        // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\Dropdown\DropdownDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Dropdown\DropdownDefinitionManager::getInstance(), null);
 
         return $definition;
     }

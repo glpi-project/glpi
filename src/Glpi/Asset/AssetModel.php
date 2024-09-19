@@ -83,12 +83,12 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getById(?int $id)
@@ -171,14 +171,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
             array_key_exists($definition_fkey, $input)
             && (int)$input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Asset definition does not match the current concrete class.');
+            throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
             && (int)$this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Asset definition cannot be changed.');
+            throw new \RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;

@@ -34,7 +34,7 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
- * @var DB $DB
+ * @var DBmysql $DB
  * @var Migration $migration
  */
 
@@ -52,7 +52,6 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
             `is_active` tinyint NOT NULL DEFAULT '0',
             `profiles` JSON NOT NULL,
             `translations` JSON NOT NULL,
-            `is_tree` tinyint NOT NULL DEFAULT '0',
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -69,7 +68,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
     $query = <<<SQL
         CREATE TABLE `glpi_dropdowns_dropdowns` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-            `dropdowns_dropdowndefinitions_id` int unsigned NOT NULL,
+            `dropdowns_dropdowndefinitions_id` int {$default_key_sign} NOT NULL,
             `name` varchar(255) DEFAULT NULL,
             `comment` text,
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',

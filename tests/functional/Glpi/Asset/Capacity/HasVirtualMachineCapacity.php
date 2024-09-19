@@ -63,20 +63,20 @@ class HasVirtualMachineCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasVirtualMachineCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_3  = $definition_3->getCustomObjectClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_capacity_mapping = [
             $classname_1 => true,
@@ -133,14 +133,14 @@ class HasVirtualMachineCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasVirtualMachineCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
@@ -226,7 +226,7 @@ class HasVirtualMachineCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [\Glpi\Asset\Capacity\HasVirtualMachineCapacity::class]
         );
-        $class = $definition->getCustomObjectClassName();
+        $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */

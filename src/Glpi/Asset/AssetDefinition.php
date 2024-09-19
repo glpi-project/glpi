@@ -36,20 +36,17 @@
 namespace Glpi\Asset;
 
 use CommonGLPI;
-use Dropdown;
-use Gettext\Languages\CldrData as Language_CldrData;
-use Gettext\Languages\Category as Language_Category;
-use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchOption;
-use Profile;
-use ProfileRight;
 use Session;
 
+/**
+ * @extends AbstractDefinition<\Glpi\Asset\Asset>
+ */
 final class AssetDefinition extends AbstractDefinition
 {
     public static function getCustomObjectBaseClass(): string
@@ -157,7 +154,7 @@ final class AssetDefinition extends AbstractDefinition
             'pages/admin/assetdefinition/capacities.html.twig',
             [
                 'item' => $this,
-                'classname' => $this->getCustomObjectClassName(),
+                'classname' => $this->getAssetClassName(),
                 'capacities' => $capacities,
             ]
         );
@@ -199,7 +196,6 @@ final class AssetDefinition extends AbstractDefinition
 
     public function post_addItem()
     {
-        parent::post_addItem();
         // Add default display preferences for the new asset definition
         $prefs = [
             4, // Name
@@ -213,11 +209,13 @@ final class AssetDefinition extends AbstractDefinition
         $pref = new \DisplayPreference();
         foreach ($prefs as $field) {
             $pref->add([
-                'itemtype' => $this->getCustomObjectClassName(),
+                'itemtype' => $this->getAssetClassName(),
                 'num'      => $field,
                 'users_id' => 0,
             ]);
         }
+
+        parent::post_addItem();
     }
 
     public function post_updateItem($history = true)
@@ -252,7 +250,7 @@ final class AssetDefinition extends AbstractDefinition
                     // can be null if provided by a plugin that is no longer active
                     continue;
                 }
-                $capacity->onCapacityDisabled($this->getCustomObjectClassName());
+                $capacity->onCapacityDisabled($this->getAssetClassName());
                 array_push($rights_to_remove, ...$capacity->getSpecificRights());
             }
 
@@ -261,20 +259,13 @@ final class AssetDefinition extends AbstractDefinition
             }
         }
 
-        if (in_array('is_active', $this->updates, true)) {
-            // Force menu refresh when active state change
-            unset($_SESSION['menu']);
-        }
-
-        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
-            $this->syncProfilesRights();
-        }
+        parent::post_updateItem();
     }
 
     public function cleanDBonPurge()
     {
         $related_classes = [
-            $this->getCustomObjectClassName(),
+            $this->getAssetClassName(),
             $this->getAssetModelClassName(),
             $this->getAssetTypeClassName(),
         ];
@@ -323,6 +314,18 @@ final class AssetDefinition extends AbstractDefinition
     }
 
     /**
+     * Get the definition's concrete asset class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     * @phpstan-return class-string<\Glpi\Asset\Asset>
+     */
+    public function getAssetClassName(bool $with_namespace = true): string
+    {
+        return $this->getCustomObjectClassName($with_namespace);
+    }
+
+    /**
      * Get the definition's concrete asset model class name.
      *
      * @param bool $with_namespace
@@ -331,7 +334,7 @@ final class AssetDefinition extends AbstractDefinition
      */
     public function getAssetModelClassName(bool $with_namespace = true): string
     {
-        return $this->getCustomObjectClassName($with_namespace) . 'Model';
+        return $this->getAssetClassName($with_namespace) . 'Model';
     }
 
     /**
@@ -343,7 +346,7 @@ final class AssetDefinition extends AbstractDefinition
      */
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
-        return $this->getCustomObjectClassName($with_namespace) . 'Type';
+        return $this->getAssetClassName($with_namespace) . 'Type';
     }
 
     /**
@@ -357,7 +360,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $classname = 'RuleDictionary' . $this->getAssetModelClassName(false);
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -373,7 +376,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $classname = $this->getAssetModelDictionaryClassName(false) . 'Collection';
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -389,7 +392,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $classname = 'RuleDictionary' . $this->getAssetTypeClassName(false);
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -405,7 +408,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $classname = $this->getAssetTypeDictionaryClassName(false) . 'Collection';
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }

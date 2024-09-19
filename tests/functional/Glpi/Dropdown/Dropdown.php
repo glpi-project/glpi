@@ -42,10 +42,10 @@ class Dropdown extends DbTestCase
     protected function getByIdProvider(): iterable
     {
         $foo_definition = $this->initDropdownDefinition();
-        $foo_classname = $foo_definition->getCustomObjectClassName();
+        $foo_classname = $foo_definition->getDropdownClassName();
 
         $bar_definition = $this->initDropdownDefinition();
-        $bar_classname = $bar_definition->getCustomObjectClassName();
+        $bar_classname = $bar_definition->getDropdownClassName();
 
         // Loop to ensure that switching between definition does not cause any issue
         for ($i = 0; $i < 2; $i++) {
@@ -89,28 +89,29 @@ class Dropdown extends DbTestCase
     public function testPrepareInputDefinition(): void
     {
         $definition = $this->initDropdownDefinition();
-        $classname = $definition->getCustomObjectClassName();
+        $classname = $definition->getDropdownClassName();
         $dropdown = new $classname();
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
             // definition is automatically set if missing
-            $this->array($dropdown->{$method}(['name' => 'test']))->isEqualTo(['name' => 'test', 'dropdowns_dropdowndefinitions_id' => $definition->getID()]);
+            $this->array($dropdown->{$method}(['name' => 'test']))
+                ->isEqualTo(['name' => 'test', 'completename' => 'test', 'dropdowns_dropdowndefinitions_id' => $definition->getID()]);
 
             // an exception is thrown if definition is invalid
             $this->exception(
                 function () use ($dropdown, $method, $definition) {
                     $dropdown->{$method}(['name' => 'test', 'dropdowns_dropdowndefinitions_id' => $definition->getID() + 1]);
                 }
-            )->message->contains('Dropdown definition does not match the current concrete class.');
+            )->message->contains('Definition does not match the current concrete class.');
         }
     }
 
     public function testUpdateWithWrongDefinition(): void
     {
         $definition_1 = $this->initDropdownDefinition();
-        $classname_1  = $definition_1->getCustomObjectClassName();
+        $classname_1  = $definition_1->getDropdownClassName();
         $definition_2 = $this->initDropdownDefinition();
-        $classname_2  = $definition_2->getCustomObjectClassName();
+        $classname_2  = $definition_2->getDropdownClassName();
 
         $dropdown = $this->createItem($classname_1, ['name' => 'new dropdown']);
 
@@ -119,14 +120,14 @@ class Dropdown extends DbTestCase
                 $dropdown_2 = new $classname_2();
                 $dropdown_2->update(['id' => $dropdown->getID(), 'name' => 'updated']);
             }
-        )->message->contains('Dropdown definition cannot be changed.');
+        )->message->contains('Definition cannot be changed.');
     }
 
     public function testSearchOptionsUnicity(): void
     {
         $definition = $this->initDropdownDefinition();
 
-        $dropdown = $this->createItem($definition->getCustomObjectClassName(), ['name' => 'test dropdown']);
+        $dropdown = $this->createItem($definition->getDropdownClassName(), ['name' => 'test dropdown']);
 
         $this->when(
             function () use ($dropdown) {

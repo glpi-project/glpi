@@ -35,6 +35,7 @@
 namespace Glpi\CustomObject;
 
 use CommonDBTM;
+use Dropdown;
 use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
@@ -43,13 +44,17 @@ use Profile;
 use ProfileRight;
 use Session;
 
+/**
+ * Abstract class for custom object definition managers
+ * @template ConcreteClass of CommonDBTM
+ */
 abstract class AbstractDefinition extends CommonDBTM
 {
     public static $rightname = 'config';
 
     /**
      * Get the base class for custom objects of this type.
-     * @return class-string<CommonDBTM>
+     * @return class-string<ConcreteClass>
      */
     abstract public static function getCustomObjectBaseClass(): string;
 
@@ -76,8 +81,11 @@ abstract class AbstractDefinition extends CommonDBTM
 
     /**
      * Get the name of the class for objects of this type
-     * @bool $with_namespace Whether to include the namespace in the class name
-     * @return class-string<CommonDBTM>
+     *
+     * @param bool $with_namespace Whether to include the namespace in the class name
+     *
+     * @return string
+     * @phpstan-return class-string<ConcreteClass>
      */
     public function getCustomObjectClassName(bool $with_namespace = true): string
     {
@@ -177,12 +185,6 @@ abstract class AbstractDefinition extends CommonDBTM
             ];
         }
 
-        $this->displayMainForm($item_count, $options);
-        return true;
-    }
-
-    protected function displayMainForm(int $item_count, $options = []): void
-    {
         $definition_manager = static::getDefinitionManagerClass()::getInstance();
         TemplateRenderer::getInstance()->display(
             'pages/admin/customobjects/main.html.twig',
@@ -191,9 +193,10 @@ abstract class AbstractDefinition extends CommonDBTM
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
                 'reserved_system_names' => $definition_manager->getReservedSystemNames(),
-                'item_count'           => $item_count,
+                'item_count'            => $item_count,
             ]
         );
+        return true;
     }
 
     /**
@@ -293,7 +296,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item' => $this,
                 'classname' => $this->getCustomObjectClassName(),
                 'translations' => $translations,
-                'languages_dropdown' => \Dropdown::showLanguages('language', [
+                'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display'             => false,
                     'display_emptychoice' => true,
                     'width'               => '100%',
@@ -434,9 +437,13 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
+        if (in_array('is_active', $this->updates, true)) {
+            // Force menu refresh when active state change
+            unset($_SESSION['menu']);
+        }
+
         if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
             $this->syncProfilesRights();
-            unset($_SESSION['menu']);
         }
     }
 

@@ -36,13 +36,22 @@ namespace Glpi\CustomObject;
 
 /**
  * Abstract class for custom object definition managers
- * @template T of AbstractDefinition
+ * @template ConcreteDefinition of AbstractDefinition
  */
 abstract class AbstractDefinitionManager
 {
     /**
+     * Definitions cache.
+     * @var array
+     * @phpstan-var array<class-string<ConcreteDefinition>, array<int, ConcreteDefinition>>
+     */
+    private array $definitions_data = [];
+
+    abstract public static function getInstance(): self;
+
+    /**
      * @return class-string<AbstractDefinition>
-     * @phpstan-return class-string<T>
+     * @phpstan-return class-string<ConcreteDefinition>
      */
     abstract public static function getDefinitionClass(): string;
 
@@ -56,7 +65,7 @@ abstract class AbstractDefinitionManager
      * Register the class autoload function.
      * @return void
      */
-    public function registerAutoload(): void
+    final public function registerAutoload(): void
     {
         spl_autoload_register([$this, 'autoloadClass']);
     }
@@ -67,33 +76,9 @@ abstract class AbstractDefinitionManager
      * @param string $classname
      * @return void
      */
-    public function autoloadClass(string $classname): void
-    {
-        $ns = static::getDefinitionClass()::getCustomObjectNamespace() . '\\';
-        $pattern = '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/';
+    abstract public function autoloadClass(string $classname): void;
 
-        if (preg_match($pattern, $classname) === 1) {
-            $system_name = preg_replace($pattern, '$1', $classname);
-            $definition  = $this->getDefinition($system_name);
-
-            if ($definition === null) {
-                return;
-            }
-
-            $this->loadConcreteClass($definition);
-        }
-    }
-
-    /**
-     * Load dropdown concrete class.
-     *
-     * @param AbstractDefinition $definition
-     * @phpstan-param T $definition
-     * @return void
-     */
-    abstract protected function loadConcreteClass(AbstractDefinition $definition): void;
-
-    public function bootstrapClasses(): void
+    final public function bootstrapClasses(): void
     {
         foreach ($this->getDefinitions() as $definition) {
             if (!$definition->isActive()) {
@@ -107,7 +92,7 @@ abstract class AbstractDefinitionManager
     /**
      * Bootstrap the concrete class.
      * @param AbstractDefinition $definition
-     * @phpstan-param T $definition
+     * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
     protected function boostrapConcreteClass(AbstractDefinition $definition): void
@@ -115,7 +100,7 @@ abstract class AbstractDefinitionManager
         // Intentionally left blank
     }
 
-    public function getCustomObjectClassNames(bool $with_namespace = true): array
+    final public function getCustomObjectClassNames(bool $with_namespace = true): array
     {
         $classes = [];
 
@@ -133,9 +118,9 @@ abstract class AbstractDefinitionManager
      * Get the dropdown definition corresponding to given system name.
      *
      * @param string $system_name
-     * @phpstan-return T|null
+     * @phpstan-return ConcreteDefinition|null
      */
-    protected function getDefinition(string $system_name): ?AbstractDefinition
+    final protected function getDefinition(string $system_name): ?AbstractDefinition
     {
         return $this->getDefinitions()[$system_name] ?? null;
     }
@@ -145,17 +130,17 @@ abstract class AbstractDefinitionManager
      *
      * @param bool $only_active
      * @return AbstractDefinition[]
-     * @phpstan-return T[]
+     * @phpstan-return ConcreteDefinition[]
      */
-    public function getDefinitions(bool $only_active = false): array
+    final public function getDefinitions(bool $only_active = false): array
     {
         $definition_class = static::getDefinitionClass();
-        if ($this->definitions_data === null) {
-            $this->definitions_data = getAllDataFromTable($definition_class::getTable());
+        if (!array_key_exists($definition_class, $this->definitions_data)) {
+            $this->definitions_data[$definition_class] = getAllDataFromTable($definition_class::getTable());
         }
 
         $definitions = [];
-        foreach ($this->definitions_data as $definition_data) {
+        foreach ($this->definitions_data[$definition_class] as $definition_data) {
             if ($only_active && (bool) $definition_data['is_active'] !== true) {
                 continue;
             }

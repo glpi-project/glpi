@@ -35,8 +35,6 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Config\LegacyConfigurators\AssetsAutoloader;
-use Glpi\Config\LegacyConfigurators\AssetsBootstrap;
 use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
 use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;

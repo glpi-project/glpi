@@ -73,7 +73,7 @@ class AssetDefinitionManager extends DbTestCase
         $this->login();
 
         $definition = $this->initAssetDefinition();
-        $class = $definition->getCustomObjectClassName();
+        $class = $definition->getAssetClassName();
 
         // Itemtype should be registered in $CFG_GLPI["ticket_types"]
         $this->array($CFG_GLPI["ticket_types"])->contains($class);
@@ -86,7 +86,7 @@ class AssetDefinitionManager extends DbTestCase
         // Note: the asset is not yet registered in `helpdesk_item_type` for our
         // super admin profile
         $definition = $this->initAssetDefinition();
-        $class = $definition->getCustomObjectClassName();
+        $class = $definition->getAssetClassName();
 
         // Create a test subject without any linked ITIL items
         $subject = $this->createItem($class, [
@@ -150,7 +150,7 @@ class AssetDefinitionManager extends DbTestCase
         // Create a separate definition to test rights as tabs are not removed
         // once they are defined until the page is reload
         $definition = $this->initAssetDefinition();
-        $class = $definition->getCustomObjectClassName();
+        $class = $definition->getAssetClassName();
 
         // Create a test subject without any linked ITIL items
         $subject = $this->createItem($class, [

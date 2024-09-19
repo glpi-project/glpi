@@ -37,17 +37,19 @@ namespace Glpi\Asset;
 
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\CustomObject\CustomObjectTrait;
 use Group_Item;
 use Entity;
 use Group;
 use Location;
 use Manufacturer;
 use State;
-use Toolbox;
 use User;
 
 abstract class Asset extends CommonDBTM
 {
+    use CustomObjectTrait;
+
     use \Glpi\Features\AssignableItem;
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
@@ -83,72 +85,9 @@ abstract class Asset extends CommonDBTM
         return static::$definition;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getDefinitionClass(): string
     {
-        return static::getDefinition()->getTranslatedName($nb);
-    }
-
-    public static function getIcon()
-    {
-        return static::getDefinition()->getCustomObjectIcon();
-    }
-
-    public static function getTable($classname = null)
-    {
-        if (is_a($classname ?? static::class, self::class, true)) {
-            return parent::getTable(self::class);
-        }
-        return parent::getTable($classname);
-    }
-
-    public static function getSearchURL($full = true)
-    {
-        return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
-    }
-
-    public static function getFormURL($full = true)
-    {
-        return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
-    }
-
-    public static function getById(?int $id)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if ($id === null) {
-            return false;
-        }
-
-        // Load the asset definition corresponding to given asset ID
-        $definition_request = [
-            'INNER JOIN' => [
-                self::getTable()  => [
-                    'ON'  => [
-                        self::getTable()            => AssetDefinition::getForeignKeyField(),
-                        AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
-                ],
-            ],
-            'WHERE' => [
-                self::getTableField(self::getIndexName()) => $id,
-            ],
-        ];
-        $definition = new AssetDefinition();
-        if (!$definition->getFromDBByRequest($definition_request)) {
-            return false;
-        }
-
-        // Instanciate concrete class
-        $asset_class = $definition->getCustomObjectClassName(true);
-        $asset = new $asset_class();
-        if (!$asset->getFromDB($id)) {
-            return false;
-        }
-
-        return $asset;
+        return AssetDefinition::class;
     }
 
     public function rawSearchOptions()
@@ -349,17 +288,7 @@ abstract class Asset extends CommonDBTM
             array_push($search_options, ...$capacity->getSearchOptions(static::class));
         }
 
-        foreach ($search_options as &$search_option) {
-            if (
-                is_array($search_option)
-                && array_key_exists('table', $search_option)
-                && $search_option['table'] === $this->getTable()
-            ) {
-                // Search class could not be able to retrieve the concrete class when using `getItemTypeForTable()`,
-                // so we have to define an `itemtype` here.
-                $search_option['itemtype'] = static::class;
-            }
-        }
+        $search_options = $this->amendSearchOptions($search_options);
 
         return $search_options;
     }
@@ -369,24 +298,6 @@ abstract class Asset extends CommonDBTM
         $not_allowed = parent::getUnallowedFieldsForUnicity();
         $not_allowed[] = AssetDefinition::getForeignKeyField();
         return $not_allowed;
-    }
-
-    public static function getSystemSQLCriteria(?string $tablename = null): array
-    {
-        $table_prefix = $tablename !== null
-            ? $tablename . '.'
-            : '';
-
-        // Keep only items from current definition must be shown.
-        $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
-        ];
-
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array.
-        $criteria = [crc32(serialize($criteria)) => $criteria];
-
-        return $criteria;
     }
 
     public function showForm($ID, array $options = [])
@@ -416,35 +327,6 @@ abstract class Asset extends CommonDBTM
         return $this->prepareDefinitionInput($input);
     }
 
-    /**
-     * Ensure definition input corresponds to the current concrete class.
-     *
-     * @param array $input
-     * @return array
-     */
-    private function prepareDefinitionInput(array $input): array
-    {
-        $definition_fkey = AssetDefinition::getForeignKeyField();
-        $definition_id   = static::getDefinition()->getID();
-
-        if (
-            array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
-        ) {
-            throw new \RuntimeException('Asset definition does not match the current concrete class.');
-        }
-
-        if (
-            !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
-        ) {
-            throw new \RuntimeException('Asset definition cannot be changed.');
-        }
-
-        $input[$definition_fkey] = $definition_id;
-
-        return $input;
-    }
 
     public function getCloneRelations(): array
     {

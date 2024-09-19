@@ -9953,7 +9953,6 @@ CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `is_active` tinyint NOT NULL DEFAULT '0',
   `profiles` JSON NOT NULL,
   `translations` JSON NOT NULL,
-  `is_tree` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

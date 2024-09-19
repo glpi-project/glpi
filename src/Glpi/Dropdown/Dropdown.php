@@ -34,12 +34,21 @@
 
 namespace Glpi\Dropdown;
 
-use CommonDropdown;
+use CommonTreeDropdown;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\CustomObject\CustomObjectTrait;
 
-abstract class Dropdown extends CommonDropdown
+abstract class Dropdown extends CommonTreeDropdown
 {
-    use DropdownTrait;
+    use CustomObjectTrait;
 
+    /**
+     * Dropdown definition.
+     *
+     * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
+     * Must be defined by child class too to ensure that assigning a value to this property will affect
+     * each child classe independently.
+     */
     protected static DropdownDefinition $definition;
 
     /**
@@ -54,5 +63,55 @@ abstract class Dropdown extends CommonDropdown
         }
 
         return static::$definition;
+    }
+
+    /**
+     * Get the definition class.
+     *
+     * @return string
+     */
+    public static function getDefinitionClass(): string
+    {
+        return DropdownDefinition::class;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
+        return $this->prepareDefinitionInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            return false;
+        }
+
+        return $this->prepareDefinitionInput($input);
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display(
+            'pages/setup/custom_dropdown.html.twig',
+            [
+                'item'   => $this,
+                'params' => $options,
+                'additional_fields' => $this->getAdditionalFields()
+            ]
+        );
+        return true;
+    }
+
+    public function rawSearchOptions()
+    {
+        $search_options = parent::rawSearchOptions();
+
+        return $this->amendSearchOptions($search_options);
     }
 }

@@ -38,7 +38,7 @@
     {% if item.isNewItem() %}
         {{ fields.hiddenField(
             'Glpi\\Dropdown\\DropdownDefinition'|itemtype_foreign_key,
-            _get['Glpi\\Dropdown\\DropdownDefinition'|itemtype_foreign_key]|default(0),
+            item.getDefinition().getID(),
         ) }}
     {% endif %}
 {% endblock %}
