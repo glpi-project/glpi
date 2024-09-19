@@ -199,12 +199,12 @@ class Item_Line extends CommonDBRelation
         );
 
         if (!count($simcards)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No simcard found') . "</th></tr>";
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No simcard found') . "</th></tr>";
             echo "</table>";
         } else {
             echo "<table class='tab_cadre_fixehov'>";
             $header = "<tr>";
-            $header .= "<th>" . Item_DeviceSimcard::getTypeName(1) . "</th>";
+            $header .= "<th>" . htmlspecialchars(Item_DeviceSimcard::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;
@@ -223,10 +223,10 @@ class Item_Line extends CommonDBRelation
             echo '<form method="post" action="' . static::getFormURL() . '">';
             echo '<table class="tab_cadre_fixe">';
 
-            echo '<tr class="tab_bg_2"><th colspan="3">' . __('Add an item') . '</th></tr>';
+            echo '<tr class="tab_bg_2"><th colspan="3">' . __s('Add an item') . '</th></tr>';
 
             echo '<tr class="tab_bg_1">';
-            echo '<td><label for="dropdown_items_id' . $rand . '">' . _n('Item', 'Items', 1) . '</label></td>';
+            echo '<td><label for="dropdown_items_id' . $rand . '">' . _sn('Item', 'Items', 1) . '</label></td>';
             echo '<td>';
 
             //get all used items
@@ -258,7 +258,7 @@ class Item_Line extends CommonDBRelation
         }
 
         if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr>";
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No item found') . "</th></tr>";
             echo "</table>";
         } else {
             if ($canedit) {
@@ -277,7 +277,7 @@ class Item_Line extends CommonDBRelation
                 $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header .= "</th>";
             }
-            $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
+            $header .= "<th>" . _sn('Item', 'Items', 1) . "</th>";
             $header .= "</tr>";
 
             echo $header;
@@ -367,12 +367,12 @@ class Item_Line extends CommonDBRelation
         );
 
         if (!count($lines_from_sim)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No lines from simcard found') . "</th></tr>";
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No lines from simcard found') . "</th></tr>";
             echo "</table>";
         } else {
             echo "<table class='tab_cadre_fixehov'>";
             $header = "<tr>";
-            $header .= "<th>" . Item_DeviceSimcard::getTypeName(1) . "</th>";
+            $header .= "<th>" . htmlspecialchars(Item_DeviceSimcard::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;
@@ -391,10 +391,10 @@ class Item_Line extends CommonDBRelation
             echo '<form method="post" action="' . static::getFormURL() . '">';
             echo '<table class="tab_cadre_fixe">';
 
-            echo '<tr class="tab_bg_2"><th colspan="3">' . __('Add a line') . '</th></tr>';
+            echo '<tr class="tab_bg_2"><th colspan="3">' . __s('Add a line') . '</th></tr>';
 
             echo '<tr class="tab_bg_1">';
-            echo '<td><label for="dropdown_items_id' . $rand . '">' . Line::getTypeName(1) . '</label></td>';
+            echo '<td><label for="dropdown_items_id' . $rand . '">' . htmlspecialchars(Line::getTypeName(1)) . '</label></td>';
             echo '<td>';
             //get all used items
             $used = [];
@@ -428,7 +428,7 @@ class Item_Line extends CommonDBRelation
         }
 
         if (!count($lines)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No line found') . "</th></tr>";
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No line found') . "</th></tr>";
             echo "</table>";
         } else {
             if ($canedit) {
@@ -447,7 +447,7 @@ class Item_Line extends CommonDBRelation
                 $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header .= "</th>";
             }
-            $header .= "<th>" . Line::getTypeName(1) . "</th>";
+            $header .= "<th>" . htmlspecialchars(Line::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;
