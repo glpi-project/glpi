@@ -38,13 +38,11 @@ namespace Glpi\Agent\Communication;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
-use Glpi\Inventory\Conf;
 use Glpi\Application\ErrorHandler;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Toolbox;
-use GLPIKey;
 
 /**
  * Handle agent requests
@@ -209,7 +207,7 @@ abstract class AbstractRequest
     public function handleRequest($data): bool
     {
         $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
-        if ($auth_required === Conf::CLIENT_CREDENTIALS) {
+        if ($auth_required === 'client_credentials') {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
                 $client = Server::validateAccessToken($request);
@@ -222,37 +220,6 @@ abstract class AbstractRequest
                 $this->setMode(self::JSON_MODE);
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
-            }
-        }
-
-        if ($auth_required === Conf::BASIC_AUTH) {
-            $authorization_header = $this->headers->getHeader('Authorization');
-            if (is_null($authorization_header)) {
-                $this->setMode(self::JSON_MODE);
-                $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
-                $this->addError('Authorization header required to send an inventory', 401);
-                return false;
-            } else {
-                $allowed = false;
-                // if Authorization start with 'Basic'
-                if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
-                    $inventory_login = \Config::getConfigurationValue('inventory', 'basic_auth_login');
-                    $inventory_password = (new GLPIKey())
-                        ->decrypt(\Config::getConfigurationValue('inventory', 'basic_auth_password'));
-                    $agent_credential = base64_decode($matches[1]);
-                    list($agent_login, $agent_password) = explode(':', $agent_credential, 2);
-                    if (
-                        $inventory_login == $agent_login &&
-                        $inventory_password == $agent_password
-                    ) {
-                        $allowed = true;
-                    }
-                }
-                if (!$allowed) {
-                    $this->setMode(self::JSON_MODE);
-                    $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
-                    return false;
-                }
             }
         }
 

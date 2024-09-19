@@ -127,12 +127,6 @@ class Common
      */
     protected $authorization;
 
-    /**
-     * Define HTTP Authorization Header Authorization type
-     * @var string
-     */
-    protected $www_authenticate;
-
     public function getRequireds(): array
     {
         return [
