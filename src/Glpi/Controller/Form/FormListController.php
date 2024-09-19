@@ -37,6 +37,7 @@ namespace Glpi\Controller\Form;
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
