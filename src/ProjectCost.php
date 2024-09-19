@@ -249,34 +249,34 @@ class ProjectCost extends CommonDBChild
 
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
+        echo "<td>" . __s('Name') . "</td>";
         echo "<td>";
         echo "<input type='hidden' name='projects_id' value='" . $this->fields['projects_id'] . "'>";
         echo Html::input('name', ['value' => $this->fields['name']]);
         echo "</td>";
-        echo "<td>" . _n('Cost', 'Costs', 1) . "</td>";
+        echo "<td>" . _sn('Cost', 'Costs', 1) . "</td>";
         echo "<td>";
         echo "<input type='text' name='cost' value='" . Html::formatNumber($this->fields["cost"], true) . "'
              size='14'>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Begin date') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Begin date') . "</td>";
         echo "<td>";
         Html::showDateField("begin_date", ['value' => $this->fields['begin_date']]);
         echo "</td>";
         $rowspan = 3;
-        echo "<td rowspan='$rowspan'>" . __('Comments') . "</td>";
+        echo "<td rowspan='$rowspan'>" . __s('Comments') . "</td>";
         echo "<td rowspan='$rowspan' class='middle'>";
         echo "<textarea class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . $this->fields["comment"] .
            "</textarea>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('End date') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('End date') . "</td>";
         echo "<td>";
         Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . Budget::getTypeName(1) . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . htmlspecialchars(Budget::getTypeName(1)) . "</td>";
         echo "<td>";
         Budget::dropdown(['value' => $this->fields["budgets_id"]]);
         echo "</td></tr>";
@@ -337,22 +337,22 @@ class ProjectCost extends CommonDBChild
                 $params
             );
             echo "};";
-            echo "</script>\n";
+            echo "</script>";
             echo "<div class='center firstbloc'>" .
                "<a class='btn btn-primary' href='javascript:viewAddCost" . $ID . "_$rand();'>";
-            echo __('Add a new cost') . "</a></div>\n";
+            echo __s('Add a new cost') . "</a></div>";
         }
         $total = 0;
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='5'>" . self::getTypeName(count($iterator)) .
+        echo "<tr class='noHover'><th colspan='5'>" . htmlspecialchars(self::getTypeName(count($iterator))) .
             "</th></tr>";
 
         if (count($iterator)) {
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . __('Begin date') . "</th>";
-            echo "<th>" . __('End date') . "</th>";
-            echo "<th>" . Budget::getTypeName(1) . "</th>";
-            echo "<th>" . _n('Cost', 'Costs', 1) . "</th>";
+            echo "<tr><th>" . __s('Name') . "</th>";
+            echo "<th>" . __s('Begin date') . "</th>";
+            echo "<th>" . __s('End date') . "</th>";
+            echo "<th>" . htmlspecialchars(Budget::getTypeName(1)) . "</th>";
+            echo "<th>" . _sn('Cost', 'Costs', 1) . "</th>";
             echo "</tr>";
 
             Session::initNavigateListItems(
@@ -379,12 +379,12 @@ class ProjectCost extends CommonDBChild
                                           : $data['name']);
                  echo "<td>";
                  printf(
-                     __('%1$s %2$s'),
+                     __s('%1$s %2$s'),
                      $name,
                      Html::showToolTip($data['comment'], ['display' => false])
                  );
                 if ($canedit) {
-                     echo "\n<script type='text/javascript' >\n";
+                     echo "<script type='text/javascript' >";
                      echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
                      $params = ['type'         => __CLASS__,
                          'parenttype'   => 'Project',
@@ -397,7 +397,7 @@ class ProjectCost extends CommonDBChild
                          $params
                      );
                      echo "};";
-                     echo "</script>\n";
+                     echo "</script>";
                 }
                  echo "</td>";
                  echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
@@ -409,10 +409,10 @@ class ProjectCost extends CommonDBChild
                  Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
             echo "<tr class='b noHover'><td colspan='3'>&nbsp;</td>";
-            echo "<td class='right'>" . __('Total cost') . '</td>';
+            echo "<td class='right'>" . __s('Total cost') . '</td>';
             echo "<td class='numeric'>" . Html::formatNumber($total) . '</td></tr>';
         } else {
-            echo "<tr><th colspan='5'>" . __('No item found') . "</th></tr>";
+            echo "<tr><th colspan='5'>" . __s('No item found') . "</th></tr>";
         }
         echo "</table>";
         echo "</div>";
@@ -420,7 +420,7 @@ class ProjectCost extends CommonDBChild
         $ticketcost = TicketCost::showForObject($project);
         echo "</div>";
         echo "<div class='b'>";
-        printf(__('%1$s: %2$s'), __('Total cost'), $total + $ticketcost);
+        printf(__s('%1$s: %2$s'), __('Total cost'), $total + $ticketcost);
         echo "</div>";
     }
 }

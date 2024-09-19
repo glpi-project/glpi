@@ -1351,7 +1351,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             echo Search::showEndLine($p['output_type']);
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No item in progress.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No item in progress.') . "</i></td></tr>";
         }
     }
 
@@ -1449,7 +1449,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
          action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
 
             echo "<a href='" . Toolbox::getItemTypeFormURL('Project') . "?projects_id=$ID'>";
-            echo __('Create a sub project from this project');
+            echo __s('Create a sub project from this project');
             echo "</a>";
             Html::closeForm();
             echo "</div>";
@@ -1457,7 +1457,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='12'>" . Project::getTypeName($numrows) . "</th></tr>";
+        echo "<tr class='noHover'><th colspan='12'>" . htmlspecialchars(Project::getTypeName($numrows)) . "</th></tr>";
         if ($numrows) {
             Project::commonListHeader();
             Session::initNavigateListItems(
@@ -1503,7 +1503,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         if (!$is_template) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Creation date') . "</td>";
+            echo "<td>" . __s('Creation date') . "</td>";
             echo "<td>";
 
             $date = $this->fields["date"];
@@ -1515,7 +1515,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ]);
             echo "</td>";
             if ($ID && !$from_template) {
-                echo "<td>" . __('Last update') . "</td>";
+                echo "<td>" . __s('Last update') . "</td>";
                 echo "<td >" . Html::convDateTime($this->fields["date_mod"]) . "</td>";
             } else {
                 echo "<td colspan='2'>&nbsp;</td>";
@@ -1526,7 +1526,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             // showFormHeader which add the template name in a special header
             // only displayed on creation)
             echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Template name') . "</td>";
+            echo "<td>" . __s('Template name') . "</td>";
             echo "<td>";
             echo Html::input('template_name', [
                 'value' => $this->fields['template_name']
@@ -1538,7 +1538,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         echo "<tr class='tab_bg_1'>";
         $tplmark = $this->getAutofillMark('name', $options);
-        echo "<td>" . __('Name') . $tplmark . "</td>";
+        echo "<td>" . __s('Name') . $tplmark . "</td>";
         echo "<td>";
         echo Html::input(
             'name',
@@ -1553,20 +1553,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ]
         );
         echo "</td>";
-        echo "<td>" . __('Code') . "</td>";
+        echo "<td>" . __s('Code') . "</td>";
         echo "<td>";
         echo Html::input('code', ['value' => $this->fields['code']]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Priority') . "</td>";
+        echo "<td>" . __s('Priority') . "</td>";
         echo "<td>";
         CommonITILObject::dropdownPriority(['value' => $this->fields['priority'],
             'withmajor' => 1
         ]);
         echo "</td>";
-        echo "<td>" . __('As child of') . "</td>";
+        echo "<td>" . __s('As child of') . "</td>";
         echo "<td>";
         $this->dropdown(['entity'   => $this->fields['entities_id'],
             'value'    => $this->fields['projects_id'],
@@ -1576,11 +1576,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _x('item', 'State') . "</td>";
+        echo "<td>" . _sx('item', 'State') . "</td>";
         echo "<td>";
         ProjectState::dropdown(['value' => $this->fields["projectstates_id"]]);
         echo "</td>";
-        echo "<td>" . __('Percent done') . "</td>";
+        echo "<td>" . __s('Percent done') . "</td>";
         echo "<td>";
         $percent_done_params = [
             'value' => $this->fields['percent_done'],
@@ -1609,23 +1609,23 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Type', 'Types', 1) . "</td>";
+        echo "<td>" . _sn('Type', 'Types', 1) . "</td>";
         echo "<td>";
         ProjectType::dropdown(['value' => $this->fields["projecttypes_id"]]);
         echo "</td>";
         $plugin = new Plugin();
         if ($plugin->isActivated('gantt')) {
-            echo "<td>" . __('Show on global Gantt') . "</td>";
+            echo "<td>" . __s('Show on global Gantt') . "</td>";
             echo "<td>";
             Dropdown::showYesNo("show_on_global_gantt", $this->fields["show_on_global_gantt"]);
             echo "</td>";
         }
         echo "</tr>";
 
-        echo "<tr><td colspan='4' class='subheader'>" . _n('Manager', 'Managers', 1) . "</td></tr>";
+        echo "<tr><td colspan='4' class='subheader'>" . _sn('Manager', 'Managers', 1) . "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . User::getTypeName(1) . "</td>";
+        echo "<td>" . htmlspecialchars(User::getTypeName(1)) . "</td>";
         echo "<td>";
         User::dropdown(['name'   => 'users_id',
             'value'  => $ID ? $this->fields["users_id"] : Session::getLoginUserID(),
@@ -1633,7 +1633,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'entity' => $this->fields["entities_id"]
         ]);
         echo "</td>";
-        echo "<td>" . Group::getTypeName(1) . "</td>";
+        echo "<td>" . htmlspecialchars(Group::getTypeName(1)) . "</td>";
         echo "<td>";
         Group::dropdown([
             'name'      => 'groups_id',
@@ -1641,32 +1641,32 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'entity'    => $this->fields['entities_id'],
             'condition' => ['is_manager' => 1]
         ]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
-        echo "<tr><td colspan='4' class='subheader'>" . __('Planning') . "</td></tr>";
+        echo "<tr><td colspan='4' class='subheader'>" . __s('Planning') . "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Planned start date') . "</td>";
+        echo "<td>" . __s('Planned start date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("plan_start_date", ['value' => $this->fields['plan_start_date']]);
         echo "</td>";
-        echo "<td>" . __('Real start date') . "</td>";
+        echo "<td>" . __s('Real start date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("real_start_date", ['value' => $this->fields['real_start_date']]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Planned end date') . "</td>";
+        echo "<td>" . __s('Planned end date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("plan_end_date", ['value' => $this->fields['plan_end_date']]);
         echo "</td>";
-        echo "<td>" . __('Real end date') . "</td>";
+        echo "<td>" . __s('Real end date') . "</td>";
         echo "<td>";
         Html::showDateTimeField("real_end_date", ['value' => $this->fields['real_end_date']]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Planned duration');
+        echo "<td>" . __s('Planned duration');
         echo Html::showTooltip(__('Sum of planned durations of tasks'));
         echo "</td>";
         echo "<td>";
@@ -1675,7 +1675,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             false
         );
         echo "</td>";
-        echo "<td>" . __('Effective duration');
+        echo "<td>" . __s('Effective duration');
         echo Html::showTooltip(__('Sum of total effective durations of tasks'));
         echo "</td>";
         echo "<td>";
@@ -1683,12 +1683,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ProjectTask::getTotalEffectiveDurationForProject($this->fields['id']),
             false
         );
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
         $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Description') . "</td>";
+        echo "<td>" . __s('Description') . "</td>";
         echo "<td colspan='3'>";
         Html::textarea([
             'name' => 'content',
@@ -1703,12 +1703,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "</tr>\n";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Comments') . "</td>";
+        echo "<td>" . __s('Comments') . "</td>";
         echo "<td colspan='3'>";
         echo "<textarea id='comment' name='comment' cols='90' rows='6'>" . $this->fields["comment"] .
            "</textarea>";
         echo "</td>";
-        echo "</tr>\n";
+        echo "</tr>";
 
         $this->showFormButtons($options);
 
@@ -1762,7 +1762,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             echo " method='post' action='" . Toolbox::getItemTypeFormURL('ProjectTeam') . "'>";
             echo "<input type='hidden' name='projects_id' value='$ID'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . __('Add a team member') . "</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>" . __s('Add a team member') . "</tr>";
             echo "<tr class='tab_bg_2'><td>";
 
             $params = ['itemtypes'       => ProjectTeam::$available_types,
@@ -1804,8 +1804,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_end    .= "</th>";
         }
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . _n('Member', 'Members', Session::getPluralNumber()) . "</th>";
+        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
+        $header_end .= "<th>" . _sn('Member', 'Members', Session::getPluralNumber()) . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -1820,7 +1820,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                              Html::showMassiveActionCheckBox('ProjectTeam', $data["id"]);
                              echo "</td>";
                         }
-                        echo "<td>" . $item->getTypeName(1) . "</td>";
+                        echo "<td>" . htmlspecialchars($item->getTypeName(1)) . "</td>";
                         echo "<td>" . $item->getLink() . "</td>";
                         echo "</tr>";
                     }

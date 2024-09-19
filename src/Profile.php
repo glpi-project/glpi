@@ -742,13 +742,13 @@ class Profile extends CommonDBTM
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline' class='b'>";
-        echo __('Caption') . "</td>";
+        echo __s('Caption') . "</td>";
         echo "<td class='tab_bg_4' width='15' style='border:1px solid black'></td>";
-        echo "<td class='b'>" . __('Global right') . "</td></tr>\n";
+        echo "<td class='b'>" . __s('Global right') . "</td></tr>";
         echo "<tr class='tab_bg_2'><td></td>";
         echo "<td class='tab_bg_2' width='15' style='border:1px solid black'></td>";
-        echo "<td class='b'>" . __('Entity right') . "</td></tr>";
-        echo "</table></div>\n";
+        echo "<td class='b'>" . __s('Entity right') . "</td></tr>";
+        echo "</table></div>";
     }
 
     public function post_getEmpty()
@@ -788,20 +788,20 @@ class Profile extends CommonDBTM
 
         $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Name') . "</td>";
         echo "<td><input type='text' name='name' class='form-control' value=\"" . $this->fields["name"] . "\" $onfocus></td>";
-        echo "<td rowspan='$rowspan' class='middle right'>" . __('Comments') . "</td>";
+        echo "<td rowspan='$rowspan' class='middle right'>" . __s('Comments') . "</td>";
         echo "<td class='center middle' rowspan='$rowspan'>";
         echo "<textarea class='form-control' rows='4' name='comment' class='form-control'>" . $this->fields["comment"] . "</textarea>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Default profile') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Default profile') . "</td><td>";
         Html::showCheckbox(['name'    => 'is_default',
             'checked' => $this->fields['is_default']
         ]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Profile's interface") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Profile's interface") . "</td>";
         echo "<td>";
         Dropdown::showFromArray(
             'interface',
@@ -811,19 +811,19 @@ class Profile extends CommonDBTM
                 'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central'
             ]
         );
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Update own password') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Update own password') . "</td><td>";
         Html::showCheckbox(['name'    => '_password_update',
             'checked' => $this->fields['password_update']
         ]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __('Ticket creation form on login') . "</td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s('Ticket creation form on login') . "</td><td>";
         Html::showCheckbox(['name'    => 'create_ticket_on_login',
             'checked' => $this->fields['create_ticket_on_login']
         ]);
-        echo "</td></tr>\n";
+        echo "</td></tr>";
 
         $this->showFormButtons($options);
 
@@ -1217,11 +1217,11 @@ class Profile extends CommonDBTM
         echo "<div class='mt-4 mx-n2'>";
         echo "<table class='table table-hover card-table'>";
         echo "<thead>";
-        echo "<tr class='border-top'><th colspan='2'><h4>" . __('Association') . "</h4></th></tr>";
+        echo "<tr class='border-top'><th colspan='2'><h4>" . __s('Association') . "</h4></th></tr>";
         echo "</thead>";
 
         echo "<tr'>";
-        echo "<td>" . __('See hardware of my groups') . "</td>";
+        echo "<td>" . __s('See hardware of my groups') . "</td>";
         echo "<td>";
         Html::showCheckbox([
             'name'    => '_show_group_hardware',
@@ -1231,7 +1231,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Link with items for the creation of tickets') . "</td>";
+        echo "<td>" . __s('Link with items for the creation of tickets') . "</td>";
         echo "<td>";
         self::getLinearRightChoice(
             self::getHelpdeskHardwareTypes(true),
@@ -1243,7 +1243,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
+        echo "<td>" . __s('Associable items to tickets, changes and problems') . "</td>";
         echo "<td>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
 
@@ -1251,7 +1251,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Default ticket template') . "</td>";
+        echo "<td>" . __s('Default ticket template') . "</td>";
         echo "<td>";
        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["tickettemplates_id"],
@@ -1269,7 +1269,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Default change template') . "</td>";
+        echo "<td>" . __s('Default change template') . "</td>";
         echo "<td>";
        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["changetemplates_id"],
@@ -1287,7 +1287,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Default problem template') . "</td>";
+        echo "<td>" . __s('Default problem template') . "</td>";
         echo "<td>";
        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["problemtemplates_id"],
@@ -1406,7 +1406,7 @@ class Profile extends CommonDBTM
                 'class' => 'btn btn-primary mt-2',
                 'name'  => 'update'
             ]);
-            echo "</div>\n";
+            echo "</div>";
             Html::closeForm();
         }
 
@@ -1446,7 +1446,7 @@ class Profile extends CommonDBTM
         echo "<div class='tab_cadre_fixehov mx-n2'>";
         echo "<input type='hidden' name='_managed_domainrecordtypes' value='1'>";
         $rand = rand();
-        echo "<label for='dropdown_managed_domainrecordtypes$rand'>" . __('Manageable domain records') . "</label>";
+        echo "<label for='dropdown_managed_domainrecordtypes$rand'>" . __s('Manageable domain records') . "</label>";
         $values = ['-1' => __('All')];
         $values += $this->getDomainRecordTypes();
         Dropdown::showFromArray(
@@ -1551,14 +1551,14 @@ class Profile extends CommonDBTM
         echo "<table class='table table-hover card-table'>";
        // Assistance / Tracking-helpdesk
         echo "<thead>";
-        echo "<tr><th colspan='2'><h4>" . __('ITIL Templates') . "<h4></th></tr>";
+        echo "<tr><th colspan='2'><h4>" . __s('ITIL Templates') . "<h4></th></tr>";
         echo "</thead>";
 
         echo "<tbody>";
         foreach (['Ticket', 'Change', 'Problem'] as $itiltype) {
             $object = new $itiltype();
             echo "<tr>";
-            echo "<td>" . sprintf(__('Default %1$s template'), $object->getTypeName()) . "</td><td>";
+            echo "<td>" . sprintf(__s('Default %1$s template'), $object->getTypeName()) . "</td><td>";
            // Only root entity ones and recursive
             $options = [
                 'value'     => $this->fields[strtolower($itiltype) . "templates_id"],
@@ -1601,11 +1601,11 @@ class Profile extends CommonDBTM
         echo "<table class='table table-hover card-table'>";
 
         echo "<thead>";
-        echo "<tr class='border-top'><th colspan='2'><h4>" . __('Association') . "<h4></th></tr>";
+        echo "<tr class='border-top'><th colspan='2'><h4>" . __s('Association') . "<h4></th></tr>";
         echo "</thead>";
 
         echo "<tr>";
-        echo "<td>" . __('See hardware of my groups') . "</td>";
+        echo "<td>" . __s('See hardware of my groups') . "</td>";
         echo "<td>";
         Html::showCheckbox(['name'    => '_show_group_hardware',
             'checked' => $this->fields['show_group_hardware']
@@ -1613,7 +1613,7 @@ class Profile extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Link with items for the creation of tickets') . "</td>";
+        echo "<td>" . __s('Link with items for the creation of tickets') . "</td>";
         echo "<td>";
         self::getLinearRightChoice(
             self::getHelpdeskHardwareTypes(true),
@@ -1624,7 +1624,7 @@ class Profile extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
+        echo "<td>" . __s('Associable items to tickets, changes and problems') . "</td>";
         echo "<td>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
         echo "</td>";
@@ -1654,7 +1654,7 @@ class Profile extends CommonDBTM
                 'class' => 'btn btn-primary mt-2',
                 'name'  => 'update'
             ]);
-            echo "</div>\n";
+            echo "</div>";
             Html::closeForm();
         }
         echo "</div>";
