@@ -210,18 +210,20 @@ XML
 
     public function testAuthBasic()
     {
+        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
-
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
+                "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
 
         //first call should be unauthorized and return 401
@@ -269,6 +271,7 @@ XML
 
     public function testAuthBasicMalformed()
     {
+        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
@@ -276,11 +279,13 @@ XML
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
+                "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
 
         //first call should be unauthorized and return 401
@@ -309,7 +314,7 @@ XML
 
         //second attempt should be unauthorized and return 401
         $this->exception(
-            function () {
+            function () use ($basic_auth_login, $basic_auth_password) {
                 $this->http_client->request(
                     'POST',
                     $this->base_uri . 'front/inventory.php',
@@ -331,11 +336,12 @@ XML
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
         $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}');
     }
 
     public function testAuthBasicWithFakeCredential()
     {
+        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
@@ -343,11 +349,13 @@ XML
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
+                "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
 
         //first call should be unauthorized and return 401
@@ -397,6 +405,6 @@ XML
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
         $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}');
     }
 }
