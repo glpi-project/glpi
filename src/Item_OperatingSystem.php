@@ -277,9 +277,9 @@ class Item_OperatingSystem extends CommonDBRelation
                     Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
                     echo "</td>";
                 }
-                $version = htmlspecialchars($data['version']);
-                $architecture = htmlspecialchars($data['architecture']);
-                $servicepack = htmlspecialchars($data['servicepack']);
+                $version = htmlspecialchars($data['version'] ?? "");
+                $architecture = htmlspecialchars($data['architecture'] ?? "");
+                $servicepack = htmlspecialchars($data['servicepack'] ?? "");
                 echo "<td class='center'>{$name}</td>";
                 echo "<td class='center'>{$version}</td>";
                 echo "<td class='center'>{$architecture}</td>";
