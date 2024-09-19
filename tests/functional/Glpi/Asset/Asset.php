@@ -126,7 +126,7 @@ class Asset extends DbTestCase
                 $asset_2 = new $classname_2();
                 $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
             }
-        )->message->contains('Asset definition cannot be changed.');
+        )->message->contains('Definition cannot be changed.');
     }
 
     public function testSearchOptionsUnicity(): void

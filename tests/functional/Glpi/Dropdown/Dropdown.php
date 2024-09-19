@@ -93,9 +93,16 @@ class Dropdown extends DbTestCase
         $dropdown = new $classname();
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
+            $dropdown->getEmpty();
             // definition is automatically set if missing
             $this->array($dropdown->{$method}(['name' => 'test']))
-                ->isEqualTo(['name' => 'test', 'completename' => 'test', 'dropdowns_dropdowndefinitions_id' => $definition->getID()]);
+                ->isEqualTo([
+                    'name' => 'test',
+                    'completename' => 'test',
+                    'dropdowns_dropdowndefinitions_id' => $definition->getID(),
+                    'dropdowns_dropdowns_id' => 0,
+                    'level' => 1,
+                ]);
 
             // an exception is thrown if definition is invalid
             $this->exception(
