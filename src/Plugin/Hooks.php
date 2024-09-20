@@ -60,6 +60,7 @@ class Hooks
     const VCARD_DATA            = 'vcard_data';
     const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
     const POST_PLUGIN_CLEAN     = 'post_plugin_clean';
+    const POST_PLUGIN_INSTALL   = 'post_plugin_install';
     const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
     const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
 
