@@ -57,15 +57,9 @@ class Barcode extends CommonDropdown
     public static function renderQRCode(CommonDBTM $item)
     {
         global $CFG_GLPI;
-        $lowercase_array = array_map('strtolower', $CFG_GLPI["asset_types"]);
-        if (
-            in_array(
-                strtolower($item::$rightname),
-                $lowercase_array
-            )
-        ) {
+        if (in_array($item::class, $CFG_GLPI["asset_types"])) {
             $qrcode = self::generateQRCode($item);
-            if ( $qrcode ) {
+            if ($qrcode) {
                 return $qrcode->getHtmlDiv();
             }
         }
