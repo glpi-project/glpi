@@ -38,7 +38,11 @@ class Barcode extends CommonDropdown
     public static function generateQRCode(CommonDBTM $item)
     {
         global $CFG_GLPI;
+        if ( $item->getId() === -1) {
+            return false;
+        }
         $barcode = new \Com\Tecnick\Barcode\Barcode();
+        $temp = $item->getLinkURL();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),
@@ -61,7 +65,10 @@ class Barcode extends CommonDropdown
             )
         ) {
             $qrcode = self::generateQRCode($item);
-            return $qrcode->getHtmlDiv();
+            if ( $qrcode ) {
+                return $qrcode->getHtmlDiv();
+            }
         }
+        return false;
     }
 }
