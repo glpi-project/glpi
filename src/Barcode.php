@@ -42,7 +42,6 @@ class Barcode extends CommonDropdown
             return false;
         }
         $barcode = new \Com\Tecnick\Barcode\Barcode();
-        $temp = $item->getLinkURL();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),
