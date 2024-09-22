@@ -33,31 +33,49 @@
 
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block config_fields %}
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
 
-   {{ fields.smallTitle(__('General API')) }}
-   {{ fields.sliderField('enable_api', config['enable_api'], __("Enable REST API")) }}
+    {{ fields.smallTitle(__('API')) }}
+    {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
+    {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
+    {{ fields.htmlField(
+        '',
+        getting_started_doc
+    ) }}
+    {{ fields.htmlField(
+        '',
+        endpoint_doc
+    ) }}
+    {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
+        readonly: true,
+        copyable: true
+    }) }}
 
+    {{ fields.smallTitle(__('Legacy API')) }}
+    {% if config['enable_api'] %}
+        {{ alerts.alert_warning(__('The Legacy API is enabled. It is recommended to only use the new API when possible.')) }}
+    {% endif %}
+    {{ fields.sliderField('enable_api', config['enable_api'], __("Enable Legacy REST API"), {
+        additional_attributes: {
+            onchange: 'confirmEnableLegacyApi(this)'
+        }
+    }) }}
+    {{ fields.nullField() }}
+    <script>
+        function confirmEnableLegacyApi(element) {
+            if (element.checked) {
+                glpi_confirm({
+                    title: "{{ __('Enable Legacy REST API') }}",
+                    message: "{{ __('Are you sure you want to enable the Legacy API? It is recommended to only use the new API when possible.') }}",
+                    cancel_callback: () => element.checked = false
+                });
+            }
+        }
+    </script>
    {% if config['enable_api'] %}
-      {{ fields.smallTitle(__('API')) }}
-      {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
-      {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
-      {{ fields.htmlField(
-         '',
-         getting_started_doc
-      ) }}
-      {{ fields.htmlField(
-         '',
-         endpoint_doc
-      ) }}
-      {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
-         readonly: true,
-         copyable: true
-      }) }}
-
-      {{ fields.smallTitle(__('Legacy API')) }}
       {% set legacy_doc %}<a href="{{ legacy_doc_url }}">{{ __('API inline Documentation') }}</a>{% endset %}
       {{ fields.htmlField(
          '',
