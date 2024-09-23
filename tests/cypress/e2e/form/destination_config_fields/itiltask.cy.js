@@ -89,7 +89,7 @@ describe('ITILTask configuration', () => {
         cy.get('@itiltask_dropdown').should('have.text', 'No Task');
     });
 
-    it.only('can create ticket using specific task template', () => {
+    it('can create ticket using specific task template', () => {
         cy.findByRole('region', {'name': "Tasks configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Tasks').as("itiltask_dropdown");
 
