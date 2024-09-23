@@ -40,11 +40,9 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
 use Override;
 use Session;
-use TaskTemplate;
 
 class ITILTaskField extends AbstractConfigField
 {
@@ -75,7 +73,6 @@ class ITILTaskField extends AbstractConfigField
         return $twig->render('pages/admin/form/itil_config_fields/itiltasktemplate.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_VALUES'  => ITILTaskFieldStrategy::SPECIFIC_VALUES->value,
-            'CONFIG_SPECIFIC_ANSWERS' => ITILTaskFieldStrategy::SPECIFIC_ANSWERS->value,
 
             // General display options
             'options' => $display_options,
@@ -93,14 +90,6 @@ class ITILTaskField extends AbstractConfigField
                 'aria_label'     => __("Select task templates..."),
                 'value'           => $config->getSpecificTaskTemplatesIds() ?? [],
                 'input_name'      => $input_name . "[" . ITILTaskFieldConfig::TASKTEMPLATE_IDS . "]",
-            ],
-
-            // Specific additional config for SPECIFIC_ANSWERS strategy
-            'specific_answer_extra_field' => [
-                'aria_label'     => __("Select questions..."),
-                'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ITILTaskFieldConfig::QUESTION_IDS . "]",
-                'possible_values' => $this->getTaskTemplateQuestionsValuesForDropdown($form),
             ],
         ]);
     }
@@ -129,7 +118,7 @@ class ITILTaskField extends AbstractConfigField
     public function getDefaultConfig(Form $form): ITILTaskFieldConfig
     {
         return new ITILTaskFieldConfig(
-            ITILTaskFieldStrategy::ALL_VALID_ANSWERS,
+            ITILTaskFieldStrategy::NO_TASK,
         );
     }
 
@@ -139,22 +128,6 @@ class ITILTaskField extends AbstractConfigField
         foreach (ITILTaskFieldStrategy::cases() as $strategies) {
             $values[$strategies->value] = $strategies->getLabel();
         }
-        return $values;
-    }
-
-    private function getTaskTemplateQuestionsValuesForDropdown(Form $form): array
-    {
-        $values = [];
-        $questions = $form->getQuestionsByType(QuestionTypeItemDropdown::class);
-
-        foreach ($questions as $question) {
-            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== TaskTemplate::class) {
-                continue;
-            }
-
-            $values[$question->getId()] = $question->fields['name'];
-        }
-
         return $values;
     }
 
@@ -168,11 +141,6 @@ class ITILTaskField extends AbstractConfigField
     public function prepareInput(array $input): array
     {
         $input = parent::prepareInput($input);
-
-        // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ITILTaskFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILTaskFieldConfig::QUESTION_IDS]);
-        }
 
         // Ensure that itilfollowuptemplate_ids is an array
         if (!is_array($input[$this->getKey()][ITILTaskFieldConfig::TASKTEMPLATE_IDS] ?? null)) {

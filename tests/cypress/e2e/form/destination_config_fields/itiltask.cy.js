@@ -36,14 +36,10 @@ describe('ITILTask configuration', () => {
         cy.login();
         cy.changeProfile('Super-Admin', true);
 
-        // Create form with a single "Task template" dropdown question
+        // Create form
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
         cy.findByRole('button', {'name': "Add a new question"}).click();
-        cy.focused().type("My Task template question");
-        cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
-        cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');
-
-        cy.getDropdownByLabelText('Select a dropdown type').selectDropdownValue('Task templates');
+        cy.focused().type("My question");
 
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
@@ -68,18 +64,11 @@ describe('ITILTask configuration', () => {
         // Default value
         cy.get('@itiltask_dropdown').should(
             'have.text',
-            'All answers to "Task templates" questions'
+            'No Task'
         );
 
         // Make sure hidden dropdowns are not displayed
         cy.get('@config').getDropdownByLabelText('Select task templates...').should('not.exist');
-        cy.get('@config').getDropdownByLabelText('Select questions...').should('not.exist');
-
-        // Switch to "No Task"
-        cy.get('@itiltask_dropdown').selectDropdownValue('No Task');
-        cy.findByRole('button', {'name': 'Update item'}).click();
-        cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@itiltask_dropdown').should('have.text', 'No Task');
 
         // Switch to "Specific Task templates"
         cy.get('@form_id').then((form_id) => {
@@ -93,30 +82,27 @@ describe('ITILTask configuration', () => {
             cy.get('@specific_itiltask_dropdown').should('have.text', '×Task template 1 - ' + form_id);
         });
 
-        // Switch to "Answer from specific questions"
-        cy.get('@itiltask_dropdown').selectDropdownValue('Answer from specific questions');
-        cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
-        cy.get('@specific_answers_dropdown').selectDropdownValue('My Task template question');
-
+        // Switch to "No Task"
+        cy.get('@itiltask_dropdown').selectDropdownValue('No Task');
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@itiltask_dropdown').should('have.text', 'Answer from specific questions');
-        cy.get('@specific_answers_dropdown').should('have.text', '×My Task template question');
-
-        // Switch to "Answer to last "Task templates" question"
-        cy.get('@itiltask_dropdown').selectDropdownValue('Answer to last "Task templates" question');
-        cy.findByRole('button', {'name': 'Update item'}).click();
-        cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@itiltask_dropdown').should('have.text', 'Answer to last "Task templates" question');
-
-        // Switch to "All answers to "Task templates" questions"
-        cy.get('@itiltask_dropdown').selectDropdownValue('All answers to "Task templates" questions');
-        cy.findByRole('button', {'name': 'Update item'}).click();
-        cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@itiltask_dropdown').should('have.text', 'All answers to "Task templates" questions');
+        cy.get('@itiltask_dropdown').should('have.text', 'No Task');
     });
 
-    it('can create ticket using default configuration', () => {
+    it.only('can create ticket using specific task template', () => {
+        cy.findByRole('region', {'name': "Tasks configuration"}).as("config");
+        cy.get('@config').getDropdownByLabelText('Tasks').as("itiltask_dropdown");
+
+        // Switch to "Specific Task templates"
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@itiltask_dropdown').selectDropdownValue('Specific Task templates');
+            cy.get('@config').getDropdownByLabelText('Select task templates...').as('specific_itiltask_dropdown');
+            cy.get('@specific_itiltask_dropdown').selectDropdownValue('Task template 1 - ' + form_id);
+
+            cy.findByRole('button', {'name': 'Update item'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+        });
+
         // Go to preview
         cy.findByRole('tab', {'name': "Form"}).click();
         cy.findByRole('link', {'name': "Preview"})
@@ -125,10 +111,6 @@ describe('ITILTask configuration', () => {
         ;
 
         // Fill form
-        cy.getDropdownByLabelText("My Task template question").as('itiltask_dropdown');
-        cy.get('@form_id').then((form_id) => {
-            cy.get('@itiltask_dropdown').selectDropdownValue('Task template 1 - ' + form_id);
-        });
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 

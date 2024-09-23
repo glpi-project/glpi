@@ -60,24 +60,3 @@
         })
     ) }}
 </div>
-
-<div
-    {% if main_config_field.value != CONFIG_SPECIFIC_ANSWERS %}
-        class="d-none"
-    {% endif %}
-    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
->
-    {{ fields.dropdownArrayField(
-        specific_answer_extra_field.input_name,
-        "",
-        specific_answer_extra_field.possible_values,
-        "",
-        options|merge({
-            multiple: true,
-            no_label: true,
-            values: specific_answer_extra_field.values,
-            aria_label: specific_answer_extra_field.aria_label,
-        })
-    ) }}
-</div>

@@ -42,12 +42,9 @@ use Glpi\Form\Destination\CommonITILField\ITILTaskFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use ITILTask;
 use TaskTemplate;
-use Ticket;
 use TicketTask;
 
 final class ITILTaskFieldTest extends DbTestCase
@@ -61,32 +58,9 @@ final class ITILTaskFieldTest extends DbTestCase
             strategy: ITILTaskFieldStrategy::NO_TASK
         );
 
-        // Test with no answers
         $this->sendFormAndAssertITILTask(
             form: $form,
             config: $no_task,
-            answers: [],
-            expected_itiltasks: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $no_task,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-                "Task template 2" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-                "Task template 3" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-            ],
             expected_itiltasks: []
         );
     }
@@ -103,192 +77,12 @@ final class ITILTaskFieldTest extends DbTestCase
             specific_itiltasktemplates_ids: [$templates[0]->getID(), $templates[1]->getID(),]
         );
 
-        // Test with no answers
         $this->sendFormAndAssertITILTask(
             form: $form,
             config: $specific_values,
-            answers: [],
             expected_itiltasks: [
                 $templates[0]->getID() => 'Task template 1',
                 $templates[1]->getID() => 'Task template 2',
-            ]
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $specific_values,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-                "Task template 2" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-                "Task template 3" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $this->createTaskTemplate()->getID(),
-                ],
-            ],
-            expected_itiltasks: [
-                $templates[0]->getID() => 'Task template 1',
-                $templates[1]->getID() => 'Task template 2',
-            ]
-        );
-    }
-
-    public function testTaskForSpecificAnswers(): void
-    {
-        $templates = [
-            $this->createTaskTemplate('Task template 1'),
-            $this->createTaskTemplate('Task template 2'),
-            $this->createTaskTemplate('Task template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $specific_answers = new ITILTaskFieldConfig(
-            strategy: ITILTaskFieldStrategy::SPECIFIC_ANSWERS,
-            specific_question_ids: [
-                $this->getQuestionId($form, "Task template 1"),
-                $this->getQuestionId($form, "Task template 2"),
-            ]
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $specific_answers,
-            answers: [],
-            expected_itiltasks: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $specific_answers,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Task template 2" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Task template 3" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itiltasks: [
-                $templates[0]->getID() => 'Task template 1',
-                $templates[1]->getID() => 'Task template 2',
-            ]
-        );
-    }
-
-    public function testTaskForLastValidAnswer(): void
-    {
-        $templates = [
-            $this->createTaskTemplate('Task template 1'),
-            $this->createTaskTemplate('Task template 2'),
-            $this->createTaskTemplate('Task template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $last_valid_answer = new ITILTaskFieldConfig(
-            strategy: ITILTaskFieldStrategy::LAST_VALID_ANSWER
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $last_valid_answer,
-            answers: [],
-            expected_itiltasks: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $last_valid_answer,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Task template 2" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Task template 3" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itiltasks: [
-                $templates[2]->getID() => 'Task template 3',
-            ]
-        );
-    }
-
-    public function testTaskForAllValidAnswers(): void
-    {
-        $templates = [
-            $this->createTaskTemplate('Task template 1'),
-            $this->createTaskTemplate('Task template 2'),
-            $this->createTaskTemplate('Task template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $all_valid_answers = new ITILTaskFieldConfig(
-            strategy: ITILTaskFieldStrategy::ALL_VALID_ANSWERS
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [],
-            expected_itiltasks: []
-        );
-
-        // Test with only one answer
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-            ],
-            expected_itiltasks: [
-                $templates[0]->getID() => 'Task template 1',
-            ]
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILTask(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [
-                "Task template 1" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Task template 2" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Task template 3" => [
-                    'itemtype' => TaskTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itiltasks: [
-                $templates[0]->getID() => 'Task template 1',
-                $templates[1]->getID() => 'Task template 2',
-                $templates[2]->getID() => 'Task template 3',
             ]
         );
     }
@@ -296,7 +90,6 @@ final class ITILTaskFieldTest extends DbTestCase
     private function sendFormAndAssertITILTask(
         Form $form,
         ITILTaskFieldConfig $config,
-        array $answers,
         array $expected_itiltasks
     ): void {
         $field = new ITILTaskField();
@@ -312,19 +105,11 @@ final class ITILTaskFieldTest extends DbTestCase
             ["config"],
         );
 
-        // The provider use a simplified answer format to be more readable.
-        // Rewrite answers into expected format.
-        $formatted_answers = [];
-        foreach ($answers as $question => $answer) {
-            $key = $this->getQuestionId($form, $question);
-            $formatted_answers[$key] = $answer;
-        }
-
         // Submit form
         $answers_handler = AnswersHandler::getInstance();
         $answers = $answers_handler->saveAnswers(
             $form,
-            $formatted_answers,
+            [],
             getItemByTypeName(\User::class, TU_USER, true)
         );
 
@@ -363,16 +148,6 @@ final class ITILTaskFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleDropdownItemQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addQuestion("Task template 1", QuestionTypeItemDropdown::class, [
-            'itemtype' => TaskTemplate::getType()
-        ]);
-        $builder->addQuestion("Task template 2", QuestionTypeItemDropdown::class, [
-            'itemtype' => TaskTemplate::getType()
-        ]);
-        $builder->addQuestion("Task template 3", QuestionTypeItemDropdown::class, [
-            'itemtype' => TaskTemplate::getType()
-        ]);
-
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket"

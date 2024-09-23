@@ -42,12 +42,10 @@ final class ITILTaskFieldConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_IDS = 'question_ids';
     public const TASKTEMPLATE_IDS = 'tasktemplate_ids';
 
     public function __construct(
         private ITILTaskFieldStrategy $strategy,
-        private ?array $specific_question_ids = null,
         private ?array $specific_itiltasktemplates_ids = null,
     ) {
     }
@@ -57,12 +55,11 @@ final class ITILTaskFieldConfig implements JsonFieldInterface
     {
         $strategy = ITILTaskFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {
-            $strategy = ITILTaskFieldStrategy::LAST_VALID_ANSWER;
+            $strategy = ITILTaskFieldStrategy::NO_TASK;
         }
 
         return new self(
             strategy: $strategy,
-            specific_question_ids: $data[self::QUESTION_IDS] ?? [],
             specific_itiltasktemplates_ids: $data[self::TASKTEMPLATE_IDS] ?? [],
         );
     }
@@ -72,7 +69,6 @@ final class ITILTaskFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_IDS => $this->specific_question_ids,
             self::TASKTEMPLATE_IDS => $this->specific_itiltasktemplates_ids,
         ];
     }
@@ -82,14 +78,8 @@ final class ITILTaskFieldConfig implements JsonFieldInterface
         return $this->strategy;
     }
 
-    public function getSpecificQuestionIds(): ?array
-    {
-        return $this->specific_question_ids;
-    }
-
     public function getSpecificTaskTemplatesIds(): ?array
     {
-
         return $this->specific_itiltasktemplates_ids;
     }
 }
