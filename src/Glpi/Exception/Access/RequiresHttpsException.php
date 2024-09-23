@@ -41,13 +41,15 @@ class RequiresHttpsException extends AccessException
 {
     public function asResponse(): Response
     {
+        $request = $this->getRequest();
+
         $cnt = TemplateRenderer::getInstance()->render(
             'pages/https_only.html.twig',
             [
-                'secured_url' => 'https://' . $this->request->getHost() . $this->request->getUri(),
+                'secured_url' => 'https://' . $request->getHost() . $request->getUri(),
             ]
         );
 
-        return new Response($cnt);
+        return new Response($cnt, 400);
     }
 }

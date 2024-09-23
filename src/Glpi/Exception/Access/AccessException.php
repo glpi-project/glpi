@@ -39,11 +39,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AccessException extends \RuntimeException
 {
-    protected Request $request;
+    private ?Request $request = null;
 
     public function setRequest(Request $request): void
     {
         $this->request = $request;
+    }
+
+    public function getRequest(): Request
+    {
+        if (!$this->request) {
+            throw new \RuntimeException(\sprintf(
+                'Request not set in "%s" exception class. Access error listener might be wrongly configured.',
+                static::class,
+            ));
+        }
+
+        return $this->request;
     }
 
     abstract public function asResponse(): Response;
