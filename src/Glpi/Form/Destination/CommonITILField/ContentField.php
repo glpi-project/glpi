@@ -38,13 +38,9 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
-use Glpi\Form\Comment;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\Question;
 use Glpi\Form\Tag\AnswerTagProvider;
-use Glpi\Form\Tag\CommentDescriptionTagProvider;
-use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
@@ -134,8 +130,6 @@ TWIG;
         $section_provider = new SectionTagProvider();
         $question_provider = new QuestionTagProvider();
         $answer_provider = new AnswerTagProvider();
-        $comment_title_provider = new CommentTitleTagProvider();
-        $comment_description_provider = new CommentDescriptionTagProvider();
 
         $html = "";
         $sections = $form->getSections();
@@ -145,25 +139,14 @@ TWIG;
                 $html .= "<h2>$section_tag->html</h2>";
             }
 
-            if (!empty($section->getBlocks())) {
+            if (!empty($section->getQuestions())) {
                 $html .= "<p>";
                 $i = 1;
-                foreach ($section->getBlocks() as $block) {
-                    switch ($block->getType()) {
-                        case Question::class:
-                            $question_tag = $question_provider->getTagForQuestion($block);
-                            $answer_tag   = $answer_provider->getTagForQuestion($block);
+                foreach ($section->getQuestions() as $question) {
+                    $question_tag  = $question_provider->getTagForQuestion($question);
+                    $answer_tag    = $answer_provider->getTagForQuestion($question);
 
-                            $html .= "<b>$i) $question_tag->html</b>: $answer_tag->html<br>";
-                            break;
-                        case Comment::class:
-                            $title_comment_tag        = $comment_title_provider->getTitleTagForComment($block);
-                            $description_comment_tag  = $comment_description_provider->getDescriptionTagForComment($block);
-                            $html                    .= "<b>$i) $title_comment_tag->html</b><br>";
-                            $html                    .= "$description_comment_tag->html<br>";
-                            break;
-                    }
-
+                    $html .= "<b>$i) $question_tag->html</b>: $answer_tag->html<br>";
                     $i++;
                 }
                 $html .= "</p>";
