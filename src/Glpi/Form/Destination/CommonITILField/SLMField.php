@@ -85,7 +85,7 @@ abstract class SLMField extends AbstractConfigField
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'slm_class' => $this->getSLMClass(),
-                'empty_label'     => sprintf(__("Select an %s..."), $slm->getTypeName()),
+                'empty_label'     => sprintf(__("Select a %s..."), $slm->getTypeName()),
                 'value'           => $config->getSpecificSLMID() ?? 0,
                 'input_name'      => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
                 'type'            => $this->getType(),
