@@ -51,8 +51,8 @@ describe('Location configuration', () => {
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');
             cy.getDropdownByLabelText("Select a dropdown type").selectDropdownValue('Locations');
             cy.get('@form_id').then((form_id) => {
-                const itilcategory_name = 'Test Location - ' + form_id;
-                cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue('»' + itilcategory_name);
+                const location_name = 'Test Location - ' + form_id;
+                cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue('»' + location_name);
             });
             cy.findByRole('button', {'name': 'Save'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
