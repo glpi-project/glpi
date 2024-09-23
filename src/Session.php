@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
+use Glpi\Exception\Access\InvalidCsrfException;
 use Glpi\Exception\Access\RequiresHttpsException;
 use Glpi\Exception\Access\SessionExpiredException;
 use Glpi\Plugin\Hooks;
@@ -1780,15 +1780,7 @@ class Session
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
-            $message = __("The action you have requested is not allowed.");
-
-            // Output JSON if requested by client
-            if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
-                http_response_code(403);
-                die(json_encode(["message" => $message]));
-            }
-
-            Html::displayErrorAndDie($message, true);
+            throw new InvalidCsrfException();
         }
     }
 
