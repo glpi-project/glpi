@@ -43,12 +43,12 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use SLA;
+use OLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
 
-final class SLATTOFieldTest extends DbTestCase
+final class OLATTRFieldTest extends DbTestCase
 {
     use FormTesterTrait;
 
@@ -59,11 +59,11 @@ final class SLATTOFieldTest extends DbTestCase
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_sla_tto = $this->createItem(
-            SLA::class,
+        $created_ola_ttr = $this->createItem(
+            OLA::class,
             [
-                'name'            => 'SLATTO',
-                'type'            => SLM::TTO,
+                'name'            => 'OLATTR',
+                'type'            => SLM::TTR,
                 'number_time'     => 1,
                 'definition_time' => 'hour',
             ]
@@ -72,64 +72,64 @@ final class SLATTOFieldTest extends DbTestCase
             TicketTemplatePredefinedField::class,
             [
                 'tickettemplates_id' => $default_template->getID(),
-                'num'                => 37,
-                'value'              => $created_sla_tto->getID(),
+                'num'                => 191,
+                'value'              => $created_ola_ttr->getID(),
             ]
         );
 
-        $this->checkSLATTOFieldConfiguration(
+        $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
             config: new SLMFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
-            expected_slas_tto_id: $created_sla_tto->getID()
+            expected_olas_ttr_id: $created_ola_ttr->getID()
         );
     }
 
-    public function testSpecificSLATTO(): void
+    public function testSpecificOLATTR(): void
     {
         $this->login();
-        $created_sla_tto = $this->createItem(
-            SLA::class,
+        $created_ola_ttr = $this->createItem(
+            OLA::class,
             [
-                'name'            => 'SLATTO',
-                'type'            => SLM::TTO,
+                'name'            => 'OLATTR',
+                'type'            => SLM::TTR,
                 'number_time'     => 1,
                 'definition_time' => 'hour',
             ]
         );
 
-        $this->checkSLATTOFieldConfiguration(
+        $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
             config: new SLMFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
-                specific_slm_id: $created_sla_tto->getID()
+                specific_slm_id: $created_ola_ttr->getID()
             ),
-            expected_slas_tto_id: $created_sla_tto->getID()
+            expected_olas_ttr_id: $created_ola_ttr->getID()
         );
     }
 
-    public function testSpecificSLATTOWithDefaultTemplateWithPredefinedField(): void
+    public function testSpecificOLATTRWithDefaultTemplateWithPredefinedField(): void
     {
         $this->login();
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_sla_tto = $this->createItem(
-            SLA::class,
+        $created_ola_ttr = $this->createItem(
+            OLA::class,
             [
-                'name'            => 'SLATTO',
-                'type'            => SLM::TTO,
+                'name'            => 'OLATTR',
+                'type'            => SLM::TTR,
                 'number_time'     => 1,
                 'definition_time' => 'hour',
             ]
         );
-        $created_sla_tto_for_template = $this->createItem(
-            SLA::class,
+        $created_ola_ttr_for_template = $this->createItem(
+            OLA::class,
             [
-                'name'            => 'SLATTO',
-                'type'            => SLM::TTO,
+                'name'            => 'OLATTR',
+                'type'            => SLM::TTR,
                 'number_time'     => 1,
                 'definition_time' => 'hour',
             ]
@@ -138,25 +138,25 @@ final class SLATTOFieldTest extends DbTestCase
             TicketTemplatePredefinedField::class,
             [
                 'tickettemplates_id' => $default_template->getID(),
-                'num'                => 37,
-                'value'              => $created_sla_tto_for_template->getID(),
+                'num'                => 191,
+                'value'              => $created_ola_ttr_for_template->getID(),
             ]
         );
 
-        $this->checkSLATTOFieldConfiguration(
+        $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
             config: new SLMFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
-                specific_slm_id: $created_sla_tto->getID()
+                specific_slm_id: $created_ola_ttr->getID()
             ),
-            expected_slas_tto_id: $created_sla_tto->getID()
+            expected_olas_ttr_id: $created_ola_ttr->getID()
         );
     }
 
-    private function checkSLATTOFieldConfiguration(
+    private function checkOLATTRFieldConfiguration(
         Form $form,
         SLMFieldConfig $config,
-        int $expected_slas_tto_id
+        int $expected_olas_ttr_id
     ): Ticket {
         // Insert config
         $destinations = $form->getDestinations();
@@ -165,7 +165,7 @@ final class SLATTOFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['sla_tto' => $config->jsonSerialize()]],
+            ['config' => ['ola_ttr' => $config->jsonSerialize()]],
             ["config"],
         );
 
@@ -182,8 +182,8 @@ final class SLATTOFieldTest extends DbTestCase
         $this->assertCount(1, $created_items);
         $ticket = current($created_items);
 
-        // Check sla_id_tto field
-        $this->assertEquals($expected_slas_tto_id, $ticket->fields['slas_id_tto']);
+        // Check ola_id_ttr field
+        $this->assertEquals($expected_olas_ttr_id, $ticket->fields['olas_id_ttr']);
 
         // Return the created ticket to be able to check other fields
         return $ticket;

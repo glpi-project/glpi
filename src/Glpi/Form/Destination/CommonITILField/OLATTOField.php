@@ -35,51 +35,39 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\DBAL\JsonFieldInterface;
+use OLA;
 use Override;
+use SLM;
 
-final class SLAFieldConfig implements JsonFieldInterface
+final class OLATTOField extends SLMField
 {
-    // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY = 'strategy';
-    public const SLA_ID = 'sla_id';
-
-    public function __construct(
-        private SLAFieldStrategy $strategy,
-        private ?int $specific_sla_id = null,
-    ) {
+    #[Override]
+    public function getKey(): string
+    {
+        return 'ola_tto';
     }
 
     #[Override]
-    public static function jsonDeserialize(array $data): self
+    public function getLabel(): string
     {
-        $strategy = SLAFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = SLAFieldStrategy::FROM_TEMPLATE;
-        }
-
-        return new self(
-            strategy: $strategy,
-            specific_sla_id: $data[self::SLA_ID],
-        );
+        return __("OLA TTO");
     }
 
     #[Override]
-    public function jsonSerialize(): array
+    public function getWeight(): int
     {
-        return [
-            self::STRATEGY => $this->strategy->value,
-            self::SLA_ID => $this->specific_sla_id,
-        ];
+        return 30;
     }
 
-    public function getStrategy(): SLAFieldStrategy
+    #[Override]
+    public function getSLMClass(): string
     {
-        return $this->strategy;
+        return OLA::class;
     }
 
-    public function getSpecificSLAID(): ?int
+    #[Override]
+    public function getType(): int
     {
-        return $this->specific_sla_id;
+        return SLM::TTO;
     }
 }

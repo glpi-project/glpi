@@ -42,18 +42,16 @@ use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
-use SLA;
-use SLM;
-use Ticket;
 
-abstract class SLAField extends AbstractConfigField
+abstract class SLMField extends AbstractConfigField
 {
+    abstract public function getSLMClass(): string;
     abstract public function getType(): int;
 
     #[Override]
     public function getConfigClass(): string
     {
-        return SLAFieldConfig::class;
+        return SLMFieldConfig::class;
     }
 
     #[Override]
@@ -63,14 +61,15 @@ abstract class SLAField extends AbstractConfigField
         string $input_name,
         array $display_options
     ): string {
-        if (!$config instanceof SLAFieldConfig) {
+        if (!$config instanceof SLMFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        $slm = new ($this->getSLMClass())();
         $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/itil_config_fields/sla.html.twig', [
+        return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => SLAFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_VALUE'  => SLMFieldStrategy::SPECIFIC_VALUE->value,
 
             // General display options
             'options' => $display_options,
@@ -79,15 +78,16 @@ abstract class SLAField extends AbstractConfigField
             'main_config_field' => [
                 'label'           => $this->getLabel(),
                 'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . SLAFieldConfig::STRATEGY . "]",
+                'input_name'      => $input_name . "[" . SLMFieldConfig::STRATEGY . "]",
                 'possible_values' => $this->getMainConfigurationValuesforDropdown(),
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
-                'empty_label'     => __("Select an SLA..."),
-                'value'           => $config->getSpecificSLAID() ?? 0,
-                'input_name'      => $input_name . "[" . SLAFieldConfig::SLA_ID . "]",
+                'slm_class' => $this->getSLMClass(),
+                'empty_label'     => sprintf(__("Select a %s..."), $slm->getTypeName()),
+                'value'           => $config->getSpecificSLMID() ?? 0,
+                'input_name'      => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
                 'type'            => $this->getType(),
             ],
         ]);
@@ -99,36 +99,37 @@ abstract class SLAField extends AbstractConfigField
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (!$config instanceof SLAFieldConfig) {
+        if (!$config instanceof SLMFieldConfig) {
             throw new InvalidArgumentException("Unexpected config class");
         }
 
         // Compute value according to strategy
-        $sla_id = $config->getStrategy()->getSLAID($config, $answers_set);
+        $slm_id = $config->getStrategy()->getSLMID($config);
 
         // Do not edit input if invalid value was found
-        if (!SLA::getById($sla_id)) {
+        $slm_class = $this->getSLMClass();
+        if (!$slm_class::getById($slm_id)) {
             return $input;
         }
 
-        $input[SLA::getFieldNames($this->getType())[1]] = $sla_id;
+        $input[$slm_class::getFieldNames($this->getType())[1]] = $slm_id;
 
         return $input;
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): SLAFieldConfig
+    public function getDefaultConfig(Form $form): SLMFieldConfig
     {
-        return new SLAFieldConfig(
-            SLAFieldStrategy::FROM_TEMPLATE
+        return new SLMFieldConfig(
+            SLMFieldStrategy::FROM_TEMPLATE
         );
     }
 
     private function getMainConfigurationValuesforDropdown(): array
     {
         $values = [];
-        foreach (SLAFieldStrategy::cases() as $strategies) {
-            $values[$strategies->value] = $strategies->getLabel();
+        foreach (SLMFieldStrategy::cases() as $strategies) {
+            $values[$strategies->value] = $strategies->getLabel($this);
         }
         return $values;
     }

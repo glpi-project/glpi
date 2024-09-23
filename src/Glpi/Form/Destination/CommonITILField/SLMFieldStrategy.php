@@ -33,33 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
-use Override;
-use Ticket;
-
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+enum SLMFieldStrategy: string
 {
-    #[Override]
-    public static function getTargetItemtype(): string
+    case FROM_TEMPLATE = 'from_template';
+    case SPECIFIC_VALUE = 'specific_value';
+
+    public function getLabel(SLMField $field): string
     {
-        return Ticket::class;
+        return match ($this) {
+            self::FROM_TEMPLATE     => __("From template"),
+            self::SPECIFIC_VALUE    => sprintf(__("Specific %s"), $field->getSLMClass()),
+        };
     }
 
-    #[Override]
-    public function getConfigurableFields(): array
-    {
-        return array_merge(parent::getConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-            new OLATTOField(),
-            new OLATTRField(),
-        ]);
+    public function getSLMID(
+        SLMFieldConfig $config,
+    ): ?int {
+        return match ($this) {
+            self::FROM_TEMPLATE => null, // Let the template apply its default value by itself.
+            self::SPECIFIC_VALUE => $config->getSpecificSLMID(),
+        };
     }
 }

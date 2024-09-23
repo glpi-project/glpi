@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-describe('SLA TTR configuration', () => {
+describe('OLA TTR configuration', () => {
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin', true);
@@ -45,9 +45,9 @@ describe('SLA TTR configuration', () => {
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
-            cy.createWithAPI('SLA', {
-                'name': sla_name,
+            const ola_name = 'OLA TTR - ' + slm_id;
+            cy.createWithAPI('OLA', {
+                'name': ola_name,
                 'type': 0,
                 'number_time': 1,
                 'definition_time': 'hour',
@@ -62,45 +62,45 @@ describe('SLA TTR configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', { 'name': "SLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('SLA TTR').as("sla_ttr_dropdown");
+        cy.findByRole('region', { 'name': "OLA TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('OLA TTR').as("ola_ttr_dropdown");
 
         // Default value
-        cy.get('@sla_ttr_dropdown').should(
+        cy.get('@ola_ttr_dropdown').should(
             'have.text',
             'From template'
         );
 
         // Switch to "From template"
-        cy.get('@sla_ttr_dropdown').selectDropdownValue('From template');
+        cy.get('@ola_ttr_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@sla_ttr_dropdown').should('have.text', 'From template');
+        cy.get('@ola_ttr_dropdown').should('have.text', 'From template');
 
-        // Switch to "Specific SLA"
-        cy.get('@sla_ttr_dropdown').selectDropdownValue('Specific SLA');
-        cy.get('@config').getDropdownByLabelText('Select a SLA...').as('specific_sla_ttr_dropdown');
+        // Switch to "Specific OLA"
+        cy.get('@ola_ttr_dropdown').selectDropdownValue('Specific OLA');
+        cy.get('@config').getDropdownByLabelText('Select a OLA...').as('specific_ola_ttr_dropdown');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
-            cy.get('@specific_sla_ttr_dropdown').selectDropdownValue(sla_name);
+            const ola_name = 'OLA TTR - ' + slm_id;
+            cy.get('@specific_ola_ttr_dropdown').selectDropdownValue(ola_name);
         });
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@sla_ttr_dropdown').should('have.text', 'Specific SLA');
+        cy.get('@ola_ttr_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
-            cy.get('@specific_sla_ttr_dropdown').should('have.text', sla_name);
+            const ola_name = 'OLA TTR - ' + slm_id;
+            cy.get('@specific_ola_ttr_dropdown').should('have.text', ola_name);
         });
     });
 
     it('can create ticket using default configuration', () => {
-        // Switch to "Specific SLA"
-        cy.findByRole('region', { 'name': "SLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('SLA TTR').selectDropdownValue('Specific SLA');
+        // Switch to "Specific OLA"
+        cy.findByRole('region', { 'name': "OLA TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('OLA TTR').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
-            cy.get('@config').getDropdownByLabelText('Select a SLA...').selectDropdownValue(sla_name);
+            const ola_name = 'OLA TTR - ' + slm_id;
+            cy.get('@config').getDropdownByLabelText('Select a OLA...').selectDropdownValue(ola_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
@@ -122,7 +122,7 @@ describe('SLA TTR configuration', () => {
         // Check ticket values
         cy.findByRole('region', { 'name': "Service levels" }).as('service_levels');
         cy.get('@slm_id').then((slm_id) => {
-            cy.get('@service_levels').should('contain.text', 'SLA TTR - ' + slm_id);
+            cy.get('@service_levels').should('contain.text', 'OLA TTR - ' + slm_id);
         });
 
         // Others possibles configurations are tested directly by the backend.
