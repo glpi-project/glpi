@@ -105,7 +105,7 @@ class ITILTaskField extends AbstractConfigField
         }
 
         // Compute value according to strategy
-        $tasktemplates_ids = $config->getStrategy()->getTaskTemplatesIDs($config, $answers_set);
+        $tasktemplates_ids = $config->getStrategy()->getTaskTemplatesIDs($config);
 
         if (!empty($tasktemplates_ids)) {
             $input['_tasktemplates_id'] = $tasktemplates_ids;
