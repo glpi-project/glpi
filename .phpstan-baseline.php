@@ -2318,18 +2318,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
 ];
 $ignoreErrors[] = [
-	// identifier: class.notFound
-	'message' => '#^Method Glpi\\\\Form\\\\Section\\:\\:getBlocks\\(\\) has invalid return type Glpi\\\\Form\\\\Block\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Form\\\\Section\\:\\:getBlocks\\(\\) should return array\\<Glpi\\\\Form\\\\Block\\> but returns array\\<int, Glpi\\\\Form\\\\Comment\\|Glpi\\\\Form\\\\Question\\>\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.childReturnType
 	'message' => '#^Return type \\(array\\<Glpi\\\\Form\\\\Comment\\>\\) of method Glpi\\\\Form\\\\Section\\:\\:getComments\\(\\) should be compatible with return type \\(string\\) of method CommonDBTM\\:\\:getComments\\(\\)$#',
 	'count' => 1,
