@@ -802,6 +802,7 @@ TWIG, $twig_params);
             'field'             => 'name',
             'name'              => __('Name'),
             'datatype'          => 'itemlink',
+            'massiveaction'     => false,
         ];
 
         $tab[] = [
