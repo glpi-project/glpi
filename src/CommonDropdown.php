@@ -150,7 +150,6 @@ abstract class CommonDropdown extends CommonDBTM
         } else {
             return parent::getMenuContent();
         }
-        return false;
     }
 
 
