@@ -42,12 +42,10 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_IDS = 'question_ids';
     public const ITILFOLLOWUPTEMPLATE_IDS = 'itilfollowuptemplate_ids';
 
     public function __construct(
         private ITILFollowupFieldStrategy $strategy,
-        private ?array $specific_question_ids = null,
         private ?array $specific_itilfollowuptemplates_ids = null,
     ) {
     }
@@ -57,12 +55,11 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
     {
         $strategy = ITILFollowupFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {
-            $strategy = ITILFollowupFieldStrategy::LAST_VALID_ANSWER;
+            $strategy = ITILFollowupFieldStrategy::NO_FOLLOWUP;
         }
 
         return new self(
             strategy: $strategy,
-            specific_question_ids: $data[self::QUESTION_IDS] ?? [],
             specific_itilfollowuptemplates_ids: $data[self::ITILFOLLOWUPTEMPLATE_IDS] ?? [],
         );
     }
@@ -72,7 +69,6 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_IDS => $this->specific_question_ids,
             self::ITILFOLLOWUPTEMPLATE_IDS => $this->specific_itilfollowuptemplates_ids,
         ];
     }
@@ -80,11 +76,6 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
     public function getStrategy(): ITILFollowupFieldStrategy
     {
         return $this->strategy;
-    }
-
-    public function getSpecificQuestionIds(): ?array
-    {
-        return $this->specific_question_ids;
     }
 
     public function getSpecificITILFollowupTemplatesIds(): ?array

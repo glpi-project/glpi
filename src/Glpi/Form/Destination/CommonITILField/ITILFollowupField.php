@@ -40,12 +40,9 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
-use ITILFollowupTemplate;
 use Override;
 use Session;
-use Ticket;
 
 class ITILFollowupField extends AbstractConfigField
 {
@@ -76,7 +73,6 @@ class ITILFollowupField extends AbstractConfigField
         return $twig->render('pages/admin/form/itil_config_fields/itilfollowuptemplate.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_VALUES'  => ITILFollowupFieldStrategy::SPECIFIC_VALUES->value,
-            'CONFIG_SPECIFIC_ANSWERS' => ITILFollowupFieldStrategy::SPECIFIC_ANSWERS->value,
 
             // General display options
             'options' => $display_options,
@@ -95,14 +91,6 @@ class ITILFollowupField extends AbstractConfigField
                 'value'           => $config->getSpecificITILFollowupTemplatesIds() ?? [],
                 'input_name'      => $input_name . "[" . ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS . "]",
             ],
-
-            // Specific additional config for SPECIFIC_ANSWERS strategy
-            'specific_answer_extra_field' => [
-                'aria_label'     => __("Select questions..."),
-                'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ITILFollowupFieldConfig::QUESTION_IDS . "]",
-                'possible_values' => $this->getITILFollowupQuestionsValuesForDropdown($form),
-            ],
         ]);
     }
 
@@ -117,7 +105,7 @@ class ITILFollowupField extends AbstractConfigField
         }
 
         // Compute value according to strategy
-        $itilfollowuptemplates_ids = $config->getStrategy()->getITILFollowupTemplatesIDs($config, $answers_set);
+        $itilfollowuptemplates_ids = $config->getStrategy()->getITILFollowupTemplatesIDs($config);
 
         if (!empty($itilfollowuptemplates_ids)) {
             $input['_itilfollowuptemplates_id'] = $itilfollowuptemplates_ids;
@@ -130,7 +118,7 @@ class ITILFollowupField extends AbstractConfigField
     public function getDefaultConfig(Form $form): ITILFollowupFieldConfig
     {
         return new ITILFollowupFieldConfig(
-            ITILFollowupFieldStrategy::ALL_VALID_ANSWERS,
+            ITILFollowupFieldStrategy::NO_FOLLOWUP,
         );
     }
 
@@ -140,22 +128,6 @@ class ITILFollowupField extends AbstractConfigField
         foreach (ITILFollowupFieldStrategy::cases() as $strategies) {
             $values[$strategies->value] = $strategies->getLabel();
         }
-        return $values;
-    }
-
-    private function getITILFollowupQuestionsValuesForDropdown(Form $form): array
-    {
-        $values = [];
-        $questions = $form->getQuestionsByType(QuestionTypeItemDropdown::class);
-
-        foreach ($questions as $question) {
-            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== ITILFollowupTemplate::class) {
-                continue;
-            }
-
-            $values[$question->getId()] = $question->fields['name'];
-        }
-
         return $values;
     }
 
@@ -169,11 +141,6 @@ class ITILFollowupField extends AbstractConfigField
     public function prepareInput(array $input): array
     {
         $input = parent::prepareInput($input);
-
-        // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ITILFollowupFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILFollowupFieldConfig::QUESTION_IDS]);
-        }
 
         // Ensure that itilfollowuptemplate_ids is an array
         if (!is_array($input[$this->getKey()][ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS] ?? null)) {

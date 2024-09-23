@@ -42,7 +42,6 @@ use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILFollowup;
@@ -64,28 +63,6 @@ final class ITILFollowupFieldTest extends DbTestCase
         $this->sendFormAndAssertITILFollowup(
             form: $form,
             config: $no_followup,
-            answers: [],
-            expected_itilfollowups: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $no_followup,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-                "Followup template 2" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-                "Followup template 3" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-            ],
             expected_itilfollowups: []
         );
     }
@@ -99,195 +76,15 @@ final class ITILFollowupFieldTest extends DbTestCase
         $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
         $specific_values = new ITILFollowupFieldConfig(
             strategy: ITILFollowupFieldStrategy::SPECIFIC_VALUES,
-            specific_itilfollowuptemplates_ids: [$templates[0]->getID(), $templates[1]->getID(),]
+            specific_itilfollowuptemplates_ids: [$templates[0]->getID(), $templates[1]->getID()]
         );
 
-        // Test with no answers
         $this->sendFormAndAssertITILFollowup(
             form: $form,
             config: $specific_values,
-            answers: [],
             expected_itilfollowups: [
                 $templates[0]->getID() => 'Followup template 1',
                 $templates[1]->getID() => 'Followup template 2',
-            ]
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $specific_values,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-                "Followup template 2" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-                "Followup template 3" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $this->createITILFollowupTemplate()->getID(),
-                ],
-            ],
-            expected_itilfollowups: [
-                $templates[0]->getID() => 'Followup template 1',
-                $templates[1]->getID() => 'Followup template 2',
-            ]
-        );
-    }
-
-    public function testFollowupForSpecificAnswers(): void
-    {
-        $templates = [
-            $this->createITILFollowupTemplate('Followup template 1'),
-            $this->createITILFollowupTemplate('Followup template 2'),
-            $this->createITILFollowupTemplate('Followup template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $specific_answers = new ITILFollowupFieldConfig(
-            strategy: ITILFollowupFieldStrategy::SPECIFIC_ANSWERS,
-            specific_question_ids: [
-                $this->getQuestionId($form, "Followup template 1"),
-                $this->getQuestionId($form, "Followup template 2"),
-            ]
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $specific_answers,
-            answers: [],
-            expected_itilfollowups: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $specific_answers,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Followup template 2" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Followup template 3" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itilfollowups: [
-                $templates[0]->getID() => 'Followup template 1',
-                $templates[1]->getID() => 'Followup template 2',
-            ]
-        );
-    }
-
-    public function testFollowupForLastValidAnswer(): void
-    {
-        $templates = [
-            $this->createITILFollowupTemplate('Followup template 1'),
-            $this->createITILFollowupTemplate('Followup template 2'),
-            $this->createITILFollowupTemplate('Followup template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $last_valid_answer = new ITILFollowupFieldConfig(
-            strategy: ITILFollowupFieldStrategy::LAST_VALID_ANSWER
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $last_valid_answer,
-            answers: [],
-            expected_itilfollowups: []
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $last_valid_answer,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Followup template 2" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Followup template 3" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itilfollowups: [
-                $templates[2]->getID() => 'Followup template 3',
-            ]
-        );
-    }
-
-    public function testFollowupForAllValidAnswers(): void
-    {
-        $templates = [
-            $this->createITILFollowupTemplate('Followup template 1'),
-            $this->createITILFollowupTemplate('Followup template 2'),
-            $this->createITILFollowupTemplate('Followup template 3'),
-        ];
-        $form = $this->createAndGetFormWithMultipleDropdownItemQuestions();
-        $all_valid_answers = new ITILFollowupFieldConfig(
-            strategy: ITILFollowupFieldStrategy::ALL_VALID_ANSWERS
-        );
-
-        // Test with no answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [],
-            expected_itilfollowups: []
-        );
-
-        // Test with only one answer
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-            ],
-            expected_itilfollowups: [
-                $templates[0]->getID() => 'Followup template 1',
-            ]
-        );
-
-        // Test with answers
-        $this->sendFormAndAssertITILFollowup(
-            form: $form,
-            config: $all_valid_answers,
-            answers: [
-                "Followup template 1" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[0]->getID(),
-                ],
-                "Followup template 2" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[1]->getID(),
-                ],
-                "Followup template 3" => [
-                    'itemtype' => ITILFollowupTemplate::getType(),
-                    'items_id' => $templates[2]->getID(),
-                ],
-            ],
-            expected_itilfollowups: [
-                $templates[0]->getID() => 'Followup template 1',
-                $templates[1]->getID() => 'Followup template 2',
-                $templates[2]->getID() => 'Followup template 3',
             ]
         );
     }
@@ -295,7 +92,6 @@ final class ITILFollowupFieldTest extends DbTestCase
     private function sendFormAndAssertITILFollowup(
         Form $form,
         ITILFollowupFieldConfig $config,
-        array $answers,
         array $expected_itilfollowups
     ): void {
         $field = new ITILFollowupField();
@@ -311,19 +107,11 @@ final class ITILFollowupFieldTest extends DbTestCase
             ["config"],
         );
 
-        // The provider use a simplified answer format to be more readable.
-        // Rewrite answers into expected format.
-        $formatted_answers = [];
-        foreach ($answers as $question => $answer) {
-            $key = $this->getQuestionId($form, $question);
-            $formatted_answers[$key] = $answer;
-        }
-
         // Submit form
         $answers_handler = AnswersHandler::getInstance();
         $answers = $answers_handler->saveAnswers(
             $form,
-            $formatted_answers,
+            [],
             getItemByTypeName(\User::class, TU_USER, true)
         );
 
@@ -364,16 +152,6 @@ final class ITILFollowupFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleDropdownItemQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addQuestion("Followup template 1", QuestionTypeItemDropdown::class, [
-            'itemtype' => ITILFollowupTemplate::getType()
-        ]);
-        $builder->addQuestion("Followup template 2", QuestionTypeItemDropdown::class, [
-            'itemtype' => ITILFollowupTemplate::getType()
-        ]);
-        $builder->addQuestion("Followup template 3", QuestionTypeItemDropdown::class, [
-            'itemtype' => ITILFollowupTemplate::getType()
-        ]);
-
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket"
