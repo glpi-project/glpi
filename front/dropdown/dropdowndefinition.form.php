@@ -104,6 +104,6 @@ if (isset($_POST['add'])) {
     }
     $dropdown_definition->redirectToList();
 } else {
-    $menus = ['config', DropdownDefinition::class];
+    $menus = ['config', CommonDropdown::class];
     DropdownDefinition::displayFullPageForItem($_GET['id'] ?? 0, $menus);
 }

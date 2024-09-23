@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
 
 /// CommonDropdown class - generic dropdown
@@ -111,9 +112,22 @@ abstract class CommonDropdown extends CommonDBTM
             $menu['icon']              = self::getIcon();
             $menu['config']['default'] = '/front/dropdown.php';
 
-            $dps = Dropdown::getStandardDropdownItemTypes();
-            $menu['options'] = [];
+            $menu['links']   = [
+                DropdownDefinition::class => DropdownDefinition::getSearchURL(false),
+            ];
+            $menu['options'] = [
+                DropdownDefinition::class => [
+                    'icon'  => DropdownDefinition::getIcon(),
+                    'title' => DropdownDefinition::getTypeName(Session::getPluralNumber()),
+                    'page'  => DropdownDefinition::getSearchURL(false),
+                    'links' => [
+                        'search' => DropdownDefinition::getSearchURL(false),
+                        'add'    => DropdownDefinition::getFormURL(false),
+                    ]
+                ]
+            ];
 
+            $dps = Dropdown::getStandardDropdownItemTypes();
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
                     /** @var class-string<CommonDropdown> $key */
@@ -131,9 +145,8 @@ abstract class CommonDropdown extends CommonDBTM
                     }
                 }
             }
-            if (count($menu['options'])) {
-                return $menu;
-            }
+
+            return $menu;
         } else {
             return parent::getMenuContent();
         }

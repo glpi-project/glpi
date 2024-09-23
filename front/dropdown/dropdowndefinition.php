@@ -41,6 +41,7 @@ Html::header(
     DropdownDefinition::getTypeName(Session::getPluralNumber()),
     $_SERVER['PHP_SELF'],
     'config',
+    CommonDropdown::class,
     DropdownDefinition::class
 );
 
