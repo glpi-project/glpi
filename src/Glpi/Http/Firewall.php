@@ -230,6 +230,7 @@ final class Firewall implements FirewallInterface
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/tracking.injector.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
+            '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
         ];
 
         foreach ($paths as $checkPath => $strategy) {

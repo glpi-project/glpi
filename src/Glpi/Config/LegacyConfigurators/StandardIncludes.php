@@ -70,15 +70,19 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         $skip_checks = false;
         if (array_key_exists('REQUEST_URI', $_SERVER)) {
             $no_checks_scripts = [
-                $CFG_GLPI['root_doc'] . '/front/css.php',
-                $CFG_GLPI['root_doc'] . '/front/locale.php',
-                $CFG_GLPI['root_doc'] . '/install/install.php',
-                $CFG_GLPI['root_doc'] . '/install/update.php',
+                '#^' . $CFG_GLPI['root_doc'] . '/$#',
+                '#^' . $CFG_GLPI['root_doc'] . '/index.php#',
+                '#^' . $CFG_GLPI['root_doc'] . '/front/css.php#',
+                '#^' . $CFG_GLPI['root_doc'] . '/front/locale.php#',
+                '#^' . $CFG_GLPI['root_doc'] . '/install/install.php#',
+                '#^' . $CFG_GLPI['root_doc'] . '/install/update.php#',
             ];
-            $skip_checks = preg_match(
-                '/^' . implode('|', array_map(fn ($url) => preg_quote($url, '/'), $no_checks_scripts)) . '/',
-                $_SERVER['REQUEST_URI']
-            ) === 1;
+            foreach ($no_checks_scripts as $pattern) {
+                if (preg_match($pattern, $_SERVER['REQUEST_URI']) === 1) {
+                    $skip_checks = true;
+                    break;
+                }
+            }
         }
 
         //init cache
