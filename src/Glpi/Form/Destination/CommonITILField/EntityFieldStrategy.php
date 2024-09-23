@@ -38,17 +38,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Entity;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItem;
-use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Group;
-use Group_User;
-use Session;
-use User;
 
 enum EntityFieldStrategy: string
 {
     case FROM_FORM            = 'from_form';
-    case FROM_FIRST_REQUESTER = 'from_first_requester';
-    case FROM_USER            = 'from_user';
     case SPECIFIC_VALUE       = 'specific_value';
     case SPECIFIC_ANSWER      = 'specific_answer';
     case LAST_VALID_ANSWER    = 'last_valid_answer';
@@ -57,8 +50,6 @@ enum EntityFieldStrategy: string
     {
         return match ($this) {
             self::FROM_FORM            => __("From form"),
-            self::FROM_FIRST_REQUESTER => __("From first requester"),
-            self::FROM_USER            => __("From user"),
             self::SPECIFIC_VALUE       => __("Specific entity"),
             self::SPECIFIC_ANSWER      => __("Answer from a specific question"),
             self::LAST_VALID_ANSWER    => __('Answer to last "Entity" item question'),
@@ -71,8 +62,6 @@ enum EntityFieldStrategy: string
     ): ?int {
         return match ($this) {
             self::FROM_FORM            => $answers_set->getItem()->fields['entities_id'],
-            self::FROM_FIRST_REQUESTER => $this->getEntityIDForFirstRequester($answers_set),
-            self::FROM_USER            => Session::getActiveEntity(),
             self::SPECIFIC_VALUE       => $config->getSpecificEntityId(),
             self::SPECIFIC_ANSWER      => $this->getEntityIDForSpecificAnswer(
                 $config->getSpecificQuestionId(),
@@ -80,40 +69,6 @@ enum EntityFieldStrategy: string
             ),
             self::LAST_VALID_ANSWER => $this->getEntityIDForLastValidAnswer($answers_set),
         };
-    }
-
-    private function getEntityIDForFirstRequester(
-        AnswersSet $answers_set,
-    ): ?int {
-        $valid_answers = $answers_set->getAnswersByType(
-            QuestionTypeRequester::class
-        );
-
-        if (count($valid_answers) == 0) {
-            return null;
-        }
-
-        $answer         = current($valid_answers);
-        $requester_type = explode('-', $answer->getRawAnswer()[0])[0];
-        $requester_id   = explode('-', $answer->getRawAnswer()[0])[1];
-        if (!is_numeric($requester_id)) {
-            return null;
-        }
-
-        switch ($requester_type) {
-            case 'users_id':
-                $requester = new User();
-                break;
-            case 'groups_id':
-                $requester = new Group();
-                break;
-        }
-
-        if (!isset($requester) || !$requester->getFromDB($requester_id)) {
-            return null;
-        }
-
-        return $requester->fields['entities_id'];
     }
 
     private function getEntityIDForSpecificAnswer(

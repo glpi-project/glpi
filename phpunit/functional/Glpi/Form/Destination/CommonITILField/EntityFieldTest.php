@@ -38,19 +38,13 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Entity;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
-use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Group;
-use Group_User;
-use Session;
-use User;
 
 final class EntityFieldTest extends DbTestCase
 {
@@ -71,13 +65,6 @@ final class EntityFieldTest extends DbTestCase
             ['name' => 'Entity 4', 'entities_id' => $this->getTestRootEntity(true)],
             ['name' => 'Entity 5', 'entities_id' => $this->getTestRootEntity(true)],
         ]);
-        $users = $this->createItems(User::class, [
-            ['name' => 'User 1', 'entities_id' => $entities[2]->getId()],
-            ['name' => 'User 2', 'entities_id' => $entities[3]->getId()],
-        ]);
-        $groups = $this->createItems(Group::class, [
-            ['name' => "Group 1", 'entities_id' => $entities[4]->getId()],
-        ]);
 
         return [
             'answers' => [
@@ -88,21 +75,9 @@ final class EntityFieldTest extends DbTestCase
                 "Entity 2"    => [
                     'itemtype' => Entity::getType(),
                     'items_id' => $entities[1]->getId(),
-                ],
-                "Requester 1" => [
-                    'users_id-' . $users[0]->getId(),
-                ],
-                "Requester 2" => [
-                    'groups_id-' . $groups[0]->getId(),
-                ],
-                "Requester 3" => [
-                    'users_id-' . $users[1]->getId(),
-                    'groups_id-' . $groups[0]->getId(),
-                ],
+                ]
             ],
-            'entities' => $entities,
-            'users' => $users,
-            'groups' => $groups,
+            'entities' => $entities
         ];
     }
 
@@ -146,73 +121,6 @@ final class EntityFieldTest extends DbTestCase
             ),
             answers: $answers,
             expected_entity_id: $new_entity->getId()
-        );
-    }
-
-    public function testEntityFromFirstRequester()
-    {
-        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
-        $answers = $this->getAnswers();
-
-        $this->sendFormAndAssertTicketEntity(
-            form: $form,
-            config: new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FIRST_REQUESTER
-            ),
-            answers: $answers['answers'],
-            expected_entity_id: $answers['users'][0]->fields['entities_id']
-        );
-    }
-
-    public function testEntityFromFirstRequesterGroup()
-    {
-        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
-        $answers = $this->getAnswers();
-
-        // Drop the "Requester 1" answer
-        unset($answers['answers']["Requester 1"]);
-
-        $this->sendFormAndAssertTicketEntity(
-            form: $form,
-            config: new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FIRST_REQUESTER
-            ),
-            answers: $answers['answers'],
-            expected_entity_id: $answers['groups'][0]->fields['entities_id']
-        );
-    }
-
-    public function testEntityFromFirstRequesters()
-    {
-        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
-        $answers = $this->getAnswers();
-
-        // Drop the "Requester 1" and "Requester 2" answers
-        unset($answers['answers']["Requester 1"]);
-        unset($answers['answers']["Requester 2"]);
-
-        $this->sendFormAndAssertTicketEntity(
-            form: $form,
-            config: new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FIRST_REQUESTER
-            ),
-            answers: $answers['answers'],
-            expected_entity_id: $answers['users'][1]->fields['entities_id']
-        );
-    }
-
-    public function testEntityFromUser()
-    {
-        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
-        $answers = $this->getAnswers();
-
-        $this->sendFormAndAssertTicketEntity(
-            form: $form,
-            config: new EntityFieldConfig(
-                EntityFieldStrategy::FROM_USER
-            ),
-            answers: $answers['answers'],
-            expected_entity_id: Session::getActiveEntity()
         );
     }
 
@@ -364,9 +272,6 @@ final class EntityFieldTest extends DbTestCase
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, [
             'itemtype' => Entity::getType(),
         ]);
-        $builder->addQuestion("Requester 1", QuestionTypeRequester::class);
-        $builder->addQuestion("Requester 2", QuestionTypeRequester::class);
-        $builder->addQuestion("Requester 3", QuestionTypeRequester::class);
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket",

@@ -74,18 +74,6 @@ describe('Entity configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@entity_dropdown').should('have.text', 'From form');
 
-        // Switch to "From first requester"
-        cy.get('@entity_dropdown').selectDropdownValue('From first requester');
-        cy.findByRole('button', { 'name': 'Update item' }).click();
-        cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@entity_dropdown').should('have.text', 'From first requester');
-
-        // Switch to "From user"
-        cy.get('@entity_dropdown').selectDropdownValue('From user');
-        cy.findByRole('button', { 'name': 'Update item' }).click();
-        cy.checkAndCloseAlert('Item successfully updated');
-        cy.get('@entity_dropdown').should('have.text', 'From user');
-
         // Switch to "Specific entity"
         cy.get('@entity_dropdown').selectDropdownValue('Specific entity');
         cy.get('@config').getDropdownByLabelText('Select an entity...').as('specific_entity_dropdown');
