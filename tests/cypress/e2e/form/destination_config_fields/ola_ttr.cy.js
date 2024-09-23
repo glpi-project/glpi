@@ -79,7 +79,7 @@ describe('OLA TTR configuration', () => {
 
         // Switch to "Specific OLA"
         cy.get('@ola_ttr_dropdown').selectDropdownValue('Specific OLA');
-        cy.get('@config').getDropdownByLabelText('Select an OLA...').as('specific_ola_ttr_dropdown');
+        cy.get('@config').getDropdownByLabelText('Select a OLA...').as('specific_ola_ttr_dropdown');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = 'OLA TTR - ' + slm_id;
             cy.get('@specific_ola_ttr_dropdown').selectDropdownValue(ola_name);
@@ -100,7 +100,7 @@ describe('OLA TTR configuration', () => {
         cy.get('@config').getDropdownByLabelText('OLA TTR').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = 'OLA TTR - ' + slm_id;
-            cy.get('@config').getDropdownByLabelText('Select an OLA...').selectDropdownValue(ola_name);
+            cy.get('@config').getDropdownByLabelText('Select a OLA...').selectDropdownValue(ola_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
