@@ -261,4 +261,99 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Assert: list should be empty if we don't expect the user to see the form
         $this->assertEquals($expected, $nb_forms === 1);
     }
+
+    public static function formsCanBeFilteredProvider(): iterable
+    {
+        // Simple tests cases using string comparison
+        $forms_data = [
+            ['name' => "Red form", 'description'  => 'My first description'],
+            ['name' => "Blue form", 'description' => 'My second description'],
+            ['name' => "Pink form", 'description' => 'My third description'],
+        ];
+        yield 'Simple comparison using name' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "Blue",
+            'expected_forms_names' => ["Blue form"],
+        ];
+        yield 'Simple comparison using name (case insensitive)' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "pInK",
+            'expected_forms_names' => ["Pink form"],
+        ];
+        yield 'Simple contains filter on description' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "third",
+            'expected_forms_names' => ["Pink form"],
+        ];
+        yield 'Simple contains filter on description (case insensitive)' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "fIrSt",
+            'expected_forms_names' => ["Red form"],
+        ];
+
+        // Test using fuzzy search
+        $forms_data = [
+            ['name' => "Fruits form", 'description'  => 'Banana, apple, orange'],
+            ['name' => "Vegetable form", 'description' => 'Carrot, tomato, cucumber'],
+        ];
+        yield 'Partial match on name' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "Fruit form",
+            'expected_forms_names' => ["Fruits form"],
+        ];
+        yield 'Invalid partial match on name' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "Frui and veg form",
+            'expected_forms_names' => [],
+        ];
+        yield 'Partial match on description' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "banana orange",
+            'expected_forms_names' => ["Fruits form"],
+        ];
+        yield 'Invalid partial match on description' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "banana lemon orange",
+            'expected_forms_names' => [],
+        ];
+        yield 'Partial match on name with spelling mistakes' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "Vegetoble form",
+            'expected_forms_names' => ["Vegetable form"],
+        ];
+        yield 'Partial match on description with spelling mistakes' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "cuccummber",
+            'expected_forms_names' => ["Vegetable form"],
+        ];
+        yield 'Too many spelling mistakes' => [
+            'forms_data'           => $forms_data,
+            'filter'               => "Bonanonano",
+            'expected_forms_names' => [],
+        ];
+    }
+
+    #[DataProvider('formsCanBeFilteredProvider')]
+    public function testFormsCanBeFiltered(
+        array $forms_data,
+        string $filter,
+        array $expected_forms_names,
+    ): void {
+        // Arrange: create a form with the specified names
+        foreach ($forms_data as $form_data) {
+            $builder = new FormBuilder($form_data['name']);
+            $builder->setDescription($form_data['description']);
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: filter the forms
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $forms = self::$manager->getForms($access_parameters, $filter);
+
+        // Assert: only the expected forms must be found
+        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $this->assertEquals($expected_forms_names, $forms_names);
+    }
 }

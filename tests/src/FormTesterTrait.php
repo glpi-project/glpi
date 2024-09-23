@@ -69,6 +69,7 @@ trait FormTesterTrait
         // Create form
         $form = $this->createItem(Form::class, [
             'name'                  => $builder->getName(),
+            'description'           => $builder->getDescription(),
             'entities_id'           => $builder->getEntitiesId(),
             'is_recursive'          => $builder->getIsRecursive(),
             'is_active'             => $builder->getIsActive(),

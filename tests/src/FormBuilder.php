@@ -71,6 +71,11 @@ class FormBuilder
     protected string $header;
 
     /**
+     * Form header
+     */
+    protected string $description;
+
+    /**
      * Is this form a draft ?
      */
     protected bool $is_draft;
@@ -102,6 +107,7 @@ class FormBuilder
         $this->is_recursive = true;
         $this->is_active = true;
         $this->header = "";
+        $this->description = "";
         $this->is_draft = false;
         $this->sections = [];
         $this->destinations = [];
@@ -220,6 +226,29 @@ class FormBuilder
     public function setHeader(string $header): self
     {
         $this->header = $header;
+        return $this;
+    }
+
+    /**
+     * Get form description
+     *
+     * @return string Form description
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set form description
+     *
+     * @param string Form description
+     *
+     * @return self To allow chain calls
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 
