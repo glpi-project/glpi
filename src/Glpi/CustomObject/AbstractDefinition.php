@@ -147,7 +147,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $tabs = [];
 
         $this->addDefaultFormTab($tabs);
-        $this->addStandardTab(self::class, $tabs, $options);
+        $this->addStandardTab(static::class, $tabs, $options);
 
         return $tabs;
     }
