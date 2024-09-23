@@ -60,7 +60,7 @@ trait CustomObjectTrait
      */
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
+        return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
             . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
     }
 
