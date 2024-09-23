@@ -73,7 +73,6 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
             `comment` text,
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '0',
-            `is_deleted` tinyint NOT NULL DEFAULT '0',
             `dropdowns_dropdowns_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `completename` text,
             `level` int NOT NULL DEFAULT '0',
@@ -86,7 +85,6 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
             KEY `name` (`name`),
             KEY `entities_id` (`entities_id`),
             KEY `is_recursive` (`is_recursive`),
-            KEY `is_deleted` (`is_deleted`),
             KEY `dropdowns_dropdowns_id` (`dropdowns_dropdowns_id`),
             KEY `level` (`level`),
             KEY `date_creation` (`date_creation`),
@@ -94,4 +92,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQueryOrDie($query);
+} else {
+    // TODO Remove it before the GLPI 11.0 final release.
+    $migration->dropField('glpi_dropdowns_dropdowns', 'is_deleted');
 }
