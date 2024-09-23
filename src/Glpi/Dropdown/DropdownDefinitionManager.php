@@ -79,7 +79,11 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         $core_dropdowns = [];
         foreach ($standard_dropdowns as $optgroup) {
             foreach (array_keys($optgroup) as $classname) {
-                if (!is_subclass_of($classname, Dropdown::class) && !isPluginItemType($classname)) {
+                if (
+                    !is_subclass_of($classname, Dropdown::class)
+                    && !isPluginItemType($classname)
+                    && preg_match('/(Model|Type)$/i', $classname) !== 1 // `*Model` and `*Type` patterns are already blacklisted
+                ) {
                     // Dropdown is not a custom one or from a plugin
                     $core_dropdowns[] = $classname;
                 }
