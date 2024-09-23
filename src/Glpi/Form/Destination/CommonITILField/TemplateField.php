@@ -58,7 +58,7 @@ class TemplateField extends AbstractConfigField
     }
 
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'template';
     }

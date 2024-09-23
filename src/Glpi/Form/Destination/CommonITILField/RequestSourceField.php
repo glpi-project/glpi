@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -44,12 +43,11 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 use RequestType;
-use Ticket;
 
 class RequestSourceField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'request_source';
     }

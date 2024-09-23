@@ -42,7 +42,7 @@ use SLM;
 final class SLATTRField extends SLMField
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'sla_ttr';
     }

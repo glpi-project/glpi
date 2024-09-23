@@ -44,7 +44,7 @@ use Toolbox;
 abstract class AbstractConfigField implements ConfigFieldInterface
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return Toolbox::slugify(static::class);
     }
@@ -89,9 +89,9 @@ abstract class AbstractConfigField implements ConfigFieldInterface
         return $config[$this->getAutoConfigKey()] ?? true;
     }
 
-    public function getAutoConfigKey(): string
+    public static function getAutoConfigKey(): string
     {
-        return $this->getKey() . '_auto';
+        return static::getKey() . '_auto';
     }
 
     #[Override]

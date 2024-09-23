@@ -49,7 +49,7 @@ use Ticket;
 class AssociatedItemsField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'associated_items';
     }

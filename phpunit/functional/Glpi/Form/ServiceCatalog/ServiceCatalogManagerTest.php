@@ -44,6 +44,7 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -57,6 +58,15 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         self::$manager = new ServiceCatalogManager();
         parent::setUpBeforeClass();
+    }
+
+    #[Override]
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // Disable default forms to not pollute the tests of this file
+        $this->disableExistingForms();
     }
 
     public function testOnlyActiveFormsAreDisplayed(): void

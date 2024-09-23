@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\DefaultFormsManager;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -274,6 +275,10 @@ class Update
                 );
             }
         }
+
+        // Create default forms
+        $default_forms_manager = new DefaultFormsManager();
+        $default_forms_manager->createDefaultForms();
 
         // Initalize rules
         $this->migration->displayTitle(__('Initializing rules...'));

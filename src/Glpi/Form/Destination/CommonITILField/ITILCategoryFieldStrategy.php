@@ -35,10 +35,9 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use atoum\atoum\php\tokenizer\iterator\value;
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
-use Glpi\Form\QuestionType\QuestionTypeITILCategory;
 use ITILCategory;
 
 enum ITILCategoryFieldStrategy: string
@@ -98,15 +97,25 @@ enum ITILCategoryFieldStrategy: string
             QuestionTypeItemDropdown::class
         );
 
+        // Filter by itemtype
+        $valid_answers = array_filter($valid_answers, function (Answer $answer) {
+            $value = $answer->getRawAnswer();
+            if (
+                $value['itemtype'] !== ITILCategory::getType()
+                || !is_numeric($value['items_id'])
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+
         if (count($valid_answers) == 0) {
             return null;
         }
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== ITILCategory::getType() || !is_numeric($value['items_id'])) {
-            return null;
-        }
 
         return (int) $value['items_id'];
     }

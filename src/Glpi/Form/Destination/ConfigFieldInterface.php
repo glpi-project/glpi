@@ -47,7 +47,7 @@ interface ConfigFieldInterface
      *
      * @return string
      */
-    public function getKey(): string;
+    public static function getKey(): string;
 
     /**
      * Label to be displayed when configuring this field.

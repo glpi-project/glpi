@@ -427,4 +427,16 @@ trait FormTesterTrait
 
         return $form_copy;
     }
+
+    protected function disableExistingForms(): void
+    {
+        $forms = (new Form())->find([]);
+        foreach ($forms as $row) {
+            $form = new Form();
+            $form->update([
+                'id' => $row['id'],
+                'is_active' => false
+            ]);
+        }
+    }
 }
