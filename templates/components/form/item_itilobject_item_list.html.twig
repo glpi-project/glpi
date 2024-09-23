@@ -1,0 +1,69 @@
+
+{% if linknewitil %}
+    <div class='firstbloc'>
+        {{ call('Html::showSimpleForm', [call(itemtype_1 ~ '::getFormURL'), '_add_fromitem', __('New %s for this item')|format(call(itemtype_1 ~ '::getTypeName', [0])), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
+    </div>
+{% endif %}
+<div>
+{% if number > 0 %}
+    <table class='tab_cadre_fixehov'>
+        {% if readall %}
+            {{ call('Session::initNavigateListItems', [itemtype_1, __(item.getTypeName(1)) ~ " " ~ item.getName()]) }}
+            <tr class='noHover'>
+                <th colspan={{ colspan }}>
+                    {{ __('%d linked %s')|format(number, call(itemtype_1 ~ '::getTypeName', [number])) }}
+                    (<a href="{{ call(itemtype_1 ~ '::getSearchURL') }}?{{ params|url_encode('&') }}">{{ __('Show all') }}</a>)
+                </th>
+            </tr>
+        {% else %}
+            <tr>
+                <th colspan={{ colspan }}>
+                    {{ call(itemtype_1 ~ '::getTypeName', [1]) }} : {{ __("You don't have right to see all") }}
+                </th>
+            </tr>
+        {% endif %}
+{% else %}
+    <table class='tab_cadre_fixehov'>
+        <tr class='noHover'>
+            <th colspan={{ colspan }}>
+                {{ __('No %s on this item')|format(call(itemtype_1 ~ '::getTypeName', [number])) }}
+            </th>
+        </tr>
+{% endif %}
+
+{% if number > 0 %}
+    {{ call(itemtype_1 ~ '::commonListHeader', [html_output])|raw }}
+    {% for data in iterator %}
+        {{ call('Session::addToNavigateListItems', [itemtype_1, data["id"]])|raw }}
+        {{ call(itemtype_1 ~ '::showShort', [data["id"]])|raw }}
+    {% endfor %}
+    {{ call(itemtype_1 ~ '::commonListHeader', [html_output])|raw }}
+{% endif %}
+    </table>
+</div>
+
+{% if showform %}
+    <div class='spaced'>
+        <table class='tab_cadre_fixehov'>
+            <tr class='noHover'>
+                <th colspan='{{ colspan }}'>
+                    {{ __('%s on linked items')|format(call(itemtype_1 ~ '::getTypeName', [number])) }}
+                </th>
+            </tr>
+            {% if number2 > 0 %}
+                {{ call(itemtype_1 ~ '::commonListHeader', [html_output]) }}
+                {% for data in iterator2 %}
+                    {{ call('Session::addToNavigateListItems', [itemtype_1, data["id"]]) }}
+                    {{ call(itemtype_1 ~ '::showShort', [data["id"]]) }}
+                {% endfor %}
+                {{ call(itemtype_1 ~ '::commonListHeader', [html_output]) }}
+            {% else %}
+                <tr>
+                    <td>
+                        {{  __('None found.') }}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endif %}
