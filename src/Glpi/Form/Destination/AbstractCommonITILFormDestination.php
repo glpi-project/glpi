@@ -41,6 +41,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
+use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Form;
@@ -178,6 +179,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new TemplateField($template_class),
             new UrgencyField(),
             new ITILCategoryField(),
+            new LocationField(),
         ];
     }
 
