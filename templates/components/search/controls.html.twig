@@ -197,65 +197,66 @@
                 {% endif %}
 
                 {% if count > 0 %}
-                    <div class="d-inline-block" title="{{ __("Export") }}" data-bs-toggle="tooltip" data-bs-placement="top" role="none">
-                        <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" id="dropdown-export-{{ rand }}"
-                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
+                    <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" name="export" id="dropdown-export-{{ rand }}"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
+                        <span title="{{ __("Export") }}" data-bs-toggle="tooltip" data-bs-placement="top">
                             <i id="export_dropdown_icon" class="ti ti-download"></i>
-                        </button>
-                    </div>
+                        </span>
+                    </button>
                     {% set exporthref = path('/front/report.dynamic.php') ~ "?" ~ {
                         'item_type': itemtype,
                         'sort': sort,
                         'order': order,
                         'start': start,
                     }|url_encode ~ '&' ~ posthref %}
-                    <div class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export-{{ rand }}">
-                        <h6 class="dropdown-header">{{ __("Current page") }}</h6>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
+                    <div class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export-{{ rand }}" role="menu">
+                        <div role="separator"><h6 class="dropdown-header">{{ __("Current page") }}</h6></div>
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}" role="menuitem">
                             <i class="ti ti-file-type-pdf"></i>
-                            {{ __('landscape PDF') }}
+                            {{- __('Landscape PDF') -}}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}" role="menuitem">
                             <i class="ti ti-file-type-pdf"></i>
-                            {{ __('portrait PDF') }}
+                            {{ __('Portrait PDF') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-type-csv"></i>
                             {{ __('CSV') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::ODS_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
                             {{ __('ODS') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::XLSX_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
                             {{ __('XLSX') }}
                         </a>
                         <hr class="dropdown-divider">
-                        <h6 class="dropdown-header">{{ __("All pages") }}</h6>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
+                        <div role="separator"><h6 class="dropdown-header">{{ __("All pages") }}</h6></div>
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}" role="menuitem">
                             <i class="ti ti-file-type-pdf"></i>
-                            {{ __('landscape PDF') }}
+                            {{ __('Landscape PDF') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}" role="menuitem">
                             <i class="ti ti-file-type-pdf"></i>
-                            {{ __('portrait PDF') }}
+                            {{ __('Portrait PDF') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-type-csv"></i>
                             {{ __('CSV') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::ODS_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
                             {{ __('ODS') }}
                         </a>
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::XLSX_OUTPUT') }}">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
                             {{ __('XLSX') }}
                         </a>
                         {% if itemtype != 'Stat' %}
                         <hr class="dropdown-divider">
-                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}" id="copy_names_to_clipboard">
+                        <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}"
+                           id="copy_names_to_clipboard" role="menuitem">
                             <i class="ti ti-copy"></i>
                             {{ __('Copy names to clipboard') }}
                         </a>

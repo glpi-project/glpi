@@ -53,6 +53,7 @@ Cypress.Commands.add('injectAndCheckA11y', {prevSubject: 'optional'}, (subject) 
             ['div.fileupload'], // JQuery File upload library is not under our control and has some known issues
             ['.alert'], // Default Bootstrap/Tabler alert colors don't meet contrast requirements at any level of WCAG.
             ['.nav-pills .nav-link.active'],
+            ['span[aria-label]'], // aria-label attribute cannot be used on a span with no valid role attribute. Done by bootstrap.
 
             // Below are items that do not need to be validated
             ['.sf-toolbar'], // Symfony profiler
