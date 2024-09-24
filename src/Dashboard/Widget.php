@@ -1114,10 +1114,22 @@ HTML;
         $is_horizontal      = "false";
         if ($p['horizontal']) {
             $is_horizontal = "true";
+            $offsetY = 100;
+            $maxLabelLength = 0;
+
+            foreach ($labels as $label) {
+                $labelLength = strlen($label);
+                if ($labelLength > $maxLabelLength) {
+                      $maxLabelLength = $labelLength;
+                }
+            }
+
+            $offsetY = $maxLabelLength * 7;
+
             $horizontal_options = "
             horizontalBars: true,
             axisY: {
-               offset: 100
+               offset: $offsetY
             },
             axisX: {
                onlyInteger: true
