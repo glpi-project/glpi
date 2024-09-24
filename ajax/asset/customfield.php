@@ -32,7 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
@@ -42,11 +41,7 @@ Session::checkRight(CustomFieldDefinition::$rightname, READ);
 
 if (isset($_POST['action'])) {
     $field = new CustomFieldDefinition();
-    if ($_POST['action'] === 'get_custom_field') {
-        $_POST['default_value'] ??= null;
-        $field->fields = $_POST;
-        echo $field->getFieldType()->getFormInput($_POST['value']);
-    } else if ($_POST['action'] === 'get_default_custom_field') {
+    if ($_POST['action'] === 'get_default_custom_field') {
         $field->fields = $_POST;
         $field->fields['default_value'] = $field->getFieldType()->normalizeValue($_POST['default_value'] ?? null);
         echo $field->getFieldType()->getDefaultValueFormInput();
