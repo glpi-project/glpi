@@ -2252,7 +2252,6 @@ JAVASCRIPT;
         $param['init']                = true;
         $param['aria_label']          = '';
         $param['add_data_attributes'] = '';
-        $param['enable_tags']         = false;
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2448,7 +2447,6 @@ JAVASCRIPT;
         if (!$param['noselect2']) {
            // Width set on select
             $adapt_params = [
-                'tags'              => (bool) $param['enable_tags'],
                 'width'             => $param["width"],
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
