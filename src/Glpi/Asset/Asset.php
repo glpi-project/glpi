@@ -383,9 +383,6 @@ abstract class Asset extends CommonDBTM
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
             $f_name = 'custom_' . $custom_field->fields['name'];
             $this->fields[$f_name] = $custom_field->fields['default_value'];
-            if (($custom_field->fields['field_options']['multiple'] ?? false) && is_string($this->fields[$f_name])) {
-                $this->fields[$f_name] = empty($custom_field->fields['default_value']) ? [] : [$custom_field->fields['default_value']];
-            }
         }
         return true;
     }
@@ -443,6 +440,16 @@ abstract class Asset extends CommonDBTM
                 }
             }
         }
+    }
+
+    public function getNonLoggedFields(): array
+    {
+        $ignored_fields = array_map(
+            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['name'],
+            static::getDefinition()->getCustomFieldDefinitions()
+        );
+        $ignored_fields[] = 'custom_fields';
+        return $ignored_fields;
     }
 
     public function getCloneRelations(): array

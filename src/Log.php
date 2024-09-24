@@ -153,8 +153,8 @@ class Log extends CommonDBTM
 
            // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
-                if (!isset($val2['table']) || ($val2['no_history'] ?? false) === true) {
-                    // skip sub-title and no_history fields
+                if (!isset($val2['table'])) {
+                   // skip sub-title
                     continue;
                 }
                // specific for profile

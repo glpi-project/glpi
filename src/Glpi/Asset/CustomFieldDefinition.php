@@ -35,15 +35,11 @@
 namespace Glpi\Asset;
 
 use CommonDBChild;
-use CommonGLPI;
-use DirectoryIterator;
-use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use ReflectionClass;
 use Session;
 
 final class CustomFieldDefinition extends CommonDBChild
@@ -159,7 +155,7 @@ final class CustomFieldDefinition extends CommonDBChild
         $field_for_validation->fields = array_merge($this->fields, $input);
         if (isset($input['default_value'])) {
             try {
-                $input['default_value'] = $field_for_validation->getFieldType()->formatValueForDB($input['default_value']);
+                $input['default_value'] = json_encode($field_for_validation->getFieldType()->formatValueForDB($input['default_value']));
             } catch (\InvalidArgumentException) {
                 $input['default_value'] = null;
             }
@@ -196,7 +192,9 @@ final class CustomFieldDefinition extends CommonDBChild
         if (isset($this->fields['field_options']['multiple'])) {
             $this->fields['field_options']['multiple'] = (bool) $this->fields['field_options']['multiple'];
         }
-        $this->fields['default_value'] = $this->getFieldType()->formatValueFromDB($this->fields['default_value']);
+        if ($this->fields['default_value'] !== null) {
+            $this->fields['default_value'] = $this->getFieldType()->formatValueFromDB(json_decode($this->fields['default_value']));
+        }
         parent::post_getFromDB();
     }
 

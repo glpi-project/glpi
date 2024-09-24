@@ -2751,19 +2751,7 @@ final class SQLProvider implements SearchProviderInterface
                         break;
 
                     case "custom_condition_only":
-                        $nocondition_join = [
-                            'LEFT JOIN' => [
-                                "$new_table$AS" => [
-                                    'ON' => [
-                                        $rt => 'id',
-                                        new QueryExpression("$rt.id"),
-                                    ],
-                                ]
-                            ]
-                        ];
-
-                        $append_join_criteria($nocondition_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
-                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $nocondition_join);
+                        $specific_leftjoin_criteria = ['LEFT JOIN' => ["$new_table$AS" => $add_criteria]];
                         $transitemtype = getItemTypeForTable($new_table);
                         if (Session::haveTranslations($transitemtype, $field)) {
                             $transAS            = $nt . '_trans_' . $field;

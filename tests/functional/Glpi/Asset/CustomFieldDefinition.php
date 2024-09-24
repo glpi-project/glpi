@@ -440,7 +440,7 @@ class CustomFieldDefinition extends DbTestCase
             'FROM' => $field::getTable(),
             'WHERE' => ['id' => $fields_id],
         ]);
-        $this->string($it->current()['default_value'])->isEqualTo('2021-01-01 01:25:15');
+        $this->string($it->current()['default_value'])->isEqualTo(json_encode('2021-01-01 01:25:15'));
 
         $it = $DB->request([
             'SELECT' => [

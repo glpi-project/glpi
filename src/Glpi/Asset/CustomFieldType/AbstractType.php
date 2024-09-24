@@ -126,7 +126,6 @@ abstract class AbstractType implements TypeInterface
             ]),
             'nometa' => true,
             'field_definition' => $this->custom_field,
-            'no_history' => true, // Do not use standard handling for field value history since all cusotm field values are stored in the same column
         ];
     }
 

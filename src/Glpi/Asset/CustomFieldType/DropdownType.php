@@ -61,9 +61,6 @@ class DropdownType extends AbstractType
         }
         if ($this->getOptionValues()['multiple'] ?? false) {
             if (!is_array($value)) {
-                if (!is_numeric($value)) {
-                    return $value;
-                }
                 $value = [$value];
             }
             $value = array_filter($value, static fn ($val) => (int) $val > 0);
@@ -79,7 +76,7 @@ class DropdownType extends AbstractType
 
     public function formatValueForDB(mixed $value): mixed
     {
-        return json_encode($value);
+        return $this->normalizeValue($value);
     }
 
     public function formatValueFromDB(mixed $value): mixed
@@ -88,9 +85,6 @@ class DropdownType extends AbstractType
             return null;
         }
         $is_multiple = $this->getOptionValues()['multiple'] ?? false;
-        if (!is_array($value)) {
-            $value = json_decode($value, true) ?? [];
-        }
         if ($is_multiple && !is_array($value)) {
             $value = [$value];
         } else if (!$is_multiple && is_array($value)) {
@@ -145,16 +139,17 @@ TWIG, $twig_params);
             'joinparams' => [
                 'jointype' => 'custom_condition_only',
             ],
-            'no_history' => true,
         ];
 
         if (!$multiple) {
             $opt['joinparams']['condition'] = [
-                'NEWTABLE.id' => QueryFunction::jsonUnquote(
-                    expression: QueryFunction::jsonExtract([
-                        'glpi_assets_assets.custom_fields',
-                        new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
-                    ])
+                new QueryExpression(
+                    'NEWTABLE.' . $DB->quoteName('id') . ' = ' . QueryFunction::jsonUnquote(
+                        expression: QueryFunction::jsonExtract([
+                            'glpi_assets_assets.custom_fields',
+                            new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
+                        ])
+                    )
                 )
             ];
         } else {
