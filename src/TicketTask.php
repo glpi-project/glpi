@@ -113,6 +113,7 @@ class TicketTask extends CommonITILTask
             $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
             && isset($_SESSION["glpigroups"])
             && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+            && Session::haveRight(self::$rightname, parent::SEEGROUP)
         ) {
             return true;
         }
@@ -266,6 +267,7 @@ class TicketTask extends CommonITILTask
             $values[parent::UPDATEALL]      = __('Update all');
             $values[parent::ADDALLITEM  ]   = __('Add to all items');
             $values[parent::SEEPRIVATE]     = __('See private ones');
+            $values[parent::SEEGROUP]       = __('See group ones');
         }
 
         $values[parent::SEEPUBLIC]   = __('See public ones');
