@@ -72,7 +72,7 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default value
-        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'User - e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'e2e_tests');
     });
 
     it('should be able to define multiple actors as default value', () => {
@@ -90,8 +90,8 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default values
-        cy.getDropdownByLabelText('Select an actor...').contains('User - e2e_tests');
-        cy.getDropdownByLabelText('Select an actor...').contains('User - glpi');
+        cy.getDropdownByLabelText('Select an actor...').contains('e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').contains('glpi');
     });
 
     it('should be able to switch between multiple actors and single actor', () => {
@@ -109,7 +109,7 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default value
-        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'User - e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'e2e_tests');
 
         // Focus on the question
         cy.findByRole('option', { name: 'Test actor question' }).click();
@@ -118,7 +118,7 @@ describe('Actor form question type', () => {
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
 
         // Check the default value
-        cy.getDropdownByLabelText('Select an actor...').should('have.text', '×User - e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').should('have.text', '×e2e_tests');
 
         // Add another actor
         cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('glpi');
@@ -130,8 +130,8 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default values
-        cy.getDropdownByLabelText('Select an actor...').contains('User - e2e_tests');
-        cy.getDropdownByLabelText('Select an actor...').contains('User - glpi');
+        cy.getDropdownByLabelText('Select an actor...').contains('e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').contains('glpi');
     });
 
     it('can duplicate a single actor question', () => {
