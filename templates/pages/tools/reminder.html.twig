@@ -49,7 +49,6 @@
 
     {{ fields.textField('name', item.fields['name'], __('Title'), field_options|merge({
         full_width: true,
-        full_width_adapt_column: false
     })) }}
 
     {% if params['from_planning_ajax'] is not defined %}
@@ -69,7 +68,6 @@
         {% endset %}
         {{ fields.htmlField('', visibility_fields, __('Visibility'), field_options|merge({
             full_width: true,
-            full_width_adapt_column: false,
             wrapper_class: 'd-flex',
         })) }}
     {% endif %}
@@ -83,7 +81,6 @@
     {% endset %}
     {{ fields.htmlField('', state_dropdown, __('Status'), field_options|merge({
         full_width: true,
-        full_width_adapt_column: false,
     })) }}
 
     {% set calendar_field %}
@@ -146,12 +143,10 @@
     {% endset %}
     {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), field_options|merge({
         full_width: true,
-        full_width_adapt_column: false,
     })) }}
 
     {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), field_options|merge({
         full_width: true,
-        full_width_adapt_column: false,
         enable_richtext: true,
         enable_fileupload: true,
     })) }}

@@ -426,3 +426,13 @@ body pre {
     background-color: var(--tblr-bg-surface);
     color: var(--tblr-body-color);
 }
+
+.col-12.glpi-full-width {
+    .col-form-label {
+        width: calc(-4px + 20.8333%);
+    }
+
+    .field-container {
+        width: calc(-11px + 79.1666%);
+    }
+}

@@ -45,7 +45,6 @@
          {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", criteria["link"] ?? '', call('\\Glpi\\Search\\SearchEngine::getLogicalOperators'), '', {
             full_width: true,
             input_class: 'col-12',
-            full_width_adapt_column: false,
             mb: 'mb-0',
             no_label: true,
          }) }}
