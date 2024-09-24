@@ -109,10 +109,10 @@ describe('Entity configuration', () => {
             });
         });
 
-        cy.findByRole('link', { 'name': "User menu" }).click();
-        cy.findByRole('link', { 'name': "Select the desired entity" }).click();
-        cy.findByRole('treegrid', { 'name': "Entity tree" }).as('entities');
-        cy.get('@entities').findByRole('link', { 'name': "+ sub-entities" }).click();
+        cy.openEntitySelector();
+        cy.findByRole('gridcell', {'name': "Root entity > E2ETestEntity"})
+            .findByTitle('+ sub-entities')
+            .click();
 
         // Go to preview
         cy.findByRole('tab', { 'name': "Form" }).click();
