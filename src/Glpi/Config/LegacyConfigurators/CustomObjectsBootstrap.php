@@ -37,8 +37,9 @@ namespace Glpi\Config\LegacyConfigurators;
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Dropdown\DropdownDefinitionManager;
 
-final readonly class AssetsBootstrap implements LegacyConfigProviderInterface
+final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInterface
 {
     public function execute(): void
     {
@@ -47,6 +48,7 @@ final readonly class AssetsBootstrap implements LegacyConfigProviderInterface
             return;
         }
 
-        AssetDefinitionManager::getInstance()->boostrapAssets();
+        AssetDefinitionManager::getInstance()->bootstrapClasses();
+        DropdownDefinitionManager::getInstance()->bootstrapClasses();
     }
 }

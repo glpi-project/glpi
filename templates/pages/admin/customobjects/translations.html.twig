@@ -33,7 +33,7 @@
 <div class="modal fade" id="TranslationModal{{ rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}">
+            <form method="POST" action="{{ get_class(item)|itemtype_form_path }}">
                 <input type="hidden" name="id" value="{{ item.fields['id'] }}">
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="_save_translation" value="1" />
@@ -84,10 +84,10 @@
             </thead>
             <tbody>
             {% for language, plurals in translations %}
-                <tr data-language="{{ language }}" data-plurals="{{ plurals|json_encode }}">
+                <tr lang="{{ language }}" data-language="{{ language }}" data-plurals="{{ plurals|json_encode }}">
                     <td>{{ config('languages')[language][0] }}</td>
                     <td>
-                        {% include "pages/admin/assetdefinition/plurals.html.twig" with {
+                        {% include "pages/admin/customobjects/plurals.html.twig" with {
                             'plurals': plurals,
                         } only %}
                     </td>
@@ -98,7 +98,7 @@
                             </button>
                         </span>
                         <span title="{{ __("Delete translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}" class="d-inline">
+                            <form method="POST" action="{{ get_class(item)|itemtype_form_path }}" class="d-inline">
                                 <input type="hidden" name="id" value="{{ item.fields['id'] }}">
                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                                 <input type="hidden" name="_delete_translation" value="1" />

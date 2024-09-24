@@ -1296,7 +1296,7 @@ HTML;
                         'CartridgeItem', 'ConsumableItem', 'Phone',
                         'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable',
                     ],
-                    AssetDefinitionManager::getInstance()->getAssetClassesNames(),
+                    AssetDefinitionManager::getInstance()->getCustomObjectClassNames(),
                     $CFG_GLPI['devices_in_menu']
                 ),
                 'icon'    => 'ti ti-package'

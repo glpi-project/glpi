@@ -35,10 +35,10 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Config\LegacyConfigurators\AssetsAutoloader;
-use Glpi\Config\LegacyConfigurators\AssetsBootstrap;
 use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
+use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;
+use Glpi\Config\LegacyConfigurators\CustomObjectsBootstrap;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
 use Glpi\Config\LegacyConfigurators\ProfilerStart;
 use Glpi\Config\LegacyConfigurators\SessionConfig;
@@ -70,12 +70,12 @@ return static function (ContainerConfigurator $container): void {
     $services->set(SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
     // Must be done before plugins initialization, to allow plugin to work with concrete class names.
-    $services->set(AssetsAutoloader::class)->tag($tagName, ['priority' => 120]);
+    $services->set(CustomObjectsAutoloader::class)->tag($tagName, ['priority' => 120]);
 
     $services->set(InitializePlugins::class)->tag($tagName, ['priority' => 110]);
 
     // Must be done after plugins initialization, to allow plugin to register new capacities.
-    $services->set(AssetsBootstrap::class)->tag($tagName, ['priority' => 100]);
+    $services->set(CustomObjectsBootstrap::class)->tag($tagName, ['priority' => 100]);
 
     // FIXME: This class MUST stay at the end until the entire config is revamped.
     $services->set(ConfigRest::class)->tag($tagName, ['priority' => 10]);

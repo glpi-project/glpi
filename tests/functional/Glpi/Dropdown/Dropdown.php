@@ -33,41 +33,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Asset;
+namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
-use Glpi\Asset\AssetDefinitionManager;
 
-class Asset extends DbTestCase
+class Dropdown extends DbTestCase
 {
     protected function getByIdProvider(): iterable
     {
-        $foo_definition = $this->initAssetDefinition();
-        $foo_classname = $foo_definition->getAssetClassName();
+        $foo_definition = $this->initDropdownDefinition();
+        $foo_classname = $foo_definition->getDropdownClassName();
 
-        $bar_definition = $this->initAssetDefinition();
-        $bar_classname = $bar_definition->getAssetClassName();
+        $bar_definition = $this->initDropdownDefinition();
+        $bar_classname = $bar_definition->getDropdownClassName();
 
         // Loop to ensure that switching between definition does not cause any issue
         for ($i = 0; $i < 2; $i++) {
             $fields = [
-                'name' => 'Foo asset ' . $i,
-                'entities_id' => $this->getTestRootEntity(true),
+                'name' => 'Foo dropdown ' . $i,
             ];
-            $asset = $this->createItem($foo_classname, $fields);
+            $dropdown = $this->createItem($foo_classname, $fields);
             yield [
-                'id'              => $asset->getID(),
+                'id'              => $dropdown->getID(),
                 'expected_class'  => $foo_classname,
                 'expected_fields' => $fields,
             ];
 
             $fields = [
-                'name' => 'Bar asset ' . $i,
-                'entities_id' => $this->getTestRootEntity(true),
+                'name' => 'Bar dropdown ' . $i,
             ];
-            $asset = $this->createItem($bar_classname, $fields);
+            $dropdown = $this->createItem($bar_classname, $fields);
             yield [
-                'id'              => $asset->getID(),
+                'id'              => $dropdown->getID(),
                 'expected_class'  => $bar_classname,
                 'expected_fields' => $fields,
             ];
@@ -79,31 +76,38 @@ class Asset extends DbTestCase
      */
     public function testGetById(int $id, string $expected_class, array $expected_fields): void
     {
-        $asset = \Glpi\Asset\Asset::getById($id);
+        $dropdown = \Glpi\Dropdown\Dropdown::getById($id);
 
-        $this->object($asset)->isInstanceOf($expected_class);
+        $this->object($dropdown)->isInstanceOf($expected_class);
 
         foreach ($expected_fields as $name => $value) {
-            $this->array($asset->fields)->hasKey($name);
-            $this->variable($asset->fields[$name])->isEqualTo($value);
+            $this->array($dropdown->fields)->hasKey($name);
+            $this->variable($dropdown->fields[$name])->isEqualTo($value);
         }
     }
 
     public function testPrepareInputDefinition(): void
     {
-        $definition = $this->initAssetDefinition();
-        $classname = $definition->getAssetClassName();
-        $asset = new $classname();
+        $definition = $this->initDropdownDefinition();
+        $classname = $definition->getDropdownClassName();
+        $dropdown = new $classname();
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
+            $dropdown->getEmpty();
             // definition is automatically set if missing
-            $this->array($asset->{$method}([]))->isEqualTo(['assets_assetdefinitions_id' => $definition->getID()]);
-            $this->array($asset->{$method}(['name' => 'test']))->isEqualTo(['name' => 'test', 'assets_assetdefinitions_id' => $definition->getID()]);
+            $this->array($dropdown->{$method}(['name' => 'test']))
+                ->isEqualTo([
+                    'name' => 'test',
+                    'completename' => 'test',
+                    'dropdowns_dropdowndefinitions_id' => $definition->getID(),
+                    'dropdowns_dropdowns_id' => 0,
+                    'level' => 1,
+                ]);
 
             // an exception is thrown if definition is invalid
             $this->exception(
-                function () use ($asset, $method, $definition) {
-                    $asset->{$method}(['assets_assetdefinitions_id' => $definition->getID() + 1]);
+                function () use ($dropdown, $method, $definition) {
+                    $dropdown->{$method}(['name' => 'test', 'dropdowns_dropdowndefinitions_id' => $definition->getID() + 1]);
                 }
             )->message->contains('Definition does not match the current concrete class.');
         }
@@ -111,39 +115,30 @@ class Asset extends DbTestCase
 
     public function testUpdateWithWrongDefinition(): void
     {
-        $definition_1 = $this->initAssetDefinition();
-        $classname_1  = $definition_1->getAssetClassName();
-        $definition_2 = $this->initAssetDefinition();
-        $classname_2  = $definition_2->getAssetClassName();
+        $definition_1 = $this->initDropdownDefinition();
+        $classname_1  = $definition_1->getDropdownClassName();
+        $definition_2 = $this->initDropdownDefinition();
+        $classname_2  = $definition_2->getDropdownClassName();
 
-        $asset = $this->createItem($classname_1, [
-            'name' => 'new asset',
-            'entities_id' => $this->getTestRootEntity(true),
-        ]);
+        $dropdown = $this->createItem($classname_1, ['name' => 'new dropdown']);
 
         $this->exception(
-            function () use ($asset, $classname_2) {
-                $asset_2 = new $classname_2();
-                $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+            function () use ($dropdown, $classname_2) {
+                $dropdown_2 = new $classname_2();
+                $dropdown_2->update(['id' => $dropdown->getID(), 'name' => 'updated']);
             }
         )->message->contains('Definition cannot be changed.');
     }
 
     public function testSearchOptionsUnicity(): void
     {
-        $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
-        $definition = $this->initAssetDefinition(
-            capacities: array_keys($capacities)
-        );
+        $definition = $this->initDropdownDefinition();
 
-        $asset = $this->createItem($definition->getAssetClassName(), [
-            'name' => 'test asset',
-            'entities_id' => $this->getTestRootEntity(true),
-        ]);
+        $dropdown = $this->createItem($definition->getDropdownClassName(), ['name' => 'test dropdown']);
 
         $this->when(
-            function () use ($asset) {
-                $this->array($asset->searchOptions());
+            function () use ($dropdown) {
+                $this->array($dropdown->searchOptions());
             }
         )->error()->notExists();
     }

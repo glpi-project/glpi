@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,46 +32,49 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Asset;
+namespace Glpi\CustomObject;
 
-use CommonType;
 use Toolbox;
 
-abstract class AssetType extends CommonType
+trait CustomObjectTrait
 {
     /**
-     * Asset definition.
-     *
-     * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
-     * Must be defined by child class too to ensure that assigning a value to this property will affect
-     * each child classe independently.
+     * @see \CommonGLPI::getTypeName()
      */
-    protected static AssetDefinition $definition;
-
-    /**
-     * Get the asset definition related to concrete class.
-     *
-     * @return AssetDefinition
-     */
-    public static function getDefinition(): AssetDefinition
-    {
-        if (!(static::$definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
-        }
-
-        return static::$definition;
-    }
-
     public static function getTypeName($nb = 0)
     {
-        return sprintf(_n('%s type', '%s types', $nb), static::getDefinition()->getTranslatedName());
+        return static::getDefinition()->getTranslatedName($nb);
     }
 
+    /**
+     * @see \CommonGLPI::getSearchURL()
+     */
+    public static function getSearchURL($full = true)
+    {
+        return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
+            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+    }
+
+    /**
+     * @see \CommonGLPI::getFormURL()
+     */
+    public static function getFormURL($full = true)
+    {
+        return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
+            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+    }
+
+    /**
+     * @see \CommonDBTM:: getIcon()
+     */
     public static function getIcon()
     {
         return static::getDefinition()->getCustomObjectIcon();
     }
 
+    /**
+     * @see \CommonDBTM:: getTable()
+     */
     public static function getTable($classname = null)
     {
         if (is_a($classname ?? static::class, self::class, true)) {
@@ -81,51 +83,51 @@ abstract class AssetType extends CommonType
         return parent::getTable($classname);
     }
 
-    public static function getSearchURL($full = true)
-    {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
-    }
-
-    public static function getFormURL($full = true)
-    {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
-    }
-
+    /**
+     * @see \CommonDBTM:: getById()
+     */
     public static function getById(?int $id)
     {
         if ($id === null) {
             return false;
         }
 
-        // Load the asset definition corresponding to given asset type ID
+        $base_class       = static::class;
+        $definition_class = self::getDefinitionClass();
+
+        // Load the asset definition corresponding to given asset ID
         $definition_request = [
             'INNER JOIN' => [
-                self::getTable()  => [
+                $base_class::getTable() => [
                     'ON'  => [
-                        self::getTable()            => AssetDefinition::getForeignKeyField(),
-                        AssetDefinition::getTable() => AssetDefinition::getIndexName(),
+                        $base_class::getTable()       => $definition_class::getForeignKeyField(),
+                        $definition_class::getTable() => $definition_class::getIndexName(),
                     ]
                 ],
             ],
             'WHERE' => [
-                self::getTableField(self::getIndexName()) => $id,
+                $base_class::getTableField($base_class::getIndexName()) => $id,
             ],
         ];
-        $definition = new AssetDefinition();
+
+        $definition = new $definition_class();
         if (!$definition->getFromDBByRequest($definition_request)) {
             return false;
         }
 
         // Instanciate concrete class
-        $asset_type_class = $definition->getAssetTypeClassName(true);
-        $asset_type = new $asset_type_class();
-        if (!$asset_type->getFromDB($id)) {
+        $concrete_class = $definition->getCustomObjectClassName();
+        $instance = new $concrete_class();
+        if (!$instance->getFromDB($id)) {
             return false;
         }
 
-        return $asset_type;
+        return $instance;
     }
 
+    /**
+     * @see \CommonDBTM:: getSystemSQLCriteria()
+     */
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
         $table_prefix = $tablename !== null
@@ -134,7 +136,7 @@ abstract class AssetType extends CommonType
 
         // Keep only items from current definition must be shown.
         $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
+            $table_prefix . static::getDefinition()::getForeignKeyField() => static::getDefinition()->getID(),
         ];
 
         // Add another layer to the array to prevent losing duplicates keys if the
@@ -144,25 +146,15 @@ abstract class AssetType extends CommonType
         return $criteria;
     }
 
-    public function prepareInputForAdd($input)
-    {
-        return $this->prepareDefinitionInput($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        return $this->prepareDefinitionInput($input);
-    }
-
     /**
      * Ensure definition input corresponds to the current concrete class.
      *
      * @param array $input
      * @return array
      */
-    private function prepareDefinitionInput(array $input): array
+    protected function prepareDefinitionInput(array $input): array
     {
-        $definition_fkey = AssetDefinition::getForeignKeyField();
+        $definition_fkey = static::getDefinition()::getForeignKeyField();
         $definition_id   = static::getDefinition()->getID();
 
         if (
@@ -182,5 +174,30 @@ abstract class AssetType extends CommonType
         $input[$definition_fkey] = $definition_id;
 
         return $input;
+    }
+
+    /**
+     * Amend the class search options to define their concrete `itemtype`.
+     *
+     * @param array $search_options
+     *
+     * @return array
+     */
+    protected function amendSearchOptions(array $search_options): array
+    {
+        // Ensure the search engine can handle search options when multiple classes map to the same table
+        foreach ($search_options as &$search_option) {
+            if (
+                is_array($search_option)
+                && array_key_exists('table', $search_option)
+                && $search_option['table'] === static::getTable()
+            ) {
+                // Search class could not be able to retrieve the concrete class when using `getItemTypeForTable()`,
+                // so we have to define an `itemtype` here.
+                $search_option['itemtype'] = static::class;
+            }
+        }
+
+        return $search_options;
     }
 }

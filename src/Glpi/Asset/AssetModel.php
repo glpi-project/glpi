@@ -70,7 +70,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public static function getIcon()
     {
-        return static::getDefinition()->getAssetsIcon();
+        return static::getDefinition()->getCustomObjectIcon();
     }
 
     public static function getTable($classname = null)
@@ -171,14 +171,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
             array_key_exists($definition_fkey, $input)
             && (int)$input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Asset definition does not match the current concrete class.');
+            throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
             && (int)$this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Asset definition cannot be changed.');
+            throw new \RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;

@@ -33,19 +33,19 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 
-{% block form_fields %}
+{% set customobj_ns = item.getCustomObjectNamespace() %}
 
+{% block form_fields %}
     {% if not item.isNewItem() and item.isActive() and not has_rights_enabled %}
-        <div class="alert alert-warning" role="alert">
-            {{ __('There is currently no profile with access to assets with current definition.') }}
-        </div>
+        {{ alerts.alert_warning(__('There is currently no profile with access to items with current definition.')) }}
     {% endif %}
 
     {% if item.isNewItem() %}
         {% set helper %}
-            {{ __('The system name corresponds to the customizable part of the asset class which will correspond to the current definition. For example, assets linked to the system name "%s" will have the class "%s".')|format('Laptop', 'Glpi\\CustomAsset\\Laptop') }}
+            {{ __('The system name corresponds to the customizable part of the item class which will correspond to the current definition. For example, items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
             {{ __('The value must contains only letters and must not end by "Model" or "Type".') }}
             {{ __('Also, the value must not be one of the following reserved names: %s.')|format('"' ~ reserved_system_names|join('", "') ~ '"') }}
         {% endset %}
@@ -62,7 +62,7 @@
     {% else %}
         {% set helper_html %}
             <em class="text-muted">
-                {{ __('The class of assets related to current definition is "%s".')|format('Glpi\\CustomAsset\\%s'|format(item.fields['system_name'])) }}
+                {{ __('The class of items related to current definition is "%s".')|format(customobj_ns ~ '\\%s'|format(item.fields['system_name'])) }}
             </em>
         {% endset %}
         {{ fields.textField(
@@ -88,12 +88,12 @@
 
                         <h3>{{ _x('button', 'Are you sure?') }}</h3>
                         <div class="text-muted">
-                            {% if asset_count > 0 %}
-                                {{ __('This asset definition is used by %d assets.')|format(asset_count) }}
+                            {% if item_count > 0 %}
+                                {{ __('This item definition is used by %d items.')|format(item_count) }}
                                 <br>
-                                {{ __('All assets that are using this definition will be deleted.') }}
+                                {{ __('All items that are using this definition will be deleted.') }}
                             {% else %}
-                                {{ __('This asset definition is not used by any assets.') }}
+                                {{ __('This item definition is not used by any items.') }}
                             {% endif %}
                         </div>
                     </div>

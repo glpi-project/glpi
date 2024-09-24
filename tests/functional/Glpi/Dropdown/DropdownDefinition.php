@@ -33,63 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Asset;
+namespace tests\units\Glpi\Dropdown;
 
-use Computer;
 use DbTestCase;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity\HasDocumentsCapacity;
-use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Profile;
 
-class AssetDefinition extends DbTestCase
+class DropdownDefinition extends DbTestCase
 {
     protected function updateInputProvider(): iterable
     {
-        // Capacities inputs
-        yield [
-            'input'    => [
-                'capacities' => [
-                    HasDocumentsCapacity::class,
-                    HasInfocomCapacity::class,
-                ],
-            ],
-            'output'   => [
-                'capacities' => json_encode([
-                    HasDocumentsCapacity::class,
-                    HasInfocomCapacity::class,
-                ]),
-            ],
-            'messages' => [],
-        ];
-
-        yield [
-            'input'    => [
-                'capacities' => [
-                    Computer::class, // not a capacity
-                    HasInfocomCapacity::class,
-                ],
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: &quot;Capacities&quot;.',
-                ],
-            ],
-        ];
-
-        yield [
-            'input'    => [
-                'capacities' => 'not a valid capacity input',
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: &quot;Capacities&quot;.',
-                ],
-            ],
-        ];
-
         // Profiles input
         $self_service_p_id = getItemByTypeName(Profile::class, 'Self-Service', true);
         $admin_p_id        = getItemByTypeName(Profile::class, 'Admin', true);
@@ -240,7 +193,7 @@ class AssetDefinition extends DbTestCase
                 continue;
             }
 
-            $system_name = sprintf('TestAsset%s', $char);
+            $system_name = sprintf('TestDropdown%s', $char);
             if (
                 ($char >= "A" && $char <= "Z") // A -> Z
                 || ($char >= "a" && $char <= "z") // a -> z
@@ -251,7 +204,6 @@ class AssetDefinition extends DbTestCase
                     ],
                     'output'   => [
                         'system_name'  => $system_name,
-                        'capacities'   => '[]',
                         'profiles'     => '[]',
                         'translations' => '[]',
                     ],
@@ -272,7 +224,7 @@ class AssetDefinition extends DbTestCase
             }
         }
 
-        foreach (AssetDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
+        foreach (DropdownDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
             // System name must not be a reserved name
             yield [
                 'input'    => [
@@ -292,7 +244,6 @@ class AssetDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => 'My' . $system_name,
-                    'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
                 ],
@@ -305,7 +256,6 @@ class AssetDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => $system_name . 'NG',
-                    'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
                 ],
@@ -316,7 +266,7 @@ class AssetDefinition extends DbTestCase
         // System name must not end with `Model` suffix
         yield [
             'input'    => [
-                'system_name' => 'TestAssetModel',
+                'system_name' => 'TestDropdownModel',
             ],
             'output'   => false,
             'messages' => [
@@ -328,11 +278,10 @@ class AssetDefinition extends DbTestCase
         // but system name can contains `Model`
         yield [
             'input'    => [
-                'system_name' => 'TestAssetModeling',
+                'system_name' => 'TestDropdownModeling',
             ],
             'output'   => [
-                'system_name'  => 'TestAssetModeling',
-                'capacities'   => '[]',
+                'system_name'  => 'TestDropdownModeling',
                 'profiles'     => '[]',
                 'translations' => '[]',
             ],
@@ -342,7 +291,7 @@ class AssetDefinition extends DbTestCase
         // System name must not end with `Type` suffix
         yield [
             'input'    => [
-                'system_name' => 'TestAssetType',
+                'system_name' => 'TestDropdownType',
             ],
             'output'   => false,
             'messages' => [
@@ -354,11 +303,10 @@ class AssetDefinition extends DbTestCase
         // but system name can contains `Type`
         yield [
             'input'    => [
-                'system_name' => 'TestAssetTyped',
+                'system_name' => 'TestDropdownTyped',
             ],
             'output'   => [
-                'system_name'  => 'TestAssetTyped',
-                'capacities'   => '[]',
+                'system_name'  => 'TestDropdownTyped',
                 'profiles'     => '[]',
                 'translations' => '[]',
             ],
@@ -372,10 +320,6 @@ class AssetDefinition extends DbTestCase
                 if (is_array($data['output'])) {
                     $data['output']['system_name'] = __FUNCTION__;
                 }
-            }
-            if (is_array($data['output']) && !array_key_exists('capacities', $data['output'])) {
-                // default value for `capacities`
-                $data['output']['capacities'] = '[]';
             }
             if (is_array($data['output']) && !array_key_exists('profiles', $data['output'])) {
                 // default value for `profiles`
@@ -406,7 +350,7 @@ class AssetDefinition extends DbTestCase
     public function testSystemNameUpdate(): void
     {
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            \Glpi\Dropdown\DropdownDefinition::class,
             [
                 'system_name' => 'test',
             ]
@@ -422,23 +366,22 @@ class AssetDefinition extends DbTestCase
 
     public function testDelete()
     {
-        /** @var \Glpi\Asset\AssetDefinition $definition */
-        $definition = $this->initAssetDefinition('test');
-        \Glpi\Asset\AssetDefinitionManager::getInstance()->bootstrapClasses();
+        /** @var \Glpi\Dropdown\DropdownDefinition $definition */
+        $definition = $this->initDropdownDefinition('test');
+        \Glpi\Dropdown\DropdownDefinitionManager::getInstance()->bootstrapClasses();
 
         $this->createItem(
-            $definition->getAssetClassName(),
+            $definition->getDropdownClassName(),
             [
                 'name' => 'test',
-                'entities_id' => $this->getTestRootEntity(true),
             ]
         );
 
         $this->boolean($definition->delete([
             'id' => $definition->getID(),
         ]))->isTrue();
-        $this->array(getAllDataFromTable('glpi_assets_assets', [
-            'assets_assetdefinitions_id' => $definition->getID(),
+        $this->array(getAllDataFromTable('glpi_dropdowns_dropdowns', [
+            'dropdowns_dropdowndefinitions_id' => $definition->getID(),
         ]))->size->isEqualTo(0);
     }
 
@@ -447,7 +390,7 @@ class AssetDefinition extends DbTestCase
         $technician_id  = getItemByTypeName(Profile::class, 'Technician', true);
         $super_admin_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
 
-        $definition = $this->initAssetDefinition(
+        $definition = $this->initDropdownDefinition(
             'test',
             profiles: [$super_admin_id => ALLSTANDARDRIGHT]
         );
@@ -537,7 +480,7 @@ class AssetDefinition extends DbTestCase
     public function testUpdateTranslations()
     {
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            \Glpi\Dropdown\DropdownDefinition::class,
             [
                 'system_name' => 'test',
             ]
@@ -593,9 +536,9 @@ class AssetDefinition extends DbTestCase
 
     public function testGetTranslatedName()
     {
-        /** @var \Glpi\Asset\AssetDefinition $definition */
+        /** @var \Glpi\Dropdown\DropdownDefinition $definition */
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            \Glpi\Dropdown\DropdownDefinition::class,
             [
                 'system_name' => 'test',
                 'translations' => [
@@ -657,7 +600,7 @@ class AssetDefinition extends DbTestCase
      */
     public function testGetPluralFormsForLanguage(string $language, array $expected)
     {
-        $result = \Glpi\Asset\AssetDefinition::getPluralFormsForLanguage($language);
+        $result = \Glpi\Dropdown\DropdownDefinition::getPluralFormsForLanguage($language);
         $this->array($result)->hasSize(count($expected));
         foreach ($result as $index => $category) {
             $this->object($category)->isInstanceOf(\Gettext\Languages\Category::class);
