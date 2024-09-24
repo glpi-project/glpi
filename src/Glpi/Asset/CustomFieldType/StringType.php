@@ -43,13 +43,13 @@ class StringType extends AbstractType
         return __('String');
     }
 
-    public function getFormInput(mixed $value, ?string $label = null, ?string $name = null): string
+    public function getFormInput(string $name, mixed $value, ?string $label = null, bool $for_default = false): string
     {
         $twig_params = [
-            'name' => $name ?? $this->custom_field->fields['name'],
+            'name' => $name,
             'value' => $value ?? $this->custom_field->fields['default_value'],
             'label' => $label ?? $this->custom_field->getFriendlyName(),
-            'field_options' => $this->getOptionValues($name === 'default_value') + ['additional_attributes' => ['maxlength' => 255]],
+            'field_options' => $this->getOptionValues($for_default) + ['additional_attributes' => ['maxlength' => 255]],
         ];
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

@@ -46,6 +46,6 @@
 
     {% for custom_field_definition in custom_field_definitions %}
         {% set field_name = 'custom_' ~ custom_field_definition.fields['name'] %}
-        {{ call([custom_field_definition.getFieldType(), 'getFormInput'], [item.fields[field_name], null, field_name])|raw }}
+        {{ custom_field_definition.getFieldType().getFormInput(field_name, item.fields[field_name])|raw }}
     {% endfor %}
 {% endblock %}

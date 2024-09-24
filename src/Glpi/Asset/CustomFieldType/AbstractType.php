@@ -97,7 +97,12 @@ abstract class AbstractType implements TypeInterface
 
     public function getDefaultValueFormInput(): string
     {
-        return $this->getFormInput($this->custom_field->fields['default_value'], __('Default value'), 'default_value');
+        return $this->getFormInput(
+            name: 'default_value',
+            value: $this->custom_field->fields['default_value'],
+            label: __('Default value'),
+            for_default: true
+        );
     }
 
     protected function getCommonSearchOptionData(): array

@@ -99,16 +99,16 @@ class DropdownType extends AbstractType
         return $value;
     }
 
-    public function getFormInput(mixed $value, ?string $label = null, ?string $name = null): string
+    public function getFormInput(string $name, mixed $value, ?string $label = null, bool $for_default = false): string
     {
         $twig_params = [
             'itemtype' => $this->custom_field->fields['itemtype'],
-            'name' => $name ?? $this->custom_field->fields['name'],
+            'name' => $name,
             'value' => $value ?? $this->custom_field->fields['default_value'],
             'label' => $label ?? $this->custom_field->getFriendlyName(),
-            'field_options' => $this->getOptionValues($name === 'default_value'),
+            'field_options' => $this->getOptionValues($for_default),
         ];
-        if ($name === 'default_value') {
+        if ($for_default) {
             $twig_params['field_options']['full_width'] = false;
             if ($twig_params['value'] === '') {
                 $twig_params['value'] = null;
