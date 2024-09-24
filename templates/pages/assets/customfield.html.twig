@@ -90,14 +90,9 @@
                 if ($('#customfield_form_container input[name="name"]').data('manually_changed')) {
                     return;
                 }
-                let name_prefix = '';
-                const selected_type = getSelectedType();
-                if (selected_type === 'Glpi\\Asset\\CustomFieldType\\DateType' || selected_type === 'Glpi\\Asset\\CustomFieldType\\DateTimeType') {
-                    name_prefix = 'date_';
-                }
                 // label is made lowercase and spaces are replaced with underscores. All other characters are removed
                 $('#customfield_form_container input[name="name"]')
-                    .val(name_prefix + $('#customfield_form_container input[name="label"]').val().toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+                    .val($('#customfield_form_container input[name="label"]').val().toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
             };
             const updateDefaultValueField = () => {
                 // get all inputs with name starting with field_options and create an object with the values
