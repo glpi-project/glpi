@@ -2923,7 +2923,10 @@ HTML;
                 $entities = $this->getEntities();
                 Entity::dropdown(['value'  => $this->fields["entities_id"],
                     'rand'   => $entrand,
-                    'entity' => $entities
+                    'entity' => $entities,
+                    'toadd' => [
+                        0 => __('Full structure'),
+                    ]
                 ]);
                 echo "</td></tr>";
 
@@ -3311,7 +3314,10 @@ HTML;
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
                 Entity::dropdown(['value'  => $this->fields['entities_id'],
                     'rand'   => $entrand,
-                    'entity' => $entities
+                    'entity' => $entities,
+                    'toadd' => [
+                        0 => __('Full structure'),
+                    ]
                 ]);
             } else {
                 echo "<td colspan='2'>&nbsp;";
