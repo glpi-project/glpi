@@ -66,7 +66,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 
     /**
      * Dropdown itemtypes allowed for custom field definitions.
-     * @var array<string, array<class-string<CommonDBTM>, string>>
+     * @var array<string, array<class-string<\CommonDBTM>, string>>
      * @see self::getAllowedDropdownItemtypes()
      */
     private ?array $allowed_dropdown_itemtypes = null;
@@ -317,7 +317,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Returns the dropdown itemtypes allowed for custom field definitions.
      * @param bool $flatten If true, returns a flat array of itemtypes rather than separated by category.
-     * @return array<string, array<class-string<CommonDBTM>, string>>
+     * @return array<string, array<class-string<\CommonDBTM>, string>>
      */
     public function getAllowedDropdownItemtypes($flatten = false): array
     {
