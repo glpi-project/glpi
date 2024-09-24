@@ -7056,10 +7056,6 @@ abstract class CommonITILObject extends CommonDBTM
                         'users_id_tech' => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
                     ]
                 ];
-
-                if (!empty($_SESSION["glpigroups"])) {
-                    $restrict_task['OR']['groups_id_tech'] = $_SESSION["glpigroups"];
-                }
             }
         }
 
