@@ -1168,6 +1168,10 @@ HTML;
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
             }
+
+            if (in_array('home-scss-file', $jslibs)) {
+                $tpl_vars['css_files'][] = ['path' => 'css/helpdesk_home.scss'];
+            }
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
