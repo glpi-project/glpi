@@ -56,7 +56,7 @@ if (isset($_POST['itemtype'])) {
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, UPDATE)) {
                             Session::addMessageAfterRedirect(
-                                htmlspecialchars(sprintf(
+                                htmlescape(sprintf(
                                     __('You do not have rights to restore %s item.'),
                                     $type
                                 )),
@@ -81,7 +81,7 @@ if (isset($_POST['itemtype'])) {
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, PURGE)) {
                              Session::addMessageAfterRedirect(
-                                 htmlspecialchars(sprintf(
+                                 htmlescape(sprintf(
                                      __('You do not have rights to delete %s item.'),
                                      $type
                                  )),

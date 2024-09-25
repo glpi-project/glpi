@@ -106,7 +106,7 @@ class Item_Project extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
-                action='" . htmlspecialchars(Toolbox::getItemTypeFormURL(__CLASS__)) . "'>";
+                action='" . htmlescape(Toolbox::getItemTypeFormURL(__CLASS__)) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add an item') . "</th></tr>";
@@ -149,7 +149,7 @@ class Item_Project extends CommonDBRelation
             $header_bottom .= "</th>";
         }
         $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         $header_end .= "<th>" . __s('Name') . "</th>";
         $header_end .= "<th>" . __s('Serial number') . "</th>";
         $header_end .= "<th>" . __s('Inventory number') . "</th></tr>";
@@ -176,7 +176,7 @@ class Item_Project extends CommonDBRelation
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                     }
                     $link     = $item::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . $link . "\">" . htmlspecialchars($name) . "</a>";
+                    $namelink = "<a href=\"" . $link . "\">" . htmlescape($name) . "</a>";
 
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
@@ -185,7 +185,7 @@ class Item_Project extends CommonDBRelation
                         echo "</td>";
                     }
                     if ($prem) {
-                        $typename = htmlspecialchars($item->getTypeName($nb));
+                        $typename = htmlescape($item->getTypeName($nb));
                         echo "<td class='center top' rowspan='$nb'>" .
                          (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
                         $prem = false;
@@ -195,10 +195,10 @@ class Item_Project extends CommonDBRelation
                     echo "<td class='center" .
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                     echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . htmlspecialchars($data["serial"]) . "" : "-") .
+                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . htmlescape($data["serial"]) . "" : "-") .
                     "</td>";
                     echo "<td class='center'>" .
-                      (isset($data["otherserial"]) ? "" . htmlspecialchars($data["otherserial"]) . "" : "-") . "</td>";
+                      (isset($data["otherserial"]) ? "" . htmlescape($data["otherserial"]) . "" : "-") . "</td>";
                     echo "</tr>";
                 }
                 $totalnb += $nb;

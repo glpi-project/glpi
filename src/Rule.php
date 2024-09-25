@@ -1929,7 +1929,7 @@ JS
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
                 $data['criteria'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1941,7 +1941,7 @@ JS
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
                 $data['actions'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1954,7 +1954,7 @@ JS
         );
 
         if ($display_entity) {
-            $entname = htmlspecialchars(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+            $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {
                 $entname = sprintf(__s('%1$s %2$s'), $entname, "<span class='fw-bold'>(" . __s('R') . ")</span>");
             }
@@ -2134,7 +2134,7 @@ JS
         $entries = [
             [
                 'action' => __('Validation'),
-                'result' => htmlspecialchars(Dropdown::getYesNo($global_result)),
+                'result' => htmlescape(Dropdown::getYesNo($global_result)),
             ]
         ];
         $output = $this->preProcessPreviewResults($output);
@@ -2159,7 +2159,7 @@ JS
             foreach ($value as $v) {
                 $entries[] = [
                     'action' => $action_def["name"],
-                    'result' => htmlspecialchars($this->getActionValue($action_def_key, $actiontype, $v))
+                    'result' => htmlescape($this->getActionValue($action_def_key, $actiontype, $v))
                 ];
             }
         }
@@ -2171,7 +2171,7 @@ JS
                 $regex_results .= "<table class='table table-sm table-borderless table-striped'>";
                 $regex_results .= "<tr><th>" . __s('Key') . "</th><th>" . __s('Value') . "</th></tr>";
                 foreach ($this->regex_results[0] as $key => $value) {
-                    $regex_results .= "<tr><td>" . htmlspecialchars($key) . "</td><td>" . htmlspecialchars($value) . "</td></tr>";
+                    $regex_results .= "<tr><td>" . htmlescape($key) . "</td><td>" . htmlescape($value) . "</td></tr>";
                 }
                 $regex_results .= "</table>";
             }
@@ -2208,9 +2208,9 @@ JS
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalCriteria($fields);
-        $text  = "<td $addtotd>" . htmlspecialchars($to_display['criterion']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['condition']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['pattern']) . "</td>";
+        $text  = "<td $addtotd>" . htmlescape($to_display['criterion']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['condition']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['pattern']) . "</td>";
         return $text;
     }
 
@@ -2239,9 +2239,9 @@ JS
     public function getMinimalActionText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalAction($fields);
-        $text  = "<td $addtotd>" . htmlspecialchars($to_display['field']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['type']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['value']) . "</td>";
+        $text  = "<td $addtotd>" . htmlescape($to_display['field']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['type']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['value']) . "</td>";
         return $text;
     }
 
@@ -2962,9 +2962,9 @@ JS
 
         $entries = [];
         foreach ($rules as $rule) {
-            $name = htmlspecialchars($rule->fields["name"]);
+            $name = htmlescape($rule->fields["name"]);
             if ($canedit) {
-                $name = "<a href='" . htmlspecialchars(static::getFormURLWithID($rule->fields["id"]))
+                $name = "<a href='" . htmlescape(static::getFormURLWithID($rule->fields["id"]))
                     . "&amp;onglet=1'>" . $name . "</a>";
             }
 

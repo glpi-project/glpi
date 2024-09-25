@@ -62,10 +62,10 @@ final readonly class Tag
             "class"                  => "border-$color border-start border-3 bg-dark-lt",
         ];
         $properties = implode(" ", array_map(
-            fn($key, $value) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)),
+            fn($key, $value) => sprintf('%s="%s"', htmlescape($key), htmlescape($value)),
             array_keys($properties),
             array_values($properties),
         ));
-        $this->html = sprintf('<span %s>%s</span>', $properties, htmlspecialchars($label));
+        $this->html = sprintf('<span %s>%s</span>', $properties, htmlescape($label));
     }
 }

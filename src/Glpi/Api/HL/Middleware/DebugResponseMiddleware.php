@@ -79,7 +79,7 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
             $header_value = '';
             foreach ($debug_messages as $debug_message) {
                 // escape quotes in the message, quote the message, and add it to the header value, and append a comma to the end
-                $msg = htmlspecialchars($debug_message);
+                $msg = htmlescape($debug_message);
                 $header_value .= '"' . $msg . '",';
             }
             // remove the last comma from the header value

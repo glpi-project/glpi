@@ -608,9 +608,9 @@ TWIG, $twig_params);
                         );
                     }
                 }
-                $item_link = htmlspecialchars(sprintf(__('%1$s - %2$s'), $typename, $row["name"]));
+                $item_link = htmlescape(sprintf(__('%1$s - %2$s'), $typename, $row["name"]));
                 if ($itemtype::canView()) {
-                    $item_link = "<a href='" . htmlspecialchars($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
+                    $item_link = "<a href='" . htmlescape($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
                         $item_link .
                         "</a>";
                 }
@@ -621,7 +621,7 @@ TWIG, $twig_params);
                 }
                 $entry['location'] = $location_cache[$row["location"]];
 
-                $entry['comment'] = nl2br(htmlspecialchars($row["comment"] ?? ""));
+                $entry['comment'] = nl2br(htmlescape($row["comment"]));
 
                 if ($showentity) {
                     if (!isset($entity_cache[$row["entities_id"]])) {
@@ -629,7 +629,7 @@ TWIG, $twig_params);
                     }
                     $entry['entity'] = $entity_cache[$row["entities_id"]];
                 }
-                $cal_href = htmlspecialchars(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
+                $cal_href = htmlescape(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
                 $entry['calendar'] = "<a href='$cal_href'>";
                 $entry['calendar'] .= "<i class='" . Planning::getIcon() . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
 
@@ -803,7 +803,7 @@ TWIG, $twig_params);
                     ));
                 } else {
                    //TRANS: %1$s is a name, %2$s is text of message
-                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
@@ -828,7 +828,7 @@ TWIG, $twig_params);
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 }
             }
         }

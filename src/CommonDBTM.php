@@ -1449,18 +1449,18 @@ class CommonDBTM extends CommonGLPI
         if ($link_url !== '') {
             $html .= sprintf(
                 '<a href="%s" title="%s"%s>',
-                htmlspecialchars($link_url),
-                htmlspecialchars($link_title),
-                $p['class'] !== '' ? sprintf(' class="%s"', htmlspecialchars($p['class'])) : '',
+                htmlescape($link_url),
+                htmlescape($link_title),
+                $p['class'] !== '' ? sprintf(' class="%s"', htmlescape($p['class'])) : '',
             );
         }
         if ($icon !== '') {
             $html .= sprintf(
                 '<i class="%s"></i> ',
-                htmlspecialchars($icon)
+                htmlescape($icon)
             );
         }
-        $html .= htmlspecialchars($label);
+        $html .= htmlescape($label);
         if ($comment !== '') {
             $html .= ' - ' . $comment; // Comment tooltip is already HTML encoded.
         }
@@ -1522,7 +1522,7 @@ class CommonDBTM extends CommonGLPI
                 );
             }
             $opt = [ 'forceid' => $this instanceof CommonITILObject ];
-            $display = (isset($this->input['_no_message_link']) ? htmlspecialchars($this->getNameID($opt))
+            $display = (isset($this->input['_no_message_link']) ? htmlescape($this->getNameID($opt))
                                                             : $this->getLink($opt));
 
            // Do not display quotes
@@ -1952,12 +1952,12 @@ class CommonDBTM extends CommonGLPI
     final public function formatSessionMessageAfterAction(string $message): string
     {
         if (isset($this->input['_no_message_link'])) {
-            $display = htmlspecialchars($this->getNameID());
+            $display = htmlescape($this->getNameID());
         } else {
             $display = $this->getLink();
         }
 
-        return sprintf(__s('%1$s: %2$s'), htmlspecialchars($message), $display);
+        return sprintf(__s('%1$s: %2$s'), htmlescape($message), $display);
     }
 
     /**
@@ -3490,21 +3490,21 @@ class CommonDBTM extends CommonGLPI
         if ($this->isField('completename')) {
             $toadd[] = [
                 'name'  => __s('Complete name'),
-                'value' => htmlspecialchars((string) $this->getField('completename')),
+                'value' => htmlescape((string) $this->getField('completename')),
             ];
         }
 
         if ($this->isField('serial')) {
             $toadd[] = [
                 'name'  => __s('Serial number'),
-                'value' => htmlspecialchars((string) $this->getField('serial')),
+                'value' => htmlescape((string) $this->getField('serial')),
             ];
         }
 
         if ($this->isField('otherserial')) {
             $toadd[] = [
                 'name'  => __s('Inventory number'),
-                'value' => htmlspecialchars((string) $this->getField('otherserial')),
+                'value' => htmlescape((string) $this->getField('otherserial')),
             ];
         }
 
@@ -3513,7 +3513,7 @@ class CommonDBTM extends CommonGLPI
             if (strlen($name) > 0) {
                 $toadd[] = [
                     'name'  => __s('Status'),
-                    'value' => htmlspecialchars($name),
+                    'value' => htmlescape($name),
                 ];
             }
         }
@@ -3522,8 +3522,8 @@ class CommonDBTM extends CommonGLPI
             $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
             if (strlen($name) > 0) {
                 $toadd[] = [
-                    'name'  => htmlspecialchars(Location::getTypeName(1)),
-                    'value' => htmlspecialchars($name),
+                    'name'  => htmlescape(Location::getTypeName(1)),
+                    'value' => htmlescape($name),
                 ];
             }
         }
@@ -3532,8 +3532,8 @@ class CommonDBTM extends CommonGLPI
             $name = getUserName($this->fields['users_id']);
             if (strlen($name) > 0) {
                 $toadd[] = [
-                    'name'  => htmlspecialchars(User::getTypeName(1)),
-                    'value' => htmlspecialchars($name),
+                    'name'  => htmlescape(User::getTypeName(1)),
+                    'value' => htmlescape($name),
                 ];
             }
         }
@@ -3547,8 +3547,8 @@ class CommonDBTM extends CommonGLPI
                 $name = Dropdown::getDropdownName("glpi_groups", $group);
                 if (strlen($name) > 0) {
                     $toadd[] = [
-                        'name'  => htmlspecialchars(Group::getTypeName(1)),
-                        'value' => htmlspecialchars($name),
+                        'name'  => htmlescape(Group::getTypeName(1)),
+                        'value' => htmlescape($name),
                     ];
                 }
             }
@@ -3558,8 +3558,8 @@ class CommonDBTM extends CommonGLPI
             $name = getUserName($this->fields['users_id_tech']);
             if (strlen($name) > 0) {
                 $toadd[] = [
-                    'name'  => htmlspecialchars(__('Technician in charge')),
-                    'value' => htmlspecialchars($name),
+                    'name'  => htmlescape(__('Technician in charge')),
+                    'value' => htmlescape($name),
                 ];
             }
         }
@@ -3567,14 +3567,14 @@ class CommonDBTM extends CommonGLPI
         if ($this->isField('contact')) {
             $toadd[] = [
                 'name'  => __s('Alternate username'),
-                'value' => htmlspecialchars((string) $this->getField('contact')),
+                'value' => htmlescape((string) $this->getField('contact')),
             ];
         }
 
         if ($this->isField('contact_num')) {
             $toadd[] = [
                 'name'  => __s('Alternate username number'),
-                'value' => htmlspecialchars((string) $this->getField('contact_num')),
+                'value' => htmlescape((string) $this->getField('contact_num')),
             ];
         }
 
@@ -3596,7 +3596,7 @@ class CommonDBTM extends CommonGLPI
         if ($this instanceof CommonDropdown && $this->isField('comment')) {
             $toadd[] = [
                 'name'  => __s('Comments'),
-                'value' => nl2br(htmlspecialchars((string) $this->getField('comment'))),
+                'value' => nl2br(htmlescape((string) $this->getField('comment'))),
             ];
         }
 
@@ -4382,7 +4382,7 @@ class CommonDBTM extends CommonGLPI
                 __('At least one field has an incorrect value'),
                 implode(',', $fails)
             );
-            Session::addMessageAfterRedirect(htmlspecialchars($message), INFO, true);
+            Session::addMessageAfterRedirect(htmlescape($message), INFO, true);
         }
     }
 
@@ -4446,12 +4446,12 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($unicity['action_refuse']) {
-            $message_text = htmlspecialchars(sprintf(
+            $message_text = htmlescape(sprintf(
                 __('Impossible record for %s'),
                 implode(' & ', $message)
             ));
         } else {
-            $message_text = htmlspecialchars(sprintf(
+            $message_text = htmlescape(sprintf(
                 __('Item successfully added but duplicate record on %s'),
                 implode(' & ', $message)
             ));
@@ -4486,7 +4486,7 @@ class CommonDBTM extends CommonGLPI
                             $field_value
                         );
                     }
-                    $new_text = htmlspecialchars(sprintf(__('%1$s: %2$s'), $value, $field_value));
+                    $new_text = htmlescape(sprintf(__('%1$s: %2$s'), $value, $field_value));
                     if (empty($double_text)) {
                         $double_text = $new_text;
                     } else {
@@ -5322,7 +5322,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($add) {
             $entries[] = [
-                'template' => '<a href="' . htmlspecialchars($target_blank) . '">' . __('Blank Template') . '</a>'
+                'template' => '<a href="' . htmlescape($target_blank) . '">' . __('Blank Template') . '</a>'
             ];
         }
 
@@ -5336,7 +5336,7 @@ class CommonDBTM extends CommonGLPI
                 $modify_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=1";
                 $target_modify = $target . $modify_params;
 
-                $entry['template'] = '<a href="' . htmlspecialchars($target_modify) . '">' . htmlspecialchars($templname) . '</a>';
+                $entry['template'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
                 if (Session::isMultiEntitiesMode()) {
                     if (!isset($entity_cache[$data['entities_id']])) {
                         $entity_cache[$data['entities_id']] = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
@@ -5347,7 +5347,7 @@ class CommonDBTM extends CommonGLPI
             } else {
                 $add_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=2";
                 $target_add = $target . $add_params;
-                $entry['template'] = '<a href="' . htmlspecialchars($target_add) . '">' . htmlspecialchars($templname) . '</a>';
+                $entry['template'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
             }
             $entries[] = $entry;
         }

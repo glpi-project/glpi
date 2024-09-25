@@ -611,7 +611,7 @@ class Infocom extends CommonDBChild
                     Html::convDate($budget->fields['begin_date']),
                     Html::convDate($budget->fields['end_date'])
                 );
-                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
             }
         }
     }
@@ -745,7 +745,7 @@ class Infocom extends CommonDBChild
                     ));
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
@@ -770,7 +770,7 @@ class Infocom extends CommonDBChild
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 }
             }
         }

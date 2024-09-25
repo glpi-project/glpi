@@ -33,31 +33,46 @@
  * ---------------------------------------------------------------------
  */
 
-Html::header_nocache();
+namespace tests\units\autoload;
 
-if (
-    isset($_REQUEST["urgency"])
-    && isset($_REQUEST["impact"])
-) {
-    // Read predefined templates fields
-    $predefined_fields  = array_key_exists('_predefined_fields', $_REQUEST) ? Toolbox::decodeArrayFromInput($_REQUEST["_predefined_fields"]) : [];
+use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
-    // Fallback to Form value -> Template values -> Medium
-    $priority = Ticket::computePriority(
-        $_REQUEST["urgency"] ?: $predefined_fields['urgency'] ?? 3 /* Medium */,
-        $_REQUEST["impact"]  ?: $predefined_fields['impact']  ?? 3 /* Medium */
-    );
+class MiscFunctionsTest extends DbTestCase
+{
+    public static function htmlescapeProvider(): iterable
+    {
+        yield [
+            'input'  => '1 > 0 & 1 < 2',
+            'output' => '1 &gt; 0 &amp; 1 &lt; 2',
+        ];
+        yield [
+            'input'  => null,
+            'output' => '',
+        ];
+        yield [
+            'input'  => true,
+            'output' => '1',
+        ];
+        yield [
+            'input'  => 1,
+            'output' => '1',
+        ];
+    }
 
-    if (isset($_REQUEST['getJson'])) {
-        header("Content-Type: application/json; charset=UTF-8");
-        echo json_encode(['priority' => $priority]);
-    } elseif ($_REQUEST["priority"]) {
-        // Send UTF8 Headers
-        header("Content-Type: text/html; charset=UTF-8");
-        echo "<script type='text/javascript' >";
-        echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
-        echo "</script>";
-    } else {
-        echo htmlescape(Ticket::getPriorityName($priority));
+    #[DataProvider('htmlescapeProvider')]
+    public function testHtmlescape(mixed $input, string $output): void
+    {
+        $this->assertEquals($output, \htmlescape($input));
+    }
+
+    public function testHtmlescapeWithUnexpectedType(): void
+    {
+        $this->assertEquals('Array', \htmlescape(['an', 'array']));
+        $this->hasPhpLogRecordThatContains(
+            'Array to string conversion',
+            LogLevel::WARNING
+        );
     }
 }

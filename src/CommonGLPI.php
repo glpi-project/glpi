@@ -738,13 +738,13 @@ class CommonGLPI implements CommonGLPIInterface
             $icon = '';
         }
 
-        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlspecialchars($icon)) : '';
+        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
         $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', $nb) : '';
 
         return sprintf(
             '<span class="d-flex align-items-center">%s%s%s</span>',
             $icon_html,
-            htmlspecialchars($text),
+            htmlescape($text),
             $counter_html
         );
     }
@@ -1059,7 +1059,7 @@ class CommonGLPI implements CommonGLPIInterface
             if (!$glpilisttitle) {
                 $glpilisttitle = __('List');
             }
-            $list = "<a href='$glpilisturl' title=\"" . htmlspecialchars($glpilisttitle) . "\"
+            $list = "<a href='$glpilisturl' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='ti ti-list-search fa-lg'></i>
@@ -1111,7 +1111,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
-                echo htmlspecialchars($this->getNameID([
+                echo htmlescape($this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
                 ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {

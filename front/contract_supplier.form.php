@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             _n('Contract', 'Contracts', 1)
         );
-        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     $contractsupplier->check(-1, CREATE, $_POST);

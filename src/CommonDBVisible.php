@@ -214,11 +214,11 @@ abstract class CommonDBVisible extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $ID      = htmlspecialchars($this->fields['id']);
+        $ID      = htmlescape($this->fields['id']);
         $canedit = $this->canEdit($ID);
         $rand    = mt_rand();
         $nb      = $this->countVisibilities();
-        $str_type = htmlspecialchars(strtolower($this::getType()));
+        $str_type = htmlescape(strtolower($this::getType()));
         $fk = static::getForeignKeyField();
 
         if ($canedit) {
@@ -292,8 +292,8 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox($this::getType() . '_User', $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . htmlspecialchars(User::getTypeName(1)) . "</td>";
-                    echo "<td>" . htmlspecialchars(getUserName($data['users_id'])) . "</td>";
+                    echo "<td>" . htmlescape(User::getTypeName(1)) . "</td>";
+                    echo "<td>" . htmlescape(getUserName($data['users_id'])) . "</td>";
                     echo "</tr>";
                 }
             }
@@ -309,19 +309,19 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox('Group_' . $this::getType(), $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . htmlspecialchars(Group::getTypeName(1)) . "</td>";
+                    echo "<td>" . htmlescape(Group::getTypeName(1)) . "</td>";
 
                     $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'], 1);
                     $entname = sprintf(
                         __s('%1$s %2$s'),
-                        htmlspecialchars($names["name"]),
+                        htmlescape($names["name"]),
                         Html::showToolTip($names["comment"], ['display' => false])
                     );
                     if ($data['entities_id'] !== null) {
                         $entname = sprintf(
                             __s('%1$s / %2$s'),
                             $entname,
-                            htmlspecialchars(
+                            htmlescape(
                                 Dropdown::getDropdownName(
                                     'glpi_entities',
                                     $data['entities_id']
@@ -353,10 +353,10 @@ abstract class CommonDBVisible extends CommonDBTM
                         Html::showMassiveActionCheckBox('Entity_' . $this::getType(), $data["id"]);
                         echo "</td>";
                     }
-                    echo "<td>" . htmlspecialchars(Entity::getTypeName(1)) . "</td>";
+                    echo "<td>" . htmlescape(Entity::getTypeName(1)) . "</td>";
                     $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'], 1);
                     $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
-                    $entname = sprintf(__s('%1$s %2$s'), htmlspecialchars($names["name"]), $tooltip);
+                    $entname = sprintf(__s('%1$s %2$s'), htmlescape($names["name"]), $tooltip);
                     if ($data['is_recursive']) {
                         $entname = sprintf(
                             __s('%1$s %2$s'),
@@ -389,12 +389,12 @@ abstract class CommonDBVisible extends CommonDBTM
 
                     $names   = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                     $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
-                    $entname = sprintf(__s('%1$s %2$s'), htmlspecialchars($names["name"]), $tooltip);
+                    $entname = sprintf(__s('%1$s %2$s'), htmlescape($names["name"]), $tooltip);
                     if ($data['entities_id'] !== null) {
                         $entname = sprintf(
                             __s('%1$s / %2$s'),
                             $entname,
-                            htmlspecialchars(
+                            htmlescape(
                                 Dropdown::getDropdownName(
                                     'glpi_entities',
                                     $data['entities_id']

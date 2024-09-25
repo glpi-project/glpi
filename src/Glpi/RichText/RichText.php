@@ -68,7 +68,7 @@ final class RichText
         $content = trim($content, "\r\n");
 
         if ($encode_output) {
-            $content = htmlspecialchars($content);
+            $content = htmlescape($content);
         }
 
         return $content;
@@ -152,7 +152,7 @@ final class RichText
         $content = trim($content, "\r\n");
 
         if ($encode_output) {
-            $content = htmlspecialchars($content);
+            $content = htmlescape($content);
         }
 
         return $content;
@@ -235,7 +235,7 @@ final class RichText
             if (preg_match('/(<|>)/', $content)) {
                 // Input was not HTML, and special chars were not saved as HTML entities.
                 // We have to encode them into HTML entities.
-                $content = htmlspecialchars($content);
+                $content = htmlescape($content);
             }
 
             // Plain text line breaks have to be transformed into <br /> tags.
@@ -453,7 +453,7 @@ HTML;
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
             $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
             $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
-            $out .= "<img src='" . htmlspecialchars($img['thumbnail_src'], ENT_QUOTES) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
+            $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
         }

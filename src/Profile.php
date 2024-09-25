@@ -3752,7 +3752,7 @@ class Profile extends CommonDBTM
         // without this, you can't have an empty dropdown
         // done to avoid define NORIGHT value
         if ($param['multiple']) {
-            echo "<input type='hidden' name='" . htmlspecialchars($name) . "[]' value='0'>";
+            echo "<input type='hidden' name='" . htmlescape($name) . "[]' value='0'>";
         }
         return Dropdown::showFromArray($name, $values, $param);
     }

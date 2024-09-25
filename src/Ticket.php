@@ -1582,7 +1582,7 @@ class Ticket extends CommonITILObject
             foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
                 if ($email && !NotificationMailing::isUserAddressValid($email)) {
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(__('Invalid email address %s'), $email)),
+                        htmlescape(sprintf(__('Invalid email address %s'), $email)),
                         false,
                         ERROR
                     );
@@ -2235,7 +2235,7 @@ class Ticket extends CommonITILObject
                     'rand'         => $rand
                 ];
                 echo "<table class='mx-auto'><tr>";
-                echo "<td><label for='dropdown__mergeticket$rand'>" . htmlspecialchars(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
+                echo "<td><label for='dropdown__mergeticket$rand'>" . htmlescape(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
                 Ticket::dropdown($mergeparam);
                 echo "</td></tr><tr><td><label for='with_followups'>" . __s('Merge followups') . "</label></td><td>";
                 Html::showCheckbox([
@@ -2296,7 +2296,7 @@ class Ticket extends CommonITILObject
                 echo '<div class="horizontal-form">';
 
                 echo '<div class="form-row">';
-                $label = htmlspecialchars(SolutionTemplate::getTypeName(1));
+                $label = htmlescape(SolutionTemplate::getTypeName(1));
                 echo "<label for='solution_template'>$label</label>";
                 SolutionTemplate::dropdown([
                     'name'     => "solution_template",
@@ -2328,7 +2328,7 @@ JAVASCRIPT;
                 echo '</div>'; // .form-row
 
                 echo '<div class="form-row">';
-                $label = htmlspecialchars(SolutionType::getTypeName(1));
+                $label = htmlescape(SolutionType::getTypeName(1));
                 echo "<label for='solutiontypes_id'>$label</label>";
                 SolutionType::dropdown([
                     'name'  => 'solutiontypes_id',
@@ -4675,7 +4675,7 @@ JAVASCRIPT;
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        htmlspecialchars(getUserName($d["users_id"]));
+                                        htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -5063,7 +5063,7 @@ JAVASCRIPT;
         $rand = mt_rand();
         if ($job->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
-            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
            // $rand    = mt_rand();
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -5080,7 +5080,7 @@ JAVASCRIPT;
                 foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                     $user = new User();
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
-                        $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
+                        $name     = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         $name     = sprintf(
                             __('%1$s %2$s'),
                             $name,
@@ -5094,7 +5094,7 @@ JAVASCRIPT;
                         );
                          echo $name;
                     } else {
-                        echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
+                        echo htmlescape($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -5128,12 +5128,12 @@ JAVASCRIPT;
             }
             echo "<td>";
 
-            $link = "<a id='ticket" . htmlspecialchars($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
+            $link = "<a id='ticket" . htmlescape($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
             if ($forcetab != '') {
                 $link .= "&amp;forcetab=" . $forcetab;
             }
             $link   .= "'>";
-            $link   .= "<span class='b'>" . htmlspecialchars($job->getNameID()) . "</span></a>";
+            $link   .= "<span class='b'>" . htmlescape($job->getNameID()) . "</span></a>";
             $link    = sprintf(
                 __s('%1$s (%2$s)'),
                 $link,

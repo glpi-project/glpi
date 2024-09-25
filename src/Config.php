@@ -274,7 +274,7 @@ class Config extends CommonDBTM
        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
             $_SESSION['glpiskipMaintenance'] = 1;
-            $url = htmlspecialchars($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
+            $url = htmlescape($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('Maintenance mode activated. Backdoor using: %s'),
@@ -1522,7 +1522,7 @@ class Config extends CommonDBTM
             echo $message . "\n";
         } else {
             $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
-            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlspecialchars($message) . "' title='" . htmlspecialchars($message) . "'/>";
+            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlescape($message) . "' title='" . htmlescape($message) . "'/>";
 
             if ($fordebug) {
                 echo $img . $message . "\n";
@@ -1996,7 +1996,7 @@ class Config extends CommonDBTM
             'class'   => 'purgelog_interval'
         ], $options);
 
-        $out = "<div class='" . htmlspecialchars($options['class']) . "'>";
+        $out = "<div class='" . htmlescape($options['class']) . "'>";
         $out .= Dropdown::showFromArray($name, $values, $options);
         $out .= "</div>";
 

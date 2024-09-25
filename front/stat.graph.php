@@ -139,7 +139,7 @@ switch ($_GET["type"]) {
             _n('Category', 'Categories', 1),
             Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case 'locations_tree':
@@ -161,7 +161,7 @@ switch ($_GET["type"]) {
             Location::getTypeName(1),
             Dropdown::getDropdownName('glpi_locations', $_GET['id'])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "type":
@@ -169,7 +169,7 @@ switch ($_GET["type"]) {
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case 'group_tree':
@@ -192,7 +192,7 @@ switch ($_GET["type"]) {
             Group::getTypeName(1),
             Dropdown::getDropdownName("glpi_groups", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "groups_id_assign":
@@ -204,7 +204,7 @@ switch ($_GET["type"]) {
             Group::getTypeName(1),
             Dropdown::getDropdownName("glpi_groups", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "priority":
@@ -218,7 +218,7 @@ switch ($_GET["type"]) {
             'urgency'  => sprintf(__('%1$s: %2$s'), __('Urgency'), $item::getUrgencyName($_GET["id"])),
             'impact'   => sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"])),
         };
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "usertitles_id":
@@ -230,7 +230,7 @@ switch ($_GET["type"]) {
             _x('person', 'Title'),
             Dropdown::getDropdownName("glpi_usertitles", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "solutiontypes_id":
@@ -242,7 +242,7 @@ switch ($_GET["type"]) {
             SolutionType::getTypeName(1),
             Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "usercategories_id":
@@ -254,7 +254,7 @@ switch ($_GET["type"]) {
             _n('Category', 'Categories', 1),
             Dropdown::getDropdownName("glpi_usercategories", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "requesttypes_id":
@@ -266,7 +266,7 @@ switch ($_GET["type"]) {
             RequestType::getTypeName(1),
             Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"])
         );
-        $title   = htmlspecialchars($title);
+        $title   = htmlescape($title);
         break;
 
     case "device":
@@ -295,7 +295,7 @@ switch ($_GET["type"]) {
                 $item::getTypeName(),
                 $current['designation']
             );
-            $title   = htmlspecialchars($title);
+            $title   = htmlescape($title);
         }
         break;
 
@@ -315,7 +315,7 @@ switch ($_GET["type"]) {
                 $item::getTypeName(),
                 Dropdown::getDropdownName($table, $_GET["id"])
             );
-            $title   = htmlspecialchars($title);
+            $title   = htmlescape($title);
         }
         break;
 }

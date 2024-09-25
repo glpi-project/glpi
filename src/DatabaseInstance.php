@@ -346,7 +346,7 @@ class DatabaseInstance extends CommonDBTM
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         if ($item->getFromDB($values[$field])) {
-                            return "<a href='" . htmlspecialchars($item->getLinkURL()) . "'>" . htmlspecialchars($item->fields['name']) . "</a>";
+                            return "<a href='" . htmlescape($item->getLinkURL()) . "'>" . htmlescape($item->fields['name']) . "</a>";
                         } else {
                             return ' ';
                         }

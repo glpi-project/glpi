@@ -1341,7 +1341,7 @@ class MassiveAction
         if ($this->display_progress_bars) {
             if ($this->progress_bar_displayed !== true) {
                 Html::progressBar('main_' . $this->identifier, ['create'  => true,
-                    'message' => htmlspecialchars($this->action_name)
+                    'message' => htmlescape($this->action_name)
                 ]);
                 $this->progress_bar_displayed         = true;
                 $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
@@ -1363,7 +1363,7 @@ class MassiveAction
                     Html::progressBar(
                         'itemtype_' . $this->identifier,
                         [
-                            'message' => htmlspecialchars($itemtype::getTypeName(Session::getPluralNumber())),
+                            'message' => htmlescape($itemtype::getTypeName(Session::getPluralNumber())),
                             'percent' => $percent
                         ]
                     );

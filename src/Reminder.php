@@ -736,9 +736,9 @@ class Reminder extends CommonDBVisible implements
                 }
                 $link = sprintf(
                     '<a id="content_reminder_%s" href="%s">%s</a>',
-                    htmlspecialchars($data["id"] . $rand),
-                    htmlspecialchars(self::getFormURLWithID($data["id"])),
-                    htmlspecialchars($name)
+                    htmlescape($data["id"] . $rand),
+                    htmlescape(self::getFormURLWithID($data["id"])),
+                    htmlescape($name)
                 );
                 $text = $data["text"];
                 if (!empty($data['transtext'])) {
@@ -763,8 +763,8 @@ class Reminder extends CommonDBVisible implements
                     );
                     $row['values'][] = sprintf(
                         '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="sr-only">%s</span></a>',
-                        htmlspecialchars(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
-                        htmlspecialchars($planning_text),
+                        htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
+                        htmlescape($planning_text),
                         __s('Planning')
                     );
                 } else {

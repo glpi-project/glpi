@@ -446,7 +446,7 @@ class Consumable extends CommonDBChild
             if ($nohtml) {
                 $out = $tmptxt;
             } else {
-                $out = "<div $highlight>" . htmlspecialchars($tmptxt) . "</div>";
+                $out = "<div $highlight>" . htmlescape($tmptxt) . "</div>";
             }
         } else {
             if ($nohtml) {
