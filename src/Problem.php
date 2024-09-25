@@ -1039,7 +1039,7 @@ class Problem extends CommonITILObject
                             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        htmlspecialchars(getUserName($d["users_id"]));
+                                        htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -1251,7 +1251,7 @@ class Problem extends CommonITILObject
         $rand      = mt_rand();
         if ($problem->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
-            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]));
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>
@@ -1267,7 +1267,7 @@ class Problem extends CommonITILObject
                 foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                     $user = new User();
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
-                        $name = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
+                        $name = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         if ($viewusers) {
                             $name = sprintf(
                                 __('%1$s %2$s'),
@@ -1308,7 +1308,7 @@ class Problem extends CommonITILObject
                 $link .= "&amp;forcetab=" . $forcetab;
             }
             $link .= "'>";
-            $link .= "<span class='b'>" . htmlspecialchars($problem->fields["name"]) . "</span></a>";
+            $link .= "<span class='b'>" . htmlescape($problem->fields["name"]) . "</span></a>";
             $link = printf(
                 __('%1$s %2$s'),
                 $link,

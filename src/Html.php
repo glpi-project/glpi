@@ -135,7 +135,7 @@ class Html
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, false);
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(
+                htmlescape(sprintf(
                     __('%1$s %2$s'),
                     $time,
                     _x('adjective', 'Invalid')
@@ -186,7 +186,7 @@ class Html
         if (!is_string($string)) {
             return $string;
         }
-        return htmlspecialchars($string);
+        return htmlescape($string);
     }
 
     /**
@@ -219,7 +219,7 @@ class Html
             $append = '&nbsp;(...)';
         }
 
-        return \htmlspecialchars($string) . $append;
+        return \htmlescape($string) . $append;
     }
 
     /**
@@ -557,13 +557,13 @@ class Html
 
         if ($ref_title != "") {
             echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
-            " . htmlspecialchars($ref_title) . "
+            " . htmlescape($ref_title) . "
          </span>";
         }
 
         if (is_array($ref_btts) && count($ref_btts)) {
             foreach ($ref_btts as $key => $val) {
-                echo "<a class='btn btn-outline-secondary' href='" . htmlspecialchars($key) . "'>" . htmlspecialchars($val) . "</a>";
+                echo "<a class='btn btn-outline-secondary' href='" . htmlescape($key) . "'>" . htmlescape($val) . "</a>";
             }
         }
         echo "</div>";
@@ -616,7 +616,7 @@ class Html
      **/
     public static function displayBackLink()
     {
-        echo '<a href="' . htmlspecialchars(self::getBackUrl()) . '">' . __s('Back') . "</a>";
+        echo '<a href="' . htmlescape(self::getBackUrl()) . '">' . __s('Back') . "</a>";
     }
 
     /**
@@ -708,7 +708,7 @@ class Html
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
-        return "onclick=\"" . htmlspecialchars(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
+        return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
 
@@ -2255,7 +2255,7 @@ HTML;
 
         $out .= "<input type='checkbox' class='form-check-input " . $params['class'] . "' title=\"" . $params['title'] . "\" ";
         if (isset($params['onclick'])) {
-            $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
+            $params['onclick'] = htmlescape($params['onclick']);
             $out .= " onclick='{$params['onclick']}'";
         }
 
@@ -2338,7 +2338,7 @@ HTML;
 
         if (empty($options['name'])) {
             // encode quotes and brackets to prevent maformed name attribute
-            $id = htmlspecialchars($id, ENT_QUOTES);
+            $id = htmlescape($id);
             $id = str_replace(['[', ']'], ['&amp;#91;', '&amp;#93;'], $id);
             $options['name'] = "item[$itemtype][" . $id . "]";
         }
@@ -2563,11 +2563,11 @@ HTML;
             } else {
                 $out .= "onclick='modal_massiveaction_window$identifier.show();'";
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlspecialchars($p['title']) . "\">";
+            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
-            $out .= "<span>" . htmlspecialchars($p['title']) . "</span>";
+            $out .= "<span>" . htmlescape($p['title']) . "</span>";
             $out .= "</a>";
 
             if (
@@ -3911,7 +3911,7 @@ JAVASCRIPT
        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
-            $out .= "<tr><th colspan='6'>" . htmlspecialchars($title) . "</th></tr>";
+            $out .= "<tr><th colspan='6'>" . htmlescape($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
@@ -3976,7 +3976,7 @@ JAVASCRIPT
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
-                $key = htmlspecialchars($key);
+                $key = htmlescape($key);
                 echo "<tr><td>";
                 echo $key;
                 echo "</td><td>";
@@ -4009,7 +4009,7 @@ JAVASCRIPT
                                 echo "(object) " . get_class($val);
                             }
                         } else {
-                            echo htmlspecialchars($val ?? "");
+                            echo htmlescape($val);
                         }
                     }
                 }
@@ -4224,13 +4224,13 @@ JAVASCRIPT
         if (($num > 0) && ($num < $tot)) {
            // TRANS %1$d %2$d are numbers (displayed, total)
             $cpt = "<span class='primary-bg primary-fg count'>" .
-            htmlspecialchars(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
+            htmlescape(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
         } else {
            // $num is 0, so means configured to display nothing
            // or $num == $tot
             $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
         }
-        return sprintf(__s('%1$s %2$s'), htmlspecialchars($string), $cpt);
+        return sprintf(__s('%1$s %2$s'), htmlescape($string), $cpt);
     }
 
 
@@ -4280,7 +4280,7 @@ JAVASCRIPT
                 $link .= " class='pointer' ";
             }
         }
-        $action  = " submitGetLink('$action', " . htmlspecialchars(json_encode($fields)) . ");";
+        $action  = " submitGetLink('$action', " . htmlescape(json_encode($fields)) . ");";
 
         if (is_array($confirm) || strlen($confirm)) {
             $link .= self::addConfirmationOnAction($confirm, $action);
@@ -4289,7 +4289,7 @@ JAVASCRIPT
         }
 
         // Ensure $btlabel is properly escaped
-        $btlabel = htmlspecialchars($btlabel);
+        $btlabel = htmlescape($btlabel);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
@@ -4691,12 +4691,12 @@ JS;
         }
        // Do not escape title if it is an image or a i tag (fontawesome)
         if (!preg_match('/<i(mg)?.*/', $text)) {
-            $text = htmlspecialchars($text);
+            $text = htmlescape($text);
         }
 
         return sprintf(
             '<a href="%1$s" %2$s>%3$s</a>',
-            htmlspecialchars($url),
+            htmlescape($url),
             Html::parseAttributes($options),
             $text
         );
@@ -4730,7 +4730,7 @@ JS;
         }
         return sprintf(
             '<input type="hidden" name="%1$s" %2$s />',
-            htmlspecialchars($fieldName),
+            htmlescape($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -4759,7 +4759,7 @@ JS;
         return sprintf(
             '<input type="%1$s" name="%2$s" %3$s />',
             $type,
-            htmlspecialchars($fieldName),
+            htmlescape($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -4790,7 +4790,7 @@ JS;
             }
 
             $original_field_name = str_ends_with($name, '[]') ? substr($name, 0, -2) : $name;
-            $original_field_name = htmlspecialchars($original_field_name);
+            $original_field_name = htmlescape($original_field_name);
 
             $select .= sprintf(
                 '<input type="hidden" name="%1$s" value="" %2$s>',
@@ -4800,18 +4800,18 @@ JS;
         }
         $select .= sprintf(
             '<select name="%1$s" %2$s>',
-            htmlspecialchars($name),
+            htmlescape($name),
             self::parseAttributes($options)
         );
         foreach ($values as $key => $value) {
             $select .= sprintf(
                 '<option value="%1$s"%2$s>%3$s</option>',
-                htmlspecialchars($key),
+                htmlescape($key),
                 ($selected != false && (
                 $key == $selected
                 || is_array($selected) && in_array($key, $selected))
                 ) ? ' selected="selected"' : '',
-                htmlspecialchars($value)
+                htmlescape($value)
             );
         }
         $select .= '</select>';
@@ -4870,7 +4870,7 @@ JS;
             $options['alt']   = $caption;
             return sprintf(
                 '<input type="image" src="%s" %s />',
-                htmlspecialchars($image),
+                htmlescape($image),
                 Html::parseAttributes($options)
             );
         }
@@ -4885,7 +4885,7 @@ JS;
                <span>$caption</span>
             </button>&nbsp;";
 
-        return sprintf($button, htmlspecialchars(strip_tags($caption)), Html::parseAttributes($options));
+        return sprintf($button, htmlescape(strip_tags($caption)), Html::parseAttributes($options));
     }
 
 
@@ -4986,7 +4986,7 @@ HTML;
             $value = implode(' ', $value);
         }
 
-        return sprintf('%1$s="%2$s"', htmlspecialchars($key), htmlspecialchars($value));
+        return sprintf('%1$s="%2$s"', htmlescape($key), htmlescape($value));
     }
 
 
@@ -5199,7 +5199,7 @@ HTML;
         if ($p['only_uploaded_files']) {
             $display .= "<div class='fileupload only-uploaded-files'>";
         } else {
-            $display .= "<div class='fileupload draghoverable' id='" . htmlspecialchars($p['dropZone']) . "'>";
+            $display .= "<div class='fileupload draghoverable' id='" . htmlescape($p['dropZone']) . "'>";
 
             if ($p['showtitle']) {
                 $display .= "<b>";
@@ -5242,8 +5242,8 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
-                      data-uploader-name=\"" . htmlspecialchars($p['name']) . "\"
-                      data-url='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
+                      data-uploader-name=\"" . htmlescape($p['name']) . "\"
+                      data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
@@ -5445,7 +5445,7 @@ HTML;
         $p = array_merge($p, $options);
 
        // div who will receive and display file list
-        $display = "<div id='" . htmlspecialchars($p['filecontainer']) . "' class='fileupload_info'>";
+        $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
                 $prefix  = substr($upload, 0, 23);
@@ -5474,9 +5474,9 @@ HTML;
                 ];
 
                 // Show the name and size of the upload
-                $display .= "<p id='" . htmlspecialchars($upload['id']) . "'>&nbsp;";
-                $display .= "<img src='" . htmlspecialchars($extensionIcon) . "' title='" . htmlspecialchars($extension) . "'>&nbsp;";
-                $display .= "<b>" . htmlspecialchars($upload['display']) . "</b>&nbsp;(" . htmlspecialchars(Toolbox::getSize($upload['size'])) . ")";
+                $display .= "<p id='" . htmlescape($upload['id']) . "'>&nbsp;";
+                $display .= "<img src='" . htmlescape($extensionIcon) . "' title='" . htmlescape($extension) . "'>&nbsp;";
+                $display .= "<b>" . htmlescape($upload['display']) . "</b>&nbsp;(" . htmlescape(Toolbox::getSize($upload['size'])) . ")";
 
                 $name = '_' . $p['name'] . '[' . $uploadId . ']';
                 $display .= Html::hidden($name, ['value' => $upload['name']]);
@@ -5498,7 +5498,7 @@ HTML;
                     1 => $upload['id'] . '2',
                 ]);
                 $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
-                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlspecialchars($deleteUpload) . '"></span>';
+                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlescape($deleteUpload) . '"></span>';
 
                 $display .= "</p>";
             }

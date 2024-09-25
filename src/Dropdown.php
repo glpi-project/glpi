@@ -624,36 +624,36 @@ class Dropdown
                             if (!empty($data["phone"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
-                                    "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
-                                    "</span>" . htmlspecialchars($data['phone'])
+                                    "<span class='b'>" . htmlescape(Phone::getTypeName(1)),
+                                    "</span>" . htmlescape($data['phone'])
                                 );
                             }
                             if (!empty($data["phone2"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . __s('Phone 2'),
-                                    "</span>" . htmlspecialchars($data['phone2'])
+                                    "</span>" . htmlescape($data['phone2'])
                                 );
                             }
                             if (!empty($data["mobile"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . __s('Mobile phone'),
-                                    "</span>" . htmlspecialchars($data['mobile'])
+                                    "</span>" . htmlescape($data['mobile'])
                                 );
                             }
                             if (!empty($data["fax"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . __s('Fax'),
-                                    "</span>" . htmlspecialchars($data['fax'])
+                                    "</span>" . htmlescape($data['fax'])
                                 );
                             }
                             if (!empty($data["email"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . _n('Email', 'Emails', 1),
-                                    "</span>" . htmlspecialchars($data['email'])
+                                    "</span>" . htmlescape($data['email'])
                                 );
                             }
                         }
@@ -664,22 +664,22 @@ class Dropdown
                             if (!empty($data["phonenumber"])) {
                                  $comment .= "<br>" . sprintf(
                                      __('%1$s: %2$s'),
-                                     "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
-                                     "</span>" . htmlspecialchars($data['phonenumber'])
+                                     "<span class='b'>" . htmlescape(Phone::getTypeName(1)),
+                                     "</span>" . htmlescape($data['phonenumber'])
                                  );
                             }
                             if (!empty($data["fax"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . __s('Fax'),
-                                    "</span>" . htmlspecialchars($data['fax'])
+                                    "</span>" . htmlescape($data['fax'])
                                 );
                             }
                             if (!empty($data["email"])) {
                                 $comment .= "<br>" . sprintf(
                                     __('%1$s: %2$s'),
                                     "<span class='b'>" . _sn('Email', 'Emails', 1),
-                                    "</span>" . htmlspecialchars($data['email'])
+                                    "</span>" . htmlescape($data['email'])
                                 );
                             }
                         }
@@ -703,7 +703,7 @@ class Dropdown
                             if (!empty($data['locations_id'])) {
                                  $comment .= "<br>" . sprintf(
                                      __('%1$s: %2$s'),
-                                     "<span class='b'>" . htmlspecialchars(Location::getTypeName(1)) . "</span>",
+                                     "<span class='b'>" . htmlescape(Location::getTypeName(1)) . "</span>",
                                      self::getDropdownName(
                                          "glpi_locations",
                                          $data["locations_id"],
@@ -1380,7 +1380,7 @@ JAVASCRIPT;
         echo "<div class='container-fluid text-start'>";
         echo "<div class='mb-3 row'>";
 
-        $title = htmlspecialchars($title);
+        $title = htmlescape($title);
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
@@ -2298,37 +2298,37 @@ JAVASCRIPT;
         if ($param['readonly']) {
             $to_display = [];
             foreach ($param['values'] as $value) {
-                $output .= "<input type='hidden' name='" . htmlspecialchars($field_name) . "' value='" . htmlspecialchars($value) . "'>";
+                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
                 if (isset($elements[$value])) {
-                    $to_display[] = htmlspecialchars($elements[$value]);
+                    $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . htmlspecialchars($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected
-                $output .= "<input type='hidden' name='" . htmlspecialchars($original_field_name) . "' value=''>";
+                $output .= "<input type='hidden' name='" . htmlescape($original_field_name) . "' value=''>";
             }
-            $output  .= "<select name='" . htmlspecialchars($field_name) . "' id='" . htmlspecialchars($field_id) . "'";
+            $output  .= "<select name='" . htmlescape($field_name) . "' id='" . htmlescape($field_id) . "'";
 
             if ($param['width'] !== '') {
-                $output .= " style='width: " . htmlspecialchars($param['width']) . "'";
+                $output .= " style='width: " . htmlescape($param['width']) . "'";
             }
 
             if ($param['tooltip']) {
-                $output .= ' title="' . htmlspecialchars($param['tooltip']) . '"';
+                $output .= ' title="' . htmlescape($param['tooltip']) . '"';
             }
 
             if ($param['class']) {
-                $output .= ' class="' . htmlspecialchars($param['class']) . '"';
+                $output .= ' class="' . htmlescape($param['class']) . '"';
             }
 
             if (!empty($param["on_change"])) {
-                $output .= " onChange='" . htmlspecialchars($param["on_change"]) . "'";
+                $output .= " onChange='" . htmlescape($param["on_change"]) . "'";
             }
 
             if ((is_int($param["size"])) && ($param["size"] > 0)) {
-                $output .= " size='" . htmlspecialchars($param["size"]) . "'";
+                $output .= " size='" . htmlescape($param["size"]) . "'";
             }
 
             if ($param["multiple"]) {
@@ -2348,14 +2348,14 @@ JAVASCRIPT;
             }
 
             if ($param['aria_label'] !== '') {
-                $output .= " aria-label='" . htmlspecialchars($param['aria_label']) . "'";
+                $output .= " aria-label='" . htmlescape($param['aria_label']) . "'";
             }
 
             if (!empty($param['add_data_attributes'])) {
                 if (is_array($param['add_data_attributes'])) {
                     $output .= implode(' ', array_map(
                         function ($key, $value) {
-                            return htmlspecialchars('data-' . $key) . '="' . htmlspecialchars($value) . '"';
+                            return htmlescape('data-' . $key) . '="' . htmlescape($value) . '"';
                         },
                         array_keys($param['add_data_attributes']),
                         $param['add_data_attributes']
@@ -2368,7 +2368,7 @@ JAVASCRIPT;
             foreach ($elements as $key => $val) {
                // optgroup management
                 if (is_array($val)) {
-                    $opt_goup = htmlspecialchars($key);
+                    $opt_goup = htmlescape($key);
                     if ($max_option_size < strlen($opt_goup)) {
                         $max_option_size = strlen($opt_goup);
                     }
@@ -2378,18 +2378,18 @@ JAVASCRIPT;
                     if (isset($param['option_tooltips'][$key])) {
                         if (is_array($param['option_tooltips'][$key])) {
                             if (isset($param['option_tooltips'][$key]['__optgroup_label'])) {
-                                $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]['__optgroup_label']) . '"';
+                                $output .= ' title="' . htmlescape($param['option_tooltips'][$key]['__optgroup_label']) . '"';
                             }
                             $optgroup_tooltips = $param['option_tooltips'][$key];
                         } else {
-                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
+                            $output .= ' title="' . htmlescape($param['option_tooltips'][$key]) . '"';
                         }
                     }
                     $output .= ">";
 
                     foreach ($val as $key2 => $val2) {
                         if (!isset($param['used'][$key2])) {
-                            $output .= "<option value='" . htmlspecialchars($key2) . "'";
+                            $output .= "<option value='" . htmlescape($key2) . "'";
                            // Do not use in_array : trouble with 0 and empty value
                             foreach ($param['values'] as $value) {
                                 if (strcmp($key2, $value) === 0) {
@@ -2398,9 +2398,9 @@ JAVASCRIPT;
                                 }
                             }
                             if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
-                                $output .= ' title="' . htmlspecialchars($optgroup_tooltips[$key2]) . '"';
+                                $output .= ' title="' . htmlescape($optgroup_tooltips[$key2]) . '"';
                             }
-                            $output .= ">" .  htmlspecialchars($val2) . "</option>";
+                            $output .= ">" .  htmlescape($val2) . "</option>";
                             if ($max_option_size < strlen($val2)) {
                                 $max_option_size = strlen($val2);
                             }
@@ -2409,7 +2409,7 @@ JAVASCRIPT;
                     $output .= "</optgroup>";
                 } else {
                     if (!isset($param['used'][$key])) {
-                        $output .= "<option value='" . htmlspecialchars($key) . "'";
+                        $output .= "<option value='" . htmlescape($key) . "'";
                        // Do not use in_array : trouble with 0 and empty value
                         foreach ($param['values'] as $value) {
                             if (strcmp($key, $value) === 0) {
@@ -2418,9 +2418,9 @@ JAVASCRIPT;
                             }
                         }
                         if (isset($param['option_tooltips'][$key])) {
-                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
+                            $output .= ' title="' . htmlescape($param['option_tooltips'][$key]) . '"';
                         }
-                        $output .= ">" . htmlspecialchars($val) . "</option>";
+                        $output .= ">" . htmlescape($val) . "</option>";
                         if (!is_null($val) && ($max_option_size < strlen($val))) {
                             $max_option_size = strlen($val);
                         }
@@ -2429,7 +2429,7 @@ JAVASCRIPT;
             }
 
             if ($param['other'] !== false) {
-                $output .= "<option value='" . htmlspecialchars($other_select_option) . "'";
+                $output .= "<option value='" . htmlescape($other_select_option) . "'";
                 if (is_string($param['other'])) {
                     $output .= " selected";
                 }
@@ -2438,9 +2438,9 @@ JAVASCRIPT;
 
             $output .= "</select>";
             if ($param['other'] !== false) {
-                $output .= "<input name='" . htmlspecialchars($other_select_option) . "' id='" . htmlspecialchars($other_select_option) . "' type='text'";
+                $output .= "<input name='" . htmlescape($other_select_option) . "' id='" . htmlescape($other_select_option) . "' type='text'";
                 if (is_string($param['other'])) {
-                    $output .= " value=\"" . htmlspecialchars($param['other']) . "\"";
+                    $output .= " value=\"" . htmlescape($param['other']) . "\"";
                 } else {
                     $output .= " style=\"display: none\"";
                 }
@@ -2463,7 +2463,7 @@ JAVASCRIPT;
            // Hack for All / None because select2 does not provide it
             $select   = __('All');
             $deselect = __('None');
-            $output  .= "<div class='invisible' id='selectallbuttons_" . htmlspecialchars($field_id) . "'>";
+            $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
             $output  .= "<a class='btn btn-sm' " .
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select" .
@@ -2604,7 +2604,7 @@ JAVASCRIPT;
                // Templates edition
                 if (!empty($params['withtemplate'])) {
                     echo "<input type='hidden' name='is_global' value='" .
-                        htmlspecialchars($params['management_restrict']) . "'>";
+                        htmlescape($params['management_restrict']) . "'>";
                     echo (!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
                     echo (!$params['value'] ? __s('Unit management') : __s('Global management'));

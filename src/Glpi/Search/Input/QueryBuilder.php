@@ -169,7 +169,7 @@ final class QueryBuilder implements SearchInputInterface
 
         $p      = $request['p'];
         $num    = (int) $request['num'];
-        $prefix = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
+        $prefix = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
 
         if (!is_subclass_of($request['itemtype'], 'CommonDBTM')) {
             throw new \RuntimeException('Invalid itemtype provided!');
@@ -241,7 +241,7 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         $p                 = $request['p'];
-        $prefix            = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
+        $prefix            = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
         $searchopt         = $request['searchopt'] ?? [];
         $request['value']  = rawurldecode($request['value']);
         $fieldname         = isset($request['meta']) && $request['meta']
@@ -359,8 +359,8 @@ final class QueryBuilder implements SearchInputInterface
             $message = $fieldpattern['validation_message'];
 
             echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
-                htmlspecialchars($request['value']) . "\" pattern=\"" . htmlspecialchars($pattern) . "\">" .
-                "<span class='invalid-tooltip'>" . htmlspecialchars($message) . "</span>";
+                htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">" .
+                "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
         }
     }
 
@@ -399,7 +399,7 @@ final class QueryBuilder implements SearchInputInterface
         $randrow     = mt_rand();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
-        $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
+        $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
         $criteria    = [];
         $from_meta   = isset($request['from_meta']) && $request['from_meta'];
@@ -489,7 +489,7 @@ final class QueryBuilder implements SearchInputInterface
 
         $p            = $request['p'];
         $num          = (int) $request['num'];
-        $prefix       = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
+        $prefix       = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
         $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
         $itemtype     = $request["itemtype"];
         $metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num);
@@ -611,7 +611,7 @@ final class QueryBuilder implements SearchInputInterface
         $p           = $request['p'];
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $randrow;
-        $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
+        $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
 
         if (!$criteria = self::findCriteriaInSession($request['itemtype'], $num, $parents_num)) {

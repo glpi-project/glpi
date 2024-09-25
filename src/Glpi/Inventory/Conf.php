@@ -739,7 +739,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='4'>";
-            echo htmlspecialchars(CommonDevice::getTypeName(Session::getPluralNumber()));
+            echo htmlescape(CommonDevice::getTypeName(Session::getPluralNumber()));
             echo "</th>";
             echo "</tr>";
 
@@ -1089,7 +1089,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                htmlspecialchars($msg),
+                htmlescape($msg),
                 false,
                 WARNING
             );
@@ -1143,7 +1143,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                htmlspecialchars($msg),
+                htmlescape($msg),
                 false,
                 WARNING
             );

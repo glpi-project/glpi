@@ -317,7 +317,7 @@ TWIG, $twig_params);
             echo '<tr class="tab_bg_2"><th colspan="2">' . __s('Add a project') . '</th></tr>';
             echo '<tr class="tab_bg_2">';
             echo '<td>';
-            echo '<input type="hidden" name="itemtype" value="' . htmlspecialchars($itil->getType()) . '" />';
+            echo '<input type="hidden" name="itemtype" value="' . htmlescape($itil->getType()) . '" />';
             echo '<input type="hidden" name="items_id" value="' . $ID . '" />';
             Project::dropdown(
                 [
@@ -348,7 +348,7 @@ TWIG, $twig_params);
 
         echo '<table class="tab_cadre_fixehov">';
         echo '<tr class="noHover">';
-        echo '<th colspan="12">' . htmlspecialchars(Project::getTypeName($numrows)) . '</th>';
+        echo '<th colspan="12">' . htmlescape(Project::getTypeName($numrows)) . '</th>';
         echo '</tr>';
         if ($numrows) {
             Project::commonListHeader(Search::HTML_OUTPUT, $massContainerId);

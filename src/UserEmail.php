@@ -154,9 +154,9 @@ class UserEmail extends CommonDBChild
     {
 
         return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+" . htmlspecialchars($child_count_js_var) . "+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlspecialchars($field_name) .
-             "[-'+" . htmlspecialchars($child_count_js_var) . "+']\'>";
+             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
+             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
+             "[-'+" . htmlescape($child_count_js_var) . "+']\'>";
     }
 
 
@@ -173,13 +173,13 @@ class UserEmail extends CommonDBChild
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = htmlspecialchars($this->fields['email'] ?? '');
+            $value = htmlescape($this->fields['email']);
         }
         $result = "";
-        $field_name = htmlspecialchars($field_name . "[$id]");
+        $field_name = htmlescape($field_name . "[$id]");
         $result .= "<div class='d-flex align-items-center'>";
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
-             value='" . htmlspecialchars($this->getID()) . "'";
+             value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {
             $result .= " disabled";
         }

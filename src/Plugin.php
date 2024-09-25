@@ -889,7 +889,7 @@ class Plugin extends CommonDBTM
                 $function();
             } else {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name'])),
+                    htmlescape(sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name'])),
                     true,
                     WARNING
                 );
@@ -924,7 +924,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            htmlspecialchars($message),
+            htmlescape($message),
             true,
             $type
         );
@@ -967,7 +967,7 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::NOTACTIVATED
                         ]);
-                        $message  = htmlspecialchars(sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']));
+                        $message  = htmlescape(sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']));
                         $message .= '<br/><br/>' . str_replace(
                             '%activate_link',
                             Html::getSimpleForm(
@@ -984,7 +984,7 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::TOBECONFIGURED
                         ]);
-                        $message = htmlspecialchars(sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']));
+                        $message = htmlescape(sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']));
                     }
 
                     $this->resetHookableCacheEntries($this->fields['directory']);
@@ -1005,10 +1005,10 @@ class Plugin extends CommonDBTM
                 }
             } else {
                 $type = WARNING;
-                $message = htmlspecialchars(sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']));
+                $message = htmlescape(sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']));
             }
         } else {
-            $message = htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID));
+            $message = htmlescape(sprintf(__('Plugin %1$s not found!'), $ID));
         }
 
         Session::addMessageAfterRedirect(
@@ -1049,7 +1049,7 @@ class Plugin extends CommonDBTM
                     $this->unload($this->fields['directory']);
 
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(__('Plugin %1$s prerequisites are not matching, it cannot be activated.'), $this->fields['name'])) . ' ' . $msg,
+                        htmlescape(sprintf(__('Plugin %1$s prerequisites are not matching, it cannot be activated.'), $this->fields['name'])) . ' ' . $msg,
                         true,
                         ERROR
                     );
@@ -1093,7 +1093,7 @@ class Plugin extends CommonDBTM
                 self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(__('Plugin %1$s has been activated!'), $this->fields['name'])),
+                    htmlescape(sprintf(__('Plugin %1$s has been activated!'), $this->fields['name'])),
                     true,
                     INFO
                 );
@@ -1115,7 +1115,7 @@ class Plugin extends CommonDBTM
                 $this->unload($this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(__('Plugin %1$s configuration must be done, it cannot be activated.'), $this->fields['name'])),
+                    htmlescape(sprintf(__('Plugin %1$s configuration must be done, it cannot be activated.'), $this->fields['name'])),
                     true,
                     ERROR
                 );
@@ -1124,7 +1124,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID)),
+            htmlescape(sprintf(__('Plugin %1$s not found!'), $ID)),
             true,
             ERROR
         );
@@ -1206,7 +1206,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID)),
+            htmlescape(sprintf(__('Plugin %1$s not found!'), $ID)),
             true,
             ERROR
         );
@@ -2068,7 +2068,7 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo htmlspecialchars(Plugin::messageIncompatible(
+            echo htmlescape(Plugin::messageIncompatible(
                 'core',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
@@ -2105,7 +2105,7 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo htmlspecialchars(Plugin::messageIncompatible(
+            echo htmlescape(Plugin::messageIncompatible(
                 'php',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
@@ -2130,7 +2130,7 @@ class Plugin extends CommonDBTM
         $report = Config::checkExtensions($exts);
         if (count($report['missing'])) {
             foreach (array_keys($report['missing']) as $ext) {
-                echo htmlspecialchars(self::messageMissingRequirement('ext', $ext)) . '<br/>';
+                echo htmlescape(self::messageMissingRequirement('ext', $ext)) . '<br/>';
             }
             return false;
         }
@@ -2155,7 +2155,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-                echo htmlspecialchars(self::messageMissingRequirement('glpiparam', $param)) . '<br/>';
+                echo htmlescape(self::messageMissingRequirement('glpiparam', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2178,7 +2178,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!ini_get($param) || trim(ini_get($param)) == '') {
-                echo htmlspecialchars(self::messageMissingRequirement('param', $param)) . '<br/>';
+                echo htmlescape(self::messageMissingRequirement('param', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2201,7 +2201,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($plugins as $plugin) {
             if (!$this->isActivated($plugin)) {
-                echo htmlspecialchars(self::messageMissingRequirement('plugin', $plugin)) . '<br/>';
+                echo htmlescape(self::messageMissingRequirement('plugin', $plugin)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2620,7 +2620,7 @@ TWIG;
                             ),
                             'content' => sprintf(
                                 __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                                htmlspecialchars($plugin->getField('name'))
+                                htmlescape($plugin->getField('name'))
                             )
                         ]);
                     } else {
@@ -2649,7 +2649,7 @@ TWIG;
             case 'homepage':
                 $value = Toolbox::formatOutputWebLink($values[$field]);
                 if (!empty($value)) {
-                    $value = htmlspecialchars($value);
+                    $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
                      <i class='fas fa-external-link-alt fa-2x'></i><span class='sr-only'>$value</span>
                   </a>";

@@ -429,13 +429,13 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $header_bottom .= "</th>";
         }
         $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         $header_end .= "<th>" . __s('Name') . "</th>";
         $header_end .= "<th>" . __s('Serial number') . "</th>";
         $header_end .= "<th>" . __s('Inventory number') . "</th>";
         $header_end .= "<th>" . __s('Knowledge base entries') . "</th>";
-        $header_end .= "<th>" . htmlspecialchars(State::getTypeName(1)) . "</th>";
-        $header_end .= "<th>" . htmlspecialchars(Location::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlescape(State::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlescape(Location::getTypeName(1)) . "</th>";
         echo "<tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -452,7 +452,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
                 $prem = true;
                 foreach ($iterator as $data) {
-                    $name = htmlspecialchars($data["name"] ?? '');
+                    $name = htmlescape($data["name"]);
                     if (
                         $_SESSION["glpiis_ids_visible"]
                         || empty($data["name"])
@@ -473,7 +473,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         echo "</td>";
                     }
                     if ($prem) {
-                        $typename = htmlspecialchars($item->getTypeName($nb));
+                        $typename = htmlescape($item->getTypeName($nb));
                         echo "<td class='center top' rowspan='$nb'>" .
                             (($nb > 1) ? sprintf(__s('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
                         $prem = false;
@@ -483,10 +483,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     echo "<td class='center" .
                             (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                     echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ?  htmlspecialchars($data["serial"]) : "-") .
+                    echo "<td class='center'>" . (isset($data["serial"]) ?  htmlescape($data["serial"]) : "-") .
                         "</td>";
                     echo "<td class='center'>" .
-                        (isset($data["otherserial"]) ? htmlspecialchars($data["otherserial"]) : "-") . "</td>";
+                        (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
                     $item->getFromDB($data["id"]);
                     echo "<td class='center'>" . $item->getKBLinks() . "</td>";
                     echo "<td class='center'>";
@@ -648,7 +648,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     sprintf(__('%1$s = %2$s'), $item->getTypeName(1), $item->getName())
                 );
                 echo "<tr class='noHover'><th colspan='$colspan'>";
-                $title = htmlspecialchars(sprintf(__('%d linked %s'), $number, static::$itemtype_1::getTypeName($number)));
+                $title = htmlescape(sprintf(__('%d linked %s'), $number, static::$itemtype_1::getTypeName($number)));
                 $link = "<a href='" . static::$itemtype_1::getSearchURL() . "?" .
                         Toolbox::append_params($params, '&amp;') . "'>" . __s('Show all') . "</a>";
                 $title = sprintf(__s('%1$s (%2$s)'), $title, $link);
@@ -661,7 +661,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         } else {
             echo "<table class='tab_cadre_fixehov'>";
             echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlspecialchars(sprintf(__('No %s on this item'), static::$itemtype_1::getTypeName($number)));
+            echo htmlescape(sprintf(__('No %s on this item'), static::$itemtype_1::getTypeName($number)));
         }
 
         // object list
@@ -700,7 +700,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
             echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
             echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlspecialchars(sprintf(__('%s on linked items'), static::$itemtype_1::getTypeName($number)));
+            echo htmlescape(sprintf(__('%s on linked items'), static::$itemtype_1::getTypeName($number)));
             echo "</th></tr>";
             if ($number > 0) {
                 static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
@@ -1498,7 +1498,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
             }
 
-            $display = (isset($this->input['_no_message_link']) ? htmlspecialchars($item->getNameID())
+            $display = (isset($this->input['_no_message_link']) ? htmlescape($item->getNameID())
                                                             : $item->getLink());
 
            //TRANS : %s is the description of the added item
@@ -1537,7 +1537,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item->getFromDB($this->fields['items_id']);
 
             if (isset($this->input['_no_message_link'])) {
-                $display = htmlspecialchars($item->getNameID());
+                $display = htmlescape($item->getNameID());
             } else {
                 $display = $item->getLink();
             }
@@ -1628,7 +1628,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $rand = $params['rand'];
 
         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
-            echo "<input type='hidden' name='" . htmlspecialchars($myname) . "' value=''>";
+            echo "<input type='hidden' name='" . htmlescape($myname) . "' value=''>";
             echo "<input type='hidden' name='items_id' value='0'>";
         } else {
             echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
@@ -1689,7 +1689,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
-                echo "<span id='" . Html::cleanId("results_" . htmlspecialchars($myname) . "$rand") . "'>\n";
+                echo "<span id='" . Html::cleanId("results_" . htmlescape($myname) . "$rand") . "'>\n";
 
                // Display default value if itemtype is displayed
                 if (
@@ -1713,7 +1713,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         echo "<script type='text/javascript' >\n";
                         echo "$(function() {";
                         Ajax::updateItemJsCode(
-                            "results_" . htmlspecialchars($myname) . "$rand",
+                            "results_" . htmlescape($myname) . "$rand",
                             $CFG_GLPI["root_doc"] .
                                       "/ajax/dropdownTrackingDeviceType.php",
                             $p

@@ -862,7 +862,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            array_map('htmlspecialchars', $password_errors),
+                            array_map('htmlescape', $password_errors),
                             false,
                             ERROR
                         );
@@ -986,7 +986,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, true);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         }
     }
@@ -1094,7 +1094,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            array_map('htmlspecialchars', $password_errors),
+                            array_map('htmlescape', $password_errors),
                             false,
                             ERROR
                         );
@@ -1281,7 +1281,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, false);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         } elseif (in_array('password', $this->updates)) {
             $alert = new Alert();
@@ -2578,7 +2578,7 @@ class User extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Download user VCard');
-            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
+            $vcard_url = htmlescape(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
@@ -2590,7 +2590,7 @@ HTML;
             $toolbar[] = $vcard_btn;
 
             $error_message = null;
-            $impersonate_form = htmlspecialchars(self::getFormURLWithID($ID));
+            $impersonate_form = htmlescape(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
                 $csrf_token = Session::getNewCSRFToken();
@@ -2621,7 +2621,7 @@ HTML;
 JAVASCRIPT;
                 $toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
             } elseif ($error_message !== null) {
-                $error_message = htmlspecialchars($error_message);
+                $error_message = htmlescape($error_message);
                 $impersonate_btn = <<<HTML
                <button type="button" name="impersonate" value="1"
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
@@ -2699,10 +2699,10 @@ HTML;
             ($this->fields["authtype"] == Auth::DB_GLPI)
         ) {
            //display login field for new records, or if this is not external auth
-            echo "<td><input name='name' id='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
+            echo "<td><input name='name' id='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         } else {
             echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
+            echo "<input type='hidden' name='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         }
 
         if (!$simplified_form && !empty($this->fields["name"])) {
@@ -2882,7 +2882,7 @@ JAVASCRIPT;
 
         $phonerand = mt_rand();
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
+        echo "<td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
         echo Html::input(
             'phone',
             [
@@ -2906,7 +2906,7 @@ JAVASCRIPT;
                 }
                 if (!empty($this->fields["user_dn"])) {
                   //TRANS: %s is the user dn
-                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlspecialchars($this->fields["user_dn"]));
+                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlescape($this->fields["user_dn"]));
                 }
                 if ($this->fields['is_deleted_ldap']) {
                     echo '<br>' . __s('User missing in LDAP directory');
@@ -2964,7 +2964,7 @@ JAVASCRIPT;
             echo "</td>";
             echo "<td rowspan='4' class='middle'><label for='comment'>" . __s('Comments') . "</label></td>";
             echo "<td class='center middle' rowspan='4'>";
-            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlspecialchars($this->fields["comment"] ?? '') . "</textarea>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlescape($this->fields["comment"]) . "</textarea>";
             echo "</td></tr>";
 
             $admnumrand = mt_rand();
@@ -2987,7 +2987,7 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
             $locrand = mt_rand();
-            echo "<td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
+            echo "<td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             $entities = $this->getEntities();
             if (count($entities) <= 0) {
                 $entities = -1;
@@ -3009,14 +3009,14 @@ JAVASCRIPT;
             echo "</td></tr>";
             $profilerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlspecialchars(Profile::getTypeName(1)) . "</label></td><td>";
+            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlescape(Profile::getTypeName(1)) . "</label></td><td>";
             Profile::dropdownUnder(['name'  => '_profiles_id',
                 'rand'  => $profilerand,
                 'value' => Profile::getDefault()
             ]);
 
             $entrand = mt_rand();
-            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlspecialchars(Entity::getTypeName(1)) . "</label></td><td>";
+            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlescape(Entity::getTypeName(1)) . "</label></td><td>";
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
                 'rand'                => $entrand,
@@ -3187,11 +3187,11 @@ JAVASCRIPT;
                            && !empty($this->fields["password"])));
 
             echo "<div class='center'>";
-            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . htmlspecialchars($target) . "' autocomplete='off'>";
+            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . htmlescape($target) . "' autocomplete='off'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlspecialchars($this->fields["name"]));
-            echo "<input type='hidden' name='name' value='" . htmlspecialchars($this->fields["name"]) . "'>";
-            echo "<input type='hidden' name='id' value='" . htmlspecialchars($this->fields["id"]) . "'>";
+            echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlescape($this->fields["name"]));
+            echo "<input type='hidden' name='name' value='" . htmlescape($this->fields["name"]) . "'>";
+            echo "<input type='hidden' name='id' value='" . htmlescape($this->fields["id"]) . "'>";
             echo "</th></tr>";
 
             $surnamerand = mt_rand();
@@ -3236,7 +3236,7 @@ JAVASCRIPT;
                 && isset($authtype['firstname_field'])
                 && !empty($authtype['firstname_field'])
             ) {
-                echo htmlspecialchars($this->fields["firstname"]);
+                echo htmlescape($this->fields["firstname"]);
             } else {
                 echo Html::input(
                     'firstname',
@@ -3257,7 +3257,7 @@ JAVASCRIPT;
                 if (empty($this->fields['sync_field'])) {
                     echo Dropdown::EMPTY_VALUE;
                 } else {
-                    echo htmlspecialchars($this->fields['sync_field']);
+                    echo htmlescape($this->fields['sync_field']);
                 }
                 echo "</td></tr>";
             } else {
@@ -3346,13 +3346,13 @@ JAVASCRIPT;
             }
 
             $phonerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
 
             if (
                 $extauth
                 && isset($authtype['phone_field']) && !empty($authtype['phone_field'])
             ) {
-                echo htmlspecialchars($this->fields["phone"]);
+                echo htmlescape($this->fields["phone"]);
             } else {
                 echo Html::input(
                     'phone',
@@ -3377,7 +3377,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])
             ) {
-                echo htmlspecialchars($this->fields["mobile"]);
+                echo htmlescape($this->fields["mobile"]);
             } else {
                 echo Html::input(
                     'mobile',
@@ -3418,7 +3418,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])
             ) {
-                echo htmlspecialchars($this->fields["phone2"]);
+                echo htmlescape($this->fields["phone2"]);
             } else {
                 echo Html::input(
                     'phone2',
@@ -3467,7 +3467,7 @@ JAVASCRIPT;
             echo "</td><td colspan='2'></td></tr>";
 
             $locrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             Location::dropdown(['value'  => $this->fields['locations_id'],
                 'rand'   => $locrand,
                 'entity' => $entities
@@ -4862,7 +4862,7 @@ JAVASCRIPT;
             }
 
             if ($p['readonly']) {
-                return '<span class="form-control" readonly>' . htmlspecialchars($user_name) . '</span>';
+                return '<span class="form-control" readonly>' . htmlescape($user_name) . '</span>';
             }
 
             if ($p['value'] === 'myself') {
@@ -5779,11 +5779,11 @@ JAVASCRIPT;
                 Session::addMessageAfterRedirect(__s('Reset password successful.'));
             }
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
            // Force display on error
             foreach ($e->getMessages() as $message) {
-                Session::addMessageAfteRredirect(htmlspecialchars($message), false, ERROR);
+                Session::addMessageAfteRredirect(htmlescape($message), false, ERROR);
             }
         }
 
@@ -5805,7 +5805,7 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
         Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.'));
@@ -5827,7 +5827,7 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email, true);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
         Session::addMessageAfterRedirect(__s('The given email address will receive the information required to define password.'));
@@ -5950,10 +5950,10 @@ JAVASCRIPT;
 
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . htmlspecialchars(AuthLDAP::getTypeName(1)) . "</th></tr>";
+        echo "<tr><th colspan='2'>" . htmlescape(AuthLDAP::getTypeName(1)) . "</th></tr>";
 
         echo "<tr class='tab_bg_2'><td>" . __s('User DN') . "</td>";
-        echo "<td>" . htmlspecialchars($this->fields['user_dn']) . "</td></tr>";
+        echo "<td>" . htmlescape($this->fields['user_dn']) . "</td></tr>";
 
         if ($this->fields['user_dn']) {
             $config_ldap = new AuthLDAP();
@@ -5994,7 +5994,7 @@ JAVASCRIPT;
                             continue;
                         }
                         echo '<tr class="tab_bg_2">';
-                        echo '<td>' . htmlspecialchars($key) . '</td>';
+                        echo '<td>' . htmlescape($key) . '</td>';
                         echo '<td>';
                         unset($values['count']);
                         $printed_values = [];
@@ -6002,7 +6002,7 @@ JAVASCRIPT;
                             if (str_contains($key, 'password')) {
                                 $value = '********';
                             }
-                            $printed_values[] = htmlspecialchars($value);
+                            $printed_values[] = htmlescape($value);
                         }
                         echo implode(', ', $printed_values);
                         echo '</td>';

@@ -485,8 +485,8 @@ TWIG, $twig_params);
                 'type'     => Dropdown::getDropdownName(DomainRecordType::getTable(), $data['domainrecordtypes_id']),
                 'name'     => sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(DomainRecord::getFormURLWithID($data['id'])),
-                    htmlspecialchars($name)
+                    htmlescape(DomainRecord::getFormURLWithID($data['id'])),
+                    htmlescape($name)
                 ),
                 'ttl'      => $data['ttl'],
                 'data'     => $data['data']

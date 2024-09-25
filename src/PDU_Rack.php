@@ -156,7 +156,7 @@ class PDU_Rack extends CommonDBRelation
         if (count($error_detected)) {
             foreach ($error_detected as $error) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars($error),
+                    htmlescape($error),
                     true,
                     ERROR
                 );
@@ -239,7 +239,7 @@ class PDU_Rack extends CommonDBRelation
         $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_pdus_id$rand'>" . htmlspecialchars(PDU::getTypeName(1)) . "</label></td>";
+        echo "<td><label for='dropdown_pdus_id$rand'>" . htmlescape(PDU::getTypeName(1)) . "</label></td>";
         echo "<td>";
         PDU::dropdown([
             'value'       => $this->fields["pdus_id"],
@@ -263,7 +263,7 @@ class PDU_Rack extends CommonDBRelation
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_racks_id$rand'>" . htmlspecialchars(Rack::getTypeName(1)) . "</label></td>";
+        echo "<td><label for='dropdown_racks_id$rand'>" . htmlescape(Rack::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
         echo "</td>";
@@ -573,13 +573,13 @@ JAVASCRIPT;
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
                            <label>" . __s('serial') . ":</label>" .
-                           htmlspecialchars($pdu->fields['serial']) . "
+                           htmlescape($pdu->fields['serial']) . "
                         </span>";
                     }
                     if (!empty($pdu->fields['otherserial'])) {
                         $tip .= "<span>
                            <label>" . __s('Inventory number') . ":</label>" .
-                           htmlspecialchars($pdu->fields['otherserial']) . "
+                           htmlescape($pdu->fields['otherserial']) . "
                         </span>";
                     }
                     if (!empty($model_name)) {

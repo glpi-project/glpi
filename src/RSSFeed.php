@@ -530,7 +530,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         if (!Toolbox::isUrlSafe($url)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
+                htmlescape(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
                 false,
                 ERROR
             );
@@ -644,7 +644,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = htmlspecialchars(!Toolbox::isUrlSafe($this->fields['url'])
+            $rss_feed['error'] = htmlescape(!Toolbox::isUrlSafe($this->fields['url'])
                 ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
                 : __('Error retrieving RSS feed'));
             $this->setError(true);
@@ -741,7 +741,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             $criteria['WHERE']["$table.users_id"] = $users_id;
             $criteria['WHERE']["$table.is_active"] = 1;
 
-            $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
+            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
                     _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
            // Show public rssfeeds / not mines : need to have access to public rssfeeds
@@ -757,7 +757,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
+                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
                        _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
                 $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
@@ -809,14 +809,14 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 if (empty($feed_link)) {
                     $output .= $item->feed->get_title();
                 } else {
-                    $output .= '<a target="_blank" href="' . htmlspecialchars($feed_link) . '">' . $item->feed->get_title() . '</a>';
+                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . $item->feed->get_title() . '</a>';
                 }
 
                 $item_link = URL::sanitizeURL($item->get_permalink());
                 $rand = mt_rand();
                 $output .= "<div id='rssitem$rand'>";
                 if (!empty($item_link)) {
-                    $output .= '<a target="_blank" href="' . htmlspecialchars($item_link) . '">';
+                    $output .= '<a target="_blank" href="' . htmlescape($item_link) . '">';
                 }
                 $output .= $item->get_title();
                 if (!empty($item_link)) {

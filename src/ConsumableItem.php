@@ -424,7 +424,7 @@ class ConsumableItem extends CommonDBTM
                              ) . " :  $message\n");
                                $task->addVolume(1);
                         } else {
-                             Session::addMessageAfterRedirect(htmlspecialchars(Dropdown::getDropdownName(
+                             Session::addMessageAfterRedirect(htmlescape(Dropdown::getDropdownName(
                                  "glpi_entities",
                                  $entity
                              ) . " :  $message"));
@@ -448,7 +448,7 @@ class ConsumableItem extends CommonDBTM
                         if ($task) {
                             $task->log($msg);
                         } else {
-                            Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                            Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                         }
                     }
                 }

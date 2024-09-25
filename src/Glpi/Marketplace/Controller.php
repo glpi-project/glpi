@@ -201,7 +201,7 @@ class Controller extends CommonGLPI
         if (!UnifiedArchive::canOpen($dest)) {
             $type = Formats::detectArchiveFormat($dest);
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
+                htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
                 false,
                 ERROR
             );

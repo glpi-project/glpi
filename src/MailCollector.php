@@ -469,7 +469,7 @@ class MailCollector extends CommonDBTM
                     foreach ($rejected as $id => $data) {
                         if ($action == 1) {
                             Session::addMessageAfterRedirect(
-                                htmlspecialchars(sprintf(
+                                htmlescape(sprintf(
                                     __('Email %s not found. Impossible import.'),
                                     strtr($id, $clean)
                                 )),
@@ -511,7 +511,7 @@ class MailCollector extends CommonDBTM
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e, true);
                 Session::addMessageAfterRedirect(
-                    __s('An error occurred trying to connect to collector.') . "<br/>" . htmlspecialchars($e->getMessage()),
+                    __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
                     false,
                     ERROR
                 );
@@ -798,14 +798,14 @@ class MailCollector extends CommonDBTM
                     $blacklisted
                 );
                 if ($display) {
-                     Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ($error ? ERROR : INFO));
+                     Session::addMessageAfterRedirect(htmlescape($msg), false, ($error ? ERROR : INFO));
                 } else {
                     return $msg;
                 }
             } else {
                 $msg = __('Could not connect to mailgate server');
                 if ($display) {
-                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                     GLPINetwork::addErrorMessageAfterRedirect();
                 } else {
                     return $msg;
@@ -815,7 +815,7 @@ class MailCollector extends CommonDBTM
            //TRANS: %s is the ID of the mailgate
             $msg = sprintf(__('Could not find mailgate %d'), $mailgateID);
             if ($display) {
-                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 GLPINetwork::addErrorMessageAfterRedirect();
             } else {
                 return $msg;
@@ -1885,8 +1885,8 @@ class MailCollector extends CommonDBTM
             foreach ($errors as $data) {
                 $collector->getFromDB($data['id']);
                 $servers[] = [
-                    'link' => htmlspecialchars($collector->getLinkURL()),
-                    'name' => htmlspecialchars($collector->getName(['complete' => true]))
+                    'link' => htmlescape($collector->getLinkURL()),
+                    'name' => htmlescape($collector->getName(['complete' => true]))
                 ];
             }
         }

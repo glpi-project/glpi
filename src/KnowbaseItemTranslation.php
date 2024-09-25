@@ -204,9 +204,9 @@ TWIG, $twig_params);
 
         $entries = [];
         foreach ($found as $data) {
-            $name = htmlspecialchars($data["name"]);
+            $name = htmlescape($data["name"]);
             if ($canedit) {
-                $name = "<a href=\"" . htmlspecialchars(self::getFormURLWithID($data["id"])) . "\">{$name}</a>";
+                $name = "<a href=\"" . htmlescape(self::getFormURLWithID($data["id"])) . "\">{$name}</a>";
             }
             if (!empty($data['answer'])) {
                 $name .= Html::showToolTip(RichText::getEnhancedHtml($data['answer']), [

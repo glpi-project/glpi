@@ -2868,7 +2868,7 @@ class Toolbox
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlspecialchars($path);
+        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlescape($path);
     }
 
     /**

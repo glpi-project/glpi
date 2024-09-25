@@ -60,7 +60,7 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
                 $params['toadd'] = [-1 => __('No restriction')];
             }
             echo "<table class='tab_format'><tr><td>";
-            echo htmlspecialchars(Entity::getTypeName(1));
+            echo htmlescape(Entity::getTypeName(1));
             echo "</td><td>";
             Entity::dropdown($params);
             echo "</td><td>";

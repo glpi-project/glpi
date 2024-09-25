@@ -845,7 +845,7 @@ JAVASCRIPT;
 
         if ($existing > 0) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(
+                htmlescape(sprintf(
                     __('%1$s position is not available'),
                     $input['position']
                 )),
@@ -977,33 +977,33 @@ JAVASCRIPT;
      */
     private static function getCell(Rack $rack, $cell)
     {
-        $bgcolor = htmlspecialchars($rack->getField('bgcolor'));
-        $fgcolor = htmlspecialchars(Html::getInvertedColor($bgcolor));
-        return "<div class='grid-stack-item room_orientation_" . htmlspecialchars($cell['room_orientation']) . "'
-                  gs-id='" . htmlspecialchars($cell['id']) . "'
+        $bgcolor = htmlescape($rack->getField('bgcolor'));
+        $fgcolor = htmlescape(Html::getInvertedColor($bgcolor));
+        return "<div class='grid-stack-item room_orientation_" . htmlescape($cell['room_orientation']) . "'
+                  gs-id='" . htmlescape($cell['id']) . "'
                   gs-locked='true'
                   gs-h='1'
                   gs-w='1'
-                  gs-x='" . htmlspecialchars($cell['_x']) . "'
-                  gs-y='" . htmlspecialchars($cell['_y']) . "'>
+                  gs-x='" . htmlescape($cell['_x']) . "'
+                  gs-y='" . htmlescape($cell['_y']) . "'>
             <div class='grid-stack-item-content'
                   style='background-color: $bgcolor;
                         color: $fgcolor;'>
                <a href='" . $rack->getLinkURL() . "'
                   style='color: $fgcolor'>" .
-                  htmlspecialchars($cell['name']) . "</a>
+                  htmlescape($cell['name']) . "</a>
                <span class='tipcontent'>
                   <span>
                      <label>" . __s('name') . ":</label>" .
-                     htmlspecialchars($cell['name']) . "
+                     htmlescape($cell['name']) . "
                   </span>
                   <span>
                      <label>" . __s('serial') . ":</label>" .
-                     htmlspecialchars($cell['serial']) . "
+                     htmlescape($cell['serial']) . "
                   </span>
                   <span>
                      <label>" . __s('Inventory number') . ":</label>" .
-                     htmlspecialchars($cell['otherserial']) . "
+                     htmlescape($cell['otherserial']) . "
                   </span>
                </span>
             </div><!-- // .grid-stack-item-content -->

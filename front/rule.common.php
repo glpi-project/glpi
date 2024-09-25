@@ -53,7 +53,7 @@ if (isset($_POST["action"])) {
     $ruleclass = $rulecollection->getRuleClass();
     if ($ruleclass->initRules()) {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
             //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
@@ -61,7 +61,7 @@ if (isset($_POST["action"])) {
         );
     } else {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
                 //TRANS: first parameter is the rule type name
                 __('%1$s reset failed.'),
                 $rulecollection->getTitle()
@@ -100,7 +100,7 @@ if (isset($_POST["action"])) {
 
     echo "<table class='tab_cadrehov'>";
 
-    echo "<tr><th><div class='relative b'>" . htmlspecialchars($rulecollection->getTitle()) . "<br>" .
+    echo "<tr><th><div class='relative b'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
          __s('Replay the rules dictionary') . "</div></th></tr>";
     echo "<tr><td class='center'>";
     Html::progressBar('doaction_progress', [

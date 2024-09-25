@@ -295,8 +295,8 @@ TWIG, $twig_params);
                     'type'     => $itemtype_name,
                     'name'     => sprintf(
                         '<a href="%s">%s</a>',
-                        htmlspecialchars($itemtype::getFormURLWithID($linked_data['id'])),
-                        htmlspecialchars($name)
+                        htmlescape($itemtype::getFormURLWithID($linked_data['id'])),
+                        htmlescape($name)
                     ),
                     'serial'   => $linked_data["serial"] ?? '-',
                     'otherserial' => $linked_data["otherserial"] ?? '-',
@@ -549,7 +549,7 @@ TWIG, $twig_params);
                 $relation_names[$data['domainrelations_id']] = Dropdown::getDropdownName(table: "glpi_domainrelations", id: $data['domainrelations_id'], default: '');
             }
 
-            $expiration = htmlspecialchars(Html::convDate($data["date_expiration"]));
+            $expiration = htmlescape(Html::convDate($data["date_expiration"]));
             if (
                 !empty($data["date_expiration"])
                 && $data["date_expiration"] <= date('Y-m-d')

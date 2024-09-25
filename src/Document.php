@@ -160,7 +160,7 @@ class Document extends CommonDBTM
                 ) <= 1)
             ) {
                 if (unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"])) {
-                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('Successful deletion of the file %s'),
                         $this->fields["filepath"]
                     )));
@@ -173,7 +173,7 @@ class Document extends CommonDBTM
                         E_USER_WARNING
                     );
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(
+                        htmlescape(sprintf(
                             __('Failed to delete the file %s'),
                             $this->fields["filepath"]
                         )),
@@ -447,10 +447,10 @@ class Document extends CommonDBTM
 
         $initfileout = null;
         if ($fileout !== null) {
-            $initfileout = htmlspecialchars($fileout);
+            $initfileout = htmlescape($fileout);
             $fileout     = Toolbox::strlen($fileout) > $len
-                ? htmlspecialchars(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
-                : htmlspecialchars($fileout);
+                ? htmlescape(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
+                : htmlescape($fileout);
         }
 
         $out   = '';
@@ -1043,7 +1043,7 @@ class Document extends CommonDBTM
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__('File %s not found.'), $filename)),
+                htmlescape(sprintf(__('File %s not found.'), $filename)),
                 false,
                 ERROR
             );
@@ -1070,7 +1070,7 @@ class Document extends CommonDBTM
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
-                Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('Successful deletion of the file %s'),
                     $input['current_filename']
                 )));
@@ -1085,7 +1085,7 @@ class Document extends CommonDBTM
                     E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('Failed to delete the file %1$s'),
                         $input['current_filename']
                     )),

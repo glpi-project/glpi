@@ -3887,13 +3887,13 @@ TWIG, $twig_params);
                     }
 
                     echo "<tr><td style='width: 250px' class='text-end'><label for='basedn'>" . __('BaseDN') . "</label></td><td colspan='3'>";
-                    echo "<input type='text' class='form-control' id='basedn' name='basedn' value=\"" . htmlspecialchars($_SESSION['ldap_import']['basedn'], ENT_QUOTES) .
+                    echo "<input type='text' class='form-control' id='basedn' name='basedn' value=\"" . htmlescape($_SESSION['ldap_import']['basedn']) .
                      "\" " . (!$_SESSION['ldap_import']['basedn'] ? "disabled" : "") . ">";
                     echo "</td></tr>";
 
                     echo "<tr><td class='text-end'><label for='ldap_filter'>" . __('Search filter for users') . "</label></td><td colspan='3'>";
                     echo "<input type='text' class='form-control' id='ldap_filter' name='ldap_filter' value=\"" .
-                      htmlspecialchars($_SESSION['ldap_import']['ldap_filter'], ENT_QUOTES) . "\">";
+                      htmlescape($_SESSION['ldap_import']['ldap_filter']) . "\">";
                     echo "</td></tr>";
                 }
                 break;
@@ -3997,7 +3997,7 @@ TWIG, $twig_params);
                         $field_counter++;
                         $field_value = '';
                         if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                            $field_value = htmlspecialchars($_SESSION['ldap_import']['criterias'][$field]);
+                            $field_value = htmlescape($_SESSION['ldap_import']['criterias'][$field]);
                         }
                         echo "<input type='text' class='form-control' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                         echo "</td>";

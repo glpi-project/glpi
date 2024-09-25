@@ -339,7 +339,7 @@ TWIG, $twig_params);
                 'os' => Dropdown::getDropdownName('glpi_operatingsystems', $data['operatingsystems_id']),
                 'arch' => $data['arch'],
                 'installations' => $nb,
-                'comments' => nl2br(htmlspecialchars($data['comment'] ?? ''))
+                'comments' => nl2br(htmlescape($data['comment']))
             ];
         }
 

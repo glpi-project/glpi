@@ -5130,7 +5130,7 @@ final class SQLProvider implements SearchProviderInterface
                                                         ]
                                                     );
                                                 }
-                                                $out .= sprintf(__s('%1$s %2$s'), htmlspecialchars($user->getName()), $tooltip);
+                                                $out .= sprintf(__s('%1$s %2$s'), htmlescape($user->getName()), $tooltip);
                                             }
                                         }
 
@@ -5154,7 +5154,7 @@ final class SQLProvider implements SearchProviderInterface
                                                 $out .= \Search::LBBR;
                                             }
                                             $count_display++;
-                                            $out .= "<a href='mailto:" . \htmlspecialchars($split2[1]) . "'>" . \htmlspecialchars($split2[1]) . "</a>";
+                                            $out .= "<a href='mailto:" . \htmlescape($split2[1]) . "'>" . \htmlescape($split2[1]) . "</a>";
                                         }
                                     }
                                 }
@@ -5360,7 +5360,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $text  = "<a ";
                             $text .= "href=\"" . \Ticket::getFormURLWithID($linkid) . "\">";
-                            $text .= \htmlspecialchars($link_text) . "</a>";
+                            $text .= \htmlescape($link_text) . "</a>";
                             if (count($displayed)) {
                                 $out .= \Search::LBBR;
                             }
@@ -5402,7 +5402,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out  = "<a id='problem$itemtype" . $data['id'] . "' ";
                             $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
                                 \Toolbox::append_params($options, '&amp;') . "\">";
-                            $out .= \htmlspecialchars($data[$ID][0]['name']) . "</a>";
+                            $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
                     }
@@ -5463,7 +5463,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out  = "<a id='ticket$itemtype" . $data['id'] . "' ";
                             $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.php?" .
                                 \Toolbox::append_params($options, '&amp;') . "\">";
-                            $out .= \htmlspecialchars($data[$ID][0]['name']) . "</a>";
+                            $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
                     }
@@ -5676,7 +5676,7 @@ final class SQLProvider implements SearchProviderInterface
                         $name = $data[$ID][0]['trans'];
                     }
                     if ($itemtype == 'ProjectState') {
-                        $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlspecialchars($name) . "</a></div>";
+                        $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlescape($name) . "</a></div>";
                     } else {
                         $out = $name;
                     }
@@ -5755,7 +5755,7 @@ final class SQLProvider implements SearchProviderInterface
                         ) {
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                         }
-                        $out    .= \htmlspecialchars($name) . "</a>";
+                        $out    .= \htmlescape($name) . "</a>";
 
                         // Add tooltip
                         $id = $data[$ID][0]['id'];
@@ -5908,7 +5908,7 @@ final class SQLProvider implements SearchProviderInterface
                     $color = $_SESSION["glpipriority_$index"];
                     $name  = \CommonITILObject::getPriorityName($index);
                     return "<div class='badge_block' style='border-color: $color'>
-                        <span style='background: $color'></span>&nbsp;" . \htmlspecialchars($name) . "
+                        <span style='background: $color'></span>&nbsp;" . \htmlescape($name) . "
                        </div>";
 
                 case "glpi_knowbaseitems.name":
@@ -5971,7 +5971,7 @@ final class SQLProvider implements SearchProviderInterface
                         $fa_class = "fa-eye-slash not-published";
                         $fa_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>" . \htmlspecialchars($name) . "</a></div>";
+                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>" . \htmlescape($name) . "</a></div>";
             }
         }
 
@@ -6043,11 +6043,11 @@ final class SQLProvider implements SearchProviderInterface
                                 foreach ($chunks as $key => $element_name) {
                                     $class = $key === array_key_last($chunks) ? '' : 'class="text-muted"';
                                     $separator = $key === array_key_last($chunks) ? '' : ' &gt; ';
-                                    $completename .= sprintf('<span %s>%s</span>%s', $class, \htmlspecialchars($element_name), $separator);
+                                    $completename .= sprintf('<span %s>%s</span>%s', $class, \htmlescape($element_name), $separator);
                                 }
                                 $name = $completename;
                             } else {
-                                $name = \htmlspecialchars($name);
+                                $name = \htmlescape($name);
                             }
 
                             $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_" .
@@ -6100,7 +6100,7 @@ final class SQLProvider implements SearchProviderInterface
                                     )
                                 );
                             } else {
-                                $out .= \htmlspecialchars($plaintext);
+                                $out .= \htmlescape($plaintext);
                             }
                         }
                     }
@@ -6167,7 +6167,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
-                            $mail = \htmlspecialchars($data[$ID][$k]['name']);
+                            $mail = \htmlescape($data[$ID][$k]['name']);
                             $out .= (empty($out) ? '' : \Search::LBBR);
                             $out .= "<a href='mailto:" . $mail . "'>" . $mail;
                             $out .= "</a>";
@@ -6184,7 +6184,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (\Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                             $link = \Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                         }
-                        return "<a href=\"" . \htmlspecialchars(\Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>" . \htmlspecialchars($link) . "</a>";
+                        return "<a href=\"" . \htmlescape(\Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>" . \htmlescape($link) . "</a>";
                     }
                     return '';
 
@@ -6267,7 +6267,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out .= $itemtype_name;
                         }
                     }
-                    return \htmlspecialchars($out);
+                    return \htmlescape($out);
 
                 case "language":
                     if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
@@ -6327,7 +6327,7 @@ HTML;
                     isset($so['toadd'])
                     && isset($so['toadd'][$field_data['name']])
                 ) {
-                    $out .= \htmlspecialchars($so['toadd'][$field_data['name']]);
+                    $out .= \htmlescape($so['toadd'][$field_data['name']]);
                 } else {
                     // Trans field exists
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
@@ -6338,7 +6338,7 @@ HTML;
                         $out .= $field_data['trans_name'];
                     } else {
                         $value = $field_data['name'];
-                        $out .= \htmlspecialchars($value ?: '');
+                        $out .= \htmlescape($value ?: '');
                     }
                 }
             }

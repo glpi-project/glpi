@@ -83,7 +83,7 @@ if (
 
             if (isset($_POST['withlink']) && $link !== null) {
                 echo "<script type='text/javascript' >";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
+                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlescape($link) . "');";
                 echo "</script>";
             }
             break;
@@ -123,7 +123,7 @@ if (
                 }
                 $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
                 if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo htmlspecialchars($tmpname["comment"]);
+                    echo htmlescape($tmpname["comment"]);
                 }
 
                 if (isset($_POST['withlink'])) {

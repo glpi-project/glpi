@@ -123,7 +123,7 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlspecialchars($default_email) . "'>";
+                        value='" . htmlescape($default_email) . "'>";
     }
 
     echo "$email_string";

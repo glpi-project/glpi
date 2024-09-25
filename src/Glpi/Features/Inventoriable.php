@@ -125,13 +125,13 @@ trait Inventoriable
             $title = sprintf(
              //TRANS: parameter is the name of the asset
                 __s('Download "%1$s" inventory file'),
-                htmlspecialchars($this->getName())
+                htmlescape($this->getName())
             );
 
             echo sprintf(
                 "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
-                \htmlspecialchars($href),
-                \htmlspecialchars($title)
+                \htmlescape($href),
+                \htmlescape($title)
             );
 
             if (static::class == RefusedEquipment::class) {
@@ -179,16 +179,16 @@ trait Inventoriable
         global $CFG_GLPI;
 
         echo '<tr class="tab_bg_1">';
-        echo '<td>' . htmlspecialchars(Agent::getTypeName(1)) . '</td>';
+        echo '<td>' . htmlescape(Agent::getTypeName(1)) . '</td>';
         echo '<td>' . $this->agent->getLink() . '</td>';
 
         echo '<td>' . __s('Useragent') . '</td>';
-        echo '<td>' . htmlspecialchars($this->agent->fields['useragent']) . '</td>';
+        echo '<td>' . htmlescape($this->agent->fields['useragent']) . '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . __s('Inventory tag') . '</td>';
-        echo '<td>' . htmlspecialchars($this->agent->fields['tag']) . '</td>';
+        echo '<td>' . htmlescape($this->agent->fields['tag']) . '</td>';
         echo '<td>' . __s('Last inventory') . '</td>';
         echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
         echo '</tr>';

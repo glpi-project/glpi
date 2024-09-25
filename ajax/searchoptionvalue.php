@@ -160,6 +160,6 @@ if (isset($_POST['searchtype'])) {
    // Default case : text field
     if (!$display) {
         echo "<input type='text' size='13' name='$inputname' value=\"" .
-               htmlspecialchars($_POST['value']) . "\">";
+               htmlescape($_POST['value']) . "\">";
     }
 }
