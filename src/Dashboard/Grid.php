@@ -965,6 +965,21 @@ HTML;
                     $widget_args['filters'] = $card['filters'];
                 }
 
+                self::loadAllDashboards();
+                $items = self::$all_dashboards[$this->current]['items'];
+                $target_id = null;
+
+                foreach ($items as $id => $item) {
+                    if (isset($item['gridstack_id']) && $item['gridstack_id'] === $gridstack_id) {
+                        $target_id = $id;
+                        break;
+                    }
+                }
+
+                if ($target_id !== null) {
+                    $widget_args['widget_options'] = $items[$target_id];
+                }
+
                 // call widget function
                 $html = call_user_func($widgetfct, $widget_args);
             }

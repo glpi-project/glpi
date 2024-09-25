@@ -1109,12 +1109,13 @@ JAVASCRIPT;
       </div>
 HTML;
 
-        $horizontal_options = "";
+        $horizontal_options = [];
         $vertical_options   = "";
         $is_horizontal      = "false";
+        $widgetWidth = $p['widget_options']['width'] ?? "false";
+        $offsetY = 100;
         if ($p['horizontal']) {
             $is_horizontal = "true";
-            $offsetY = 100;
             $maxLabelLength = 0;
 
             foreach ($labels as $label) {
@@ -1126,15 +1127,11 @@ HTML;
 
             $offsetY = $maxLabelLength * 7;
 
-            $horizontal_options = "
-            horizontalBars: true,
-            axisY: {
-               offset: $offsetY
-            },
-            axisX: {
-               onlyInteger: true
-            },
-         ";
+            $horizontal_options = [
+               'horizontalBars' => true,
+               'axisY' => ['offset' => $offsetY],
+               'axisX' => ['onlyInteger' => true]
+            ];
         } else {
             $vertical_options = "
             axisX: {
@@ -1145,6 +1142,8 @@ HTML;
             },
          ";
         }
+
+        $horizontal_options = json_encode($horizontal_options);
 
         $stack_options = "";
         if ($p['stacked']) {
@@ -1169,15 +1168,25 @@ HTML;
          } else {
             var target = '#{$chart_id} .chart';
          }
+
+         var horizontal_options = $horizontal_options;
+         if ($is_horizontal && $widgetWidth) {
+            var cell_add_width = $('.cell-add').width();
+            var max_offset = $widgetWidth * cell_add_width / 2;
+            if ($offsetY > max_offset) {
+                  var offsetY = max_offset;
+                  horizontal_options.axisY.offset = offsetY;
+            }
+         }
+
          var chart = new Chartist.Bar(target, {
             labels: {$json_labels},
             series: {$json_series},
-         }, {
+         }, Object.assign({
             width: '100%',
             seriesBarDistance: 10,
             chartPadding: 0,
             $distributed_options
-            $horizontal_options
             $vertical_options
             $stack_options
             plugins: [
@@ -1187,7 +1196,7 @@ HTML;
                   class: 'dashboard-tooltip'
                })
             ]
-         });
+         }, horizontal_options));
 
          var is_horizontal = chart.options.horizontalBars;
          var is_vertical   = !is_horizontal;
