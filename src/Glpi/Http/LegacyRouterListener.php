@@ -74,6 +74,14 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
+        if (
+            $request->attributes->get('_controller') !== null
+            || $event->getResponse() !== null
+        ) {
+            // A controller or a response has already been defined for this request, do not override them.
+            return;
+        }
+
         $response = $this->runLegacyRouter($request);
 
         if ($response) {

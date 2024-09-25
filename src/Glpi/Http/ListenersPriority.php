@@ -50,6 +50,8 @@ final class ListenersPriority
         LegacyConfigProviderListener::class => 350,
 
         // Plugins dropdowns requires plugins to be initialized, therefore config must be already set.
+        // Also, keep it after the `LegacyRouterListener` to not map to the generic dropdown controller if a
+        // legacy script exists for the requested URI.
         LegacyDropdownRouteListener::class => 300,
     ];
 
