@@ -104,7 +104,8 @@
     },
     "suggest": {
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
-        "ext-sodium": "Used to provide strong encryption for sensitive data in database"
+        "ext-sodium": "Used to provide strong encryption for sensitive data in database",
+        "ext-sysvsem": "Used to handle concurrency inventories"
     },
     "config": {
         "optimize-autoloader": true,
