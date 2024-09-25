@@ -77,6 +77,9 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
                         $(element).prop('checked', option !== undefined);
                     });
             });
+
+        // The question may have been cloned, so the options need to be updated
+        this.#updateDropdownOptions();
     }
 
     /**

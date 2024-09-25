@@ -46,9 +46,6 @@ describe('Selectable form question types', () => {
 
             // Add a new question
             cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
-
-            // Set the question name
-            cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test selectable question");
         });
     });
 
@@ -56,6 +53,9 @@ describe('Selectable form question types', () => {
         describe('Configure question', () => {
             // Change the question type
             cy.getDropdownByLabelText('Question type').select('Radio');
+
+            // Set the question name
+            cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test selectable question");
 
             // Add options
             for (let index = 0; index < 3; index++) {
@@ -131,6 +131,9 @@ describe('Selectable form question types', () => {
             // Change the question type
             cy.getDropdownByLabelText('Question type').select('Checkbox');
 
+            // Set the question name
+            cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test selectable question");
+
             // Add options
             for (let index = 0; index < 3; index++) {
                 cy.findAllByRole('checkbox', { name: 'Default option' }).eq(index).should('exist').should('be.disabled');
@@ -202,5 +205,185 @@ describe('Selectable form question types', () => {
             cy.findByText('Option 1').should('exist');
             cy.findByText('Option 2').should('not.exist');
         });
+    });
+
+    it('test can duplicate a radio question', () => {
+        // Set the question name
+        cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test radio question");
+
+        // Change question type
+        cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Radio");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
+
+        // Define second option as default
+        cy.findAllByRole("radio", { name: "Default option"}).eq(1).should('exist').check();
+
+        // Duplicate the question
+        cy.findByRole("button", { name: "Duplicate question" }).should('exist').click();
+
+        // Check the source question
+        cy.findAllByRole("region", { name: "Question details" }).eq(0).should('exist').as('source_question');
+        cy.get('@source_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test radio question");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@source_question').findAllByRole("radio", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+
+        // Check the duplicated question
+        cy.findAllByRole("region", { name: "Question details" }).eq(1).should('exist').as('duplicated_question');
+        cy.get('@duplicated_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test radio question");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@duplicated_question').findAllByRole("radio", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+
+        // Define first option as default for the duplicated question
+        cy.get('@duplicated_question').findAllByRole("radio", { name: "Default option"}).eq(0).should('exist').check();
+
+        // Check the source question
+        cy.get('@source_question').findAllByRole("radio", { name: "Default option"}).eq(0).should('exist').should('not.be.checked');
+        cy.get('@source_question').findAllByRole("radio", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+
+        // Save the form
+        cy.findByRole("button", { name: "Save" }).should('exist').click();
+
+        // Reload the form
+        cy.reload();
+
+        // Check options for the source question
+        cy.findAllByRole("option", { name: "Test radio question" }).eq(0).should('exist').as('source_question');
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option" }).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option" }).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@source_question').findAllByRole("radio", { name: "Default option" }).eq(0).should('not.be.checked');
+        cy.get('@source_question').findAllByRole("radio", { name: "Default option" }).eq(1).should('be.checked');
+
+        // Check options for the duplicated question
+        cy.findAllByRole("option", { name: "Test radio question" }).eq(1).should('exist').as('duplicated_question');
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option" }).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option" }).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@duplicated_question').findAllByRole("radio", { name: "Default option" }).eq(0).should('be.checked');
+        cy.get('@duplicated_question').findAllByRole("radio", { name: "Default option" }).eq(1).should('not.be.checked');
+    });
+
+    it('test can duplicate a checkbox question', () => {
+        // Set the question name
+        cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test checkbox question");
+
+        // Change question type
+        cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Checkbox");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(2).should('exist').type("Option 3");
+
+        // Define second option as default
+        cy.findAllByRole("checkbox", { name: "Default option"}).eq(1).should('exist').check();
+
+        // Define third option as default
+        cy.findAllByRole("checkbox", { name: "Default option"}).eq(2).should('exist').check();
+
+        // Duplicate the question
+        cy.findByRole("button", { name: "Duplicate question" }).should('exist').click();
+
+        // Check the source question
+        cy.findAllByRole("region", { name: "Question details" }).eq(0).should('exist').as('source_question');
+        cy.get('@source_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test checkbox question");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(2).should('exist').should('have.value', "Option 3");
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option"}).eq(2).should('exist').should('be.checked');
+
+        // Check the duplicated question
+        cy.findAllByRole("region", { name: "Question details" }).eq(1).should('exist').as('duplicated_question');
+        cy.get('@duplicated_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test checkbox question");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(2).should('exist').should('have.value', "Option 3");
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option"}).eq(2).should('exist').should('be.checked');
+
+        // Define first option as default for the duplicated question
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option"}).eq(0).should('exist').check();
+
+        // Check the source question
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option"}).eq(0).should('exist').should('not.be.checked');
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option"}).eq(1).should('exist').should('be.checked');
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option"}).eq(2).should('exist').should('be.checked');
+
+        // Save the form
+        cy.findByRole("button", { name: "Save" }).should('exist').click();
+
+        // Reload the form
+        cy.reload();
+
+        // Check options for the source question
+        cy.findAllByRole("option", { name: "Test checkbox question" }).eq(0).should('exist').as('source_question');
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option" }).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option" }).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option" }).eq(2).should('exist').should('have.value', "Option 3");
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option" }).eq(0).should('not.be.checked');
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option" }).eq(1).should('be.checked');
+        cy.get('@source_question').findAllByRole("checkbox", { name: "Default option" }).eq(2).should('be.checked');
+
+        // Check options for the duplicated question
+        cy.findAllByRole("option", { name: "Test checkbox question" }).eq(1).should('exist').as('duplicated_question');
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option" }).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option" }).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option" }).eq(2).should('exist').should('have.value', "Option 3");
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option" }).eq(0).should('be.checked');
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option" }).eq(1).should('be.checked');
+        cy.get('@duplicated_question').findAllByRole("checkbox", { name: "Default option" }).eq(2).should('be.checked');
+    });
+
+    it('test can duplicate a dropdown question', () => {
+        // Set the question name
+        cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test dropdown question");
+
+        // Change question type
+        cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Dropdown");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
+
+        // Define second option as default
+        cy.getDropdownByLabelText("Default option").selectDropdownValue("Option 2");
+
+        // Duplicate the question
+        cy.findByRole("button", { name: "Duplicate question" }).should('exist').click();
+
+        // Check the source question
+        cy.findAllByRole("region", { name: "Question details" }).eq(0).should('exist').as('source_question');
+        cy.get('@source_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test dropdown question").click();
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@source_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@source_question').getDropdownByLabelText("Default option").should('exist').findByRole("textbox", { name: "Option 2" }).should('exist');
+
+        // Check the duplicated question
+        cy.findAllByRole("region", { name: "Question details" }).eq(1).should('exist').as('duplicated_question');
+        cy.get('@duplicated_question').findByRole("textbox", { name: "Question name" }).should('exist').should('have.value', "Test dropdown question").click();
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').should('have.value', "Option 1");
+        cy.get('@duplicated_question').findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').should('have.value', "Option 2");
+        cy.get('@duplicated_question').getDropdownByLabelText("Default option").should('have.text', "Option 2");
+
+        // Define first option as default for the duplicated question
+        cy.get('@duplicated_question').getDropdownByLabelText("Default option").selectDropdownValue("Option 1");
+
+        // Check the source question
+        cy.get('@source_question').getDropdownByLabelText("Default option").should('have.text', "Option 2");
+
+        // Save the form
+        cy.findByRole("button", { name: "Save" }).should('exist').click();
     });
 });
