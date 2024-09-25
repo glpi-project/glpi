@@ -1199,7 +1199,7 @@ JAVASCRIPT;
                     'KnowbaseItemCategory' => null
                 ],
 
-                _n('Calendar', 'Calendars', 1) => [
+                _n('Calendar', 'Calendars', Session::getPluralNumber()) => [
                     'Calendar' => null,
                     'Holiday' => null
                 ],
