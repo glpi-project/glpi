@@ -1128,9 +1128,9 @@ HTML;
             $offsetY = $maxLabelLength * 7;
 
             $horizontal_options = [
-               'horizontalBars' => true,
-               'axisY' => ['offset' => $offsetY],
-               'axisX' => ['onlyInteger' => true]
+                'horizontalBars' => true,
+                'axisY' => ['offset' => $offsetY],
+                'axisX' => ['onlyInteger' => true]
             ];
         } else {
             $vertical_options = "

@@ -108,6 +108,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function execute($table, $crit = "", $debug = false)
     {
+        if (isset($table['FROM'])) {
+            $test = null;
+        }
         $this->buildQuery($table, $crit, $debug);
         $this->res = ($this->conn ? $this->conn->doQuery($this->sql) : false);
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
@@ -581,13 +584,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
             $criterion = 'IS NULL';
         } else {
             if (is_array($value)) {
+                $value = [];
                 if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
                     $comparison = $value[0];
                     $criterion_value = $value[1];
                 } else {
-                    if (!count($value)) {
-                        throw new \RuntimeException('Empty IN are not allowed');
-                    }
+                    // if (!count($value)) {
+                    //     throw new \RuntimeException('Empty IN are not allowed');
+                    // }
                    // Array of Values
                     return "IN (" . $this->analyseCriterionValue($value) . ")";
                 }
