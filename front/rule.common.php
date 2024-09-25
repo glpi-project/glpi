@@ -101,13 +101,13 @@ if (isset($_POST["action"])) {
     echo "<table class='tab_cadrehov'>";
 
     echo "<tr><th><div class='relative b'>" . htmlspecialchars($rulecollection->getTitle()) . "<br>" .
-         __s('Replay the rules dictionary') . "</div></th></tr>\n";
+         __s('Replay the rules dictionary') . "</div></th></tr>";
     echo "<tr><td class='center'>";
     Html::progressBar('doaction_progress', [
         'create' => true,
         'message' => __s('Work in progress...')
     ]);
-    echo "</td></tr>\n";
+    echo "</td></tr>";
     echo "</table>";
 
     if (!isset($_GET['offset'])) {
@@ -135,7 +135,7 @@ if (isset($_POST["action"])) {
             __('Task completed in %s'),
             Html::timestampToString($duree)
         ));
-        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __('Back') . "</a>";
+        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __s('Back') . "</a>";
     } else {
        // Need more work
         Html::redirect($_SERVER['PHP_SELF'] . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .

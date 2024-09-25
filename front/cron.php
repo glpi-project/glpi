@@ -70,8 +70,8 @@ if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
 
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
-    echo "\t" . sprintf(__('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __('Run the script as the same user that your web server runs as.') . "\n";
+    echo "\t" . sprintf(__s('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
+    echo "\t" . __s('Run the script as the same user that your web server runs as.') . "\n";
     exit(1);
 }
 
