@@ -977,23 +977,26 @@ abstract class CommonITILValidation extends CommonDBChild
         Session::initNavigateListItems(
             static::class,
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                    sprintf(
-                                        __('%1$s = %2$s'),
-                                        $item::getTypeName(1),
-                                        $item->fields["name"]
-                                    )
+            sprintf(
+                __('%1$s = %2$s'),
+                $item::getTypeName(1),
+                $item->fields["name"]
+            )
         );
         $values = [];
         foreach ($iterator as $row) {
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);
-            $bgcolor = self::getStatusColor($row['status']);
-            $status  = "<div class='badge fw-normal fs-4 text-wrap' style='border-color:" . $bgcolor . ";border-width: 2px;'>" . self::getStatus($row['status']) . "</div>";
+            $status  = sprintf(
+                '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
+                htmlspecialchars(self::getStatusColor($row['status'])),
+                htmlspecialchars(self::getStatus($row['status']))
+            );
 
             $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
             $type_name   = null;
             $target_name = null;
-            if ($row["itemtype_target"] === 'User') {
+            if ($row["itemtype_target"] === User::class) {
                 $type_name   = User::getTypeName();
                 $target_name = getUserName($row["items_id_target"]);
             } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
@@ -1007,47 +1010,50 @@ abstract class CommonITILValidation extends CommonDBChild
             $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
 
             $doc_item = new Document_Item();
-            $docs = $doc_item->find(["itemtype"          => static::class,
+            $docs = $doc_item->find([
+                "itemtype"          => static::class,
                 "items_id"           => $this->getID(),
                 "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]
             ]);
 
             $document = "";
             foreach ($docs as $docs_values) {
-                    $doc = new Document();
-                    $doc->getFromDB($docs_values['documents_id']);
-                    $document  .= "<a ";
-                    $document .= "href=\"" . htmlspecialchars(Document::getFormURLWithID($docs_values['documents_id']), ENT_QUOTES, 'UTF-8') . "\">";
-                    $document .= htmlspecialchars($doc->getField('name'), ENT_QUOTES, 'UTF-8') . "</a><br>";
+                $doc = new Document();
+                if ($doc->getFromDB($docs_values['documents_id'])) {
+                    $document .= sprintf(
+                        '<a href="%s">%s</a><br />',
+                        htmlspecialchars($doc->getLinkURL()),
+                        htmlspecialchars($doc->getName())
+                    );
+                }
             }
 
             $script = "";
             if ($canedit) {
-                $params = ['type'             => static::class,
+                $edit_title = __s('Edit');
+                $item_id = htmlspecialchars($item->fields['id']);
+                $row_id = htmlspecialchars($row["id"]);
+                $rand = htmlspecialchars($rand);
+                $view_validation_id = htmlspecialchars($this->fields[static::$items_id]);
+                $root_doc = htmlspecialchars($CFG_GLPI["root_doc"]);
+                $params_json = json_encode([
+                    'type'             => static::class,
                     'parenttype'       => static::$itemtype,
                     static::$items_id  => $this->fields[static::$items_id],
                     'id'               => $row["id"]
-                ];
-
-                $editTitle = htmlspecialchars(__('Edit'), ENT_QUOTES, 'UTF-8');
-                $itemId = htmlspecialchars($item->fields['id'], ENT_QUOTES, 'UTF-8');
-                $rowId = htmlspecialchars($row["id"], ENT_QUOTES, 'UTF-8');
-                $rand = htmlspecialchars($rand, ENT_QUOTES, 'UTF-8');
-                $viewValidationId = htmlspecialchars($this->fields[static::$items_id], ENT_QUOTES, 'UTF-8');
-                $rootDoc = htmlspecialchars($CFG_GLPI["root_doc"], ENT_QUOTES, 'UTF-8');
-                $paramsJson = json_encode($params, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+                ]);
 
                 $script = <<<HTML
-                <span class='far fa-edit' style='cursor:pointer' title='$editTitle' 
-                    onClick="viewEditValidation{$itemId}{$rowId}{$rand}();" 
-                    id='viewvalidation{$viewValidationId}{$rowId}{$rand}'>
-                </span>
-                <script type='text/javascript'>
-                function viewEditValidation{$itemId}{$rowId}{$rand}() {
-                    $('#viewvalidation{$itemId}{$rand}').load('$rootDoc/ajax/viewsubitem.php', $paramsJson);
-                };
-                </script>
-                HTML;
+                    <span class="far fa-edit" style="cursor:pointer" title="{$edit_title}" 
+                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
+                          id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
+                    </span>
+                    <script>
+                        function viewEditValidation{$item_id}{$row_id}{$rand}() {
+                            $('#viewvalidation{$item_id}{$rand}').load('$root_doc/ajax/viewsubitem.php', $params_json);
+                        };
+                    </script>
+HTML;
             }
 
             $values[] = [
@@ -1071,11 +1077,9 @@ abstract class CommonITILValidation extends CommonDBChild
             'itemtype' => static::$itemtype,
             'tID' => $tID,
             'donestatus' => array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()),
-            'this' => $this,
-            'self' => self::getType(),
+            'validation' => $this,
             'rand' => $rand,
             'items_id' => static::$items_id,
-            'root_doc' => $CFG_GLPI["root_doc"]
         ]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [

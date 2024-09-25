@@ -32,25 +32,25 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if canadd %}
-    <form method='post' name="form" action={{ call(itemtype ~ '::getFormURL') }}>
+    <form method='post' name="form" action={{ itemtype|itemtype_form_path }}>
 {% endif %}
 <div class="card border-0 shadow-none p-0 m-0 mt-3">
     <div class="card-header mb-1 pt-2">
         <h4 class="card-title ">
-            {{ this.getTypeName(2) }}
+            {{ validation.getTypeName(2) }}
         </h4>
     </div>
 </div>
 
 {{ fields.htmlField(
     '',
-    call(self ~ '::getStatus', [item.fields["global_validation"], true])|raw,
+    validation.getStatus(item.fields["global_validation"], true),
     __('Global approval status')
 ) }}
 
 {{ fields.htmlField(
     '',
-    call(self ~ '::getValidationStats', [tID]),
+    validation.getValidationStats(tID),
     __('Approval status details')
 ) }}
 
@@ -61,9 +61,9 @@
             'validation_percent',
             item.fields["validation_percent"]
         )|raw }}
-        <input type='submit' name='update' class='btn btn-primary' value='{{ _x('button', 'Save') }}'>
+        <input type="submit" name="update" class="btn btn-primary" value="{{ _x('button', 'Save') }}">
         {% if tID is not null %}
-            <input type='hidden' name='id' value='{{ tID }}'>
+            <input type="hidden" name="id" value="{{ tID }}">
         {% endif %}
     {% endset %}
 
@@ -102,16 +102,16 @@
     {% endif %}
 </div>
 
-<div id='viewvalidation{{ tID }}{{ rand }}'></div>
+<div id="viewvalidation{{ tID }}{{ rand }}"></div>
 
-<script type='text/javascript'>
+<script>
     function viewAddValidation{{ tID }}{{ rand }}() {
         var params = {
-            type: '{{ this.getType() }}',
-            parenttype: '{{ itemtype }}',
-            {{ items_id }}: '{{ this.fields[items_id] }}',
+            type: '{{ get_class(validation)|e('js') }}',
+            parenttype: '{{ itemtype|e('js') }}',
+            {{ items_id }}: '{{ validation.fields[items_id]|e('js') }}',
             id: -1
         };
-        $('#viewvalidation{{ tID }}{{ rand }}').load('{{ root_doc }}/ajax/viewsubitem.php', params);
+        $('#viewvalidation{{ tID }}{{ rand }}').load('{{ config('root_doc')|e('js') }}/ajax/viewsubitem.php', params);
     };
 </script>
