@@ -116,7 +116,7 @@ class PluginExtension extends AbstractExtension
         bool $full = true,
         bool $use_url_base = false
     ): ?string {
-        Toolbox::deprecated('All plugins resource should be accessed from the `/plugins/` path.');
+        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
         return Plugin::getWebDir($plugin, $full, $use_url_base) ?: null;
     }
 }

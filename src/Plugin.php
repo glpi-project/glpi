@@ -2765,7 +2765,7 @@ TWIG;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        Toolbox::deprecated('All plugins resource should be accessed from the `/plugins/` path.');
+        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
 
         $directory = '/plugins/' . $plugin_key;
 
