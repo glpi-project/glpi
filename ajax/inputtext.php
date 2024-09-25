@@ -44,7 +44,7 @@ Session::checkLoginUser();
 if (isset($_POST['name'])) {
     echo "<input type='text' " . (isset($_POST["size"]) ? " size='" . (int) $_POST["size"] . "' " : "") . " " .
          (isset($_POST["maxlength"]) ? "maxlength='" . (int) $_POST["maxlength"] . "' " : "") . " name='" .
-         htmlspecialchars($_POST['name']) . "' value=\"" .
-         htmlspecialchars(rawurldecode($_POST["data"])) .
+         htmlescape($_POST['name']) . "' value=\"" .
+         htmlescape(rawurldecode($_POST["data"])) .
         "\">";
 }

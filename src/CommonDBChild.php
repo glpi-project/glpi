@@ -799,9 +799,9 @@ abstract class CommonDBChild extends CommonDBConnexity
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = htmlspecialchars($this->getName());
+            $value = htmlescape($this->getName());
         }
-        $field_name = htmlspecialchars($field_name . "[$id]");
+        $field_name = htmlescape($field_name . "[$id]");
 
         if ($canedit) {
             $out = "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
@@ -863,8 +863,8 @@ abstract class CommonDBChild extends CommonDBConnexity
 
         if ($canedit) {
             $lower_name         = strtolower(get_called_class());
-            $child_count_js_var = htmlspecialchars('nb' . $lower_name . 's');
-            $div_id             = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+            $child_count_js_var = htmlescape('nb' . $lower_name . 's');
+            $div_id             = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
@@ -923,7 +923,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
 
         $lower_name = strtolower(get_called_class());
-        $div_id     = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+        $div_id     = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
         $query = [
             'FROM'   => static::getTable(),

@@ -112,7 +112,7 @@ class Planning extends CommonGLPI
         $links = [];
 
         if (self::canView()) {
-            $title     = htmlspecialchars(self::getTypeName(Session::getPluralNumber()));
+            $title     = htmlescape(self::getTypeName(Session::getPluralNumber()));
             $planning  = "<i class='fa far fa-calendar-alt pointer' title='$title'>
                         <span class='sr-only'>$title</span>
                        </i>";
@@ -121,7 +121,7 @@ class Planning extends CommonGLPI
         }
 
         if (PlanningExternalEvent::canView()) {
-            $ext_title = htmlspecialchars(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
+            $ext_title = htmlescape(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
             $external  = "<i class='fa fas fa-calendar-week pointer' title='$ext_title'>
                         <span class='sr-only'>$ext_title</span>
                        </i>";
@@ -226,7 +226,7 @@ class Planning extends CommonGLPI
      */
     public static function getStatusIcon($status): string
     {
-        $label = htmlspecialchars(self::getState($status), ENT_QUOTES);
+        $label = htmlescape(self::getState($status), ENT_QUOTES);
         if (empty($label)) {
             return '';
         }
@@ -371,7 +371,7 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('The user %1$s is busy at the selected timeframe.'),
-                    '<a href="' . htmlspecialchars($user::getFormURLWithID($users_id)) . '">' . htmlspecialchars($user->getName()) . '</a>'
+                    '<a href="' . htmlescape($user::getFormURLWithID($users_id)) . '">' . htmlescape($user->getName()) . '</a>'
                 ) . '<br/>' . $message,
                 false,
                 WARNING

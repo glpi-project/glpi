@@ -331,7 +331,7 @@ class KnowbaseItem_Item extends CommonDBRelation
                     if ($values[$field] > 0) {
                         $item = new $values['itemtype']();
                         $item->getFromDB($values[$field]);
-                        return "<a href='" . htmlspecialchars($item->getLinkURL()) . "'>" . htmlspecialchars($item->fields['name']) . "</a>";
+                        return "<a href='" . htmlescape($item->getLinkURL()) . "'>" . htmlescape($item->fields['name']) . "</a>";
                     }
                 }
                 return ' ';

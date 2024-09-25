@@ -163,7 +163,7 @@ TWIG, $twig_params);
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
                 $tpl_link = "<i class='fa fa-exclamation-triangle red'></i>
-                        <a href='" . htmlspecialchars($notiftpl->getLinkUrl()) . "'>" .
+                        <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>" .
                          __s("No template selected") .
                       "</a>";
             }

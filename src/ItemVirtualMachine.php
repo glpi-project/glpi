@@ -214,7 +214,7 @@ class ItemVirtualMachine extends CommonDBChild
                         ];
                     } else {
                         $entries[] = [
-                            'name' => htmlspecialchars($computer->fields['name']),
+                            'name' => htmlescape($computer->fields['name']),
                             'serial' => NOT_AVAILABLE,
                             'comment' => NOT_AVAILABLE,
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])

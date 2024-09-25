@@ -114,7 +114,7 @@ abstract class HTMLTableEntity
     {
         $id = $options['id'] ?? $this->html_id;
         if (!empty($id)) {
-            echo ' id="' . htmlspecialchars($id) . '"';
+            echo ' id="' . htmlescape($id) . '"';
         }
 
         $style = $this->html_style;
@@ -126,7 +126,7 @@ abstract class HTMLTableEntity
             }
         }
         if (count($style) > 0) {
-            echo " style='" . htmlspecialchars(implode(';', $style)) . "'";
+            echo " style='" . htmlescape(implode(';', $style)) . "'";
         }
 
         $class = $this->html_class;
@@ -138,7 +138,7 @@ abstract class HTMLTableEntity
             }
         }
         if (count($class) > 0) {
-            echo " class='" . htmlspecialchars(implode(' ', $class)) . "'";
+            echo " class='" . htmlescape(implode(' ', $class)) . "'";
         }
     }
 

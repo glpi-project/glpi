@@ -126,7 +126,7 @@ class Migration
     {
         if (!isCommandLine() && $id != $this->current_message_area_id) {
             $this->current_message_area_id = $id;
-            echo "<div id='" . htmlspecialchars($this->current_message_area_id) . "'></div>";
+            echo "<div id='" . htmlescape($this->current_message_area_id) . "'></div>";
         }
 
         $this->displayMessage(__('Work in progress...'));
@@ -683,7 +683,7 @@ class Migration
             if (isCommandLine()) {
                 throw new \RuntimeException($message);
             } else {
-                echo htmlspecialchars($message) . "\n";
+                echo htmlescape($message) . "\n";
                 die(1);
             }
         }
@@ -1605,7 +1605,7 @@ class Migration
      */
     private function outputMessageToHtml(string $msg, ?string $style = null, ?string $area_id = null): void
     {
-        $msg = htmlspecialchars($msg);
+        $msg = htmlescape($msg);
 
         $msg = match ($style) {
             'title' => '<h3>' . $msg . '</h3>',

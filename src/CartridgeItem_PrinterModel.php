@@ -175,7 +175,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                     ]
                 ];
                 $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt, '&amp;');
-                echo "<td class='center'><a href='" . $url . "'>" . htmlspecialchars($data["name"]) . "</a></td>";
+                echo "<td class='center'><a href='" . $url . "'>" . htmlescape($data["name"]) . "</a></td>";
                 echo "</tr>";
             }
             echo $header_begin . $header_bottom . $header_end;

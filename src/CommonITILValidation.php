@@ -367,10 +367,10 @@ abstract class CommonITILValidation extends CommonDBChild
                     $user->getFromDB($this->fields["items_id_target"]);
                     $email   = $user->getDefaultEmail();
                     if (!empty($email)) {
-                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $user->getName())));
+                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $user->getName())));
                     } else {
                         Session::addMessageAfterRedirect(
-                            htmlspecialchars(sprintf(
+                            htmlescape(sprintf(
                                 __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
                                 $user->getName()
                             )),
@@ -381,7 +381,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
                     $target = new $this->fields["itemtype_target"]();
                     if ($target->getFromDB($this->fields["items_id_target"])) {
-                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $target->getName())));
+                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $target->getName())));
                     }
                 }
             }
@@ -975,7 +975,7 @@ abstract class CommonITILValidation extends CommonDBChild
         }
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr>";
-        echo "<th colspan='3'>" . htmlspecialchars(self::getTypeName(Session::getPluralNumber())) . "</th>";
+        echo "<th colspan='3'>" . htmlescape(self::getTypeName(Session::getPluralNumber())) . "</th>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -987,7 +987,7 @@ abstract class CommonITILValidation extends CommonDBChild
         echo "<tr>";
         echo "<th colspan='2'>" . _sx('item', 'State') . "</th>";
         echo "<th colspan='2'>";
-        echo htmlspecialchars(self::getValidationStats($tID));
+        echo htmlescape(self::getValidationStats($tID));
         echo "</th>";
         echo "</tr>";
 
@@ -1068,8 +1068,8 @@ abstract class CommonITILValidation extends CommonDBChild
             foreach ($iterator as $row) {
                 $canedit = $this->canEdit($row["id"]);
                 Session::addToNavigateListItems($this->getType(), $row["id"]);
-                $bgcolor = htmlspecialchars(self::getStatusColor($row['status']));
-                $status  = htmlspecialchars(self::getStatus($row['status']));
+                $bgcolor = htmlescape(self::getStatusColor($row['status']));
+                $status  = htmlescape(self::getStatus($row['status']));
 
                 echo "<tr class='tab_bg_1'>";
 
@@ -1098,7 +1098,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
                 echo "<td><div style='background-color:" . $bgcolor . ";'>" . $status . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["submission_date"]) . "</td>";
-                echo "<td>" . htmlspecialchars(getUserName($row["users_id"])) . "</td>";
+                echo "<td>" . htmlescape(getUserName($row["users_id"])) . "</td>";
                 $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_submission . "</div></td>";
                 echo "<td>" . Html::convDateTime($row["validation_date"]) . "</td>";
@@ -1114,10 +1114,10 @@ abstract class CommonITILValidation extends CommonDBChild
                         $target_name = $target->getName();
                     }
                 }
-                echo "<td>" . htmlspecialchars($type_name) . "</td>";
-                echo "<td>" . htmlspecialchars($target_name) . "</td>";
+                echo "<td>" . htmlescape($type_name) . "</td>";
+                echo "<td>" . htmlescape($target_name) . "</td>";
                 $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
-                echo "<td>" . ($is_answered ? htmlspecialchars(getUserName($row["users_id_validate"])) : '') . "</td>";
+                echo "<td>" . ($is_answered ? htmlescape(getUserName($row["users_id_validate"])) : '') . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1132,7 +1132,7 @@ abstract class CommonITILValidation extends CommonDBChild
                      $doc->getFromDB($docs_values['documents_id']);
                      $out  .= "<a ";
                      $out .= "href=\"" . Document::getFormURLWithID($docs_values['documents_id']) . "\">";
-                     $out .= htmlspecialchars($doc->getField('name')) . "</a><br>";
+                     $out .= htmlescape($doc->getField('name')) . "</a><br>";
                 }
                  echo "<td>" . $out . "</td>";
 

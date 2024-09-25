@@ -414,10 +414,10 @@ class ProjectTask_Ticket extends CommonDBRelation
 
         $entries = [];
         foreach ($iterator as $data) {
-            $project_name = htmlspecialchars($data['projectname'] . (empty($data['projectname']) ? "({$data['projects_id']})" : ''));
-            $projectlink = "<a href='" . htmlspecialchars(Project::getFormURLWithID($data['projects_id'])) . "'>$project_name</a>";
-            $task_name = htmlspecialchars($data['name'] . (empty($data['name']) ? "({$data['id']})" : ''));
-            $tasklink = "<a href='" . htmlspecialchars(ProjectTask::getFormURLWithID($data['id'])) . "'>$task_name</a>";
+            $project_name = htmlescape($data['projectname'] . (empty($data['projectname']) ? "({$data['projects_id']})" : ''));
+            $projectlink = "<a href='" . htmlescape(Project::getFormURLWithID($data['projects_id'])) . "'>$project_name</a>";
+            $task_name = htmlescape($data['name'] . (empty($data['name']) ? "({$data['id']})" : ''));
+            $tasklink = "<a href='" . htmlescape(ProjectTask::getFormURLWithID($data['id'])) . "'>$task_name</a>";
 
             $father = '';
             if ($data['projecttasks_id'] > 0) {
@@ -434,7 +434,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             if (!empty($status)) {
                 $fg_color = Toolbox::getFgColor($data['color']);
                 $status_badge_style = "background-color:{$data['color']}; color:{$fg_color};";
-                $status = '<span class="badge" style="' . $status_badge_style . '">' . htmlspecialchars($data['sname']) . '</span>';
+                $status = '<span class="badge" style="' . $status_badge_style . '">' . htmlescape($data['sname']) . '</span>';
             }
 
             $entries[] = [

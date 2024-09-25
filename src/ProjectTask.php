@@ -1354,7 +1354,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 $header    .= "</th>";
             }
             foreach ($columns as $key => $val) {
-                $val = htmlspecialchars($val);
+                $val = htmlescape($val);
 
                 // Non order column
                 if ($key[0] == '_') {
@@ -1555,7 +1555,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                              Html::showMassiveActionCheckBox('ProjectTaskTeam', $data["id"]);
                              echo "</td>";
                         }
-                        echo "<td>" . htmlspecialchars($item->getTypeName(1)) . "</td>";
+                        echo "<td>" . htmlescape($item->getTypeName(1)) . "</td>";
                         echo "<td>" . $item->getLink() . "</td>";
                         echo "</tr>";
                     }
@@ -1748,7 +1748,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'colspan' => 4,
                         'content' => sprintf(
                             '<a href="%s">%s</a>',
-                            htmlspecialchars(self::getSearchURL() . '?' . Toolbox::append_params($options)),
+                            htmlescape(self::getSearchURL() . '?' . Toolbox::append_params($options)),
                             Html::makeTitle(__('Ongoing projects tasks'), $displayed_row_count, count($projecttasks_id))
                         ),
                     ]
@@ -1793,9 +1793,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'content' => $state !== false
                             ? sprintf(
                                 '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
-                                htmlspecialchars($state->fields['color']),
-                                htmlspecialchars($state->fields['color']),
-                                htmlspecialchars($state->fields['name']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['name']),
                             )
                             : '',
                     ],

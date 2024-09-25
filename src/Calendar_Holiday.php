@@ -124,8 +124,8 @@ class Calendar_Holiday extends CommonDBRelation
                 'id' => $data['linkid'],
                 'name' => sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(Holiday::getFormURLWithID($data['id'])),
-                    htmlspecialchars($data['name'])
+                    htmlescape(Holiday::getFormURLWithID($data['id'])),
+                    htmlescape($data['name'])
                 ),
                 'begin' => $data['begin_date'],
                 'end' => $data['end_date'],

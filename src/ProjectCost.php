@@ -276,7 +276,7 @@ class ProjectCost extends CommonDBChild
         Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . htmlspecialchars(Budget::getTypeName(1)) . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . htmlescape(Budget::getTypeName(1)) . "</td>";
         echo "<td>";
         Budget::dropdown(['value' => $this->fields["budgets_id"]]);
         echo "</td></tr>";
@@ -344,14 +344,14 @@ class ProjectCost extends CommonDBChild
         }
         $total = 0;
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='5'>" . htmlspecialchars(self::getTypeName(count($iterator))) .
+        echo "<tr class='noHover'><th colspan='5'>" . htmlescape(self::getTypeName(count($iterator))) .
             "</th></tr>";
 
         if (count($iterator)) {
             echo "<tr><th>" . __s('Name') . "</th>";
             echo "<th>" . __s('Begin date') . "</th>";
             echo "<th>" . __s('End date') . "</th>";
-            echo "<th>" . htmlspecialchars(Budget::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlescape(Budget::getTypeName(1)) . "</th>";
             echo "<th>" . _sn('Cost', 'Costs', 1) . "</th>";
             echo "</tr>";
 

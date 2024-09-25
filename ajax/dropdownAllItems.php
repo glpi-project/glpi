@@ -115,7 +115,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];
         }
 
-        $name = htmlspecialchars($_POST["name"]);
+        $name = htmlescape($_POST["name"]);
         Ajax::updateItemOnSelectEvent(
             $field_id,
             "showItemSpecificity_" . $name . "$rand",

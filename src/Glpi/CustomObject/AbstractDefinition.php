@@ -364,7 +364,7 @@ abstract class AbstractDefinition extends CommonDBTM
         if (array_key_exists('system_name', $input)) {
             if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         __('System name')
                     )),
@@ -374,7 +374,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 $has_errors = true;
             } else if (in_array($input['system_name'], static::getDefinitionManagerClass()::getInstance()->getReservedSystemNames(), true)) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The system name must not be the reserved word "%s".'),
                         $input['system_name']
                     )),
@@ -395,7 +395,7 @@ abstract class AbstractDefinition extends CommonDBTM
         if (array_key_exists('profiles', $input)) {
             if (!$this->validateProfileArray($input['profiles'])) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         _n('Profile', 'Profiles', Session::getPluralNumber())
                     )),
@@ -411,7 +411,7 @@ abstract class AbstractDefinition extends CommonDBTM
         if (array_key_exists('translations', $input)) {
             if (!$this->validateTranslationsArray($input['translations'])) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         _n('Translation', 'Translations', Session::getPluralNumber())
                     )),
@@ -644,7 +644,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         switch ($field) {
             case 'icon':
-                $value = htmlspecialchars($values[$field]);
+                $value = htmlescape($values[$field]);
                 return sprintf('<i class="ti %s"></i>', $value);
             case 'translations':
                 $translations = json_decode($values[$field], associative: true);
@@ -681,7 +681,7 @@ TWIG,
 
         switch ($field) {
             case 'icon':
-                $value = htmlspecialchars($values[$field] ?? '');
+                $value = htmlescape($values[$field]);
                 return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                     {% import 'components/form/fields_macros.html.twig' as fields %}
                     {{ fields.dropdownWebIcons(name, value, '', {no_label: true, width: '200px'}) }}

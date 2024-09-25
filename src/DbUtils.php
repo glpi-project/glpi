@@ -1465,7 +1465,7 @@ final class DbUtils
                 $comment  = sprintf(
                     __('%1$s: %2$s') . "<br>",
                     "<span class='b'>" . __('Complete name') . "</span>",
-                    htmlspecialchars($name)
+                    htmlescape($name)
                 );
                 if ($table == Location::getTable()) {
                     $acomment = '';
@@ -1476,14 +1476,14 @@ final class DbUtils
                     $alias   = $result['alias'];
                     if (!empty($alias)) {
                         $name = $alias;
-                        $comment .= "<span class='b'>" . __s('Alias:') . "</span> " . htmlspecialchars($alias) . "<br/>";
+                        $comment .= "<span class='b'>" . __s('Alias:') . "</span> " . htmlescape($alias) . "<br/>";
                     }
                     if (!empty($code)) {
                         $name .= ' - ' . $code;
-                        $comment .= "<span class='b'>" . __s('Code:') . "</span> " . htmlspecialchars($code) . "<br/>";
+                        $comment .= "<span class='b'>" . __s('Code:') . "</span> " . htmlescape($code) . "<br/>";
                     }
                     if (!empty($address)) {
-                        $acomment .= htmlspecialchars($address);
+                        $acomment .= htmlescape($address);
                     }
                     if (
                         !empty($address) &&
@@ -1492,13 +1492,13 @@ final class DbUtils
                         $acomment .= '<br/>';
                     }
                     if (!empty($town)) {
-                        $acomment .= htmlspecialchars($town);
+                        $acomment .= htmlescape($town);
                     }
                     if (!empty($country)) {
                         if (!empty($town)) {
                             $acomment .= ' - ';
                         }
-                        $acomment .= htmlspecialchars($country);
+                        $acomment .= htmlescape($country);
                     }
                     if (trim($acomment) != '') {
                         $comment .= "<span class='b'>&nbsp;" . __s('Address:') . "</span> " . $acomment . "<br/>";
@@ -1769,14 +1769,14 @@ final class DbUtils
         $username = $this->formatUserName($id, $login, $realname, $firstname);
 
         if ($id <= 0 || !User::canView()) {
-            return htmlspecialchars($username);
+            return htmlescape($username);
         }
 
         return sprintf(
             '<a title="%s" href="%s">%s</a>',
-            htmlspecialchars($username),
+            htmlescape($username),
             User::getFormURLWithID($id),
-            htmlspecialchars($username)
+            htmlescape($username)
         );
     }
 
@@ -1819,8 +1819,8 @@ final class DbUtils
         if ($link == 1) {
             Toolbox::deprecated('Usage of `$link` parameter is deprecated. Use `getUserLink()` instead.');
             return $valid_user
-                ? sprintf('<a title="%s" href="%s">%s</a>', htmlspecialchars($username), User::getFormURLWithID($ID), htmlspecialchars($username))
-                : htmlspecialchars($username);
+                ? sprintf('<a title="%s" href="%s">%s</a>', htmlescape($username), User::getFormURLWithID($ID), htmlescape($username))
+                : htmlescape($username);
         }
 
         if ($link == 2) {
@@ -1848,14 +1848,14 @@ final class DbUtils
         $username = $this->getUserName($id);
 
         if (!is_int($id) || $id <= 0 || !User::canView()) {
-            return htmlspecialchars($username);
+            return htmlescape($username);
         }
 
         return sprintf(
             '<a title="%s" href="%s">%s</a>',
-            htmlspecialchars($username),
+            htmlescape($username),
             User::getFormURLWithID($id),
-            htmlspecialchars($username)
+            htmlescape($username)
         );
     }
 
