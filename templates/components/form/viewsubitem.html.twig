@@ -1,0 +1,78 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+<div id='{{ subitem_container_id }}'></div>
+<script>
+    $(() => {
+        function viewAddSubItem{{ rand }} (btn) {
+            {% do call('Ajax::updateItemJsCode', [
+                subitem_container_id,
+                config('root_doc') ~ '/ajax/viewsubitem.php',
+                {
+                    'type': type,
+                    'parenttype': parenttype,
+                    (items_id): id,
+                    'id': -1
+                }
+            ]) %}
+        }
+
+        {% if datatable_id is defined %}
+            $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
+                if ($(e.target).closest('td').find('.massive_action_checkbox').length > 0) {
+                    return;
+                }
+                const subitem_id = $(e.currentTarget).data('id');
+                if (subitem_id) {
+                    $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
+                        type: "{{ type|e('js') }}",
+                        parenttype: "{{ parenttype|e('js') }}",
+                        {{ items_id }}: {{ id }},
+                        id: subitem_id
+                    });
+                }
+            });
+        {% endif %}
+
+        $('#addsubitem{{ rand }}').on('click', (e) => {
+            viewAddSubItem{{ rand }}(e.target);
+        });
+    });
+</script>
+{% if cancreate %}
+    <div class="text-center mt-1 mb-3">
+        <button id="addsubitem{{ rand }}" type="button" class="btn btn-primary">
+            {{ add_new_label|default(__('Add')) }}
+        </button>
+    </div>
+{% endif %}

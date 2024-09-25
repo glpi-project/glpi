@@ -4482,7 +4482,7 @@ JAVASCRIPT
                 placeholder: {$placeholder},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 templateresult: {$templateresult},
-                templateselection: {$templateselection}
+                templateselection: {$templateselection},
             };
 JS;
 

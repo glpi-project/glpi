@@ -36,8 +36,13 @@
 namespace Glpi\Asset;
 
 use CommonGLPI;
+use Dropdown;
+use Gettext\Languages\Category as Language_Category;
+use Gettext\Languages\CldrData as Language_CldrData;
+use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -69,6 +74,12 @@ final class AssetDefinition extends AbstractDefinition
         return sprintf('asset_%s', strtolower($this->fields['system_name']));
     }
 
+    /**
+     * @var CustomFieldDefinition[]|null
+     * @see self::getCustomFieldDefinitions()
+     */
+    private ?array $custom_field_definitions = null;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Asset definition', 'Asset definitions', $nb);
@@ -85,10 +96,12 @@ final class AssetDefinition extends AbstractDefinition
             $capacities_count   = 0;
             $profiles_count     = 0;
             $translations_count = 0;
+            $fields_count = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $capacities_count   = count($item->getDecodedCapacitiesField());
                 $profiles_count     = count(array_filter($item->getDecodedProfilesField()));
                 $translations_count = count($item->getDecodedTranslationsField());
+                $fields_count       = count($item->getCustomFieldDefinitions());
             }
             return [
                 1 => self::createTabEntry(
@@ -97,7 +110,12 @@ final class AssetDefinition extends AbstractDefinition
                     self::class,
                     'ti ti-adjustments'
                 ),
-                // 2 is reserved for "Fields"
+                2 => self::createTabEntry(
+                    CustomFieldDefinition::getTypeName(Session::getPluralNumber()),
+                    $fields_count,
+                    CustomFieldDefinition::class,
+                    CustomFieldDefinition::getIcon()
+                ),
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
                     $profiles_count,
@@ -124,7 +142,7 @@ final class AssetDefinition extends AbstractDefinition
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    // 2 is reserved for "Fields" form
+                    $item->showCustomFieldsForm();
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -158,6 +176,101 @@ final class AssetDefinition extends AbstractDefinition
                 'capacities' => $capacities,
             ]
         );
+    }
+
+    /**
+     * Show the custom fields tab including the list of custom fields and a form to add/edit them.
+     * @return void
+     */
+    private function showCustomFieldsForm(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (!$this->canViewItem()) {
+            return;
+        }
+
+        $canedit = $this->canUpdateItem();
+        $rand = mt_rand();
+        if ($canedit) {
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'cancreate' => CustomFieldDefinition::canCreate(),
+                'id'        => $this->fields['id'],
+                'rand'      => $rand,
+                'type'      => CustomFieldDefinition::class,
+                'parenttype' => CustomFieldDefinition::$itemtype,
+                'items_id'  => CustomFieldDefinition::$items_id,
+                'add_new_label' => __('Add a new field'),
+                'datatable_id' => 'datatable_customfields' . $rand,
+                'subitem_container_id' => 'customfield_form_container'
+            ]);
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'name', 'label', 'type', 'field_options', 'itemtype'],
+            'FROM' => CustomFieldDefinition::getTable(),
+            'WHERE' => [
+                self::getForeignKeyField() => $this->fields['id'],
+            ],
+        ]);
+
+        $entries = [];
+        $adm = AssetDefinitionManager::getInstance();
+        $field_types = $adm->getCustomFieldTypes();
+        $allowed_dropdown_itemtypes = $adm->getAllowedDropdownItemtypes(true);
+        foreach ($iterator as $data) {
+            $entry = [
+                'id' => $data['id'],
+                'itemtype' => CustomFieldDefinition::class,
+                'name' => $data['name'],
+                'label' => $data['label'],
+                'type' => in_array($data['type'], $field_types, true) ? $data['type']::getName() : NOT_AVAILABLE,
+                'dropdown_itemtype' => $data['itemtype'] !== '' ? ($allowed_dropdown_itemtypes[$data['itemtype']] ?? NOT_AVAILABLE) : NOT_AVAILABLE,
+                'row_class' => 'cursor-pointer'
+            ];
+
+            $field_options = json_decode($data['field_options'] ?? '[]', true) ?? [];
+            $flags = '';
+            if ($field_options['readonly'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Read-only') . '</span>';
+            }
+            if ($field_options['required'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Mandatory') . '</span>';
+            }
+            if ($field_options['multiple'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Multiple values') . '</span>';
+            }
+            $entry['flags'] = $flags;
+            $entries[] = $entry;
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'datatable_customfields' . $rand,
+            'is_tab' => true,
+            'nopager' => true,
+            'nosort' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'label' => __('Label'),
+                'type' => _n('Type', 'Types', 1),
+                'flags' => __('Flags'),
+                'dropdown_itemtype' => __('Item type'),
+            ],
+            'formatters' => [
+                'flags' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . str_replace('\\', '_', self::class) . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+            ],
+        ]);
     }
 
     public function prepareInputForAdd($input)
@@ -491,5 +604,37 @@ final class AssetDefinition extends AbstractDefinition
         }
 
         return $is_valid;
+    }
+
+    /**
+     * @return CustomFieldDefinition[]
+     */
+    public function getCustomFieldDefinitions(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if ($this->custom_field_definitions === null) {
+            $this->custom_field_definitions = [];
+            $it = $DB->request([
+                'FROM'   => CustomFieldDefinition::getTable(),
+                'WHERE'  => [
+                    self::getForeignKeyField() => $this->getID(),
+                ],
+            ]);
+
+            $available_types = AssetDefinitionManager::getInstance()->getCustomFieldTypes();
+            foreach ($it as $field) {
+                if (!in_array($field['type'], $available_types, true)) {
+                    continue;
+                }
+                $custom_field = new CustomFieldDefinition();
+                $custom_field->getFromResultSet($field);
+                $custom_field->post_getFromDB();
+                $this->custom_field_definitions[] = $custom_field;
+            }
+        }
+
+        return $this->custom_field_definitions;
     }
 }

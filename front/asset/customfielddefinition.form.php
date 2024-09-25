@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -31,9 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-import './commands.js';
-import './commands/select2.js';
-import './commands/form.js';
-import '@testing-library/cypress/add-commands';
-import './cypress-axe.js';
-import 'cypress-network-idle';
+use Glpi\Asset\CustomFieldDefinition;
+
+$custom_field = new CustomFieldDefinition();
+
+if (isset($_POST["add"])) {
+    $custom_field->check(-1, CREATE, $_POST);
+    $custom_field->add($_POST);
+} else if (isset($_POST["update"])) {
+    $custom_field->check($_POST['id'], UPDATE);
+    $custom_field->update($_POST);
+} else if (isset($_POST["purge"])) {
+    $custom_field->check($_POST['id'], PURGE);
+    $custom_field->delete(['id' => $_POST['id']]);
+}
+Html::back();

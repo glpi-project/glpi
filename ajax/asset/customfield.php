@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -6,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,9 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-import './commands.js';
-import './commands/select2.js';
-import './commands/form.js';
-import '@testing-library/cypress/add-commands';
-import './cypress-axe.js';
-import 'cypress-network-idle';
+use Glpi\Asset\CustomFieldDefinition;
+
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
+
+Session::checkRight(CustomFieldDefinition::$rightname, READ);
+
+if (isset($_POST['action'])) {
+    $field = new CustomFieldDefinition();
+    if ($_POST['action'] === 'get_default_custom_field') {
+        $field->fields = $_POST;
+        $field->fields['default_value'] = $field->getFieldType()->normalizeValue($_POST['default_value'] ?? null);
+        echo $field->getFieldType()->getDefaultValueFormInput();
+    } else if ($_POST['action'] === 'get_field_type_options') {
+        $field->getFromDB($_POST['customfielddefinitions_id']);
+        $field->fields['type'] = $_POST['type'];
+        $field_options = $field->getFieldType()->getOptions();
+        foreach ($field_options as $option) {
+            echo $option->getFormInput();
+        }
+    } else {
+        http_response_code(400);
+    }
+} else {
+    http_response_code(400);
+}
