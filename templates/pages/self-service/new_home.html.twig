@@ -34,25 +34,14 @@
 {% extends "layout/page_skeleton.html.twig" %}
 
 {% block content %}
-    <div class="d-flex flex-column" style="height: 100vh">
-        <div style="
-            background:
-                url('/pics/serfservice-portal-header-1.svg') no-repeat bottom right,
-                url('/pics/serfservice-portal-header-2.svg') no-repeat bottom left
-            ;
-            background-color: var(--glpi-helpdesk-header);
-            padding-top:150px;
-            padding-bottom:100px;
-        ">
+    <div class="d-flex flex-column helpdesk-home-container">
+        <div class="search-banner">
             <div class="container-narrow">
-                <h1
-                    class="text-dark text-center"
-                    style="font-size:3.7rem;"
-                >
+                <h1 class="text-dark text-center">
                     {{ __("How can we help you?") }}
                 </h1>
 
-                <div class="input-icon" style="padding: 3rem 0">
+                <div class="input-icon search-bar-container">
                     <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
@@ -65,11 +54,7 @@
                 </div>
             </div>
         </div>
-        <div style="
-            background: #f6f8fb;
-            padding-top:70px;
-            padding-bottom:70px;
-        ">
+        <div class="tiles-banner">
             <div class="container-xl">
                 <div class="row">
                     {% for card in cards %}
@@ -101,12 +86,7 @@
                 </div>
             </div>
         </div>
-        <div style="
-            background: #fff;
-            padding-top:70px;
-            padding-bottom:70px;
-            flex-grow: 1;
-        ">
+        <div class="tickets-banner">
             <div class="container-xl">
                 <ul class="nav nav-tabs home-tickets-tabs" role="tablist">
                     {% for tab in tabs %}

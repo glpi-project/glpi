@@ -120,3 +120,38 @@ header {
 .home-tickets-list  [data-searchopt-content-id] {
     display: none;
 }
+
+.helpdesk-home-container {
+    height: 100vh;
+
+    h1 {
+        font-size:3.7rem;
+    }
+
+    .search-bar-container {
+        padding: 3rem 0;
+    }
+}
+
+.search-banner {
+    background:
+        url('/pics/serfservice-portal-header-1.svg') no-repeat bottom right,
+        url('/pics/serfservice-portal-header-2.svg') no-repeat bottom left
+    ;
+    background-color: var(--glpi-helpdesk-header);
+    padding-top:150px;
+    padding-bottom:100px;
+}
+
+.tiles-banner {
+    background: #f6f8fb;
+    padding-top:70px;
+    padding-bottom:70px;
+}
+
+.tickets-banner {
+    background: #fff;
+    padding-top:70px;
+    padding-bottom:70px;
+    flex-grow: 1;
+}

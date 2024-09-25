@@ -431,6 +431,13 @@ body pre {
 
 // Needed as 'text-muted' may not always be readable depending on the menu
 // background color.
-.text-muted-menu {
-    color: var(--glpi-mainmenu-fg-muted) !important;
+.horizontal-layout  {
+    .text-muted-menu {
+        color: var(--glpi-mainmenu-fg-muted) !important;
+    }
+}
+.vertical-layout  {
+    .text-muted-menu {
+        color: var(--tblr-muted) !important;
+    }
 }
