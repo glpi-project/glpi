@@ -57,21 +57,23 @@ chdir(__DIR__);
 // Ensure that session is not used
 ini_set('session.use_cookies', 0);
 
+$escape_fct = fn ($str) => isCommandLine() ? $str : htmlspecialchars($str);
+
 // Try detecting if we are running with the root user (Not available on Windows)
 if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
     // Translation functions not available here
-    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
-    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+    echo "\t" . $escape_fct(__('WARNING: running as root is discouraged.')) . "\n";
+    echo "\t" . $escape_fct(__('You should run the script as the same user that your web server runs as to avoid file permissions being ruined.')) . "\n";
     if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
-        echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+        echo "\t" . $escape_fct(sprintf(__('Use %s option to bypass this limitation.'), '--allow-superuser')) . "\n";
         exit(1);
     }
 }
 
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
-    echo "\t" . sprintf(__s('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __s('Run the script as the same user that your web server runs as.') . "\n";
+    echo "\t" . $escape_fct(sprintf(__('ERROR: %s is not writable.'), GLPI_LOCK_DIR)) . "\n";
+    echo "\t" . $escape_fct(__('Run the script as the same user that your web server runs as.')) . "\n";
     exit(1);
 }
 
