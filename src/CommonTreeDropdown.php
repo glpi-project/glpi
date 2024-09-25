@@ -588,7 +588,7 @@ TWIG, $twig_params);
                 'itemtype' => static::class,
                 'id'       => $data['id'],
             ];
-            $name = htmlspecialchars($data['name']);
+            $name = htmlescape($data['name']);
             if (
                 (($fk === 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities'], true))
                 || !$entity_assign
@@ -596,7 +596,7 @@ TWIG, $twig_params);
             ) {
                 $entry['name'] = sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(static::getFormURLWithID($data['id'])),
+                    htmlescape(static::getFormURLWithID($data['id'])),
                     $name
                 );
             } else {

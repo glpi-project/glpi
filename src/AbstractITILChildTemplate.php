@@ -103,7 +103,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         $err_msg = null;
         if (!TemplateManager::validate($input['content'], $err_msg)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf('%s: %s', __('Content'), $err_msg)),
+                htmlescape(sprintf('%s: %s', __('Content'), $err_msg)),
                 false,
                 ERROR
             );

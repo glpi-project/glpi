@@ -149,13 +149,13 @@ class CableStrand extends CommonDropdown
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . _sn('Type', 'Types', 1) . "</th>";
-            echo "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
             echo "<th>" . __s('Name') . "</th>";
             echo "<th>" . __s('Inventory number') . "</th>";
             echo "<th>" . sprintf(__s('%s (%s)'), _sn('Associated item', 'Associated items', 1), __s('Endpoint B')) . "</th>";
-            echo "<th>" . sprintf(__s('%s (%s)'), htmlspecialchars(Socket::getTypeName(1)), __s('Endpoint B')) . "</th>";
+            echo "<th>" . sprintf(__s('%s (%s)'), htmlescape(Socket::getTypeName(1)), __s('Endpoint B')) . "</th>";
             echo "<th>" . sprintf(__s('%s (%s)'), _sn('Associated item', 'Associated items', 1), __s('Endpoint A')) . "</th>";
-            echo "<th>" . sprintf(__s('%s (%s)'), htmlspecialchars(Socket::getTypeName(1)), __s('Endpoint A')) . "</th>";
+            echo "<th>" . sprintf(__s('%s (%s)'), htmlescape(Socket::getTypeName(1)), __s('Endpoint A')) . "</th>";
             echo "</tr>";
 
             foreach ($iterator as $data) {
@@ -167,7 +167,7 @@ class CableStrand extends CommonDropdown
                 echo "<tr class='tab_bg_1'><td>" . $cable->getTypeName() . "</td>";
                 echo "<td>" . Dropdown::getDropdownName("glpi_entities", $cable->getEntityID()) . "</td>";
                 echo "<td>" . $cable->getLink() . "</td>";
-                echo "<td>" . (isset($cable->fields["otherserial"]) ? htmlspecialchars($cable->fields["otherserial"]) : "-") . "</td>";
+                echo "<td>" . (isset($cable->fields["otherserial"]) ? htmlescape($cable->fields["otherserial"]) : "-") . "</td>";
                 echo "<td>";
                 if ($cable->fields["items_id_endpoint_b"] > 0) {
                     $item_endpoint_b = getItemForItemtype($cable->fields["itemtype_endpoint_b"]);

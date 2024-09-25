@@ -130,7 +130,7 @@ class DocumentType extends CommonDropdown
             case 'icon':
                 if (!empty($values[$field])) {
                     return "&nbsp;<img style='vertical-align:middle;' alt='' src='" .
-                      htmlspecialchars($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
+                      htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

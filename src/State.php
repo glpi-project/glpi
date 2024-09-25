@@ -233,9 +233,9 @@ class State extends CommonTreeDropdown
             ];
 
 
-            $url = htmlspecialchars(AllAssets::getSearchURL()) . '?' . Toolbox::append_params($opt, '&amp;');
+            $url = htmlescape(AllAssets::getSearchURL()) . '?' . Toolbox::append_params($opt, '&amp;');
             $entry = [
-                'state' => '<a href="' . $url . '">' . htmlspecialchars($data["completename"]) . '</a>'
+                'state' => '<a href="' . $url . '">' . htmlescape($data["completename"]) . '</a>'
             ];
             foreach ($state_type as $itemtype) {
                 $count = $states[$data["id"]][$itemtype] ?? 0;
@@ -301,7 +301,7 @@ class State extends CommonTreeDropdown
         }
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
+                htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
                 false,
                 ERROR
             );
@@ -742,7 +742,7 @@ class State extends CommonTreeDropdown
     {
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__s('%1$s must be unique per level!'), static::getTypeName(1))),
+                htmlescape(sprintf(__s('%1$s must be unique per level!'), static::getTypeName(1))),
                 false,
                 ERROR
             );

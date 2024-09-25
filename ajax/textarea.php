@@ -44,6 +44,6 @@ Session::checkLoginUser();
 if (isset($_POST['name'])) {
     echo "<textarea " . (isset($_POST['rows']) ? " rows='" . $_POST['rows'] . "' " : "") . " " .
          (isset($_POST['cols']) ? " cols='" . $_POST['cols'] . "' " : "") . "  name='" . $_POST['name'] . "'>";
-    echo htmlspecialchars(rawurldecode(($_POST["data"])));
+    echo htmlescape(rawurldecode(($_POST["data"])));
     echo "</textarea>";
 }

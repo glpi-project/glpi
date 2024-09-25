@@ -117,7 +117,7 @@ class NetworkAlias extends FQDNLabel
         );
         echo "</td>";
         echo "<td>" . __s('Comments') . "</td>";
-        echo "<td><textarea class='form-control' rows='4' name='comment' >" . htmlspecialchars($this->fields["comment"]);
+        echo "<td><textarea class='form-control' rows='4' name='comment' >" . htmlescape($this->fields["comment"]);
         echo "</textarea></td>";
         echo "</tr>";
 
@@ -151,9 +151,9 @@ class NetworkAlias extends FQDNLabel
             return;
         }
 
-        $content = htmlspecialchars(self::getTypeName());
+        $content = htmlescape(self::getTypeName());
         if (isset($options['column_links'][$column_name])) {
-            $content = "<a href='" . htmlspecialchars($options['column_links'][$column_name]) . "'>$content</a>";
+            $content = "<a href='" . htmlescape($options['column_links'][$column_name]) . "'>$content</a>";
         }
         $this_header = $base->addHeader($column_name, $content, $super, $father);
         $this_header->setItemType('NetworkAlias');
@@ -212,8 +212,8 @@ class NetworkAlias extends FQDNLabel
                     $row = $row->createRow();
                 }
 
-                $content = '<a href="' . htmlspecialchars($alias->getLinkURL()) . '">'
-                    . htmlspecialchars($alias->getInternetName())
+                $content = '<a href="' . htmlescape($alias->getLinkURL()) . '">'
+                    . htmlescape($alias->getInternetName())
                     . '</a>';
                 $row->addCell($header, $content, $father, $alias);
             }
@@ -302,7 +302,7 @@ class NetworkAlias extends FQDNLabel
         }
         $header_end .= "<th>" . __s('Name') . "</th>";
         $header_end .= "<th>" . _sn('Internet domain', 'Internet domains', 1) . "</th>";
-        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -337,7 +337,7 @@ class NetworkAlias extends FQDNLabel
                 echo "};";
                 echo "</script>";
             }
-            echo "<a href='" . static::getFormURLWithID($data["id"]) . "'>" . htmlspecialchars($name) . "</a>";
+            echo "<a href='" . static::getFormURLWithID($data["id"]) . "'>" . htmlescape($name) . "</a>";
             echo "</td>";
             echo "<td class='center' $showviewjs>" . Dropdown::getDropdownName(
                 "glpi_fqdns",
@@ -393,7 +393,7 @@ class NetworkAlias extends FQDNLabel
 
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . htmlspecialchars(self::getTypeName(1)) . "</th><th>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th>" . htmlescape(self::getTypeName(1)) . "</th><th>" . __s('No item found') . "</th></tr>";
             echo "</table>";
         } else {
             Html::printAjaxPager(self::getTypeName($number), $start, $number);
@@ -444,10 +444,10 @@ class NetworkAlias extends FQDNLabel
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
                     echo "<td><a href='" . $alias->getFormURLWithID($data['alias_id']) . "'>" .
-                          htmlspecialchars($data['alias']) . "</a></td>";
-                    echo "<td><a href='" . $address->getLinkURL() . "'>" . htmlspecialchars($address->getInternetName()) .
+                          htmlescape($data['alias']) . "</a></td>";
+                    echo "<td><a href='" . $address->getLinkURL() . "'>" . htmlescape($address->getInternetName()) .
                     "</a></td>";
-                    echo "<td>" . htmlspecialchars($data['comment']) . "</td>";
+                    echo "<td>" . htmlescape($data['comment']) . "</td>";
                     echo "</tr>";
                 }
             }

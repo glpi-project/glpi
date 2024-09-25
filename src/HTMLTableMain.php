@@ -240,7 +240,7 @@ class HTMLTableMain extends HTMLTableBase
 
         echo "\n<table class='tab_cadre_fixehov'";
         if (!empty($p['html_id'])) {
-            echo " id='" . htmlspecialchars($p['html_id']) . "'";
+            echo " id='" . htmlescape($p['html_id']) . "'";
         }
         echo ">\n";
 
@@ -250,7 +250,7 @@ class HTMLTableMain extends HTMLTableBase
         }
 
         if (!empty($this->title)) {
-            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . htmlspecialchars($this->title) .
+            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . htmlescape($this->title) .
               "</th></tr>\n";
         }
 

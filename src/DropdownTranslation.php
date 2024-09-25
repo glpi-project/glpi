@@ -415,7 +415,7 @@ TWIG, $twig_params);
             if (($matching_field['type'] ?? null) === 'tinymce') {
                 $entry['value'] = '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
             } else {
-                $entry['value'] = htmlspecialchars($data['value']);
+                $entry['value'] = htmlescape($data['value']);
             }
             $entries[] = $entry;
         }

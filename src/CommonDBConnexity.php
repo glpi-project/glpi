@@ -319,7 +319,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             }
 
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(
+                htmlescape(sprintf(
                     __('Cannot update item %s #%s: not enough right on the parent(s) item(s)'),
                     $new_item->getTypeName(),
                     $new_item->getID()
@@ -637,13 +637,13 @@ abstract class CommonDBConnexity extends CommonDBTM
                                 $itemtype_2 = $itemtype::$itemtype_2;
                                 $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
                             }
-                            echo htmlspecialchars(sprintf(__('Select a peer for %s:'), $itemtype::getTypeName()));
+                            echo htmlescape(sprintf(__('Select a peer for %s:'), $itemtype::getTypeName()));
                             Dropdown::showFromArray($peer_field, $values);
                             echo "<br>\n";
                         } else if (!$itemtype::$mustBeAttached_1) {
-                              echo "<input type='hidden' name='" . htmlspecialchars($peer_field) . "' value='0'>";
+                              echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='0'>";
                         } else if (!$itemtype::$mustBeAttached_2) {
-                            echo "<input type='hidden' name='" . htmlspecialchars($peer_field) . "' value='1'>";
+                            echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='1'>";
                         }
                     }
                 }

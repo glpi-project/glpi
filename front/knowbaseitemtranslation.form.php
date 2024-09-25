@@ -54,14 +54,14 @@ if (isset($_POST['add'])) {
     $translation->check($_GET["id"], UPDATE);
     if ($translation->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item translation has been reverted to revision %s'),
                 $_GET['to_rev']
             ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item translation has not been reverted to revision %s'),
                 $_GET['to_rev']
             )),

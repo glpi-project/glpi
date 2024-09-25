@@ -304,7 +304,7 @@ class Item_Rack extends CommonDBRelation
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid-front"
                  gs-column="2"
-                 gs-max-row="' . htmlspecialchars($rack->fields['number_units'] + 1) . '">';
+                 gs-max-row="' . htmlescape($rack->fields['number_units'] + 1) . '">';
 
         if ($link->canCreate()) {
             echo '<div class="racks_add"></div>';
@@ -315,7 +315,7 @@ class Item_Rack extends CommonDBRelation
         }
         echo '   <div class="grid-stack-item lock-bottom"
                     gs-no-resize="true" gs-no-move="true"
-                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlspecialchars($rack->fields['number_units']) . '"></div>
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlescape($rack->fields['number_units']) . '"></div>
             </div>
             <ul class="indexes"></ul>';
         // append some spaces on bottom for having symetrical view between front and rear
@@ -333,7 +333,7 @@ class Item_Rack extends CommonDBRelation
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
                  gs-column="2"
-                 gs-max-row="' . htmlspecialchars($rack->fields['number_units'] + 1) . '">';
+                 gs-max-row="' . htmlescape($rack->fields['number_units'] + 1) . '">';
 
         if ($link->canCreate()) {
             echo '<div class="racks_add"></div>';
@@ -344,7 +344,7 @@ class Item_Rack extends CommonDBRelation
         }
         echo '   <div class="grid-stack-item lock-bottom"
                     gs-no-resize="true" gs-no-move="true"
-                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlspecialchars($rack->fields['number_units']) . '">
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlescape($rack->fields['number_units']) . '">
                </div>
             </div>
             <ul class="indexes"></ul>';
@@ -512,21 +512,21 @@ JAVASCRIPT;
         Html::progressBar('rack_space', [
             'create' => true,
             'percent' => $space_prct,
-            'message' => htmlspecialchars($space_prct . "%"),
+            'message' => htmlescape($space_prct . "%"),
         ]);
 
         echo "<h3>" . __s("Weight") . "</h3>";
         Html::progressBar('rack_weight', [
             'create' => true,
             'percent' => $weight_prct,
-            'message' => htmlspecialchars($weight . " / " . $rack->fields['max_weight'])
+            'message' => htmlescape($weight . " / " . $rack->fields['max_weight'])
         ]);
 
         echo "<h3>" . __s("Power") . "</h3>";
         Html::progressBar('rack_power', [
             'create' => true,
             'percent' => $power_prct,
-            'message' => htmlspecialchars($power . " / " . $rack->fields['max_power'])
+            'message' => htmlescape($power . " / " . $rack->fields['max_power'])
         ]);
         echo "</div>";
         echo "</div>";
@@ -647,7 +647,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_racks_id$rand'>" . htmlspecialchars(Rack::getTypeName(1)) . "</label></td>";
+        echo "<td><label for='dropdown_racks_id$rand'>" . htmlescape(Rack::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
         echo "</td>";
@@ -1085,7 +1085,7 @@ JAVASCRIPT;
         if (count($error_detected)) {
             foreach ($error_detected as $error) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars($error),
+                    htmlescape($error),
                     true,
                     ERROR
                 );

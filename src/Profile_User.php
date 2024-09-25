@@ -168,8 +168,8 @@ class Profile_User extends CommonDBRelation
             if ($canshowentity) {
                 $link = sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(Entity::getFormURLWithID($data["entities_id"])),
-                    htmlspecialchars($link)
+                    htmlescape(Entity::getFormURLWithID($data["entities_id"])),
+                    htmlescape($link)
                 );
             }
             $entry['entity'] = $link;
@@ -177,11 +177,11 @@ class Profile_User extends CommonDBRelation
             if (Profile::canView()) {
                 $profile_name = sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(Profile::getFormURLWithID($data['id'])),
-                    htmlspecialchars($data['name'])
+                    htmlescape(Profile::getFormURLWithID($data['id'])),
+                    htmlescape($data['name'])
                 );
             } else {
-                $profile_name = htmlspecialchars($data['name']);
+                $profile_name = htmlescape($data['name']);
             }
 
             if ($data['is_dynamic'] || $data['is_recursive']) {

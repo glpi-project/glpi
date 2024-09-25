@@ -52,7 +52,7 @@ if (isset($_POST['execute'])) {
     }
     if ($name) {
        //TRANS: %s is a task name
-        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Task %s executed'), $name)));
+        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Task %s executed'), $name)));
     }
     Html::back();
 } else if (isset($_POST["update"])) {

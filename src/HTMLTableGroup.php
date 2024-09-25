@@ -206,7 +206,7 @@ class HTMLTableGroup extends HTMLTableBase
                 $p['display_title_for_each_group']
                 && !empty($this->content)
             ) {
-                echo "\t<tbody><tr><th colspan='$totalNumberOfColumn'>" . htmlspecialchars($this->content) .
+                echo "\t<tbody><tr><th colspan='$totalNumberOfColumn'>" . htmlescape($this->content) .
                  "</th></tr></tbody>\n";
             }
 

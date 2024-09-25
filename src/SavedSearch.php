@@ -506,7 +506,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     && Session::getCurrentInterface() != "helpdesk"
                 ) {
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
+                        htmlescape(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
                         false,
                         ERROR
                     );

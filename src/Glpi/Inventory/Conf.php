@@ -622,7 +622,7 @@ class Conf extends CommonGLPI
                 echo \Rule::createTabEntry(sprintf(
                     "<a href='%s'>%s</a>",
                     $rules::getSearchURL(),
-                    \htmlspecialchars($collection->getTitle())
+                    \htmlescape($collection->getTitle())
                 ), 0, \Rule::getType());
                 echo "</td>";
             }
@@ -634,7 +634,7 @@ class Conf extends CommonGLPI
             echo \NetworkPort::createTabEntry(sprintf(
                 "<a href='%s'>%s</a>",
                 NetworkPortType::getSearchURL(),
-                \htmlspecialchars(NetworkPortType::getTypeName())
+                \htmlescape(NetworkPortType::getTypeName())
             ), 0, \NetworkPort::getType());
             echo "</td>";
             echo "</tr>";
@@ -1087,7 +1087,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                htmlspecialchars($msg),
+                htmlescape($msg),
                 false,
                 WARNING
             );
@@ -1141,7 +1141,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                htmlspecialchars($msg),
+                htmlescape($msg),
                 false,
                 WARNING
             );

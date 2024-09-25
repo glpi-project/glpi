@@ -136,8 +136,8 @@ class NetworkPortConnectionLog extends CommonDBChild
 
                 $cport_link = sprintf(
                     '<a href="%1$s">%2$s</a>',
-                    htmlspecialchars($cport::getFormURLWithID($cport->fields['id'])),
-                    htmlspecialchars(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
+                    htmlescape($cport::getFormURLWithID($cport->fields['id'])),
+                    htmlescape(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
 
                 $entries = [

@@ -81,7 +81,7 @@ switch ($action) {
     case "download":
         echo "<div class='center'>";
         $itemtype = $_REQUEST['itemtype'];
-        echo "<a href='" . htmlspecialchars($itemtype::getSearchURL()) . "'>" . __s('Back') . "</a>";
+        echo "<a href='" . htmlescape($itemtype::getSearchURL()) . "'>" . __s('Back') . "</a>";
         echo "</div>";
         Html::redirect("rule.backup.php?action=export&itemtype=" . urlencode($_REQUEST['itemtype']));
         // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning

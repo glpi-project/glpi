@@ -85,7 +85,7 @@ if (
 
             if (isset($_POST['withlink']) && $link !== null) {
                 echo "<script type='text/javascript' >";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
+                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlescape($link) . "');";
                 echo "</script>";
             }
             break;

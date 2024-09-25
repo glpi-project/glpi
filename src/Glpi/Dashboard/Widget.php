@@ -1657,7 +1657,7 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
-        $p['label'] = \htmlspecialchars($p['label'] ?? '');
+        $p['label'] = \htmlescape($p['label']);
 
         $id = "search-table-" . $p['rand'];
 
@@ -1668,7 +1668,7 @@ HTML;
         $fg_color2 = Toolbox::getFgColor($p['color'], 5);
 
         $href = strlen($p['url'])
-            ? \sprintf('href="%s"', \htmlspecialchars($p['url']))
+            ? \sprintf('href="%s"', \htmlescape($p['url']))
             : "";
 
         $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
