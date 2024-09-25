@@ -51,8 +51,6 @@ final class HomeController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        $_ENV['extra_css_files'] = ['css/helpdesk_home.scss'];
-
         // Compute cards, will be handled by a service in later iterations (with a proper Card object).
         $cards = [
             [
@@ -119,6 +117,7 @@ final class HomeController extends AbstractController
         // the original file yet.
         return $this->render('pages/self-service/new_home.html.twig', [
             'title' => __("Home"),
+            'menu'  => ['helpdesk-home'],
             'cards' => $cards,
             'tabs'  => $tabs,
         ]);
