@@ -353,11 +353,7 @@ class MassiveAction
                         foreach ($POST['items'] as $itemtype => $ids) {
                             $this->nb_items += count($ids);
                         }
-                        if (isset($_SERVER['HTTP_REFERER'])) {
-                            $this->redirect = $_SERVER['HTTP_REFERER'];
-                        } else {
-                            $this->redirect = $CFG_GLPI['root_doc'] . "/front/central.php";
-                        }
+                        $this->redirect = Html::getBackUrl();
                     // Don't display progress bars if delay is less than 1 second
                         $this->display_progress_bars = false;
                         break;
