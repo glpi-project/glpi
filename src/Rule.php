@@ -902,7 +902,7 @@ class Rule extends CommonDBTM
         $rand = mt_rand();
 
         $plugin = isPluginItemType(static::class);
-        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? Plugin::getWebDir($plugin['plugin'], false) : '');
+        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? "/plugins/{$plugin['plugin']}" : '');
 
         $add_buttons = [];
         if (!$new_item && $canedit) {

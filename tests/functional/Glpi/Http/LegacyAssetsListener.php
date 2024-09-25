@@ -96,6 +96,13 @@ class LegacyAssetsListener extends \GLPITestCase
                     ],
                 ],
             ],
+            'marketplace' => [
+                'anotherplugin' => [
+                    'public' => [
+                        'resources.json' => '["b","c","d"]',
+                    ],
+                ],
+            ],
             'public' => [
                 'fonts' => [
                     // see https://en.wikipedia.org/wiki/List_of_file_signatures
@@ -110,87 +117,94 @@ class LegacyAssetsListener extends \GLPITestCase
         vfsStream::setup('glpi', null, $structure);
 
         // HTML file
-        yield [
+        yield '/docs/index.html' => [
             'path'  => '/docs/index.html',
             'body'  => $structure['docs']['index.html'],
             'type'  => 'text/html',
         ];
-        yield [
+        yield '/docs/page.htm' => [
             'path'  => '/docs/page.htm',
             'body'  => $structure['docs']['page.htm'],
             'type'  => 'text/html',
         ];
 
         // CSS file
-        yield [
+        yield '/css/test.css' => [
             'path'  => '/css/test.css',
             'body'  => $structure['css']['test.css'],
             'type'  => 'text/css',
         ];
 
         // JS file
-        yield [
+        yield '/js/scripts.js' => [
             'path'  => '/js/scripts.js',
             'body'  => $structure['js']['scripts.js'],
             'type'  => 'application/javascript',
         ];
 
         // GIF file
-        yield [
+        yield '/media/Blank.gif' => [
             'path'  => '/media/Blank.gif',
             'body'  => $structure['media']['Blank.gif'],
             'type'  => 'image/gif',
         ];
 
         // JPG file
-        yield [
+        yield '/media/Blank.jpeg' => [
             'path'  => '/media/Blank.jpeg',
             'body'  => $structure['media']['Blank.jpeg'],
             'type'  => 'image/jpeg',
         ];
 
         // PNG file
-        yield [
+        yield '/media/Empty.png' => [
             'path'  => '/media/Empty.png',
             'body'  => $structure['media']['Empty.png'],
             'type'  => 'image/png',
         ];
 
         // SVG file
-        yield [
+        yield '/media/Sq_blank.svg' => [
             'path'  => '/media/Sq_blank.svg',
             'body'  => $structure['media']['Sq_blank.svg'],
             'type'  => 'image/svg+xml',
         ];
 
-        // JSON file
-        yield [
+        // JSON file from a plugin located in `/plugins`
+        yield '/plugins/myplugin/public/resources.json' => [
             'path'  => '/plugins/myplugin/public/resources.json',
             'body'  => $structure['plugins']['myplugin']['public']['resources.json'],
             'type'  => 'application/json',
         ];
 
+        // JSON file from a plugin located in `/marketplace` but accessed with `/plugins`
+        yield '/plugins/anotherplugin/public/resources.json' => [
+            'path'  => '/plugins/anotherplugin/public/resources.json',
+            'body'  => $structure['marketplace']['anotherplugin']['public']['resources.json'],
+            'type'  => 'application/json',
+        ];
+
         // EOT/OTF file
-        yield [
+        yield '/public/fonts/myfont.eot' => [
             'path'  => '/public/fonts/myfont.eot',
             'body'  => $structure['public']['fonts']['myfont.eot'],
             'type'  => 'application/vnd.ms-opentype',
         ];
-        yield [
+        yield '/public/fonts/myfont.otf' => [
             'path'  => '/public/fonts/myfont.otf',
             'body'  => $structure['public']['fonts']['myfont.otf'],
             'type'  => 'application/vnd.ms-opentype',
         ];
 
         // WOFF file
-        yield [
+        yield '/public/fonts/myfont.woff' => [
             'path'  => '/public/fonts/myfont.woff',
             'body'  => $structure['public']['fonts']['myfont.woff'],
             'type'  => 'font/woff',
         ];
 
         // WOFF2 file
-        yield [
+        yield '/public/fonts/myfont.woff2' => [
             'path'  => '/public/fonts/myfont.woff2',
             'body'  => $structure['public']['fonts']['myfont.woff2'],
             'type'  => 'font/woff2',
@@ -202,7 +216,10 @@ class LegacyAssetsListener extends \GLPITestCase
      */
     public function testServeLegacyAssetsResponse(string $path, ?string $body, string $type): void
     {
-        $this->newTestedInstance(vfsStream::url('glpi'));
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
 
         $request = new Request();
         $request->server->set('SCRIPT_NAME', '/index.php');
@@ -416,27 +433,25 @@ class LegacyAssetsListener extends \GLPITestCase
             $disallowed_plugins_static_paths
         );
 
-        foreach (['/marketplace/anyname', '/plugins/myplugin'] as $plugin_basepath) {
-            foreach ($served_plugins_paths as $path) {
-                yield $plugin_basepath . $path => [
-                    'path'      => $plugin_basepath . $path,
-                    'is_served' => true,
-                ];
-                yield $plugin_basepath . '/' . $path => [
-                    'path'      => $plugin_basepath . '/' . $path, // extra leading slash should not change result
-                    'is_served' => true,
-                ];
-            }
-            foreach ($ignored_glpi_paths as $path) {
-                yield $plugin_basepath . $path => [
-                    'path'      => $plugin_basepath . $path,
-                    'is_served' => false,
-                ];
-                yield $plugin_basepath . '/' . $path => [
-                    'path'      => $plugin_basepath . '/' . $path, // extra leading slash should not change result
-                    'is_served' => false,
-                ];
-            }
+        foreach ($served_plugins_paths as $path) {
+            yield '/plugins/myplugin' . $path => [
+                'path'      => '/plugins/myplugin' . $path,
+                'is_served' => true,
+            ];
+            yield '/plugins/myplugin' . '/' . $path => [
+                'path'      => '/plugins/myplugin' . '/' . $path, // extra leading slash should not change result
+                'is_served' => true,
+            ];
+        }
+        foreach ($ignored_glpi_paths as $path) {
+            yield '/plugins/myplugin' . $path => [
+                'path'      => '/plugins/myplugin' . $path,
+                'is_served' => false,
+            ];
+            yield '/plugins/myplugin' . '/' . $path => [
+                'path'      => '/plugins/myplugin' . '/' . $path, // extra leading slash should not change result
+                'is_served' => false,
+            ];
         }
     }
 
@@ -463,7 +478,10 @@ class LegacyAssetsListener extends \GLPITestCase
 
         vfsStream::setup('glpi', null, $structure);
 
-        $this->newTestedInstance(vfsStream::url('glpi'));
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
 
         $request = new Request();
         $request->server->set('SCRIPT_NAME', '/index.php');
@@ -478,5 +496,94 @@ class LegacyAssetsListener extends \GLPITestCase
             $this->object($response->getFile())->isInstanceOf(File::class);
             $this->string($file->getContent())->isEqualTo($random);
         }
+    }
+
+    public function testServeLegacyAssetsFromDeprecatedMarketplacePath(): void
+    {
+        $structure = [
+            'marketplace' => [
+                'myplugin' => [
+                    'public' => [
+                        'resources.json' => '["b","c","d"]',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $request = new Request();
+        $request->server->set('SCRIPT_NAME', '/index.php');
+        $request->server->set('REQUEST_URI', '/marketplace/myplugin/public/resources.json');
+
+        $response = null;
+        $this->when(
+            function () use ($request, &$response) {
+                $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+            }
+        )->error
+            ->withMessage('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.')
+            ->withType(E_USER_DEPRECATED)
+            ->exists();
+
+        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $file = $response->getFile();
+        $this->object($response->getFile())->isInstanceOf(File::class);
+        $this->string($file->getContent())->isEqualTo('["b","c","d"]');
+    }
+
+    public function testServeLegacyAssetsFromPluginInMultipleDirectories(): void
+    {
+        $structure = [
+            'marketplace' => [
+                'myplugin' => [
+                    'public' => [
+                        'resources.json' => '["b","c","d"]',
+                    ],
+                ],
+            ],
+            'plugins' => [
+                'myplugin' => [
+                    'public' => [
+                        'resources.json' => '[1, 2, 3]',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $request = new Request();
+        $request->server->set('SCRIPT_NAME', '/index.php');
+        $request->server->set('REQUEST_URI', '/plugins/myplugin/public/resources.json');
+
+        // Plugin inside `/marketplace` should be served when `/marketplace` is dir is declared first
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $file = $response->getFile();
+        $this->object($response->getFile())->isInstanceOf(File::class);
+        $this->string($file->getContent())->isEqualTo('["b","c","d"]');
+
+        // Plugin inside `/plugins` should be served when `/plugins` is dir is declared first
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/plugins'), vfsStream::url('glpi/marketplace')]
+        );
+
+        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $file = $response->getFile();
+        $this->object($response->getFile())->isInstanceOf(File::class);
+        $this->string($file->getContent())->isEqualTo('[1, 2, 3]');
     }
 }

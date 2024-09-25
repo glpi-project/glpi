@@ -64,8 +64,11 @@ class Report extends CommonGLPI
 
     public static function getReports(): array
     {
-        /** @var array $PLUGIN_HOOKS */
-        global $PLUGIN_HOOKS;
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         // Report generation
         // Default Report included
@@ -115,10 +118,9 @@ class Report extends CommonGLPI
                 }
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
-                        $plugin_path = Plugin::getWebDir($plug);
                         $report_list[Plugin::getInfo($plug, 'name')][$page] = [
                             'name' => $name,
-                            'file' => $plugin_path . '/' . $page,
+                            'file' => "{$CFG_GLPI['root_doc']}/plugins/{$plug}/{$page}",
                             'plug' => $plug
                         ];
                     }

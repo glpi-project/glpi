@@ -43,19 +43,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacyRouterListener implements EventSubscriberInterface
+final class LegacyRouterListener implements EventSubscriberInterface
 {
     use LegacyRouterTrait;
 
-    /**
-     * GLPI root directory.
-     */
-    protected string $glpi_root;
-
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] private string $projectDir,
+        #[Autowire('%kernel.project_dir%')] string $glpi_root,
+        array $plugin_directories = PLUGINS_DIRECTORIES,
     ) {
-        $this->glpi_root = $projectDir;
+        $this->glpi_root = $glpi_root;
+        $this->plugin_directories = $plugin_directories;
     }
 
     public static function getSubscribedEvents(): array
@@ -90,19 +87,17 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
          */
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
-        $path = $this->getTargetPath($path);
-
         $response = $this->handleRedirects($path, $uri_prefix);
         if ($response) {
             return $response;
         }
 
-        $target_file = $this->glpi_root . $path;
+        $target_file = $this->getTargetFile($path);
 
         if (
-            !$this->isTargetAPhpScript($path)
+            $target_file === null
+            || !$this->isTargetAPhpScript($path)
             || !$this->isPathAllowed($path)
-            || !is_file($target_file)
         ) {
             // Let the previous router do the trick, it's fine.
             return null;
@@ -128,37 +123,6 @@ final readonly class LegacyRouterListener implements EventSubscriberInterface
         $request->attributes->set(LegacyFileLoadController::REQUEST_FILE_KEY, $target_file);
 
         return null;
-    }
-
-    private function getTargetPath(string $init_path): string
-    {
-        $path = '';
-
-        // Parse URI to find requested script and PathInfo
-        $slash_pos = 0;
-        while ($slash_pos !== false && ($dot_pos = strpos($init_path, '.', $slash_pos)) !== false) {
-            $slash_pos = strpos($init_path, '/', $dot_pos);
-            $filepath = substr($init_path, 0, $slash_pos !== false ? $slash_pos : strlen($init_path));
-            if (is_file($this->glpi_root . $filepath)) {
-                $path = $filepath;
-                break;
-            }
-        }
-
-        if ($path === '') {
-            // Fallback to requested URI
-            $path = $init_path;
-
-            // Clean trailing `/`.
-            $path = rtrim($path, '/');
-
-            // If URI matches a directory path, consider `index.php` is the requested script.
-            if (is_dir($this->glpi_root . $path) && is_file($this->glpi_root . $path . '/index.php')) {
-                $path .= '/index.php';
-            }
-        }
-
-        return $path;
     }
 
     /**

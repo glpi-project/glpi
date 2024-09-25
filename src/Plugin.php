@@ -2482,8 +2482,7 @@ class Plugin extends CommonDBTM
                     && isset($PLUGIN_HOOKS['config_page'][$directory])
                 ) {
                    // Configuration button for activated or configurable plugins
-                    $plugin_dir = self::getWebDir($directory, true);
-                    $config_url = "$plugin_dir/" . $PLUGIN_HOOKS['config_page'][$directory];
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="fas fa-wrench fa-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -2665,8 +2664,7 @@ TWIG;
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                     && isset($PLUGIN_HOOKS['config_page'][$directory])
                 ) {
-                    $plugin_dir = self::getWebDir($directory, true);
-                    $config_url = "$plugin_dir/" . $PLUGIN_HOOKS['config_page'][$directory];
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
                     return "<a href='$config_url'><span class='b'>$value</span></a>";
                 } else {
                     return $value;
@@ -2759,19 +2757,17 @@ TWIG;
      * @param bool $use_url_base if true, url_base instead root_doc
      *
      * @return false|string the web path
+     *
+     * @deprecated 11.0
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $directory = self::getPhpDir($plugin_key, false);
+        Toolbox::deprecated('All plugins resource should be accessed from the `/plugins/` path.');
 
-        if ($directory === false) {
-            return false;
-        }
-
-        $directory = ltrim($directory, '/\\');
+        $directory = '/plugins/' . $plugin_key;
 
         if ($full) {
             $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];

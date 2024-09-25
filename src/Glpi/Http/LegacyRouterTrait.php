@@ -34,10 +34,23 @@
 
 namespace Glpi\Http;
 
+use Plugin;
 use Symfony\Component\HttpFoundation\Request;
+use Toolbox;
 
 trait LegacyRouterTrait
 {
+    /**
+     * GLPI root directory.
+     */
+    protected string $glpi_root;
+
+    /**
+     * GLPI plugins directories.
+     * @var string[]
+     */
+    protected array $plugin_directories;
+
     protected function isTargetAPhpScript(string $path): bool
     {
         // Check extension on path directly to be able to recognize that target is supposed to be a PHP
@@ -60,7 +73,7 @@ trait LegacyRouterTrait
             // old-styles CLI tools (should anyway not be present in dist)
             '^\/tools\/',
             // `node_modules` and `vendor`, in GLPI root directory or in any plugin root directory
-            '^(\/(marketplace|plugins)\/[^\/]+)?\/(node_modules|vendor)\/',
+            '^(\/plugins\/[^\/]+)?\/(node_modules|vendor)\/',
         ];
 
         if (preg_match('/(' . implode('|', $excluded_path_patterns) . ')/i', $path) === 1) {
@@ -100,7 +113,7 @@ trait LegacyRouterTrait
                 . '('
                 . sprintf('\/(%s)', implode('|', $glpi_path_patterns))
                 . '|'
-                . sprintf('\/(marketplace|plugins)\/[^\/]+\/(%s)', implode('|', $plugins_path_patterns))
+                . sprintf('\/plugins\/[^\/]+\/(%s)', implode('|', $plugins_path_patterns))
                 . ')'
                 . '/';
             return preg_match($allowed_path_pattern, $path) === 1;
@@ -109,7 +122,7 @@ trait LegacyRouterTrait
         // Check rules related to non-PHP files.
         $allowed_path_pattern = [
             // files in `/public` directories
-            '^(\/(marketplace|plugins)\/[^\/]+)?\/public\/',
+            '^(\/plugins\/[^\/]+)?\/public\/',
             // static pages
             '\.html?$',
             // JS/CSS files
@@ -127,12 +140,36 @@ trait LegacyRouterTrait
             // webfonts
             '\.(eot|otf|ttf|woff2?)$',
             // JSON files in plugins (except `composer.json`, `package.json` and `package-lock.json` located on root)
-            '^\/(marketplace|plugins)\/[^\/]+\/(?!composer\.json|package\.json|package-lock\.json).+\.json$',
+            '^\/plugins\/[^\/]+\/(?!composer\.json|package\.json|package-lock\.json).+\.json$',
             // favicon
             '(^|\/)favicon\.ico$',
         ];
 
         return preg_match('/(' . implode('|', $allowed_path_pattern) . ')/i', $path) === 1;
+    }
+
+    protected function getTargetFile(string $path): ?string
+    {
+        $path_matches = [];
+        if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $path, $path_matches) === 1) {
+            $plugin_dir = null;
+            foreach ($this->plugin_directories as $plugins_directory) {
+                $to_check = $plugins_directory . DIRECTORY_SEPARATOR . $path_matches['plugin_key'];
+                if (is_dir($to_check)) {
+                    $plugin_dir = $to_check;
+                    break;
+                }
+            }
+            if ($plugin_dir === null) {
+                // The requested plugin does not exist, the target file does not exists.
+                return null;
+            }
+            $filename = $plugin_dir . $path_matches['plugin_resource'];
+        } else {
+            $filename = $this->glpi_root . $path;
+        }
+
+        return is_file($filename) ? $filename : null;
     }
 
     protected function extractPathAndPrefix(Request $request): array
@@ -163,6 +200,44 @@ trait LegacyRouterTrait
             '',
             parse_url($request_uri, PHP_URL_PATH)
         );
+
+        // Normalize plugins paths.
+        // All plugins resources should now be accessed using the `/plugins/${plugin_key}/${resource_path}`.
+        if (str_starts_with($path, '/marketplace/')) {
+            $path = preg_replace(
+                '#^/marketplace/#',
+                '/plugins/',
+                parse_url($request_uri, PHP_URL_PATH)
+            );
+            Toolbox::deprecated('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.');
+        }
+
+        // Parse URI to find requested script and PathInfo
+        $init_path = $path;
+        $path = '';
+
+        $slash_pos = 0;
+        while ($slash_pos !== false && ($dot_pos = strpos($init_path, '.', $slash_pos)) !== false) {
+            $slash_pos = strpos($init_path, '/', $dot_pos);
+            $filepath = substr($init_path, 0, $slash_pos !== false ? $slash_pos : strlen($init_path));
+            if ($this->getTargetFile($filepath) !== null) {
+                $path = $filepath;
+                break;
+            }
+        }
+
+        if ($path === '') {
+            // Fallback to requested URI
+            $path = $init_path;
+
+            // Clean trailing `/`.
+            $path = rtrim($path, '/');
+
+            // If URI matches a directory path, consider `index.php` is the requested script.
+            if ($this->getTargetFile($path . '/index.php') !== null) {
+                $path .= '/index.php';
+            }
+        }
 
         return [$uri_prefix, $path];
     }
