@@ -411,7 +411,7 @@ class Html
 
 
     /**
-     * Redirection to $_SERVER['HTTP_REFERER'] page
+     * Redirect to the previous page.
      *
      * @return never
      **/
@@ -643,52 +643,84 @@ class Html
 
 
     /**
-     * Display a Link to the last page using http_referer if available else use history.back
+     * Display a Link to the last page.
      **/
     public static function displayBackLink()
     {
-        $url_referer = self::getBackUrl();
-        if ($url_referer !== false) {
-            echo '<a href="' . htmlspecialchars($url_referer) . '">' . __s('Back') . "</a>";
-        } else {
-            echo "<a href='javascript:history.back();'>" . __s('Back') . "</a>";
-        }
+        echo '<a href="' . htmlspecialchars(self::getBackUrl()) . '">' . __s('Back') . "</a>";
     }
 
     /**
-     * Return an url for getting back to previous page.
-     * Remove `forcetab` parameter if exists to prevent bad tab display
-     *
-     * @param string $url_in optional url to return (without forcetab param), if empty, we will user HTTP_REFERER from server
+     * Return an URL for getting back to previous page.
+     * Remove `forcetab` parameter if exists to prevent bad tab display.
+     * If the referer does not match an URL inside GLPI, return value will be the GLPI index page.
      *
      * @since 9.2.2
+     * @since 11.0.0 The `$url_in` parameter has been removed.
      *
-     * @return mixed [string|boolean] false, if failed, else the url string
+     * @return string|false Referer URL or false if referer URL is outside the GLPI path.
      */
-    public static function getBackUrl($url_in = "")
+    public static function getBackUrl()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $referer_url  = self::getRefererUrl();
+
+        if ($referer_url === null) {
+            return $CFG_GLPI['url_base'];
+        }
+
+        $referer_host = parse_url($referer_url, PHP_URL_HOST);
+        $referer_path = parse_url($referer_url, PHP_URL_PATH);
+
+        $glpi_host      = parse_url($CFG_GLPI['url_base'], PHP_URL_HOST);
+        $glpi_base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '/';
+
         if (
-            isset($_SERVER['HTTP_REFERER'])
-            && $url_in === ''
+            $referer_host !== $glpi_host
+            || !str_starts_with($referer_path, $glpi_base_path)
         ) {
-            $url_in = $_SERVER['HTTP_REFERER'];
+            return $CFG_GLPI['url_base'];
         }
-        if ($url_in !== '') {
-            $url = parse_url($url_in);
 
-            if (isset($url['query'])) {
-                $parameters = [];
-                parse_str($url['query'], $parameters);
-                unset($parameters['forcetab'], $parameters['tab_params']);
-                $new_query = http_build_query($parameters);
-                $url_out = str_replace($url['query'], $new_query, $url_in);
-                $url_out = rtrim($url_out, '?'); // remove `?` when there is no parameters
-                return $url_out;
-            }
+        $referer_query = parse_url($referer_url, PHP_URL_QUERY);
 
-            return $url_in;
+        if ($referer_query !== null) {
+            $parameters = [];
+            parse_str($referer_query, $parameters);
+            unset($parameters['forcetab'], $parameters['tab_params']);
+            $new_query = http_build_query($parameters);
+
+            $referer_url = str_replace($referer_query, $new_query, $referer_url);
+            $referer_url = rtrim($referer_url, '?'); // remove `?` when there is no parameters
+            return $referer_url;
         }
-        return false;
+
+        return $referer_url;
+    }
+
+    /**
+     * Return the referer URL.
+     * If the referer is invalid, return value will be null.
+     *
+     * @since 11.0.0
+     *
+     * @return string|null
+     */
+    public static function getRefererUrl(): ?string
+    {
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+
+        $referer_host = parse_url($referer, PHP_URL_HOST);
+        $referer_path = parse_url($referer, PHP_URL_PATH);
+
+        if ($referer_host === null || $referer_path === null) {
+            // Filter invalid referer.
+            return null;
+        }
+
+        return $referer;
     }
 
 
