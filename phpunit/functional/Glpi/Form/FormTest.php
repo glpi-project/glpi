@@ -106,6 +106,12 @@ class FormTest extends DbTestCase
                     123 => 'Dropdown 1',
                 ]
             ],
+            \Glpi\Form\QuestionType\QuestionTypeItem::class => [
+                'itemtype' => 'Computer',
+            ],
+            \Glpi\Form\QuestionType\QuestionTypeItemDropdown::class => [
+                'itemtype' => 'Location',
+            ],
         ];
 
         foreach ($questions as $type) {

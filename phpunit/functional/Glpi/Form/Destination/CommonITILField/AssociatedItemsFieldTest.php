@@ -361,18 +361,15 @@ final class AssociatedItemsFieldTest extends DbTestCase
         $monitors = $this->createMonitors(3);
 
         $builder = new FormBuilder();
-        $builder->addQuestion("Computer 1", QuestionTypeItem::class, [
+        $builder->addQuestion("Computer 1", QuestionTypeItem::class, $computers[0]->getID(), json_encode([
             'itemtype' => Computer::getType(),
-            'items_id' => $computers[0]->getID(),
-        ]);
-        $builder->addQuestion("Monitor 1", QuestionTypeItem::class, [
+        ]));
+        $builder->addQuestion("Monitor 1", QuestionTypeItem::class, $monitors[0]->getID(), json_encode([
             'itemtype' => Monitor::getType(),
-            'items_id' => $monitors[0]->getID(),
-        ]);
-        $builder->addQuestion("Computer 2", QuestionTypeItem::class, [
+        ]));
+        $builder->addQuestion("Computer 2", QuestionTypeItem::class, $computers[1]->getID(), json_encode([
             'itemtype' => Computer::getType(),
-            'items_id' => $computers[1]->getID(),
-        ]);
+        ]));
 
         $builder->addDestination(
             FormDestinationTicket::class,

@@ -290,12 +290,12 @@ final class ITILCategoryFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleITILCategoryQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, [
+        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, 0, json_encode([
             'itemtype' => ITILCategory::class,
-        ]);
-        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, [
+        ]));
+        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode([
             'itemtype' => ITILCategory::class,
-        ]);
+        ]));
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket",

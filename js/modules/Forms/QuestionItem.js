@@ -59,17 +59,17 @@ export class GlpiFormQuestionTypeItem {
 
     #updateItemsIdDropdownID(question_details) {
         const id = getUUID();
-        question_details.find('span[id^="show_default_value_items_id_"]')
-            .attr('id', `show_default_value_items_id_${id}`);
+        question_details.find('span[id^="show_default_value"]')
+            .attr('id', `show_default_value${id}`);
 
         // Replace all occurence of previous id by the new one in script tags
         question_details.find('div script').each((index, script) => {
             // Replace the old itemtype select id by the new one
-            const itemtype_select_id = question_details.find('select[name="default_value[itemtype]"]').attr('id');
-            script.text = script.text.replace(/dropdown_default_value_itemtype_[0-9]+/g, itemtype_select_id);
+            const itemtype_select_id = question_details.find('select[name="itemtype"]').attr('id');
+            script.text = script.text.replace(/dropdown_itemtype[0-9]+/g, itemtype_select_id);
 
             // Replace the old id by the new one
-            script.text = script.text.replace(/show_default_value_items_id_[0-9]+/g, `show_default_value_items_id_${id}`);
+            script.text = script.text.replace(/show_default_value[0-9]+/g, `show_default_value${id}`);
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script

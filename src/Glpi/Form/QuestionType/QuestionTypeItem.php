@@ -104,14 +104,11 @@ class QuestionTypeItem extends AbstractQuestionType
      */
     public function getDefaultValueItemtype(?Question $question): ?string
     {
-        if (
-            $question !== null
-            && isset($question->fields['default_value'])
-        ) {
-            return json_decode($question->fields['default_value'], true)['itemtype'] ?? null;
+        if ($question === null) {
+            return null;
         }
 
-        return null;
+        return $question->getExtraDatas()['itemtype'] ?? null;
     }
 
     /**
@@ -122,24 +119,30 @@ class QuestionTypeItem extends AbstractQuestionType
      */
     public function getDefaultValueItemId(?Question $question): int
     {
-        if (
-            $question !== null
-            && isset($question->fields['default_value'])
-        ) {
-            return json_decode($question->fields['default_value'], true)['items_id'] ?? 0;
+        if ($question === null) {
+            return 0;
         }
 
-        return 0;
+        return (int) $question->fields['default_value'] ?? 0;
     }
 
     #[Override]
-    public function formatDefaultValueForDB(mixed $value): ?string
+    public function validateExtraDataInput(array $input): bool
     {
-        if (is_array($value)) {
-            return json_encode($value);
+        // Check if the itemtype is set
+        if (!isset($input['itemtype'])) {
+            return false;
         }
 
-        return null;
+        // Check if the itemtype is allowed
+        if (
+            $input['itemtype'] != '0'
+            && !in_array($input['itemtype'], array_merge(...array_values($this->getAllowedItemtypes())))
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     #[Override]
@@ -160,14 +163,17 @@ class QuestionTypeItem extends AbstractQuestionType
                     'display_emptychoice'            : true,
                     'default_itemtype'               : default_itemtype,
                     'default_items_id'               : default_items_id,
-                    'itemtype_name'                  : 'default_value[itemtype]',
-                    'items_id_name'                  : 'default_value[items_id]',
+                    'itemtype_name'                  : 'itemtype',
+                    'items_id_name'                  : 'default_value',
                     'width'                          : '100%',
                     'container_css_class'            : 'mt-2',
                     'no_sort'                        : true,
                     'aria_label'                     : itemtype_aria_label,
                     'specific_tags_items_id_dropdown': {
                         'aria-label': items_id_aria_label,
+                    },
+                    'add_data_attributes_itemtype_dropdown' : {
+                        'glpi-form-editor-specific-question-extra-data': '',
                     },
                 }
             ) }}

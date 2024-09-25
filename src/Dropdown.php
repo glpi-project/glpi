@@ -1619,6 +1619,7 @@ JAVASCRIPT;
         $params['width']               = '';
         $params['no_sort']             = false;
         $params['aria_label']          = '';
+        $params['add_data_attributes'] = '';
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1648,6 +1649,7 @@ JAVASCRIPT;
                 'init'                => $params['init'],
                 'width'               => $params['width'],
                 'aria_label'          => $params['aria_label'],
+                'add_data_attributes' => $params['add_data_attributes'],
             ]);
         }
         return 0;
@@ -1721,28 +1723,29 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $params = [
-            'itemtype_name'                   => 'itemtype',
-            'items_id_name'                   => 'items_id',
-            'itemtypes'                       => '',
-            'default_itemtype'                => 0,
-            'default_items_id'                => -1,
-            'entity_restrict'                 => -1,
-            'onlyglobal'                      => false,
-            'checkright'                      => false,
-            'showItemSpecificity'             => '',
-            'emptylabel'                      => self::EMPTY_VALUE,
-            'display_emptychoice'             => true,
-            'used'                            => [],
-            'ajax_page'                       => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
-            'display'                         => true,
-            'rand'                            => mt_rand(),
-            'itemtype_track_changes'          => false,
-            'init'                            => true,
-            'width'                           => '80%',
-            'container_css_class'             => '',
-            'no_sort'                         => false,
-            'aria_label'                      => '',
-            'specific_tags_items_id_dropdown' => [],
+            'itemtype_name'                         => 'itemtype',
+            'items_id_name'                         => 'items_id',
+            'itemtypes'                             => '',
+            'default_itemtype'                      => 0,
+            'default_items_id'                      => -1,
+            'entity_restrict'                       => -1,
+            'onlyglobal'                            => false,
+            'checkright'                            => false,
+            'showItemSpecificity'                   => '',
+            'emptylabel'                            => self::EMPTY_VALUE,
+            'display_emptychoice'                   => true,
+            'used'                                  => [],
+            'ajax_page'                             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'display'                               => true,
+            'rand'                                  => mt_rand(),
+            'itemtype_track_changes'                => false,
+            'init'                                  => true,
+            'width'                                 => '80%',
+            'container_css_class'                   => '',
+            'no_sort'                               => false,
+            'aria_label'                            => '',
+            'specific_tags_items_id_dropdown'       => [],
+            'add_data_attributes_itemtype_dropdown' => '',
         ];
 
         if (is_array($options) && count($options)) {
@@ -1763,6 +1766,7 @@ JAVASCRIPT;
             'width'               => $params['width'],
             'no_sort'             => $params['no_sort'],
             'aria_label'          => $params['aria_label'],
+            'add_data_attributes' => $params['add_data_attributes_itemtype_dropdown'],
         ]);
 
         $p_ajax = [
