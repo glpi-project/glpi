@@ -50,13 +50,13 @@ if (isset($_POST['type'], $_POST['end'])) {
     echo "<table style='width: 90%'>";
     switch ($_POST['type']) {
         case 'day':
-            echo "<tr><td>" . __('End date') . '</td><td>';
+            echo "<tr><td>" . __s('End date') . '</td><td>';
             Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
             echo "</td></tr>";
             break;
 
         case 'week':
-            echo "<tr><td>" . __('End date') . '</td><td>';
+            echo "<tr><td>" . __s('End date') . '</td><td>';
             Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
             echo "</td></tr></table>";
             echo "<table class='tab_glpi'>";

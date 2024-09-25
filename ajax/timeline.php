@@ -126,7 +126,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         exit();
     }
     if ($template === null) {
-        echo __('Access denied');
+        echo __s('Access denied');
         exit();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);

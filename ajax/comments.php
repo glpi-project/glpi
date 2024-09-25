@@ -84,9 +84,9 @@ if (
             echo(implode("<br>", $comments));
 
             if (isset($_POST['withlink']) && $link !== null) {
-                echo "<script type='text/javascript' >\n";
+                echo "<script type='text/javascript' >";
                 echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
-                echo "</script>\n";
+                echo "</script>";
             }
             break;
 
@@ -125,19 +125,19 @@ if (
                 }
                 $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
                 if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo $tmpname["comment"];
+                    echo htmlspecialchars($tmpname["comment"]);
                 }
 
                 if (isset($_POST['withlink'])) {
-                    echo "<script type='text/javascript' >\n";
+                    echo "<script type='text/javascript' >";
                     echo Html::jsGetElementbyID($_POST['withlink']) . ".
                     attr('href', '" . $_POST['itemtype']::getFormURLWithID($_POST["value"]) . "');";
-                    echo "</script>\n";
+                    echo "</script>";
                 }
 
                 if (isset($_POST['with_dc_position'])) {
                     $item = getItemForItemtype($_POST['itemtype']);
-                    echo "<script type='text/javascript' >\n";
+                    echo "<script type='text/javascript' >";
 
                     //if item have a DC position (reload url to it's rack)
                     if (
@@ -150,7 +150,7 @@ if (
                         //remove old dc position
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".empty();";
                     }
-                    echo "</script>\n";
+                    echo "</script>";
                 }
             }
     }

@@ -94,5 +94,5 @@ switch ($_REQUEST['widget']) {
         }
         break;
     default:
-        echo __('Invalid widget');
+        echo __s('Invalid widget');
 }
