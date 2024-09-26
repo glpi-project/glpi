@@ -37,7 +37,7 @@ namespace Glpi\Exception\Access;
 use Glpi\Application\View\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequiresHttpsException extends AccessException
+class RequiresHttpsException extends AbstractHttpException
 {
     public function asResponse(): Response
     {
@@ -46,7 +46,7 @@ class RequiresHttpsException extends AccessException
         $cnt = TemplateRenderer::getInstance()->render(
             'pages/https_only.html.twig',
             [
-                'secured_url' => 'https://' . $request->getHost() . $request->getUri(),
+                'secured_url' => 'https://' . $request->getHost() . $request->getRequestUri(),
             ]
         );
 

@@ -32,35 +32,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Exception\Access;
 
-use Glpi\Exception\Access\AccessException;
-use Glpi\Exception\Access\RequiresHttpsException;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class AccessErrorListener implements EventSubscriberInterface
+abstract class AbstractHttpException extends \RuntimeException
 {
-    public static function getSubscribedEvents(): array
+    private ?Request $request = null;
+
+    public function setRequest(Request $request): void
     {
-        return [
-            KernelEvents::EXCEPTION => 'onKernelException',
-        ];
+        $this->request = $request;
     }
 
-    public function onKernelException(ExceptionEvent $event): void
+    public function getRequest(): Request
     {
-        $e = $event->getThrowable();
-
-        if (!$e instanceof AccessException) {
-            return;
+        if (!$this->request) {
+            throw new \RuntimeException(\sprintf(
+                'Request not set in "%s" exception class. Access error listener might be wrongly configured.',
+                static::class,
+            ));
         }
 
-        $req = $event->getRequest();
-
-        $e->setRequest($req);
-
-        $event->setResponse($e->asResponse());
+        return $this->request;
     }
+
+    abstract public function asResponse(): Response;
 }

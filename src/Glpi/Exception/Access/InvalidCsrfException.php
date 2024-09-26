@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class InvalidCsrfException extends AccessException
+class InvalidCsrfException extends AbstractHttpException
 {
     public function asResponse(): Response
     {

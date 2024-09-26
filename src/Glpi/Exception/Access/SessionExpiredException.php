@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Used when there is no session, or session cookies have expired.
  */
-class SessionExpiredException extends AccessException
+class SessionExpiredException extends AbstractHttpException
 {
     public function asResponse(): Response
     {
