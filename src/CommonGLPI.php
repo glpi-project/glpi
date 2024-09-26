@@ -1096,9 +1096,9 @@ class CommonGLPI implements CommonGLPIInterface
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
-                echo $this->getNameID([
+                echo htmlspecialchars($this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
-                ]);
+                ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
                     $title = $this->isField('date_mod')
                                 ? sprintf(__s('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod']))
