@@ -86,8 +86,14 @@ class IsInventoriableCapacity extends DbTestCase
             // Check that the class is globally registered
             if ($has_capacity) {
                 $this->array($CFG_GLPI['inventory_types'])->contains($classname);
+                $this->array($CFG_GLPI['agent_types'])->contains($classname);
+                $this->array($CFG_GLPI['environment_types'])->contains($classname);
+                $this->array($CFG_GLPI['process_types'])->contains($classname);
             } else {
                 $this->array($CFG_GLPI['inventory_types'])->notContains($classname);
+                $this->array($CFG_GLPI['agent_types'])->notContains($classname);
+                $this->array($CFG_GLPI['environment_types'])->notContains($classname);
+                $this->array($CFG_GLPI['process_types'])->notContains($classname);
             }
         }
     }
@@ -132,17 +138,25 @@ class IsInventoriableCapacity extends DbTestCase
         // Ensure  class is registered to global config
         $this->array($CFG_GLPI['inventory_types'])->contains($classname_1);
         $this->array($CFG_GLPI['agent_types'])->contains($classname_1);
+        $this->array($CFG_GLPI['environment_types'])->contains($classname_1);
+        $this->array($CFG_GLPI['process_types'])->contains($classname_1);
         $this->array($CFG_GLPI['inventory_types'])->contains($classname_2);
         $this->array($CFG_GLPI['agent_types'])->contains($classname_2);
+        $this->array($CFG_GLPI['environment_types'])->contains($classname_2);
+        $this->array($CFG_GLPI['process_types'])->contains($classname_2);
 
         // Disable capacity and check class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->array($CFG_GLPI['inventory_types'])->notContains($classname_1);
         $this->array($CFG_GLPI['agent_types'])->notContains($classname_1);
+        $this->array($CFG_GLPI['environment_types'])->notContains($classname_1);
+        $this->array($CFG_GLPI['process_types'])->notContains($classname_1);
 
         // Ensure global registration is preserved for other definition
         $this->array($CFG_GLPI['inventory_types'])->contains($classname_2);
         $this->array($CFG_GLPI['agent_types'])->contains($classname_2);
+        $this->array($CFG_GLPI['environment_types'])->contains($classname_2);
+        $this->array($CFG_GLPI['process_types'])->contains($classname_2);
     }
 
     public function testIsUsed(): void

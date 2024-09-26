@@ -36,7 +36,10 @@
 namespace Glpi\Asset\Capacity;
 
 use AutoUpdateSystem;
+use CommonGLPI;
 use Glpi\Inventory\Inventory;
+use Item_Environment;
+use Item_Process;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity
@@ -92,6 +95,11 @@ class IsInventoriableCapacity extends AbstractCapacity
         global $CFG_GLPI;
         $this->registerToTypeConfig('inventory_types', $classname);
         $this->registerToTypeConfig('agent_types', $classname);
+        $this->registerToTypeConfig('environment_types', $classname);
+        $this->registerToTypeConfig('process_types', $classname);
+
+        CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
+        CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
     }
 
     public function onCapacityDisabled(string $classname): void
@@ -100,5 +108,20 @@ class IsInventoriableCapacity extends AbstractCapacity
         global $CFG_GLPI;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
         $this->unregisterFromTypeConfig('agent_types', $classname);
+        $this->unregisterFromTypeConfig('environment_types', $classname);
+        $this->unregisterFromTypeConfig('process_types', $classname);
+
+        $env_item = new Item_Environment();
+        $env_item->deleteByCriteria([
+            'itemtype' => $classname,
+        ], true, false);
+        $this->deleteRelationLogs($classname, Item_Environment::class);
+
+        $process_item = new Item_Process();
+        $process_item->deleteByCriteria([
+            'itemtype' => $classname,
+        ], true, false);
+
+        $this->deleteRelationLogs($classname, Item_Process::class);
     }
 }
