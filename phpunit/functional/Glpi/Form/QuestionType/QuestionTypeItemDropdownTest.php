@@ -48,6 +48,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
 
     public function testItemDropdownAnswerIsDisplayedInTicketDescription(): void
     {
+        $this->login();
+
         $category = $this->createItem(ITILCategory::class, [
             'name' => 'My category',
         ]);

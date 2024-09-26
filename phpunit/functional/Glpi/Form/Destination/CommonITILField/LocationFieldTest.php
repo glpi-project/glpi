@@ -289,6 +289,8 @@ final class LocationFieldTest extends DbTestCase
 
     private function createAndGetFormWithMultipleLocationQuestions(): Form
     {
+        $this->login();
+
         $builder = new FormBuilder();
         $builder->addQuestion("Location 1", QuestionTypeItemDropdown::class, 0, json_encode([
             'itemtype' => Location::getType(),
