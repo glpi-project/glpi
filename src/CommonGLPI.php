@@ -627,7 +627,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (count($ong)) {
                     foreach ($ong as $key => $val) {
                         if ($key != 'empty') {
-                            echo "<div class='alltab'>" . htmlspecialchars($val) . "</div>";
+                            echo "<div class='alltab'>" . $val . "</div>";
                             self::displayStandardTab($item, $key, $withtemplate, $options);
                         }
                     }
