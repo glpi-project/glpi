@@ -1008,8 +1008,6 @@ class CommonGLPI implements CommonGLPIInterface
                 $glpilisturl = $this->getSearchURL();
             }
 
-           // echo "<div id='menu_navigate'>";
-
             $next = $prev = $first = $last = -1;
             $current = false;
             if (is_array($glpilistitems)) {
@@ -1277,11 +1275,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $ret = '';
-        $title = __s('FAQ');
-        if (Session::getCurrentInterface() == 'central') {
-            $title = __s('Knowledge base');
-        }
-
         $iterator = $DB->request([
             'SELECT' => [KnowbaseItem::getTable() . '.*'],
             'FROM'   => KnowbaseItem::getTable(),
