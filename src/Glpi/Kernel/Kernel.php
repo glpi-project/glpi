@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel;
 
+use GLPI;
 use Glpi\Application\ConfigurationConstants;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
@@ -58,12 +59,17 @@ final class Kernel extends BaseKernel
         (new ConfigurationConstants($this->getProjectDir()))->computeConstants($env);
 
         // TODO: refactor the GLPI class.
-        $glpi = (new \GLPI());
+        $glpi = (new GLPI());
         $glpi->initLogger();
         $glpi->initErrorHandler();
 
         $env = GLPI_ENVIRONMENT_TYPE;
-        parent::__construct($env, $env === 'development');
+        parent::__construct(
+            $env,
+            // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
+            // Reserved for dev/test environments as it consumes many disk I/O.
+            debug: in_array($env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+        );
     }
 
     public function __destruct()

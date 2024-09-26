@@ -2636,14 +2636,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Glpi\\\\Kernel\\\\Kernel\\:\\:getLogDir\\(\\) should return string but returns null\\.$#',
+	// identifier: function.impossibleType
+	'message' => '#^Call to function in_array\\(\\) with arguments null, array\\{\'development\', \'testing\'\\} and true will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
 ];
 $ignoreErrors[] = [
-	// identifier: identical.alwaysFalse
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	// identifier: return.type
+	'message' => '#^Method Glpi\\\\Kernel\\\\Kernel\\:\\:getLogDir\\(\\) should return string but returns null\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
 ];
