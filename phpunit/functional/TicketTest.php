@@ -6418,6 +6418,19 @@ HTML
         $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
         $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
 
+        $n_profile = new \Profile();
+        $new_profile_id = $n_profile->add(
+            [
+                'name' => 'No Private Task',
+                'interface' => 'central',
+            ]
+        );
+        $this->createItem(\Profile::class, [
+            'name' => 'No Private Task',
+            'interface' => 'central',
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
         $this->login();
 
         $ticket = $this->createItem(
@@ -6496,6 +6509,17 @@ HTML
             ]
         );
 
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task of only see his task user',
+                'is_private'    => 1,
+                'users_id_tech' => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
         // tech has rights to see all private followups/tasks
         yield [
             'login'              => 'tech',
@@ -6509,6 +6533,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task of only see his task user',
                 'private task of tech user',
                 'public task',
             ],
@@ -6526,6 +6551,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task of only see his task user',
                 'public task',
             ],
         ];
@@ -6561,6 +6587,7 @@ HTML
                 ],
                 'expected_tasks'     => [
                     'private task of normal user',
+                    'private task of only see his task user',
                     'private task of tech user',
                     'public task',
                 ],
