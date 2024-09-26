@@ -123,7 +123,7 @@ class QuestionTypeItem extends AbstractQuestionType
             return 0;
         }
 
-        return (int) $question->fields['default_value'] ?? 0;
+        return (int) ($question->fields['default_value'] ?? 0);
     }
 
     #[Override]
