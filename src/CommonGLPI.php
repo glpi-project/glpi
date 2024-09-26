@@ -627,7 +627,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (count($ong)) {
                     foreach ($ong as $key => $val) {
                         if ($key != 'empty') {
-                            echo "<div class='alltab'>$val</div>";
+                            echo "<div class='alltab'>" . htmlspecialchars($val) . "</div>";
                             self::displayStandardTab($item, $key, $withtemplate, $options);
                         }
                     }
@@ -1042,9 +1042,9 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<div class='left-icons'>";
 
             if (!$glpilisttitle) {
-                $glpilisttitle = __s('List');
+                $glpilisttitle = __('List');
             }
-            $list = "<a href='$glpilisturl' title=\"$glpilisttitle\"
+            $list = "<a href='$glpilisturl' title=\"" . htmlspecialchars($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='ti ti-list-search fa-lg'></i>
