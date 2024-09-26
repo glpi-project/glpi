@@ -1238,12 +1238,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#3 \\$plugins_dirs \\(null\\) of method DbUtils\\:\\:fixItemtypeCase\\(\\) is incompatible with type array\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method DbUtils\\:\\:getHourFromSql\\(\\) should return array but returns string\\.$#',
 	'count' => 1,
@@ -1874,12 +1868,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	// identifier: function.impossibleType
-	'message' => '#^Call to function is_array\\(\\) with null will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
-];
-$ignoreErrors[] = [
 	// identifier: nullCoalesce.offset
 	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DEMO_MODE\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
 	'count' => 2,
@@ -2102,12 +2090,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
 ];
 $ignoreErrors[] = [
-	// identifier: foreach.nonIterable
-	'message' => '#^Argument of an invalid type null supplied for foreach, only iterables are supported\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.unused
 	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\InstallCommand\\:\\:shouldSetDBConfig\\(\\) is unused\\.$#',
 	'count' => 1,
@@ -2148,12 +2130,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) never returns float so it can be removed from the return type\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	// identifier: foreach.nonIterable
-	'message' => '#^Argument of an invalid type null supplied for foreach, only iterables are supported\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.type
@@ -2318,12 +2294,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
-	// identifier: property.onlyWritten
-	'message' => '#^Property Glpi\\\\Http\\\\LegacyAssetsListener\\:\\:\\$projectDir is never read, only written\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyAssetsListener.php',
-];
-$ignoreErrors[] = [
 	// identifier: classConstant.nonObject
 	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetModel\\|false\\.$#',
 	'count' => 1,
@@ -2334,12 +2304,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetType\\|false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/LegacyDropdownRouteListener.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.onlyWritten
-	'message' => '#^Property Glpi\\\\Http\\\\LegacyRouterListener\\:\\:\\$projectDir is never read, only written\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
 	// identifier: booleanNot.alwaysFalse
@@ -2688,12 +2652,6 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
-];
-$ignoreErrors[] = [
-	// identifier: foreach.nonIterable
-	'message' => '#^Argument of an invalid type null supplied for foreach, only iterables are supported\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
 ];
 $ignoreErrors[] = [
 	// identifier: booleanAnd.leftAlwaysFalse
@@ -3980,12 +3938,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
-	// identifier: foreach.nonIterable
-	'message' => '#^Argument of an invalid type null supplied for foreach, only iterables are supported\\.$#',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
@@ -4848,12 +4800,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/autoload/i18n.php',
-];
-$ignoreErrors[] = [
-	// identifier: foreach.nonIterable
-	'message' => '#^Argument of an invalid type null supplied for foreach, only iterables are supported\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.unusedType

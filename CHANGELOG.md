@@ -205,6 +205,8 @@ The present file will list all changes made to the project; according to the
 - `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
 
 #### Deprecated
+- Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
+- Usage of `GLPI_PLUGINS_PATH` javascript variable.
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - `$AJAX_INCLUDE` global variable usage. Use `$this->setAjax()` in legacy `/ajax/` and `/front` scripts or `Html::setAjax()` and `Session::setAjax()`.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
@@ -215,6 +217,7 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- Usage of `get_plugin_web_dir` Twig function.
 - Usage of `verbatim_value` Twig filter.
 - `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 - `linkuser_types`, `linkgroup_types`, `linkuser_tech_types`, `linkgroup_tech_types` configuration entries have been merged in a unique `assignable_types` configuration entry.
@@ -232,7 +235,8 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
-- `Glpi\Application\View\Extension::getVerbatimValue()`
+- `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
+- `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashboard\Filter::getAll()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
@@ -269,6 +273,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::showManageForm()`
 - `Migration::updateRight()`. Use `Migration::replaceRight()` instead.
 - `Pdu_Plug` has been deprecated and replaced by `Item_Plug`
+- `Plugin::getWebDir()`
 - `Search::getOptions()` no longer returns a reference
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.

@@ -590,10 +590,9 @@ TWIG, $twig_params);
             </script>
 HTML;
 
+        $url = $CFG_GLPI["root_doc"];
         if ($plugin = isPluginItemType(static::class)) {
-            $url = Plugin::getWebDir($plugin['plugin']);
-        } else {
-            $url = $CFG_GLPI["root_doc"];
+            $url .= "/plugins/{$plugin['plugin']}";
         }
 
         $twig_params = [

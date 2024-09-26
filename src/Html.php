@@ -1205,7 +1205,6 @@ HTML;
                     continue;
                 }
 
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1214,7 +1213,7 @@ HTML;
 
                 foreach ($files as $file) {
                     $tpl_vars['css_files'][] = [
-                        'path' => "$plugin_web_dir/$file",
+                        'path' => "{$CFG_GLPI['root_doc']}/plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
                         ]
@@ -1589,9 +1588,8 @@ HTML;
                         }
 
                         // Prefix with plugin path if plugin path is missing
-                        $plugin_dir = Plugin::getWebDir($plugin, false);
-                        if (!str_starts_with($link, '/' . $plugin_dir)) {
-                            $link = '/' . $plugin_dir . $link;
+                        if (!str_starts_with($link, "/plugins/{$plugin}/")) {
+                            $link = "/plugins/{$plugin}{$link}";
                         }
                     }
                     $infos['page'] = $link;
@@ -1776,7 +1774,6 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1785,7 +1782,7 @@ HTML;
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         $tpl_vars['js_files'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
+                            'path' => "/plugins/{$plugin}/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
                             ]
@@ -1802,7 +1799,6 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1811,7 +1807,7 @@ HTML;
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         $tpl_vars['js_modules'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
+                            'path' => "/plugins/{$plugin}/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
                             ]
@@ -6075,14 +6071,13 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo Html::script("$plugin_web_dir/{$file}", [
+                        echo Html::script("/plugins/{$plugin}/{$file}", [
                             'version'   => $version,
                             'type'      => 'text/javascript'
                         ]);
@@ -6099,14 +6094,13 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo self::script("$plugin_web_dir/{$file}", [
+                        echo self::script("/plugins/{$plugin}/{$file}", [
                             'version'   => $version,
                             'type'      => 'module'
                         ]);
@@ -6151,7 +6145,7 @@ HTML;
 
         $plugins_path = [];
         foreach (Plugin::getPlugins() as $key) {
-            $plugins_path[$key] = Plugin::getWebDir($key, false);
+            $plugins_path[$key] = "/plugins/{$key}";
         }
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 

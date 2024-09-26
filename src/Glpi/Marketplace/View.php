@@ -911,8 +911,7 @@ HTML;
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {
-                $plugin_dir = Plugin::getWebDir($plugin_key, true);
-                $config_url = "$plugin_dir/$config_page";
+                $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$plugin_key}/{$config_page}";
                 $buttons .= "<a href='$config_url'>
                         <button class='add_tooltip' title='" . __s("Configure") . "'>
                             <i class='ti ti-tool'></i>
