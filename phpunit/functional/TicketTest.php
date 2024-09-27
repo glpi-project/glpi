@@ -6500,7 +6500,7 @@ HTML
             \TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
-                'content'       => 'private task of only see his task user',
+                'content'       => 'private task assigned to normal user',
                 'is_private'    => 1,
                 'users_id_tech' => $normal_user_id,
                 'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
@@ -6520,7 +6520,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
-                'private task of only see his task user',
+                'private task assigned to normal user',
                 'private task of tech user',
                 'public task',
             ],
@@ -6538,7 +6538,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
-                'private task of only see his task user',
+                'private task assigned to normal user',
                 'public task',
             ],
         ];
@@ -6574,7 +6574,7 @@ HTML
                 ],
                 'expected_tasks'     => [
                     'private task of normal user',
-                    'private task of only see his task user',
+                    'private task assigned to normal user',
                     'private task of tech user',
                     'public task',
                 ],
