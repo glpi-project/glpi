@@ -175,7 +175,6 @@
    </div>
 </div>
 
-{% set openfollowup = (_get['_openfollowup'] ?? false) %}
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
 <script type="text/javascript">
@@ -214,7 +213,7 @@
          $("#right-actions").show();
       });
 
-      {% if openfollowup %}
+      {% if _openfollowup %}
          // trigger for reopen, show followup form in timeline
          var myCollapse = document.getElementById('new-ITILFollowup-block')
          var bsCollapse = new bootstrap.Collapse(myCollapse);

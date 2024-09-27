@@ -57,14 +57,14 @@
 {# Include header content if one or more condition matches and no_header is not explicitly true: #}
 {# - This template is called from another twig template (as opposed to from PHP and most likely a legacy form) OR is in a modal #}
 {# - Not from a twig template and it is a new item #}
-{% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
+{% set include_header_content = no_header == false and ((in_twig is defined or _in_modal) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
 
 {% if open_form and item.canEdit(item.fields['id']) %}
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
    {% endif %}
-   {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
+   {% if _in_modal %}
       <input type="hidden" name="_in_modal" value="1"/>
    {% endif %}
 {% endif %}

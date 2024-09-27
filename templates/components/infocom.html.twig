@@ -52,9 +52,8 @@
    {% else %}
       {% set disabled = (withtemplate != 2) %}
       {% set disabled = false %}
-      {% set in_modal = _get is defined and _get._in_modal|default("0") %}
       <input type="hidden" name="id" value="{{ infocom.fields['id'] }}" />
-      <div class="card-body d-flex flex-wrap p-0 {{ in_modal == "1" ? "ps-3 me-2" : "" }}">
+      <div class="card-body d-flex flex-wrap p-0 {{ _in_modal ? "ps-3 me-2" : "" }}">
          <div class="col-12 flex-column">
             <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                <div class="row flex-row align-items-start flex-grow-1">

@@ -33,7 +33,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set no_header = no_header|default(not item.isNewItem() and not _in_modal) %}
 {% set bg = '' %}
 {% if item.isDeleted() %}
    {% set bg = 'asset-deleted' %}
