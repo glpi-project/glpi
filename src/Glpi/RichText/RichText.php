@@ -195,6 +195,10 @@ final class RichText
             'table',
             'ul',
             'ol',
+
+            //logs entries
+            'ins',
+            'del'
         ];
         return preg_match('/<(' . implode('|', $html_tags) . ')(\s+[^>]*)?>/i', $content) === 1;
     }

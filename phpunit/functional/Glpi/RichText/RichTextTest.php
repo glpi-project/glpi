@@ -406,6 +406,11 @@ HTML,
             'encode_output_entities' => false,
             'expected_result' => $tag->html,
         ];
+        yield 'Clean log entries' => [
+            'content' => "Change <del>Smith</del> to <ins>Smith'><script>prompt(888);</script></ins>",
+            'encode_output_entities' => false,
+            'expected_result' => "Change <del>Smith</del> to <ins>Smith&#039;&gt;</ins>",
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
