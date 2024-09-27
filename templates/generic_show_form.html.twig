@@ -63,9 +63,14 @@
         'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
         'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
     ] %}
+    {# Support custom fields for generic assets #}
+    {% set custom_fields = custom_fields|default({}) %}
     {# Set real field older using 'field_order' provided and any fields missing added to the end of the order array #}
     {% set field_order = field_order|default(default_field_order) %}
     {% set field_order = field_order|merge(array_diff(default_field_order, field_order)) %}
+    {# Add missing custom fields to end of the order array #}
+    {% set custom_fields_keys = custom_fields|keys %}
+    {% set field_order = field_order|merge(array_diff(custom_fields_keys, field_order)) %}
     {# Remove fields that don't apply #}
     {% set field_order = field_order|filter((f) => f starts with '_' or item.isField(f)) %}
 
@@ -564,6 +569,8 @@
                           {% elseif field is same as 'last_boot' and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
                               {# display last_boot data only if item is dynamic and have field #}
                               {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
+                          {% elseif field in custom_fields|keys %}
+                              {{ custom_fields[field].getFieldType().getFormInput(field, item.fields[field])|raw }}
                           {% endif %}
                       {% endfor %}
 

@@ -677,6 +677,16 @@ final class AssetDefinition extends AbstractDefinition
         return $fields_display;
     }
 
+    public function getFieldOrder(): array
+    {
+        $fields_display = $this->getDecodedFieldsField();
+        usort(
+            $fields_display,
+            static fn ($a, $b) => $a['order'] <=> $b['order']
+        );
+        return array_column($fields_display, 'key');
+    }
+
     /**
      * Validate that the given capacities array contains valid values.
      *

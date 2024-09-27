@@ -318,12 +318,14 @@ abstract class Asset extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
             [
                 'item'   => $this,
                 'params' => $options,
-                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
+                'custom_fields' => array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['name'], $custom_fields), $custom_fields),
+                'field_order' => static::getDefinition()->getFieldOrder()
             ]
         );
         return true;
