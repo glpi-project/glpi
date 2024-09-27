@@ -35,6 +35,7 @@
 namespace Glpi\Controller\SelfService;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Form\SelfService\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
 {
+    private TilesManager $tiles_manager;
+
+    public function __construct()
+    {
+        $this->tiles_manager = new TilesManager();
+    }
+
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
         "/Home",
@@ -51,40 +59,6 @@ final class HomeController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        // Compute cards, will be handled by a service in later iterations (with a proper Card object).
-        $cards = [
-            [
-                'name'         => __("Browse help articles"),
-                'description'  => __("See all available help articles and our FAQ."),
-                'illustration' => "Knowledge",
-            ],
-            [
-                'name'         => __("Report an issue"),
-                'description'  => __("Ask for support from our helpdesk team."),
-                'illustration' => "Key points",
-            ],
-            [
-                'name'         => __("Request a service"),
-                'description'  => __("Ask for a service to be provided by our team."),
-                'illustration' => "Services",
-            ],
-            [
-                'name'         => __("Create a ticket"),
-                'description'  => __("See all our available helpdesk forms and create a ticket."),
-                'illustration' => "New entries",
-            ],
-            [
-                'name'         => __("Make a reservation"),
-                'description'  => __("Pick an available asset and reserve it for a given date."),
-                'illustration' => "Schedule",
-            ],
-            [
-                'name'         => __("View approval requests"),
-                'description'  => __("View all tickets waiting for your validation."),
-                'illustration' => "Confirmation",
-            ],
-        ];
-
         // Compute tabs, will be handled by a service in later iterations (with a proper Tab object).
         $tabs = [
             [
@@ -118,7 +92,7 @@ final class HomeController extends AbstractController
         return $this->render('pages/self-service/new_home.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
-            'cards' => $cards,
+            'tiles' => $this->tiles_manager->getTiles(),
             'tabs'  => $tabs,
         ]);
     }
