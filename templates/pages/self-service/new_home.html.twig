@@ -54,28 +54,28 @@
                 </div>
             </div>
         </div>
-        <div class="tiles-banner">
+        <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
             <div class="container-xl">
                 <div class="row">
-                    {% for card in cards %}
+                    {% for tile in tiles %}
                         <div class="col-12 col-sm-6 col-md-4 d-flex">
                             <a
                                 class="card mx-1 my-2 flex-grow-1"
-                                href="{{ path("/Form/Render/") }}"
+                                href="{{ path(tile.getLink()) }}"
                             >
                                 <section class="card-body">
                                     <div class="d-flex">
                                         <img
-                                            data-ujs-name="{{ card.illustration }}"
+                                            data-ujs-name="{{ tile.getIllustration() }}"
                                             data-ujs-color="#fec901"
                                             width="80px"
                                         />
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
-                                                {{ card.name }}
+                                                {{ tile.getTitle() }}
                                             </h2>
                                             <div class="text-secondary">
-                                                {{ card.description }}
+                                                {{ tile.getDescription() }}
                                             </div>
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@
                     {% endfor %}
                 </div>
             </div>
-        </div>
+        </section>
         <div class="tickets-banner">
             <div class="container-xl">
                 <ul class="nav nav-tabs home-tickets-tabs" role="tablist">
