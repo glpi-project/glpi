@@ -6418,19 +6418,6 @@ HTML
         $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
         $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
 
-        $n_profile = new \Profile();
-        $new_profile_id = $n_profile->add(
-            [
-                'name' => 'No Private Task',
-                'interface' => 'central',
-            ]
-        );
-        $this->createItem(\Profile::class, [
-            'name' => 'No Private Task',
-            'interface' => 'central',
-            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-
         $this->login();
 
         $ticket = $this->createItem(
