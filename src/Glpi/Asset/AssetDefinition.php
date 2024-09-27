@@ -149,8 +149,8 @@ final class AssetDefinition extends AbstractDefinition
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    $item->showFieldsForm();
                     $item->showCustomFieldsForm();
+                    $item->showFieldsForm();
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -209,7 +209,7 @@ final class AssetDefinition extends AbstractDefinition
                 'type' => CustomFieldDefinition::class,
                 'parenttype' => CustomFieldDefinition::$itemtype,
                 'items_id' => CustomFieldDefinition::$items_id,
-                'add_new_label' => __('Add a new field'),
+                'add_new_label' => __('Create new field'),
                 'datatable_id' => 'datatable_customfields' . $rand,
                 'subitem_container_id' => 'customfield_form_container'
             ]);
@@ -638,7 +638,9 @@ final class AssetDefinition extends AbstractDefinition
             'comment'          => __('Comment'),
         ];
 
-        // TODO add custom fields
+        foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
+            $fields['custom_' . $custom_field_def->fields['name']] = $custom_field_def->computeFriendlyName();
+        }
 
         return $fields;
     }
@@ -662,13 +664,13 @@ final class AssetDefinition extends AbstractDefinition
 
 
     /**
-     * Return the decoded value of the `capacities` field.
+     * Return the decoded value of the `fields_display` field.
      *
      * @return array
      */
     private function getDecodedFieldsField(): array
     {
-        $fields_display = @json_decode($this->fields['fields_display'], associative: true);
+        $fields_display = json_decode($this->fields['fields_display'] ?? '[]', associative: true) ?? [];
         if (!is_array($fields_display) || count($fields_display) === 0) {
             return $this->getDefaultFieldsDisplay();
         }

@@ -35,24 +35,6 @@
 
 {% set all_fields = all_fields ?? {} %}
 
-{% macro draggable_field(field_key, field_label) %}
-    <div class="g-col-6 sortable-field d-flex align-items-center p-1">
-        <input type="hidden" name="fields_display[]" value="{{ field_key }}" />
-        <div class="form-field row flex-grow-1">
-            <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
-                {{ field_label }}
-                <i class="ti ti-grip-vertical sort-handle"></i>
-            </label>
-            <div class="col-xxl-7 field-container btn-group shadow-none">
-                <input type="text" disabled class="form-control" />
-                <button type="button" class="btn btn-ghost-secondary btn-sm remove-field" title="{{ __("Remove") }}">
-                    <i class="ti ti-x"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-{% endmacro %}
-
 {% set params = {} %}
 {# do not display delete button #}
 {% set params = params|merge({'candel': false}) %}
@@ -60,13 +42,24 @@
 {% set params = params|merge({'formfooter': false}) %}
 
 {% block form_fields %}
+    <template id="sortable-field-template">
+        <div class="g-col-6 sortable-field d-flex align-items-center p-1">
+            <input type="hidden" name="fields_display[]" value="" />
+            <div class="form-field row flex-grow-1">
+                <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
+                    <slot name="field_label"></slot>
+                    <i class="ti ti-grip-vertical sort-handle"></i>
+                </label>
+                <div class="col-xxl-7 field-container btn-group shadow-none">
+                    <input type="text" disabled class="form-control" />
+                    <button type="button" class="btn btn-ghost-secondary btn-sm remove-field" title="{{ __("Remove") }}">
+                        <i class="ti ti-x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
     <input type="hidden" name="_update_fields_display" value="1" />
-
-    <div class="grid gap-3 user-select-none" id="sortable-fields">
-        {% for field in fields_display %}
-            {{ _self.draggable_field(field['key'], all_fields[field['key']])|raw }}
-        {% endfor %}
-    </div>
 
     <div class="row mt-3">
         <div class="col-6">
@@ -80,9 +73,41 @@
             </button>
         </div>
     </div>
+    <div class="grid gap-3 user-select-none" id="sortable-fields"></div>
 
     <script>
         $(() => {
+            const all_fields = {{ all_fields|json_encode()|raw }};
+            const fields_display = {{ fields_display|default({})|json_encode()|raw }};
+
+            const append_field = (key) => {
+                const template = document.getElementById('sortable-field-template');
+                const clone = template.content.cloneNode(true);
+                const fieldLabel = clone.querySelector('slot[name="field_label"]');
+                fieldLabel.textContent = all_fields[key];
+                const input = clone.querySelector('input[name="fields_display[]"]');
+                input.value = key;
+                document.getElementById('sortable-fields').appendChild(clone);
+                // remove the selected option in select2
+                $('#dropdown_new_field{{ rand }} option[value=' + key + ']').remove()
+            };
+
+            const remove_field = (key) => {
+                // re-add the option in select2
+                $('#dropdown_new_field{{ rand }}').append($('<option>', {
+                    value: key,
+                    text: all_fields[key]
+                }));
+
+                // remove the field from sortable list
+                $(`input[name="fields_display[]"][value="${key}"]`).closest('.sortable-field').remove();
+            };
+
+            //for each field in fields_display, add it to the list using the template and slot
+            fields_display.forEach(field => {
+                append_field(field.key);
+            });
+
             // init sortable lib on fields
             sortable('#sortable-fields', {
                 items: '.sortable-field',
@@ -90,38 +115,19 @@
                 forcePlaceholderSize: true,
             });
 
-            const all_fields = {{ all_fields|json_encode()|raw }};
-
             // add field action
-            $('#add-field').on('click', function() {
+            $('#add-field').on('click', () => {
                 //get select2 value
                 const field_key = $('#dropdown_new_field{{ rand }}').val();
                 if (field_key && field_key != 0 ) {
-                    // re-use twig macro to generate the field
-                    let field_html = `{{ my_draggable_macros.draggable_field() }}`;
-                    field_html = field_html.replace('%field_key%', field_key);
-                    field_html = field_html.replace('%field_label%', all_fields[field_key]);
-
-                    //add field to the list
-                    $('#sortable-fields').append(field_html);
-
-                    // remove the selected option in select2
-                    $('#dropdown_new_field{{ rand }} option[value=' + field_key + ']').remove()
+                    append_field(field_key);
                 }
             });
 
             // remove field action
             $('#sortable-fields').on('click', '.remove-field', function() {
-                const field_key = $(this).closest('.sortable-field').find('input[type=hidden]').val();
-
-                // re-add the option in select2
-                $('#dropdown_new_field{{ rand }}').append($('<option>', {
-                    value: field_key,
-                    text: all_fields[field_key]
-                }));
-
-                // remove the field from sortable list
-                $(this).closest('.sortable-field').remove();
+                const field_key = $(this).closest('.sortable-field').find('input[name="fields_display[]"]').val();
+                remove_field(field_key);
             });
         });
     </script>
