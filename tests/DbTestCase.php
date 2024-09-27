@@ -347,6 +347,7 @@ class DbTestCase extends \GLPITestCase
                 'is_active'   => true,
                 'capacities'  => $capacities,
                 'profiles'    => $profiles,
+                'fields_display' => '[]',
             ],
             skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
         );

@@ -635,7 +635,7 @@ final class AssetDefinition extends AbstractDefinition
             'otherserial'      => __('Inventory number'),
             'users_id'         => User::getTypeName(1),
             'groups_id'        => Group::getTypeName(1),
-            'comment'          => __('Comment'),
+            'comment'          => _n('Comment', 'Comments', Session::getPluralNumber()),
         ];
 
         foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
