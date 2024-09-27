@@ -156,6 +156,12 @@
             {{ _self.log_entries(log_entries) }}
         </div>
         <div class="card-footer d-flex justify-content-between">
+            <span class="search-limit d-none d-md-block text-muted">
+                {{ __('Last entries to show:') }}
+                {% include 'components/dropdown/limit.html.twig' with {
+                    'no_onchange': fluid_search|default(false),
+                } %}
+            </span>
             <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row flex-nowrap"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
@@ -168,12 +174,6 @@
                     <i class="ti ti-refresh"></i>
                 </span>
             </label>
-            <span class="search-limit d-none d-md-block text-muted">
-                {{ __('Last entries to show:') }}
-                {% include 'components/dropdown/limit.html.twig' with {
-                    'no_onchange': fluid_search|default(false),
-                } %}
-            </span>
         </div>
     </div>
 
