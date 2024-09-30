@@ -56,6 +56,13 @@ if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
     ini_set('memory_limit', sprintf('%dM', $max_memory));
 }
 
+// Main CSS compilation can be quiet long on dev environments that have xdebug loaded.
+$max_execution_time    = 180;
+$current_max_exec_time = (int) ini_get('max_execution_time');
+if ($current_max_exec_time !== 0 && $current_max_exec_time < $max_execution_time) {
+    ini_set('max_execution_time', $max_execution_time);
+}
+
 // Ensure warnings will not break CSS output.
 ErrorHandler::getInstance()->disableOutput();
 
