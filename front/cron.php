@@ -54,9 +54,6 @@ global $CFG_GLPI;
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
-// Ensure that session is not used
-ini_set('session.use_cookies', 0);
-
 // Try detecting if we are running with the root user (Not available on Windows)
 if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
     // Translation functions not available here
