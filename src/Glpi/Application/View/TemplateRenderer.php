@@ -64,65 +64,15 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private static ?Environment $environment = null;
 
-    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
+    public function __construct()
     {
-        $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
-
-        $active_plugins = Plugin::getPlugins();
-        foreach ($active_plugins as $plugin_key) {
-           // Add a dedicated namespace for each active plugin, so templates would be loadable using
-           // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
-           // is the path of the template inside the `/templates` directory of the plugin.
-            $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
+        if (self::$environment) {
+            return;
         }
 
-        $env_params = [
-            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-            'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
-        ];
-
-        $tpl_cachedir = $cachedir . '/templates';
-        if (
-            (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))
-            || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
-        ) {
-            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
-        } else {
-            $env_params['cache'] = $tpl_cachedir;
-        }
-
-        $this->environment = new Environment(
-            $loader,
-            $env_params
-        );
-       // Vendor extensions
-        $this->environment->addExtension(new DebugExtension());
-        $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
-        $this->environment->addExtension(new ConfigExtension());
-        $this->environment->addExtension(new SecurityExtension());
-        $this->environment->addExtension(new DataHelpersExtension());
-        $this->environment->addExtension(new DocumentExtension());
-        $this->environment->addExtension(new FrontEndAssetsExtension());
-        $this->environment->addExtension(new I18nExtension());
-        $this->environment->addExtension(new IllustrationExtension());
-        $this->environment->addExtension(new ItemtypeExtension());
-        $this->environment->addExtension(new PhpExtension());
-        $this->environment->addExtension(new PluginExtension());
-        $this->environment->addExtension(new RoutingExtension());
-        $this->environment->addExtension(new SearchExtension());
-        $this->environment->addExtension(new SessionExtension());
-        $this->environment->addExtension(new TeamExtension());
-
-       // add superglobals
-        $this->environment->addGlobal('_post', $_POST);
-        $this->environment->addGlobal('_get', $_GET);
-        $this->environment->addGlobal('_request', $_REQUEST);
+        throw new \RuntimeException('Must not create TemplateRenderer without Dependency Injection');
     }
 
     /**
@@ -141,6 +91,11 @@ class TemplateRenderer
         return $instance;
     }
 
+    public static function setEnvironment(Environment $environment): void
+    {
+        self::$environment = $environment;
+    }
+
     /**
      * Return Twig environment used to handle templates.
      *
@@ -148,7 +103,13 @@ class TemplateRenderer
      */
     public function getEnvironment(): Environment
     {
-        return $this->environment;
+        $environment = self::$environment;
+
+        if (!$environment) {
+            throw new \RuntimeException('Twig environment was not properly set in ' . self::class);
+        }
+
+        return $environment;
     }
 
     /**
@@ -163,7 +124,7 @@ class TemplateRenderer
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            return $this->environment->load($template)->render($variables);
+            return self::getEnvironment()->load($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
@@ -184,7 +145,7 @@ class TemplateRenderer
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            $this->environment->load($template)->display($variables);
+            self::getEnvironment()->load($template)->display($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
@@ -204,7 +165,7 @@ class TemplateRenderer
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            return $this->environment->createTemplate($template)->render($variables);
+            return self::getEnvironment()->createTemplate($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {

@@ -36,16 +36,23 @@ namespace Glpi\Kernel;
 
 use GLPI;
 use Glpi\Application\ConfigurationConstants;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Glpi\DependencyInjection\Compiler\GlpiTwigConfigurationPass;
+use Glpi\Twig\TwigEnvironmentConfigurator;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Twig\Environment;
 
 final class Kernel extends BaseKernel
 {
@@ -97,10 +104,11 @@ final class Kernel extends BaseKernel
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
+        $bundles[] = new TwigBundle();
+        $bundles[] = new TwigComponentBundle();
 
         if ($this->environment === 'development') {
             $bundles[] = new WebProfilerBundle();
-            $bundles[] = new TwigBundle();
         }
 
         return $bundles;
@@ -133,11 +141,28 @@ final class Kernel extends BaseKernel
         }
     }
 
+    public function boot(): void
+    {
+        parent::boot();
+
+        TemplateRenderer::setEnvironment($this->container->get(Environment::class));
+    }
+
+    protected function buildContainer(): ContainerBuilder
+    {
+        $container = parent::buildContainer();
+
+        $container->addCompilerPass(new GlpiTwigConfigurationPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 200);
+
+        return $container;
+    }
+
     protected function configureContainer(ContainerConfigurator $container): void
     {
         $projectDir = $this->getProjectDir();
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig.php', 'php');
         $container->import($projectDir . '/dependency_injection/legacyConfigProviders.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');

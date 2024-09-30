@@ -89,6 +89,8 @@
         "symfony/property-access": "^7.1",
         "symfony/routing": "^6.4",
         "symfony/serializer": "^7.1",
+        "symfony/twig-bundle": "^7.1",
+        "symfony/ux-twig-component": "^2.20",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.13",
@@ -113,9 +115,8 @@
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
         "symfony/stopwatch": "^6.4",
-        "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
-        "symfony/web-profiler-bundle": "^6.4"
+        "symfony/web-profiler-bundle": "^7.1"
     },
     "provide": {
         "ext-sodium": "*"
