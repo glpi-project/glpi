@@ -42,6 +42,7 @@ use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\I18nExtension;
+use Glpi\Application\View\Extension\IllustrationExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
 use Glpi\Application\View\Extension\PhpExtension;
 use Glpi\Application\View\Extension\PluginExtension;
@@ -109,6 +110,7 @@ class TemplateRenderer
         $this->environment->addExtension(new DocumentExtension());
         $this->environment->addExtension(new FrontEndAssetsExtension());
         $this->environment->addExtension(new I18nExtension());
+        $this->environment->addExtension(new IllustrationExtension());
         $this->environment->addExtension(new ItemtypeExtension());
         $this->environment->addExtension(new PhpExtension());
         $this->environment->addExtension(new PluginExtension());

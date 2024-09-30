@@ -46,7 +46,7 @@ final class TilesManager
         $tiles[] = new Tile(
             title: __("Browse help articles"),
             description: __("See all available help articles and our FAQ."),
-            illustration: "Knowledge",
+            illustration: "browse-help.svg",
             link: "/front/helpdesk.faq.php"
         );
 
@@ -60,36 +60,36 @@ final class TilesManager
                 description: __("Ask for support from our helpdesk team."),
                 // Override illustration as forms are still using tabler icons
                 // instead of the new illustrations.
-                illustration: "Key points",
+                illustration: "report-issue.svg",
             );
         }
 
         $tiles[] = new Tile(
             title: __("Request a service"),
             description: __("Ask for a service to be provided by our team."),
-            illustration: "Services",
+            illustration: "request-service.svg",
             link: "/ServiceCatalog"
         );
 
         $tiles[] = new Tile(
             title: __("Make a reservation"),
             description: __("Pick an available asset and reserve it for a given date."),
-            illustration: "Schedule",
+            illustration: "make-reservation.svg",
             link: "/front/reservationitem.php"
         );
 
         $tiles[] = new Tile(
             title: __("View approval requests"),
             description: __("View all tickets waiting for your validation."),
-            illustration: "Confirmation",
+            illustration: "approval-request.svg",
             // TODO: apply correct search filter
             link: "/front/ticket.php"
         );
 
         $tiles[] = new Tile(
             title: __("View RSS feeds"),
-            description: __("See all our available helpdesk forms and create a ticket."),
-            illustration: "New entries",
+            description: __("Checkout new data from your saved RSS feeds."),
+            illustration: "view-feed.svg",
             // TODO: create dedicated RSS page, the only place they are
             // visible is on the dashboard of the legacy home page.
             link: "/front/helpdesk.public.php"

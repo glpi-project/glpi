@@ -65,11 +65,7 @@
                             >
                                 <section class="card-body">
                                     <div class="d-flex">
-                                        <img
-                                            data-ujs-name="{{ tile.getIllustration() }}"
-                                            data-ujs-color="#fec901"
-                                            width="80px"
-                                        />
+                                        {{ render_illustration(tile.getIllustration(), 100) }}
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
                                                 {{ tile.getTitle() }}
@@ -92,6 +88,4 @@
             </div>
         </div>
     </div>
-
-    <script> UndrawJS.init(); </script>
 {% endblock content %}
