@@ -34,12 +34,13 @@
 
 namespace Glpi\Twig;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Loader\FilesystemLoader;
 
 class PluginsPathsLoader extends FilesystemLoader
 {
-    public function __construct()
+    public function __construct(#[Autowire(param: 'kernel.project_dir')] string $projectDir)
     {
-        parent::__construct();
+        parent::__construct([], $projectDir);
     }
 }

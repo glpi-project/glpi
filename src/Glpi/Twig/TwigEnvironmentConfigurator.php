@@ -40,7 +40,6 @@ use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
-use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
@@ -49,6 +48,7 @@ final readonly class TwigEnvironmentConfigurator implements PublicService
 {
     public function __construct(
         #[Autowire(param: 'kernel.cache_dir')] private string $cacheDir,
+        #[Autowire(param: 'kernel.project_dir')] private string $projectDir,
         private RequestStack $requestStack,
     ) {
     }
@@ -79,7 +79,7 @@ final readonly class TwigEnvironmentConfigurator implements PublicService
             // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
             // is the path of the template inside the `/templates` directory of the plugin.
             $plugin_path = Plugin::getPhpDir($plugin_key . '/templates');
-            $loader = new FilesystemLoader([$plugin_path], $plugin_path);
+            $loader = new FilesystemLoader([\str_replace($this->projectDir, '', $plugin_path)], $plugin_path);
             $loader->addPath($plugin_path, $plugin_key);
             $twig_loader->addLoader($loader);
         }

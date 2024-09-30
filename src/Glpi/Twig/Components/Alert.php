@@ -32,13 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Twig\Components;
 
-use Symfony\Config\TwigComponentConfig;
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-return static function (TwigComponentConfig $config, ContainerConfigurator $container): void {
-    $components_dir = 'twig_components/';
-
-    $config->defaults('Glpi\Twig\Components\\', $components_dir);
-    $config->anonymousTemplateDirectory('twig_components');
-};
+#[AsTwigComponent(name: "Alert")]
+class Alert
+{
+    public string $type = 'success';
+    public string $message;
+}
