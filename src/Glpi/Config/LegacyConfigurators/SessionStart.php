@@ -49,6 +49,7 @@ final class SessionStart implements LegacyConfigProviderInterface, ConfigProvide
     private const NO_COOKIE_PATHS = [
         '/api(rest)?\.php.*',
         '/caldav\.php.*',
+        '/front/cron\.php.*',
     ];
 
     private const NO_SESSION_PATHS = [
