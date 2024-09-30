@@ -45,7 +45,7 @@ final class IllustrationManager
     {
         $svg_content = $this->getSvgContent($filename);
         $svg_content = $this->replaceColorsByVariables($svg_content);
-        $svg_content = $this->setSize($svg_content, $size);
+        $svg_content = $this->adjustSize($svg_content, $size);
 
         return $svg_content;
     }
@@ -54,8 +54,6 @@ final class IllustrationManager
     {
         $svg_content = file_get_contents(GLPI_ROOT . "/pics/illustration/$filename");
         if (!$svg_content) {
-            trigger_error("Unknown illustration: $filename", E_USER_WARNING);
-
             // Can't fallback to default icon if it is already the one being
             // requeted.
             if ($filename == self::DEFAULT_ICON) {
@@ -83,7 +81,7 @@ final class IllustrationManager
         return $svg_content;
     }
 
-    private function setSize(string $svg_content, int $size): string
+    private function adjustSize(string $svg_content, int $size): string
     {
         $svg_content = str_replace(
             'width="100%"',
