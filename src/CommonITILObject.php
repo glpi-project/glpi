@@ -5340,7 +5340,7 @@ abstract class CommonITILObject extends CommonDBTM
             $CFG_GLPI["root_doc"] . "/ajax/dropdownItilActors.php",
             $params
         );
-        echo "<span id='showitilactor" . $typename . "_$rand' class='actor-dropdown'>&nbsp;</span>";
+        echo "<span id='showitilactor" . htmlspecialchars($typename) . "_$rand' class='actor-dropdown'>&nbsp;</span>";
         if ($inobject) {
             echo "<hr>";
         }
@@ -5509,14 +5509,14 @@ abstract class CommonITILObject extends CommonDBTM
                     "countassign_$rand",
                     $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
                     ['users_id_assign' => '__VALUE__'],
-                    "dropdown__users_id_" . $typename . $rand
+                    "dropdown__users_id_" . htmlspecialchars($typename . $rand)
                 );
                 echo "});</script>";
             }
         }
 
         if ($CFG_GLPI['notifications_mailing']) {
-            echo "<div id='notif_" . $typename . "_$rand' class='mt-2'>";
+            echo "<div id='notif_" . htmlspecialchars($typename) . "_$rand' class='mt-2'>";
             echo "</div>";
 
             echo "<script type='text/javascript'>";
@@ -5792,21 +5792,21 @@ abstract class CommonITILObject extends CommonDBTM
     public function showStatsDates()
     {
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _n('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
+        echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Opening date') . "</td>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Opening date') . "</td>";
         echo "<td>" . Html::convDateTime($this->fields['date']) . "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Time to resolve') . "</td>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Time to resolve') . "</td>";
         echo "<td>" . Html::convDateTime($this->fields['time_to_resolve']) . "</td></tr>";
 
         if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __('Resolution date') . "</td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Resolution date') . "</td>";
             echo "<td>" . Html::convDateTime($this->fields['solvedate']) . "</td></tr>";
         }
 
         if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __('Closing date') . "</td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
             echo "<td>" . Html::convDateTime($this->fields['closedate']) . "</td></tr>";
         }
         echo "</table>";
@@ -5816,10 +5816,10 @@ abstract class CommonITILObject extends CommonDBTM
     {
         echo "<div class='dates_timelines'>";
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _n('Time', 'Times', Session::getPluralNumber()) . "</th></tr>";
+        echo "<tr><th colspan='2'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</th></tr>";
 
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
-            echo "<tr class='tab_bg_2'><td>" . __('Take into account') . "</td><td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
                 echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
             } else {
@@ -5829,7 +5829,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __('Resolution') . "</td><td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
 
             if ($this->fields['solve_delay_stat'] > 0) {
                 echo Html::timestampToString($this->fields['solve_delay_stat'], 0, false);
@@ -5840,7 +5840,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __('Closure') . "</td><td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
             if ($this->fields['close_delay_stat'] > 0) {
                 echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
             } else {
@@ -5849,7 +5849,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo "</td></tr>";
         }
 
-        echo "<tr class='tab_bg_2'><td>" . __('Pending') . "</td><td>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
             echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
         } else {
@@ -7084,7 +7084,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo Search::showEndLine($p['output_type']);
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No item in progress.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No item in progress.') . "</i></td></tr>";
         }
     }
 
@@ -10637,7 +10637,7 @@ abstract class CommonITILObject extends CommonDBTM
             if ($item = getItemForItemtype($output["itemtype"])) {
                 if ($item->getFromDB($output["items_id"])) {
                     echo "<tr class='tab_bg_2'>";
-                    echo "<td>" . __('Assign equipment') . "</td>";
+                    echo "<td>" . __s('Assign equipment') . "</td>";
 
                     echo "<td>" . $item->getLink(['comments' => true]) . "</td>";
                     echo "</tr>";
@@ -10926,7 +10926,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $satisfaction->showSatisactionForm($item);
         } else {
-            echo "<p class='center b'>" . __('No generated survey') . "</p>";
+            echo "<p class='center b'>" . __s('No generated survey') . "</p>";
         }
     }
 

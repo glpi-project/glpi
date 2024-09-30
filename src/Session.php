@@ -379,9 +379,7 @@ class Session
             $url = '';
 
             if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
-                if (isset($_SERVER['HTTP_REFERER'])) {
-                    $url = $_SERVER['HTTP_REFERER'];
-                }
+                $url = Html::getRefererUrl();
             } else {
                 $url = $_SERVER['REQUEST_URI'];
             }
@@ -1436,7 +1434,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory()) {
+        if (Session::isInventory() || Session::isCron()) {
             return true;
         }
 

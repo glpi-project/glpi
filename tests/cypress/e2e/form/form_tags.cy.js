@@ -60,6 +60,11 @@ describe('Form tags', () => {
                 }).then((question_id) => {
                     last_name_question_id = question_id;
                 });
+                cy.createWithAPI('Glpi\\Form\\Comment', {
+                    'name': 'Comment title',
+                    'description': 'Comment description',
+                    'forms_sections_id': section_id,
+                });
             });
         });
 
@@ -81,6 +86,8 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Comment title: Comment title"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Comment description: Comment description"}).should('not.exist');
 
         // Remove auto configuration to allow us to type into the content field
         cy.findByLabelText("Content").awaitTinyMCE().as("rich_text_editor");
@@ -98,6 +105,8 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('exist');
+        cy.findByRole("menuitem", {name: "Comment title: Comment title"}).should('exist');
+        cy.findByRole("menuitem", {name: "Comment description: Comment description"}).should('exist');
 
         // Filter results
         cy.get("@rich_text_editor").type("Last");
@@ -107,6 +116,8 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('exist');
         cy.findByRole("menuitem", {name: "Answer: First name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('exist');
+        cy.findByRole("menuitem", {name: "Comment title: Comment title"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Comment description: Comment description"}).should('not.exist');
 
         // Auto completion UI is terminated after clicking on the item.
         cy.findByRole("menuitem", {name: "Question: Last name"}).click();
@@ -114,6 +125,8 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Section: Section 1"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Question: Last name"}).should('not.exist');
         cy.findByRole("menuitem", {name: "Answer: Last name"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Comment title: Comment title"}).should('not.exist');
+        cy.findByRole("menuitem", {name: "Comment description: Comment description"}).should('not.exist');
 
         // Item has been inserted into rich text
         cy.get("@rich_text_editor")

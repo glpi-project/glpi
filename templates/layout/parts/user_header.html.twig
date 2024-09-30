@@ -44,7 +44,7 @@
                   <div class="pe-2 d-none d-xl-block">
                      <div>{{ (session('glpiactiveprofile')['name'] ?? '')|u.truncate(35, '...') }}</div>
                      {% set entity_completename = session('glpiactive_entity_name') %}
-                     <div class="mt-1 small text-muted" title="{{ entity_completename }}"
+                     <div class="mt-1 small text-muted-menu" title="{{ entity_completename }}"
                           data-bs-toggle="tooltip" data-bs-placement="bottom">
                         {{ entity_completename|truncate_left }}
                      </div>

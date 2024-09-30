@@ -102,7 +102,7 @@ class AssetType extends DbTestCase
                 function () use ($asset_type, $method, $definition) {
                     $asset_type->{$method}(['assets_assetdefinitions_id' => $definition->getID() + 1]);
                 }
-            )->message->contains('Asset definition does not match the current concrete class.');
+            )->message->contains('Definition does not match the current concrete class.');
         }
     }
 
@@ -120,6 +120,6 @@ class AssetType extends DbTestCase
                 $asset_2 = new $classname_2();
                 $asset_2->update(['id' => $asset_type->getID(), 'name' => 'updated']);
             }
-        )->message->contains('Asset definition cannot be changed.');
+        )->message->contains('Definition cannot be changed.');
     }
 }

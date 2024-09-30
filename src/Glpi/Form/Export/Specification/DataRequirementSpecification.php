@@ -37,6 +37,9 @@ namespace Glpi\Form\Export\Specification;
 
 final class DataRequirementSpecification
 {
-    public string $itemtype;
-    public string $name;
+    public function __construct(
+        public string $itemtype = "",
+        public string $name = "",
+    ) {
+    }
 }

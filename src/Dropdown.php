@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
 use Glpi\Plugin\Hooks;
@@ -47,6 +48,18 @@ class Dropdown
 {
    //Empty value displayed in a dropdown
     const EMPTY_VALUE = '-----';
+
+    /**
+     * List of standard itemtypes options
+     * @var array|null
+     */
+    private static $standard_itemtypes_options = null;
+
+    /**
+     * List of devices itemtypes options
+     * @var array|null
+     */
+    private static $devices_itemtypes_options = null;
 
     /**
      * Print out an HTML "<select>" for a dropdown with preselected value
@@ -1095,21 +1108,19 @@ JAVASCRIPT;
      **/
     public static function getDeviceItemTypes()
     {
-        static $optgroup = null;
-
         if (!Session::haveRight('device', READ)) {
             return [];
         }
 
-        if (is_null($optgroup)) {
+        if (self::$devices_itemtypes_options === null) {
             $devices = [];
             foreach (CommonDevice::getDeviceTypes() as $device_type) {
                 $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
             }
             asort($devices);
-            $optgroup = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
+            self::$devices_itemtypes_options = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
         }
-        return $optgroup;
+        return self::$devices_itemtypes_options;
     }
 
 
@@ -1117,12 +1128,11 @@ JAVASCRIPT;
      * Get the dropdown list name the user is allowed to edit
      *
      * @return array (group of dropdown) of array (itemtype => localized name)
+     * @phpstan-return array<string, array<class-string<CommonDBTM>, string>>
      **/
     public static function getStandardDropdownItemTypes()
     {
-        static $optgroup = null;
-
-        if (is_null($optgroup)) {
+        if (self::$standard_itemtypes_options === null) {
             $optgroup = [
                 __('Common') => [
                     'Location' => null,
@@ -1310,6 +1320,14 @@ JAVASCRIPT;
 
             ]; //end $opt
 
+            $custom_dropdowns = DropdownDefinitionManager::getInstance()->getCustomObjectClassNames();
+            if (count($custom_dropdowns)) {
+                $optgroup[__('Custom dropdowns')] = [];
+                foreach ($custom_dropdowns as $dropdown) {
+                    $optgroup[__('Custom dropdowns')][$dropdown] = null;
+                }
+            }
+
             $plugdrop = Plugin::getDropdowns();
 
             if (count($plugdrop)) {
@@ -1319,7 +1337,7 @@ JAVASCRIPT;
             foreach ($optgroup as $label => &$dp) {
                 foreach ($dp as $key => &$val) {
                     if ($tmp = getItemForItemtype($key)) {
-                        if (!$tmp->canView()) {
+                        if (!$tmp::canView()) {
                             unset($optgroup[$label][$key]);
                         } else if ($val === null) {
                             $val = $key::getTypeName(Session::getPluralNumber());
@@ -1329,12 +1347,14 @@ JAVASCRIPT;
                     }
                 }
 
-                if (count($optgroup[$label]) == 0) {
+                if (count($optgroup[$label]) === 0) {
                     unset($optgroup[$label]);
                 }
             }
+
+            self::$standard_itemtypes_options = $optgroup;
         }
-        return $optgroup;
+        return self::$standard_itemtypes_options;
     }
 
 
@@ -4462,5 +4482,11 @@ JAVASCRIPT;
         return ($json === true)
          ? json_encode($return)
          : $return;
+    }
+
+    public static function resetItemtypesStaticCache(): void
+    {
+        self::$devices_itemtypes_options  = null;
+        self::$standard_itemtypes_options = null;
     }
 }

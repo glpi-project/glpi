@@ -49,7 +49,7 @@ if (isset($_REQUEST['newprofile'])) {
             Html::redirect($_SERVER['PHP_SELF']);
         }
     } else {
-        Html::redirect(preg_replace("/entities_id=.*/", "", $_SERVER['HTTP_REFERER']));
+        Html::redirect(preg_replace("/entities_id=.*/", "", Html::getBackUrl()));
     }
 }
 
@@ -60,7 +60,7 @@ if (isset($_GET["active_entity"])) {
     }
     if (Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"])) {
         if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/(\?|&|" . urlencode('?') . "|" . urlencode('&') . ")?(entities_id|active_entity).*/", "", $_SERVER['HTTP_REFERER']));
+            Html::redirect(preg_replace("/(\?|&|" . urlencode('?') . "|" . urlencode('&') . ")?(entities_id|active_entity).*/", "", Html::getBackUrl()));
         }
     }
 }

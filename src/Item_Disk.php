@@ -229,9 +229,9 @@ class Item_Disk extends CommonDBChild
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             echo "<div class='mt-1 mb-3 text-center'>" .
-               "<a class='btn btn-primary' href='" . self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&amp;withtemplate=" .
+               "<a class='btn btn-primary' href='" . self::getFormURL() . "?itemtype=" . htmlspecialchars($itemtype) . "&items_id=$ID&amp;withtemplate=" .
                   $withtemplate . "'>";
-            echo __('Add a volume');
+            echo __s('Add a volume');
             echo "</a></div>\n";
         }
 

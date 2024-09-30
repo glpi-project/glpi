@@ -174,8 +174,7 @@ class Process extends AbstractInventoryAsset
             system_name: 'MyAsset' . $this->getUniqueString(),
             capacities: array_merge(
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                    \Glpi\Asset\Capacity\HasProcessCapacity::class
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
                 ]
             )
         );

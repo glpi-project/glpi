@@ -143,8 +143,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 } else {
                                     // This is only used in the debug tab of some forms
                                     $notificationtarget->getFromDB($target['id']);
-                                    echo "<tr class='tab_bg_2'><td>" . $label . "</td>";
-                                    echo "<td>" . $notificationtarget->getNameID() . "</td>";
+                                    echo "<tr class='tab_bg_2'><td>" . htmlspecialchars($label) . "</td>";
+                                    echo "<td>" . htmlspecialchars($notificationtarget->getNameID()) . "</td>";
                                     echo "<td>" . sprintf(
                                         __s('%1$s (%2$s)'),
                                         $template->getName(),

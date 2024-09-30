@@ -40,8 +40,9 @@ use Glpi\Session\SessionInfo;
 final readonly class FormAccessParameters
 {
     public function __construct(
-        private ?SessionInfo $session_info,
-        private array $url_parameters,
+        private ?SessionInfo $session_info = null,
+        private array $url_parameters = [],
+        private bool $bypass_restriction = false,
     ) {
     }
 
@@ -58,5 +59,10 @@ final readonly class FormAccessParameters
     public function getUrlParameters(): array
     {
         return $this->url_parameters;
+    }
+
+    public function isBypassingRestrictions(): bool
+    {
+        return $this->bypass_restriction;
     }
 }

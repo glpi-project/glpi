@@ -47,6 +47,7 @@ Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
 ) => {
     const fully_qualified_tabs = new Map([
         ['Form', 'Glpi\\Form\\Form\\Form$main'],
+        ['Policies', 'Glpi\\Form\\AccessControl\\FormAccessControl$1'],
         ['Destinations', 'Glpi\\Form\\Destination\\FormDestination$1'],
         ['ServiceCatalog', 'Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1'],
     ]);

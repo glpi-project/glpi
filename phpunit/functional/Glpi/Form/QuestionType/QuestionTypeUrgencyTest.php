@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use CommonITILObject;
 use DbTestCase;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
@@ -59,6 +60,54 @@ final class QuestionTypeUrgencyTest extends DbTestCase
         $this->assertStringContainsString(
             "1) What is the urgency: Very high",
             strip_tags($ticket->fields['content']),
+        );
+    }
+
+    public function testGetUrgencyLevels(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $questionType = new QuestionTypeUrgency();
+        $urgency_levels = array_combine(
+            range(1, 5),
+            array_map(
+                fn($level) => CommonITILObject::getUrgencyName($level),
+                range(1, 5),
+            )
+        );
+
+        // Allow all urgency levels
+        $CFG_GLPI['urgency_mask'] = array_reduce(range(1, 5), fn($mask, $level) => $mask | (1 << $level), 0);
+        $this->assertEquals($urgency_levels, $this->callPrivateMethod($questionType, 'getUrgencyLevels'));
+
+        // Allow only the third urgency level (the third level can't be disabled)
+        $CFG_GLPI['urgency_mask'] = 1 << 3;
+        $this->assertEquals(
+            [3 => $urgency_levels[3]],
+            $this->callPrivateMethod($questionType, 'getUrgencyLevels')
+        );
+
+        // Allow the three first urgency levels
+        $CFG_GLPI['urgency_mask'] = (1 << 1) | (1 << 2) | (1 << 3);
+        $this->assertEquals(
+            [
+                1 => $urgency_levels[1],
+                2 => $urgency_levels[2],
+                3 => $urgency_levels[3],
+            ],
+            $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
+        );
+
+        // Allow the two last urgency levels
+        $CFG_GLPI['urgency_mask'] = (1 << 3) | (1 << 4) | (1 << 5);
+        $this->assertEquals(
+            [
+                3 => $urgency_levels[3],
+                4 => $urgency_levels[4],
+                5 => $urgency_levels[5],
+            ],
+            $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
         );
     }
 }

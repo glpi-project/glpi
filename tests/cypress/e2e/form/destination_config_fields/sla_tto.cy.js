@@ -79,7 +79,7 @@ describe('SLA TTO configuration', () => {
 
         // Switch to "Specific SLA"
         cy.get('@sla_tto_dropdown').selectDropdownValue('Specific SLA');
-        cy.get('@config').getDropdownByLabelText('Select an SLA...').as('specific_sla_tto_dropdown');
+        cy.get('@config').getDropdownByLabelText('Select a SLA...').as('specific_sla_tto_dropdown');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = 'SLA TTO - ' + slm_id;
             cy.get('@specific_sla_tto_dropdown').selectDropdownValue(sla_name);
@@ -100,7 +100,7 @@ describe('SLA TTO configuration', () => {
         cy.get('@config').getDropdownByLabelText('SLA TTO').selectDropdownValue('Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = 'SLA TTO - ' + slm_id;
-            cy.get('@config').getDropdownByLabelText('Select an SLA...').selectDropdownValue(sla_name);
+            cy.get('@config').getDropdownByLabelText('Select a SLA...').selectDropdownValue(sla_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');

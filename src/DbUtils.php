@@ -1476,14 +1476,14 @@ final class DbUtils
                     $alias   = $result['alias'];
                     if (!empty($alias)) {
                         $name = $alias;
-                        $comment .= "<span class='b'>" . __('Alias:') . "</span> " . $alias . "<br/>";
+                        $comment .= "<span class='b'>" . __s('Alias:') . "</span> " . htmlspecialchars($alias) . "<br/>";
                     }
                     if (!empty($code)) {
                         $name .= ' - ' . $code;
-                        $comment .= "<span class='b'>" . __('Code:') . "</span> " . $code . "<br/>";
+                        $comment .= "<span class='b'>" . __s('Code:') . "</span> " . htmlspecialchars($code) . "<br/>";
                     }
                     if (!empty($address)) {
-                        $acomment .= $address;
+                        $acomment .= htmlspecialchars($address);
                     }
                     if (
                         !empty($address) &&
@@ -1492,19 +1492,19 @@ final class DbUtils
                         $acomment .= '<br/>';
                     }
                     if (!empty($town)) {
-                        $acomment .= $town;
+                        $acomment .= htmlspecialchars($town);
                     }
                     if (!empty($country)) {
                         if (!empty($town)) {
                             $acomment .= ' - ';
                         }
-                        $acomment .= $country;
+                        $acomment .= htmlspecialchars($country);
                     }
                     if (trim($acomment) != '') {
-                        $comment .= "<span class='b'>&nbsp;" . __('Address:') . "</span> " . $acomment . "<br/>";
+                        $comment .= "<span class='b'>&nbsp;" . __s('Address:') . "</span> " . $acomment . "<br/>";
                     }
                 }
-                $comment .= "<span class='b'>&nbsp;" . __('Comments') . "&nbsp;</span>";
+                $comment .= "<span class='b'>&nbsp;" . __s('Comments') . "&nbsp;</span>";
             }
             $transcomment = $result['transcomment'];
             if ($translate && !empty($transcomment)) {

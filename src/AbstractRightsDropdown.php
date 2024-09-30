@@ -107,10 +107,10 @@ abstract class AbstractRightsDropdown
 
         if ($params['multiple']) {
             $params['values'] = $dropdown_values;
-            $params['valuesnames'] = self::getValueNames($dropdown_values);
+            $params['valuesnames'] = static::getValueNames($dropdown_values);
         } elseif (count($dropdown_values) > 0) {
             $params['value'] = $dropdown_values[0];
-            $params['valuename'] = self::getValueNames($dropdown_values)[0];
+            $params['valuename'] = static::getValueNames($dropdown_values)[0];
         }
         return Html::jsAjaxDropdown($params['name'], $field_id, $url, $params);
     }

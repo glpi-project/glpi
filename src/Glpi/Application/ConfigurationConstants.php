@@ -170,9 +170,6 @@ final class ConfigurationConstants
                 )
             );
         }
-        if (defined('PLUGINS_DIRECTORIES') && !is_array(PLUGINS_DIRECTORIES)) {
-            throw new \Exception('PLUGINS_DIRECTORIES constant value must be an array');
-        }
 
         // Configure environment type if not defined by user.
         if (!defined('GLPI_ENVIRONMENT_TYPE')) {

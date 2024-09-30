@@ -105,7 +105,7 @@ class Contact_Supplier extends CommonDBRelation
     public static function showForContact(Contact $contact)
     {
 
-        $instID = $contact->fields['id'];
+        $instID = (int)$contact->fields['id'];
 
         if (!$contact->can($instID, READ)) {
             return;
@@ -130,7 +130,7 @@ class Contact_Supplier extends CommonDBRelation
                 method='post' action='";
             echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . __('Add a supplier') . "</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>" . __s('Add a supplier') . "</tr>";
 
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
@@ -166,12 +166,12 @@ class Contact_Supplier extends CommonDBRelation
             $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_bottom .= "</th>";
         }
-        $header_end .= "<th>" . Supplier::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . SupplierType::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . Phone::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . __('Fax') . "</th>";
-        $header_end .= "<th>" . __('Website') . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Supplier::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(SupplierType::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Phone::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . __s('Fax') . "</th>";
+        $header_end .= "<th>" . __s('Website') . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -207,13 +207,13 @@ class Contact_Supplier extends CommonDBRelation
                 }
                 echo "<td class='center'>";
                 echo "<a href='" . Supplier::getFormURLWithID($data["id"]) . "'>" .
-                   Dropdown::getDropdownName("glpi_suppliers", $data["id"]) . "</a></td>";
-                echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data["entity"]);
+                   htmlspecialchars(Dropdown::getDropdownName("glpi_suppliers", $data["id"])) . "</a></td>";
+                echo "<td class='center'>" . htmlspecialchars(Dropdown::getDropdownName("glpi_entities", $data["entity"]));
                 echo "</td>";
-                echo "<td class='center'>" . Dropdown::getDropdownName("glpi_suppliertypes", $data["suppliertypes_id"]);
+                echo "<td class='center'>" . htmlspecialchars(Dropdown::getDropdownName("glpi_suppliertypes", $data["suppliertypes_id"]));
                 echo "</td>";
-                echo "<td class='center' width='80'>" . $data["phonenumber"] . "</td>";
-                echo "<td class='center' width='80'>" . $data["fax"] . "</td>";
+                echo "<td class='center' width='80'>" . htmlspecialchars($data["phonenumber"]) . "</td>";
+                echo "<td class='center' width='80'>" . htmlspecialchars($data["fax"]) . "</td>";
                 echo "<td class='center'>" . $website . "</td>";
                 echo "</tr>";
             }
@@ -262,7 +262,7 @@ class Contact_Supplier extends CommonDBRelation
                 method='post' action='";
             echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . __('Add a contact') . "</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>" . __s('Add a contact') . "</tr>";
 
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
@@ -301,14 +301,14 @@ class Contact_Supplier extends CommonDBRelation
             $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_bottom .= "</th>";
         }
-        $header_end .= "<th>" . __('Name') . "</th>";
-        $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . Phone::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . __('Phone 2') . "</th>";
-        $header_end .= "<th>" . __('Mobile phone') . "</th>";
-        $header_end .= "<th>" . __('Fax') . "</th>";
-        $header_end .= "<th>" . _n('Email', 'Emails', 1) . "</th>";
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
+        $header_end .= "<th>" . __s('Name') . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . htmlspecialchars(Phone::getTypeName(1)) . "</th>";
+        $header_end .= "<th>" . __s('Phone 2') . "</th>";
+        $header_end .= "<th>" . __s('Mobile phone') . "</th>";
+        $header_end .= "<th>" . __s('Fax') . "</th>";
+        $header_end .= "<th>" . _sn('Email', 'Emails', 1) . "</th>";
+        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -333,18 +333,18 @@ class Contact_Supplier extends CommonDBRelation
                 }
                 echo "<td class='center'>";
                 echo "<a href='" . Contact::getFormURLWithID($data["id"]) . "'>" .
-                   sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"]) . "</a></td>";
+                   htmlspecialchars(sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])) . "</a></td>";
                 echo "<td class='center' width='100'>" . Dropdown::getDropdownName(
                     "glpi_entities",
                     $data["entity"]
                 );
                  echo "</td>";
-                 echo "<td class='center' width='100'>" . $data["phone"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["phone2"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["mobile"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["fax"] . "</td>";
+                 echo "<td class='center' width='100'>" . htmlspecialchars($data["phone"]) . "</td>";
+                 echo "<td class='center' width='100'>" . htmlspecialchars($data["phone2"]) . "</td>";
+                 echo "<td class='center' width='100'>" . htmlspecialchars($data["mobile"]) . "</td>";
+                 echo "<td class='center' width='100'>" . htmlspecialchars($data["fax"]) . "</td>";
                  echo "<td class='center'>";
-                 echo "<a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
+                 echo "<a href='mailto:" . htmlspecialchars($data["email"]) . "'>" . htmlspecialchars($data["email"]) . "</a></td>";
                  echo "<td class='center'>" . Dropdown::getDropdownName(
                      "glpi_contacttypes",
                      $data["contacttypes_id"]

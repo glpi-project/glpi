@@ -506,7 +506,7 @@ class ErrorHandler
             $this->output_handler->writeln($message, $verbosity);
         } else if (!isCommandLine()) {
             echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
-            . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
+            . '<span class="b">' . \htmlspecialchars($error_type) . ': </span>' . \htmlspecialchars($message) . '</div>';
         } else {
             echo $error_type . ': ' . $message . "\n";
         }

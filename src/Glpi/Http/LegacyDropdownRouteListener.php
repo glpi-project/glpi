@@ -38,11 +38,13 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
 use Glpi\Controller\DropdownController;
+use Glpi\Controller\DropdownFormController;
+use Glpi\Dropdown\Dropdown;
+use Glpi\Dropdown\DropdownDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Glpi\Controller\DropdownFormController;
 
 final readonly class LegacyDropdownRouteListener implements EventSubscriberInterface
 {
@@ -60,6 +62,14 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         }
         $request = $event->getRequest();
 
+        if (
+            $request->attributes->get('_controller') !== null
+            || $event->getResponse() !== null
+        ) {
+            // A controller or a response has already been defined for this request, do not override them.
+            return;
+        }
+
         if ($class = $this->findDropdownClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
@@ -73,6 +83,10 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         $path_info = $request->getPathInfo();
 
         if ($model_class = $this->findPluginClass($path_info)) {
+            return $this->normalizeClass($model_class);
+        }
+
+        if ($model_class = $this->findCustomDropdownClass($request)) {
             return $this->normalizeClass($model_class);
         }
 
@@ -93,6 +107,33 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         }
 
         return null;
+    }
+
+    private function findCustomDropdownClass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/dropdown/dropdown(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+
+        if ($is_form && $id !== null) {
+            $dropdown = Dropdown::getById($id);
+            if ($dropdown instanceof Dropdown) {
+                $classname = $dropdown::class;
+            }
+        } else {
+            $definition = new DropdownDefinition();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getDropdownClassName();
+            }
+        }
+
+        return $classname;
     }
 
     private function findGenericClass(string $path_info): ?string

@@ -112,7 +112,7 @@ if (isset($_POST["validatortype"])) {
                 $param
             );
 
-            echo "<br><span id='show_groups_users'>&nbsp;</span>\n";
+            echo "<br><span id='show_groups_users'>&nbsp;</span>";
             break;
 
         case $types_mapping['list_users']:
@@ -141,7 +141,7 @@ if (isset($_POST["validatortype"])) {
 
             Dropdown::showFromArray($items_id_name, $users, $param);
 
-            echo "<br><br>" . __('Comments') . " ";
+            echo "<br><br>" . __s('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";

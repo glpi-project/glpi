@@ -1,0 +1,173 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    <input type="hidden" name="{{ 'Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key }}" value="{{ assetdefinitions_id }}">
+
+    {{ fields.textField('label', item.fields['label'], __('Label')) }}
+    {{ fields.textField('name', item.fields['name'], __('System name'), {
+        readonly: not item.isNewItem()
+    }) }}
+    {{ fields.dropdownArrayField('type', item.fields['type']|default('Glpi\\Asset\\CustomFieldType\\StringType'), field_types, _n('Type', 'Types', 1), {
+        readonly: not item.isNewItem()
+    }) }}
+    {{ fields.nullField() }}
+
+    <div class="field-type-options d-flex flex-wrap"></div>
+
+    {{ fields.dropdownArrayField('itemtype', item.fields['itemtype'], allowed_dropdown_itemtypes, __('Item type'), {
+        add_field_class: 'd-none'
+    }) }}
+
+    <div class="field-default-value">
+        {% if item.fields['default_value'] is array %}
+            {% for value in item.fields['default_value'] %}
+                <input type="hidden" name="default_value[]" value="{{ value }}">
+            {% endfor %}
+        {% else %}
+            <input type="hidden" name="default_value" value="{{ item.fields['default_value'] }}">
+        {% endif %}
+    </div>
+
+    <script>
+        $(() => {
+            $('#customfield_form_container input[name="name"]').on('input', () => {
+                $('input[name="name"]').data('manually_changed', true);
+            });
+            const getSelectedType = () => {
+                return $('#customfield_form_container select[name="type"], #customfield_form_container input[name="type"]').first().val();
+            };
+            const getDefaultValue = () => {
+                // handle array from hidden inputs
+                if ($('#customfield_form_container input[name="default_value[]"]').length > 0) {
+                    return $('#customfield_form_container input[name="default_value[]"]').map(function () {
+                        return this.value;
+                    }).get();
+                }
+                return $('#customfield_form_container select[name="default_value"], #customfield_form_container input[name="default_value"]').val();
+            }
+            const resetDefaultValueField = () => {
+                $('#customfield_form_container input[name="default_value[]"]').remove();
+                $('#customfield_form_container select[name="default_value"], #customfield_form_container input[name="default_value"]').val('');
+            };
+            const autoUpdateNameField = () => {
+                {% if not item.isNewItem() %}
+                    // System name shouldn't be changed for existing custom fields
+                    return;
+                {% endif %}
+                if ($('#customfield_form_container input[name="name"]').data('manually_changed')) {
+                    return;
+                }
+                // label is made lowercase and spaces are replaced with underscores. All other characters are removed
+                $('#customfield_form_container input[name="name"]')
+                    .val($('#customfield_form_container input[name="label"]').val().toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+            };
+            const updateDefaultValueField = () => {
+                // get all inputs with name starting with field_options and create an object with the values
+                const field_options = {};
+                $('#customfield_form_container input[name^="field_options"]').each((index, element) => {
+                    // ignore hidden
+                    if ($(element).is(':hidden')) {
+                        return;
+                    }
+                    const opt_key = element.name.replace('field_options[', '').replace(']', '');
+                    if (opt_key.endsWith('[]')) {
+                        const key = opt_key.replace('[]', '');
+                        if (field_options[key] === undefined) {
+                            field_options[key] = [];
+                        }
+                        field_options[key].push(element.value);
+                    } else {
+                        // Handle checkboxes
+                        if (element.type === 'checkbox') {
+                            field_options[opt_key] = element.checked ? '1' : '0';
+                        } else {
+                            field_options[opt_key] = element.value;
+                        }
+                    }
+                });
+
+                $(`#customfield_form_container .field-default-value`).load(
+                    '{{ path('ajax/asset/customfield.php') }}',
+                    {
+                        action: 'get_default_custom_field',
+                        itemtype: $('select[name="itemtype"]').val(),
+                        type: getSelectedType(),
+                        default_value: getDefaultValue(),
+                        field_options: field_options,
+                    }
+                )
+            }
+            const updateFieldOptions = () => {
+                $('#customfield_form_container .field-type-options').load(
+                    '{{ path('ajax/asset/customfield.php') }}',
+                    {
+                        action: 'get_field_type_options',
+                        type: getSelectedType(),
+                        customfielddefinitions_id: $(`#customfield_form_container input[name="id"]`).val() ?? 0,
+                    },
+                    updateDefaultValueField
+                );
+            };
+
+            $('#customfield_form_container input[name="label"]').on('input', () => {
+                autoUpdateNameField();
+            });
+            if ($('#customfield_form_container select[name="type"]').length === 0) {
+                updateFieldOptions();
+            } else {
+                $('#customfield_form_container select[name="type"]').on('change', () => {
+                    autoUpdateNameField();
+                    const selected_type = getSelectedType();
+                    resetDefaultValueField();
+                    updateFieldOptions();
+                    if ($('#customfield_form_container input[name="label"]').data('last-value') !== undefined) {
+                        $('#customfield_form_container input[name="label"]')
+                            .val($('input[name="label"]').data('last-value'))
+                            .data('last-value', undefined);
+                        autoUpdateNameField();
+                    }
+                    $('#customfield_form_container select[name="itemtype"]').closest('.form-field').toggleClass('d-none', selected_type !== 'Glpi\\Asset\\CustomFieldType\\DropdownType');
+                }).trigger('change');
+            }
+            $('#customfield_form_container').on('change', '.field-type-options input, .field-type-options select', () => {
+                updateDefaultValueField();
+            });
+            $('#customfield_form_container select[name="itemtype"]').on('change', () => {
+                updateDefaultValueField();
+            });
+        });
+    </script>
+{% endblock %}

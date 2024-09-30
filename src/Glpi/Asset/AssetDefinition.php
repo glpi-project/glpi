@@ -35,71 +35,59 @@
 
 namespace Glpi\Asset;
 
-use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
-use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Category as Language_Category;
+use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\TypeInterface;
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchOption;
-use Profile;
-use ProfileRight;
 use Session;
 
-final class AssetDefinition extends CommonDBTM
+/**
+ * @extends AbstractDefinition<\Glpi\Asset\Asset>
+ */
+final class AssetDefinition extends AbstractDefinition
 {
-    public static $rightname = 'config';
+    public static function getCustomObjectBaseClass(): string
+    {
+        return Asset::class;
+    }
+
+    public static function getCustomObjectNamespace(): string
+    {
+        return 'Glpi\\CustomAsset';
+    }
+
+    public static function getDefinitionManagerClass(): string
+    {
+        return AssetDefinitionManager::class;
+    }
+
+    public function getCustomObjectRightname(): string
+    {
+        return sprintf('asset_%s', strtolower($this->fields['system_name']));
+    }
+
+    /**
+     * @var CustomFieldDefinition[]|null
+     * @see self::getCustomFieldDefinitions()
+     */
+    private ?array $custom_field_definitions = null;
 
     public static function getTypeName($nb = 0)
     {
         return _n('Asset definition', 'Asset definitions', $nb);
     }
 
-    public static function getIcon()
-    {
-        return 'ti ti-database-cog';
-    }
-
-    public static function canCreate(): bool
-    {
-        // required due to usage of `config` rightname
-        return static::canUpdate();
-    }
-
-    public static function canPurge(): bool
-    {
-        // required due to usage of `config` rightname
-        return static::canUpdate();
-    }
-
     protected function computeFriendlyName()
     {
         return $this->getTranslatedName();
-    }
-
-    /**
-     * Load instance related to given system name.
-     *
-     * @param string $system_name
-     * @return bool
-     */
-    public function getFromDBBySystemName(string $system_name): bool
-    {
-        return $this->getFromDBByCrit(['system_name' => $system_name]);
-    }
-
-    public function defineTabs($options = [])
-    {
-        $tabs = [];
-
-        $this->addDefaultFormTab($tabs);
-        $this->addStandardTab(self::class, $tabs, $options);
-
-        return $tabs;
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -108,10 +96,12 @@ final class AssetDefinition extends CommonDBTM
             $capacities_count   = 0;
             $profiles_count     = 0;
             $translations_count = 0;
+            $fields_count = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $capacities_count   = count($item->getDecodedCapacitiesField());
                 $profiles_count     = count(array_filter($item->getDecodedProfilesField()));
                 $translations_count = count($item->getDecodedTranslationsField());
+                $fields_count       = count($item->getCustomFieldDefinitions());
             }
             return [
                 1 => self::createTabEntry(
@@ -120,7 +110,12 @@ final class AssetDefinition extends CommonDBTM
                     self::class,
                     'ti ti-adjustments'
                 ),
-                // 2 is reserved for "Fields"
+                2 => self::createTabEntry(
+                    CustomFieldDefinition::getTypeName(Session::getPluralNumber()),
+                    $fields_count,
+                    CustomFieldDefinition::class,
+                    CustomFieldDefinition::getIcon()
+                ),
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
                     $profiles_count,
@@ -147,7 +142,7 @@ final class AssetDefinition extends CommonDBTM
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    // 2 is reserved for "Fields" form
+                    $item->showCustomFieldsForm();
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -157,46 +152,6 @@ final class AssetDefinition extends CommonDBTM
                     break;
             }
         }
-        return true;
-    }
-
-    public function showForm($ID, array $options = [])
-    {
-        $this->initForm($ID, $options);
-        $options['candel'] = false;
-
-        $asset_count = 0;
-
-        if (!self::isNewID($ID)) {
-            // Add custom delete button that will show the number of assets using this definition and a link to their search page
-            $asset_count = countElementsInTable(
-                table: 'glpi_assets_assets',
-                condition: [
-                    'assets_assetdefinitions_id' => $ID,
-                    'is_template' => 0
-                ]
-            );
-            $options['addbuttons'] = [
-                'purge' => [
-                    'title' => _x('button', 'Delete permanently'),
-                    'add_class' => 'btn-outline-danger',
-                    'icon' => 'ti ti-trash',
-                    'text' => _x('button', 'Delete permanently'),
-                    'type' => 'submit',
-                ]
-            ];
-        }
-
-        TemplateRenderer::getInstance()->display(
-            'pages/admin/assetdefinition/main.html.twig',
-            [
-                'item'                  => $this,
-                'params'                => $options,
-                'has_rights_enabled'    => $this->hasRightsEnabled(),
-                'reserved_system_names' => AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames(),
-                'asset_count'           => $asset_count,
-            ]
-        );
         return true;
     }
 
@@ -210,7 +165,7 @@ final class AssetDefinition extends CommonDBTM
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
         usort(
             $capacities,
-            fn (CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
+            static fn (CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
         );
 
         TemplateRenderer::getInstance()->display(
@@ -224,206 +179,114 @@ final class AssetDefinition extends CommonDBTM
     }
 
     /**
-     * Display profiles form.
-     *
+     * Show the custom fields tab including the list of custom fields and a form to add/edit them.
      * @return void
      */
-    private function showProfilesForm(): void
+    private function showCustomFieldsForm(): void
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $possible_rights = $this->getPossibleAssetRights();
-
-        $profiles_data   = iterator_to_array(
-            $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM'   => Profile::getTable(),
-                'WHERE'  => [
-                    // simplified interface is not supposed to have access to assets
-                    ['NOT' => ['interface' => 'helpdesk']],
-                ]
-            ])
-        );
-
-        $nb_cb_per_col = array_fill_keys(
-            array_keys($possible_rights),
-            [
-                'checked' => 0,
-                'total' => count($profiles_data),
-            ]
-        );
-        $nb_cb_per_row = [];
-
-        $matrix_rows = [];
-        foreach ($profiles_data as $profile_data) {
-            $profile_id = $profile_data['id'];
-            $profile_rights = $this->getRightsForProfile($profile_id);
-
-            $checkbox_key = sprintf('profiles[%d]', $profile_id);
-
-            $nb_cb_per_row[$checkbox_key] = [
-                'checked' => 0,
-                'total' => count($possible_rights),
-            ];
-
-            $row = [
-                'label' => $profile_data['name'],
-                'columns' => []
-            ];
-            foreach (array_keys($possible_rights) as $right_value) {
-                $checked = $profile_rights & $right_value;
-                $row['columns'][$right_value] = [
-                    'checked' => $checked,
-                ];
-
-                if ($checked) {
-                    $nb_cb_per_row[$checkbox_key]['checked']++;
-                    $nb_cb_per_col[$right_value]['checked']++;
-                }
-            }
-            $matrix_rows[$checkbox_key] = $row;
+        if (!$this->canViewItem()) {
+            return;
         }
 
-        TemplateRenderer::getInstance()->display(
-            'pages/admin/assetdefinition/profiles.html.twig',
-            [
-                'item'           => $this,
-                'matrix_columns' => $possible_rights,
-                'matrix_rows'    => $matrix_rows,
-                'nb_cb_per_col'  => $nb_cb_per_col,
-                'nb_cb_per_row'  => $nb_cb_per_row,
-            ]
-        );
-    }
-
-    /**
-     * Display translation form.
-     *
-     * @return void
-     */
-    private function showTranslationForm(): void
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $translations = $this->getDecodedTranslationsField();
-        uksort(
-            $translations,
-            fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
-        );
-
+        $canedit = $this->canUpdateItem();
         $rand = mt_rand();
+        if ($canedit) {
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'cancreate' => CustomFieldDefinition::canCreate(),
+                'id'        => $this->fields['id'],
+                'rand'      => $rand,
+                'type'      => CustomFieldDefinition::class,
+                'parenttype' => CustomFieldDefinition::$itemtype,
+                'items_id'  => CustomFieldDefinition::$items_id,
+                'add_new_label' => __('Add a new field'),
+                'datatable_id' => 'datatable_customfields' . $rand,
+                'subitem_container_id' => 'customfield_form_container'
+            ]);
+        }
 
-        TemplateRenderer::getInstance()->display(
-            'pages/admin/assetdefinition/translations.html.twig',
-            [
-                'item' => $this,
-                'classname' => $this->getAssetClassName(),
-                'translations' => $translations,
-                'languages_dropdown' => Dropdown::showLanguages('language', [
-                    'display'             => false,
-                    'display_emptychoice' => true,
-                    'width'               => '100%',
-                    'on_change'           => 'setModalLanguagePlural(this.value);',
-                    'rand'                => $rand,
-                ]),
-                'rand' => $rand,
-            ]
-        );
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'name', 'label', 'type', 'field_options', 'itemtype'],
+            'FROM' => CustomFieldDefinition::getTable(),
+            'WHERE' => [
+                self::getForeignKeyField() => $this->fields['id'],
+            ],
+        ]);
+
+        $entries = [];
+        $adm = AssetDefinitionManager::getInstance();
+        $field_types = $adm->getCustomFieldTypes();
+        $allowed_dropdown_itemtypes = $adm->getAllowedDropdownItemtypes(true);
+        foreach ($iterator as $data) {
+            $entry = [
+                'id' => $data['id'],
+                'itemtype' => CustomFieldDefinition::class,
+                'name' => $data['name'],
+                'label' => $data['label'],
+                'type' => in_array($data['type'], $field_types, true) ? $data['type']::getName() : NOT_AVAILABLE,
+                'dropdown_itemtype' => $data['itemtype'] !== '' ? ($allowed_dropdown_itemtypes[$data['itemtype']] ?? NOT_AVAILABLE) : NOT_AVAILABLE,
+                'row_class' => 'cursor-pointer'
+            ];
+
+            $field_options = json_decode($data['field_options'] ?? '[]', true) ?? [];
+            $flags = '';
+            if ($field_options['readonly'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Read-only') . '</span>';
+            }
+            if ($field_options['required'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Mandatory') . '</span>';
+            }
+            if ($field_options['multiple'] ?? false) {
+                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Multiple values') . '</span>';
+            }
+            $entry['flags'] = $flags;
+            $entries[] = $entry;
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'datatable_customfields' . $rand,
+            'is_tab' => true,
+            'nopager' => true,
+            'nosort' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'label' => __('Label'),
+                'type' => _n('Type', 'Types', 1),
+                'flags' => __('Flags'),
+                'dropdown_itemtype' => __('Item type'),
+            ],
+            'formatters' => [
+                'flags' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . str_replace('\\', '_', self::class) . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+            ],
+        ]);
     }
 
     public function prepareInputForAdd($input)
     {
-        if (!array_key_exists('system_name', $input)) {
-            Session::addMessageAfterRedirect(
-                __s('The system name is mandatory.'),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         foreach (['capacities', 'profiles', 'translations'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
                 // ensure default value of JSON fields will be a valid array
                 $input[$json_field] = [];
             }
         }
-        return $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
-    {
-        if (
-            array_key_exists('system_name', $input)
-            && $input['system_name'] !== $this->fields['system_name']
-        ) {
-            Session::addMessageAfterRedirect(
-                __s('The system name cannot be changed.'),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
-        if (isset($input['_save_translation']) && isset($input['language']) && isset($input['plurals'])) {
-            $translations = $this->getDecodedTranslationsField();
-            $translations[$input['language']] = $input['plurals'];
-            unset($input['_save_translation'], $input['language'], $input['plurals']);
-            $input['translations'] = $translations;
-        }
-
-        if (isset($input['_delete_translation']) && isset($input['language'])) {
-            $translations = $this->getDecodedTranslationsField();
-            unset($translations[$input['language']]);
-            unset($input['_delete_translation'], $input['language']);
-            $input['translations'] = $translations;
-        }
-
-        return $this->prepareInput($input);
-    }
-
-    /**
-     * Prepare common input for and an update.
-     *
-     * @param array $input
-     * @return array|bool
-     */
-    private function prepareInput(array $input): array|bool
+    protected function prepareInput(array $input): array|bool
     {
         $has_errors = false;
-
-        if (array_key_exists('system_name', $input)) {
-            if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
-                Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        __('System name')
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } elseif (in_array($input['system_name'], AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames())) {
-                Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
-                        __('The system name must not be the reserved word "%s".'),
-                        $input['system_name']
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } elseif (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
-                Session::addMessageAfterRedirect(
-                    __s('The system name must not end with the word "Model" or the word "Type".'),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            }
-        }
 
         if (array_key_exists('capacities', $input)) {
             if (!$this->validateCapacityArray($input['capacities'])) {
@@ -441,50 +304,11 @@ final class AssetDefinition extends CommonDBTM
             }
         }
 
-        if (array_key_exists('profiles', $input)) {
-            if (!$this->validateProfileArray($input['profiles'])) {
-                Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        _n('Profile', 'Profiles', Session::getPluralNumber())
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else {
-                $input['profiles'] = json_encode($input['profiles']);
-            }
-        }
-
-        if (array_key_exists('translations', $input)) {
-            if (!$this->validateTranslationsArray($input['translations'])) {
-                Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        _n('Translation', 'Translations', Session::getPluralNumber())
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else {
-                $input['translations'] = json_encode($input['translations']);
-            }
-        }
-
-        return $has_errors ? false : $input;
+        return $has_errors ? false : parent::prepareInput($input);
     }
 
     public function post_addItem()
     {
-        if ($this->isActive()) {
-            $this->syncProfilesRights();
-
-            // Force menu refresh when active state change
-            unset($_SESSION['menu']);
-        }
-
         // Add default display preferences for the new asset definition
         $prefs = [
             4, // Name
@@ -503,6 +327,8 @@ final class AssetDefinition extends CommonDBTM
                 'users_id' => 0,
             ]);
         }
+
+        parent::post_addItem();
     }
 
     public function post_updateItem($history = true)
@@ -546,53 +372,7 @@ final class AssetDefinition extends CommonDBTM
             }
         }
 
-        if (in_array('is_active', $this->updates, true)) {
-            // Force menu refresh when active state change
-            unset($_SESSION['menu']);
-        }
-
-        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
-            $this->syncProfilesRights();
-        }
-    }
-
-    /**
-     * Remove given rights from `profiles` field.
-     *
-     * @param int[] $rights_to_remove
-     * @return void
-     */
-    private function cleanRights(array $rights_to_remove): void
-    {
-        $profiles = $this->getDecodedProfilesField();
-
-        foreach (array_keys($profiles) as $profile_id) {
-            foreach ($rights_to_remove as $right_value) {
-                $profiles[$profile_id] &= ~$right_value;
-            }
-        }
-
-        $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
-    }
-
-    /**
-     * Set rights for given profile.
-     *
-     * @param int $profiles_id
-     * @param int $rights
-     * @return void
-     */
-    public function setProfileRights(int $profiles_id, int $rights): void
-    {
-        $profiles = $this->getDecodedProfilesField();
-        $profiles[$profiles_id] = $rights;
-
-        $this->update(
-            [
-                'id'       => $this->getID(),
-                'profiles' => $profiles,
-            ]
-        );
+        parent::post_updateItem();
     }
 
     public function cleanDBonPurge()
@@ -612,162 +392,9 @@ final class AssetDefinition extends CommonDBTM
         }
     }
 
-    /**
-     * Synchronize `profiles` field with `ProfileRights` entries.
-     *
-     * @return void
-     */
-    private function syncProfilesRights(): void
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $rightname = $this->getAssetRightname();
-
-        if (!$this->isActive()) {
-            ProfileRight::deleteProfileRights([$rightname]);
-        } else {
-            $profiles_iterator = $DB->request([
-                'SELECT' => ['id', 'interface'],
-                'FROM'   => Profile::getTable(),
-            ]);
-
-            foreach ($profiles_iterator as $profile_data) {
-                $profile_id = $profile_data['id'];
-                $rights = $profile_data['interface'] === 'helpdesk'
-                    ? 0
-                    : $this->getRightsForProfile($profile_id);
-
-                ProfileRight::updateProfileRights($profile_id, [$rightname => $rights]);
-            }
-        }
-    }
-
-    /**
-     * Indicates whether at least one profile has rights enabled on asset concrete class.
-     *
-     * @return bool
-     */
-    private function hasRightsEnabled(): bool
-    {
-        if (!$this->isNewItem()) {
-            $profiles = $this->getDecodedProfilesField();
-            foreach ($profiles as $rights) {
-                if ($rights > 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Return translated name.
-     *
-     * @param int $count
-     * @return string
-     */
-    public function getTranslatedName(int $count = 1): string
-    {
-        if ($this->isNewItem()) {
-            return '';
-        }
-
-        $translations = $this->getDecodedTranslationsField();
-        $language = Session::getLanguage();
-        $current_translation = $translations[$language] ?? null;
-        if ($current_translation === null) {
-            return $this->fields['system_name'];
-        }
-
-        // retrieve the formulas associated to the language
-        $gettext_language = Language::getById($language);
-
-        // compute the formula with the paramater count
-        $formula_to_compute = str_replace('n', $count, $gettext_language->formula);
-        $category_index_number = eval("return $formula_to_compute;");
-
-        // retrieve the category index string (one, few, many, other) based on the index
-        $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
-        $category_index_string = $found_category->id;
-
-        return $current_translation[$category_index_string] ?? $this->fields['system_name'];
-    }
-
-    /**
-     * Return icon to use for assets.
-     *
-     * @return string
-     */
-    public function getAssetsIcon(): string
-    {
-        return 'ti ' . ($this->fields['icon'] ?: 'ti-box');
-    }
-
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
-
-        $search_options[] = [
-            'id'            => 1,
-            'table'         => self::getTable(),
-            'field'         => 'system_name',
-            'name'          => __('System name'),
-            'datatype'      => 'itemlink',
-            'massiveaction' => false,
-        ];
-
-        $search_options[] = [
-            'id'            => 3,
-            'table'         => self::getTable(),
-            'field'         => 'is_active',
-            'name'          => __('Active'),
-            'datatype'      => 'bool'
-        ];
-
-        $search_options[] = [
-            'id'            => 4,
-            'table'         => self::getTable(),
-            'field'         => 'date_mod',
-            'name'          => __('Last update'),
-            'datatype'      => 'datetime',
-            'massiveaction' => false
-        ];
-
-        $search_options[] = [
-            'id'            => 5,
-            'table'         => self::getTable(),
-            'field'         => 'date_creation',
-            'name'          => __('Creation date'),
-            'datatype'      => 'datetime',
-            'massiveaction' => false
-        ];
-
-        $search_options[] = [
-            'id'            => 6,
-            'table'         => self::getTable(),
-            'field'         => 'icon',
-            'name'          => __('Icon'),
-            'datatype'      => 'specific',
-            'searchtype'    => ['equals'],
-        ];
-
-        $search_options[] = [
-            'id'            => 7,
-            'table'         => self::getTable(),
-            'field'         => 'comment',
-            'name'          => __('Comments'),
-            'datatype'      => 'text'
-        ];
-
-        $search_options[] = [
-            'id'            => 8,
-            'table'         => self::getTable(),
-            'field'         => 'translations',
-            'name'          => __('Translations'),
-            'datatype'      => 'specific'
-        ];
 
         $search_options[] = [
             'id'   => 'capacities',
@@ -799,62 +426,6 @@ final class AssetDefinition extends CommonDBTM
         return $search_options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-
-        switch ($field) {
-            case 'icon':
-                $value = htmlspecialchars($values[$field]);
-                return sprintf('<i class="ti %s"></i>', $value);
-            case 'translations':
-                $translations = json_decode($values[$field], associative: true);
-
-                return TemplateRenderer::getInstance()->renderFromStringTemplate(
-                    <<<TWIG
-                    {% if translations is not empty %}
-                        <ul>
-                            {% for language, plurals in translations %}
-                                <li>
-                                    {{ config('languages')[language][0] }}:
-                                    {% include "pages/admin/assetdefinition/plurals.html.twig" with {
-                                        'plurals': plurals,
-                                    } only %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-TWIG,
-                    [
-                        'translations' => $translations,
-                    ]
-                );
-        }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
-    }
-
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-
-        switch ($field) {
-            case 'icon':
-                $value = htmlspecialchars($values[$field] ?? '');
-                return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                    {% import 'components/form/fields_macros.html.twig' as fields %}
-                    {{ fields.dropdownWebIcons(name, value, '', {no_label: true, width: '200px'}) }}
-TWIG, ['name' => $name, 'value' => $value]);
-        }
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
-    }
-
     /**
      * Get the definition's concrete asset class name.
      *
@@ -864,13 +435,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public function getAssetClassName(bool $with_namespace = true): string
     {
-        $classname = $this->fields['system_name'];
-
-        if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
-        }
-
-        return $classname;
+        return $this->getCustomObjectClassName($with_namespace);
     }
 
     /**
@@ -908,7 +473,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $classname = 'RuleDictionary' . $this->getAssetModelClassName(false);
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -924,7 +489,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $classname = $this->getAssetModelDictionaryClassName(false) . 'Collection';
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -940,7 +505,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $classname = 'RuleDictionary' . $this->getAssetTypeClassName(false);
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
     }
@@ -956,20 +521,9 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $classname = $this->getAssetTypeDictionaryClassName(false) . 'Collection';
         if ($with_namespace) {
-            $classname = 'Glpi\\CustomAsset\\' . $classname;
+            $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
         return $classname;
-    }
-
-    /**
-     * Get the definition's concrete asset rightname.
-     *
-     * @param AssetDefinition $definition
-     * @return string
-     */
-    public function getAssetRightname(): string
-    {
-        return sprintf('asset_%s', strtolower($this->fields['system_name']));
     }
 
     /**
@@ -998,29 +552,6 @@ TWIG, ['name' => $name, 'value' => $value]);
             }
         }
         return $capacities;
-    }
-
-    /**
-     * Get the list of possible rights for the assets.
-     * @return array
-     */
-    private function getPossibleAssetRights(): array
-    {
-        $class = $this->getAssetClassName();
-        $object = new $class();
-        return $object->getRights();
-    }
-
-    /**
-     * Get rights for profile.
-     *
-     * @param int $profile_id
-     * @return int
-     */
-    private function getRightsForProfile(int $profile_id): int
-    {
-        $profiles_entries = $this->getDecodedProfilesField();
-        return $profiles_entries[$profile_id] ?? 0;
     }
 
     /**
@@ -1076,156 +607,34 @@ TWIG, ['name' => $name, 'value' => $value]);
     }
 
     /**
-     * Return the decoded value of the `translations` field.
-     *
-     * @return array
+     * @return CustomFieldDefinition[]
      */
-    private function getDecodedTranslationsField(): array
-    {
-        $translations = @json_decode($this->fields['translations'], associative: true);
-        if (!$this->validateTranslationsArray($translations)) {
-            trigger_error(
-                sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
-                E_USER_WARNING
-            );
-            $this->fields['translations'] = '[]'; // prevent warning to be triggered on each method call
-            $translations = [];
-        }
-        return $translations;
-    }
-
-    /**
-     * Validate that the given translations array contains valid values.
-     *
-     * @param mixed $profiles
-     * @return bool
-     */
-    private function validateTranslationsArray(mixed $translations): bool
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (!is_array($translations)) {
-            return false;
-        }
-
-        $is_valid = true;
-
-        foreach ($translations as $language => $values) {
-            if (!in_array($language, array_keys($CFG_GLPI['languages']), true)) {
-                $is_valid = false;
-                break;
-            }
-
-            $available_categories = array_map(
-                fn (Language_Category $category) => $category->id,
-                self::getPluralFormsForLanguage($language)
-            );
-            foreach ($values as $category => $translation) {
-                if (!in_array($category, $available_categories, true)) {
-                    $is_valid = false;
-                    break 2;
-                }
-                if (!is_string($translation)) {
-                    $is_valid = false;
-                    break 2;
-                }
-            }
-        }
-
-        return $is_valid;
-    }
-
-    /**
-     * Gel plural form list for given language.
-     *
-     * @param string $language
-     * @return \Gettext\Languages\Category[]
-     */
-    public static function getPluralFormsForLanguage(string $language): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        // check language exists in GLPI configuration
-        if (!array_key_exists($language, $CFG_GLPI['languages'])) {
-            return [];
-        }
-
-        $cldrLanguage = Language_CldrData::getLanguageInfo($language);
-        $cldrCategories = $cldrLanguage['categories'] ?? [];
-
-        $languageCategories = [];
-        foreach ($cldrCategories as $cldrCategoryId => $cldrFormulaAndExamples) {
-            $category = new Language_Category($cldrCategoryId, $cldrFormulaAndExamples);
-            $languageCategories[] = $category;
-        }
-
-        return $languageCategories;
-    }
-
-    /**
-     * Return the decoded value of the `profiles` field.
-     *
-     * @return array
-     * @phpstan-return array<int, int>
-     */
-    private function getDecodedProfilesField(): array
-    {
-        $profiles = @json_decode($this->fields['profiles'], associative: true);
-        if (!$this->validateProfileArray($profiles, false)) {
-            trigger_error(
-                sprintf('Invalid `profiles` value (`%s`).', $this->fields['profiles']),
-                E_USER_WARNING
-            );
-            $this->fields['profiles'] = '[]'; // prevent warning to be triggered on each method call
-            $profiles = [];
-        }
-        return $profiles;
-    }
-
-    /**
-     * Validate that the given profiles array contains valid values.
-     *
-     * @param mixed $profiles
-     * @param bool $check_values
-     * @return bool
-     */
-    private function validateProfileArray(mixed $profiles, bool $check_values = true): bool
+    public function getCustomFieldDefinitions(): array
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_array($profiles)) {
-            return false;
-        }
-
-        $is_valid = true;
-
-        $available_profiles = [];
-        if ($check_values) {
-            $profiles_iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => Profile::getTable(),
+        if ($this->custom_field_definitions === null) {
+            $this->custom_field_definitions = [];
+            $it = $DB->request([
+                'FROM'   => CustomFieldDefinition::getTable(),
+                'WHERE'  => [
+                    self::getForeignKeyField() => $this->getID(),
+                ],
             ]);
-            $available_profiles = array_column(iterator_to_array($profiles_iterator), 'id');
-        }
 
-        foreach ($profiles as $profile_id => $rights) {
-            if (!is_int($profile_id) && !ctype_digit($profile_id)) {
-                $is_valid = false;
-                break;
-            }
-            if ($check_values && !in_array((int)$profile_id, $available_profiles, true)) {
-                $is_valid = false;
-                break;
-            }
-            if (!is_int($rights)) {
-                $is_valid = false;
-                break;
+            $available_types = AssetDefinitionManager::getInstance()->getCustomFieldTypes();
+            foreach ($it as $field) {
+                if (!in_array($field['type'], $available_types, true)) {
+                    continue;
+                }
+                $custom_field = new CustomFieldDefinition();
+                $custom_field->getFromResultSet($field);
+                $custom_field->post_getFromDB();
+                $this->custom_field_definitions[] = $custom_field;
             }
         }
 
-        return $is_valid;
+        return $this->custom_field_definitions;
     }
 }

@@ -129,7 +129,7 @@ class Migration
             echo "<div id='" . htmlspecialchars($this->current_message_area_id) . "'></div>";
         }
 
-        $this->displayMessage(isCommandLine() ? __('Work in progress...') : __s('Work in progress...'));
+        $this->displayMessage(__('Work in progress...'));
     }
 
     /**
@@ -1617,7 +1617,7 @@ class Migration
         if (null !== $area_id) {
             echo "<script type='text/javascript'>
                   document.getElementById('{$area_id}').innerHTML = '{$msg}';
-               </script>\n";
+               </script>";
             Html::glpi_flush();
         } else {
             echo $msg;
@@ -1646,7 +1646,7 @@ class Migration
         global $DB;
 
         if ($old_itemtype == $new_itemtype) {
-           // Do nothing if new value is same as old one
+            // Do nothing if new value is same as old one
             return;
         }
 
@@ -1711,11 +1711,11 @@ class Migration
                 }
             }
 
-           //1. Rename itemtype table
+            //1. Rename itemtype table
             $this->displayMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
             $this->renameTable($old_table, $new_table);
 
-           //2. Rename foreign key fields
+            //2. Rename foreign key fields
             $this->displayMessage(
                 sprintf(__('Renaming "%s" foreign keys to "%s" in all tables...'), $old_fkey, $new_fkey)
             );
@@ -1738,7 +1738,7 @@ class Migration
             }
         }
 
-       //3. Update "itemtype" values in all tables
+        //3. Update "itemtype" values in all tables
         $this->displayMessage(
             sprintf(__('Renaming "%s" itemtype to "%s" in all tables...'), $old_itemtype, $new_itemtype)
         );
@@ -1871,7 +1871,7 @@ class Migration
             }
         }
 
-       // Update saved searches. We have to parse every query to account for the search option in meta criteria
+        // Update saved searches. We have to parse every query to account for the search option in meta criteria
         $iterator = $DB->request([
             'SELECT' => ['id', 'itemtype', 'query'],
             'FROM'   => SavedSearch::getTable(),
@@ -1895,7 +1895,7 @@ class Migration
                         }
                     }
 
-                   // Fix criteria
+                    // Fix criteria
                     if (isset($query['criteria'])) {
                         foreach ($query['criteria'] as $cid => $criterion) {
                              $is_meta = isset($criterion['meta']) && (int)$criterion['meta'] === 1;
@@ -1917,7 +1917,7 @@ class Migration
                 }
             }
 
-           // Write changes if any were made
+            // Write changes if any were made
             if ($is_changed) {
                 $DB->updateOrDie(SavedSearch::getTable(), [
                     'query'  => http_build_query($query)

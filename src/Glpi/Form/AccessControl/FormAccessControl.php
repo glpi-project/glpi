@@ -284,6 +284,21 @@ final class FormAccessControl extends CommonDBChild
         return "_access_control[{$this->getID()}][$name]";
     }
 
+    /**
+     * Verify that the given access control strategy is valid.
+     *
+     * @param string $strategy Strategy name (class name)
+     *
+     * @return bool
+     */
+    public function isValidStrategy(string $strategy): bool
+    {
+        return
+            is_a($strategy, ControlTypeInterface::class, true)
+            && !(new ReflectionClass($strategy))->isAbstract()
+        ;
+    }
+
     #[Override]
     protected function computeFriendlyName()
     {
@@ -307,20 +322,5 @@ final class FormAccessControl extends CommonDBChild
         }
 
         return $input;
-    }
-
-    /**
-     * Verify that the given access control strategy is valid.
-     *
-     * @param string $strategy Strategy name (class name)
-     *
-     * @return bool
-     */
-    protected function isValidStrategy(string $strategy): bool
-    {
-        return
-            is_a($strategy, ControlTypeInterface::class, true)
-            && !(new ReflectionClass($strategy))->isAbstract()
-        ;
     }
 }

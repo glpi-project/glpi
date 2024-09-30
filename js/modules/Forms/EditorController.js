@@ -520,6 +520,9 @@ export class GlpiFormEditorController
             } else if (type === "comment") {
                 // The input is for a comment block
                 base_input_index = `_comments[${item_index}]`;
+            } else if (type === "temp") {
+                // We need to format the input name temporarily
+                base_input_index = `_temp[${item_index}]`;
             } else {
                 throw new Error(`Unknown item type: ${type}`);
             }
@@ -854,12 +857,18 @@ export class GlpiFormEditorController
     /**
      * Copy the given template into the given destination.
      *
-     * @param {jQuery} target         Template to copy
-     * @param {jQuery} destination    Destination to copy the template into
-     * @param {string} action         How to insert the template (append, prepend, after)
+     * @param {jQuery} target                    Template to copy
+     * @param {jQuery} destination               Destination to copy the template into
+     * @param {string} action                    How to insert the template (append, prepend, after)
+     * @param {boolean} is_from_duplicate_action Is this target is from a question to duplicate
      * @returns {jQuery} Copy of the template
      */
-    #copy_template(target, destination, action = "append") {
+    #copy_template(
+        target,
+        destination,
+        action = "append",
+        is_from_duplicate_action = false
+    ) {
         const copy = target.clone();
 
         // Keep track of rich text editors that will need to be initialized
@@ -867,6 +876,9 @@ export class GlpiFormEditorController
 
         // Keep track of select2 that will need to be initialized
         const select2_to_init = [];
+
+        // Keep track of select2 values to restore
+        const select2_values_to_restore = [];
 
         // Look for tiynmce editor to init
         copy.find("textarea").each(function() {
@@ -895,13 +907,41 @@ export class GlpiFormEditorController
 
         // Look for select2 to init
         copy.find("select").each(function() {
-            let id = $(this).attr("id");
-            const config = window.select2_configs[id];
+            let selected_values;
+            if (is_from_duplicate_action) {
+                // Retrieve selected values
+                selected_values = $(this).select2("data");
+
+                // Remove select2 class
+                $(this).removeClass("select2-hidden-accessible");
+
+                // Remove data-select2-id
+                $(this).removeAttr("data-select2-id");
+
+                // Remove old select2 container
+                $(this).next(".select2-container").remove();
+
+                // Add the target select to the select2_to_init list
+                target.find('#' + $(this).attr("id")).each(function() {
+                    const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+                    const config = { ...window.select2_configs[id] };
+
+                    config.field_id = $(this).attr("id");
+                    select2_to_init.push(config);
+                    select2_values_to_restore[$(this).attr("id")] = selected_values;
+
+                    $(this).select2('destroy');
+                });
+            }
+
+            let id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+            const config = { ...window.select2_configs[id] };
 
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
                 $(this).attr("id", uid);
+                $(this).attr("data-glpi-form-editor-original-id", id);
 
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
@@ -911,9 +951,22 @@ export class GlpiFormEditorController
                 ) {
                     config.field_id = uid;
                     select2_to_init.push(config);
+
+                    if (selected_values) {
+                        select2_values_to_restore[uid] = selected_values;
+                    }
                 }
             }
         });
+
+        if (is_from_duplicate_action) {
+            // We need to temporarily format the inputs names to avoid conflicts with source question
+            this.#formatInputsNames(
+                copy,
+                "temp",
+                getUUID()
+            );
+        }
 
         // Insert the new question
         switch (action) {
@@ -939,9 +992,24 @@ export class GlpiFormEditorController
         // Init the select2
         select2_to_init.forEach((config) => {
             if (config.type === "ajax") {
-                setupAjaxDropdown(config);
+                const select2_el = setupAjaxDropdown(config);
+                if (select2_values_to_restore[config.field_id]) {
+                    // Remove options before restoring them
+                    select2_el.find("option").remove();
+
+                    for (const value of select2_values_to_restore[config.field_id]) {
+                        const option = new Option(value.text, value.id, true, true);
+                        select2_el.append(option).trigger("change");
+                        select2_el.trigger("select2:select", { data: value });
+                    }
+                }
             } else if (config.type === "adapt") {
-                setupAdaptDropdown(config);
+                const select2_el = setupAdaptDropdown(config);
+                if (select2_values_to_restore[config.field_id]) {
+                    for (const value of select2_values_to_restore[config.field_id]) {
+                        select2_el.val(value.id).trigger("change");
+                    }
+                }
             }
         });
 
@@ -956,6 +1024,11 @@ export class GlpiFormEditorController
         [...popover_trigger_list].map(
             popover_trigger_el => new bootstrap.Popover(popover_trigger_el)
         );
+
+        if (is_from_duplicate_action) {
+            // Compute state to update inputs names
+            this.computeState();
+        }
 
         return copy;
     }
@@ -1039,6 +1112,14 @@ export class GlpiFormEditorController
      * @param {string} category  New category
      */
     #changeQuestionTypeCategory(question, category) {
+        // Get the current category
+        const old_category = this.#getItemInput(question, "category");
+
+        // Nothing to do if the category is the same
+        if (old_category === category) {
+            return;
+        }
+
         // Find types available in the new category
         const e_category = $.escapeSelector(category);
         const new_options = $(this.#templates)
@@ -1054,6 +1135,9 @@ export class GlpiFormEditorController
             new_options,
             types_select,
         );
+
+        // Update the question category
+        this.#setItemInput(question, "category", category);
 
         // Hide type selector if only one type is available
         const types_select_container = types_select.parent();
@@ -1073,8 +1157,15 @@ export class GlpiFormEditorController
      * @param {string} type     New type
      */
     #changeQuestionType(question, type) {
-        // Get the current question type and extracted default value
+        // Get the current question type
         const old_type = this.#getItemInput(question, "type");
+
+        // Nothing to do if the type is the same
+        if (old_type === type) {
+            return;
+        }
+
+        // Extracted default value
         const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
 
         // Clear the specific form of the question
@@ -1593,7 +1684,7 @@ export class GlpiFormEditorController
     #duplicateSection(section) {
         // TinyMCE must be disabled before we can duplicate the section DOM
         const ids = this.#disableTinyMce(section);
-        const new_section = this.#copy_template(section, section, "after");
+        const new_section = this.#copy_template(section, section, "after", true);
         this.#enableTinyMce(ids);
 
         this.#setItemInput(new_section, "id", 0);
@@ -1615,11 +1706,13 @@ export class GlpiFormEditorController
     #duplicateQuestion(question) {
         // TinyMCE must be disabled before we can duplicate the question DOM
         const ids = this.#disableTinyMce(question);
-        const new_question = this.#copy_template(question, question, "after");
+        const new_question = this.#copy_template(question, question, "after", true);
         this.#enableTinyMce(ids);
 
         this.#setItemInput(new_question, "id", 0);
         this.#setActiveItem(new_question);
+
+        $(document).trigger('glpi-form-editor-question-duplicated', [question, new_question]);
     }
 
     /**

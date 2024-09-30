@@ -157,13 +157,14 @@ final class DatabaseMapper
             'name' => $name
         ];
 
-        // Entities restrictions are not always included in addDefaultWhere,
-        // it is safer to add them manually (they might be checked twice tho).
-        $entities_restrictions = getEntitiesRestrictCriteria(
-            $item::getTable(),
-            value: $this->entities_restrictions
-        );
-        $condition[] = $entities_restrictions;
+        // Check entities
+        if ($item->isEntityAssign()) {
+            $entities_restrictions = getEntitiesRestrictCriteria(
+                $item::getTable(),
+                value: $this->entities_restrictions
+            );
+            $condition[] = $entities_restrictions;
+        }
         $query['WHERE'] = $condition;
 
         // Find item

@@ -1243,7 +1243,7 @@ class Problem extends CommonITILObject
         $rand      = mt_rand();
         if ($problem->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
-            $name    = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
+            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>
@@ -1300,7 +1300,7 @@ class Problem extends CommonITILObject
                 $link .= "&amp;forcetab=" . $forcetab;
             }
             $link .= "'>";
-            $link .= "<span class='b'>" . $problem->fields["name"] . "</span></a>";
+            $link .= "<span class='b'>" . htmlspecialchars($problem->fields["name"]) . "</span></a>";
             $link = printf(
                 __('%1$s %2$s'),
                 $link,
@@ -1318,7 +1318,7 @@ class Problem extends CommonITILObject
             echo "</tr>";
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No problem in progress.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No problem in progress.') . "</i></td></tr>";
         }
     }
 
@@ -1361,9 +1361,9 @@ class Problem extends CommonITILObject
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                     echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
+                    echo "<tr class='tab_bg_1'><th>" . __s('Last tickets') . "</th></tr>";
                     echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups') . "&nbsp;";
+                    echo __s('Child groups') . "&nbsp;";
                     Dropdown::showYesNo(
                         'tree',
                         $tree,

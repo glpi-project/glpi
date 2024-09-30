@@ -665,11 +665,11 @@ class NetworkPort extends CommonDBChild
             $canedit
             && (empty($withtemplate) || ($withtemplate != 2))
         ) {
-            echo "\n<form method='get' action='" . $netport::getFormURL() . "'>\n";
-            echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>\n";
-            echo "<input type='hidden' name='itemtype' value='" . $itemtype . "'>\n";
-            echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
-            echo "<tr class='tab_bg_2'><td class='center'>\n";
+            echo "<form method='get' action='" . $netport::getFormURL() . "'>";
+            echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . $itemtype . "'>";
+            echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><td class='center'>";
             echo __s('Network port type to be added');
             echo "&nbsp;";
 
@@ -685,13 +685,13 @@ class NetworkPort extends CommonDBChild
                 ['value' => 'NetworkPortEthernet']
             );
 
-            echo "</td>\n";
+            echo "</td>";
             echo "<td class='tab_bg_2 center' width='50%'>";
             echo __s('Add several ports');
-            echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
-            echo "<td>\n";
-            echo "<input type='submit' name='create' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>\n";
-            echo "</td></tr></table></div>\n";
+            echo "&nbsp;<input type='checkbox' name='several' value='1'></td>";
+            echo "<td>";
+            echo "<input type='submit' name='create' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr></table></div>";
             Html::closeForm();
         }
 

@@ -586,4 +586,202 @@ describe ('Form editor', () => {
             .should('have.length', 1) // First question
         ;
     });
+
+    it('can duplicate a question and change its type', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Create a question
+        cy.addQuestion("My question");
+
+        // Set all general questions properties
+        // Type specific properties should have their own tests
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('not.be.checked')
+                .check()
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("My question description")
+            ;
+        });
+
+        // Change the question type to not use the default type
+        cy.getDropdownByLabelText("Question type")
+            .selectDropdownValue('Long answer')
+        ;
+
+        // Duplicate question
+        cy.findByRole('button', {'name': "Duplicate question"}).click();
+
+        // Validate values
+        cy.findAllByRole('region', {'name': 'Question details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                // Focus region to display hiden actions
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+
+                cy.findByRole('textbox', {'name': 'Question name'})
+                    .should('have.value', "My question")
+                ;
+                cy.findByRole('checkbox', {'name': 'Mandatory'})
+                    .should('be.checked')
+                ;
+                cy.findByLabelText("Question description")
+                    .awaitTinyMCE()
+                    .should('have.text', "My question description")
+                ;
+                cy.getDropdownByLabelText("Question type").should('have.text', 'Long answer');
+            });
+        });
+
+        // Change question type
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Validate values
+        cy.findAllByRole('region', {'name': 'Question details'}).each((region, index) => {
+            cy.wrap(region).within(() => {
+                // Focus region to display hiden actions
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+
+                cy.findByRole('textbox', {'name': 'Question name'})
+                    .should('have.value', "My question")
+                ;
+                cy.findByRole('checkbox', {'name': 'Mandatory'})
+                    .should('be.checked')
+                ;
+                cy.findByLabelText("Question description")
+                    .awaitTinyMCE()
+                    .should('have.text', "My question description")
+                ;
+
+                if (index === 0) {
+                    cy.getDropdownByLabelText("Question type").should('have.text', 'Long answer');
+                } else if (index === 1) {
+                    cy.getDropdownByLabelText("Question type").should('have.text', 'Date and time');
+                }
+            });
+        });
+    });
+
+    function verifySection(sectionIndex, sectionName, questions) {
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(sectionIndex).within(() => {
+            cy.findByRole('textbox', {'name': 'Section name'}).should('have.value', sectionName);
+            questions.forEach((question, questionIndex) => {
+                cy.findAllByRole('region', {'name': 'Question details'}).eq(questionIndex).within(() => {
+                    // Focus region to display hidden actions
+                    cy.findByRole('textbox', {'name': 'Question name'}).click();
+
+                    cy.findByRole('textbox', {'name': 'Question name'}).should('have.value', question.name);
+                    cy.findByRole('checkbox', {'name': 'Mandatory'}).should('be.checked');
+                    cy.findByLabelText("Question description").awaitTinyMCE().should('have.text', question.description);
+                    cy.getDropdownByLabelText("Question type").should('have.text', question.type);
+                });
+            });
+        });
+    }
+
+    it('can duplicate a section with questions and change their types', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Create questions
+        cy.addQuestion("First question");
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'}).check();
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("First question description");
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Long answer');
+
+        cy.addQuestion("Second question");
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'}).check();
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("Second question description");
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
+
+        // Create sections
+        cy.findByRole('button', {'name': 'Add a new section'}).click();
+
+        // Add a question to the new section
+        cy.addQuestion("Third question");
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(2).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'}).check();
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("Third question description");
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Actors');
+
+        // Duplicate first section
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(0).within(() => {
+            cy.findByRole('button', {'name': 'Section actions'}).click();
+            cy.findByRole('button', {'name': 'Duplicate section'}).click();
+        });
+
+        // Validate values
+        verifySection(0, 'First section', [
+            { name: 'First question', description: 'First question description', type: 'Long answer' },
+            { name: 'Second question', description: 'Second question description', type: 'Date and time' }
+        ]);
+
+        verifySection(1, 'First section', [
+            { name: 'First question', description: 'First question description', type: 'Long answer' },
+            { name: 'Second question', description: 'Second question description', type: 'Date and time' }
+        ]);
+
+        verifySection(2, '', [
+            { name: 'Third question', description: 'Third question description', type: 'Actors' }
+        ]);
+
+        // Change question type of the first question of the first section
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(0).within(() => {
+            cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+                // Focus region to display hidden actions
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+            });
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
+
+        // Change question type of the first question of the second section
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(1).within(() => {
+            cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+                // Focus region to display hidden actions
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+            });
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Actors');
+
+        // Change question type of the first question of the third section
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(2).within(() => {
+            cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+                // Focus region to display hidden actions
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+            });
+        });
+        cy.getDropdownByLabelText("Question type").selectDropdownValue('Long answer');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Validate values
+        verifySection(0, 'First section', [
+            { name: 'First question', description: 'First question description', type: 'Date and time' },
+            { name: 'Second question', description: 'Second question description', type: 'Date and time' }
+        ]);
+
+        verifySection(1, 'First section', [
+            { name: 'First question', description: 'First question description', type: 'Actors' },
+            { name: 'Second question', description: 'Second question description', type: 'Date and time' }
+        ]);
+
+        verifySection(2, '', [
+            { name: 'Third question', description: 'Third question description', type: 'Long answer' }
+        ]);
+    });
 });

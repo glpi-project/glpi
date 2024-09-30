@@ -38,12 +38,20 @@ namespace Glpi\Asset;
 use Change_Item;
 use CommonGLPI;
 use DirectoryIterator;
+use Dropdown;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\TypeInterface;
+use Glpi\CustomObject\AbstractDefinition;
+use Glpi\CustomObject\AbstractDefinitionManager;
 use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
+use Session;
 
-final class AssetDefinitionManager
+/**
+ * @extends AbstractDefinitionManager<AssetDefinition>
+ */
+final class AssetDefinitionManager extends AbstractDefinitionManager
 {
     /**
      * Singleton instance
@@ -51,15 +59,22 @@ final class AssetDefinitionManager
     private static ?AssetDefinitionManager $instance = null;
 
     /**
-     * Definitions cache.
-     */
-    private ?array $definitions_data = null;
-
-    /**
      * List of available capacities.
      * @var CapacityInterface[]
      */
     private array $capacities = [];
+
+    /**
+     * Dropdown itemtypes allowed for custom field definitions.
+     * @var array<string, array<class-string<\CommonDBTM>, string>>
+     * @see self::getAllowedDropdownItemtypes()
+     */
+    private ?array $allowed_dropdown_itemtypes = null;
+
+    /**
+     * @var class-string<TypeInterface>[]|null Custom field types
+     */
+    private ?array $custom_field_types = null;
 
     /**
      * Singleton constructor
@@ -81,6 +96,29 @@ final class AssetDefinitionManager
                 && (new ReflectionClass($classname))->isAbstract() === false
             ) {
                 $this->capacities[$classname] = new $classname();
+            }
+        }
+
+        $directory_iterator = new DirectoryIterator(__DIR__ . '/CustomFieldType');
+
+        if ($this->custom_field_types === null) {
+            $this->custom_field_types = [];
+            /** @var \SplFileObject $file */
+            foreach ($directory_iterator as $file) {
+                // Compute class name with the expected namespace
+                $classname = $file->getExtension() === 'php'
+                    ? 'Glpi\\Asset\\CustomFieldType\\' . $file->getBasename('.php')
+                    : null;
+
+                // Validate that the class is a valid question type
+                if (
+                    $classname !== null
+                    && class_exists($classname)
+                    && is_subclass_of($classname, TypeInterface::class)
+                    && (new ReflectionClass($classname))->isAbstract() === false
+                ) {
+                    $this->custom_field_types[] = $classname;
+                }
             }
         }
     }
@@ -109,11 +147,12 @@ final class AssetDefinitionManager
         self::$instance = null;
     }
 
-    /**
-     * Returns the list of reserved system names
-     * @return array
-     */
-    public function getReservedAssetsSystemNames(): array
+    public static function getDefinitionClass(): string
+    {
+        return AssetDefinition::class;
+    }
+
+    public function getReservedSystemNames(): array
     {
         $names = [
             'Computer',
@@ -138,47 +177,14 @@ final class AssetDefinitionManager
         return $names;
     }
 
-    /**
-     * Register assets concrete classes autoload.
-     *
-     * @return void
-     */
-    public function registerAssetsAutoload(): void
-    {
-        spl_autoload_register([$this, 'autoloadAssetClass']);
-    }
-
-    /**
-     * Bootstrap asset classes.
-     *
-     * @return void
-     */
-    public function boostrapAssets(): void
-    {
-        foreach ($this->getDefinitions() as $definition) {
-            if (!$definition->isActive()) {
-                continue;
-            }
-
-            $this->boostrapConcreteClass($definition);
-        }
-    }
-
-    /**
-     * Bootstrap the concrete class.
-     *
-     * @param AssetDefinition $definition
-     *
-     * @return void
-     */
-    private function boostrapConcreteClass(AssetDefinition $definition): void
+    protected function boostrapConcreteClass(AbstractDefinition $definition): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $capacities = $this->getAvailableCapacities();
 
-        $asset_class_name = $definition->getAssetClassName();
+        $asset_class_name = $definition->getCustomObjectClassName();
 
         // Register asset into configuration entries related to the capacities that cannot be disabled
         $config_keys = [
@@ -230,16 +236,17 @@ final class AssetDefinitionManager
      * @param string $classname
      * @return void
      */
-    public function autoloadAssetClass(string $classname): void
+    public function autoloadClass(string $classname): void
     {
+        $ns = self::getDefinitionClass()::getCustomObjectNamespace() . '\\';
         $patterns = [
-            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
-            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
-            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)Model$/' => 'loadConcreteModelDictionaryClass',
-            '/^Glpi\\\CustomAsset\\\RuleDictionary([A-Za-z]+)Type$/' => 'loadConcreteTypeDictionaryClass',
-            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
-            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
-            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/' => 'loadConcreteClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)Model$/' => 'loadConcreteModelDictionaryClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)Type$/' => 'loadConcreteTypeDictionaryClass',
+            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
+            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
+            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/' => 'loadConcreteClass',
         ];
 
         foreach ($patterns as $pattern => $load_function) {
@@ -255,26 +262,6 @@ final class AssetDefinitionManager
                 break;
             }
         }
-    }
-
-    /**
-     * Get the classes names of all assets concrete classes.
-     *
-     * @param bool $with_namespace
-     * @return array
-     */
-    public function getAssetClassesNames(bool $with_namespace = true): array
-    {
-        $classes = [];
-
-        foreach ($this->getDefinitions() as $definition) {
-            if (!$definition->isActive()) {
-                continue;
-            }
-            $classes[] = $definition->getAssetClassName($with_namespace);
-        }
-
-        return $classes;
     }
 
     /**
@@ -328,6 +315,46 @@ final class AssetDefinitionManager
     }
 
     /**
+     * Returns the dropdown itemtypes allowed for custom field definitions.
+     * @param bool $flatten If true, returns a flat array of itemtypes rather than separated by category.
+     * @return array<string, array<class-string<\CommonDBTM>, string>>
+     */
+    public function getAllowedDropdownItemtypes($flatten = false): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if ($this->allowed_dropdown_itemtypes === null) {
+            $this->allowed_dropdown_itemtypes = [
+                _n('Asset', "Assets", Session::getPluralNumber()) => array_combine(
+                    $CFG_GLPI['asset_types'],
+                    array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['asset_types'])
+                ),
+            ];
+            $this->allowed_dropdown_itemtypes = array_merge_recursive($this->allowed_dropdown_itemtypes, Dropdown::getStandardDropdownItemTypes());
+        }
+
+        if ($flatten) {
+            $itemtypes = [];
+            foreach ($this->allowed_dropdown_itemtypes as $category) {
+                $itemtypes = array_merge($itemtypes, $category);
+            }
+            return $itemtypes;
+        }
+
+        return $this->allowed_dropdown_itemtypes;
+    }
+
+    /**
+     * Get the list of field types available
+     * @return class-string<TypeInterface>[]
+     */
+    public function getCustomFieldTypes(): array
+    {
+        return $this->custom_field_types;
+    }
+
+    /**
      * Return capacity instance.
      *
      * @param string $classname
@@ -338,53 +365,9 @@ final class AssetDefinitionManager
         return $this->capacities[$classname] ?? null;
     }
 
-    /**
-     * Get the asset definition corresponding to given system name.
-     *
-     * @param string $system_name
-     * @return AssetDefinition|null
-     */
-    private function getDefinition(string $system_name): ?AssetDefinition
-    {
-        return $this->getDefinitions()[$system_name] ?? null;
-    }
-
-    /**
-     * Get all the asset definitions.
-     *
-     * @param bool $only_active
-     * @return AssetDefinition[]
-     */
-    public function getDefinitions(bool $only_active = false): array
-    {
-        if ($this->definitions_data === null) {
-            $this->definitions_data = getAllDataFromTable(AssetDefinition::getTable());
-        }
-
-        $definitions = [];
-        foreach ($this->definitions_data as $definition_data) {
-            if ($only_active && (bool)$definition_data['is_active'] !== true) {
-                continue;
-            }
-
-            $system_name = $definition_data['system_name'];
-            $definition = new AssetDefinition();
-            $definition->getFromResultSet($definition_data);
-            $definitions[$system_name] = $definition;
-        }
-
-        return $definitions;
-    }
-
-    /**
-     * Load asset concrete class.
-     *
-     * @param AssetDefinition $definition
-     * @return void
-     */
     private function loadConcreteClass(AssetDefinition $definition): void
     {
-        $rightname = $definition->getAssetRightname();
+        $rightname = $definition->getCustomObjectRightname();
 
         // Static properties must be defined in each concrete class otherwise they will be shared
         // accross all concrete classes, and so would be overriden by the values from the last loaded class.
@@ -413,6 +396,7 @@ PHP
      *
      * @param AssetDefinition $definition
      * @return void
+     * @used-by self::autoloadClass()
      */
     private function loadConcreteModelClass(AssetDefinition $definition): void
     {
@@ -437,6 +421,7 @@ PHP
      *
      * @param AssetDefinition $definition
      * @return void
+     * @used-by self::autoloadClass()
      */
     private function loadConcreteTypeClass(AssetDefinition $definition): void
     {

@@ -1,0 +1,117 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if canadd %}
+    <form method='post' name="form" action={{ itemtype|itemtype_form_path }}>
+{% endif %}
+<div class="card border-0 shadow-none p-0 m-0 mt-3">
+    <div class="card-header mb-1 pt-2">
+        <h4 class="card-title ">
+            {{ validation.getTypeName(2) }}
+        </h4>
+    </div>
+</div>
+
+{{ fields.htmlField(
+    '',
+    validation.getStatus(item.fields["global_validation"], true),
+    __('Global approval status')
+) }}
+
+{{ fields.htmlField(
+    '',
+    validation.getValidationStats(tID),
+    __('Approval status details')
+) }}
+
+{% if canadd %}
+    {% set minvalue %}
+        {{ item.getValueToSelect(
+            'validation_percent',
+            'validation_percent',
+            item.fields["validation_percent"]
+        )|raw }}
+        <input type="submit" name="update" class="btn btn-primary" value="{{ _x('button', 'Save') }}">
+        {% if tID is not null %}
+            <input type="hidden" name="id" value="{{ tID }}">
+        {% endif %}
+    {% endset %}
+
+    {{ fields.htmlField(
+        '',
+        minvalue,
+        __('Minimum validation required')
+    ) }}
+{% else %}
+    {{ fields.htmlField(
+        '',
+        call('Dropdown::getValueWithUnit', [item.fields["validation_percent"], "%"]),
+        __('Minimum validation required')
+    ) }}
+{% endif %}
+
+{% if canadd %}
+       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   </form>
+{% endif %}
+
+<div class="card border-0 shadow-none p-0 m-0 mt-3">
+    <div class="card-header mb-3 pt-2">
+        <h4 class="card-title ">
+            {{ __('Approvals for the ticket') }}
+        </h4>
+    </div>
+    {% if canadd %}
+        {% if item.fields['status'] not in donestatus %}
+            <div class="card-body mb-3 p-0 text-center">
+                <a class='btn btn-primary' href='javascript:viewAddValidation{{ tID }}{{ rand }}()'>
+                    {{ __('Send an approval request') }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div id="viewvalidation{{ tID }}{{ rand }}"></div>
+
+<script>
+    function viewAddValidation{{ tID }}{{ rand }}() {
+        var params = {
+            type: '{{ get_class(validation)|e('js') }}',
+            parenttype: '{{ itemtype|e('js') }}',
+            {{ items_id }}: '{{ validation.fields[items_id]|e('js') }}',
+            id: -1
+        };
+        $('#viewvalidation{{ tID }}{{ rand }}').load('{{ config('root_doc')|e('js') }}/ajax/viewsubitem.php', params);
+    };
+</script>

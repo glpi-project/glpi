@@ -161,8 +161,7 @@ class Environment extends AbstractInventoryAsset
             system_name: 'MyAsset' . $this->getUniqueString(),
             capacities: array_merge(
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                    \Glpi\Asset\Capacity\HasEnvironmentsCapacity::class
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
                 ]
             )
         );

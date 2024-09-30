@@ -430,7 +430,10 @@ function step8()
         );
     }
 
-    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
+    $referer_url = Html::getRefererUrl();
+    $url_base = $referer_url !== null
+        ? str_replace("/install/install.php", "", $referer_url)
+        : 'http://localhost';
     $DB->update(
         'glpi_configs',
         ['value' => $url_base],

@@ -31,7 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI_PLUGINS_PATH */
 class Screenhot {
 
     constructor() {

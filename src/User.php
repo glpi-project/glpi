@@ -2965,7 +2965,7 @@ JAVASCRIPT;
             echo "</td>";
             echo "<td rowspan='4' class='middle'><label for='comment'>" . __s('Comments') . "</label></td>";
             echo "<td class='center middle' rowspan='4'>";
-            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlspecialchars($this->fields["comment"]) . "</textarea>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlspecialchars($this->fields["comment"] ?? '') . "</textarea>";
             echo "</td></tr>";
 
             $admnumrand = mt_rand();

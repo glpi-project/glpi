@@ -36,14 +36,18 @@
 namespace Glpi\Tests;
 
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
+use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
+use Profile;
 use Ticket;
 use User;
 
@@ -65,6 +69,7 @@ trait FormTesterTrait
         // Create form
         $form = $this->createItem(Form::class, [
             'name'                  => $builder->getName(),
+            'description'           => $builder->getDescription(),
             'entities_id'           => $builder->getEntitiesId(),
             'is_recursive'          => $builder->getIsRecursive(),
             'is_active'             => $builder->getIsActive(),
@@ -120,12 +125,12 @@ trait FormTesterTrait
         }
 
         // Create access controls
-        foreach ($builder->getAccessControls() as $strategy_class => $config) {
+        foreach ($builder->getAccessControls() as $strategy_class => $params) {
             $this->createItem(FormAccessControl::class, [
                 'forms_forms_id' => $form->getID(),
                 'strategy'       => $strategy_class,
-                '_config'        => $config,
-                'is_active'      => true,
+                '_config'        => $params['config'],
+                'is_active'      => $params['is_active'],
             ]);
         }
 
@@ -370,5 +375,56 @@ trait FormTesterTrait
         $ticket = current($created_items);
         $this->assertInstanceOf(Ticket::class, $ticket);
         return $ticket;
+    }
+
+    /**
+     * Get the default parameters containing a mocked session of the TU_USER
+     * user and no URL parameters.
+     *
+     * @return FormAccessParameters
+     */
+    protected function getDefaultParametersForTestUser(): FormAccessParameters
+    {
+        $session_info = new SessionInfo(
+            user_id: getItemByTypeName(User::class, TU_USER, true),
+            group_ids: [],
+            profile_id: getItemByTypeName(Profile::class, "Super-Admin", true),
+        );
+
+        return new FormAccessParameters($session_info, []);
+    }
+
+    private function exportForm(Form $form): string
+    {
+        return self::$serializer->exportFormsToJson([$form])->getJsonContent();
+    }
+
+    private function importForm(
+        string $json,
+        DatabaseMapper $mapper,
+    ): Form {
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $imported_forms = $import_result->getImportedForms();
+        $this->assertCount(1, $imported_forms, "Failed to import form from JSON: $json");
+        $form_copy = current($imported_forms);
+        return $form_copy;
+    }
+
+    private function exportAndImportForm(Form $form): Form
+    {
+        // Export and import process
+        $json = $this->exportForm($form);
+        $form_copy = $this->importForm(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Make sure it was not the same form object that was returned.
+        $this->assertNotEquals($form_copy->getId(), $form->getId());
+
+        // Make sure the new form really exist in the database.
+        $this->assertNotFalse($form_copy->getFromDB($form_copy->getId()));
+
+        return $form_copy;
     }
 }

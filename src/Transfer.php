@@ -3804,7 +3804,8 @@ final class Transfer extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $edit_form = true;
-        if (!str_contains($_SERVER['HTTP_REFERER'], "transfer.form.php")) {
+        $referer_url = Html::getRefererUrl();
+        if ($referer_url === null || !str_contains($referer_url, "transfer.form.php")) {
             $edit_form = false;
         }
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [

@@ -36,36 +36,40 @@
 {% set container_size = "xl" %}
 
 {% block content_title %}
-    {{ __('Service catalog') }}
+    <div class="d-flex">
+        <span>{{ __('Service catalog') }}</span>
+        <div class="ms-auto input-icon">
+            <input
+                class="form-control"
+                placeholder="{{ __("Search for forms...") }}"
+                data-glpi-service-catalog-filter-forms
+            >
+            <span class="input-icon-addon" style="font-size: 18px;">
+                <i class="ti ti-search"></i>
+            </span>
+        </div>
+    </div>
 {% endblock content_title %}
 
 {% block content_body %}
-    <section aria-label="{{ __("Forms") }}" class="row">
-        {% for form in forms %}
-            <div class="col-12 col-sm-6 col-md-4 d-flex">
-                <a
-                    class="card mx-1 my-2 flex-grow-1"
-                    href=" {{ "/Form/Render/" ~ form.fields.id }}"
-                >
-                    <section
-                        class="card-body"
-                        aria-labelledby="form-{{ form.fields.id }}"
-                    >
-                        <div class="d-flex">
-                            <i
-                                class="ti {{ form.fields.icon ?? "ti-list-details" }} fa-fw"
-                                style="font-size: 5rem; color: var(--glpi-mainmenu-bg)"
-                            > </i>
-                            <div class="ms-4">
-                                <h2 id="form-{{ form.fields.id }}" class="card-title">
-                                    {{ form.fields.name }}
-                                </h2>
-                                <div class="text-secondary">{{ form.fields.description|safe_html }}</div>
-                            </div>
-                        </div>
-                    </section>
-                </a>
-            </div>
-        {% endfor %}
+    <section
+        aria-label="{{ __("Forms") }}"
+        class="row"
+        data-glpi-service-catalog-forms
+    >
+        {{ include(
+            'components/helpdesk_forms/forms_list.html.twig',
+            {forms: forms},
+            with_context = false
+        ) }}
     </section>
+
+    <script>
+        (async function() {
+            const module = await import(
+                "{{ js_path('js/modules/Forms/SelfServiceController.js') }}"
+            );
+            new module.GlpiFormSelfServiceController();
+        })();
+    </script>
 {% endblock content_body %}

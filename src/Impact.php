@@ -290,15 +290,15 @@ JS);
            // Header
             echo '<thead>';
             echo '<tr class="noHover">';
-            echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . $label . '';
+            echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlspecialchars($label) . '';
             echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
             echo '</tr>';
             echo '<tr class="noHover">';
-            echo '<th>' . _n('Item', 'Items', 1) . '</th>';
-            echo '<th>' . __('Relation') . '</th>';
-            echo '<th>' . Ticket::getTypeName(Session::getPluralNumber()) . '</th>';
-            echo '<th>' . Problem::getTypeName(Session::getPluralNumber()) . '</th>';
-            echo '<th>' . Change::getTypeName(Session::getPluralNumber()) . '</th>';
+            echo '<th>' . _sn('Item', 'Items', 1) . '</th>';
+            echo '<th>' . __s('Relation') . '</th>';
+            echo '<th>' . htmlspecialchars(Ticket::getTypeName(Session::getPluralNumber())) . '</th>';
+            echo '<th>' . htmlspecialchars(Problem::getTypeName(Session::getPluralNumber())) . '</th>';
+            echo '<th>' . htmlspecialchars(Change::getTypeName(Session::getPluralNumber())) . '</th>';
             echo '<th width="50px"></th>';
             echo '</tr>';
             echo '</thead>';
@@ -311,7 +311,7 @@ JS);
                 echo '<tr class="tab_bg_1">';
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
-                echo '<a>' . $itemtype::getTypeName() . '</a>' . ' (' . $total . ')';
+                echo '<a>' . htmlspecialchars($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
                 echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
                 echo '</td>';
                 echo '</tr>';
@@ -322,16 +322,16 @@ JS);
                     echo '<td class="impact-left" width="15%">';
                     echo '<div><a target="_blank" href="' .
                     $itemtype_item['stored']->getLinkURL() . '">' .
-                    $itemtype_item['stored']->getFriendlyName() . '</a></div>';
+                    htmlspecialchars($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
                     echo '</td>';
                     echo '<td width="40%"><div>';
 
                     $path = [];
                     foreach ($itemtype_item['node']['path'] as $node) {
                         if ($node['id'] == $start_node_id) {
-                            $path[] = '<b>' . $node['label'] . '</b>';
+                            $path[] = '<b>' . htmlspecialchars($node['label']) . '</b>';
                         } else {
-                            $path[] = $node['label'];
+                            $path[] = htmlspecialchars($node['label']);
                         }
                     }
                     $separator = '<i class="fas fa-angle-right"></i>';
@@ -366,7 +366,7 @@ JS);
         }
 
         if (!$has_impact) {
-            echo '<p>' . __("This asset doesn't have any dependencies.") . '</p>';
+            echo '<p>' . __s("This asset doesn't have any dependencies.") . '</p>';
         }
 
         echo '</div>';
@@ -376,12 +376,12 @@ JS);
        // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
-            echo '<a target="_blank" href="' . $CFG_GLPI['root_doc'] . '/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id'] . '">';
-            echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __('Export to csv') . '"></i>';
+            echo '<a target="_blank" href="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlspecialchars($impact_item->fields['itemtype']) . '&items_id=' . htmlspecialchars($impact_item->fields['items_id']) . '">';
+            echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
             echo '</a>';
         }
         if ($can_update && $impact_context) {
-            echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools" title="' . __('Settings') . '"></i>';
+            echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
         }
         echo '</div>';
 
@@ -390,17 +390,17 @@ JS);
         if ($can_update && $impact_context) {
             $rand = mt_rand();
 
-            $setting_dialog .= '<form id="list_depth_form" action="' . $CFG_GLPI['root_doc'] . '/front/impactitem.form.php" method="POST">';
+            $setting_dialog .= '<form id="list_depth_form" action="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
             $setting_dialog .= '<table class="tab_cadre_fixe">';
             $setting_dialog .= '<tr>';
-            $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __("Max depth") . '</label></td>';
+            $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __s("Max depth") . '</label></td>';
             $setting_dialog .= '<td>' . Html::input("max_depth", [
                 'id'    => "impact_max_depth_$rand",
                 'value' => $max_depth >= self::MAX_DEPTH ? '' : $max_depth,
             ]) . '</td>';
             $setting_dialog .= '</tr>';
             $setting_dialog .= '<tr>';
-            $setting_dialog .= '<td><label for="check_no_limit_' . $rand . '">' . __("No limit") . '</label></td>';
+            $setting_dialog .= '<td><label for="check_no_limit_' . $rand . '">' . __s("No limit") . '</label></td>';
             $setting_dialog .= '<td>' . Html::getCheckbox([
                 'name'    => 'no_limit',
                 'id'      => "check_no_limit_$rand",
@@ -468,9 +468,9 @@ JS);
          $(document).on("impactUpdated", function() {
             $.ajax({
                type: "GET",
-               url: "' . $CFG_GLPI['root_doc'] . '/ajax/impact.php",
+               url: "' . htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php",
                data: {
-                  itemtype: "' . get_class($item) . '",
+                  itemtype: "' . htmlspecialchars(get_class($item)) . '",
                   items_id: "' . $item->fields['id'] . '",
                   action  : "load",
                   view    : "list",
@@ -560,7 +560,7 @@ JS);
                     $priority = $itil_object['priority'];
                 }
             }
-            $extra = 'id="' . $id . '" style="background-color:' .  $user->fields["priority_$priority"] . '; cursor:pointer;"';
+            $extra = 'id="' . $id . '" style="background-color:' .  htmlspecialchars($user->fields["priority_$priority"]) . '; cursor:pointer;"';
 
             echo Html::scriptBlock(<<<JS
                 $(document).on("click", "#$id", () => {
@@ -761,10 +761,10 @@ JS);
         bool $readonly
     ) {
         echo '<div class="impact-header">';
-        echo "<h2>" . __("Impact analysis") . "</h2>";
+        echo "<h2>" . __s("Impact analysis") . "</h2>";
         echo "<div id='switchview'>";
-        echo "<a id='sviewlist' href='#list'><i class='pointer ti ti-list' title='" . __('View as list') . "'></i></a>";
-        echo "<a id='sviewgraph' href='#graph'><i class='pointer ti ti-hierarchy-2' title='" . __('View graphical representation') . "'></i></a>";
+        echo "<a id='sviewlist' href='#list'><i class='pointer ti ti-list' title='" . __s('View as list') . "'></i></a>";
+        echo "<a id='sviewgraph' href='#graph'><i class='pointer ti ti-hierarchy-2' title='" . __s('View graphical representation') . "'></i></a>";
         echo "</div>";
         echo "</div>";
 
@@ -853,7 +853,7 @@ JS);
 
                $.ajax({
                   type: "GET",
-                  url: "' . $CFG_GLPI['root_doc'] . '/ajax/impact.php",
+                  url: "' . htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php",
                   data: {
                      itemtype: values[0],
                      items_id: values[1],
@@ -986,7 +986,7 @@ JS);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $action = $CFG_GLPI['root_doc'] . '/ajax/impact.php';
+        $action = htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php';
         $formName = "form_impact_network";
 
         echo "<form name=\"$formName\" action=\"$action\" method=\"post\" class='no-track'>";
@@ -1041,8 +1041,8 @@ JS);
             $icon = self::checkIcon($icon);
 
             echo '<div class="impact-side-filter-itemtypes-item">';
-            echo '<h4><img class="impact-side-icon" src="' . $CFG_GLPI['root_doc'] . '/' . $icon . '" title="' . $itemtype::getTypeName() . '" data-itemtype="' . $itemtype . '">';
-            echo "<span>" . $itemtype::getTypeName() . "</span></h4>";
+            echo '<h4><img class="impact-side-icon" src="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/' . htmlspecialchars($icon) . '" title="' . htmlspecialchars($itemtype::getTypeName()) . '" data-itemtype="' . htmlspecialchars($itemtype) . '">';
+            echo "<span>" . htmlspecialchars($itemtype::getTypeName()) . "</span></h4>";
             echo '</div>'; // impact-side-filter-itemtypes-item
         }
         echo '</div>'; // impact-side-filter-itemtypes-items
@@ -1052,18 +1052,18 @@ JS);
         echo '<h4><i class="fas fa-chevron-left"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
             'id' => 'impact-side-filter-assets',
-            'placeholder' => __('Filter assets...'),
+            'placeholder' => __s('Filter assets...'),
         ]);
 
         echo '<div class="impact-side-search-panel">';
         echo '<div class="impact-side-search-results"></div>';
 
         echo '<div class="impact-side-search-more">';
-        echo '<h4><i class="fas fa-chevron-down"></i>' . __("More...") . '</h4>';
+        echo '<h4><i class="fas fa-chevron-down"></i>' . __s("More...") . '</h4>';
         echo '</div>'; // <div class="impact-side-search-more">
 
         echo '<div class="impact-side-search-no-results">';
-        echo '<p>' . __("No results") . '</p>';
+        echo '<p>' . __s("No results") . '</p>';
         echo '</div>'; // <div class="impact-side-search-no-results">
 
         echo '<div class="impact-side-search-spinner">';
@@ -1077,7 +1077,7 @@ JS);
         echo '</div>'; // div class="impact-side-add-node">
 
         echo '<div class="impact-side-settings">';
-        echo '<h3>' . __('Settings') . '</h3>';
+        echo '<h3>' . __s('Settings') . '</h3>';
 
         echo '<h4>' . __('Visibility') . '</h4>';
         echo '<div class="impact-side-settings-item">';
@@ -1086,7 +1086,7 @@ JS);
             'name'    => "toggle_impact",
             'checked' => "true",
         ]);
-        echo '<span class="impact-checkbox-label">' . __("Show impact") . '</span>';
+        echo '<span class="impact-checkbox-label">' . __s("Show impact") . '</span>';
         echo '</div>';
 
         echo '<div class="impact-side-settings-item">';
@@ -1095,23 +1095,23 @@ JS);
             'name'    => "toggle_depends",
             'checked' => "true",
         ]);
-        echo '<span class="impact-checkbox-label">' . __("Show depends") . '</span>';
+        echo '<span class="impact-checkbox-label">' . __s("Show depends") . '</span>';
         echo '</div>';
 
         echo '<h4>' . __('Colors') . '</h4>';
         echo '<div class="impact-side-settings-item">';
         Html::showColorField("depends_color", []);
-        echo '<span class="impact-checkbox-label">' . __("Depends") . '</span>';
+        echo '<span class="impact-checkbox-label">' . __s("Depends") . '</span>';
         echo '</div>';
 
         echo '<div class="impact-side-settings-item">';
         Html::showColorField("impact_color", []);
-        echo '<span class="impact-checkbox-label">' . __("Impact") . '</span>';
+        echo '<span class="impact-checkbox-label">' . __s("Impact") . '</span>';
         echo '</div>';
 
         echo '<div class="impact-side-settings-item">';
         Html::showColorField("impact_and_depends_color", []);
-        echo '<span class="impact-checkbox-label">' . __("Impact and depends") . '</span>';
+        echo '<span class="impact-checkbox-label">' . __s("Impact and depends") . '</span>';
         echo '</div>';
 
         echo '<h4>' . __('Max depth') . '</h4>';
@@ -1125,18 +1125,18 @@ JS);
         echo '</div>'; // div class="impact-side-panel">
 
         echo '<ul>';
-        echo '<li id="save_impact" title="' . __("Save") . '"><i class="fa-fw far fa-save"></i></li>';
-        echo '<li id="impact_undo" class="impact-disabled" title="' . __("Undo") . '"><i class="fa-fw fas fa-undo"></i></li>';
-        echo '<li id="impact_redo" class="impact-disabled" title="' . __("Redo") . '"><i class="fa-fw fas fa-redo"></i></li>';
+        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="fa-fw far fa-save"></i></li>';
+        echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="fa-fw fas fa-undo"></i></li>';
+        echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="fa-fw fas fa-redo"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="add_node" title="' . __("Add asset") . '"><i class="fa-fw ti ti-plus"></i></li>';
-        echo '<li id="add_edge" title="' . __("Add relation") . '"><i class="fa-fw ti ti-line"></i></li>';
-        echo '<li id="add_compound" title="' . __("Add group") . '"><i class="far fa-fw fa-object-group"></i></li>';
-        echo '<li id="delete_element" title="' . __("Delete element") . '"><i class="fa-fw ti ti-trash"></i></li>';
+        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="fa-fw ti ti-plus"></i></li>';
+        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="fa-fw ti ti-line"></i></li>';
+        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-fw fa-object-group"></i></li>';
+        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="fa-fw ti ti-trash"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="export_graph" title="' . __("Download") . '"><i class="fa-fw ti ti-download"></i></li>';
-        echo '<li id="toggle_fullscreen" title="' . __("Fullscreen") . '"><i class="fa-fw ti ti-maximize"></i></li>';
-        echo '<li id="impact_settings" title="' . __("Settings") . '"><i class="fa-fw ti ti-adjustments"></i></li>';
+        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="fa-fw ti ti-download"></i></li>';
+        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="fa-fw ti ti-maximize"></i></li>';
+        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="fa-fw ti ti-adjustments"></i></li>';
         echo '</ul>';
         echo '<span class="impact-side-toggle"><i class="fa-fw ti ti-chevron-left"></i></span>';
         echo '</div>'; // <div class="impact-side impact-side-expanded">
@@ -1796,12 +1796,12 @@ JS);
         global $CFG_GLPI;
 
        // Form head
-        $action = Toolbox::getItemTypeFormURL(Config::getType());
+        $action = htmlspecialchars(Toolbox::getItemTypeFormURL(Config::getType()));
         echo "<form name='form' action='$action' method='post'>";
 
        // Table head
         echo '<table class="tab_cadre_fixe">';
-        echo '<tr><th colspan="2">' . __('Impact analysis configuration') . '</th></tr>';
+        echo '<tr><th colspan="2">' . __s('Impact analysis configuration') . '</th></tr>';
 
        // First row: enabled itemtypes
         $input_name = self::CONF_ENABLED;
@@ -1813,7 +1813,7 @@ JS);
 
         echo '<td width="40%">';
         echo "<label for='$input_name'>";
-        echo __('Enabled itemtypes');
+        echo __s('Enabled itemtypes');
         echo '</label>';
         echo '</td>';
 

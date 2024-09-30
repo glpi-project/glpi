@@ -73,7 +73,7 @@ if (count($actions)) {
     }
     $rand = mt_rand();
 
-    echo "<label for=\"dropdown_massiveaction$rand\">" . _n('Action', 'Actions', 1) . "</label>";
+    echo "<label for=\"dropdown_massiveaction$rand\">" . _sn('Action', 'Actions', 1) . "</label>";
     echo "&nbsp;";
 
     $actions = ['-1' => Dropdown::EMPTY_VALUE] + $actions;

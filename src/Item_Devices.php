@@ -635,7 +635,7 @@ class Item_Devices extends CommonDBRelation
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                   action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . $item->getType() . "'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlspecialchars($item->getType()) . "'>\n";
         }
 
         $table = new HTMLTableMain();
@@ -737,7 +737,7 @@ class Item_Devices extends CommonDBRelation
 
         if ($canedit) {
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
-            echo __('Add a new component') . "</td><td class=left width='70%'>";
+            echo __s('Add a new component') . "</td><td class=left width='70%'>";
             if ($is_device) {
                 Dropdown::showNumber('number_devices_to_add', ['value' => 0,
                     'min'   => 0,
@@ -762,7 +762,7 @@ class Item_Devices extends CommonDBRelation
             echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
                   action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . $item->getType() . "'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlspecialchars($item->getType()) . "'>\n";
         }
 
         $table->display(['display_super_for_each_group' => false,

@@ -35,10 +35,23 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\FuzzyMatcher\FuzzyMatcher;
+use Glpi\FuzzyMatcher\PartialMatchStrategy;
 
 final class ServiceCatalogManager
 {
+    private FormAccessControlManager $access_manager;
+    private FuzzyMatcher $matcher;
+
+    public function __construct()
+    {
+        $this->access_manager = FormAccessControlManager::getInstance();
+        $this->matcher = new FuzzyMatcher(new PartialMatchStrategy());
+    }
+
     /**
      * Return all available forms for the given user.
      *
@@ -51,17 +64,21 @@ final class ServiceCatalogManager
      *
      * @return Form[]
      */
-    public function getForms(): array
-    {
-        $forms = $this->getFormsFromDatabase();
+    public function getForms(
+        FormAccessParameters $parameters,
+        string $filter = "",
+    ): array {
+        $forms = $this->getFormsFromDatabase($parameters, $filter);
         $forms = $this->addSuffixesToIdenticalFormNames($forms);
 
         return $forms;
     }
 
     /** @return Form[] */
-    private function getFormsFromDatabase(): array
-    {
+    private function getFormsFromDatabase(
+        FormAccessParameters $parameters,
+        string $filter = "",
+    ): array {
         $forms = [];
         $raw_forms = (new Form())->find([
             'is_active' => 1,
@@ -71,6 +88,25 @@ final class ServiceCatalogManager
             $form = new Form();
             $form->getFromResultSet($raw_form);
             $form->post_getFromDB();
+
+            // Fuzzy matching
+            $name = $form->fields['name'] ?? "";
+            $description = $form->fields['description'] ?? "";
+            if (
+                !$this->matcher->match($name, $filter)
+                && !$this->matcher->match($description, $filter)
+            ) {
+                continue;
+            }
+
+            /// Note: this is in theory less performant than applying the parameters
+            // directly to the SQL query (which would require more complicated code).
+            // However, the number of forms is expected to be low, so this is acceptable.
+            // If performance becomes an issue, we can revisit this and/or add a cache.
+            if (!$this->access_manager->canAnswerForm($form, $parameters)) {
+                continue;
+            }
+
             $forms[] = $form;
         };
 
