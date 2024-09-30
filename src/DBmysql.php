@@ -410,8 +410,11 @@ class DBmysql
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }
 
+        // Ensure that we collect warning after affected rows
         $this->last_query_warnings = $this->fetchQueryWarnings();
-        $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
+        if ($is_debug && $CFG_GLPI["debug_sql"]) {
+            $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
+        }
 
         $warnings_string = implode(
             "\n",
