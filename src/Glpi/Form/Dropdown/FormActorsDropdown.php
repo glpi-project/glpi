@@ -36,6 +36,7 @@
 namespace Glpi\Form\Dropdown;
 
 use AbstractRightsDropdown;
+use Dropdown;
 use Group;
 use Override;
 use Supplier;
@@ -71,18 +72,26 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     #[Override]
     public static function show(string $name, array $values, array $params = []): string
     {
-        $itemtype_name = fn($itemtype) => $itemtype::getTypeName(1);
         $params['width'] = '100%';
         $params['templateSelection'] = <<<JS
             function (data) {
                 let icon = '';
                 let text = data.text;
                 let title = data.title;
-                if (data.itemtype === 'User') {
+                if (
+                    (data.itemtype && data.itemtype === 'User')
+                    || (data.id && data.id.startsWith('users_id-'))
+                ) {
                     icon = '<i class="ti fa-fw ti-user mx-1" title="' + title + '"></i>';
-                } else if (data.itemtype === 'Group') {
+                } else if (
+                    (data.itemtype && data.itemtype === 'Group')
+                    || (data.id && data.id.startsWith('groups_id-'))
+                ) {
                     icon = '<i class="ti fa-fw ti-users mx-1" title="' + title + '"></i>';
-                } else if (data.itemtype === 'Supplier') {
+                } else if (
+                    (data.itemtype && data.itemtype === 'Supplier')
+                    || (data.id && data.id.startsWith('suppliers_id-'))
+                ) {
                     icon = '<i class="ti fa-fw ti-package mx-1" title="' + title + '"></i>';
                 }
 
@@ -92,6 +101,22 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         $params['templateResult'] = $params['templateSelection'];
 
         return parent::show($name, $values, $params);
+    }
+
+    #[Override]
+    protected static function getValueNames(array $values): array
+    {
+        return array_map(function ($value) {
+            $data = explode("-", $value);
+            $itemtype = getItemtypeForForeignKeyField($data[0]);
+            $items_id = $data[1];
+            $item = new $itemtype();
+
+            return Dropdown::getDropdownName(
+                $item->getTable(),
+                $items_id
+            );
+        }, $values);
     }
 
     #[Override]

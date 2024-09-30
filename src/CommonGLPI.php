@@ -627,7 +627,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (count($ong)) {
                     foreach ($ong as $key => $val) {
                         if ($key != 'empty') {
-                            echo "<div class='alltab'>$val</div>";
+                            echo "<div class='alltab'>" . $val . "</div>";
                             self::displayStandardTab($item, $key, $withtemplate, $options);
                         }
                     }
@@ -1008,8 +1008,6 @@ class CommonGLPI implements CommonGLPIInterface
                 $glpilisturl = $this->getSearchURL();
             }
 
-           // echo "<div id='menu_navigate'>";
-
             $next = $prev = $first = $last = -1;
             $current = false;
             if (is_array($glpilistitems)) {
@@ -1042,9 +1040,9 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<div class='left-icons'>";
 
             if (!$glpilisttitle) {
-                $glpilisttitle = __s('List');
+                $glpilisttitle = __('List');
             }
-            $list = "<a href='$glpilisturl' title=\"$glpilisttitle\"
+            $list = "<a href='$glpilisturl' title=\"" . htmlspecialchars($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='ti ti-list-search fa-lg'></i>
@@ -1096,9 +1094,9 @@ class CommonGLPI implements CommonGLPIInterface
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
-                echo $this->getNameID([
+                echo htmlspecialchars($this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
-                ]);
+                ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
                     $title = $this->isField('date_mod')
                                 ? sprintf(__s('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod']))
@@ -1277,11 +1275,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $ret = '';
-        $title = __s('FAQ');
-        if (Session::getCurrentInterface() == 'central') {
-            $title = __s('Knowledge base');
-        }
-
         $iterator = $DB->request([
             'SELECT' => [KnowbaseItem::getTable() . '.*'],
             'FROM'   => KnowbaseItem::getTable(),

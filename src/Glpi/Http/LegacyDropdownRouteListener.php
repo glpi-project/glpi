@@ -62,6 +62,14 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         }
         $request = $event->getRequest();
 
+        if (
+            $request->attributes->get('_controller') !== null
+            || $event->getResponse() !== null
+        ) {
+            // A controller or a response has already been defined for this request, do not override them.
+            return;
+        }
+
         if ($class = $this->findDropdownClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 

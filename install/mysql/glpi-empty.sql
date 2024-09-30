@@ -9869,6 +9869,7 @@ CREATE TABLE `glpi_assets_assets` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `custom_fields` json,
   PRIMARY KEY (`id`),
   KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
   KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
@@ -9986,6 +9987,21 @@ CREATE TABLE `glpi_dropdowns_dropdowns` (
   KEY `level` (`level`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_assets_customfielddefinitions`;
+CREATE TABLE `glpi_assets_customfielddefinitions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `field_options` json,
+  `itemtype` VARCHAR(255) NULL DEFAULT NULL,
+  `default_value` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

@@ -122,12 +122,12 @@ $options2 = [
 $ticket = new Ticket();
 
 $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-$nb  = $ticket->{$method}($actor_id);
+$nb  = (int) $ticket->{$method}($actor_id);
 
 if ($only_number) {
     echo "<a href='$url'>" . $nb . "</a>";
 } else {
     echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-    printf(__('%1$s: %2$s'), __('Processing'), $nb);
+    printf(__s('%1$s: %2$s'), __('Processing'), $nb);
     echo ")</a>";
 }

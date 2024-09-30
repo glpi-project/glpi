@@ -95,6 +95,14 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
                             new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
                         }
                     });
+
+                    $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
+                        const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
+                        if (question_type === '{{ question_type|escape('js') }}') {
+                            const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
+                            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                        }
+                    });
                 {% endif %}
             });
 TWIG;
@@ -126,7 +134,8 @@ TWIG;
                     'multiple': false,
                     'display_emptychoice': true,
                     'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': ''
+                    'mb': '',
+                    'aria_label': __('Default option')
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -140,7 +149,8 @@ TWIG;
                     'multiple': true,
                     'values': checked_values,
                     'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': ''
+                    'mb': '',
+                    'aria_label': __('Default options')
                 }
             ) }}
         </div>

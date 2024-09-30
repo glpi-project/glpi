@@ -1780,7 +1780,8 @@ class Stat extends CommonGLPI
                 }
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
-                        $names[Plugin::getWebDir($plug, false) . '/' . $page] = ["name" => $name,
+                        $names["/plugins/{$plug}/{$page}"] = [
+                            "name" => $name,
                             "plug" => $plug
                         ];
                         $optgroup[$plug] = Plugin::getInfo($plug, 'name');

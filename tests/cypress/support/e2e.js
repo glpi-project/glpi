@@ -36,3 +36,4 @@ import './commands/select2.js';
 import './commands/form.js';
 import '@testing-library/cypress/add-commands';
 import './cypress-axe.js';
+import 'cypress-network-idle';

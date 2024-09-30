@@ -559,6 +559,7 @@ $CFG_GLPI['javascript'] = [
     'create_ticket' => ['tinymce'],
     'reservation'   => array_merge(['tinymce'], $reservations_libs),
     'faq'           => ['tinymce'],
+    'helpdesk-home' => ['home-scss-file']
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

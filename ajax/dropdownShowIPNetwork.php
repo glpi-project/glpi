@@ -39,8 +39,8 @@ Html::header_nocache();
 $network = new IPNetwork();
 
 if ($_POST['ipnetworks_id'] && $network->can($_POST['ipnetworks_id'], READ)) {
-    echo "<br>\n";
-    echo "<a href='" . $network->getLinkURL() . "'>" . $network->fields['completename'] . "</a><br>\n";
+    echo "<br>";
+    echo "<a href='" . $network->getLinkURL() . "'>" . htmlspecialchars($network->fields['completename']) . "</a><br>";
 
     $address = $network->getAddress()->getTextual();
     $netmask = $network->getNetmask()->getTextual();
@@ -52,10 +52,10 @@ if ($_POST['ipnetworks_id'] && $network->can($_POST['ipnetworks_id'], READ)) {
     $network->computeNetworkRange($start, $end);
 
    //TRANS: %1$s is address, %2$s is netmask
-    printf(__('IP network: %1$s/%2$s') . "<br>\n", $address, $netmask);
-    printf(__('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual());
+    printf(__s('IP network: %1$s/%2$s') . "<br>", $address, $netmask);
+    printf(__s('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual());
     if (!empty($gateway)) {
-        echo "<br>\n";
-        printf(__('Gateway: %s') . "\n", $gateway);
+        echo "<br>";
+        printf(__s('Gateway: %s') . "\n", $gateway);
     }
 }

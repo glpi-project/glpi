@@ -82,5 +82,5 @@ if (class_exists($_POST["itemtype"])) {
     Dropdown::show($_POST['itemtype'], $params);
 
     echo "<span id='results_item_$rand'>";
-    echo "</span>\n";
+    echo "</span>";
 }
