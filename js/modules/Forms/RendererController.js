@@ -77,6 +77,11 @@ export class GlpiFormRendererController
 
         // Init event handlers
         this.#initEventHandlers();
+
+        // Make "Send form" button clickable
+        $(this.#target)
+            .find("[data-glpi-form-renderer-action=submit]")
+            .removeAttr("disabled");
     }
 
     /**
