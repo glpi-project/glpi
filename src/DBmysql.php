@@ -402,13 +402,17 @@ class DBmysql
             }
         }
 
-        $this->last_query_warnings = $this->fetchQueryWarnings();
         if ($is_debug && $CFG_GLPI["debug_sql"]) {
             $TIME = (float) $TIMER->getTime();
             $debug_data['time'] = (int) ($TIME * 1000);
             $debug_data['rows'] = $this->affectedRows();
             $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
+        }
+
+        // Ensure that we collect warning after affected rows
+        $this->last_query_warnings = $this->fetchQueryWarnings();
+        if ($is_debug && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
         }
 
