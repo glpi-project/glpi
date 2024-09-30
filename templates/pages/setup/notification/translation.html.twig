@@ -40,10 +40,7 @@
    {% set template_link %}
       <a href="{{ 'NotificationTemplate'|itemtype_form_path ~ '?id=' ~ template.fields['id'] }}">{{ template.fields['name'] }}</a>
    {% endset %}
-   {{ fields.htmlField('', template_link, 'NotificationTemplate'|itemtype_name(1), {
-      full_width_adapt_column: false,
-      label_class: 'col-xxl-4'
-   }) }}
+   {{ fields.htmlField('', template_link, 'NotificationTemplate'|itemtype_name(1)) }}
 
    {% do call('Ajax::createIframeModalWindow', ['tags' ~ rand, path('/front/notification.tags.php?sub_type=') ~ template.fields['itemtype']]) %}
    {% set show_tags %}
@@ -60,16 +57,12 @@
       emptylabel: __('Default translation'),
       display: false
    }]), __('Language'), {
-      full_width_adapt_column: false,
-      label_class: 'col-xxl-4'
+      full_width: true,
    }) }}
 
    {{ fields.nullField() }}
    {{ fields.textField('subject', item.fields['subject'], __('Subject'), {
       full_width: true,
-      full_width_adapt_column: false,
-      label_class: 'col-xxl-2',
-      input_class: 'col-xxl-10'
    }) }}
 
    {% set text_content_label %}
@@ -79,17 +72,11 @@
    {% endset %}
    {{ fields.textareaField('content_text', item.fields['content_text'], text_content_label, {
       full_width: true,
-      full_width_adapt_column: false,
-      label_class: 'col-xxl-2',
-      input_class: 'col-xxl-10',
       rows: 15
    }) }}
 
    {{ fields.textareaField('content_html', item.fields['content_html']|safe_html, __('Email HTML body'), {
       full_width: true,
-      full_width_adapt_column: false,
-      label_class: 'col-xxl-2',
-      input_class: 'col-xxl-10',
       rows: 15,
       enable_richtext: true,
       id: 'content' ~ rand

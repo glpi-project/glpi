@@ -86,6 +86,7 @@ The present file will list all changes made to the project; according to the
 - `status.php` and `bin/console system:status` no longer supports plain-text output.
 - `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
 - `Sylk` export of search results.
+- `full_width_adapt_column` option for fields macros has been removed.
 
 ### API changes
 
