@@ -8048,9 +8048,9 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $content = $log_row['change'];
                 if (strlen($log_row['field']) > 0) {
-                    $content = sprintf(__("%s: %s"), $log_row['field'], $content);
+                    $content = sprintf(__s("%s: %s"), htmlspecialchars($log_row['field']), $content);
                 }
-                $content = "<i class='fas fa-history me-1' title='" . __("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $content = "<i class='fas fa-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
                 $user_id = 0;
                 // try to extract ID from "user_name" (which was created using User::getNameForLog)
                 if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {
