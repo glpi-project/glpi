@@ -149,7 +149,6 @@ final class AssetDefinition extends AbstractDefinition
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    $item->showCustomFieldsForm();
                     $item->showFieldsForm();
                     break;
                 case 3:
@@ -186,101 +185,6 @@ final class AssetDefinition extends AbstractDefinition
         );
     }
 
-    /**
-     * Show the custom fields tab including the list of custom fields and a form to add/edit them.
-     * @return void
-     */
-    private function showCustomFieldsForm(): void
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (!$this->canViewItem()) {
-            return;
-        }
-
-        $canedit = $this->canUpdateItem();
-        $rand = mt_rand();
-        if ($canedit) {
-            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
-                'cancreate' => CustomFieldDefinition::canCreate(),
-                'id' => $this->fields['id'],
-                'rand' => $rand,
-                'type' => CustomFieldDefinition::class,
-                'parenttype' => CustomFieldDefinition::$itemtype,
-                'items_id' => CustomFieldDefinition::$items_id,
-                'add_new_label' => __('Create new field'),
-                'datatable_id' => 'datatable_customfields' . $rand,
-                'subitem_container_id' => 'customfield_form_container'
-            ]);
-        }
-
-        $iterator = $DB->request([
-            'SELECT' => ['id', 'name', 'label', 'type', 'field_options', 'itemtype'],
-            'FROM' => CustomFieldDefinition::getTable(),
-            'WHERE' => [
-                self::getForeignKeyField() => $this->fields['id'],
-            ],
-        ]);
-
-        $entries = [];
-        $adm = AssetDefinitionManager::getInstance();
-        $field_types = $adm->getCustomFieldTypes();
-        $allowed_dropdown_itemtypes = $adm->getAllowedDropdownItemtypes(true);
-        foreach ($iterator as $data) {
-            $entry = [
-                'id' => $data['id'],
-                'itemtype' => CustomFieldDefinition::class,
-                'name' => $data['name'],
-                'label' => $data['label'],
-                'type' => in_array($data['type'], $field_types, true) ? $data['type']::getName() : NOT_AVAILABLE,
-                'dropdown_itemtype' => $data['itemtype'] !== '' ? ($allowed_dropdown_itemtypes[$data['itemtype']] ?? NOT_AVAILABLE) : NOT_AVAILABLE,
-                'row_class' => 'cursor-pointer'
-            ];
-
-            $field_options = json_decode($data['field_options'] ?? '[]', true) ?? [];
-            $flags = '';
-            if ($field_options['readonly'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Read-only') . '</span>';
-            }
-            if ($field_options['required'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Mandatory') . '</span>';
-            }
-            if ($field_options['multiple'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Multiple values') . '</span>';
-            }
-            $entry['flags'] = $flags;
-            $entries[] = $entry;
-        }
-
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'datatable_id' => 'datatable_customfields' . $rand,
-            'is_tab' => true,
-            'nopager' => true,
-            'nosort' => true,
-            'nofilter' => true,
-            'columns' => [
-                'name' => __('Name'),
-                'label' => __('Label'),
-                'type' => _n('Type', 'Types', 1),
-                'flags' => __('Flags'),
-                'dropdown_itemtype' => __('Item type'),
-            ],
-            'formatters' => [
-                'flags' => 'raw_html'
-            ],
-            'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
-            'massiveactionparams' => [
-                'num_displayed' => count($entries),
-                'container' => 'mass' . str_replace('\\', '_', self::class) . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ],
-        ]);
-    }
-
     /*
      * Display fields form.
      *
@@ -300,6 +204,17 @@ final class AssetDefinition extends AbstractDefinition
                 'all_fields'     => $this->getAllFields(),
                 'fields_display' => $fields_display,
                 'used'           => $used,
+                'custom_field_form_params' => [
+                    'cancreate' => CustomFieldDefinition::canCreate(),
+                    'id' => $this->fields['id'],
+                    'type' => CustomFieldDefinition::class,
+                    'parenttype' => CustomFieldDefinition::$itemtype,
+                    'items_id' => CustomFieldDefinition::$items_id,
+                    'add_new_label' => __('Create new field'),
+                    'subitem_container_id' => 'customfield_form_container',
+                    'as_modal' => true,
+                    'on_form_submit' => 'return false;', // Block redirect
+                ]
             ]
         );
     }
@@ -616,7 +531,7 @@ final class AssetDefinition extends AbstractDefinition
     }
 
 
-    private function getAllFields(): array
+    public function getAllFields(): array
     {
         $type_class = $this->getAssetTypeClassName();
         $model_class = $this->getAssetModelClassName();
@@ -639,7 +554,10 @@ final class AssetDefinition extends AbstractDefinition
         ];
 
         foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
-            $fields['custom_' . $custom_field_def->fields['name']] = $custom_field_def->computeFriendlyName();
+            $fields['custom_' . $custom_field_def->fields['name']] = [
+                'customfields_id'    => $custom_field_def->getID(),
+                'text' => $custom_field_def->computeFriendlyName()
+            ];
         }
 
         return $fields;

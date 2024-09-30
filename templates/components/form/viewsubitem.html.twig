@@ -31,20 +31,41 @@
  #}
 
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+{% set as_modal = as_modal|default(false) %}
+{% set add_new_label = add_new_label|default(__('Add')) %}
+
+{% if as_modal %}
+<div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
+            </div>
+            <div class="modal-body overflow-auto">
+{% endif %}
 <div id='{{ subitem_container_id }}'></div>
+{% if as_modal %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script>
     $(() => {
-        function viewAddSubItem{{ rand }} (btn) {
-            {% do call('Ajax::updateItemJsCode', [
-                subitem_container_id,
-                config('root_doc') ~ '/ajax/viewsubitem.php',
-                {
-                    'type': type,
-                    'parenttype': parenttype,
-                    (items_id): id,
-                    'id': -1
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+
+        function viewAddEditSubItem{{ rand }}(id) {
+            $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
+                type: "{{ type|e('js') }}",
+                parenttype: "{{ parenttype|e('js') }}",
+                {{ items_id }}: {{ id }},
+                id: id
+            }, () => {
+                if (modal_el.length) {
+                    modal_el.modal('show');
                 }
-            ]) %}
+            });
         }
 
         {% if datatable_id is defined %}
@@ -54,25 +75,34 @@
                 }
                 const subitem_id = $(e.currentTarget).data('id');
                 if (subitem_id) {
-                    $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
-                        type: "{{ type|e('js') }}",
-                        parenttype: "{{ parenttype|e('js') }}",
-                        {{ items_id }}: {{ id }},
-                        id: subitem_id
-                    });
+                    viewAddEditSubItem{{ rand }}(subitem_id);
                 }
             });
         {% endif %}
 
         $('#addsubitem{{ rand }}').on('click', (e) => {
-            viewAddSubItem{{ rand }}(e.target);
+            viewAddEditSubItem{{ rand }}(-1);
+        });
+        $('#{{ subitem_container_id }}').on('submit', 'form', (e) => {
+            // Close the modal if it exists
+            if (modal_el.length) {
+                modal_el.modal('hide');
+            }
+            {% if on_form_submit is defined %}
+                {# Allow blocking redirect, or performing an action after form submit #}
+                {{ on_form_submit|raw }}
+            {% endif %}
         });
     });
 </script>
 {% if cancreate %}
-    <div class="text-center mt-1 mb-3">
-        <button id="addsubitem{{ rand }}" type="button" class="btn btn-primary">
-            {{ add_new_label|default(__('Add')) }}
+    {% if not add_new_inline %}
+        <div class="text-center mt-1 mb-3">
+    {% endif %}
+        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }}">
+            {{ add_new_label }}
         </button>
-    </div>
+    {% if not add_new_inline %}
+        </div>
+    {% endif %}
 {% endif %}
