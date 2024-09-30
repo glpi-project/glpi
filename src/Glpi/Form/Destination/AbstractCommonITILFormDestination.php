@@ -44,6 +44,7 @@ use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\LocationField;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Form;
@@ -182,6 +183,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new EntityField(),
             new LocationField(),
             new AssociatedItemsField(),
+            new ITILFollowupField(),
         ];
     }
 

@@ -2468,14 +2468,17 @@ JAVASCRIPT;
                      "</a>";
             $output  .= "</div></div>";
 
+            $multichecksappend_varname = "multichecksappend" . str_replace('-', '_', $field_id);
             $js = "
-         var multichecksappend$field_id = false;
-         $('#$field_id').on('select2:open', function(e) {
-            if (!multichecksappend$field_id) {
-               $('#select2-$field_id-results').parent().append($('#selectallbuttons_$field_id').html());
-               multichecksappend$field_id = true;
-            }
-         });";
+                var $multichecksappend_varname = false;
+                $('#$field_id').on('select2:open', function(e) {
+                    if (!$multichecksappend_varname) {
+                        $('#select2-$field_id-results').parent().append($('#selectallbuttons_$field_id').html());
+                        $multichecksappend_varname = true;
+                    }
+                });
+            ";
+
             $output .= Html::scriptBlock($js);
         }
         $output .= Ajax::commonDropdownUpdateItem($param, false);
