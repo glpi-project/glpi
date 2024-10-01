@@ -470,7 +470,7 @@
     {% endif %}
 
     <label class="{{ class }}" for="{{ id }}">
-        {{ label }}
+        {{ label|raw }}
         {{ locked_mark|raw }}
         {{ required_mark|raw }}
         {{ helper|raw }}
