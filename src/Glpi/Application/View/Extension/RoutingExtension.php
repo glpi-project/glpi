@@ -37,6 +37,8 @@ namespace Glpi\Application\View\Extension;
 
 use Html;
 use Session;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -45,6 +47,11 @@ use Twig\TwigFunction;
  */
 class RoutingExtension extends AbstractExtension
 {
+    public function __construct(
+        private readonly ?UrlGeneratorInterface $router = null
+    ) {
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -77,9 +84,24 @@ class RoutingExtension extends AbstractExtension
      *
      * @return string
      */
-    public function path(string $resource): string
+    public function path(string $resource, array $parameters = []): string
     {
-        return Html::getPrefixedUrl($resource);
+        if ($this->router) {
+            try {
+                // Symfony's router must take precedence over GLPI's router, for forwards compatibility
+                return $this->router->generate($resource, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
+            } catch (RouteNotFoundException) {
+                // Fallback to GLPI router in this case for consistency
+            }
+        }
+
+        $url = Html::getPrefixedUrl($resource);
+
+        if ($parameters) {
+            $url .= '?' . http_build_query($parameters);
+        }
+
+        return $url;
     }
 
     /**
@@ -89,16 +111,31 @@ class RoutingExtension extends AbstractExtension
      *
      * @return string
      */
-    public function url(string $resource): string
+    public function url(string $resource, array $parameters = []): string
     {
+        if ($this->router) {
+            try {
+                // Symfony's router must take precedence over GLPI's router, for forwards compatibility
+                return $this->router->generate($resource, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
+            } catch (RouteNotFoundException) {
+                // Fallback to GLPI router in this case for consistency
+            }
+        }
+
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $prefix = $CFG_GLPI['url_base'];
-        if (substr($resource, 0, 1) != '/') {
+        if (!str_starts_with($resource, '/')) {
             $prefix .= '/';
         }
 
-        return $prefix . $resource;
+        $url = $prefix . $resource;
+
+        if ($parameters) {
+            $url .= '?' . http_build_query($parameters);
+        }
+
+        return $url;
     }
 }

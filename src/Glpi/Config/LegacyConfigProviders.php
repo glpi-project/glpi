@@ -35,7 +35,7 @@
 namespace Glpi\Config;
 
 use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final class LegacyConfigProviders implements PublicService
 {
@@ -45,7 +45,7 @@ final class LegacyConfigProviders implements PublicService
     private array $configProviders = [];
 
     public function __construct(
-        #[TaggedIterator(LegacyConfigProviderInterface::TAG_NAME)]
+        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
         iterable $configProviders = [],
     ) {
         foreach ($configProviders as $provider) {
