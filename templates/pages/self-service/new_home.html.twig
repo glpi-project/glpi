@@ -88,48 +88,7 @@
         </section>
         <div class="tickets-banner">
             <div class="container-xl">
-                <ul class="nav nav-tabs home-tickets-tabs" role="tablist">
-                    {% for tab in tabs %}
-                        <li class="nav-item">
-                            <a
-                                class="nav-link {{ loop.index0 == 0 ? 'active' : '' }}"
-                                aria-current="page"
-                                id="{{ tab.id }}-tab"
-                                href="#"
-                                data-bs-toggle="tab"
-                                data-bs-target="#{{ tab.id }}-pane"
-                                type="button"
-                                role="tab"
-                                aria-controls="{{ tab.id }}-pane"
-                                aria-selected="{{ loop.index0 == 0 ? 'true' : 'false' }}"
-                            >{{ tab.label }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
-                <div class="tab-content">
-                    {% for tab in tabs %}
-                        <div
-                            id="{{ tab.id }}-pane"
-                            class="tab-pane fade home-tickets-list {{ loop.index0 == 0 ? 'show active' : '' }}"
-                            role="tabpanel"
-                            aria-labelledby="{{ tab.id }}-tab"
-                            tabindex="{{ loop.index0 }}"
-                        >
-                            {% do call('Search::showList', [
-                                'Ticket',
-                                {
-                                    'criteria' : tab.criteria,
-                                    'showmassiveactions' : false,
-                                    'hide_controls'      : true,
-                                    'as_map'             : false,
-                                    'push_history'       : false,
-                                }
-                            ]) %}
-                        </div>
-                    {% endfor %}
-                </div>
-
+                {{ tabs.showTabsContent() }}
             </div>
         </div>
     </div>

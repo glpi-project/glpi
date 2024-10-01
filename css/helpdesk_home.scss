@@ -101,23 +101,23 @@ header {
 
 // Hack to hide some columns until we can add proper display preferences for
 // this list.
-.home-tickets-list [data-searchopt-id="1"],
-.home-tickets-list  [data-searchopt-content-id="1"],
-.home-tickets-list [data-searchopt-id="2"],
-.home-tickets-list  [data-searchopt-content-id="2"],
-.home-tickets-list [data-searchopt-id="80"],
-.home-tickets-list  [data-searchopt-content-id="80"],
-.home-tickets-list [data-searchopt-id="12"],
-.home-tickets-list  [data-searchopt-content-id="12"],
-.home-tickets-list [data-searchopt-id="19"],
-.home-tickets-list  [data-searchopt-content-id="19"],
-.home-tickets-list [data-searchopt-id="15"],
-.home-tickets-list  [data-searchopt-content-id="15"] {
+.tickets-banner [data-searchopt-id="1"],
+.tickets-banner  [data-searchopt-content-id="1"],
+.tickets-banner [data-searchopt-id="2"],
+.tickets-banner  [data-searchopt-content-id="2"],
+.tickets-banner [data-searchopt-id="80"],
+.tickets-banner  [data-searchopt-content-id="80"],
+.tickets-banner [data-searchopt-id="12"],
+.tickets-banner  [data-searchopt-content-id="12"],
+.tickets-banner [data-searchopt-id="19"],
+.tickets-banner  [data-searchopt-content-id="19"],
+.tickets-banner [data-searchopt-id="15"],
+.tickets-banner  [data-searchopt-content-id="15"] {
     display: table-cell !important;
 }
 
-.home-tickets-list [data-searchopt-id],
-.home-tickets-list  [data-searchopt-content-id] {
+.tickets-banner [data-searchopt-id],
+.tickets-banner  [data-searchopt-content-id] {
     display: none;
 }
 
@@ -154,4 +154,44 @@ header {
     padding-top:70px;
     padding-bottom:70px;
     flex-grow: 1;
+}
+
+// Specific style for the tabs
+#tabspanel {
+    border-right: 0 !important;
+    border-bottom: 1px solid transparent;
+
+    .nav-link {
+        border-bottom: 0 !important;
+        border-bottom-color: unset !important;
+    }
+}
+
+.tab-content {
+    border-top-right-radius: 0 !important;
+    border: 0 !important;
+}
+
+.tab-pane {
+    // Cancel parent padding, can't be done in .tab-content because the p-2 class
+    // already use !important so we can't override it.
+    margin: -0.5rem !important;
+}
+
+.home-ticket-list {
+    .search-card {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    td {
+        // Remove stripped rows
+        box-shadow: none !important;
+    }
+
+    .card-footer {
+        border-top: 0;
+        padding-top: 16px;
+        padding-bottom: 8px;
+    }
 }
