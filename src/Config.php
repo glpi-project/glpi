@@ -1597,6 +1597,9 @@ class Config extends CommonDBTM
                 'simplexml' => [
                     'required'  => true,
                 ],
+                'bcmath' => [
+                    'required'  => true,
+                ],
             //to sync/connect from LDAP
                 'ldap'       => [
                     'required'  => false,
