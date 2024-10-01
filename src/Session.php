@@ -393,7 +393,22 @@ class Session
             $glpiactive_entity = $_SESSION['glpiactive_entity'];
             $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
             $entities = [$glpiactive_entity];
-            if ($glpiactive_entity_recursive) {
+            if (
+                ($_SESSION["glpientity_fullstructure"] ?? false)
+                && isset($_SESSION['glpiactiveprofile']['entities'])
+            ) {
+                foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+                    $entities[$val['id']] = $val['id'];
+                    if ($val['is_recursive']) {
+                        $sons = getSonsOf("glpi_entities", $val['id']);
+                        if (count($entities)) {
+                            foreach ($sons as $key2 => $val2) {
+                                $entities[$key2] = $key2;
+                            }
+                        }
+                    }
+                }
+            } elseif ($glpiactive_entity_recursive) {
                 $entities = getSonsOf("glpi_entities", $glpiactive_entity);
             }
 
@@ -420,6 +435,8 @@ class Session
 
         $newentities = [];
         $ancestors = [];
+
+        $_SESSION["glpientity_fullstructure"] = ($ID = 'all');
 
         if (isset($_SESSION['glpiactiveprofile'])) {
             if ($ID === "all") {
