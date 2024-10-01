@@ -38,7 +38,10 @@ class Barcode extends CommonDropdown
     public static function generateQRCode(CommonDBTM $item)
     {
         global $CFG_GLPI;
-        if ($item->getId() === -1) {
+        if (
+            $item->getId() === -1 ||
+            !in_array($item::class, $CFG_GLPI["asset_types"])
+        ) {
             return false;
         }
         $barcode = new \Com\Tecnick\Barcode\Barcode();
@@ -55,12 +58,9 @@ class Barcode extends CommonDropdown
 
     public static function renderQRCode(CommonDBTM $item)
     {
-        global $CFG_GLPI;
-        if (in_array($item::class, $CFG_GLPI["asset_types"])) {
-            $qrcode = self::generateQRCode($item);
-            if ($qrcode) {
-                return $qrcode->getHtmlDiv();
-            }
+        $qrcode = self::generateQRCode($item);
+        if ($qrcode) {
+            return $qrcode->getHtmlDiv();
         }
         return false;
     }
