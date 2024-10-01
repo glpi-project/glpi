@@ -1093,7 +1093,7 @@ class Session
 
             $row = $result->current();
 
-            if ($row['count'] === 0) {
+            if (!isset($row['count']) || $row['count'] === 0) {
                 $valid_user = false;
             } elseif (
                 $row['last_rights_update'] !== null
