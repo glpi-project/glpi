@@ -122,6 +122,11 @@ class RequirementsManager
             false,
             __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
         );
+        $requirements[] = new Extension(
+            'bcmath',
+            false,
+            __('Required for qrcode support')
+        );
         $requirements[] = new ExtensionConstant(
             __('Sodium ChaCha20-Poly1305 size constant'),
             'SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES',

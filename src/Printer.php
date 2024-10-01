@@ -305,7 +305,6 @@ class Printer extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/assets/printer.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'barcode' => Barcode::renderQRCode($this)
         ]);
         return true;
     }

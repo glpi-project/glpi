@@ -495,7 +495,6 @@ class CommonDBTM extends CommonGLPI
             'params' => $options,
             'no_header' => !$new_item && !$in_modal,
             'cluster' => $cluster,
-            'barcode' => Barcode::renderQRCode($this)
         ]);
         return true;
     }

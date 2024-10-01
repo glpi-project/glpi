@@ -179,7 +179,6 @@ class Phone extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/assets/phone.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'barcode' => Barcode::renderQRCode($this)
         ]);
         return true;
     }

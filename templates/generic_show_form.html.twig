@@ -683,7 +683,13 @@
                         {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
                      {% endif %}
 
-                     {% if barcode %}
+                     {% if item_type in config("asset_types")  %}
+                        {% set barcode %}
+                           {{ call('Barcode::renderQRCode', [
+                              item
+                           ])|raw }}
+                        {% endset %}
+
                         {{  fields.htmlField(
                            'qrcode',
                            barcode,
