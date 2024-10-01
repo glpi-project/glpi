@@ -1265,16 +1265,16 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "2.28.0",
+            "version": "2.28.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "e1e312650232e5ef26c28ea08f3c4c18633f48c3"
+                "reference": "d553a9c15c08768b8410050b4fa5479c99e2ed82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/e1e312650232e5ef26c28ea08f3c4c18633f48c3",
-                "reference": "e1e312650232e5ef26c28ea08f3c4c18633f48c3",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/d553a9c15c08768b8410050b4fa5479c99e2ed82",
+                "reference": "d553a9c15c08768b8410050b4fa5479c99e2ed82",
                 "shasum": ""
             },
             "require": {
@@ -1347,7 +1347,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2024-07-15T12:54:14+00:00"
+            "time": "2024-09-10T11:54:30+00:00"
         },
         {
             "name": "laminas/laminas-json",
