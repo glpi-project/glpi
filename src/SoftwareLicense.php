@@ -274,6 +274,7 @@ class SoftwareLicense extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/management/softwarelicense.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'barcode' => Barcode::renderQRCode($this)
         ]);
 
         return true;
