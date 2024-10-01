@@ -67,7 +67,7 @@ class ItemtypeExtension extends AbstractExtension
     {
         return [
             new TwigFunction('get_item', [$this, 'getItem']),
-            new TwigFunction('get_item_comment', [$this, 'getItemComment']),
+            new TwigFunction('get_item_comment', [$this, 'getItemComment'], ['is_safe' => ['html']]),
             new TwigFunction('get_item_link', [$this, 'getItemLink'], ['is_safe' => ['html']]),
             new TwigFunction('get_item_name', [$this, 'getItemName']),
         ];
@@ -205,8 +205,7 @@ class ItemtypeExtension extends AbstractExtension
     {
         if (is_a($item, CommonDropdown::class, true)) {
             $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
-            $texts = Dropdown::getDropdownName($item::getTable(), $items_id, true, true, false, '');
-            return $texts['comment'];
+            return Dropdown::getDropdownComments($item::getTable(), $items_id, tooltip: false);
         }
 
         if (($instance = $this->getItemInstance($item, $id)) === null) {
@@ -215,7 +214,7 @@ class ItemtypeExtension extends AbstractExtension
 
         $comment = $instance->isField('comment') ? $instance->fields['comment'] : null;
 
-        return $comment;
+        return htmlescape($comment);
     }
 
     /**

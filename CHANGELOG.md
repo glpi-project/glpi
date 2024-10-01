@@ -231,6 +231,7 @@ The present file will list all changes made to the project; according to the
 - Usage of the `front/dropdown.common.php` and the `dropdown.common.form.php` files. There is now a generic controller that will serve the search and form pages of any `Dropdown` class.
 - Usage of the `$link` parameter in `formatUserName()` and `DbUtils::formatUserName()`. Use `formatUserLink()` or `DbUtils::formatUserLink()` instead.
 - Usage of the `$link` parameter in `getUserName()` and `DbUtils::getUserName()`. Use `getUserLink()`, `DbUtils::getUserLink()`, or `User::getInfoCard()` instead.
+- Usage of the `$withcomment` parameter in `getTreeValueCompleteName()`, `DbUtils::getTreeValueCompleteName()` and `Dropdown::getDropdownName()`. Use `Dropdown::getDropdownComments()` instead.
 - `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`

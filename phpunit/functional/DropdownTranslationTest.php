@@ -168,8 +168,7 @@ class DropdownTranslationTest extends DbTestCase
 
     public function testgetTranslatedCompletename(): void
     {
-        global $CFG_GLPI, $DB;
-        $CFG_GLPI['translate_dropdowns'] = 1;
+        global $DB;
 
         $values = $this->completenameGenerationFakeProvider();
         foreach ($values as $value) {
