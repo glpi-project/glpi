@@ -135,6 +135,7 @@ class Appliance extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'barcode' => Barcode::renderQRCode($this)
         ]);
         return true;
     }

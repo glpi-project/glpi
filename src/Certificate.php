@@ -555,6 +555,7 @@ class Certificate extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/management/certificate.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'barcode' => Barcode::renderQRCode($this)
         ]);
         return true;
     }
