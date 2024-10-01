@@ -46,6 +46,7 @@ use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
+use Glpi\Form\Destination\CommonITILField\ITILTaskField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
@@ -188,6 +189,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new ITILFollowupField(),
             new RequestSourceField(),
             new ValidationField(),
+            new ITILTaskField(),
         ];
     }
 
