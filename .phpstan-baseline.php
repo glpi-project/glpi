@@ -44,6 +44,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/impact.php',
 ];
 $ignoreErrors[] = [
+	// identifier: offsetAssign.dimType
+	'message' => '#^Cannot assign offset \'impactcontexts_id\' to string\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/impact.php',
+];
+$ignoreErrors[] = [
 	// identifier: offsetAccess.notFound
 	'message' => '#^Offset \'node_id\' does not exist on string\\.$#',
 	'count' => 1,
@@ -548,6 +554,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
+	// identifier: if.alwaysTrue
+	'message' => '#^If condition is always true\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Auth\\:\\:login\\(\\) should return bool but returns int\\.$#',
 	'count' => 1,
@@ -964,7 +976,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -2240,6 +2252,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
+	// identifier: offsetAccess.notFound
+	'message' => '#^Offset \'max\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: empty.offset
+	'message' => '#^Offset \'max\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: offsetAccess.notFound
+	'message' => '#^Offset \'min\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: empty.offset
+	'message' => '#^Offset \'min\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
 	// identifier: deadCode.unreachable
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 3,
@@ -3357,7 +3393,7 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: isset.offset
-	'message' => '#^Offset 2 on array\\{array\\<int, string\\>, array\\<int, non\\-empty\\-string\\>, array\\<int, numeric\\-string\\>, array\\<int, non\\-empty\\-string\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'message' => '#^Offset 2 on array\\{array\\<int, string\\>, array\\<int, \'"\'\\|\'\\\\\'\'\\>, array\\<int, numeric\\-string\\>, array\\<int, \'"\'\\|\'\\\\\'\'\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
