@@ -36,11 +36,10 @@
 namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
-use Psr\Http\Client\RequestExceptionInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
-class Request extends \DBTestCase
+class Request extends \GLPITestCase
 {
     private $http_client;
     private $base_uri;
@@ -210,10 +209,8 @@ XML
 
     public function testAuthBasic()
     {
-        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
-        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -223,8 +220,6 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
-        $DB->commit();
-        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
@@ -271,11 +266,9 @@ XML
 
     public function testAuthBasicMalformed()
     {
-        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
-        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -285,8 +278,6 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
-        $DB->commit();
-        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
@@ -341,11 +332,9 @@ XML
 
     public function testAuthBasicWithFakeCredential()
     {
-        global $DB;
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
-        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -355,8 +344,6 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
-        $DB->commit();
-        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
