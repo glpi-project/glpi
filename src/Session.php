@@ -392,7 +392,7 @@ class Session
         if (count($glpiactiveentities)) {
             $glpiactive_entity = $_SESSION['glpiactive_entity'];
             $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
-            $entities = [$glpiactive_entity];
+            $entities = [$glpiactive_entity => $glpiactive_entity];
             if (
                 ($_SESSION["glpientity_fullstructure"] ?? false)
                 && isset($_SESSION['glpiactiveprofile']['entities'])
@@ -436,7 +436,7 @@ class Session
         $newentities = [];
         $ancestors = [];
 
-        $_SESSION["glpientity_fullstructure"] = ($ID = 'all');
+        $_SESSION["glpientity_fullstructure"] = ($ID === 'all');
 
         if (isset($_SESSION['glpiactiveprofile'])) {
             if ($ID === "all") {
