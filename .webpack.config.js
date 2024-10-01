@@ -31,6 +31,9 @@ let config = {
             }
         }
 
+        entries['sf_live_controller_js'] = path.resolve(__dirname, 'vendor/symfony/ux-live-component/assets/dist/live_controller.js');
+        entries['sf_live_controller_css'] = path.resolve(__dirname, 'vendor/symfony/ux-live-component/assets/styles/live.css');
+
         return entries;
     },
     output: {

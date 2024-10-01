@@ -90,6 +90,7 @@
         "symfony/routing": "^6.4",
         "symfony/serializer": "^7.1",
         "symfony/twig-bundle": "^7.1",
+        "symfony/ux-live-component": "^2.20",
         "symfony/ux-twig-component": "^2.20",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",

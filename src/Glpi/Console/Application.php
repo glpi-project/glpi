@@ -344,6 +344,24 @@ class Application extends BaseApplication
     }
 
     /**
+     * This method is used internally by Symfony, especially "debug:*" commands.
+     * This is caused by the fact that Symfony expects an instance of FrameworkBundle's Application class,
+     * which we do not extend (yet).
+     *
+     * @todo remove this when the Application class extends the FrameworkBundle's one.
+     */
+    public function getKernel(): ?Kernel
+    {
+        global $kernel;
+
+        if (!$kernel instanceof Kernel) {
+            return null;
+        }
+
+        return $kernel;
+    }
+
+    /**
      * Initialize database connection.
      *
      * @global DBmysql $DB

@@ -32,22 +32,20 @@
  #}
 
 {% set theme = config('palette')|default('auror') %}
-{% if css_files is not defined %}
-   {% set css_files = [
-       {'path': 'public/lib/base.css'},
-       {'path': 'public/lib/tabler.css'},
-       {'path': 'css/glpi.scss'},
-       {'path': 'css/core_palettes.scss'}
-   ] %}
-   {# TODO : load hight contrast css #}
-{% endif %}
-{% if js_files is not defined %}
-   {% set js_files = [
-       {'path': 'public/lib/base.js'},
-       {'path': 'js/common.js'},
-       {'path': 'public/lib/fuzzy.js'}
-   ] %}
-{% endif %}
+
+{% set css_files = ([
+    {'path': 'public/lib/base.css'},
+    {'path': 'public/lib/tabler.css'},
+    {'path': 'css/glpi.scss'},
+    {'path': 'css/core_palettes.scss'}
+]) | merge(css_files ?? []) %}
+{# TODO : load hight contrast css #}
+
+{% set js_files = [
+    {'path': 'public/lib/base.js'},
+    {'path': 'js/common.js'},
+    {'path': 'public/lib/fuzzy.js'}
+] | merge(js_files ?? []) %}
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">
