@@ -1376,17 +1376,21 @@ final class DbUtils
      * @return string completename of the element
      *
      * @see DbUtils::getTreeLeafValueName
+     *
+     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      */
     public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
+        if ($withcomment) {
+            Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
+        }
+
         /** @var \DBmysql $DB */
         global $DB;
 
         $name    = "";
-        $comment = "";
 
         $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1405,21 +1409,6 @@ final class DbUtils
                     ]
                 ];
             }
-            if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
-                $SELECTCOMMENT = 'namec.value AS transcomment';
-                $JOINS['glpi_dropdowntranslations AS namec'] = [
-                    'ON' => [
-                        'namec'  => 'items_id',
-                        $table   => 'id', [
-                            'AND' => [
-                                'namec.itemtype'  => $this->getItemTypeForTable($table),
-                                'namec.language'  => $_SESSION['glpilanguage'],
-                                'namec.field'     => 'comment'
-                            ]
-                        ]
-                    ]
-                ];
-            }
 
             if (count($JOINS)) {
                 $JOIN = ['LEFT JOIN' => $JOINS];
@@ -1431,7 +1420,6 @@ final class DbUtils
                 "$table.completename",
                 "$table.comment",
                 $SELECTNAME,
-                $SELECTCOMMENT
             ],
             'FROM'   => $table,
             'WHERE'  => ["$table.id" => $ID]
@@ -1461,56 +1449,15 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-            if ($tooltip) {
-                $comment  = sprintf(
-                    __('%1$s: %2$s') . "<br>",
-                    "<span class='b'>" . __('Complete name') . "</span>",
-                    htmlspecialchars($name)
-                );
-                if ($table == Location::getTable()) {
-                    $acomment = '';
-                    $address = $result['address'];
-                    $town    = $result['town'];
-                    $country = $result['country'];
-                    $code    = $result['code'];
-                    $alias   = $result['alias'];
-                    if (!empty($alias)) {
-                        $name = $alias;
-                        $comment .= "<span class='b'>" . __s('Alias:') . "</span> " . htmlspecialchars($alias) . "<br/>";
-                    }
-                    if (!empty($code)) {
-                        $name .= ' - ' . $code;
-                        $comment .= "<span class='b'>" . __s('Code:') . "</span> " . htmlspecialchars($code) . "<br/>";
-                    }
-                    if (!empty($address)) {
-                        $acomment .= htmlspecialchars($address);
-                    }
-                    if (
-                        !empty($address) &&
-                        (!empty($town) || !empty($country))
-                    ) {
-                        $acomment .= '<br/>';
-                    }
-                    if (!empty($town)) {
-                        $acomment .= htmlspecialchars($town);
-                    }
-                    if (!empty($country)) {
-                        if (!empty($town)) {
-                            $acomment .= ' - ';
-                        }
-                        $acomment .= htmlspecialchars($country);
-                    }
-                    if (trim($acomment) != '') {
-                        $comment .= "<span class='b'>&nbsp;" . __s('Address:') . "</span> " . $acomment . "<br/>";
-                    }
+            if ($table == Location::getTable()) {
+                $code    = $result['code'];
+                $alias   = $result['alias'];
+                if (!empty($alias)) {
+                    $name = $alias;
                 }
-                $comment .= "<span class='b'>&nbsp;" . __s('Comments') . "&nbsp;</span>";
-            }
-            $transcomment = $result['transcomment'];
-            if ($translate && !empty($transcomment)) {
-                $comment .= nl2br($transcomment);
-            } else if (!empty($result['comment'])) {
-                $comment .= nl2br($result['comment']);
+                if (!empty($code)) {
+                    $name .= ' - ' . $code;
+                }
             }
         }
 
@@ -1521,7 +1468,7 @@ final class DbUtils
         if ($withcomment) {
             return [
                 'name'      => $name,
-                'comment'   => $comment
+                'comment'   => Dropdown::getDropdownComments((string) $table, (int) $ID, (bool) $translate, (bool) $tooltip),
             ];
         }
         return $name;
