@@ -37,6 +37,7 @@ namespace Glpi\Console;
 
 use AppendIterator;
 use DirectoryIterator;
+use Glpi\Kernel\Kernel;
 use Plugin;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -144,6 +145,8 @@ class CommandLoader implements CommandLoaderInterface
             if ($this->include_plugins) {
                 $this->findPluginCommands();
             }
+
+            $this->findSymfonyCommands();
         }
 
         return $this->commands;
@@ -352,6 +355,30 @@ class CommandLoader implements CommandLoaderInterface
                 }
             }
 
+            $this->registerCommand($command);
+        }
+    }
+
+    private function findSymfonyCommands(): void
+    {
+        /** @var Kernel|null $kernel */
+        global $kernel;
+
+        if (!$kernel instanceof Kernel) {
+            return;
+        }
+
+        if (!\in_array($kernel->getEnvironment(), [\GLPI::ENV_DEVELOPMENT, \GLPI::ENV_TESTING], true)) {
+            // Don't load commands if non-dev/test
+            return;
+        }
+
+        /** @var CommandLoaderInterface $base_loader */
+        $base_loader = $kernel->getContainer()->get('console.command_loader');
+
+        foreach ($base_loader->getNames() as $name) {
+            $command = $base_loader->get($name);
+            $command->setName('symfony:' . $name);
             $this->registerCommand($command);
         }
     }
