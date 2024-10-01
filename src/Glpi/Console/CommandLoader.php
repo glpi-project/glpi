@@ -97,10 +97,6 @@ class CommandLoader implements CommandLoaderInterface
         $commands = $this->getCommands();
 
         if (!array_key_exists($name, $commands)) {
-            if ($command = $this->getCommandFromKernel($name)) {
-                return $command;
-            }
-
             throw new \Symfony\Component\Console\Exception\CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
         }
 
@@ -111,11 +107,7 @@ class CommandLoader implements CommandLoaderInterface
     {
         $commands = $this->getCommands();
 
-        if (array_key_exists($name, $commands)) {
-            return true;
-        }
-
-        return $this->getCommandFromKernel($name) !== null;
+        return array_key_exists($name, $commands);
     }
 
     public function getNames(): array
@@ -482,19 +474,5 @@ class CommandLoader implements CommandLoaderInterface
        // Assume that filepath is prefixed by basedir
        // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
         return str_replace($basedir . DIRECTORY_SEPARATOR, '', $filepath);
-    }
-
-    private function getCommandFromKernel(string $name): ?Command
-    {
-        global $kernel;
-
-        if (!$kernel instanceof Kernel) {
-            return null;
-        }
-
-        /** @var CommandLoaderInterface $base_loader */
-        $base_loader = $kernel->getContainer()->get('console.command_loader');
-
-        return $base_loader->has($name) ? $base_loader->get($name) : null;
     }
 }
