@@ -39,7 +39,7 @@ use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
-class Request extends \GLPITestCase
+class Request extends \DBTestCase
 {
     private $http_client;
     private $base_uri;
@@ -211,6 +211,7 @@ XML
     {
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
+        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -220,6 +221,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
@@ -269,6 +271,7 @@ XML
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
+        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -278,6 +281,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
@@ -335,6 +339,7 @@ XML
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
+        $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean($conf->saveConf(
             [
@@ -344,6 +349,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $this->logout();
 
         //first call should be unauthorized and return 401
         $this->exception(
