@@ -40,6 +40,7 @@
 {% set params = params|merge({'candel': false}) %}
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
+{% set rand = rand|default(random()) %}
 
 {% block form_fields %}
     <template id="sortable-field-template">
@@ -73,6 +74,7 @@
                 {{ include('components/form/viewsubitem.html.twig', custom_field_form_params|merge({
                     add_new_btn_class: 'btn-outline-secondary ms-2',
                     add_new_inline: true,
+                    rand: rand,
                 }), with_context = false) }}
             {% endset %}
             <script>
@@ -80,6 +82,7 @@
                     if ($(`.sortable-field[data-key="${field.id}"]`).length) {
                         return null
                     }
+                    $(field.element).attr('data-customfield-id', field.customfields_id);
                     return $(`<span data-customfield-id="${field.customfields_id}">${field.text}</span>`);
                 }
             </script>
@@ -104,12 +107,14 @@
             const fields_display = {{ fields_display|default({})|json_encode()|raw }};
 
             const append_field = (key) => {
+                $('select[name="new_field"]').val(key).trigger('change');
                 if (all_fields[key] === undefined) {
                     return;
                 }
                 const is_custom_field = key.startsWith('custom_');
                 const template = document.getElementById('sortable-field-template');
                 const clone = template.content.cloneNode(true);
+                clone.querySelector('.sortable-field').setAttribute('data-customfield-id', all_fields[key].customfields_id ?? -1);
                 clone.querySelector('.sortable-field').setAttribute('data-key', key);
                 if (!is_custom_field) {
                     clone.querySelector('.edit-field').setAttribute('disabled', 'disabled');
@@ -147,9 +152,11 @@
                 }
             });
 
-            // remove field action
-            $('#sortable-fields').on('click', '.remove-field', function() {
-                const field_key = $(this).closest('.sortable-field').find('input[name="fields_display[]"]').val();
+            $('#sortable-fields').on('click', '.edit-field', function() {
+                const field_id = $(this).closest('.sortable-field').attr('data-customfield-id');
+                viewAddEditSubItem{{ rand }}(field_id);
+            }).on('click', '.remove-field', function() {
+                const field_key = $(this).closest('.sortable-field').attr('data-key');
                 remove_field(field_key);
             });
         });

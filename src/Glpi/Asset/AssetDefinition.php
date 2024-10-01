@@ -213,7 +213,7 @@ final class AssetDefinition extends AbstractDefinition
                     'add_new_label' => __('Create new field'),
                     'subitem_container_id' => 'customfield_form_container',
                     'as_modal' => true,
-                    'on_form_submit' => 'return false;', // Block redirect
+                    'ajax_form_submit' => true,
                 ]
             ]
         );

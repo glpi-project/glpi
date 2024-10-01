@@ -30,13 +30,14 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = rand|default(random()) %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
 {% set as_modal = as_modal|default(false) %}
 {% set add_new_label = add_new_label|default(__('Add')) %}
 
 {% if as_modal %}
 <div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
@@ -52,21 +53,21 @@
 {% endif %}
 
 <script>
+    function viewAddEditSubItem{{ rand }}(id) {
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
+            type: "{{ type|e('js') }}",
+            parenttype: "{{ parenttype|e('js') }}",
+        {{ items_id }}: {{ id }},
+        id: id
+    }, () => {
+            if (modal_el.length) {
+                modal_el.modal('show');
+            }
+        });
+    }
     $(() => {
         const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
-
-        function viewAddEditSubItem{{ rand }}(id) {
-            $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
-                type: "{{ type|e('js') }}",
-                parenttype: "{{ parenttype|e('js') }}",
-                {{ items_id }}: {{ id }},
-                id: id
-            }, () => {
-                if (modal_el.length) {
-                    modal_el.modal('show');
-                }
-            });
-        }
 
         {% if datatable_id is defined %}
             $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
@@ -88,9 +89,14 @@
             if (modal_el.length) {
                 modal_el.modal('hide');
             }
-            {% if on_form_submit is defined %}
-                {# Allow blocking redirect, or performing an action after form submit #}
-                {{ on_form_submit|raw }}
+            {% if ajax_form_submit %}
+                e.preventDefault();
+                let form_data = $(e.target).serialize();
+                // Add submitter button name/value to form data
+                const submit_btn = $(e.originalEvent.submitter);
+                form_data += '&' + submit_btn.attr('name') + '=' + submit_btn.val();
+                $.post($(e.target).attr('action'), form_data).then(displayAjaxMessageAfterRedirect, displayAjaxMessageAfterRedirect);
+                return false;
             {% endif %}
         });
     });
