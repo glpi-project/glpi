@@ -59,7 +59,6 @@ ini_set('session.use_cookies', 0);
 
 // Try detecting if we are running with the root user (Not available on Windows)
 if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
-    // Translation functions not available here
     echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
     echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
     if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
@@ -69,9 +68,8 @@ if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
 }
 
 if (!is_writable(GLPI_LOCK_DIR)) {
-   //TRANS: %s is a directory
-    echo "\t" . sprintf(__s('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __s('Run the script as the same user that your web server runs as.') . "\n";
+    echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
+    echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
     exit(1);
 }
 
