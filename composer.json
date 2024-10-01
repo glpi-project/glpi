@@ -12,6 +12,7 @@
     "require": {
         "php": ">=8.2",
         "php-64bit": "*",
+        "ext-bcmath": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-dom": "*",
