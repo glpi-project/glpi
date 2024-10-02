@@ -52,6 +52,7 @@ class I18nExtension extends AbstractExtension
             new TwigFunction('_n', '_n'),
             new TwigFunction('_x', '_x'),
             new TwigFunction('_nx', '_nx'),
+            new TwigFunction('__s', '__s'),
             new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
             new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
         ];

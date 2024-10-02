@@ -158,10 +158,25 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
     {
         $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer|safe_html }}</div>
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {{ fields.textareaField(
+                '',
+                answer,
+                '',
+                {
+                    'enable_richtext': true,
+                    'is_horizontal': false,
+                    'full_width'   : true,
+                    'no_label'     : true,
+                    'toolbar'      : false,
+                    'disabled'     : true,
+                    'mb'           : '',
+                }
+            ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();

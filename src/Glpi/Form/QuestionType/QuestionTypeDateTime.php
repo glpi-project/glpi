@@ -115,15 +115,6 @@ class QuestionTypeDateTime extends AbstractQuestionType
         ];
     }
 
-    public function formatAnswer(string $answer): string
-    {
-        if (str_contains($answer, 'T')) {
-            return (new DateTime($answer))->format('Y-m-d H:i');
-        }
-
-        return $answer;
-    }
-
     public function isDefaultValueCurrentTime(?Question $question): bool
     {
         if ($question === null) {
@@ -297,7 +288,7 @@ TWIG;
                         otherInput.prop('checked', true);
                     }
 
-                    updateDateAndTimeInputType($(input).closest('div[data-glpi-form-editor-question]'));
+                    updateDateAndTimeInputType($(input).closest('section[data-glpi-form-editor-question]'));
                 }
             </script>
 TWIG;
@@ -337,9 +328,32 @@ TWIG;
     }
 
     #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
+    {
+        $template = <<<TWIG
+            <input
+                type="{{ input_type }}"
+                class="form-control"
+                value="{{ answer }}"
+                readonly
+            >
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'input_type' => $this->getInputType($question, true),
+            'answer'     => $answer,
+        ]);
+    }
+
+    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
-        return $this->formatAnswer($answer);
+        if (str_contains($answer, 'T')) {
+            return (new DateTime($answer))->format('Y-m-d H:i');
+        }
+
+        return $answer;
     }
 
     #[Override]

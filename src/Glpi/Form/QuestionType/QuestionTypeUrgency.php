@@ -146,6 +146,35 @@ TWIG;
     }
 
     #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
+    {
+        $template = <<<TWIG
+        {% import 'components/form/fields_macros.html.twig' as fields %}
+
+        {{ fields.dropdownArrayField(
+            '',
+            value,
+            urgency_levels,
+            '',
+            {
+                'no_label'           : true,
+                'display_emptychoice': true,
+                'readonly'           : true
+            }
+        ) }}
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'value'              => $answer,
+            'urgency_levels'     => array_combine(
+                range(1, 5),
+                array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            ),
+        ]);
+    }
+
+    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         return CommonITILObject::getUrgencyName($answer);

@@ -226,12 +226,24 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
     {
         $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {{ get_item_link(itemtype, items_id) }}
-            </div>
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {{ fields.dropdownField(
+                itemtype,
+                '',
+                items_id,
+                '',
+                {
+                    'no_label'           : true,
+                    'display_emptychoice': true,
+                    'right'              : 'all',
+                    'disabled'           : true,
+                    'mb'                 : ''
+                }
+            ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();

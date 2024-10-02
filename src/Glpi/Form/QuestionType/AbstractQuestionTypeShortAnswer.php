@@ -138,6 +138,25 @@ TWIG;
     }
 
     #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
+    {
+        $template = <<<TWIG
+            <input
+                type="{{ input_type }}"
+                class="form-control"
+                value="{{ answer }}"
+                readonly
+            >
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'input_type' => $this->getInputType(),
+            'answer'     => $this->formatRawAnswer($answer),
+        ]);
+    }
+
+    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::SHORT_ANSWER;

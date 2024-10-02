@@ -32,39 +32,41 @@
  #}
 
 <form method="POST" action="{{ item.getFormURL() }}">
+    <div class="col-7 ms-3 mt-2">
+        <div
+            class="card mb-3"
+            data-glpi-form-renderer-form-header
+        >
+            <div class="card-status-top bg-primary"></div>
 
-    {# TODO: improve UI #}
-    <div class="ms-3 mt-2">
-        <h2 class="mb-3">{{ item.fields.name }}</h2>
-
-        <div class="mb-3">
-            <label class="form-label">
-                {{ __("Author") }}
-            </label>
-            <div class="form-control-plaintext">{{ get_item_link('User', item.fields.users_id) }}</div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">
-                {{ _n('Date', 'Dates', 1) }}
-            </label>
-            <div
-                class="form-control-plaintext"
-            >
-                {{ item.fields.date_creation }}
+            <div class="card-body">
+                <h1 class="form-title"> {{ item.fields.name }} </h1>
+                <p class="text-secondary">
+                    {{ __s('Submitted by %s on %s')|format(
+                        get_item_link('User', item.fields.users_id),
+                        item.fields.date_creation
+                    )|raw }}
             </div>
         </div>
 
-        {% for answer in answers %}
-            {% set type = answer.getType() %}
-            {% if answer.getRawAnswer() is not empty and type is not null %}
-                <div class="mb-3">
-                    <label class="form-label">
-                        {{ answer.getQuestionLabel() }}
-                    </label>
-                    {{ type.renderAnswerTemplate(answer.getRawAnswer())|raw }}
+        {% for section in sections %}
+            <section class="card mb-3">
+                <div class="card-body">
+                    {% if section.label is not empty %}
+                        <h2 class="mb-3">{{ section.label }}</h2>
+                    {% endif %}
+                    {% set section_answers = answers|filter(answer => answer.getSectionId() == section.id) %}
+                    {% for answer in section_answers %}
+                        {% set type = answer.getType() %}
+                        {% if answer.getRawAnswer() is not empty and type is not null %}
+                            <h3 class="mb-2">{{ answer.getQuestionLabel() }}</h3>
+                            <div class="{% if not loop.last %}mb-3{% endif %}">
+                                {{ type.renderAnswerTemplate(answer.getQuestion(), answer.getRawAnswer())|raw }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endif %}
+            </section>
         {% endfor %}
     </div>
 

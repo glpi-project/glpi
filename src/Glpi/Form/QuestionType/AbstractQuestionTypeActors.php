@@ -261,23 +261,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {% for actors in actors %}
-                    {{ get_item_link(actors.itemtype, actors.items_id) }}
-                {% endfor %}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'actors' => $answer
-        ]);
-    }
-
-    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         $formatted_actors = [];
@@ -333,6 +316,52 @@ TWIG;
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $is_multiple_actors,
             'aria_label'         => $question->fields['name']
+        ]);
+    }
+
+    #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
+    {
+        $template = <<<TWIG
+        {% import 'components/form/fields_macros.html.twig' as fields %}
+
+        {% set actors_dropdown = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
+            '',
+            value,
+            {
+                'multiple': is_multiple_actors,
+                'allowed_types': allowed_types
+            }
+        ]) %}
+
+        {{ fields.htmlField(
+            '',
+            actors_dropdown,
+            '',
+            {
+                'no_label': true,
+                'field_class': [
+                    'col-12',
+                    'col-sm-6',
+                ]|join(' '),
+                'mb': '',
+                'wrapper_class': '',
+                'disabled': true
+            }
+        ) }}
+TWIG;
+
+        $actors = [];
+        foreach ($answer as $actor) {
+            $itemtype = $actor['itemtype'];
+            $items_id = $actor['items_id'];
+            $actors[getForeignKeyFieldForItemType($itemtype)][] = $items_id;
+        }
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'allowed_types'      => $this->getAllowedActorTypes(),
+            'is_multiple_actors' => count($answer) > 1,
+            'value'              => $actors
         ]);
     }
 

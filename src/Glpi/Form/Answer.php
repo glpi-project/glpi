@@ -41,15 +41,19 @@ use JsonSerializable;
 final readonly class Answer implements JsonSerializable
 {
     private int $question_id;
+    private int $section_id;
     private string $question_label;
     private string $raw_question_type;
+    private mixed $raw_extra_data;
     private mixed $raw_answer;
 
     public function __construct(Question $question, mixed $raw_answer)
     {
         $this->question_id       = $question->fields['id'];
+        $this->section_id        = $question->fields['forms_sections_id'];
         $this->question_label    = $question->fields['name'];
         $this->raw_question_type = $question->fields['type'];
+        $this->raw_extra_data    = $question->fields['extra_data'];
         $this->raw_answer        = $raw_answer;
     }
 
@@ -58,6 +62,7 @@ final readonly class Answer implements JsonSerializable
         if (
             !isset(
                 $data['question_id'],
+                $data['section_id'],
                 $data['question_label'],
                 $data['raw_question_type'],
                 $data['raw_answer'],
@@ -66,17 +71,36 @@ final readonly class Answer implements JsonSerializable
             throw new \InvalidArgumentException('Invalid JSON data');
         }
 
-        $question = new Question();
-        $question->fields['id']   = $data['question_id'];
-        $question->fields['name'] = $data['question_label'];
-        $question->fields['type'] = $data['raw_question_type'];
+        $question                              = new Question();
+        $question->fields['id']                = $data['question_id'];
+        $question->fields['forms_sections_id'] = $data['section_id'];
+        $question->fields['name']              = $data['question_label'];
+        $question->fields['type']              = $data['raw_question_type'];
+        $question->fields['extra_data']        = $data['raw_extra_data'] ?? null;
 
         return new self($question, $data['raw_answer']);
+    }
+
+    public function getQuestion(): Question
+    {
+        $question                              = new Question();
+        $question->fields['id']                = $this->getQuestionId();
+        $question->fields['forms_sections_id'] = $this->getSectionId();
+        $question->fields['name']              = $this->getQuestionLabel();
+        $question->fields['type']              = $this->getRawType();
+        $question->fields['extra_data']        = $this->getRawExtraData();
+
+        return $question;
     }
 
     public function getQuestionId(): int
     {
         return $this->question_id;
+    }
+
+    public function getSectionId(): int
+    {
+        return $this->section_id;
     }
 
     public function getRawAnswer(): mixed
@@ -114,12 +138,19 @@ final readonly class Answer implements JsonSerializable
         return new $type();
     }
 
+    public function getRawExtraData(): mixed
+    {
+        return $this->raw_extra_data;
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'question_id'       => $this->getQuestionId(),
+            'section_id'        => $this->getSectionId(),
             'question_label'    => $this->getQuestionLabel(),
             'raw_question_type' => $this->getRawType(),
+            'raw_extra_data'    => $this->getRawExtraData(),
             'raw_answer'        => $this->getRawAnswer(),
         ];
     }

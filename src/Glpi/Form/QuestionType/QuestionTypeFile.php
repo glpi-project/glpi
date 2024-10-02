@@ -116,7 +116,7 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
     {
         $template = <<<TWIG
             {% for document in documents %}

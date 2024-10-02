@@ -120,6 +120,32 @@ TWIG;
     }
 
     #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
+    {
+        $template = <<<TWIG
+        {% import 'components/form/fields_macros.html.twig' as fields %}
+
+        {{ fields.dropdownArrayField(
+            '',
+            answer,
+            request_types,
+            '',
+            {
+                'no_label'           : true,
+                'display_emptychoice': false,
+                'disabled'           : true
+            }
+        ) }}
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'request_types' => Ticket::getTypes(),
+            'answer'     => $answer,
+        ]);
+    }
+
+    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         return Ticket::getTicketTypeName($answer);

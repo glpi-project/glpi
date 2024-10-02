@@ -234,4 +234,32 @@ TWIG;
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);
     }
+
+    #[Override]
+    public function renderAnswerTemplate(Question $question, mixed $answers): string
+    {
+        $template = <<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {{ fields.dropdownArrayField(
+                '',
+                not is_multiple ? answers|first : '',
+                answers,
+                '',
+                {
+                    'no_label': true,
+                    'values': answers,
+                    'multiple': is_multiple,
+                    'disabled': true,
+                    'mb': ''
+                }
+            ) }}
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'answers'    => is_array($answers) ? array_combine($answers, $answers) : [$answers],
+            'is_multiple' => $this->isMultipleDropdown($question),
+        ]);
+    }
 }

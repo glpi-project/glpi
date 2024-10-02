@@ -328,17 +328,24 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answers): string
+    public function renderAnswerTemplate(Question $question, mixed $answers): string
     {
         $template = <<<TWIG
             {% for answer in answers %}
-                <div class="form-control-plaintext">{{ answer }}</div>
+                <label class="form-check">
+                    <input
+                        type="{{ input_type }}"
+                        class="form-check-input" checked disabled
+                    >
+                    <span class="form-check-label">{{ answer }}</span>
+                </label>
             {% endfor %}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'answers' => $answers,
+            'input_type' => $this->getInputType($question),
+            'answers'    => $answers,
         ]);
     }
 

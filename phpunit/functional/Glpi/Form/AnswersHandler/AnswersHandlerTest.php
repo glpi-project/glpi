@@ -61,9 +61,11 @@ class AnswersHandlerTest extends DbTestCase
         // Fist form
         $builder = new FormBuilder("Form 1");
         $builder
+            ->addSection("Personal information")
             ->addQuestion("First name", QuestionTypeShortText::class)
             ->addQuestion("Last name", QuestionTypeShortText::class)
             ->addQuestion("Age", QuestionTypeNumber::class)
+            ->addSection("Feedback")
             ->addQuestion("Thoughts about GLPI", QuestionTypeLongText::class)
         ;
         $form_1 = self::createForm($builder);
@@ -97,10 +99,22 @@ class AnswersHandlerTest extends DbTestCase
                 'name'           => "Form 1 #1",
                 'index'          => 1,
                 'answers'        => json_encode([
-                    new Answer($first_name_question, "John"),
-                    new Answer($last_name_question, "Doe"),
-                    new Answer($age_question, 78),
-                    new Answer($thoughts_question, "I love GLPI!!!"),
+                    'sections' => [
+                        self::getSectionId($form_1, "Personal information") => [
+                            'id'    => self::getSectionId($form_1, "Personal information"),
+                            'label' => "Personal information",
+                        ],
+                        self::getSectionId($form_1, "Feedback") => [
+                            'id'    => self::getSectionId($form_1, "Feedback"),
+                            'label' => "Feedback",
+                        ],
+                    ],
+                    'answers' => [
+                        new Answer($first_name_question, "John"),
+                        new Answer($last_name_question, "Doe"),
+                        new Answer($age_question, 78),
+                        new Answer($thoughts_question, "I love GLPI!!!"),
+                    ]
                 ]),
             ]
         );
@@ -121,10 +135,22 @@ class AnswersHandlerTest extends DbTestCase
                 'name'           => "Form 1 #2", // Increased to #2
                 'index'          => 2,           // Increased to #2
                 'answers'        => json_encode([
-                    new Answer($first_name_question, "John"),
-                    new Answer($last_name_question, "Smith"),
-                    new Answer($age_question, 19),
-                    new Answer($thoughts_question, "GLPI is incredible"),
+                    'sections' => [
+                        self::getSectionId($form_1, "Personal information") => [
+                            'id'    => self::getSectionId($form_1, "Personal information"),
+                            'label' => "Personal information",
+                        ],
+                        self::getSectionId($form_1, "Feedback") => [
+                            'id'    => self::getSectionId($form_1, "Feedback"),
+                            'label' => "Feedback",
+                        ],
+                    ],
+                    'answers' => [
+                        new Answer($first_name_question, "John"),
+                        new Answer($last_name_question, "Smith"),
+                        new Answer($age_question, 19),
+                        new Answer($thoughts_question, "GLPI is incredible"),
+                    ]
                 ]),
             ]
         );
@@ -152,7 +178,15 @@ class AnswersHandlerTest extends DbTestCase
                 'name'           => "Form 2 #1", // Back to #1 since this is a different form
                 'index'          => 1,
                 'answers'        => json_encode([
-                    new Answer($contact_email_question, "glpi@teclib.com"),
+                    'sections' => [
+                        self::getSectionId($form_2, "First section") => [
+                            'id'    => self::getSectionId($form_2, "First section"),
+                            'label' => "First section",
+                        ],
+                    ],
+                    'answers' => [
+                        new Answer($contact_email_question, "glpi@teclib.com"),
+                    ]
                 ]),
             ]
         );

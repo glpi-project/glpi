@@ -192,6 +192,7 @@ final class AnswersHandler
         // Load relevant questions data from the DB
         $questions = $form->getQuestions();
 
+        $sections = [];
         $formatted_answers = [];
         foreach ($answers as $question_id => $answer) {
             if (!isset($questions[$question_id])) {
@@ -207,6 +208,11 @@ final class AnswersHandler
             // the linked question might be deleted one day but the answer must still
             // be readable.
             $question = $questions[$question_id];
+            $section  = $question->getItem();
+            $sections[$section->getID()] = [
+                'id'    => $section->getID(),
+                'label' => $section->fields['name'],
+            ];
             $prepared_answer = $question->getQuestionType()
                 ->prepareEndUserAnswer($question, $answer)
             ;
@@ -219,7 +225,10 @@ final class AnswersHandler
             'name'           => $form->getName() . " #$next_index",
             'entities_id'    => $form->fields['entities_id'],
             'forms_forms_id' => $form->getID(),
-            'answers'        => json_encode($formatted_answers),
+            'answers'        => json_encode([
+                'sections' => $sections,
+                'answers'  => $formatted_answers,
+            ]),
             'users_id'       => $users_id,
             'index'          => $next_index,
         ];

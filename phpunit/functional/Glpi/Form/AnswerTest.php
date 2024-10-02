@@ -43,6 +43,7 @@ final class AnswerTest extends GLPITestCase
     private const FAKE_QUESTION_ID    = 47;
     private const FAKE_QUESTION_LABEL = "My fake question label";
     private const FAKE_QUESTION_TYPE  = "My fake question type";
+    private const FAKE_SECTION_ID     = 42;
 
     public function testGetQuestionId(): void
     {
@@ -88,8 +89,10 @@ final class AnswerTest extends GLPITestCase
 
         $expected_decoded_json = [
             'question_id'       => self::FAKE_QUESTION_ID,
+            'section_id'        => self::FAKE_SECTION_ID,
             'question_label'    => self::FAKE_QUESTION_LABEL,
             'raw_question_type' => self::FAKE_QUESTION_TYPE,
+            'raw_extra_data'    => null,
             'raw_answer'        => $fake_answer,
         ];
 
@@ -101,8 +104,10 @@ final class AnswerTest extends GLPITestCase
         $fake_answer = "My raw answer";
         $data = [
             'question_id'       => self::FAKE_QUESTION_ID,
+            'section_id'        => self::FAKE_SECTION_ID,
             'question_label'    => self::FAKE_QUESTION_LABEL,
             'raw_question_type' => self::FAKE_QUESTION_TYPE,
+            'raw_extra_data'    => null,
             'raw_answer'        => $fake_answer,
         ];
 
@@ -135,10 +140,12 @@ final class AnswerTest extends GLPITestCase
 
     private function getFakeQuestion(): Question
     {
-        $question                 = new Question();
-        $question->fields['id']   = self::FAKE_QUESTION_ID;
-        $question->fields['name'] = self::FAKE_QUESTION_LABEL;
-        $question->fields['type'] = self::FAKE_QUESTION_TYPE;
+        $question                              = new Question();
+        $question->fields['id']                = self::FAKE_QUESTION_ID;
+        $question->fields['forms_sections_id'] = self::FAKE_SECTION_ID;
+        $question->fields['name']              = self::FAKE_QUESTION_LABEL;
+        $question->fields['type']              = self::FAKE_QUESTION_TYPE;
+        $question->fields['extra_data']        = null;
         return $question;
     }
 }

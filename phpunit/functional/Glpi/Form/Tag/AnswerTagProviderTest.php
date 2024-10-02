@@ -133,7 +133,10 @@ final class AnswerTagProviderTest extends DbTestCase
     private function getEmptyAnswerSet(): AnswersSet
     {
         $answers = new AnswersSet();
-        $answers->fields['answers'] = json_encode([]);
+        $answers->fields['answers'] = json_encode([
+            'sections' => [],
+            'answers' => []
+        ]);
         return $answers;
     }
 }

@@ -131,7 +131,7 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function renderAnswerTemplate(mixed $answer): string;
+    public function renderAnswerTemplate(Question $question, mixed $answer): string;
 
     /**
      * Format the given answer.

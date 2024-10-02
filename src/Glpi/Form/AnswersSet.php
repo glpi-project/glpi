@@ -129,10 +129,15 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
+    public function getSections(): array
+    {
+        return json_decode($this->fields['answers'], true)['sections'];
+    }
+
     public function getAnswers(): array
     {
         $answers = [];
-        $raw_answers = json_decode($this->fields['answers'], true);
+        $raw_answers = json_decode($this->fields['answers'], true)['answers'];
         foreach ($raw_answers as $raw_answer) {
             try {
                 $answers[] = Answer::fromDecodedJsonData($raw_answer);
@@ -234,9 +239,10 @@ final class AnswersSet extends CommonDBChild
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/display_answers.html.twig', [
-            'item'    => $this,
-            'answers' => $this->getAnswers(),
-            'params'  => $options,
+            'item'     => $this,
+            'sections' => $this->getSections(),
+            'answers'  => $this->getAnswers(),
+            'params'   => $options,
         ]);
         return true;
     }

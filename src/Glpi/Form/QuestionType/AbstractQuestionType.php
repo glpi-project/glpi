@@ -90,7 +90,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
+    public function renderAnswerTemplate(Question $question, mixed $answer): string
     {
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             '<div class="form-control-plaintext">{{ answer }}</div>',
