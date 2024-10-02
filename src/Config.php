@@ -565,7 +565,7 @@ class Config extends CommonDBTM
 
         $fields = ["contact", "user", "group", "location"];
         echo "<tr class='tab_bg_2'>";
-        echo "<td> " . __('When connecting or updating') . "</td>";
+        echo "<td> " . __('When connecting or updating the relevant field') . "</td>";
         $values = [
             __('Do not copy'),
             __('Copy'),
