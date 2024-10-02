@@ -723,32 +723,6 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * Force sending all mails in queue for a specific item
-     *
-     * @param string  $itemtype item type
-     * @param integer $items_id id of the item
-     *
-     * @return void
-     **/
-    public static function forceSendFor($itemtype, $items_id)
-    {
-        if (!empty($itemtype) && !empty($items_id)) {
-            $pendings = self::getPendings(
-                limit: 1,
-                extra_where: [
-                    'itemtype'  => $itemtype,
-                    'items_id'  => $items_id,
-                ]
-            );
-
-            foreach ($pendings as $mode => $data) {
-                $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
-                $eventclass::send($data);
-            }
-        }
-    }
-
-    /**
      * Print the queued mail form
      *
      * @param integer $ID      ID of the item

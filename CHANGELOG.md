@@ -549,6 +549,7 @@ The present file will list all changes made to the project; according to the
 - `ProjectTask::showDebug()`
 - `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
 - `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.
+- `QueuedNotification::forceSendFor()`
 - `Reminder::addVisibilityJoins()`
 - `ReminderTranslation::canBeTranslated()`. Translations are now always active.
 - `ReminderTranslation::isReminderTranslationActive()`. Translations are now always active.

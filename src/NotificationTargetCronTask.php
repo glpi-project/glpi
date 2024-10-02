@@ -43,6 +43,13 @@ class NotificationTargetCronTask extends NotificationTarget
         return ['alert' => __('Monitoring of automatic actions')];
     }
 
+    #[Override()]
+    public function getEventsToSendImmediately(): array
+    {
+        return [
+            'alert',
+        ];
+    }
 
     public function addDataForTemplate($event, $options = [])
     {
