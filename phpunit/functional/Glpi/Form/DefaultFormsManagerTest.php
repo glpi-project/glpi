@@ -145,8 +145,8 @@ final class DefaultFormsManagerTest extends DbTestCase
             ],
             'Urgency' => 5, // Very high
             'Watchers' => [
-                ['itemtype' => User::class, 'items_id' => $tech_user_id],
-                ['itemtype' => User::class, 'items_id' => $normal_user_id],
+                User::class . '-' . $tech_user_id,
+                User::class . '-' . $normal_user_id,
             ]
         ]);
 
@@ -194,8 +194,8 @@ final class DefaultFormsManagerTest extends DbTestCase
             ],
             'Urgency' => 5, // Very high
             'Watchers' => [
-                ['itemtype' => User::class, 'items_id' => $tech_user_id],
-                ['itemtype' => User::class, 'items_id' => $normal_user_id],
+                User::class . '-' . $tech_user_id,
+                User::class . '-' . $normal_user_id,
             ]
         ]);
 
