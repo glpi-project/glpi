@@ -70,8 +70,11 @@ final class IllustrationManager
     {
         $mapping = [
             'rgb(71,71,71)'    => "--glpi-mainmenu-bg",
+            '#474747'          => "--glpi-mainmenu-bg",
             'rgb(186,186,186)' => "--glpi-helpdesk-header",
+            '#BABABA'          => "--glpi-helpdesk-header",
             'rgb(235,235,235)' => "--tblr-primary",
+            '#EBEBEB'          => "--tblr-primary",
         ];
 
         foreach ($mapping as $color => $variable) {
