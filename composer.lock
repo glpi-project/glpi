@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7622f64a9ff8ddb9257ceaefa4eb4ea",
+    "content-hash": "dca6834304221e952694f6e3807ccc6e",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -650,16 +650,16 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "5.0.0",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "319324e50315e5744592c15831bbdc1286bb3d22"
+                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/319324e50315e5744592c15831bbdc1286bb3d22",
-                "reference": "319324e50315e5744592c15831bbdc1286bb3d22",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
+                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
                 "shasum": ""
             },
             "require": {
@@ -687,9 +687,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/5.0.0"
+                "source": "https://github.com/elvanto/litemoji/tree/5.1.0"
             },
-            "time": "2024-01-08T23:21:14+00:00"
+            "time": "2024-09-11T21:55:58+00:00"
         },
         {
             "name": "firebase/php-jwt",
