@@ -88,8 +88,8 @@ class Itil_ProjectTest extends DbTestCase
             // Count displayed in tab name should be equal to count of ITIL items linked to project
             $item_count = count($items);
             $this->assertSame(
-                "<span><i class='ti ti-alert-circle me-2'></i>Itil items</span> <span class='badge glpi-badge'>{$item_count}</span>",
-                $itil_project->getTabNameForItem($project)
+                "Itil items {$item_count}",
+                strip_tags($itil_project->getTabNameForItem($project))
             );
         }
 

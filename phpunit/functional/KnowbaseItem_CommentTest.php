@@ -145,15 +145,15 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->assertSame("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>", $name);
+        $this->assertSame("Comments 5", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>", $name);
+        $this->assertSame("Comments 5", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-message-circle me-2'></i>Comments</span>", $name);
+        $this->assertSame("Comments", strip_tags($name));
 
         // Change knowbase rights to be empty
         $_SESSION['glpiactiveprofile']['knowbase'] = 0;
@@ -163,7 +163,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         // Add comment and read right
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
         // Tab name should be filled
-        $this->assertSame("<span><i class='ti ti-message-circle me-2'></i>Comments</span>", $name);
+        $this->assertSame("Comments", strip_tags($name));
     }
 
     public function testDisplayComments()

@@ -57,7 +57,7 @@ class OperatingSystemArchitectureTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemArchitecture$main'  => "<span><i class='ti ti-edit me-2'></i>Operating system architecture</span>",
+            'OperatingSystemArchitecture$main'  => "Operating system architecture",
         ];
     }
 

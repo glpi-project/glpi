@@ -91,46 +91,49 @@ class ConfigTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Config$1'      => "<span><i class='ti ti-adjustments me-2'></i>General setup</span>",
-            'Config$2'      => "<span><i class='ti ti-adjustments me-2'></i>Default values</span>",
-            'Config$3'      => "<span><i class='ti ti-package me-2'></i>Assets</span>",
-            'Config$4'      => "<span><i class='ti ti-headset me-2'></i>Assistance</span>",
-            'Config$12'     => "<span><i class='ti ti-wallet me-2'></i>Management</span>",
-            'DisplayPreference$1' => "<span><i class='ti ti-columns-3 me-2'></i>Search result display</span>",
-            'GLPINetwork$1' => "<span><i class='ti ti-headset me-2'></i>GLPI Network</span>",
+            'Config$1'      => "General setup",
+            'Config$2'      => "Default values",
+            'Config$3'      => "Assets",
+            'Config$4'      => "Assistance",
+            'Config$12'     => "Management",
+            'DisplayPreference$1' => "Search result display",
+            'GLPINetwork$1' => "GLPI Network",
         ];
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
 
         //Standards users do not have extra tabs
         $auth = new \Auth();
         $this->assertTrue((bool)$auth->login('tech', 'tech', true));
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
 
         //check extra tabs from superadmin profile
         $this->login();
         $expected = [
-            'Config$1'      => "<span><i class='ti ti-adjustments me-2'></i>General setup</span>",
-            'Config$2'      => "<span><i class='ti ti-adjustments me-2'></i>Default values</span>",
-            'Config$3'      => "<span><i class='ti ti-package me-2'></i>Assets</span>",
-            'Config$4'      => "<span><i class='ti ti-headset me-2'></i>Assistance</span>",
-            'Config$12'     => "<span><i class='ti ti-wallet me-2'></i>Management</span>",
-            'Config$9'      => "<span><i class='ti ti-news me-2'></i>Logs purge</span>",
-            'Config$5'      => "<span><i class='ti ti-adjustments me-2'></i>System</span>",
-            'Config$10'     => "<span><i class='ti ti-shield-lock me-2'></i>Security</span>",
-            'Config$7'      => "<span><i class='ti ti-dashboard me-2'></i>Performance</span>",
-            'Config$8'      => "<span><i class='ti ti-api-app me-2'></i>API</span>",
-            'Config$11'      => "<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>",
-            'DisplayPreference$1' => "<span><i class='ti ti-columns-3 me-2'></i>Search result display</span>",
-            'GLPINetwork$1' => "<span><i class='ti ti-headset me-2'></i>GLPI Network</span>",
-            'Log$1'         => "<span><i class='ti ti-history me-2'></i>Historical</span>",
+            'Config$1'      => "General setup",
+            'Config$2'      => "Default values",
+            'Config$3'      => "Assets",
+            'Config$4'      => "Assistance",
+            'Config$12'     => "Management",
+            'Config$9'      => "Logs purge",
+            'Config$5'      => "System",
+            'Config$10'     => "Security",
+            'Config$7'      => "Performance",
+            'Config$8'      => "API",
+            'Config$11'      => "Impact analysis",
+            'DisplayPreference$1' => "Search result display",
+            'GLPINetwork$1' => "GLPI Network",
+            'Log$1'         => "Historical",
         ];
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testUnsetUndisclosedFields()

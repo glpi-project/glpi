@@ -92,12 +92,13 @@ class DocumentTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Document$main'   => "<span><i class='ti ti-files me-2'></i>Document</span>",
-            'Document_Item$1' => "<span><i class='ti ti-package me-2'></i>Associated items</span>",
-            'Document_Item$2' => "<span><i class='ti ti-files me-2'></i>Documents</span>",
+            'Document$main'   => "Document",
+            'Document_Item$1' => "Associated items",
+            'Document_Item$2' => "Documents",
         ];
         $doc = new \Document();
-        $this->assertSame($expected, $doc->defineTabs());
+        $tabs = array_map('strip_tags', $doc->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testPrepareInputForAdd()

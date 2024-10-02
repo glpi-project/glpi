@@ -65,11 +65,11 @@ class Notification_NotificationTemplateTest extends DbTestCase
 
         $this->login();
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>1</span>", $name);
+        $this->assertSame("Templates 1", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame("<span><i class='ti ti-template me-2'></i>Templates</span>", $name);
+        $this->assertSame("Templates", strip_tags($name));
 
         $toadd = $n_nt->fields;
         unset($toadd['id']);
@@ -78,7 +78,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>2</span>", $name);
+        $this->assertSame("Templates 2", strip_tags($name));
     }
 
 

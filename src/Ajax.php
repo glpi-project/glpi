@@ -357,6 +357,8 @@ JAVASCRIPT;
                 $direct_link_url = $_SERVER['REQUEST_URI'];
                 if (count($_GET)) {
                     $direct_link_url .= count($_GET) ? '&' : '?';
+                } elseif (!str_contains($direct_link_url, "?")) {
+                    $direct_link_url .= "?";
                 }
                 $direct_link_url .= "forcetab=$tab_key";
 

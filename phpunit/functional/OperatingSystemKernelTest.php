@@ -57,7 +57,7 @@ class OperatingSystemKernelTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemKernel$main'  => "<span><i class='ti ti-edit me-2'></i>Kernel</span>",
+            'OperatingSystemKernel$main'  => "Kernel",
         ];
     }
 

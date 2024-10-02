@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Form\SelfService\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\SelfService\HomePageTabs;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -59,41 +60,13 @@ final class HomeController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        // Compute tabs, will be handled by a service in later iterations (with a proper Tab object).
-        $tabs = [
-            [
-                'id'    => 'open-tickets',
-                'label' => __("Ongoing tickets"),
-                'criteria' => [
-                    [
-                        'link'       => 'AND',
-                        'field'      => 12,
-                        'searchtype' => 'equals',
-                        'value'      => 'notold',
-                    ]
-                ]
-            ],
-            [
-                'id'    => 'solved-tickets',
-                'label' => __("Solved tickets"),
-                'criteria' => [
-                    [
-                        'link'       => 'AND',
-                        'field'      => 12,
-                        'searchtype' => 'equals',
-                        'value'      => 'old',
-                    ]
-                ]
-            ],
-        ];
-
         // Will rename the file to "home.html.twig" later, don't want to remove
         // the original file yet.
         return $this->render('pages/self-service/new_home.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
             'tiles' => $this->tiles_manager->getTiles(),
-            'tabs'  => $tabs,
+            'tabs'  => new HomePageTabs(),
         ]);
     }
 }

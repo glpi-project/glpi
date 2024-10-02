@@ -723,7 +723,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         $icon = !empty($icon) ? "<i class='$icon me-2'></i>" : '';
         if (!empty($icon)) {
-            $text = '<span>' . $icon . $text . '</span>';
+            $text = '<span class="d-flex align-items-center">' . $icon . $text . '</span>';
         }
         if ($nb) {
            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()

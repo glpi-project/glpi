@@ -44,12 +44,13 @@ class AgentTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Agent$main'       => "<span><i class='ti ti-robot me-2'></i>Agent</span>",
-            'RuleMatchedLog$0' => "<span><i class='ti ti-book me-2'></i>Import information</span>",
+            'Agent$main'       => "Agent",
+            'RuleMatchedLog$0' => "Import information",
         ];
 
         $agent = new \Agent();
-        $this->assertSame($expected, $agent->defineTabs());
+        $tabs = array_map('strip_tags', $agent->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testHandleAgent()

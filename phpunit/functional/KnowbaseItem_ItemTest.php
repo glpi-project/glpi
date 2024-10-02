@@ -194,23 +194,23 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-lifebuoy me-2'></i>Associated elements</span> <span class='badge glpi-badge'>3</span>", $name);
+        $this->assertSame("Associated elements 3", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-lifebuoy me-2'></i>Associated elements</span>", $name);
+        $this->assertSame("Associated elements", strip_tags($name));
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($ticket3, true);
-        $this->assertSame("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span> <span class='badge glpi-badge'>2</span>", $name);
+        $this->assertSame("Knowledge base 2", strip_tags($name));
 
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->assertSame("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span> <span class='badge glpi-badge'>2</span>", $name);
+        $this->assertSame("Knowledge base 2", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->assertSame("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span>", $name);
+        $this->assertSame("Knowledge base", strip_tags($name));
     }
 }

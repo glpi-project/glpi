@@ -36,7 +36,7 @@ describe('Helpdesk home page', () => {
         cy.login();
         cy.changeProfile('Self-Service', true);
     });
-    it('Tiles are working', () => {
+    it('can use tiles', () => {
         cy.visit('/Home');
         cy.findByRole('region', { name: 'Quick Access' })
             .findAllByRole('link')
@@ -49,5 +49,65 @@ describe('Helpdesk home page', () => {
                 failOnStatusCode: true,
             });
         });
+    });
+
+    it('can use tabs', () => {
+        const next_year = (new Date().getFullYear() + 1);
+
+        // Create test data set
+        cy.createWithAPI('Ticket', {
+            'users_id': 7,
+            'name': 'Open ticket 1',
+            'content': 'Open ticket 1',
+            'entities_id': 1,
+        });
+        cy.createWithAPI('Ticket', {
+            'users_id': 7,
+            'name': 'Open ticket 2',
+            'content': 'Open ticket 2',
+            'entities_id': 1,
+        });
+        cy.createWithAPI('Ticket', {
+            'users_id': 7,
+            'name': 'Closed ticket 1',
+            'content': 'Closed ticket 1',
+            'entities_id': 1,
+            'status': 5,
+        });
+        cy.createWithAPI('Reminder', {
+            'users_id': 7,
+            'name': 'Public reminder 1',
+            'content': 'Public reminder 1',
+            'begin': '2023-10-01 16:45:11',
+            'end': `${next_year}-10-01 16:45:11`,
+        }).as('reminder_id');
+        cy.get('@reminder_id').then(reminder_id => {
+            cy.createWithAPI('Reminder_User', {
+                'users_id': 7,
+                'reminders_id': reminder_id,
+            }).as('reminder_id');
+        });
+        cy.visit('/Home');
+
+        // Default tab should be opened tickets
+        cy.findAllByText('Open ticket 1').should('be.visible');
+        cy.findAllByText('Open ticket 2').should('be.visible');
+        cy.findAllByText('Closed ticket 1').should('not.exist');
+
+        // Got to closed tickets tab
+        cy.findByRole('tab', {'name': 'Solved tickets'}).click();
+        cy.findAllByText('Open ticket 1').should('not.be.visible');
+        cy.findAllByText('Open ticket 2').should('not.be.visible');
+        cy.findAllByText('Closed ticket 1').should('be.visible');
+
+        // Got to Reminder Feed tab
+        cy.findByRole('tab', {'name': 'Reminders'}).click();
+        cy.findAllByRole('link', {'name': 'Public reminder 1'}).should('be.visible');
+
+        // RSS feeds are not tested as they are only displayed if a real feed
+        // is configurated. Since the query to the feed is done on the backend,
+        // we can't mock it here.
+        // Could be added if we don't mind relying on a real outside feeds for
+        // ours tests or if we setup a dedicated container for this.
     });
 });
