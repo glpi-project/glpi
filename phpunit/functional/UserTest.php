@@ -1480,4 +1480,78 @@ class UserTest extends \DbTestCase
             importArrayFromDB($user->fields['savedsearches_pinned'])
         );
     }
+
+    public function testUnsetUndisclosedFields()
+    {
+        $users_passwords = [
+            TU_USER     => TU_PASS,
+            'glpi'      => 'glpi',
+            'tech'      => 'tech',
+            'normal'    => 'normal',
+            'post-only' => 'postonly',
+        ];
+
+        $users_matrix = [
+            TU_USER => [
+                TU_USER     => true,
+                'glpi'      => true,
+                'tech'      => true,
+                'normal'    => true,
+                'post-only' => true,
+            ],
+            'glpi' => [
+                TU_USER     => true,
+                'glpi'      => true,
+                'tech'      => true,
+                'normal'    => true,
+                'post-only' => true,
+            ],
+            'tech' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => true,
+                'normal'    => false, // has some more rights somewhere
+                'post-only' => true,
+            ],
+            'normal' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => false,
+                'normal'    => true,
+                'post-only' => false, // no update right
+            ],
+            'post-only' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => false,
+                'normal'    => false,
+                'post-only' => true,
+            ]
+        ];
+
+        foreach ($users_matrix as $login => $targer_users_names) {
+            $this->login($login, $users_passwords[$login]);
+
+            foreach ($targer_users_names as $target_user_name => $disclose) {
+                $target_user = \getItemByTypeName(\User::class, $target_user_name);
+
+                $fields = $target_user->fields;
+                $this->assertArrayHasKey('password', $fields);
+                $this->assertArrayHasKey('personal_token', $fields);
+                $this->assertArrayHasKey('api_token', $fields);
+                $this->assertArrayHasKey('cookie_token', $fields);
+                $this->assertArrayHasKey('password_forget_token', $fields);
+                $this->assertArrayHasKey('password_forget_token_date', $fields);
+
+                \User::unsetUndisclosedFields($fields);
+
+                $this->assertEquals(false, \array_key_exists('password', $fields));
+                $this->assertEquals(false, \array_key_exists('personal_token', $fields));
+                $this->assertEquals(false, \array_key_exists('api_token', $fields));
+                $this->assertEquals(false, \array_key_exists('cookie_token', $fields));
+                $this->assertEquals($disclose, \array_key_exists('password_forget_token', $fields));
+                $this->assertEquals($disclose, \array_key_exists('password_forget_token_date', $fields));
+            }
+        }
+    }
 }

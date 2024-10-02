@@ -730,10 +730,13 @@ class User extends CommonDBTM
     {
         parent::unsetUndisclosedFields($fields);
 
-        if (
-            !array_key_exists('id', $fields)
-            || !(new self())->currentUserHaveMoreRightThan($fields['id'])
-        ) {
+        $user = new self();
+        $can_see_token = Session::getLoginUserID() === $fields['id']
+            || (
+                $user->can($fields['id'], UPDATE)
+                && $user->currentUserHaveMoreRightThan($fields['id'])
+            );
+        if (!$can_see_token) {
             unset($fields['password_forget_token'], $fields['password_forget_token_date']);
         }
     }
