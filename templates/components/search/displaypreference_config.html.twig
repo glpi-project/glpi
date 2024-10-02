@@ -100,7 +100,7 @@
                 {% endfor %}
                 {% for opt in entries|filter(v => v['fixed'] != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
-                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2">
+                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                         <i class="ti ti-grip-vertical fa-fw"></i>
                         <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
                         <span>
@@ -207,7 +207,7 @@
 
             const tbody = specific_form.find(`ul.list-group`);
             tbody.append(`
-               <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2">
+               <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                   <i class="ti ti-grip-vertical fa-fw"></i>
                   <span class="flex-fill ms-1">${label}</span>
                   <span>
