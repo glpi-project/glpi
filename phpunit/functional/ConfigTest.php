@@ -101,7 +101,7 @@ class ConfigTest extends DbTestCase
         ];
 
         $instance = new \Config();
-        $tabs = array_map(fn($text) => strip_tags($text), $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
 
         //Standards users do not have extra tabs
@@ -109,7 +109,7 @@ class ConfigTest extends DbTestCase
         $this->assertTrue((bool)$auth->login('tech', 'tech', true));
 
         $instance = new \Config();
-        $tabs = array_map(fn($text) => strip_tags($text), $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
 
         //check extra tabs from superadmin profile
@@ -132,7 +132,7 @@ class ConfigTest extends DbTestCase
         ];
 
         $instance = new \Config();
-        $tabs = array_map(fn($text) => strip_tags($text), $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
     }
 

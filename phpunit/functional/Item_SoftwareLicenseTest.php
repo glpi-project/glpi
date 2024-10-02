@@ -228,7 +228,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             2 => "Items",
         ];
         $tabs = array_map(
-            fn($text) => strip_tags($text),
+            'strip_tags',
             $cSoftwareLicense->getTabNameForItem($license, 0)
         );
         $this->assertSame($expected, $tabs);
@@ -239,7 +239,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             2 => "Items 2"
         ];
         $tabs = array_map(
-            fn($text) => strip_tags($text),
+            'strip_tags',
             $cSoftwareLicense->getTabNameForItem($license, 0)
         );
         $this->assertSame($expected, $tabs);

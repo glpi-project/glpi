@@ -49,7 +49,7 @@ class AgentTest extends DbTestCase
         ];
 
         $agent = new \Agent();
-        $tabs = array_map(fn($text) => strip_tags($text), $agent->defineTabs());
+        $tabs = array_map('strip_tags', $agent->defineTabs());
         $this->assertSame($expected, $tabs);
     }
 

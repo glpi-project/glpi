@@ -97,7 +97,7 @@ class DocumentTest extends DbTestCase
             'Document_Item$2' => "Documents",
         ];
         $doc = new \Document();
-        $tabs = array_map(fn($text) => strip_tags($text), $doc->defineTabs());
+        $tabs = array_map('strip_tags', $doc->defineTabs());
         $this->assertSame($expected, $tabs);
     }
 

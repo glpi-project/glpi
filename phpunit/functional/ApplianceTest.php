@@ -48,7 +48,7 @@ class ApplianceTest extends DbTestCase
         ];
 
         $appliance = new \Appliance();
-        $tabs = array_map(fn($text) => strip_tags($text), $appliance->defineTabs());
+        $tabs = array_map('strip_tags', $appliance->defineTabs());
         $this->assertSame($expected, $tabs);
     }
 

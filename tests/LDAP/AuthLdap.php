@@ -261,7 +261,7 @@ class AuthLDAP extends DbTestCase
         $expected = [
             'AuthLDAP$main' => "LDAP directory",
         ];
-        $tabs = array_map(fn($text) => strip_tags($text), $tabs);
+        $tabs = array_map('strip_tags', $tabs);
         $this->array($tabs)->isIdenticalTo($expected);
     }
 
@@ -549,10 +549,7 @@ class AuthLDAP extends DbTestCase
 
         $ldap   = getItemByTypeName('AuthLDAP', 'LDAP1');
         $result = $ldap->getTabNameForItem($ldap);
-        $result = array_map(
-            fn($text) => strip_tags($text),
-            $result,
-        );
+        $result = array_map('strip_tags', $result);
         $expected = [
             1 => "Test",
             2 => "Users",
