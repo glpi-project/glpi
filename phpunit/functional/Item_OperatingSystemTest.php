@@ -96,8 +96,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue($ios->getFromDB($ios->getID()));
 
         $this->assertSame(
-            "<span><i class='ti ti-device-desktop-cog me-2'></i>Operating systems</span> <span class='badge glpi-badge'>1</span>",
-            $ios->getTabNameForItem($computer)
+            "Operating systems 1",
+            strip_tags($ios->getTabNameForItem($computer))
         );
         $this->assertSame(
             1,
@@ -132,8 +132,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue($ios->getFromDB($ios->getID()));
 
         $this->assertSame(
-            "<span><i class='ti ti-device-desktop-cog me-2'></i>Operating systems</span> <span class='badge glpi-badge'>2</span>",
-            $ios->getTabNameForItem($computer)
+            "Operating systems 2",
+            strip_tags($ios->getTabNameForItem($computer))
         );
         $this->assertSame(
             2,

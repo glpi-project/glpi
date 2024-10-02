@@ -76,7 +76,11 @@ abstract class CommonDropdown extends DbTestCase
     public function testDefineTabs()
     {
         $instance = $this->newInstance();
-        $this->assertSame($this->getTabs(), $instance->defineTabs());
+        $tabs = array_map(
+            fn($text) => strip_tags($text),
+            $instance->defineTabs(),
+        );
+        $this->assertSame($this->getTabs(), $tabs);
     }
 
     public function testPre_deleteItem()

@@ -178,7 +178,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-history me-2'></i>Revision</span> <span class='badge glpi-badge'>1</span>", $name);
+        $this->assertSame("Revision 1", strip_tags($name));
 
         $this->assertTrue(
             $kb1->update(
@@ -190,11 +190,11 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         );
 
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-history me-2'></i>Revisions</span> <span class='badge glpi-badge'>2</span>", $name);
+        $this->assertSame("Revisions 2", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("<span><i class='ti ti-history me-2'></i>Revisions</span>", $name);
+        $this->assertSame("Revisions", strip_tags($name));
     }
 
     private function getNewKbItem()

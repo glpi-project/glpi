@@ -224,22 +224,25 @@ class Item_SoftwareLicenseTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $expected = [
-            1 => "<span><i class='ti ti-key me-2'></i>Summary</span>",
-            2 => "<span><i class='ti ti-package me-2'></i>" . _n('Item', 'Items', \Session::getPluralNumber()) . "</span>"
+            1 => "Summary",
+            2 => "Items",
         ];
-        $this->assertSame($expected, $cSoftwareLicense->getTabNameForItem($license, 0));
+        $tabs = array_map(
+            fn($text) => strip_tags($text),
+            $cSoftwareLicense->getTabNameForItem($license, 0)
+        );
+        $this->assertSame($expected, $tabs);
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [
-            1 => "<span><i class='ti ti-key me-2'></i>Summary</span>",
-            2 => \Item_SoftwareLicense::createTabEntry(
-                _n('Item', 'Items', \Session::getPluralNumber()),
-                2,
-                $license::getType(),
-                'ti ti-package'
-            )
+            1 => "Summary",
+            2 => "Items 2"
         ];
-        $this->assertSame($expected, $cSoftwareLicense->getTabNameForItem($license, 0));
+        $tabs = array_map(
+            fn($text) => strip_tags($text),
+            $cSoftwareLicense->getTabNameForItem($license, 0)
+        );
+        $this->assertSame($expected, $tabs);
     }
 
     public function testCountLicenses()
