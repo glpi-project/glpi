@@ -45,19 +45,9 @@ final class IllustrationManagerTest extends GLPITestCase
         return new IllustrationManager();
     }
 
-    public function testIllustrationsAreLoaded(): void
+    private function getAllIllustrationFiles(): array
     {
-        // Act: try to load a given illustration
-        $manager = $this->getTestedInstance();
-        $render = $manager->render('report-issue.svg');
-
-        // Assert: load sould succeed
-        $this->assertNotEmpty($render);
-    }
-
-    public function testIllustrationsUseThemeColors(): void
-    {
-        // Arrange: list all icons
+        // List all icons
         $icons = [];
         $icons_files = new DirectoryIterator(GLPI_ROOT . "/pics/illustration");
         foreach ($icons_files as $file) {
@@ -72,6 +62,24 @@ final class IllustrationManagerTest extends GLPITestCase
 
             $icons[] = $file->getFilename();
         }
+
+        return $icons;
+    }
+
+    public function testIllustrationsAreLoaded(): void
+    {
+        // Act: try to load a given illustration
+        $manager = $this->getTestedInstance();
+        $render = $manager->render('report-issue.svg');
+
+        // Assert: load sould succeed
+        $this->assertNotEmpty($render);
+    }
+
+    public function testIllustrationsUseThemeColors(): void
+    {
+        // Arrange: list all icons
+        $icons = $this->getAllIllustrationFiles();
 
         // Act: render all icons
         $manager = $this->getTestedInstance();
@@ -93,14 +101,23 @@ final class IllustrationManagerTest extends GLPITestCase
 
     public function testIllustrationUseTheSpecifiedSize(): void
     {
-        // Act: try to load a given illustration
+        // Arrange: list all icons
+        $icons = $this->getAllIllustrationFiles();
+
+        // Act: render all icons
         $manager = $this->getTestedInstance();
-        $render = $manager->render('report-issue.svg', 75);
+        $rendered_icons = array_map(
+            fn($filename) => $manager->render($filename, 75),
+            $icons
+        );
 
         // Assert: the icon should have the given size
-        $this->assertStringContainsString('width="75px"', $render);
-        $this->assertStringNotContainsString('width="100%"', $render);
-        $this->assertStringContainsString('height="75px"', $render);
-        $this->assertStringNotContainsString('height="100%"', $render);
+        $this->assertNotEmpty($rendered_icons);
+        foreach ($rendered_icons as $rendered_icon) {
+            $this->assertStringContainsString('width="75px"', $rendered_icon);
+            $this->assertStringNotContainsString('width="100%"', $rendered_icon);
+            $this->assertStringContainsString('height="75px"', $rendered_icon);
+            $this->assertStringNotContainsString('height="100%"', $rendered_icon);
+        }
     }
 }
