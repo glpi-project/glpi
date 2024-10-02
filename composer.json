@@ -95,7 +95,7 @@
         "twig/string-extra": "^3.13",
         "twig/twig": "^3.8",
         "wapmorgan/unified-archive": "^1.2",
-        "webonyx/graphql-php": "^15.13"
+        "webonyx/graphql-php": "^15.14"
     },
     "require-dev": {
         "ext-xml": "*",
