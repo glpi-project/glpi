@@ -47,6 +47,16 @@ class NotificationTargetUser extends NotificationTarget
         ];
     }
 
+    #[Override()]
+    public function getEventsToSendImmediately(): array
+    {
+        return [
+            'passwordexpires',
+            'passwordforget',
+            'passwordinit',
+        ];
+    }
+
     public function canNotificationContentBeDisclosed(string $event): bool
     {
         if ($event === 'passwordforget') {

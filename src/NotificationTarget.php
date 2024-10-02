@@ -964,6 +964,34 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
+     * Return list of notification events for which the notifications should be sent immediately.
+     *
+     * @return array
+     */
+    public function getEventsToSendImmediately(): array
+    {
+        return [];
+    }
+
+    /**
+     * Indicates whether the notification should be sent immediately.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     */
+    public static function shouldNotificationBeSentImmediately(string $itemtype, string $event): bool
+    {
+        $target_class = NotificationTarget::getInstanceClass($itemtype);
+
+        if (!is_a($target_class, NotificationTarget::class, true)) {
+            return false;
+        }
+
+        $target = new $target_class();
+
+        return in_array($event, $target->getEventsToSendImmediately(), true);
+    }
+
+    /**
      * Return whether the notification content corresponding to the given event can be disclosed.
      *
      * @return bool

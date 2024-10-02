@@ -261,6 +261,37 @@ class GLPITestCase extends TestCase
         $this->has_failed = false;
     }
 
+    /**
+     * Check that the session contains the given message.
+     */
+    protected function hasSessionMessageThatContains(string $message, string $level): void
+    {
+        $this->has_failed = true;
+        $this->assertTrue(
+            isset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]),
+            'No messages for selected level!'
+        );
+
+        $found = false;
+        foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'][$level] as $key => $record) {
+            if (str_contains($record, $message)) {
+                $found = true;
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level][$key]);
+                break;
+            }
+        }
+
+        if ($found) {
+            foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'] as $level => $records) {
+                if ($records === []) {
+                    unset($_SESSION['MESSAGE_AFTER_REDIRECT'][$level]);
+                }
+            }
+        }
+
+        $this->has_failed = !$found;
+    }
+
     protected function hasNoSessionMessages(array $levels)
     {
         foreach ($levels as $level) {

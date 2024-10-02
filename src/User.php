@@ -5360,7 +5360,6 @@ HTML;
         NotificationEvent::raiseEvent($event, $this, [
             'entities_id' => $entities_id,
         ]);
-        QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
 
         return true;
     }
