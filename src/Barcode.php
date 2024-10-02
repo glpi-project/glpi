@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class Barcode extends CommonDropdown
+class Barcode extends CommonGLPI
 {
     public static function generateQRCode(CommonDBTM $item)
     {
