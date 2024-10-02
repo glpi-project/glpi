@@ -1093,10 +1093,12 @@ class User extends CommonDBTM
         }
 
        // Security on default entity  update
-        if (isset($input['entities_id'])) {
-            if (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))) {
-                unset($input['entities_id']);
-            }
+        if (
+            isset($input['entities_id'])
+            && ($input['entities_id'] > 0)
+            && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+        ) {
+            unset($input['entities_id']);
         }
 
        // Security on default group  update
