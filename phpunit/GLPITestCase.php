@@ -441,6 +441,7 @@ class GLPITestCase extends TestCase
         // Statics values
         Log::$use_queue = false;
         CommonDBTM::clearSearchOptionCache();
+        \Glpi\Search\SearchOption::clearSearchOptionCache();
         AssetDefinitionManager::unsetInstance();
         Dropdown::resetItemtypesStaticCache();
     }
