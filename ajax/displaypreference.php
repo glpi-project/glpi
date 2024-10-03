@@ -55,7 +55,12 @@ if (isset($_POST["activate"])) {
     if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
         die(400);
     }
-    $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
+    $setupdisplay->updateOrder(
+        $_POST['itemtype'],
+        $_POST['users_id'],
+        $_POST['opts'],
+        $_POST['interface'] ?? 'central'
+    );
 } else {
     die(400);
 }
