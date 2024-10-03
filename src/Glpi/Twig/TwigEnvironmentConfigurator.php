@@ -98,7 +98,7 @@ final readonly class TwigEnvironmentConfigurator implements PublicService
             $session = $_SESSION ?? [];
         }
 
-        if ($session['glpi_use_mode'] ?? null === Session::DEBUG_MODE) {
+        if (($session['glpi_use_mode'] ?? null) === Session::DEBUG_MODE) {
             $twig->enableDebug();
         } else {
             $twig->disableDebug();

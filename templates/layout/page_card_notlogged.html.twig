@@ -38,14 +38,14 @@
     {'path': 'public/lib/tabler.css'},
     {'path': 'css/glpi.scss'},
     {'path': 'css/core_palettes.scss'}
-]) | merge(css_files ?? []) %}
+])|merge(css_files ?? []) %}
 {# TODO : load hight contrast css #}
 
 {% set js_files = [
     {'path': 'public/lib/base.js'},
     {'path': 'js/common.js'},
     {'path': 'public/lib/fuzzy.js'}
-] | merge(js_files ?? []) %}
+]|merge(js_files ?? []) %}
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">

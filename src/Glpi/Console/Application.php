@@ -352,6 +352,7 @@ class Application extends BaseApplication
      */
     public function getKernel(): ?Kernel
     {
+        /** @var Kernel|null $kernel */
         global $kernel;
 
         if (!$kernel instanceof Kernel) {
