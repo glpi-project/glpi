@@ -4744,8 +4744,52 @@ JAVASCRIPT;
 
         switch ($searchtype) {
             case "notcontains":
-                $nott = !$nott;
-               //negated, use contains case
+                // FIXME
+                // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+                // or at least to unexpected results, when following datatype are used:
+                //  - integer
+                //  - number
+                //  - decimal
+                //  - count
+                //  - mio
+                //  - percentage
+                //  - timestamp
+                //  - datetime
+                //  - date_delay
+                //  - mac
+                //  - color
+                //  - language
+                // Values should be filtered to accept only valid pattern according to given datatype.
+
+                if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
+                    $matches = [];
+                    if (preg_match('/^(\d+.?\d?)/', $val, $matches)) {
+                        $val = $matches[1];
+                        if (!str_contains($val, '.')) {
+                            $val .= '.';
+                        }
+                    }
+                }
+
+                // To search for '&' in rich text
+                if (
+                    (($searchopt[$ID]['datatype'] ?? null) === 'text')
+                    && (($searchopt[$ID]['htmltext'] ?? null) === true)
+                ) {
+                    $val = str_replace('&#38;', '38;amp;', $val);
+                }
+                if ($should_use_subquery) {
+                    // Subquery will be needed to get accurate results
+                    $use_subquery_on_text_search = true;
+
+                    // Potential negation will be handled by the subquery operator
+                    $SEARCH = self::makeTextSearch($val, false);
+                    $subquery_operator = $nott ? "IN" : "NOT IN";
+                } else {
+                    $SEARCH = self::makeTextSearch($val, $nott);
+                }
+                break;
+
             case "contains":
                 // FIXME
                 // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
