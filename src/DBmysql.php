@@ -1539,13 +1539,26 @@ class DBmysql
     {
         $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
-        if ($req->count() == 0) {
-            return $this->insertOrDie($table, $data, 'Unable to create new element or update existing one');
-        } else if ($req->count() == 1 || !$onlyone) {
-            return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
-        } else {
-            trigger_error('Update would change too many rows!', E_USER_WARNING);
+
+        try {
+            $query = $this->buildUpdateOrInsert($table, $data, $where, $onlyone);
+            return $this->doQueryOrDie($query, 'Unable to create new element or update existing one');
+        } catch (\RuntimeException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
             return false;
+        }
+    }
+
+    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    {
+        $req = $this->request(array_merge(['FROM' => $table], $where));
+        $data = array_merge($where, $params);
+        if ($req->count() == 0) {
+            return $this->buildInsert($table, $data);
+        } elseif ($req->count() == 1 || !$onlyone) {
+            return $this->buildUpdate($table, $data, $where);
+        } else {
+            throw new RuntimeException('Update would change too many rows!', E_USER_WARNING);
         }
     }
 

@@ -46,10 +46,11 @@ function update100xto1100()
      */
     global $DB, $migration;
 
-    $updateresult       = true;
-    $ADDTODISPLAYPREF   = [];
-    $DELFROMDISPLAYPREF = [];
-    $update_dir = __DIR__ . '/update_10.0.x_to_11.0.0/';
+    $updateresult              = true;
+    $ADDTODISPLAYPREF          = [];
+    $ADDTODISPLAYPREF_HELPDESK = [];
+    $DELFROMDISPLAYPREF        = [];
+    $update_dir                = __DIR__ . '/update_10.0.x_to_11.0.0/';
 
     //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '11.0.0'));
@@ -76,6 +77,23 @@ function update100xto1100()
                     'users_id'  => '0',
                     'itemtype'  => $type,
                     'num'       => $newval,
+                ]
+            );
+        }
+    }
+    foreach ($ADDTODISPLAYPREF_HELPDESK as $type => $tab) {
+        $rank = 1;
+        foreach ($tab as $newval) {
+            $DB->updateOrInsert(
+                'glpi_displaypreferences',
+                [
+                    'rank'      => $rank++
+                ],
+                [
+                    'users_id'  => '0',
+                    'itemtype'  => $type,
+                    'num'       => $newval,
+                    'interface' => 'helpdesk',
                 ]
             );
         }

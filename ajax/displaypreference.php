@@ -57,7 +57,12 @@ if (isset($_POST["activate"])) {
     if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
         throw new BadRequestHttpException();
     }
-    $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
+    $setupdisplay->updateOrder(
+        $_POST['itemtype'],
+        $_POST['users_id'],
+        $_POST['opts'],
+        $_POST['interface'] ?? 'central'
+    );
 } else {
     throw new BadRequestHttpException();
 }
