@@ -1036,29 +1036,35 @@ class User extends CommonDBTM
             unset($input["password"]);
         }
 
-        // prevent changing tokens and emails from users with lower rights
-        $protected_input_keys = [
-            'api_token',
-            '_reset_api_token',
-            'cookie_token',
-            'password_forget_token',
-            'personal_token',
-            '_reset_personal_token',
-
-            '_useremails',
-        ];
-        if (!isCommandLine()) {
-            // Disallow `_emails` input unless on CLI context (e.g. LDAP sync command).
-            $protected_input_keys[] = '_emails';
-        }
         if (
-            count(array_intersect($protected_input_keys, array_keys($input))) > 0
-            && !Session::isCron() // cron context is considered safe
-            && (int) $input['id'] !== Session::getLoginUserID()
-            && !$this->currentUserHaveMoreRightThan($input['id'])
+            Session::getLoginUserID() !== false
+            && ((int) $input['id']) !== Session::getLoginUserID()
         ) {
-            foreach ($protected_input_keys as $input_key) {
-                unset($input[$input_key]);
+            // Security checks to prevent an unathorized user to update sensitive fields of another user.
+            // These checks are done only if a "user" session is active.
+            $protected_input_keys = [
+                // Security tokens
+                'api_token',
+                '_reset_api_token',
+                'cookie_token',
+                'password_forget_token',
+                'personal_token',
+                '_reset_personal_token',
+
+                // Prevent changing emails that could then be used to get the password reset token
+                '_useremails',
+                '_emails',
+
+                // Prevent disabling another user account
+                'is_active',
+            ];
+            if (
+                count(array_intersect($protected_input_keys, array_keys($input))) > 0
+                && !$this->currentUserHaveMoreRightThan($input['id'])
+            ) {
+                foreach ($protected_input_keys as $input_key) {
+                    unset($input[$input_key]);
+                }
             }
         }
 

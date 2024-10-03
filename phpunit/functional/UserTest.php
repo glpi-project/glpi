@@ -39,6 +39,7 @@ use Glpi\Toolbox\Sanitizer;
 use Monolog\Logger;
 use Profile_User;
 use QuerySubQuery;
+use User;
 
 /* Test for inc/user.class.php */
 
@@ -554,6 +555,91 @@ class UserTest extends \DbTestCase
         }
 
         $this->assertSame($expected, $result);
+    }
+
+    public function testPrepareInputForUpdateSensitiveFields(): void
+    {
+        $users_passwords = [
+            TU_USER     => TU_PASS,
+            'glpi'      => 'glpi',
+            'tech'      => 'tech',
+            'normal'    => 'normal',
+            'post-only' => 'postonly',
+        ];
+
+        $users_matrix = [
+            TU_USER => [
+                TU_USER     => true,
+                'glpi'      => true,
+                'tech'      => true,
+                'normal'    => true,
+                'post-only' => true,
+            ],
+            'glpi' => [
+                TU_USER     => true,
+                'glpi'      => true,
+                'tech'      => true,
+                'normal'    => true,
+                'post-only' => true,
+            ],
+            'tech' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => true,
+                'normal'    => false, // has some more rights somewhere
+                'post-only' => true,
+            ],
+            'normal' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => false,
+                'normal'    => true,
+                'post-only' => true,
+            ],
+            'post-only' => [
+                TU_USER     => false,
+                'glpi'      => false,
+                'tech'      => false,
+                'normal'    => false,
+                'post-only' => true,
+            ]
+        ];
+
+        $inputs = [
+            'api_token'             => \bin2hex(\random_bytes(16)),
+            '_reset_api_token'      => true,
+            'cookie_token'          => \bin2hex(\random_bytes(16)),
+            'password_forget_token' => \bin2hex(\random_bytes(16)),
+            'personal_token'        => \bin2hex(\random_bytes(16)),
+            '_reset_personal_token' => true,
+            '_useremails'           => ['test1@example.com', 'test2@example.com'],
+            '_emails'               => ['test1@example.com', 'test2@example.com'],
+            'is_active'              => false,
+        ];
+
+        foreach ($users_matrix as $login => $targer_users_names) {
+            $this->login($login, $users_passwords[$login]);
+
+            foreach ($targer_users_names as $target_user_name => $can) {
+                $target_user = \getItemByTypeName(User::class, $target_user_name);
+
+                foreach ($inputs as $key => $value) {
+                    $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
+                    $this->assertEquals($can, \array_key_exists($key, $output));
+                }
+            }
+        }
+
+        // Filtering of sensitive fields is not done if no session is active (cron case)
+        $this->logout();
+        foreach ([TU_USER, 'glpi', 'tech', 'normal', 'post-only'] as $target_user_name) {
+            $target_user = \getItemByTypeName(User::class, $target_user_name);
+
+            foreach ($inputs as $key => $value) {
+                $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
+                $this->assertEquals(true, \array_key_exists($key, $output));
+            }
+        }
     }
 
     public function testPost_addItem()
