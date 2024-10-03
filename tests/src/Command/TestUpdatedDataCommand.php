@@ -36,12 +36,13 @@
 namespace Glpi\Tests\Command;
 
 use DBmysql;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Toolbox;
 
 class TestUpdatedDataCommand extends Command
 {
@@ -145,6 +146,7 @@ class TestUpdatedDataCommand extends Command
                 ['NOT' => ['table_name' => $this->getExcludedTables()]],
             ]
         );
+
         foreach ($table_iterator as $table_data) {
             $table_name = $table_data['TABLE_NAME'];
 
@@ -174,7 +176,8 @@ class TestUpdatedDataCommand extends Command
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
                     }
-                    if ($value === null && !in_array($this->getFieldType($fresh_db, $table_name, $key), ['datetime', 'timestamp'])) {
+                    $field_type = $this->getFieldType($fresh_db, $table_name, $key);
+                    if ($value === null && !in_array($field_type, ['datetime', 'timestamp'], true)) {
                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
@@ -182,6 +185,15 @@ class TestUpdatedDataCommand extends Command
                                 [$key => null],
                             ]
                         ];
+                    } elseif ($field_type === 'json') {
+                        // Compare JSON fields using they CHAR representation
+                        $criteria[$key] = new QueryExpression(
+                            sprintf(
+                                '%s = %s',
+                                QueryFunction::cast($key, 'CHAR'),
+                                $fresh_db->quoteValue($value)
+                            )
+                        );
                     } else {
                         $criteria[$key] = $value;
                     }
@@ -195,7 +207,7 @@ class TestUpdatedDataCommand extends Command
                 );
                 if ($found_in_updated->count() !== 1) {
                      $missing = true;
-                     $msg = sprintf('Unable to found following object in table "%s": %s', $table_name, json_encode($row_data));
+                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
                      $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }
@@ -321,13 +333,13 @@ class TestUpdatedDataCommand extends Command
                 ]
             );
             foreach ($fields_iterator as $field_data) {
-                 $table_name = $field_data['TABLE_NAME'];
-                 $field_name = $field_data['COLUMN_NAME'];
-                 $field_type = $field_data['DATA_TYPE'];
+                $table_name = $field_data['TABLE_NAME'];
+                $field_name = $field_data['COLUMN_NAME'];
+                $field_type = $field_data['DATA_TYPE'];
                 if (!array_key_exists($table_name, $types)) {
                     $types[$table_name] = [];
                 }
-                 $types[$table_name][$field_name] = $field_type;
+                $types[$table_name][$field_name] = $field_type;
             }
         }
 

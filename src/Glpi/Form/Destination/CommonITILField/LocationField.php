@@ -48,7 +48,7 @@ use Override;
 class LocationField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'location';
     }

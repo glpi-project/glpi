@@ -50,7 +50,7 @@ use Override;
 class ITILCategoryField extends AbstractConfigField
 {
     #[Override]
-    public function getKey(): string
+    public static function getKey(): string
     {
         return 'itilcategory';
     }

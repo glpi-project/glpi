@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Form\DefaultFormsManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
@@ -2154,6 +2155,10 @@ class Toolbox
                     }
                 }
             }
+
+            // Create default forms
+            $default_forms_manager = new DefaultFormsManager();
+            $default_forms_manager->createDefaultForms();
 
             // Initalize rules
             RulesManager::initializeRules();
