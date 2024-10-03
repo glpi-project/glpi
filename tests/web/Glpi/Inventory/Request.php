@@ -264,7 +264,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be authorized
         $res = $this->http_client->request(
@@ -327,7 +327,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
         $this->exception(
@@ -397,7 +397,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
         $this->exception(
