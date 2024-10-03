@@ -18,6 +18,8 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 
+- `NotificationTarget::canNotificationContentBeDisclosed()` method that can be overriden to indicates whether a notification contents should be undisclosed.
+
 #### Changes
 
 #### Deprecated

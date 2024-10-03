@@ -44,6 +44,14 @@ class NotificationTargetUser extends NotificationTarget
         ];
     }
 
+    public function canNotificationContentBeDisclosed(string $event): bool
+    {
+        if ($event === 'passwordforget') {
+            return false;
+        }
+
+        return parent::canNotificationContentBeDisclosed($event);
+    }
 
     /**
      * @see NotificationTarget::addNotificationTargets()
