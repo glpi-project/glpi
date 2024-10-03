@@ -230,7 +230,12 @@ abstract class AbstractRequest
             if (is_null($authorization_header)) {
                 $this->setMode(self::JSON_MODE);
                 $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
-                $this->addError('Authorization header required to send an inventory', 401);
+                $this->addToResponse([
+                    'status' => 'ok',
+                    'message' => 'Authorization header required to send an inventory',
+                    'expiration' => self::DEFAULT_FREQUENCY
+                ]);
+                $this->http_response_code = 401;
                 return false;
             } else {
                 $allowed = false;

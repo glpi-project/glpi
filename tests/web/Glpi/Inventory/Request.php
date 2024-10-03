@@ -71,6 +71,23 @@ class Request extends \DBTestCase
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>");
     }
 
+    /**
+     * Check a JSON response
+     *
+     * @param Response $res   Request response
+     * @param string   $reply Reply tag contents
+     * @param integer  $reply Reply HTTP code
+     *
+     * @return void
+     */
+    private function checkJsonResponse(GuzzleHttp\Psr7\Response $res, $reply, $code)
+    {
+        $this->integer($res->getStatusCode())->isIdenticalTo($code);
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/json');
+        $this->string((string)$res->getBody())
+         ->isIdenticalTo($reply);
+    }
+
     public function testUnsupportedHttpMethod()
     {
         $this->exception(
@@ -222,7 +239,6 @@ XML
             ]
         ))->isTrue();
         $this->logout();
-
         //first call should be unauthorized and return 401
         $this->exception(
             function () {
@@ -244,8 +260,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be authorized
         $res = $this->http_client->request(
@@ -304,8 +319,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
         $this->exception(
@@ -330,8 +344,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}');
+        $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
     }
 
     public function testAuthBasicWithFakeCredential()
@@ -372,8 +385,7 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Authorization header required to send an inventory","expiration":24}');
+        $this->checkJsonResponse($response, '{"status":"ok","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
         $this->exception(
@@ -397,7 +409,6 @@ XML
         );
         $this->object($this->exception)->isInstanceOf(RequestException::class);
         $this->object($response = $this->exception->getResponse())->isInstanceOf(Response::class);
-        $this->integer($response->getStatusCode())->isEqualTo(401);
-        $this->string((string)$response->getBody())->isEqualTo('{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}');
+        $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
     }
 }
