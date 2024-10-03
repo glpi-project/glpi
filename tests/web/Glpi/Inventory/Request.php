@@ -226,6 +226,9 @@ XML
 
     public function testAuthBasic()
     {
+        /** @var mixed $DB */
+        global $DB;
+
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
         $this->login();
@@ -238,6 +241,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
         //first call should be unauthorized and return 401
         $this->exception(
@@ -283,6 +287,9 @@ XML
 
     public function testAuthBasicMalformed()
     {
+        /** @var mixed $DB */
+        global $DB;
+
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
@@ -296,6 +303,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
 
         //first call should be unauthorized and return 401
@@ -349,6 +357,9 @@ XML
 
     public function testAuthBasicWithFakeCredential()
     {
+        /** @var mixed $DB */
+        global $DB;
+
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
@@ -362,6 +373,7 @@ XML
                 'basic_auth_password' => $basic_auth_password
             ]
         ))->isTrue();
+        $DB->commit();
         $this->logout();
 
         //first call should be unauthorized and return 401
