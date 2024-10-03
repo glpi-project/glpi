@@ -903,7 +903,7 @@ class Change extends CommonITILObject
             'name'                       => '',
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
-            'date'                      => 'NULL',
+            'date'                       => 'NULL',
             '_add_validation'            => 0,
             'users_id_validate'          => [],
             '_tasktemplates_id'          => [],
@@ -913,7 +913,11 @@ class Change extends CommonITILObject
             'backoutplancontent'         => '',
             'checklistcontent'           => '',
             'items_id'                   => 0,
-            '_actors'                     => [],
+            '_actors'                    => [],
+            'status'                     => self::INCOMING,
+            'time_to_resolve'            => 'NULL',
+            'itemtype'                   => '',
+            'locations_id'               => 0,
         ];
     }
 
