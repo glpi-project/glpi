@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
@@ -47,6 +48,8 @@ use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
+use Glpi\Form\Destination\CommonITILField\ObserverField;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
@@ -190,6 +193,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new RequestSourceField(),
             new ValidationField(),
             new ITILTaskField(),
+            new RequesterField(),
+            new ObserverField(),
+            new AssigneeField(),
         ];
     }
 
