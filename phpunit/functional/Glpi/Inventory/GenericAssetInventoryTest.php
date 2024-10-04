@@ -109,7 +109,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $iterator = $DB->request($criteria);
         $this->assertCount(1, $iterator);
         //$this->assertSame('Assert import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame('Global import (by serial)', $iterator->current()['name']);
+        $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
 
         //get models, manufacturer, ...
@@ -900,7 +900,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         //$this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame('Global import (by serial)', $iterator->current()['name']);
+        $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
 
         //operating system
@@ -1030,8 +1030,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $computer_criteria['WHERE'] = ['itemtype' => $classname];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
-        //$this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame('Global import (by serial)', $iterator->current()['name']);
+        $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
 
         //operating system
