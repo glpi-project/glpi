@@ -81,10 +81,6 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   if (!file_exists(dirname(__DIR__) . '/phpstan.neon')) {
-      symlink(dirname(__DIR__) . '/phpstan.neon.dist', dirname(__DIR__) . '/phpstan.neon');
-   }
-
    $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);
    if ($exit_code > 0) {
