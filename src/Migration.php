@@ -578,7 +578,7 @@ class Migration
         // MariaDB support HASH, BTREE and RTREE.
         // BTREE is the implicit default for both.
         if ($index_type && in_array($index_type, ['HASH', 'BTREE'])) {
-            $index_type = "USING $index_type";
+            $index_type = "USING $index_type ";
         } else {
             $index_type = '';
         }
@@ -599,9 +599,9 @@ class Migration
             if ($type === 'FULLTEXT') {
                 $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
             } else if ($type === 'UNIQUE') {
-                $this->uniques[$table][] = "ADD $type `$indexname` $index_type ($fields)";
+                $this->uniques[$table][] = "ADD $type `$indexname` $index_type($fields)";
             } else {
-                $this->change[$table][] = "ADD $type `$indexname` $index_type ($fields)";
+                $this->change[$table][] = "ADD $type `$indexname` $index_type($fields)";
             }
         }
     }
