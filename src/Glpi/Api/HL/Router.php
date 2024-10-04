@@ -707,6 +707,10 @@ EOT;
     private function handleAuth(Request $request): void
     {
         if ($request->hasHeader('Authorization')) {
+            // Ignore Basic auth because it is only supported when passing data in password flow to /token, not actual auth
+            if (str_starts_with($request->getHeaderLine('Authorization'), 'Basic ')) {
+                return;
+            }
             $this->startTemporarySession($request);
             if ($request->hasHeader('GLPI-Profile')) {
                 $requested_profile = $request->getHeaderLine('GLPI-Profile');

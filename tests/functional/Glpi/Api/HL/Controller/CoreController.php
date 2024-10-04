@@ -281,6 +281,51 @@ class CoreController extends \HLAPITestCase
         });
     }
 
+    public function testOAuthPasswordGrantHeader()
+    {
+        global $DB;
+
+        // Create an OAuth client
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['password']
+        ]);
+        $this->integer($client_id)->isGreaterThan(0);
+
+        // get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client_id],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+        $client_data = $it->current();
+        $auth_data = [
+            'grant_type' => 'password',
+            'username' => TU_USER,
+            'password' => TU_PASS,
+            'scope' => ''
+        ];
+        $request = new Request('POST', '/Token', [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Basic ' . base64_encode($client_data['identifier'] . ':' . (new \GLPIKey())->decrypt($client_data['secret']))
+        ], json_encode($auth_data));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
+                    $this->string($content['token_type'])->isEqualTo('Bearer');
+                    $this->string($content['access_token'])->isNotEmpty();
+                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                });
+        });
+    }
+
     public function testOAuthAuthCodeGrant()
     {
         // Not a complete end to end test. Not sure how that could be done. Should probably be using Cypress.
