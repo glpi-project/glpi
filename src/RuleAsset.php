@@ -195,6 +195,7 @@ class RuleAsset extends Rule
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
         $actions['comment']['name']             = __('Comments');
+        $actions['comment']['force_actions']    = ['assign', 'regex_result'];
 
         $actions['otherserial']['name']              = __('Inventory number');
         $actions['otherserial']['type']              = 'text';
