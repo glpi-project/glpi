@@ -66,11 +66,6 @@ class RuleImportAsset extends Rule
     /** @var boolean */
     private $link_criteria_port = false;
 
-    /** @var ?string<class-string>  */
-    private ?string $itemtype_from;
-    /** @var ?string<class-string>  */
-    private ?string $itemtype_to;
-
     public function getTitle()
     {
         $col = new RuleImportAssetCollection();

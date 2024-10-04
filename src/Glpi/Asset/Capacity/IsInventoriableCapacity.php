@@ -130,14 +130,16 @@ class IsInventoriableCapacity extends AbstractCapacity
 
         //remove rules
         $where = ['sub_type' => \RuleImportAsset::class];
-        $joins = ['LEFT JOIN' => [
-            'glpi_rulecriterias' => [
-                'FKEY' => [
-                    'glpi_rules' => 'id',
-                    'glpi_rulecriterias' => 'rules_id'
+        $joins = [
+            'LEFT JOIN' => [
+                'glpi_rulecriterias' => [
+                    'FKEY' => [
+                        'glpi_rules' => 'id',
+                        'glpi_rulecriterias' => 'rules_id'
+                    ]
                 ]
             ]
-        ]];
+        ];
         $where += [
             'criteria' => 'itemtype',
             'pattern' => $classname
