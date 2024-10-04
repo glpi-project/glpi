@@ -426,11 +426,12 @@ HTML;
             $user_id = Session::getLoginUserID();
             if ($user_id === false) {
                 // Redirect to login page
-                $scope = implode(',', $auth_request->getScopes());
+                $scope = implode(',', array_map(static fn ($s) => $s->getIdentifier(), $auth_request->getScopes()));
                 $client_id = $auth_request->getClient()->getIdentifier();
-                $redirect_uri = $this->getAPIPathForRouteFunction(self::class, 'authorize');
+                $redirect_uri = self::getAPIPathForRouteFunction(self::class, 'authorize');
                 $redirect_uri .= '?scope=' . $scope . '&client_id=' . $client_id . '&response_type=code&redirect_uri=' . urlencode($auth_request->getRedirectUri());
                 $redirect_uri = $CFG_GLPI['url_base'] . '/api.php/v2' . $redirect_uri;
+
                 return new Response(302, ['Location' => $CFG_GLPI['url_base'] . '/?redirect=' . rawurlencode($redirect_uri)]);
             }
             $user = new \Glpi\OAuth\User();
