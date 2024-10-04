@@ -35,6 +35,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 
 class RuleImportAsset extends Rule
 {
@@ -65,6 +66,10 @@ class RuleImportAsset extends Rule
     /** @var boolean */
     private $link_criteria_port = false;
 
+    /** @var ?string<class-string>  */
+    private ?string $itemtype_from;
+    /** @var ?string<class-string>  */
+    private ?string $itemtype_to;
 
     public function getTitle()
     {
@@ -1165,5 +1170,64 @@ TWIG, $twig_params);
                 );
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    /**
+     * Get default rules as XML
+     *
+     * @return SimpleXMLElement
+     */
+    public function getDefaultRules(): SimpleXMLElement
+    {
+        $rules = parent::getDefaultRules();
+
+        //add extra rules for active generic assets
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($definitions as $definition) {
+            if ($definition->hasCapacityEnabled(new \Glpi\Asset\Capacity\IsInventoriableCapacity())) {
+                $this->addGenericAssetRules($rules, $definition->getAssetClassName());
+            }
+        }
+
+        return $rules;
+    }
+
+    public function addGenericAssetRules(
+        SimpleXMLElement $rules,
+        string $itemtype_to,
+        string $itemtype_from = \Computer::class
+    ): void {
+        $extra_rules = $rules->xpath(
+            sprintf(
+                "/rules/rule[rulecriteria/criteria = 'itemtype' and rulecriteria/pattern = '%s']",
+                $itemtype_from
+            )
+        );
+
+        //switch to DOMXML since SimpleXML cannot add full children...
+        $drules = dom_import_simplexml($rules);
+
+        foreach ($extra_rules as $rule) {
+            $crule = clone($rule);
+            $crule->uuid = str_replace(
+                strtolower($itemtype_from),
+                Toolbox::slugify($itemtype_to),
+                $crule->uuid
+            );
+            $crule->name = str_replace(
+                $itemtype_from,
+                $itemtype_to,
+                $crule->name
+            );
+            foreach ($crule->rulecriteria as $criteria) {
+                if ($criteria->criteria == 'itemtype') {
+                    $criteria->pattern = $itemtype_to;
+                }
+            }
+
+            //switch to DOMXML since SimpleXML cannot add full children...
+            $drule = dom_import_simplexml($crule);
+            $drules->appendChild($drule->cloneNode(true));
+        }
     }
 }

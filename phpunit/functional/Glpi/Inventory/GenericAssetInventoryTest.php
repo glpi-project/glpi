@@ -1979,4 +1979,51 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $this->assertIsArray($battery);
         $this->assertSame($expected, $battery);
     }
+
+    public function testRulesCreation(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $rules = new \RuleImportAsset();
+        $this->assertTrue($rules->initRules());
+
+        $criteria = [
+            'COUNT' => 'cnt',
+            'FROM' => \RuleImportAsset::getTable(),
+            'LEFT JOIN' => [
+                'glpi_rulecriterias' => [
+                    'FKEY' => [
+                        'glpi_rules' => 'id',
+                        'glpi_rulecriterias' => 'rules_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'sub_type' => \RuleImportAsset::class,
+                'criteria' => 'itemtype',
+                'pattern' => \Computer::class
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        $tpl_rules_count = $iterator->current()['cnt'];
+        $this->assertGreaterThanOrEqual(13, $tpl_rules_count);
+
+        //create Server generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'Server' . $this->getUniqueString(),
+            capacities: [\Glpi\Asset\Capacity\IsInventoriableCapacity::class]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $criteria['WHERE']['pattern'] = $classname;
+        $iterator = $DB->request($criteria);
+        $this->assertSame($tpl_rules_count, $iterator->current()['cnt']);
+
+        // Disable capacity and check that rules have been cleaned
+        $this->assertTrue($definition->update(['id' => $definition->getID(), 'capacities' => []]));
+
+        $iterator = $DB->request($criteria);
+        $this->assertSame(0, $iterator->current()['cnt']);
+    }
 }
