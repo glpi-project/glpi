@@ -1170,11 +1170,14 @@ TWIG, $twig_params);
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement
+     * @return SimpleXMLElement|false
      */
-    public function getDefaultRules(): SimpleXMLElement
+    public function getDefaultRules(): SimpleXMLElement|false
     {
         $rules = parent::getDefaultRules();
+        if (!$rules) {
+            return false;
+        }
 
         //add extra rules for active generic assets
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);

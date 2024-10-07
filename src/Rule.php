@@ -3569,9 +3569,9 @@ JS
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement
+     * @return SimpleXMLElement|false
      */
-    public function getDefaultRules(): SimpleXMLElement
+    public function getDefaultRules(): SimpleXMLElement|false
     {
         return simplexml_load_file(self::getDefaultRulesFilePath());
     }
