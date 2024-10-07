@@ -414,6 +414,25 @@ class GLPITestCase extends TestCase
     }
 
     /**
+     * Get the raw database handle object.
+     *
+     * Useful when you need to run some queries that may not be allowed by
+     * the DBMysql object.
+     *
+     * @return mysqli
+     */
+    protected function getDbHandle(): mysqli
+    {
+        /** @var \DBmysql $db */
+        global $DB;
+
+        $reflection = new ReflectionClass(\DBmysql::class);
+        $property = $reflection->getProperty("dbh");
+        $property->setAccessible(true);
+        return $property->getValue($DB);
+    }
+
+    /**
      * Store Globals
      *
      * @return void

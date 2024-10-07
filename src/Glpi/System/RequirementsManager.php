@@ -51,6 +51,7 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
+use Glpi\System\Requirement\TablesEngine;
 
 /**
  * @since 9.5.0
@@ -133,10 +134,6 @@ class RequirementsManager
             __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
         );
 
-        if ($db instanceof \DBmysql) {
-            $requirements[] = new DbEngine($db);
-        }
-
         $requirements[] = new InstallationNotOverriden($db);
 
         /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
@@ -200,6 +197,7 @@ class RequirementsManager
         );
 
         if ($db instanceof \DBmysql) {
+            $requirements[] = new DbEngine($db);
             $requirements[] = new DbTimezones($db);
         }
 

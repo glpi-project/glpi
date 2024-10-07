@@ -34,6 +34,7 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
+use Glpi\System\Requirement\TablesEngine;
 use Session;
 use Auth;
 use DBConnection;
@@ -236,8 +237,11 @@ TWIG, $twig_params);
             /** @var \DBmysql $DB */
             global $DB;
 
+            $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+            $requirements->add(new TablesEngine($DB));
+
             $twig_params = [
-                'core_requirements' => (new RequirementsManager())->getCoreRequirementList($DB),
+                'core_requirements' => $requirements,
                 'try_again'         => __('Try again'),
                 'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
                 'upgrade'           => _sx('button', 'Upgrade'),
