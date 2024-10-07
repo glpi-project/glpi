@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Access\AbstractHttpException;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
 use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +53,12 @@ class ErrorController extends AbstractController
         }
 
         ErrorHandler::getInstance()->handleException($exception, true);
+
+        if ($exception instanceof AbstractHttpException) {
+            $exception->setRequest($request);
+
+            return $exception->asResponse();
+        }
 
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 

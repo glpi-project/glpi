@@ -732,7 +732,13 @@ class Html
      *
      * @return void
      **/
-    public static function displayErrorAndDie($message, $minimal = false)
+    public static function displayErrorAndDie($message, $minimal = false): void
+    {
+        self::displayError($message, $minimal);
+        exit();
+    }
+
+    public static function displayError($message, $minimal = false): void
     {
         /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
@@ -754,9 +760,7 @@ class Html
         ]);
 
         self::nullFooter();
-        exit();
     }
-
 
     /**
      * Add confirmation on button or link before action
