@@ -266,12 +266,12 @@ final class EntityFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleEntityAndRequesterQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addQuestion("Entity 1", QuestionTypeItem::class, [
+        $builder->addQuestion("Entity 1", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
-        ]);
-        $builder->addQuestion("Entity 2", QuestionTypeItem::class, [
+        ]));
+        $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
-        ]);
+        ]));
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket",

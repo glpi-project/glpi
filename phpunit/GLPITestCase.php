@@ -442,5 +442,6 @@ class GLPITestCase extends TestCase
         Log::$use_queue = false;
         CommonDBTM::clearSearchOptionCache();
         AssetDefinitionManager::unsetInstance();
+        Dropdown::resetItemtypesStaticCache();
     }
 }

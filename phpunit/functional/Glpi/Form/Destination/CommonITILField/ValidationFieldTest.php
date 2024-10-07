@@ -323,7 +323,9 @@ final class ValidationFieldTest extends DbTestCase
     {
         $builder = new FormBuilder();
         $builder->addQuestion("Assignee", QuestionTypeAssignee::class);
-        $builder->addQuestion("GLPI User", QuestionTypeItem::class);
+        $builder->addQuestion("GLPI User", QuestionTypeItem::class, 0, json_encode([
+            'itemtype' => User::class,
+        ]));
         $builder->addDestination(
             FormDestinationTicket::class,
             "My ticket",

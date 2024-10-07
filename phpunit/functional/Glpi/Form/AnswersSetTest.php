@@ -211,14 +211,8 @@ class AnswersSetTest extends DbTestCase
                         123 => 'Dropdown 1'
                     ]
                 ]))
-                ->addQuestion("GLPI Objects", QuestionTypeItem::class, [
-                    'itemtype' => 'User',
-                    'items_id' => 0
-                ])
-                ->addQuestion("Dropdowns", QuestionTypeItemDropdown::class, [
-                    'itemtype' => 'Location',
-                    'items_id' => 0
-                ])
+                ->addQuestion("GLPI Objects", QuestionTypeItem::class, 0, json_encode(['itemtype' => 'User']))
+                ->addQuestion("Dropdowns", QuestionTypeItemDropdown::class, 0, json_encode(['itemtype' => 'Location']))
         );
 
         // File question type requires an uploaded file

@@ -48,12 +48,16 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
 
     public function testItemDropdownAnswerIsDisplayedInTicketDescription(): void
     {
+        $this->login();
+
         $category = $this->createItem(ITILCategory::class, [
             'name' => 'My category',
         ]);
 
         $builder = new FormBuilder();
-        $builder->addQuestion("Category", QuestionTypeItemDropdown::class);
+        $builder->addQuestion("Category", QuestionTypeItemDropdown::class, 0, json_encode(
+            ['itemtype' => ITILCategory::getType()]
+        ));
         $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 

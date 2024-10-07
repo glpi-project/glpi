@@ -230,27 +230,31 @@ class CronTaskTest extends DbTestCase
         $plugins = new \Plugin();
         $plugins->init();
 
-        // Deactivate all registered tasks
-        $crontask = new \CronTask();
-        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
-        $this->assertFalse($crontask->getNeedToRun());
+        try {
+            // Deactivate all registered tasks
+            $crontask = new \CronTask();
+            $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
+            $this->assertFalse($crontask->getNeedToRun());
 
-        // Register task for active plugin.
-        $plugin_task = \CronTask::register(
-            $itemtype,
-            $name,
-            30,
-            [
-                'state'   => \CronTask::STATE_WAITING,
-                'hourmin' => 0,
-                'hourmax' => 24,
-            ]
-        );
-        $this->assertNotFalse($plugin_task);
-        $this->assertEquals($should_run, $crontask->getNeedToRun());
-        if ($should_run) {
-            $this->assertEquals($itemtype, $crontask->fields['itemtype']);
-            $this->assertEquals($name, $crontask->fields['name']);
+            // Register task for active plugin.
+            $plugin_task = \CronTask::register(
+                $itemtype,
+                $name,
+                30,
+                [
+                    'state'   => \CronTask::STATE_WAITING,
+                    'hourmin' => 0,
+                    'hourmax' => 24,
+                ]
+            );
+            $this->assertNotFalse($plugin_task);
+            $this->assertEquals($should_run, $crontask->getNeedToRun());
+            if ($should_run) {
+                $this->assertEquals($itemtype, $crontask->fields['itemtype']);
+                $this->assertEquals($name, $crontask->fields['name']);
+            }
+        } finally {
+            $plugins->unactivateAll();
         }
     }
 
