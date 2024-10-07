@@ -44,11 +44,11 @@ describe('Service catalog tab', () => {
     it('can configure service catalog', () => {
         // Make sure the values we are about to apply are are not already set to
         // prevent false negative.
-        cy.getDropdownByLabelText("Icon").should('not.contain.text', 'ti-dog');
+        cy.findByRole("textbox", {'name': 'Illustration'}).should('not.contain.text', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('not.contain.text', 'My description');
 
         // Set values
-        cy.getDropdownByLabelText("Icon").selectDropdownValue('ti-dog');
+        cy.findByRole("textbox", {'name': 'Illustration'}).type('request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().type('My description');
 
         // Save changes
@@ -56,7 +56,7 @@ describe('Service catalog tab', () => {
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
         // Validate values
-        cy.getDropdownByLabelText("Icon").should('contain.text', 'ti-dog');
+        cy.findByRole("textbox", {'name': 'Illustration'}).should('have.value', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
     });
 });

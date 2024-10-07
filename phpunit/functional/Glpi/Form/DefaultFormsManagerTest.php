@@ -78,7 +78,7 @@ final class DefaultFormsManagerTest extends DbTestCase
     public function testIncidentFormProperties(): void
     {
         // Arrange: Get default incident form
-        $rows = (new Form())->find(['name' => 'Incident']);
+        $rows = (new Form())->find(['name' => 'Report an issue']);
 
         // Assert: there should be one single form with specific properties
         $this->assertCount(1, $rows);
@@ -89,14 +89,14 @@ final class DefaultFormsManagerTest extends DbTestCase
         $this->assertEquals(false, $row['is_deleted']);
         $this->assertEquals(false, $row['is_draft']);
         $this->assertEmpty($row['header']);
-        $this->assertNotEmpty($row['icon']);
+        $this->assertNotEmpty($row['illustration']);
         $this->assertNotEmpty($row['description']);
     }
 
     public function testRequestFormProperties(): void
     {
         // Arrange: Get default incident form
-        $rows = (new Form())->find(['name' => 'Request']);
+        $rows = (new Form())->find(['name' => 'Request a service']);
 
         // Assert: there should be one single form with specific properties
         $this->assertCount(1, $rows);
@@ -107,14 +107,14 @@ final class DefaultFormsManagerTest extends DbTestCase
         $this->assertEquals(false, $row['is_deleted']);
         $this->assertEquals(false, $row['is_draft']);
         $this->assertEmpty($row['header']);
-        $this->assertNotEmpty($row['icon']);
+        $this->assertNotEmpty($row['illustration']);
         $this->assertNotEmpty($row['description']);
     }
 
     public function testIncidentFormQuestions(): void
     {
         // Arrange: Get default incident form and fetch test data
-        $rows = (new Form())->find(['name' => 'Incident']);
+        $rows = (new Form())->find(['name' => 'Report an issue']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 
@@ -163,7 +163,7 @@ final class DefaultFormsManagerTest extends DbTestCase
     public function testRequestFormQuestions(): void
     {
         // Arrange: Get default request form and fetch test data
-        $rows = (new Form())->find(['name' => 'Request']);
+        $rows = (new Form())->find(['name' => 'Request a service']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 
@@ -212,7 +212,7 @@ final class DefaultFormsManagerTest extends DbTestCase
     public function testIncidentFormShouldBeAccessibleBySelfServiceUsers(): void
     {
         // Arrange: Get default incident form
-        $rows = (new Form())->find(['name' => 'Incident']);
+        $rows = (new Form())->find(['name' => 'Report an issue']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 
@@ -232,7 +232,7 @@ final class DefaultFormsManagerTest extends DbTestCase
     public function testRequestFormShouldBeAccessibleBySelfServiceUsers(): void
     {
         // Arrange: Get default request form
-        $rows = (new Form())->find(['name' => 'Request']);
+        $rows = (new Form())->find(['name' => 'Request a service']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 

@@ -55,7 +55,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `is_draft` tinyint NOT NULL DEFAULT '0',
             `name` varchar(255) NOT NULL DEFAULT '',
             `header` longtext,
-            `icon` varchar(255) NOT NULL DEFAULT '',
+            `illustration` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
@@ -231,7 +231,7 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addKey("glpi_forms_answerssets", "entities_id");
     $migration->addField("glpi_forms_destinations_formdestinations", "config", "JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type'");
 
-    $migration->addField("glpi_forms_forms", "icon", "string");
+    $migration->addField("glpi_forms_forms", "illustration", "string");
     $migration->addField("glpi_forms_forms", "description", "text");
 }
 
