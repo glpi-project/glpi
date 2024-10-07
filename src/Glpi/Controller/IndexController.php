@@ -42,11 +42,11 @@ use Preference;
 use Dropdown;
 use CronTask;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
@@ -61,7 +61,7 @@ final class IndexController extends AbstractController
     #[SecurityStrategy('no_check')]
     public function __invoke(Request $request): Response
     {
-        return new StreamedResponse($this->call(...));
+        return new HeaderlessStreamedResponse($this->call(...));
     }
 
     private function call(): void

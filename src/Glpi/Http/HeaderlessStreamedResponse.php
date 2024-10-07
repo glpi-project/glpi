@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,33 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Http;
 
-use Glpi\Http\HeaderlessStreamedResponse;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class CaldavController extends AbstractController
+/**
+ * Sends a streamed response without specific headers.
+ * Headers could still be sent by the callback function.
+ * This class is for internal use only and is a temporary solution to get around the following PHP bug:
+ * - https://bugs.php.net/bug.php?id=81451
+ * - https://stackoverflow.com/questions/69197771/why-is-function-http-response-code-acting-strange-that-was-called-after-functi/69213593#69213593
+ *
+ * @since 11.0.0
+ * @deprecated 11.0.0
+ */
+class HeaderlessStreamedResponse extends StreamedResponse
 {
-    #[Route(
-        "/caldav.php{request_parameters}",
-        name: "glpi_caldav",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
-    )]
-    #[SecurityStrategy('no_check')]
-    public function __invoke(Request $request): Response
+    public function __construct(?callable $callback = null)
     {
-        return new HeaderlessStreamedResponse(function () {
-            /** @var array $CFG_GLPI */
-            global $CFG_GLPI;
+        parent::__construct($callback);
+    }
 
-            $server = new \Glpi\CalDAV\Server();
-            $server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-            $server->start();
-        });
+    public function sendHeaders(): static
+    {
+        // Sending headers is disabled.
+
+        return $this;
     }
 }
