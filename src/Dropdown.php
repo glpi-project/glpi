@@ -1130,7 +1130,7 @@ JAVASCRIPT;
      * @return array (group of dropdown) of array (itemtype => localized name)
      * @phpstan-return array<string, array<class-string<CommonDBTM>, string>>
      **/
-    public static function getStandardDropdownItemTypes()
+    public static function getStandardDropdownItemTypes(bool $check_rights = true)
     {
         if (self::$standard_itemtypes_options === null) {
             $optgroup = [
@@ -1337,7 +1337,7 @@ JAVASCRIPT;
             foreach ($optgroup as $label => &$dp) {
                 foreach ($dp as $key => &$val) {
                     if ($tmp = getItemForItemtype($key)) {
-                        if (!$tmp::canView()) {
+                        if ($check_rights && !$tmp::canView()) {
                             unset($optgroup[$label][$key]);
                         } else if ($val === null) {
                             $val = $key::getTypeName(Session::getPluralNumber());
