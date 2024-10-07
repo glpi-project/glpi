@@ -38,10 +38,10 @@ use CommonDevice;
 use CommonDropdown;
 use Html;
 use Glpi\Event;
+use Glpi\Http\HeaderlessStreamedResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -62,7 +62,7 @@ final class DropdownFormController extends AbstractController
             throw new BadRequestException('The "class" attribute must be a valid dropdown class.');
         }
 
-        return new StreamedResponse(function () use ($class, $request) {
+        return new HeaderlessStreamedResponse(function () use ($class, $request) {
             $dropdown = new $class();
             $this->loadDropdownForm($request, $dropdown);
         });

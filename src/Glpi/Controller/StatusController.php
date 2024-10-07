@@ -37,12 +37,12 @@ namespace Glpi\Controller;
 use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
+use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class StatusController extends AbstractController
@@ -54,7 +54,7 @@ final class StatusController extends AbstractController
     #[SecurityStrategy('no_check')]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
-        return new StreamedResponse($this->call(...));
+        return new HeaderlessStreamedResponse($this->call(...));
     }
 
     private function call(): void

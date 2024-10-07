@@ -35,8 +35,9 @@
 namespace Glpi\Controller;
 
 use Glpi\DependencyInjection\PublicService;
+use Glpi\Http\HeaderlessStreamedResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class LegacyFileLoadController implements PublicService
 {
@@ -44,7 +45,7 @@ final class LegacyFileLoadController implements PublicService
 
     protected ?Request $request = null;
 
-    public function __invoke(Request $request): StreamedResponse
+    public function __invoke(Request $request): Response
     {
         $this->request = $request;
 
@@ -58,7 +59,7 @@ final class LegacyFileLoadController implements PublicService
             require $target_file;
         };
 
-        return new StreamedResponse($callback->bindTo($this, self::class));
+        return new HeaderlessStreamedResponse($callback->bindTo($this, self::class));
     }
 
     protected function setAjax(): void
