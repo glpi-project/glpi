@@ -258,10 +258,8 @@ final class DefaultFormsManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
-            'default_value' => ([
-                'itemtype' => ITILCategory::class,
-                'items_id' => 0,
-            ])
+            'default_value' => 0,
+            'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
         ];
     }
 
@@ -270,10 +268,8 @@ final class DefaultFormsManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
-            'default_value' => ([
-                'itemtype' => Location::class,
-                'items_id' => 0,
-            ])
+            'default_value' => 0,
+            'extra_data' => json_encode(['itemtype' => Location::class]),
         ];
     }
 

@@ -52,7 +52,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
 
     public function getAllowedItemtypes(): array
     {
-        $dropdown_itemtypes = Dropdown::getStandardDropdownItemTypes();
+        $dropdown_itemtypes = Dropdown::getStandardDropdownItemTypes(check_rights: false);
 
         /**
          * It is necessary to replace the values with their corresponding keys
