@@ -3348,7 +3348,7 @@ TWIG, $twig_params);
 
         $infos  = $auth->connection_ldap($ldap_method, $login, $password, $error);
 
-        if ($infos === false) {
+        if ($infos === false || $auth->ldap_connection === false) {
             return $auth;
         }
 
