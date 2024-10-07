@@ -57,12 +57,6 @@ class DBConnection extends CommonDBTM
     public const PROPERTY_USE_UTF8MB4 = 'use_utf8mb4';
 
     /**
-     * "Allow MyISAM" property name.
-     * @var string
-     */
-    public const PROPERTY_ALLOW_MYISAM = 'allow_myisam';
-
-    /**
      * "Allow datetime" property name.
      * @var string
      */
@@ -95,7 +89,6 @@ class DBConnection extends CommonDBTM
      * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
      * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
      * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
      * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
      * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      * @param string  $config_dir
@@ -110,7 +103,6 @@ class DBConnection extends CommonDBTM
         bool $use_timezones = false,
         bool $log_deprecation_warnings = false,
         bool $use_utf8mb4 = false,
-        bool $allow_myisam = true,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
         string $config_dir = GLPI_CONFIG_DIR
@@ -130,9 +122,6 @@ class DBConnection extends CommonDBTM
         }
         if ($use_utf8mb4) {
             $properties[self::PROPERTY_USE_UTF8MB4] = true;
-        }
-        if (!$allow_myisam) {
-            $properties[self::PROPERTY_ALLOW_MYISAM] = false;
         }
         if (!$allow_datetime) {
             $properties[self::PROPERTY_ALLOW_DATETIME] = false;
@@ -239,7 +228,6 @@ class DBConnection extends CommonDBTM
      * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
      * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
      * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_myisam              Flag that indicates if MyISAM engine usage should be allowed
      * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
      * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      * @param string  $config_dir
@@ -254,7 +242,6 @@ class DBConnection extends CommonDBTM
         bool $use_timezones = false,
         bool $log_deprecation_warnings = false,
         bool $use_utf8mb4 = false,
-        bool $allow_myisam = true,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
         string $config_dir = GLPI_CONFIG_DIR
@@ -281,9 +268,6 @@ class DBConnection extends CommonDBTM
         }
         if ($use_utf8mb4) {
             $properties[self::PROPERTY_USE_UTF8MB4] = true;
-        }
-        if (!$allow_myisam) {
-            $properties[self::PROPERTY_ALLOW_MYISAM] = false;
         }
         if (!$allow_datetime) {
             $properties[self::PROPERTY_ALLOW_DATETIME] = false;
@@ -345,7 +329,6 @@ class DBConnection extends CommonDBTM
             $DB->use_timezones,
             $DB->log_deprecation_warnings,
             $DB->use_utf8mb4,
-            $DB->allow_myisam,
             $DB->allow_datetime,
             $DB->allow_signed_keys
         );
@@ -372,7 +355,6 @@ class DBConnection extends CommonDBTM
             $DB->use_timezones,
             $DB->log_deprecation_warnings,
             $DB->use_utf8mb4,
-            $DB->allow_myisam,
             $DB->allow_datetime,
             $DB->allow_signed_keys
         );

@@ -257,7 +257,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         if (!$db_exists || $strict_configuration || !$compute_flags_from_db) {
             // Force strict configuration
             $use_utf8mb4 = true;
-            $allow_myisam = false;
             $allow_datetime = false;
             $allow_signed_keys = false;
         } else {
@@ -274,7 +273,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             };
             $config_flags = $db->getComputedConfigBooleanFlags();
             $use_utf8mb4 = $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] ?? false;
-            $allow_myisam = $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] ?? true;
             $allow_datetime = $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] ?? true;
             $allow_signed_keys = $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] ?? true;
         }
@@ -299,7 +297,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
-            $allow_myisam,
             $allow_datetime,
             $allow_signed_keys
         );
@@ -323,7 +320,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
-            $allow_myisam,
             $allow_datetime,
             $allow_signed_keys
         ) extends DBmysql {
@@ -335,7 +331,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 $use_timezones,
                 $log_deprecation_warnings,
                 $use_utf8mb4,
-                $allow_myisam,
                 $allow_datetime,
                 $allow_signed_keys
             ) {
@@ -346,7 +341,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
 
                   $this->use_timezones     = $use_timezones;
                   $this->use_utf8mb4       = $use_utf8mb4;
-                  $this->allow_myisam      = $allow_myisam;
                   $this->allow_datetime    = $allow_datetime;
                   $this->allow_signed_keys = $allow_signed_keys;
 

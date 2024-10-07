@@ -33,28 +33,49 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Command;
+namespace Glpi\System\Requirement;
 
-interface GlpiCommandInterface
+/**
+ * @since 9.5.0
+ */
+final class TablesEngine extends AbstractRequirement
 {
     /**
-     * Defines whether or not mandatory requirements must be checked before running command.
+     * DB instance.
      *
-     * @return boolean
+     * @var \DBmysql
      */
-    public function mustCheckMandatoryRequirements(): bool;
+    private $db;
 
-    /**
-     * Defines whether or not mandatory requirements must be checked before running command.
-     *
-     * @return \Glpi\System\Requirement\RequirementInterface[]
-     */
-    public function getSpecificMandatoryRequirements(): array;
+    public function __construct(\DBmysql $db)
+    {
+        parent::__construct(
+            __('DB tables engine')
+        );
 
-    /**
-     * Defines whether or not command requires an up-to-date database to be executed.
-     *
-     * @return boolean
-     */
-    public function requiresUpToDateDb(): bool;
+        $this->db = $db;
+    }
+
+    protected function check(): void
+    {
+        $this->validated = true;
+        $tables = $this->db->getMyIsamTables();
+
+        // Fail if at least one MyIsam table is found
+        if (count($tables)) {
+            $this->validated = false;
+            $this->validation_messages[] = sprintf(
+                __('Please run the "%1$s" command.'),
+                'php bin/console migration:myisam_to_innodb'
+            );
+        }
+
+        // List each invalid table
+        foreach ($tables as $table) {
+            $this->validation_messages[] = sprintf(
+                __('The "%1$s" table does not have the required InnoDB engine.'),
+                $table['TABLE_NAME']
+            );
+        }
+    }
 }

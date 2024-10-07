@@ -9,6 +9,18 @@ bin/console database:configure \
   --ansi --no-interaction \
   --reconfigure --db-name=glpitest085 --db-host=db --db-user=root --db-password=""
 
+# Execute myisam_to_innodb migration
+## First run should do the migration (with no warnings).
+bin/console migration:myisam_to_innodb --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
+  then echo "bin/console migration:myisam_to_innodb command FAILED" && exit 1;
+fi
+## Second run should do nothing.
+bin/console migration:myisam_to_innodb --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
+  then echo "bin/console migration:myisam_to_innodb command FAILED" && exit 1;
+fi
+
 # Execute update
 ## First run should do the migration (with no warnings/errors).
 bin/console database:update --skip-db-checks --ansi --no-interaction --allow-unstable | tee $LOG_FILE
@@ -24,17 +36,6 @@ fi
 bin/console database:check_schema_integrity \
   --ansi --no-interaction
 
-# Execute myisam_to_innodb migration
-## First run should do the migration (with no warnings).
-bin/console migration:myisam_to_innodb --ansi --no-interaction | tee $LOG_FILE
-if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
-  then echo "bin/console migration:myisam_to_innodb command FAILED" && exit 1;
-fi
-## Second run should do nothing.
-bin/console migration:myisam_to_innodb --ansi --no-interaction | tee $LOG_FILE
-if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
-  then echo "bin/console migration:myisam_to_innodb command FAILED" && exit 1;
-fi
 ## Check DB schema integrity (including myisam_to_innodb migration)
 bin/console database:check_schema_integrity \
   --ansi --no-interaction \

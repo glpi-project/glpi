@@ -1095,13 +1095,13 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#11 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#11 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
