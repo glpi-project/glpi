@@ -11432,31 +11432,6 @@ abstract class CommonITILObject extends CommonDBTM implements AdvancedSearchInte
                 }
                 return [$opt->getTableField() => $to_check];
             }
-        } else if ($opt['table'] === Ticket_Ticket::getTable() && $opt['field'] === 'tickets_id_1') {
-            $tmp_link = $nott ? 'AND' : 'OR';
-            $compare = $nott ? '<>' : '=';
-            $to_add = [];
-
-            if ($nott && ($val !== 'NULL' && $val !== 'null')) {
-                $to_add = [$opt->getTableField() => null];
-            }
-
-            $criteria = [
-                $tmp_link => [
-                    $opt->getTableField() => [$compare, $val],
-                    "{$opt['table']}.tickets_id_2" => [$compare, $val],
-                ],
-                Ticket::getTableField('id') => ['<>', $val],
-            ];
-            if (!empty($to_add)) {
-                $criteria = [
-                    'OR' => [
-                        $criteria,
-                        $to_add
-                    ]
-                ];
-            }
-            return $criteria;
         } else if (in_array($opt['field'], ['impact', 'urgency', 'priority'], true)) {
             if (!is_numeric($val)) {
                 return [];
@@ -11465,28 +11440,6 @@ abstract class CommonITILObject extends CommonDBTM implements AdvancedSearchInte
                 $val > 0 => [$opt->getTableField() => [$nott ? '<>' : '=', $val]],
                 $val < 0 => [$opt->getTableField() => [$nott ? '<' : '>=', $val]],
                 default => [$opt->getTableField() => [$nott ? '<' : '>=', 0]],
-            };
-        } else if (
-            in_array(
-                $opt->getTableField(),
-                ['glpi_tickets.global_validation', 'glpi_ticketvalidations.status', 'glpi_changes.global_validation', 'glpi_changevalidations.status'],
-                true
-            )
-        ) {
-            if ($val == 'all') {
-                return [];
-            }
-            $to_check = match ($val) {
-                'can' => CommonITILValidation::getCanValidationStatusArray(),
-                'add' => CommonITILValidation::getAllValidationStatusArray(), // Dead case? Handled above
-                default => []
-            };
-            if (count($to_check) === 0) {
-                $to_check = [$val];
-            }
-            return match ($nott) {
-                true => [$opt->getTableField() => ['NOT IN' => $to_check]],
-                default => [$opt->getTableField() => $to_check],
             };
         }
 
