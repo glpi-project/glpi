@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 Session::checkLoginUser();
 
@@ -50,8 +51,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     /** @var CommonITILTask $task */
     $task = new $taskClass();
     if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
-        http_response_code(403);
-        die();
+        throw new AccessDeniedHttpException();
     }
     if (!in_array($task->fields['state'], [0, Planning::INFO])) {
         $new_state = ($task->fields['state'] == Planning::DONE)

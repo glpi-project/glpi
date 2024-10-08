@@ -34,6 +34,9 @@
  */
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
+
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 $this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -42,8 +45,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!Session::haveRight('datacenter', UPDATE)) {
-    http_response_code(403);
-    die;
+    throw new AccessDeniedHttpException();
 }
 if (!isset($_REQUEST['action'])) {
     exit();

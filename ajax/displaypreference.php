@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
 Html::header_nocache();
 
 Session::checkLoginUser();
@@ -53,9 +55,9 @@ if (isset($_POST["activate"])) {
     }
 } else if (isset($_POST['action']) && $_POST['action'] === 'update_order') {
     if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
-        die(400);
+        throw new BadRequestHttpException('Missing input keys');
     }
     $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
 } else {
-    die(400);
+    throw new BadRequestHttpException('No input data');
 }

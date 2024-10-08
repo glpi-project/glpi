@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -48,7 +53,7 @@ switch ($action) {
             header("Content-Type: application/json; charset=UTF-8");
             echo json_encode($response);
         } else {
-            die(404);
+            throw new NotFoundHttpException();
         }
         die();
     case 'get_events_from_itemtype':
@@ -137,8 +142,7 @@ switch ($action) {
         $webhook = new Webhook();
         if ($webhook->getFromDB($webhook_id)) {
             if (!$webhook->canUpdateItem()) {
-                http_response_code(403);
-                die();
+                throw new AccessDeniedHttpException();
             }
             if ($_POST['use_default_payload'] === 'true') {
                 $webhook->update([
@@ -153,16 +157,13 @@ switch ($action) {
                 ]);
             }
         } else {
-            http_response_code(404);
-            die();
+            throw new NotFoundHttpException();
         }
         die();
     case 'resend':
         $result = QueuedWebhook::sendById($_POST['id']);
-        if ($result) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
+        if (!$result) {
+            throw new BadRequestHttpException();
         }
         die();
     case 'get_monaco_suggestions':
@@ -170,8 +171,9 @@ switch ($action) {
         try {
             echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            http_response_code(500);
+            throw new HttpException(500, 'Error encoding JSON.', $e);
         }
         die();
 }
-http_response_code(400);
+
+throw new BadRequestHttpException();

@@ -33,6 +33,7 @@
  */
 
 use Glpi\Asset\CustomFieldDefinition;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
@@ -53,8 +54,8 @@ if (isset($_POST['action'])) {
             echo $option->getFormInput();
         }
     } else {
-        http_response_code(400);
+        throw new BadRequestHttpException();
     }
 } else {
-    http_response_code(400);
+    throw new BadRequestHttpException();
 }

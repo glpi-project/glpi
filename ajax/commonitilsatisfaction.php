@@ -40,6 +40,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 use Glpi\Application\View\TemplateRenderer;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 $itemtype = $_POST['itemtype'];
 $ent = new Entity();
@@ -49,8 +50,7 @@ $config_suffix = $itemtype::getType() === 'Ticket' ? '' : ('_' . strtolower($ite
 if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
     if ($ent->getFromDB($_POST['entities_id'])) {
         if (!$ent->canViewItem()) {
-            http_response_code(403);
-            die();
+            throw new AccessDeniedHttpException();
         }
         $inquest_delay             = $ent->getfield('inquest_delay' . $config_suffix);
         $inquest_rate              = $ent->getfield('inquest_rate' . $config_suffix);
