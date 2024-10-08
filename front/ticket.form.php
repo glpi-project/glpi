@@ -35,11 +35,13 @@
 
 use Glpi\Event;
 
+/** @var Glpi\Config\HasAppConfig $this */
+$CFG_GLPI = $this->getAppConfig();
+
 /**
- * @var array $CFG_GLPI
  * @var \DBmysql $DB
  */
-global $CFG_GLPI, $DB;
+global $DB;
 
 Session::checkLoginUser();
 $track = new Ticket();

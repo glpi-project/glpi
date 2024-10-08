@@ -35,7 +35,7 @@
 
 use Glpi\Http\Response;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
+/** @var Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 header("Content-Type: application/json; charset=UTF-8");

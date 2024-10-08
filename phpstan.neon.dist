@@ -19,9 +19,7 @@ parameters:
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
         - { message: '/Variable \$this might not be defined/', paths: [ 'inc/includes.php' ] }
-        - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
-        - { message: '/Access to protected property/', paths: [ 'front/dropdown.common.php', 'front/dropdown.common.form.php' ] }
-        - { message: '/LDAP\\Connection/', reportUnmatched: false }
+        - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'inc/includes.php', 'front/', 'ajax/' ] }
 
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
