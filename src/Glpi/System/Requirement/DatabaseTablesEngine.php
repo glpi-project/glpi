@@ -35,7 +35,7 @@
 
 namespace Glpi\System\Requirement;
 
-final class TablesEngine extends AbstractRequirement
+final class DatabaseTablesEngine extends AbstractRequirement
 {
     /**
      * DB instance.

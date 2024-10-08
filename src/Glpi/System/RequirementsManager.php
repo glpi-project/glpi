@@ -51,7 +51,7 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
-use Glpi\System\Requirement\TablesEngine;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 
 /**
  * @since 9.5.0

@@ -41,7 +41,7 @@ use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
-use Glpi\System\Requirement\TablesEngine;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use GLPIKey;
@@ -94,7 +94,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         /** @var \DBmysql $DB */
         global $DB;
 
-        return [new TablesEngine($DB)];
+        return [new DatabaseTablesEngine($DB)];
     }
 
     protected function configure()

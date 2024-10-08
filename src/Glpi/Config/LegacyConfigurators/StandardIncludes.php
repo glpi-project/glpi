@@ -34,7 +34,7 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\System\Requirement\TablesEngine;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Session;
 use Auth;
 use DBConnection;
@@ -238,7 +238,7 @@ TWIG, $twig_params);
             global $DB;
 
             $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
-            $requirements->add(new TablesEngine($DB));
+            $requirements->add(new DatabaseTablesEngine($DB));
 
             $twig_params = [
                 'core_requirements' => $requirements,

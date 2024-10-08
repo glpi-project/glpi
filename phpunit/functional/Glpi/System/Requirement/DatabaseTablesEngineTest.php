@@ -35,11 +35,11 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-use Glpi\System\Requirement\TablesEngine;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use GLPITestCase;
 use Override;
 
-final class TablesEngineTest extends GLPITestCase
+final class DatabaseTablesEngineTest extends GLPITestCase
 {
     #[Override]
     public function tearDown(): void
@@ -72,7 +72,7 @@ final class TablesEngineTest extends GLPITestCase
         SQL);
 
         // Act: run table engine requirement
-        $table_engine_requirement = new TablesEngine($DB);
+        $table_engine_requirement = new DatabaseTablesEngine($DB);
         $is_validated = $table_engine_requirement->isValidated();
         $messages = $table_engine_requirement->getValidationMessages();
 
@@ -91,7 +91,7 @@ final class TablesEngineTest extends GLPITestCase
         global $DB;
 
         // Act: run table engine requirement
-        $table_engine_requirement = new TablesEngine($DB);
+        $table_engine_requirement = new DatabaseTablesEngine($DB);
         $is_validated = $table_engine_requirement->isValidated();
         $messages = $table_engine_requirement->getValidationMessages();
 
