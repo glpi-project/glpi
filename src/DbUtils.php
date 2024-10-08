@@ -391,7 +391,17 @@ final class DbUtils
         } else if (preg_match('/^' . preg_quote(NS_PLUG, '/') . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
             $context = strtolower($plugin_matches['plugin']);
         }
-        $unique_key = crc32($context . $root_dir . implode(',', $plugins_dirs));
+
+        // Our cache key must take into account the requested directories
+        if ($context == 'glpi-core') {
+            // Only $root_dir will be used, we don't need to take plugins directories into account
+            // The "root=" prefix make sure we don't have any collision if $root_dir and $plugins_dirs are equals
+            $unique_key = crc32($context . 'root=' . $root_dir);
+        } else {
+            // Only $plugins_dirs will be used, we don't need to take the root dir
+            // The "plugins=" prefix make sure we don't have any collision if $root_dir and $plugins_dirs are equals
+            $unique_key = crc32($context . 'plugins=' . implode(',', $plugins_dirs));
+        }
 
         $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
         $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
