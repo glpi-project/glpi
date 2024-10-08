@@ -609,6 +609,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
+        $current_user_id = Session::getLoginUserID();
+        if ($current_user_id === false) {
+            // RSSFeeds are not supposed to be created in a sessionless context.
+            return false;
+        }
+        $input['users_id'] = $current_user_id;
+
         if ($feed = self::getRSSFeed($input['url'])) {
             $input['have_error'] = 0;
             $input['name']       = addslashes($feed->get_title());
@@ -643,6 +650,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $input['comment'] = addslashes($feed->get_description());
             }
         }
+
+        // Owner cannot be changed
+        unset($input['users_id']);
+
         return $input;
     }
 
@@ -662,20 +673,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         return true;
-    }
-
-
-    public function pre_updateInDB()
-    {
-
-       // Set new user if initial user have been deleted
-        if (
-            ($this->fields['users_id'] == 0)
-            && ($uid = Session::getLoginUserID())
-        ) {
-            $this->fields['users_id'] = $uid;
-            $this->updates[]          = "users_id";
-        }
     }
 
 
@@ -730,14 +727,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
         echo "<td colspan='3'>";
-        echo "<input type='text' name='url' size='100' value='" . $this->fields["url"] . "' class='form-control'>";
+        echo "<input type='text' name='url' size='100' value='" . htmlspecialchars($this->fields["url"], ENT_QUOTES) . "' class='form-control'>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('By') . "</td>";
         echo "<td>";
         echo getUserName($this->fields["users_id"]);
-        echo "<input type='hidden' name='users_id' value='" . $this->fields['users_id'] . "'>\n";
         echo "</td>";
         echo "<td rowspan='$rowspan'>" . __('Comments') . "</td>";
         echo "<td rowspan='$rowspan' class='middle'>";
@@ -895,7 +891,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             if ($newfeed && !$newfeed->error()) {
                 $link = URL::sanitizeURL($newfeed->get_permalink());
                 if (!empty($link)) {
-                     echo "<a href='$newurl'>" . $newfeed->get_title() . "</a>&nbsp;";
+                     echo "<a href='" . htmlspecialchars($newurl, ENT_QUOTES) . "'>" . $newfeed->get_title() . "</a>&nbsp;";
                      Html::showSimpleForm(
                          $this->getFormURL(),
                          'update',
