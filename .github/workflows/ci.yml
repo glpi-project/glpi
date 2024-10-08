@@ -62,6 +62,7 @@ jobs:
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
+            /tmp/phpstan
           key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
             app_home_lint-${{ matrix.php-version }}

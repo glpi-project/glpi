@@ -48,6 +48,7 @@ phpunit.xml
 /inc/downstream.php
 /docker-compose.override.yaml
 /.devcontainer/docker-compose.override.yaml
+phpstan.neon
 /.phpunit.result.cache
 /phpunit/files/
 /phpunit/config
