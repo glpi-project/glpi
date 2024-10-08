@@ -134,6 +134,10 @@ class RequirementsManager
             __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
         );
 
+        if ($db instanceof \DBmysql) {
+            $requirements[] = new DbEngine($db);
+        }
+
         $requirements[] = new InstallationNotOverriden($db);
 
         /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
@@ -197,7 +201,6 @@ class RequirementsManager
         );
 
         if ($db instanceof \DBmysql) {
-            $requirements[] = new DbEngine($db);
             $requirements[] = new DbTimezones($db);
         }
 
