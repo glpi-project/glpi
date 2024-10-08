@@ -171,6 +171,7 @@ The present file will list all changes made to the project; according to the
 - `Group::getDataItems()` signature changed. The two first parameters `$types` and `$field` were replaced
   by a unique boolean `$tech` parameter that is used to compute the `$types` and `$field` values automatically.
 - `CartridgeItem::addCompatibleType()` method is now static.
+- `Rule::initRule()` has been made final and non static and its signature changed.
 - `Transfer` class is now final.
 - `Transfer::addNotToBeTransfer()` method is now private.
 - `Transfer::addToAlreadyTransfer()` method is now private.
