@@ -984,6 +984,32 @@ class RuleTest extends DbTestCase
         ]);
         $this->assertEquals(1, $rule->fields['ranking']);
     }
+
+    public function testReinit(): void
+    {
+        $rules = new \RuleImportAsset();
+        $existing = $rules->find(['sub_type' => $rules::class]);
+        $this->assertGreaterThan(20, count($existing));
+
+        //change one rule
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertTrue($rules->update(['id' => $rules->getID(), 'name' => 'Changed for tests']));
+
+        //init rules, no reset
+        $this->assertTrue($rules->initRules(false));
+        $this->assertSame(count($existing), count($rules->find(['sub_type' => $rules::class])));
+
+        //check rules has not been reset
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertSame($rules->fields['name'], 'Changed for tests');
+
+        //init rules, reset
+        $this->assertTrue($rules->initRules());
+        $this->assertSame(count($existing), count($rules->find(['sub_type' => $rules::class])));
+
+        $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
+        $this->assertNotSame($rules->fields['name'], 'Changed for tests');
+    }
 }
 
 // @codingStandardsIgnoreStart

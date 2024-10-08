@@ -53,8 +53,6 @@ class IsInventoriableCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
-
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\IsInventoriableCapacity::class,

@@ -3389,33 +3389,50 @@ JS
      * @param boolean $reset        Whether to reset before adding new rules, defaults to true
      * @param boolean $with_plugins Use plugins rules or not
      * @param boolean $check        Check if rule exists before creating
+     * @param ?string $itemtype     Itemtype to work on
      *
      * @return boolean
      *
      * @FIXME Make it final in GLPI 11.0.
      * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
      */
-    public static function initRules($reset = true, $with_plugins = true, $check = false): bool
+    public function initRules(bool $reset = true, $with_plugins = true, $check = true, string $itemtype = null): bool
     {
-        $self = new static();
+        /** @var DBmysql $DB */
+        global $DB;
 
         if (!static::hasDefaultRules()) {
             return false;
         }
 
         if ($reset === true) {
-            $rules = $self->find(['sub_type' => static::class]);
-            foreach ($rules as $data) {
-                $delete = $self->delete($data);
-                if (!$delete) {
-                    return false; // Do not continue if reset failed
-                }
+            $where = ['sub_type' => static::class];
+            $joins = [];
+            if ($itemtype !== null) {
+                $joins = [
+                    'LEFT JOIN' => [
+                        'glpi_rulecriterias' => [
+                            'FKEY' => [
+                                'glpi_rules' => 'id',
+                                'glpi_rulecriterias' => 'rules_id'
+                            ]
+                        ]
+                    ]
+                ];
+                $where += [
+                    'criteria' => 'itemtype',
+                    'pattern' => $itemtype
+                ];
+            }
+
+            if (!$DB->delete(self::getTable(), $where, $joins)) {
+                return false; // Do not continue if reset failed
             }
 
             $check = false; // Nothing to check
         }
 
-        $xml = simplexml_load_file(self::getDefaultRulesFilePath());
+        $xml = $this->getDefaultRules();
         if ($xml === false) {
             return false;
         }
@@ -3432,14 +3449,34 @@ JS
         }
 
         $has_errors = false;
-        foreach ($xml->xpath('/rules/rule') as $rulexml) {
+        $xpath = '/rules/rule';
+        if ($itemtype !== null) {
+            $xpath = sprintf(
+                "/rules/rule[rulecriteria/criteria = 'itemtype' and rulecriteria/pattern = '%s']",
+                $itemtype
+            );
+        }
+        foreach ($xml->xpath($xpath) as $rulexml) {
             if ((string)$rulexml->sub_type !== self::getType()) {
-                trigger_error(sprintf('Unexpected rule type for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                trigger_error(
+                    sprintf(
+                        'Unexpected rule type %s for rule `%s`.',
+                        (string)$rulexml->sub_type,
+                        (string)$rulexml->uuid
+                    ),
+                    E_USER_WARNING
+                );
                 $has_errors = true;
                 continue;
             }
             if ((string)$rulexml->entities_id !== 'Root entity') {
-                trigger_error(sprintf('Unexpected entity value for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                trigger_error(
+                    sprintf(
+                        'Unexpected entity value for rule `%s`.',
+                        (string)$rulexml->uuid
+                    ),
+                    E_USER_WARNING
+                );
                 $has_errors = true;
                 continue;
             }
@@ -3527,6 +3564,16 @@ JS
     final public static function hasDefaultRules(): bool
     {
         return file_exists(self::getDefaultRulesFilePath());
+    }
+
+    /**
+     * Get default rules as XML
+     *
+     * @return SimpleXMLElement|false
+     */
+    public function getDefaultRules(): SimpleXMLElement|false
+    {
+        return simplexml_load_file(self::getDefaultRulesFilePath());
     }
 
     /**

@@ -51,7 +51,7 @@ if (isset($_POST["action"])) {
 } else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
    //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
-    if ($ruleclass::initRules()) {
+    if ($ruleclass->initRules()) {
         Session::addMessageAfterRedirect(
             htmlspecialchars(sprintf(
             //TRANS: first parameter is the rule type name

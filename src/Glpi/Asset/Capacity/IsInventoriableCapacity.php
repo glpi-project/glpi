@@ -91,21 +91,25 @@ class IsInventoriableCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
         $this->registerToTypeConfig('inventory_types', $classname);
         $this->registerToTypeConfig('agent_types', $classname);
         $this->registerToTypeConfig('environment_types', $classname);
         $this->registerToTypeConfig('process_types', $classname);
 
+        //copy rules from "inventory model" (Computer only for now)
+
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+
+        //create rules
+        $rules = new \RuleImportAsset();
+        $rules->initRules(true, false, false, $classname);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var \DBmysql $DB */
+        global $DB;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
         $this->unregisterFromTypeConfig('agent_types', $classname);
         $this->unregisterFromTypeConfig('environment_types', $classname);
@@ -123,5 +127,23 @@ class IsInventoriableCapacity extends AbstractCapacity
         ], true, false);
 
         $this->deleteRelationLogs($classname, Item_Process::class);
+
+        //remove rules
+        $where = ['sub_type' => \RuleImportAsset::class];
+        $joins = [
+            'LEFT JOIN' => [
+                'glpi_rulecriterias' => [
+                    'FKEY' => [
+                        'glpi_rules' => 'id',
+                        'glpi_rulecriterias' => 'rules_id'
+                    ]
+                ]
+            ]
+        ];
+        $where += [
+            'criteria' => 'itemtype',
+            'pattern' => $classname
+        ];
+        $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
     }
 }
