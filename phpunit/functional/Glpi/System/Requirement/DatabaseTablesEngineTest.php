@@ -79,9 +79,7 @@ final class DatabaseTablesEngineTest extends GLPITestCase
         // Assert: validation should fail with 2 invalid tables
         $this->assertFalse($is_validated);
         $this->assertEquals([
-            'Please run the "php bin/console migration:myisam_to_innodb" command.',
-            'The "glpi_tmp_testTablesWithIncorrectEngineAreFound1" table does not have the required InnoDB engine.',
-            'The "glpi_tmp_testTablesWithIncorrectEngineAreFound2" table does not have the required InnoDB engine.',
+            'The database contains 2 table(s) using the unsupported MyISAM engine. Please run the "php bin/console migration:myisam_to_innodb" command to migrate them to the InnoDB engine.',
         ], $messages);
     }
 

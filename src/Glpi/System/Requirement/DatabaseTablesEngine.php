@@ -56,22 +56,15 @@ final class DatabaseTablesEngine extends AbstractRequirement
     protected function check(): void
     {
         $this->validated = true;
-        $tables = $this->db->getMyIsamTables();
+        $tables_count = count($this->db->getMyIsamTables());
 
         // Fail if at least one MyIsam table is found
-        if (count($tables)) {
+        if ($tables_count > 0) {
             $this->validated = false;
             $this->validation_messages[] = sprintf(
-                __('Please run the "%1$s" command.'),
+                __('The database contains %1$d table(s) using the unsupported MyISAM engine. Please run the "%2$s" command to migrate them to the InnoDB engine.'),
+                $tables_count,
                 'php bin/console migration:myisam_to_innodb'
-            );
-        }
-
-        // List each invalid table
-        foreach ($tables as $table) {
-            $this->validation_messages[] = sprintf(
-                __('The "%1$s" table does not have the required InnoDB engine.'),
-                $table['TABLE_NAME']
             );
         }
     }
