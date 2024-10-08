@@ -70,9 +70,6 @@ The present file will list all changes made to the project; according to the
 - The debug tab that was present, for some items, when the debug mode was active, no longer exists. The corresponding features have been either moved, either removed.
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
-- `DBConnection::createMainConfig()` signature changed. The `$allow_myisam` parameter has been removed.
-- `DBConnection::createSlaveConnectionFile()` signature changed. The `$allow_myisam` parameter has been removed.
-- The `$allow_myisam` parameter found in `config/config_db.php` has been removed.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -208,6 +205,9 @@ The present file will list all changes made to the project; according to the
 - `comments` and `icon` options have been removed from `CommonDBTM::getName()`.
 - `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
 - The `$keepDb` parameter has been removed from `Html::footer()`.
+- `DBConnection::createMainConfig()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBConnection::createSlaveConnectionFile()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBmysql::$allow_myisam` property has been removed.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
