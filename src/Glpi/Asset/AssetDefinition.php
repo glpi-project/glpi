@@ -42,6 +42,9 @@ use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\DropdownType;
+use Glpi\Asset\CustomFieldType\StringType;
+use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
@@ -535,22 +538,68 @@ final class AssetDefinition extends AbstractDefinition
     {
         $type_class = $this->getAssetTypeClassName();
         $model_class = $this->getAssetModelClassName();
+
         $fields = [
-            'name'             => __('Name'),
-            'states_id'        => State::getTypeName(1),
-            'locations_id'     => Location::getTypeName(1),
-            $type_class::getForeignKeyField() => $type_class::getTypeName(1),
-            'users_id_tech'    => __('Technician in charge'),
-            'manufacturers_id' => Manufacturer::getTypeName(1),
-            'groups_id_tech'   => __('Group in charge'),
-            $model_class::getForeignKeyField() => $model_class::getTypeName(1),
-            'contact_num'      => __('Alternate username number'),
-            'serial'           => __('Serial'),
-            'contact'          => __('Alternate username'),
-            'otherserial'      => __('Inventory number'),
-            'users_id'         => User::getTypeName(1),
-            'groups_id'        => Group::getTypeName(1),
-            'comment'          => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'name'             => [
+                'text' => __('Name'),
+                'type' => StringType::class
+            ],
+            'states_id'        => [
+                'text' => State::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'locations_id'     => [
+                'text' => Location::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            $type_class::getForeignKeyField() => [
+                'text' => $type_class::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'users_id_tech'    => [
+                'text' => __('Technician in charge'),
+                'type' => DropdownType::class
+            ],
+            'manufacturers_id' => [
+                'text' => Manufacturer::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'groups_id_tech'   => [
+                'text' => __('Group in charge'),
+                'type' => DropdownType::class
+            ],
+            $model_class::getForeignKeyField() => [
+                'text' => $model_class::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'contact_num'      => [
+                'text' => __('Alternate username number'),
+                'type' => StringType::class
+            ],
+            'serial'           => [
+                'text' => __('Serial'),
+                'type' => StringType::class
+            ],
+            'contact'          => [
+                'text' => __('Alternate username'),
+                'type' => StringType::class
+            ],
+            'otherserial'      => [
+                'text' => __('Inventory number'),
+                'type' => StringType::class
+            ],
+            'users_id'         => [
+                'text' => User::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'groups_id'        => [
+                'text' => Group::getTypeName(1),
+                'type' => DropdownType::class
+            ],
+            'comment'          => [
+                'text' => _n('Comment', 'Comments', Session::getPluralNumber()),
+                'type' => TextType::class
+            ],
         ];
 
         foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {

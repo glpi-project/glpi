@@ -85,17 +85,20 @@
             viewAddEditSubItem{{ rand }}(-1);
         });
         $('#{{ subitem_container_id }}').on('submit', 'form', (e) => {
-            // Close the modal if it exists
-            if (modal_el.length) {
-                modal_el.modal('hide');
-            }
             {% if ajax_form_submit %}
                 e.preventDefault();
                 let form_data = $(e.target).serialize();
                 // Add submitter button name/value to form data
                 const submit_btn = $(e.originalEvent.submitter);
                 form_data += '&' + submit_btn.attr('name') + '=' + submit_btn.val();
-                $.post($(e.target).attr('action'), form_data).then(displayAjaxMessageAfterRedirect, displayAjaxMessageAfterRedirect);
+
+                const on_finish = () => {
+                    displayAjaxMessageAfterRedirect();
+                    if (modal_el.length) {
+                        modal_el.modal('hide');
+                    }
+                };
+                $.post($(e.target).attr('action'), form_data).then(on_finish, on_finish);
                 return false;
             {% endif %}
         });

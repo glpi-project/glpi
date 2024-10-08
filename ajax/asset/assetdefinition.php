@@ -33,15 +33,16 @@
  */
 
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\CustomFieldDefinition;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
 Session::checkRight(AssetDefinition::$rightname, READ);
 
-header("Content-Type: application/json; charset=UTF-8");
-
 if ($_GET['action'] === 'get_all_fields') {
+    header("Content-Type: application/json; charset=UTF-8");
     $definition = new AssetDefinition();
     if (!$definition->getFromDB($_GET['assetdefinitions_id'])) {
         http_response_code(404);
@@ -61,6 +62,23 @@ if ($_GET['action'] === 'get_all_fields') {
         'results' => $field_results,
         'count' => count($all_fields)
     ], JSON_THROW_ON_ERROR);
+    exit();
+} else if ($_GET['action'] === 'get_field_placeholder') {
+    header("Content-Type: text/html; charset=UTF-8");
+    $custom_field = new CustomFieldDefinition();
+    if ($_GET['customfields_id'] > 0) {
+        if (!$custom_field->getFromDB($_GET['customfields_id'])) {
+            throw new NotFoundHttpException();
+        }
+    } else {
+        $custom_field->fields['name'] = '';
+        $custom_field->fields['label'] = $_GET['label'];
+        $custom_field->fields['type'] = $_GET['type'];
+        $custom_field->fields['itemtype'] = 'Computer'; // Doesn't matter what it is as long as it's not empty
+        $custom_field->fields['default_value'] = '';
+    }
+    $custom_field->fields['field_options']['disabled'] = true;
+    echo $custom_field->getFieldType()->getFormInput('', null);
     exit();
 }
 http_response_code(400);
