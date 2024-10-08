@@ -31,32 +31,32 @@
  */
 
 $(function() {
-    var preview = document.querySelector('.preview');
+    const preview = document.querySelector('.preview');
     if (preview) {
-        var mainform = preview.querySelector('#main-form');
-        var formFields = mainform.querySelectorAll('.form-field');
+        const mainform = preview.querySelector('#main-form');
+        const formFields = mainform.querySelectorAll('.form-field');
         if (formFields.length > 0) {
-            var lastFormField = formFields[formFields.length - 1];
-            var formLabels = lastFormField.querySelectorAll('.form-check');
-            var ports = [];
+            const lastFormField = formFields[formFields.length - 1];
+            const formLabels = lastFormField.querySelectorAll('.form-check');
+            const ports = [];
             formLabels.forEach(function(formLabel) {
-                var formInput = formLabel.querySelector('.form-check-input');
+                const formInput = formLabel.querySelector('.form-check-input');
                 if (formInput.type === 'checkbox' && formInput.checked) {
-                    var spanElement = formLabel.querySelector('.form-check-label');
+                    const spanElement = formLabel.querySelector('.form-check-label');
                     if (spanElement) {
-                        var spanText = spanElement.textContent.trim();
+                        const spanText = spanElement.textContent.trim();
                         ports.push(spanText);
                     }
                 }
                 formLabel.remove();
             });
 
-            var colFormLabel = lastFormField.querySelector('.col-form-label');
+            const colFormLabel = lastFormField.querySelector('.col-form-label');
             if (colFormLabel) {
-                var nextDiv = colFormLabel.nextElementSibling;
+                const nextDiv = colFormLabel.nextElementSibling;
                 if (nextDiv && nextDiv.tagName.toLowerCase() === 'div') {
                     nextDiv.innerHTML = '';
-                    var spanElement = document.createElement('span');
+                    const spanElement = document.createElement('span');
                     spanElement.textContent = ports.join(', ');
                     nextDiv.appendChild(spanElement);
                 }
