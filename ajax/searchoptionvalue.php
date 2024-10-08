@@ -56,7 +56,7 @@ if (isset($_POST['searchtype'])) {
         $fieldname = 'metacriteria';
     }
 
-    $inputname         = $fieldname . '[' . $_POST['num'] . '][value]';
+    $inputname         = $fieldname . '[' . ((int) $_POST['num']) . '][value]';
     $display           = false;
     $item              = getItemForItemtype($_POST['itemtype']);
     $options2          = [];

@@ -2857,6 +2857,7 @@ HTML;
          ? "mode: 'range',"
          : "";
 
+        $name = Html::cleanInputText($name);
         $output = <<<HTML
       <div class="input-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
@@ -2878,9 +2879,7 @@ HTML;
          ? "mode: 'multiple',"
          : "";
 
-        $value = is_array($p['value'])
-         ? json_encode($p['value'])
-         : "'{$p['value']}'";
+        $value = json_encode($p['value']);
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
         $js = <<<JS
@@ -3047,9 +3046,11 @@ JS;
          ? "<i class='input-group-text fas fa-times-circle fa-lg pointer' data-clear role='button' title='" . __s('Clear') . "'></i>"
          : "";
 
+        $name = Html::cleanInputText($name);
+        $value = Html::cleanInputText($p['value']);
         $output = <<<HTML
          <div class="input-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
-            <input type="text" name="{$name}" value="{$p['value']}"
+            <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <i class="input-group-text far fa-calendar-alt fa-lg pointer" data-toggle="" role="button"></i>
             $clear

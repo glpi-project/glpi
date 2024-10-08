@@ -44,8 +44,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['name'])) {
-    echo "<textarea " . (isset($_POST['rows']) ? " rows='" . $_POST['rows'] . "' " : "") . " " .
-         (isset($_POST['cols']) ? " cols='" . $_POST['cols'] . "' " : "") . "  name='" . $_POST['name'] . "'>";
+    echo "<textarea " . (isset($_POST['rows']) ? " rows='" . ((int) $_POST['rows']) . "' " : "") . " " .
+         (isset($_POST['cols']) ? " cols='" . ((int) $_POST['cols']) . "' " : "") . "  name='" . Html::cleanInputText($_POST['name']) . "'>";
     echo Html::cleanPostForTextArea(Sanitizer::encodeHtmlSpecialChars(rawurldecode(($_POST["data"]))));
     echo "</textarea>";
 }

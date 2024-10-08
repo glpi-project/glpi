@@ -50,5 +50,5 @@ if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
         Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
     }
 } else {
-    echo "<input type='hidden' name='" . $_POST['name'] . "' value='" . $_POST['value'] . "'>";
+    echo "<input type='hidden' name='" . Html::cleanInputText($_POST['name']) . "' value='" . Html::cleanInputText($_POST['value']) . "'>";
 }

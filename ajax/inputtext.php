@@ -45,9 +45,9 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['name'])) {
-    echo "<input type='text' " . (isset($_POST["size"]) ? " size='" . $_POST["size"] . "' " : "") . " " .
-         (isset($_POST["maxlength"]) ? "maxlength='" . $_POST["maxlength"] . "' " : "") . " name='" .
-         $_POST['name'] . "' value=\"" .
+    echo "<input type='text' " . (isset($_POST["size"]) ? " size='" . ((int) $_POST["size"]) . "' " : "") . " " .
+         (isset($_POST["maxlength"]) ? "maxlength='" . ((int) $_POST["maxlength"]) . "' " : "") . " name='" .
+         Html::cleanInputText($_POST['name']) . "' value=\"" .
          Html::cleanInputText(Sanitizer::encodeHtmlSpecialChars(rawurldecode(stripslashes($_POST["data"])))) .
         "\">";
 }

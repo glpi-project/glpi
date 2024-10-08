@@ -38,6 +38,7 @@ use Glpi\RichText\RichText;
 use Glpi\Socket;
 use Glpi\Toolbox\DataExport;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
 
 /**
  * Search Class
@@ -256,7 +257,7 @@ class Search
         self::displayData($data);
 
         if ($data['data']['totalcount'] > 0) {
-            $target = $data['search']['target'];
+            $target = URL::sanitizeURL($data['search']['target']);
             $criteria = $data['search']['criteria'];
             array_pop($criteria);
             array_pop($criteria);
@@ -1809,6 +1810,7 @@ class Search
             }
         }
 
+        $search['target'] = URL::sanitizeURL($search['target']);
         $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
         $href    = $prehref . $parameters;
 
@@ -2573,6 +2575,7 @@ class Search
         foreach ($params as $key => $val) {
             $p[$key] = $val;
         }
+        $p['target'] = URL::sanitizeURL($p['target']);
 
        // Itemtype name used in JS function names, etc
         $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
