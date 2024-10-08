@@ -391,7 +391,6 @@ class AssetDefinition extends DbTestCase
                 $data['output']['translations'] = '[]';
             }
             if (is_array($data['output']) && !array_key_exists('fields_display', $data['output'])) {
-                // default value for `translations`
                 $data['output']['fields_display'] = '[]';
             }
             yield $data;

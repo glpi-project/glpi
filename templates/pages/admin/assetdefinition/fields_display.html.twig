@@ -87,7 +87,7 @@
                 }
             </script>
             {% set get_fields_url = path('ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=' ~ item.getID()) %}
-            {{ fields.dropdownAjaxField(get_fields_url, 'new_field', '',  _n('Field', 'Fields', 1), {
+            {{ fields.dropdownAjaxField(get_fields_url, 'new_field', '', _n('Field', 'Fields', 1), {
                 rand: rand,
                 templateSelection: 'formatAllFields',
                 templateResult: 'formatAllFields',
