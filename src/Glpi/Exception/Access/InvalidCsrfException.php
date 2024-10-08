@@ -47,7 +47,7 @@ class InvalidCsrfException extends AbstractHttpException
         $request = $this->getRequest();
 
         // Output JSON if requested by client
-        if (str_contains($request->getAcceptableContentTypes()['HTTP_ACCEPT'] ?? '', 'application/json')) {
+        if (\in_array('application/json', $request->getAcceptableContentTypes(), true)) {
             return new JsonResponse(['message' => $this->message], 403);
         }
 
