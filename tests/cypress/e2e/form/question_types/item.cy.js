@@ -74,7 +74,7 @@ describe('Item form question type', () => {
 
         cy.get('@ticket_id').then((ticket_id) => {
             // Select the new ticket item
-            cy.findByRole("option", { name: "Test ticket - " + ticket_id }).should('exist').click();
+            cy.findByRole("option", { name: `Test ticket - ${ticket_id}` }).should('exist').click();
         });
 
         // Save the form (force is required because the button is hidden by a toast message)

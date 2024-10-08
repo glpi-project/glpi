@@ -45,7 +45,7 @@ describe('OLA TTO configuration', () => {
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
-            const ola_name = 'OLA TTO - ' + slm_id;
+            const ola_name = `OLA TTO - ${slm_id}`;
             cy.createWithAPI('OLA', {
                 'name': ola_name,
                 'type': 1,
@@ -81,7 +81,7 @@ describe('OLA TTO configuration', () => {
         cy.get('@ola_tto_dropdown').selectDropdownValue('Specific OLA');
         cy.get('@config').getDropdownByLabelText('Select a OLA...').as('specific_ola_tto_dropdown');
         cy.get('@slm_id').then((slm_id) => {
-            const ola_name = 'OLA TTO - ' + slm_id;
+            const ola_name = `OLA TTO - ${slm_id}`;
             cy.get('@specific_ola_tto_dropdown').selectDropdownValue(ola_name);
         });
 
@@ -89,7 +89,7 @@ describe('OLA TTO configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@ola_tto_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
-            const ola_name = 'OLA TTO - ' + slm_id;
+            const ola_name = `OLA TTO - ${slm_id}`;
             cy.get('@specific_ola_tto_dropdown').should('have.text', ola_name);
         });
     });
@@ -99,7 +99,7 @@ describe('OLA TTO configuration', () => {
         cy.findByRole('region', { 'name': "OLA TTO configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('OLA TTO').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
-            const ola_name = 'OLA TTO - ' + slm_id;
+            const ola_name = `OLA TTO - ${slm_id}`;
             cy.get('@config').getDropdownByLabelText('Select a OLA...').selectDropdownValue(ola_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
@@ -122,7 +122,7 @@ describe('OLA TTO configuration', () => {
         // Check ticket values
         cy.findByRole('region', { 'name': "Service levels" }).as('service_levels');
         cy.get('@slm_id').then((slm_id) => {
-            cy.get('@service_levels').should('contain.text', 'OLA TTO - ' + slm_id);
+            cy.get('@service_levels').should('contain.text', `OLA TTO - ${slm_id}`);
         });
 
         // Others possibles configurations are tested directly by the backend.

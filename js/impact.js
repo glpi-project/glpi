@@ -31,6 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-arrow-callback: 0 */
+/* eslint prefer-template: 0 */
+/* eslint no-var: 0 */
+
 // Load cytoscape
 var cytoscape = window.cytoscape;
 

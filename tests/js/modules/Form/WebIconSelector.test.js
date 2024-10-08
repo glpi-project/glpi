@@ -88,7 +88,7 @@ describe('Web Icon Selector', () => {
             expect(results.pagination.more).toBeTrue();
             // each option id and text should match and contain 'ti-'
             results.results[0].children.forEach((option) => {
-                expect(option.id).toBe('ti-' + option.text);
+                expect(option.id).toBe(`ti-${option.text}`);
                 expect(option.id).toContain('ti-');
             });
         });

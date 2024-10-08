@@ -51,7 +51,7 @@ describe('ITILTask configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('TaskTemplate', {
-                'name': 'Task template 1 - ' + form_id,
+                'name': `Task template 1 - ${form_id}`,
                 'content': 'My Task template content',
             });
         });
@@ -74,12 +74,12 @@ describe('ITILTask configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.get('@itiltask_dropdown').selectDropdownValue('Specific Task templates');
             cy.get('@config').getDropdownByLabelText('Select task templates...').as('specific_itiltask_dropdown');
-            cy.get('@specific_itiltask_dropdown').selectDropdownValue('Task template 1 - ' + form_id);
+            cy.get('@specific_itiltask_dropdown').selectDropdownValue(`Task template 1 - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@itiltask_dropdown').should('have.text', 'Specific Task templates');
-            cy.get('@specific_itiltask_dropdown').should('have.text', '×Task template 1 - ' + form_id);
+            cy.get('@specific_itiltask_dropdown').should('have.text', `×Task template 1 - ${form_id}`);
         });
 
         // Switch to "No Task"
@@ -97,7 +97,7 @@ describe('ITILTask configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.get('@itiltask_dropdown').selectDropdownValue('Specific Task templates');
             cy.get('@config').getDropdownByLabelText('Select task templates...').as('specific_itiltask_dropdown');
-            cy.get('@specific_itiltask_dropdown').selectDropdownValue('Task template 1 - ' + form_id);
+            cy.get('@specific_itiltask_dropdown').selectDropdownValue(`Task template 1 - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');

@@ -46,7 +46,7 @@ describe('Template configuration', () => {
 
         // Create a ticket template
         cy.get('@form_id').then((form_id) => {
-            const ticket_template_name = 'Test ticket template for the template configuration suite - ' + form_id;
+            const ticket_template_name = `Test ticket template for the template configuration suite - ${form_id}`;
 
             cy.createWithAPI('TicketTemplate', {
                 'name': ticket_template_name,
@@ -80,7 +80,7 @@ describe('Template configuration', () => {
         cy.get('@config').getDropdownByLabelText('Select a template...').should('not.exist');
 
         cy.get('@form_id').then((form_id) => {
-            const ticket_template_name = 'Test ticket template for the template configuration suite - ' + form_id;
+            const ticket_template_name = `Test ticket template for the template configuration suite - ${form_id}`;
 
             // Switch to "Specific template"
             cy.get('@template_dropdown').selectDropdownValue('Specific template');

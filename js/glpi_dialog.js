@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint no-var: 0 */
 /* global bootstrap */
 
 /**
@@ -64,7 +65,7 @@ var glpi_html_dialog = function({
     footer      = "",
     modalclass  = "",
     dialogclass = "",
-    id          = "modal_" + Math.random().toString(36).substring(7),
+    id          = `modal_${Math.random().toString(36).substring(7)}`,
     appendTo    = "body",
     autoShow    = true,
     show        = () => {},
@@ -75,7 +76,7 @@ var glpi_html_dialog = function({
     if (buttons.length > 0) {
         var buttons_html = "";
         buttons.forEach(button => {
-            var bid    = ("id" in button)    ? button.id    : "button_"+Math.random().toString(36).substring(7);
+            var bid    = ("id" in button)    ? button.id    : `button_${Math.random().toString(36).substring(7)}`;
             var label  = ("label" in button) ? button.label : __("OK");
             var bclass = ("class" in button) ? button.class : 'btn-secondary';
 
@@ -87,7 +88,7 @@ var glpi_html_dialog = function({
 
             // add click event on button
             if ('click' in button) {
-                $(document).on('click', '#'+bid, function(event) {
+                $(document).on('click', `#${bid}`, (event) => {
                     button.click(event);
                 });
             }
@@ -133,14 +134,14 @@ var glpi_html_dialog = function({
     }
 
     // create global events
-    myModalEl.addEventListener('shown.bs.modal', function(event) {
+    myModalEl.addEventListener('shown.bs.modal', (event) => {
         // focus first element in modal
-        $('#'+id).find("input, textearea, select").first().trigger("focus");
+        $(`#${id}`).find("input, textarea, select").first().trigger("focus");
 
         // call show event
         show(event);
     });
-    myModalEl.addEventListener('hidden.bs.modal', function(event) {
+    myModalEl.addEventListener('hidden.bs.modal', (event) => {
         // call close event
         close(event);
 
@@ -149,7 +150,7 @@ var glpi_html_dialog = function({
         }
 
         // remove html on modal close
-        $('#'+id).remove();
+        $(`#${id}`).remove();
     });
 
     return id;
@@ -193,7 +194,7 @@ var glpi_ajax_dialog = function({
     footer      = "",
     modalclass  = "",
     dialogclass = "",
-    id          = "modal_" + Math.random().toString(36).substring(7),
+    id          = `modal_${Math.random().toString(36).substring(7)}`,
     appendTo    = 'body',
     autoShow    = true,
     done        = () => {},
@@ -231,9 +232,9 @@ var glpi_ajax_dialog = function({
                 bs_focus: bs_focus
             });
         }
-    }).done(function(data) {
+    }).done((data) => {
         done(data);
-    }).fail(function (jqXHR, textStatus) {
+    }).fail((jqXHR, textStatus) => {
         fail(jqXHR, textStatus);
     });
 
@@ -253,7 +254,7 @@ var glpi_ajax_dialog = function({
 var glpi_alert = function({
     title    = _n('Information', 'Information', 1),
     message  = "",
-    id       = "modal_" + Math.random().toString(36).substring(7),
+    id       = `modal_${Math.random().toString(36).substring(7)}`,
     ok_callback = () => {},
 } = {}) {
     glpi_html_dialog({
@@ -262,7 +263,7 @@ var glpi_alert = function({
         id: id,
         buttons: [{
             label: __("OK"),
-            click: function(event) {
+            click: (event) => {
                 ok_callback(event);
             }
         }]
@@ -287,7 +288,7 @@ var glpi_alert = function({
 var glpi_confirm = function({
     title         = _n('Information', 'Information', 1),
     message       = "",
-    id            = "modal_" + Math.random().toString(36).substring(7),
+    id            = `modal_${Math.random().toString(36).substring(7)}`,
     confirm_callback = () => {},
     confirm_label = _x('button', 'Confirm'),
     cancel_callback  = () => {},
@@ -301,12 +302,12 @@ var glpi_confirm = function({
         id: id,
         buttons: [{
             label: confirm_label,
-            click: function(event) {
+            click: (event) => {
                 confirm_callback(event);
             }
         }, {
             label: cancel_label,
-            click: function(event) {
+            click: (event) => {
                 cancel_callback(event);
             }
         }],
@@ -367,7 +368,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
    </div>`;
     $('body').append(html);
 
-    const toast = new bootstrap.Toast(document.querySelector('#toast_js_' + toast_id), {
+    const toast = new bootstrap.Toast(document.querySelector(`#toast_js_${toast_id}`), {
         delay: options.delay,
     });
     toast.show();

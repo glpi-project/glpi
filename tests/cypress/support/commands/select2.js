@@ -73,12 +73,12 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
     // Reduce the scope to the dropdown
     if (subject.hasClass('select2-selection--multiple')) {
         cy.wrap(subject).find('.select2-search__field').then(($input) => {
-            cy.get('#' + $input.attr('aria-controls'))
+            cy.get(`#${$input.attr('aria-controls')}`)
                 .findByRole('option', { name: new_value })
                 .click();
         });
     } else {
         const select2_id = subject.get(0).children[0].id.replace('-container', '');
-        cy.get('#' + select2_id + '-results').findByRole('option', { name: new_value }).click();
+        cy.get(`#${select2_id}-results`).findByRole('option', { name: new_value }).click();
     }
 });

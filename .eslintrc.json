@@ -72,6 +72,13 @@
             "error",
             "always"
         ],
+        "no-var": "error",
+        "prefer-arrow-callback": "error",
+        "no-eval": "error",
+        "no-implied-eval": "error",
+        "prefer-const": "error",
+        "prefer-spread": "error",
+        "prefer-template": "error",
         "mocha/no-skipped-tests": "error",
         "mocha/no-exclusive-tests": "error"
     },

@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales */
 /* global glpi_ajax_dialog */
 
@@ -52,7 +53,7 @@ var Reservations = function() {
         my.is_all       = config.is_all || true;
         my.rand         = config.rand || true;
         my.is_tab       = config.is_tab || false;
-        my.dom_id       = "reservations_planning_"+my.rand;
+        my.dom_id       = `reservations_planning_${my.rand}`;
         my.currentv     = config.currentv || 'dayGridMonth';
         my.defaultDate  = config.defaultDate || new Date();
         my.defaultPDate = new Date(my.defaultDate);
@@ -138,7 +139,7 @@ var Reservations = function() {
             },
 
             events: {
-                url:  CFG_GLPI.root_doc+"/ajax/reservations.php",
+                url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                 type: 'GET',
                 extraParams: {
                     'action': 'get_events',
@@ -153,7 +154,7 @@ var Reservations = function() {
             },
 
             resources: {
-                url:  CFG_GLPI.root_doc+"/ajax/reservations.php",
+                url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                 method: 'GET',
                 extraParams: {
                     'action': 'get_resources',
@@ -174,7 +175,7 @@ var Reservations = function() {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append("&nbsp;<i class='"+extProps.icon+"' title='"+icon_alt+"'></i>");
+                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
                 }
 
                 // detect ideal position
@@ -235,7 +236,7 @@ var Reservations = function() {
                 if (my.can_reserve) {
                     glpi_ajax_dialog({
                         title: __("Add reservation"),
-                        url: CFG_GLPI.root_doc+"/ajax/reservations.php",
+                        url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                         params: {
                             action: 'add_reservation_fromselect',
                             id:     my.id,
@@ -262,7 +263,7 @@ var Reservations = function() {
 
                 glpi_ajax_dialog({
                     title: __("Edit reservation"),
-                    url: ajaxurl+"&ajax=true",
+                    url: `${ajaxurl}&ajax=true`,
                     dialogclass: 'modal-lg',
                 });
             }
@@ -286,7 +287,7 @@ var Reservations = function() {
         var end        = event.end;
 
         $.ajax({
-            url: CFG_GLPI.root_doc+"/ajax/reservations.php",
+            url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
             type: 'POST',
             data: {
                 action:        'update_event',

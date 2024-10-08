@@ -60,7 +60,7 @@ describe('Selectable form question types', () => {
             // Add options
             for (let index = 0; index < 3; index++) {
                 cy.findAllByRole('radio', { name: 'Default option' }).eq(index).should('exist').should('be.disabled');
-                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).type('Option ' + index);
+                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).type(`Option ${index}`);
             }
 
             // Save the form
@@ -72,7 +72,7 @@ describe('Selectable form question types', () => {
             // Check if options are still there
             for (let index = 0; index < 3; index++) {
                 cy.findAllByRole('radio', { name: 'Default option' }).eq(index).should('exist').should('not.be.checked');
-                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).should('have.value', 'Option ' + index);
+                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).should('have.value', `Option ${index}`);
             }
 
             // Check the second option
@@ -100,7 +100,7 @@ describe('Selectable form question types', () => {
 
             // Check if the options are displayed
             for (let index = 0; index < 3; index++) {
-                cy.findByRole('radio', { name: 'Option ' + index }).should('exist');
+                cy.findByRole('radio', { name: `Option ${index}` }).should('exist');
             }
 
             // Check if the second option is checked
@@ -137,7 +137,7 @@ describe('Selectable form question types', () => {
             // Add options
             for (let index = 0; index < 3; index++) {
                 cy.findAllByRole('checkbox', { name: 'Default option' }).eq(index).should('exist').should('be.disabled');
-                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).type('Option ' + index);
+                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).type(`Option ${index}`);
             }
 
             // Save the form
@@ -149,7 +149,7 @@ describe('Selectable form question types', () => {
             // Check if options are still there
             for (let index = 0; index < 3; index++) {
                 cy.findAllByRole('checkbox', { name: 'Default option' }).eq(index).should('exist').should('not.be.checked');
-                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).should('have.value', 'Option ' + index);
+                cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(index).should('have.value', `Option ${index}`);
             }
 
             // Check the second and third options
@@ -177,7 +177,7 @@ describe('Selectable form question types', () => {
 
             // Check if the options are displayed
             for (let index = 0; index < 3; index++) {
-                cy.findByRole('checkbox', { name: 'Option ' + index }).should('exist');
+                cy.findByRole('checkbox', { name: `Option ${index}` }).should('exist');
             }
 
             // Check if the second and third options are checked

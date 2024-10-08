@@ -110,7 +110,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
         const items_id_name = this.#items_id_name;
 
         field.find("select").each(function () {
-            let id = $(this).attr("id");
+            const id = $(this).attr("id");
             const config = window.select2_configs[id];
 
             if (id !== undefined && config !== undefined) {
@@ -136,24 +136,24 @@ export class GlpiFormFieldDestinationAssociatedItem {
 
 
         const id = getUUID();
-        const itemtype_select_id = field.find('select[name="' + itemtype_name + '"]').attr('id');
+        const itemtype_select_id = field.find(`select[name="${itemtype_name}"]`).attr('id');
 
         // Replace the old id by the new one
-        field.find('span[id^="show_' + items_id_name.replace(/[[\]]/g, '_') + '"]')
-            .attr('id', 'show_' + items_id_name.replace(/[[\]]/g, '_') + id);
+        field.find(`span[id^="show_${items_id_name.replace(/[[\]]/g, '_')}"]`)
+            .attr('id', `show_${items_id_name.replace(/[[\]]/g, '_')}${id}`);
 
         // Replace all occurence of previous id by the new one in script tags
         field.find('script').each((index, script) => {
             // Replace the old itemtype select id by the new one
             script.text = script.text.replace(
-                new RegExp('dropdown_' + itemtype_name.replace(/[[\]]/g, '_') + '[0-9]+', 'g'),
+                new RegExp(`dropdown_${itemtype_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
                 itemtype_select_id
             );
 
             // Replace the old id by the new one
             script.text = script.text.replace(
-                new RegExp('show_' + items_id_name.replace(/[[\]]/g, '_') + '[0-9]+', 'g'),
-                'show_' + items_id_name.replace(/[[\]]/g, '_') + id
+                new RegExp(`show_${items_id_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
+                `show_${items_id_name.replace(/[[\]]/g, '_')}${id}`
             );
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 

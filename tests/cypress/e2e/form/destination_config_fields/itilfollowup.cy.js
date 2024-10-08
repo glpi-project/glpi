@@ -52,7 +52,7 @@ describe('ITILFollowup configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('ITILFollowupTemplate', {
-                'name': 'ITILFollowup template 1 - ' + form_id,
+                'name': `ITILFollowup template 1 - ${form_id}`,
                 'content': 'My ITILFollowup template content',
             });
         });
@@ -75,12 +75,12 @@ describe('ITILFollowup configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.get('@itilfollowup_dropdown').selectDropdownValue('Specific Followup templates');
             cy.get('@config').getDropdownByLabelText('Select followup templates...').as('specific_itilfollowup_dropdown');
-            cy.get('@specific_itilfollowup_dropdown').selectDropdownValue('ITILFollowup template 1 - ' + form_id);
+            cy.get('@specific_itilfollowup_dropdown').selectDropdownValue(`ITILFollowup template 1 - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@itilfollowup_dropdown').should('have.text', 'Specific Followup templates');
-            cy.get('@specific_itilfollowup_dropdown').should('have.text', '×ITILFollowup template 1 - ' + form_id);
+            cy.get('@specific_itilfollowup_dropdown').should('have.text', `×ITILFollowup template 1 - ${form_id}`);
         });
 
         // Switch to "No Followup"
@@ -98,12 +98,12 @@ describe('ITILFollowup configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.get('@itilfollowup_dropdown').selectDropdownValue('Specific Followup templates');
             cy.get('@config').getDropdownByLabelText('Select followup templates...').as('specific_itilfollowup_dropdown');
-            cy.get('@specific_itilfollowup_dropdown').selectDropdownValue('ITILFollowup template 1 - ' + form_id);
+            cy.get('@specific_itilfollowup_dropdown').selectDropdownValue(`ITILFollowup template 1 - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@itilfollowup_dropdown').should('have.text', 'Specific Followup templates');
-            cy.get('@specific_itilfollowup_dropdown').should('have.text', '×ITILFollowup template 1 - ' + form_id);
+            cy.get('@specific_itilfollowup_dropdown').should('have.text', `×ITILFollowup template 1 - ${form_id}`);
         });
 
         // Go to preview

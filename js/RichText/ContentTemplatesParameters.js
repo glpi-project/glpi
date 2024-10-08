@@ -33,15 +33,15 @@
 
 /* global tinymce */
 
-var GLPI = GLPI || {};
-GLPI.RichText = GLPI.RichText || {};
+window.GLPI = window.GLPI || {};
+window.GLPI.RichText = window.GLPI.RichText || {};
 
 /**
  * User templates parameters autocompleter.
  *
  * @since 10.0.0
  */
-GLPI.RichText.ContentTemplatesParameters = class {
+window.GLPI.RichText.ContentTemplatesParameters = class {
 
     /**
     * @param {Editor} editor
@@ -89,9 +89,9 @@ GLPI.RichText.ContentTemplatesParameters = class {
         const that = this;
 
         return new Promise(
-            function (resolve) {
+            (resolve) => {
                 const items = that.values.filter(
-                    function(item) {
+                    (item) => {
                         pattern = pattern.trim();
 
                         if (pattern.length === 0) {
@@ -105,19 +105,19 @@ GLPI.RichText.ContentTemplatesParameters = class {
                         }
 
                         // Filter variables depending on for loops
-                        var for_counter = 0;
-                        var for_key = null;
+                        let for_counter = 0;
+                        let for_key = null;
                         tinymce.dom.TextSeeker(that.editor.dom, () => false).backwards(
                             that.editor.selection.getNode(),
                             0,
-                            function(textNode, offset, text) {
+                            (textNode, offset, text) => {
                                 // If a endfor is found, store it in a counter,
                                 // to remember how many for loops opening should be ignored.
                                 if (/\{%\s*endfor\s*%\}/.test(text)) {
                                     for_counter++;
                                 }
 
-                                var found = text.match(/\{%\s*for\s+\w+\s+in\s+([\w.]+)\s*%\}/);
+                                const found = text.match(/\{%\s*for\s+\w+\s+in\s+([\w.]+)\s*%\}/);
                                 if (found !== null) {
                                     if (for_counter == 0) {
                                         for_key = found[1]; // key is the first captured group
@@ -139,7 +139,7 @@ GLPI.RichText.ContentTemplatesParameters = class {
                         // Check if our item match the given pattern
                         // Search in both key and text
                         const key = pattern.replace(/^(\{|%)\s*/, '').toLowerCase();
-                        let match = item.key.toLowerCase().includes(key) || item.text.toLowerCase().includes(key);
+                        const match = item.key.toLowerCase().includes(key) || item.text.toLowerCase().includes(key);
 
                         // Text do not match item, skip
                         if (!match) {
@@ -174,19 +174,19 @@ GLPI.RichText.ContentTemplatesParameters = class {
             // Add key prefix, needed when we go down recursivly so we don't lose track
             // of the main item (e.g ticket.entity.name instead of entity.name)
             if (key_prefix.length > 0) {
-                parameter.key = key_prefix + "." + parameter.key;
+                parameter.key = `${key_prefix}.${parameter.key}`;
             }
             // Add label prefix to enhance lisibility
             if (label_prefix.length > 0) {
-                parameter.label = label_prefix + " > " + parameter.label;
+                parameter.label = `${label_prefix} > ${parameter.label}`;
             }
 
             switch (parameter.type) {
             // Add a simple attribute to autocomplete
                 case 'AttributeParameter': {
-                    let value = '{{ ' + parameter.key;
+                    let value = `{{ ${parameter.key}`;
                     if (parameter.filter && parameter.filter.length) {
-                        value += ' | ' + parameter.filter;
+                        value += ` | ${parameter.filter}`;
                     }
                     value += " }}";
 
@@ -195,7 +195,7 @@ GLPI.RichText.ContentTemplatesParameters = class {
                         opening: '{{',
                         key: parameter.key,
                         value: value,
-                        text: value + ' - ' + parameter.label,
+                        text: `${value} - ${parameter.label}`,
                     });
                     break;
                 }
@@ -209,20 +209,20 @@ GLPI.RichText.ContentTemplatesParameters = class {
                 // Add a possible loop to the autocomplete, with extra autocomplete
                 // support for the content of the array.
                 case 'ArrayParameter': {
-                    let value = '{% for ' + parameter.items_key + ' in ' + parameter.key + ' %}';
+                    const value = `{% for ${parameter.items_key} in ${parameter.key} %}`;
                     parsed_parameters.push({
                         type: 'autocompleteitem',
                         opening: '{%',
                         key: parameter.key,
                         value: value,
-                        text: value + ' - ' + parameter.label,
+                        text: `${value} - ${parameter.label}`,
                     });
 
                     // Push content of array, hidden by default unless the parent loop exist in the editor
                     const content = that.parseParameters([parameter.content]);
                     parsed_parameters.push(
                         ...content.map(
-                            function(item) {
+                            (item) => {
                                 item.opening = '{{';
                                 item.parent_key = parameter.key;
                                 return item;
@@ -253,7 +253,7 @@ GLPI.RichText.ContentTemplatesParameters = class {
 
         // Special case for loops, auto add closing tag
         if (value.indexOf("{% for ") == 0) {
-            value = value + "<br><br>{% endfor %}";
+            value = `${value}<br><br>{% endfor %}`;
         }
 
         this.editor.insertContent(value);

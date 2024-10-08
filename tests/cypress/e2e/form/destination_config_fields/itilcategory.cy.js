@@ -41,7 +41,7 @@ describe('ITILCategory configuration', () => {
 
         // Create an ITIL category
         cy.get('@form_id').then((form_id) => {
-            const itilcategory_name = 'Test ITIL Category for the ITILCategory configuration suite - ' + form_id;
+            const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
 
             cy.createWithAPI('ITILCategory', {
                 'name': itilcategory_name,
@@ -54,8 +54,8 @@ describe('ITILCategory configuration', () => {
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');
         cy.getDropdownByLabelText("Select a dropdown type").selectDropdownValue('ITIL categories');
         cy.get('@form_id').then((form_id) => {
-            const itilcategory_name = 'Test ITIL Category for the ITILCategory configuration suite - ' + form_id;
-            cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue('»' + itilcategory_name);
+            const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
+            cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue(`»${itilcategory_name}`);
         });
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
@@ -84,15 +84,15 @@ describe('ITILCategory configuration', () => {
         cy.get('@itilcategory_dropdown').selectDropdownValue('Specific ITIL category');
         cy.get('@config').getDropdownByLabelText('Select an ITIL category...').as('specific_itilcategory_dropdown');
         cy.get('@form_id').then((form_id) => {
-            const itilcategory_name = 'Test ITIL Category for the ITILCategory configuration suite - ' + form_id;
-            cy.get('@specific_itilcategory_dropdown').selectDropdownValue('»' + itilcategory_name);
+            const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
+            cy.get('@specific_itilcategory_dropdown').selectDropdownValue(`»${itilcategory_name}`);
         });
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@itilcategory_dropdown').should('have.text', 'Specific ITIL category');
         cy.get('@form_id').then((form_id) => {
-            const itilcategory_name = 'Test ITIL Category for the ITILCategory configuration suite - ' + form_id;
+            const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
             cy.get('@specific_itilcategory_dropdown').should('have.text', itilcategory_name);
         });
 
@@ -121,7 +121,7 @@ describe('ITILCategory configuration', () => {
 
         // Check ticket values
         cy.get('@form_id').then((form_id) => {
-            const itilcategory_name = 'Test ITIL Category for the ITILCategory configuration suite - ' + form_id;
+            const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
             cy.getDropdownByLabelText('Category').should('have.text', itilcategory_name);
         });
 
