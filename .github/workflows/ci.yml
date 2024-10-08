@@ -62,17 +62,11 @@ jobs:
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
+            /tmp/phpstan
           key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
             app_home_lint-${{ matrix.php-version }}
             app_home_lint-
-      - name: "Restore PHPStan cache"
-        uses: actions/cache/restore@v3
-        with:
-          path: tmp
-          key: "phpstan-result-cache-${{ github.run_id }}"
-          restore-keys: |
-            phpstan-result-cache-
       - name: "Initialize containers"
         run: |
           .github/actions/init_containers-start.sh
@@ -106,12 +100,6 @@ jobs:
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/lint_misc-lint.sh
-      - name: "Save PHPStan result cache"
-        uses: actions/cache/save@v3
-        if: always()
-        with:
-          path: tmp
-          key: "phpstan-result-cache-${{ github.run_id }}"
 
   generate-tests-matrix:
     # Do not run scheduled tests on tier repositories
