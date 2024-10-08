@@ -31,30 +31,30 @@
  */
 
 $(function() {
-    var preview = document.querySelector('.preview');
+    const preview = document.querySelector('.preview');
     if (preview) {
-        var mainform = preview.querySelector('#main-form');
+        const mainform = preview.querySelector('#main-form');
         if (mainform) {
-            var helpdeskCheckbox = mainform.querySelector('input[name="is_helpdesk_visible"]');
+            const helpdeskCheckbox = mainform.querySelector('input[name="is_helpdesk_visible"]');
             if (helpdeskCheckbox) {
-                var spanElement = document.createElement('span');
+                const spanElement = document.createElement('span');
                 spanElement.textContent = helpdeskCheckbox.checked ? __('Yes') : __('No');
                 helpdeskCheckbox.parentNode.replaceChild(spanElement, helpdeskCheckbox);
             }
 
-            var updateCheckbox = mainform.querySelector('input[name="is_update"][type="checkbox"]');
+            const updateCheckbox = mainform.querySelector('input[name="is_update"][type="checkbox"]');
             if (updateCheckbox) {
                 if (updateCheckbox.checked) {
-                    var spanElement2 = document.createElement('span');
+                    const spanElement2 = document.createElement('span');
                     spanElement2.classList.add('me-1');
                     spanElement2.textContent = __('Yes from');
                     updateCheckbox.parentNode.replaceChild(spanElement2, updateCheckbox);
-                    var nextSibling = spanElement2.nextSibling;
+                    const nextSibling = spanElement2.nextSibling;
                     if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
                         nextSibling.remove();
                     }
                 } else {
-                    var parentDiv = updateCheckbox.closest('div');
+                    const parentDiv = updateCheckbox.closest('div');
                     if (parentDiv) {
                         parentDiv.remove();
                     }
