@@ -1,2 +1,2 @@
 includes:
-    - .phpstan.neon.dist
+    - phpstan.neon.dist
