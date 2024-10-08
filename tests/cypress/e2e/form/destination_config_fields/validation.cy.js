@@ -94,8 +94,7 @@ describe('Validation configuration', () => {
             cy.get('@validation_dropdown').should('have.text', 'Specific actors');
             cy.get('@specific_actors_dropdown').should(
                 'have.text',
-                `×Validation configuration test user - ${form_id}
-                ×Validation configuration test group - ${form_id}`
+                `×Validation configuration test user - ${form_id}\n×Validation configuration test group - ${form_id}`
             );
         });
 
