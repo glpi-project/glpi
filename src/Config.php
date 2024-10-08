@@ -982,6 +982,9 @@ class Config extends CommonDBTM
                 'version' => TCPDF_STATIC::getTCPDFVersion(),
                 'check'   => 'TCPDF'
             ],
+            [ 'name'      => 'tecnickcom/tc-lib-barcode',
+                'check'   => 'Com\\Tecnick\\Barcode\\Barcode'
+            ],
             [ 'name'    => 'sabre/dav',
                 'check'   => 'Sabre\\DAV\\Version'
             ],
@@ -1595,6 +1598,9 @@ class Config extends CommonDBTM
                     'required'  => true,
                 ],
                 'simplexml' => [
+                    'required'  => true,
+                ],
+                'bcmath' => [
                     'required'  => true,
                 ],
             //to sync/connect from LDAP
