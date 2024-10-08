@@ -93,8 +93,7 @@
       </div>
    </li>
    {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
-      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" data-bs-toggle="tooltip"
-       title="{{ firstlevel['title'] }}">
+      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" title="{{ firstlevel['title'] }}">
          <a class="nav-link" href="{{ path(firstlevel['default']) }}">
             <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
             <span class="menu-label">{{ firstlevel['title'] }}</span>
