@@ -41,7 +41,7 @@
 
 {% if gallery_type == 'horizontal' %}
    <div class="col-12">
-      <div class="d-flex overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
+      <div class="d-flex flex-row overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
          {% for img in imgs %}
             <div class="{{ img['gallery_item_class']|default('') }}">
             {% if img['pre_figure_content'] %}

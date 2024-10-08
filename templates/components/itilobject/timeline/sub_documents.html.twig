@@ -60,8 +60,8 @@
                         <input type="hidden" name="documents_id" value="{{ document['item']['id'] }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                         <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
-                                 title="{{ _x('button', 'Delete permanently') }}"
-                                 data-bs-toggle="tooltip" data-bs-placement="top">
+                              title="{{ _x('button', 'Delete permanently') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top">
                            <i class="ti ti-trash"></i>
                         </button>
                      </form>
