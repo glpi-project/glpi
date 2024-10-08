@@ -3386,17 +3386,12 @@ JS
     /**
      * Create rules (initialisation).
      *
-     * @param boolean $reset        Whether to reset before adding new rules, defaults to true
-     * @param boolean $with_plugins Use plugins rules or not
-     * @param boolean $check        Check if rule exists before creating
-     * @param ?string $itemtype     Itemtype to work on
+     * @param bool      $reset      Whether to reset before adding new rules, defaults to true
+     * @param ?string   $itemtype   Itemtype to work on
      *
-     * @return boolean
-     *
-     * @FIXME Make it final in GLPI 11.0.
-     * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
+     * @return bool
      */
-    public function initRules(bool $reset = true, $with_plugins = true, $check = true, string $itemtype = null): bool
+    final public function initRules(bool $reset = true, ?string $itemtype = null): bool
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -3428,8 +3423,6 @@ JS
             if (!$DB->delete(self::getTable(), $where, $joins)) {
                 return false; // Do not continue if reset failed
             }
-
-            $check = false; // Nothing to check
         }
 
         $xml = $this->getDefaultRules();
@@ -3483,7 +3476,10 @@ JS
 
             $rule = new static();
 
-            if ($check === true && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])) {
+            if (
+                $reset === false // bypass this check in reset mode to save a query
+                && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])
+            ) {
                 // Rule already exists, ignore it.
                 continue;
             }
