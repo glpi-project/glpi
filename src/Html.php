@@ -7148,4 +7148,15 @@ CSS;
 
         return "";
     }
+
+    /**
+     * Sanitize a input name to prevent XSS.
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function sanitizeInputName(string $name): string
+    {
+        return preg_replace('/[^a-z0-9_\[\]]/i', '', $name);
+    }
 }
