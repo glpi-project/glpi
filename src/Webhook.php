@@ -330,7 +330,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
     }
 
-    private static function getAPIItemtypeData(): array
+    public static function getAPIItemtypeData(): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -399,8 +399,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
                                 $supported[$controller][$category][$supported_itemtype] = [
                                     'name' => $schema['name'],
                                 ];
-                                unset($supported[$controller][$category][$i]);
                             }
+                            unset($supported[$controller][$category][$i]);
                         }
                     } else if ($category === 'subtypes' && $controller === ITILController::class) {
                         /** @phpstan-var class-string<ITILController> $controller */
