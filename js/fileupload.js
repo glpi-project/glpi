@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getExtIcon, getSize, isImage, stopEvent */
+/* global getExtIcon, getSize, isImage, stopEvent, _ */
 
 var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 
@@ -134,7 +134,8 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
         .html(
             getExtIcon(ext)
          + '&nbsp;'
-         + '<b>'+file.display
+         + '<b>'
+         + _.escape(file.display)
          + '</b>'
          + '&nbsp;('
          + getSize(file.size)+')&nbsp;'
