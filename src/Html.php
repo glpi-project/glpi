@@ -5268,7 +5268,7 @@ HTML;
         if ($p['only_uploaded_files']) {
             $display .= "<div class='fileupload only-uploaded-files'>";
         } else {
-            $display .= "<div class='fileupload draghoverable' id='{$p['dropZone']}'>";
+            $display .= "<div class='fileupload draghoverable' id='" . htmlspecialchars($p['dropZone']) . "'>";
 
             if ($p['showtitle']) {
                 $display .= "<b>";
@@ -5300,26 +5300,30 @@ HTML;
             $required = "required='required'";
         }
 
+        // sanitize name and random id
+        $name    = preg_replace('/[^a-z0-9_\[\]]/', '', $p['name']);
+        $rand_id = (int)$p['rand'];
+
         if (!$p['only_uploaded_files']) {
            // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
-        $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
+        $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
-                      data-uploader-name=\"{$p['name']}\"
-                      data-url='" . $CFG_GLPI["root_doc"] . "/ajax/fileupload.php'
-                      data-form-data='{\"name\": \"_uploader_" . $p['name'] . "\", \"showfilesize\": \"" . $p['showfilesize'] . "\"}'"
+                      data-uploader-name=\"" . htmlspecialchars($p['name']) . "\"
+                      data-url='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
+                      data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
-        $display .= "<div id='progress{$p['rand']}' style='display:none'>" .
+        $display .= "<div id='progress{$rand_id}' style='display:none'>" .
                 "<div class='uploadbar' style='width: 0%;'></div></div>";
         $progressall_js = "
         progressall: function(event, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress{$p['rand']}').show();
-            $('#progress{$p['rand']} .uploadbar')
+            $('#progress{$rand_id}').show();
+            $('#progress{$rand_id} .uploadbar')
                 .text(progress + '%')
                 .css('width', progress + '%')
                 .show();
@@ -5328,14 +5332,14 @@ HTML;
 
         $display .= Html::scriptBlock("
       $(function() {
-         var fileindex{$p['rand']} = 0;
-         $('#fileupload{$p['rand']}').fileupload({
+         var fileindex{$rand_id} = 0;
+         $('#fileupload{$rand_id}').fileupload({
             dataType: 'json',
             pasteZone: " . ($p['pasteZone'] !== false
-                           ? "$('#{$p['pasteZone']}')"
+                           ? "$(" . json_encode("#" . $p['pasteZone']) . ")"
                            : "false") . ",
             dropZone:  " . ($p['dropZone'] !== false
-                           ? "$('#{$p['dropZone']}')"
+                           ? "$(" . json_encode("#" . $p['dropZone']) . ")"
                            : "false") . ",
             acceptFileTypes: " . ($p['onlyimages']
                                     ? "/(\.|\/)(gif|jpe?g|png)$/i"
@@ -5355,15 +5359,15 @@ HTML;
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
-                  data.result._uploader_{$p['name']}, // response from '/ajax/fileupload.php'
-                  '{$p['name']}',
-                  $('#{$p['filecontainer']}'),
-                  '{$p['editor_id']}'
+                  data.result._uploader_{$name}, // response from '/ajax/fileupload.php'
+                  \"{$name}\",
+                  $(" . json_encode("#" . $p['filecontainer']) . "),
+                  " . json_encode($p['editor_id']) . "
                );
                // enable submit button after upload
                $(this).closest('form').find(':submit').prop('disabled', false);
                // remove required
-                $('#fileupload{$p['rand']}').removeAttr('required');
+                $('#fileupload{$rand_id}').removeAttr('required');
             },
             fail: function (e, data) {
                 // enable submit button after upload
@@ -5380,8 +5384,8 @@ HTML;
                   data.files,
                   function(index, file) {
                      if (file.error) {
-                        $('#progress{$p['rand']}').show();
-                        $('#progress{$p['rand']} .uploadbar')
+                        $('#progress{$rand_id}').show();
+                        $('#progress{$rand_id} .uploadbar')
                            .text(file.error)
                            .css('width', '100%')
                            .show();
@@ -5510,7 +5514,7 @@ HTML;
         $p = array_merge($p, $options);
 
        // div who will receive and display file list
-        $display = "<div id='" . $p['filecontainer'] . "' class='fileupload_info'>";
+        $display = "<div id='" . htmlspecialchars($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
                 $prefix  = substr($upload, 0, 23);
@@ -5539,9 +5543,9 @@ HTML;
                 ];
 
                 // Show the name and size of the upload
-                $display .= "<p id='" . $upload['id'] . "'>&nbsp;";
-                $display .= "<img src='$extensionIcon' title='$extension'>&nbsp;";
-                $display .= "<b>" . $upload['display'] . "</b>&nbsp;(" . Toolbox::getSize($upload['size']) . ")";
+                $display .= "<p id='" . htmlspecialchars($upload['id']) . "'>&nbsp;";
+                $display .= "<img src='" . htmlspecialchars($extensionIcon) . "' title='" . htmlspecialchars($extension) . "'>&nbsp;";
+                $display .= "<b>" . htmlspecialchars($upload['display']) . "</b>&nbsp;(" . htmlspecialchars(Toolbox::getSize($upload['size'])) . ")";
 
                 $name = '_' . $p['name'] . '[' . $uploadId . ']';
                 $display .= Html::hidden($name, ['value' => $upload['name']]);
@@ -5555,12 +5559,15 @@ HTML;
                 // show button to delete the upload
                 $getEditor = 'null';
                 if ($p['editor_id'] != '') {
-                    $getEditor = "tinymce.get('" . $p['editor_id'] . "')";
+                    $getEditor = "tinymce.get('" . json_encode($p['editor_id']) . "')";
                 }
-                $textTag = $tag['tag'];
-                $domItems = "{0:'" . $upload['id'] . "', 1:'" . $upload['id'] . "'+'2'}";
-                $deleteUpload = "deleteImagePasted($domItems, '$textTag', $getEditor)";
-                $display .= '<span class="fas fa-times-circle pointer" onclick="' . $deleteUpload . '"></span>';
+                $textTag = json_encode($tag['tag']);
+                $domItems = json_encode([
+                    0 => $upload['id'],
+                    1 => $upload['id'] . '2',
+                ]);
+                $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
+                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlspecialchars($deleteUpload) . '"></span>';
 
                 $display .= "</p>";
             }
