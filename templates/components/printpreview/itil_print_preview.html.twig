@@ -239,7 +239,7 @@
             <div class="card my-0 border-0 shadow-none">
                 <div class="card-header">
                     <h4 class="card-title ps-4">
-                        <i class="{{ call(key ~ '::getIcon') }}"></i> &nbsp {{ key }}
+                        <i class="{{ key|itemtype_icon }}"></i>{{ key|itemtype_name }}
                     </h4>
                 </div>
             </div>

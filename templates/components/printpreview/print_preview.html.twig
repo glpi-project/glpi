@@ -90,7 +90,6 @@
                 modalDialogs.forEach(function(modalDialog) {
                     modalDialog.classList.add('modal-lg');
                 });
-                console.log(modalDialogs);
             }
         })
     </script>
@@ -129,7 +128,7 @@
         <div class="title-card card my-0 border-start-0 border-end-0 border-bottom-0 shadow-none">
             <div class="card-header">
                 <h4 class="card-title ps-4">
-                    <i class="{{ call(item.getType() ~ '::getIcon') }}"></i> &nbsp {{ call(item.getType() ~ '::getTypeName') }}
+                    <i class="{{ call(item.getIcon()) }}"></i>{{ item.getTypeName()) }}
                 </h4>
             </div>
         </div>

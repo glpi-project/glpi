@@ -38,7 +38,7 @@
                 <div class="card-header">
                     <h4 class="card-title ps-4">
 
-                        <i class="{{ call(key ~ '::getIcon') }}"></i> &nbsp {{ key == 'Item_Devices' ? 'Components' : call(key ~ '::getTypeName') }}
+                        <i class="{{ key|itemtype_icon }}"></i>{{ key == 'Item_Devices' ? _n('Component', 'Components', get_plural_number()) : key|itemtype_name }}
                     </h4>
                 </div>
             </div>
@@ -49,7 +49,6 @@
 <script>
     import("{{ js_path('js/PrintPreview/print_generalasset.js') }}")
     var jsFile = {{ js_file|json_encode|raw }};
-    console.log(jsFile);
     if (jsFile !== null) {
         import("{{ js_path(js_file) }}");
     }

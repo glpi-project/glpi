@@ -45,7 +45,7 @@ class PrintPreview extends CommonDBTM
         $action_prefix = 'PrintPreview' . MassiveAction::CLASS_ACTION_SEPARATOR;
         $item = new $itemtype();
         if ($item instanceof CommonDBTM) {
-            $actions[$action_prefix . 'print_preview'] = '<i class="' . self::getIcon() . '"></i>' . __('Display to a printable view');
+            $actions[$action_prefix . 'print_preview'] = '<i class="' . self::getIcon() . '"></i>' . __s('Display to a printable view');
         }
     }
 
@@ -163,7 +163,7 @@ class PrintPreview extends CommonDBTM
             $label = reset($label);
         }
         if (empty($label)) {
-            $label = '<span><i class="' . $itemtype::getIcon() . ' me-2"></i>' . $itemtype::getTypeName(0) . '</span>';
+            $label = '<span><i class="' . $itemtype::getIcon() . ' me-2"></i>' . htmlspecialchars($itemtype::getTypeName(Session::getPluralNumber())) . '</span>';
         }
         return $label;
     }
