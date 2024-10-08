@@ -3131,7 +3131,9 @@ class Entity extends CommonTreeDropdown implements AdvancedSearchInterface
 
     public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
     {
+        /** @var \DBmysql $DB */
         global $DB;
+
         $itemtable = SearchEngine::getOrigTableName($itemtype);
         return [
             "{$itemtable}.id AS entities_id",

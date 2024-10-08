@@ -7350,6 +7350,7 @@ JAVASCRIPT;
 
     public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = $opt->getTableReference($itemtype, $meta);
