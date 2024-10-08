@@ -35,9 +35,6 @@
 
 namespace Glpi\System\Requirement;
 
-/**
- * @since 9.5.0
- */
 final class TablesEngine extends AbstractRequirement
 {
     /**
