@@ -2925,7 +2925,9 @@ HTML;
                 $entities = $this->getEntities();
                 Entity::dropdown(['value'  => $this->fields["entities_id"],
                     'rand'   => $entrand,
-                    'entity' => $entities,
+                    'entity' => array_filter($entities, function ($entity) {
+                        return $entity !== 0;
+                    }),
                     'toadd' => [
                         0 => __('Full structure'),
                     ]
@@ -3316,7 +3318,9 @@ HTML;
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
                 Entity::dropdown(['value'  => $this->fields['entities_id'],
                     'rand'   => $entrand,
-                    'entity' => $entities,
+                    'entity' => array_filter($entities, function ($entity) {
+                        return $entity !== 0;
+                    }),
                     'toadd' => [
                         0 => __('Full structure'),
                     ]
