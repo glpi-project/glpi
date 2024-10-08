@@ -221,7 +221,7 @@ final class AssetDefinition extends AbstractDefinition
 
     public function prepareInputForAdd($input)
     {
-        foreach (['capacities', 'profiles', 'translations'] as $json_field) {
+        foreach (['capacities', 'profiles', 'translations', 'fields_display'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
                 // ensure default value of JSON fields will be a valid array
                 $input[$json_field] = [];
