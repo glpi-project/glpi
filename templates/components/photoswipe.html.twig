@@ -41,32 +41,24 @@
 
 {% if gallery_type == 'horizontal' %}
    <div class="col-12">
-      <div
-         class="d-flex overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}"
-         itemscope
-         itemtype="https://schema.org/ImageGallery"
-      >
+      <div class="d-flex overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
          {% for img in imgs %}
             <div class="{{ img['gallery_item_class']|default('') }}">
             {% if img['pre_figure_content'] %}
                {{ img['pre_figure_content']|raw }}
             {% endif %}
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
-               {% if img['is_blacklisted'] %}
-                  <span class="fw-light fst-italic">{{ __("Blacklisted document") }}</span>
+               {% if img['_video'] %}
+                  <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
+                     <i class="fas fa-video"></i>
+                  </span>
                {% else %}
-                  {% if img['_video'] %}
-                     <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
-                        <i class="fas fa-video"></i>
-                     </span>
-                  {% else %}
-                     <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                        <img src="{{ img['thumbnail_src']|default(img['src']) }}"
-                           itemprop="thumbnail" alt="{{ img['title']|default('') }}"
-                           class="{{ img['img_class']|default('') }} pointer pswp-trigger"
-                        />
-                     </a>
-                  {% endif %}
+                  <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
+                     <img src="{{ img['thumbnail_src']|default(img['src']) }}"
+                        itemprop="thumbnail" alt="{{ img['title']|default('') }}"
+                        class="{{ img['img_class']|default('') }} pointer pswp-trigger"
+                     />
+                  </a>
                {% endif %}
                <figcaption itemprop="caption description" class="text-muted fst-italic">
                   {{ img['title']|default('') }}
