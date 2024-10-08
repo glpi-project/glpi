@@ -438,10 +438,16 @@ final class DbUtils
 
         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
         $mapping[$context] = [];
-        foreach ($plugins_dirs as $plugins_dir) {
-            $srcdir = $context === 'glpi-core'
-                ? $root_dir . '/src'
-                : $plugins_dir . '/' . $context . '/src';
+
+        $srcdirs = [];
+        if ($context === 'glpi-core') {
+            $srcdirs[] = $root_dir . '/src';
+        } else {
+            foreach ($plugins_dirs as $plugins_dir) {
+                $srcdirs[] = $plugins_dir . '/' . $context . '/src';
+            }
+        }
+        foreach ($srcdirs as $srcdir) {
             if (is_dir($srcdir)) {
                 $files_iterator = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($srcdir),
