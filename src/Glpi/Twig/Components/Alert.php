@@ -32,37 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Glpi\Twig\Components;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-final class LegacyConfigProviders implements PublicService
+#[AsTwigComponent(name: "Alert")]
+class Alert
 {
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
-
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
-    {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
-    }
+    public string $type = 'success';
+    public string $message;
 }

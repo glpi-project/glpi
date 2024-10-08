@@ -37,6 +37,7 @@ namespace Glpi\Application\View\Extension;
 
 use Html;
 use Session;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -45,6 +46,11 @@ use Twig\TwigFunction;
  */
 class RoutingExtension extends AbstractExtension
 {
+    public function __construct(
+        private readonly UrlGeneratorInterface $router
+    ) {
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -77,8 +83,14 @@ class RoutingExtension extends AbstractExtension
      *
      * @return string
      */
-    public function path(string $resource): string
+    public function path(string $resource, array $parameters = []): string
     {
+        try {
+            // Symfony's router must take precedence over GLPI's router, for forwards compatibility
+            return $this->router->generate($resource, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
+        } catch (\Throwable) {
+        }
+
         return Html::getPrefixedUrl($resource);
     }
 
@@ -89,8 +101,14 @@ class RoutingExtension extends AbstractExtension
      *
      * @return string
      */
-    public function url(string $resource): string
+    public function url(string $resource, array $parameters = []): string
     {
+        try {
+            // Symfony's router must take precedence over GLPI's router, for forwards compatibility
+            return $this->router->generate($resource, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        } catch (\Throwable) {
+        }
+
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 

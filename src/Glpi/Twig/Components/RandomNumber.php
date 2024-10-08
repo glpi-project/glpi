@@ -32,37 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Glpi\Twig\Components;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\DefaultActionTrait;
 
-final class LegacyConfigProviders implements PublicService
+#[AsLiveComponent()]
+class RandomNumber
 {
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
+    use DefaultActionTrait;
 
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
+    public function getRandomNumber(): int
     {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
+        return random_int(0, 1000);
     }
 }

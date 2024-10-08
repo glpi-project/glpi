@@ -72,11 +72,11 @@
         "symfony/config": "^6.4",
         "symfony/console": "^6.4",
         "symfony/css-selector": "^6.4",
-        "symfony/dependency-injection": "^6.4",
+        "symfony/dependency-injection": "^7.1",
         "symfony/dom-crawler": "^6.4",
         "symfony/event-dispatcher": "^6.4",
-        "symfony/filesystem": "^6.4",
-        "symfony/framework-bundle": "^6.4",
+        "symfony/filesystem": "^7.1",
+        "symfony/framework-bundle": "^7.1",
         "symfony/html-sanitizer": "^6.4",
         "symfony/http-foundation": "^6.4",
         "symfony/http-kernel": "^6.4",
@@ -89,6 +89,9 @@
         "symfony/property-access": "^7.1",
         "symfony/routing": "^6.4",
         "symfony/serializer": "^7.1",
+        "symfony/twig-bundle": "^7.1",
+        "symfony/ux-live-component": "^2.20",
+        "symfony/ux-twig-component": "^2.20",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.13",
@@ -113,9 +116,8 @@
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
         "symfony/stopwatch": "^6.4",
-        "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
-        "symfony/web-profiler-bundle": "^6.4"
+        "symfony/web-profiler-bundle": "^7.1"
     },
     "provide": {
         "ext-sodium": "*"

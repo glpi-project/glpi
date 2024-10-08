@@ -32,37 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Glpi\Twig;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Twig\Loader\FilesystemLoader;
 
-final class LegacyConfigProviders implements PublicService
+class PluginsPathsLoader extends FilesystemLoader
 {
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
-
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
+    public function __construct(#[Autowire(param: 'kernel.project_dir')] string $projectDir)
     {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
+        parent::__construct([], $projectDir);
     }
 }

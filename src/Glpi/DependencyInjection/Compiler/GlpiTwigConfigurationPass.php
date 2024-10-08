@@ -32,37 +32,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Glpi\DependencyInjection\Compiler;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Glpi\Twig\TwigEnvironmentConfigurator;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+use Twig\Environment;
 
-final class LegacyConfigProviders implements PublicService
+/**
+ * The reason to make Twig's service public is to allow runtime customization.
+ * And the reason for runtime customization is the plugins checks, which can be done only when the Container is compiled.
+ *
+ * @see \Glpi\Twig\TwigEnvironmentConfigurator
+ */
+final readonly class GlpiTwigConfigurationPass implements CompilerPassInterface
 {
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
-
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
+    public function process(ContainerBuilder $container): void
     {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
+        $container->getDefinition('twig')
+            ->setPublic(true)
+            ->setConfigurator([new Reference(TwigEnvironmentConfigurator::class), 'configure'])
+        ;
+        $container->setAlias(Environment::class, 'twig')->setPublic(true);
     }
 }

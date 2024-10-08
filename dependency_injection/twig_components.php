@@ -32,37 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Config\TwigComponentConfig;
 
-final class LegacyConfigProviders implements PublicService
-{
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
+return static function (TwigComponentConfig $config, ContainerConfigurator $container): void {
+    $components_dir = 'twig_components/';
 
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
-    {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
-    }
-}
+    $config->defaults('Glpi\Twig\Components\\', $components_dir);
+    $config->anonymousTemplateDirectory('twig_components');
+};

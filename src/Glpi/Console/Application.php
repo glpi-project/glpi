@@ -44,12 +44,14 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 use Plugin;
 use Session;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -339,6 +341,25 @@ class Application extends BaseApplication
      */
     private function initApplication()
     {
+    }
+
+    /**
+     * This method is used internally by Symfony, especially "debug:*" commands.
+     * This is caused by the fact that Symfony expects an instance of FrameworkBundle's Application class,
+     * which we do not extend (yet).
+     *
+     * @todo remove this when the Application class extends the FrameworkBundle's one.
+     */
+    public function getKernel(): ?Kernel
+    {
+        /** @var Kernel|null $kernel */
+        global $kernel;
+
+        if (!$kernel instanceof Kernel) {
+            return null;
+        }
+
+        return $kernel;
     }
 
     /**

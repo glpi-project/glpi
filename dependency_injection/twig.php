@@ -32,37 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Glpi\DependencyInjection\PublicService;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use GLPI;
+use Symfony\Config\TwigConfig;
 
-final class LegacyConfigProviders implements PublicService
-{
-    /**
-     * @var LegacyConfigProviderInterface[]
-     */
-    private array $configProviders = [];
-
-    public function __construct(
-        #[AutowireIterator(LegacyConfigProviderInterface::TAG_NAME)]
-        iterable $configProviders = [],
-    ) {
-        foreach ($configProviders as $provider) {
-            $this->addProvider($provider);
-        }
-    }
-
-    /**
-     * @return LegacyConfigProviderInterface[]
-     */
-    public function getProviders(): array
-    {
-        return $this->configProviders;
-    }
-
-    private function addProvider(LegacyConfigProviderInterface $provider): void
-    {
-        $this->configProviders[] = $provider;
-    }
-}
+return static function (TwigConfig $config, ContainerConfigurator $container): void {
+    $config->defaultPath(param('kernel.project_dir') . '/templates');
+    $config->autoReload($container->env() !== GLPI::ENV_PRODUCTION);
+    $config->strictVariables(false); // TODO: In the future: set this to "true" in dev, because CONSISTENCY
+};

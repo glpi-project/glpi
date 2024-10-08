@@ -2,7 +2,7 @@ SHELL=bash
 
 COMPOSE = docker compose
 
-PHP = $(COMPOSE) exec app
+PHP = $(COMPOSE) exec app php -dmemory_limit=256M
 CONSOLE = $(PHP) bin/console
 
 # Helper variables

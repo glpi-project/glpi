@@ -56,9 +56,11 @@ return static function (ContainerConfigurator $container): void {
         ->instanceof(PublicService::class)->public()
     ;
 
+    $services->load('Glpi\Application\View\Extension\\', $projectDir . '/src/Glpi/Application/View/Extension');
     $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+    $services->load('Glpi\Twig\\', $projectDir . '/src/Glpi/Twig');
 
     $services->set(Firewall::class)
         ->factory([Firewall::class, 'createDefault'])
