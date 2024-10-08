@@ -47,7 +47,7 @@ final class DatabaseTablesEngine extends AbstractRequirement
     public function __construct(\DBmysql $db)
     {
         parent::__construct(
-            __('DB tables engine')
+            __('Database tables engine')
         );
 
         $this->db = $db;
