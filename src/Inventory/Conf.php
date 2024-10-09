@@ -818,7 +818,7 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
         echo "<label for='component_networkdrive'>";
-        echo __s('Network drives');
+        echo __s('Network drives volumes');
         echo "</label>";
         echo "</td>";
         echo "<td>";
@@ -832,8 +832,8 @@ class Conf extends CommonGLPI
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>";
-        echo "<label for='component_drive'>";
-        echo __s('Removable drives');
+        echo "<label for='component_removablemedia'>";
+        echo __s('Removable drives volumes');
         echo "</label>";
         echo "</td>";
         echo "<td>";
