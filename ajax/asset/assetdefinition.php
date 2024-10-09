@@ -76,6 +76,18 @@ if ($_GET['action'] === 'get_all_fields') {
         $custom_field->fields['type'] = $_GET['type'];
         $custom_field->fields['itemtype'] = 'Computer'; // Doesn't matter what it is as long as it's not empty
         $custom_field->fields['default_value'] = '';
+
+        $asset_definition = new AssetDefinition();
+        if (!$asset_definition->getFromDB($_GET['assetdefinitions_id'])) {
+            throw new NotFoundHttpException();
+        }
+        $fields_display = $asset_definition->getDecodedFieldsField();
+        foreach ($fields_display as $field) {
+            if ($field['key'] === $_GET['key']) {
+                $custom_field->fields['field_options'] = $field['field_options'] ?? [];
+                break;
+            }
+        }
     }
     $custom_field->fields['field_options']['disabled'] = true;
     echo $custom_field->getFieldType()->getFormInput('', null);

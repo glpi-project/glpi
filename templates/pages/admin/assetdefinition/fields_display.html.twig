@@ -150,7 +150,9 @@
                 document.getElementById('sortable-fields').appendChild(clone);
 
                 const preview_params = new URLSearchParams({
+                    assetdefinitions_id: '{{ item.getID() }}',
                     customfields_id: selected_field.customfields_id ?? -1,
+                    key: key,
                     label: fieldLabel.textContent,
                     type: selected_field.type ?? '',
                 });
@@ -173,6 +175,15 @@
                     sortable_field.find('.form-field').attr('class', wrapper_classes);
                     sortable_field.removeClass('col-12 col-sm-6');
                     sortable_field.attr('class', `${sortable_field.attr('class')} ${sortable_classes}`);
+
+                    // If the returned label has a .required span, it needs added to the label in the preview
+                    if (placeholder_el.find('label span.required').length) {
+                        sortable_field.find('label slot').after('<span class="required">*</span>');
+                    }
+                    // If the returned field is readonly, we need to add an icon to the label to indicate it since all preview fields are disabled
+                    if (placeholder_el.find('input, textarea, select').attr('readonly')) {
+                        sortable_field.find('label slot').after(`<i class="ti ti-pencil-off ms-2" title="${__('Readonly')}"></i>`);
+                    }
                 });
             };
 
