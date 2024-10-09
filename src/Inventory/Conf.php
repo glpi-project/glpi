@@ -417,7 +417,33 @@ class Conf extends CommonGLPI
             'checked'   => $config['import_volume']
         ]);
         echo "</td>";
+        echo "<td>";
+        echo "<label for='component_networkdrive'>";
+        echo __s('Network drives volumes');
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        Html::showCheckbox([
+            'name'      => 'component_networkdrive',
+            'id'        => 'component_networkdrive',
+            'checked'   => $config['component_networkdrive']
+        ]);
+        echo "</td>";
+        echo "</tr>";
 
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo "<label for='component_removablemedia'>";
+        echo __s('Removable drives volumes');
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        Html::showCheckbox([
+            'name'      => 'component_removablemedia',
+            'id'        => 'component_removablemedia',
+            'checked'   => $config['component_removablemedia']
+        ]);
+        echo "</td>";
         echo "<td>";
         echo "<label for='import_software'>";
         echo htmlspecialchars(Software::getTypeName(Session::getPluralNumber()));
@@ -815,33 +841,6 @@ class Conf extends CommonGLPI
         ]);
         echo "</td>";
 
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='component_networkdrive'>";
-        echo __s('Network drives volumes');
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_networkdrive',
-            'id'        => 'component_networkdrive',
-            'checked'   => $config['component_networkdrive']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_removablemedia'>";
-        echo __s('Removable drives volumes');
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_removablemedia',
-            'id'        => 'component_removablemedia',
-            'checked'   => $config['component_removablemedia']
-        ]);
         echo "</td>";
         echo "<td>";
         echo "<label for='component_powersupply'>";
