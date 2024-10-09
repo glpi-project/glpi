@@ -2923,14 +2923,14 @@ HTML;
                 $entrand = mt_rand();
                 echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
+                $toadd = [];
+                if (!in_array(0, $entities)) {
+                    $toadd = [0 => __('Full structure')];
+                }
                 Entity::dropdown(['value'  => $this->fields["entities_id"],
                     'rand'   => $entrand,
-                    'entity' => array_filter($entities, function ($entity) {
-                        return $entity !== 0;
-                    }),
-                    'toadd' => [
-                        0 => __('Full structure'),
-                    ]
+                    'entity' => $entities,
+                    'toadd' => $toadd,
                 ]);
                 echo "</td></tr>";
 
@@ -3316,14 +3316,14 @@ HTML;
             ) {
                 $entrand = mt_rand();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
+                $toadd = [];
+                if (!in_array(0, $entities)) {
+                    $toadd = [0 => __('Full structure')];
+                }
                 Entity::dropdown(['value'  => $this->fields['entities_id'],
                     'rand'   => $entrand,
-                    'entity' => array_filter($entities, function ($entity) {
-                        return $entity !== 0;
-                    }),
-                    'toadd' => [
-                        0 => __('Full structure'),
-                    ]
+                    'entity' => $entities,
+                    'toadd' => $toadd,
                 ]);
             } else {
                 echo "<td colspan='2'>&nbsp;";
