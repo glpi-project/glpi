@@ -88,6 +88,45 @@
                      </button>
                   </form>
                {% endif %}
+
+               <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path(item.id) }}" id="blacklist_form">
+                    <input type="hidden" name="id" value="{{ item.id }}">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="is_blacklisted" id="blacklist_input_{{ item.id }}" value="{{ entry_i['is_blacklisted'] }}">
+                    <button type="submit" name="update" id="blaclist_submit_{{ item.id }}" style="display: none;"></button>
+                    <div
+                        class="btn btn-sm btn-ghost-secondary"
+                        title="{{ _x('button', 'Blacklisted for import') }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        name="blacklisted_document"
+                        id="blacklist_icon_{{ item.id }}"
+                        >
+                            <i
+                                class="ti ti-ban {{ entry_i['is_blacklisted'] == 0 ? '' : 'text-danger' }}"
+                            ></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll("[id^='blacklist_icon_']").forEach(blacklist_icon => {
+
+                const docID = blacklist_icon.id.split('_').pop();
+                const blacklist_input = document.getElementById(`blacklist_input_${docID}`);
+                const blaclist_submit = document.getElementById(`blaclist_submit_${docID}`);
+
+                blacklist_icon.addEventListener('click', () => {
+                    if (blacklist_input.value === '1') {
+                    blacklist_input.value = 0;
+                    } else {
+                    blacklist_input.value = 1;
+                    }
+                    blaclist_submit.click();
+                });
+            })
+        </script>
             </div>
          </div>
       </div>

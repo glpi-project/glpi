@@ -48,17 +48,18 @@
                {{ img['pre_figure_content']|raw }}
             {% endif %}
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
-                  {% if img['_video'] %}
-                     <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
-                        <i class="fas fa-video"></i>
-                     </span>
-                  {% else %}
-                     <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
-                        <img src="{{ img['thumbnail_src']|default(img['src']) }}"
-                             itemprop="thumbnail" alt="{{ img['title']|default('') }}"
-                             class="{{ img['img_class']|default('') }} pointer pswp-trigger" />
-                     </a>
-                  {% endif %}
+               {% if img['_video'] %}
+                  <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
+                     <i class="fas fa-video"></i>
+                  </span>
+               {% else %}
+                  <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">
+                     <img src="{{ img['thumbnail_src']|default(img['src']) }}"
+                        itemprop="thumbnail" alt="{{ img['title']|default('') }}"
+                        class="{{ img['img_class']|default('') }} pointer pswp-trigger"
+                     />
+                  </a>
+               {% endif %}
                <figcaption itemprop="caption description" class="text-muted fst-italic">
                   {{ img['title']|default('') }}
                </figcaption>
