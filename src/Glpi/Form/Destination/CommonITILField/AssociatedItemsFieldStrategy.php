@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 use CommonITILObject;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 
 enum AssociatedItemsFieldStrategy: string
 {
@@ -52,7 +53,7 @@ enum AssociatedItemsFieldStrategy: string
             self::SPECIFIC_VALUES   => __("Specific items"),
             self::SPECIFIC_ANSWERS  => __("Answer from specific questions"),
             self::LAST_VALID_ANSWER => __('Answer to last assets item question'),
-            self::ALL_VALID_ANSWERS => __('All "Item" answers'),
+            self::ALL_VALID_ANSWERS => __('All valid "Item" answers'),
         };
     }
 
@@ -75,8 +76,19 @@ enum AssociatedItemsFieldStrategy: string
 
     private function isValidAnswer(array $value): bool
     {
-        return isset($value['itemtype']) && is_string($value['itemtype']) &&
-            isset($value['items_id']) && is_numeric($value['items_id']);
+        if (!isset($value['itemtype']) || !is_string($value['itemtype'])) {
+            return false;
+        }
+
+        if (!isset($value['items_id']) || !is_numeric($value['items_id'])) {
+            return false;
+        }
+
+        if (!in_array($value['itemtype'], CommonITILObject::getAllTypesForHelpdesk())) {
+            return false;
+        }
+
+        return true;
     }
 
     private function getSpecificAssociatedItems(
@@ -111,12 +123,13 @@ enum AssociatedItemsFieldStrategy: string
             return null;
         }
 
-        $associted_items = array_map(
-            fn($question_id) => $this->getAssociatedItemsForSpecificAnswer($question_id, $answers_set),
-            $question_ids
+        return array_reduce(
+            $question_ids,
+            fn($carry, $question_id) => array_merge(
+                $carry ?? [],
+                $this->getAssociatedItemsForSpecificAnswer($question_id, $answers_set) ?? []
+            )
         );
-
-        return array_filter($associted_items);
     }
 
     private function getAssociatedItemsForSpecificAnswer(
@@ -132,62 +145,82 @@ enum AssociatedItemsFieldStrategy: string
             return null;
         }
 
-        $value = $answer->getRawAnswer();
-        if (!$this->isValidAnswer($value)) {
+        $values = $answer->getRawAnswer();
+        if (count($values) == count($values, COUNT_RECURSIVE)) {
+            $values = [$values];
+        }
+
+        $values = array_filter($values, fn($value) => $this->isValidAnswer($value));
+        if (empty($values)) {
             return null;
         }
 
-        return $value;
+        return $values;
     }
 
     private function getAssociatedItemsForLastValidAnswer(
         AnswersSet $answers_set,
     ): ?array {
-        $valid_answers = array_filter(
-            $answers_set->getAnswersByType(
-                QuestionTypeItem::class
-            ),
-            fn($answer) => in_array(
-                $answer->getRawAnswer()['itemtype'],
-                CommonITILObject::getAllTypesForHelpdesk()
-            )
-        );
+        $valid_answers = $this->getValidAnswers($answers_set);
 
         if (count($valid_answers) == 0) {
             return null;
         }
 
         $answer = end($valid_answers);
-        $value = $answer->getRawAnswer();
-        if (!$this->isValidAnswer($value)) {
+        $values = $answer->getRawAnswer();
+        if (count($values) == count($values, COUNT_RECURSIVE)) {
+            $values = [$values];
+        }
+
+        if (empty($values)) {
             return null;
         }
 
-        return [$value];
+        return $values;
     }
 
     private function getAssociatedItemsFromAllValidAnswers(
         AnswersSet $answers_set,
     ): ?array {
-        $valid_answers = array_filter(
-            $answers_set->getAnswersByType(
-                QuestionTypeItem::class
-            ),
-            fn($answer) => in_array(
-                $answer->getRawAnswer()['itemtype'],
-                CommonITILObject::getAllTypesForHelpdesk()
-            )
-        );
+        $valid_answers = $this->getValidAnswers($answers_set);
 
         if (count($valid_answers) == 0) {
             return null;
         }
 
-        $associted_items = array_map(
-            fn($answer) => $answer->getRawAnswer(),
-            $valid_answers
-        );
+        return array_merge(...array_map(
+            function ($answer) {
+                $raw_answer = $answer->getRawAnswer();
+                if (count($raw_answer) == count($raw_answer, COUNT_RECURSIVE)) {
+                    $raw_answer = [$raw_answer];
+                }
 
-        return array_filter($associted_items, fn($answer) => $this->isValidAnswer($answer));
+                return $raw_answer;
+            },
+            $valid_answers
+        ));
+    }
+
+    private function getValidAnswers(AnswersSet $answers_set): array
+    {
+        return array_filter(
+            $answers_set->getAnswersByTypes([
+                QuestionTypeItem::class,
+                QuestionTypeUserDevice::class,
+            ]),
+            function ($answer) {
+                $raw_answer = $answer->getRawAnswer();
+                if (count($raw_answer) == count($raw_answer, COUNT_RECURSIVE)) {
+                    $raw_answer = [$raw_answer];
+                }
+
+                return array_reduce(
+                    $raw_answer,
+                    fn($carry, $value) => $carry || $this->isValidAnswer($value),
+                    false
+                );
+            }
+        );
     }
 }

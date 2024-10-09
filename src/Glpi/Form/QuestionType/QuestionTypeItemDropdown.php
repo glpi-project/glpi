@@ -82,6 +82,6 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
     #[Override]
     public function getWeight(): int
     {
-        return 20;
+        return 30;
     }
 }

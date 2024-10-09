@@ -761,304 +761,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
             & pow(2, CommonITILObject::HELPDESK_MY_HARDWARE)
         ) {
-            $my_devices = ['' => Dropdown::EMPTY_VALUE];
-            $devices    = [];
+            $my_devices = array_merge(
+                ['' => Dropdown::EMPTY_VALUE],
+                self::getMyDevices($userID, $entity_restrict)
+            );
 
-            // My items
-            foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
-                if (
-                    ($item = getItemForItemtype($itemtype))
-                    && CommonITILObject::isPossibleToAssignType($itemtype)
-                ) {
-                    $itemtable = getTableForItemType($itemtype);
-
-                    $criteria = [
-                        'FROM'   => $itemtable,
-                        'WHERE'  => [
-                            'users_id' => $userID
-                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
-                          + $itemtype::getSystemSQLCriteria(),
-                        'ORDER'  => $item->getNameField()
-                    ];
-
-                    if ($item->maybeDeleted()) {
-                        $criteria['WHERE']['is_deleted'] = 0;
-                    }
-                    if ($item->maybeTemplate()) {
-                        $criteria['WHERE']['is_template'] = 0;
-                    }
-                    if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
-                        $criteria['WHERE']['is_helpdesk_visible'] = 1;
-                    }
-
-                    $iterator = $DB->request($criteria);
-                    $nb = count($iterator);
-                    if ($nb > 0) {
-                        $type_name = $item->getTypeName($nb);
-
-                        foreach ($iterator as $data) {
-                            if (!isset($already_add[$itemtype]) || !in_array($data["id"], $already_add[$itemtype])) {
-                                $output = $data[$item->getNameField()];
-                                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                    $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
-                                }
-                                $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
-                                if ($itemtype != 'Software') {
-                                    if (!empty($data['serial'])) {
-                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
-                                    }
-                                    if (!empty($data['otherserial'])) {
-                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-                                    }
-                                }
-                                $devices[$itemtype . "_" . $data["id"]] = $output;
-
-                                $already_add[$itemtype][] = $data["id"];
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (count($devices)) {
-                $my_devices[__('My devices')] = $devices;
-            }
-            // My group items
-            if (Session::haveRight("show_group_hardware", "1")) {
-                $iterator = $DB->request([
-                    'SELECT'    => [
-                        'glpi_groups_users.groups_id',
-                        'glpi_groups.name'
-                    ],
-                    'FROM'      => 'glpi_groups_users',
-                    'LEFT JOIN' => [
-                        'glpi_groups'  => [
-                            'ON' => [
-                                'glpi_groups_users'  => 'groups_id',
-                                'glpi_groups'        => 'id'
-                            ]
-                        ]
-                    ],
-                    'WHERE'     => [
-                        'glpi_groups_users.users_id'  => $userID
-                    ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
-                ]);
-
-                $devices = [];
-                $groups  = [];
-                if (count($iterator)) {
-                    foreach ($iterator as $data) {
-                        $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
-                        $a_groups[$data["groups_id"]] = $data["groups_id"];
-                        $groups = array_merge($groups, $a_groups);
-                    }
-
-                    foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
-                        if (
-                            ($item = getItemForItemtype($itemtype))
-                            && CommonITILObject::isPossibleToAssignType($itemtype)
-                        ) {
-                            $itemtable  = getTableForItemType($itemtype);
-                            $criteria = [
-                                'SELECT'  => [$itemtable . '.*'],
-                                'FROM'    => $itemtable,
-                                'LEFT JOIN' => [
-                                    Group_Item::getTable() => [
-                                        'ON' => [
-                                            $itemtable => 'id',
-                                            Group_Item::getTable() => 'items_id', [
-                                                'AND' => [
-                                                    Group_Item::getTable() . '.itemtype' => $itemtype
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'WHERE'   => [
-                                    Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_NORMAL,
-                                    Group_Item::getTable() . '.groups_id' => $groups
-                                ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
-                                  + $itemtype::getSystemSQLCriteria(),
-                                'GROUPBY' => $itemtable . '.id',
-                                'ORDER'   => $item->getNameField()
-                            ];
-
-                            if ($item->maybeDeleted()) {
-                                $criteria['WHERE']['is_deleted'] = 0;
-                            }
-                            if ($item->maybeTemplate()) {
-                                $criteria['WHERE']['is_template'] = 0;
-                            }
-
-                            $iterator = $DB->request($criteria);
-                            if (count($iterator)) {
-                                $type_name = $item->getTypeName();
-                                if (!isset($already_add[$itemtype])) {
-                                    $already_add[$itemtype] = [];
-                                }
-                                foreach ($iterator as $data) {
-                                    if (!in_array($data["id"], $already_add[$itemtype])) {
-                                        $output = '';
-                                        if (isset($data["name"])) {
-                                            $output = $data["name"];
-                                        }
-                                        if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                            $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
-                                        }
-                                        $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
-                                        if (isset($data['serial'])) {
-                                            $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
-                                        }
-                                        if (isset($data['otherserial'])) {
-                                            $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-                                        }
-                                        $devices[$itemtype . "_" . $data["id"]] = $output;
-
-                                        $already_add[$itemtype][] = $data["id"];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (count($devices)) {
-                        $my_devices[__('Devices own by my groups')] = $devices;
-                    }
-                }
-            }
-            // Get software linked to all owned items
-            if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-                $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
-                foreach ($software_helpdesk_types as $itemtype) {
-                    if (isset($already_add[$itemtype]) && count($already_add[$itemtype])) {
-                        $iterator = $DB->request([
-                            'SELECT'          => [
-                                'glpi_softwareversions.name AS version',
-                                'glpi_softwares.name AS name',
-                                'glpi_softwares.id'
-                            ],
-                            'DISTINCT'        => true,
-                            'FROM'            => 'glpi_items_softwareversions',
-                            'LEFT JOIN'       => [
-                                'glpi_softwareversions'  => [
-                                    'ON' => [
-                                        'glpi_items_softwareversions' => 'softwareversions_id',
-                                        'glpi_softwareversions'       => 'id'
-                                    ]
-                                ],
-                                'glpi_softwares'        => [
-                                    'ON' => [
-                                        'glpi_softwareversions' => 'softwares_id',
-                                        'glpi_softwares'        => 'id'
-                                    ]
-                                ]
-                            ],
-                            'WHERE'        => [
-                                'glpi_items_softwareversions.items_id' => $already_add[$itemtype],
-                                'glpi_items_softwareversions.itemtype' => $itemtype,
-                                'glpi_softwares.is_helpdesk_visible'   => 1
-                            ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                            'ORDERBY'      => 'glpi_softwares.name'
-                        ]);
-
-                        $devices = [];
-                        if (count($iterator)) {
-                            $item       = new Software();
-                            $type_name  = $item->getTypeName();
-                            if (!isset($already_add['Software'])) {
-                                $already_add['Software'] = [];
-                            }
-                            foreach ($iterator as $data) {
-                                if (!in_array($data["id"], $already_add['Software'])) {
-                                    $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
-                                    $output = sprintf(
-                                        __('%1$s (%2$s)'),
-                                        $output,
-                                        sprintf(__('%1$s: %2$s'), __('version'), $data["version"])
-                                    );
-                                    if ($_SESSION["glpiis_ids_visible"]) {
-                                        $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
-                                    }
-                                    $devices["Software_" . $data["id"]] = $output;
-
-                                    $already_add['Software'][] = $data["id"];
-                                }
-                            }
-                            if (count($devices)) {
-                                $my_devices[__('Installed software')] = $devices;
-                            }
-                        }
-                    }
-                }
-            }
-            // Get linked items to computers
-            foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
-                if (isset($already_add[$peripheralhost_itemtype]) && count($already_add[$peripheralhost_itemtype])) {
-                    $devices = [];
-
-                    // Direct Connection
-                    foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
-                        if (
-                            in_array($peripheral_itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-                            && ($item = getItemForItemtype($peripheral_itemtype))
-                        ) {
-                            $itemtable = getTableForItemType($peripheral_itemtype);
-                            if (!isset($already_add[$peripheral_itemtype])) {
-                                $already_add[$peripheral_itemtype] = [];
-                            }
-                            $relation_table = Asset_PeripheralAsset::getTable();
-                            $criteria = [
-                                'SELECT'          => "$itemtable.*",
-                                'DISTINCT'        => true,
-                                'FROM'            => $relation_table,
-                                'LEFT JOIN'       => [
-                                    $itemtable  => [
-                                        'ON' => [
-                                            $relation_table => 'items_id_peripheral',
-                                            $itemtable      => 'id'
-                                        ]
-                                    ]
-                                ],
-                                'WHERE'           => [
-                                    $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
-                                    $relation_table . '.itemtype_asset'      => $peripheralhost_itemtype,
-                                    $relation_table . '.items_id_asset'      => $already_add[$peripheralhost_itemtype]
-                                ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
-                                'ORDERBY'         => "$itemtable.name"
-                            ];
-
-                            if ($item->maybeDeleted()) {
-                                $criteria['WHERE']["$itemtable.is_deleted"] = 0;
-                            }
-                            if ($item->maybeTemplate()) {
-                                $criteria['WHERE']["$itemtable.is_template"] = 0;
-                            }
-
-                            $iterator = $DB->request($criteria);
-                            if (count($iterator)) {
-                                $type_name = $item->getTypeName();
-                                foreach ($iterator as $data) {
-                                    if (!in_array($data["id"], $already_add[$peripheral_itemtype])) {
-                                        $output = $data["name"];
-                                        if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                            $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
-                                        }
-                                        $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
-                                        if ($peripheral_itemtype != 'Software') {
-                                            $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-                                        }
-                                        $devices[$peripheral_itemtype . "_" . $data["id"]] = $output;
-
-                                        $already_add[$peripheral_itemtype][] = $data["id"];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (count($devices)) {
-                        $my_devices[__('Connected devices')] = $devices;
-                    }
-                }
-            }
             echo "<div id='tracking_my_devices' class='input-group mb-1'>";
             echo "<span class='input-group-text'>" . __s('My devices') . "</span>";
             Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
@@ -1076,6 +783,409 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
             }
         }
+    }
+
+    /**
+     * Retrieves a list of devices associated with a user, including their own devices,
+     * devices owned by their groups, installed software, and linked items to computers.
+     *
+     * @param int $userID The ID of the user whose devices are to be retrieved.
+     * @param int|array $entity_restrict Optional. The entity restriction to apply. Default is -1.
+     *
+     * @return array<string, array<string, string>> An associative array of devices associated with the user.
+     *               The array keys are the categories, and the values are arrays of device descriptions.
+     *
+     * The categories include:
+     * - 'My devices': Devices directly assigned to the user.
+     * - 'Devices own by my groups': Devices owned by the user's groups.
+     * - 'Installed software': Software linked to all owned items.
+     * - 'Connected devices': Items linked to computers.
+     */
+    public static function getMyDevices(int $userID, mixed $entity_restrict = -1)
+    {
+        $my_devices = [];
+        $already_add = [];
+
+        // My items
+        $devices = self::getMyAssigneeDevices($userID, $entity_restrict, $already_add);
+        foreach ($devices as $itemtype => $items) {
+            foreach ($items as $data) {
+                $output = $data['name'];
+                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                    $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                }
+                $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                if ($itemtype != 'Software') {
+                    if (!empty($data['serial'])) {
+                        $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                    }
+                    if (!empty($data['otherserial'])) {
+                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                    }
+                }
+                $my_devices[__('My devices')][$itemtype . "_" . $data["id"]] = $output;
+            }
+        }
+
+        // My group items
+        if (Session::haveRight("show_group_hardware", "1")) {
+            $devices = self::getMyGroupsDevices($userID, $entity_restrict, $already_add);
+            foreach ($devices as $itemtype => $items) {
+                foreach ($items as $data) {
+                    $output = $data['name'];
+                    if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                        $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                    }
+                    $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                    if (!empty($data['serial'])) {
+                        $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                    }
+                    if (!empty($data['otherserial'])) {
+                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                    }
+                    $my_devices[__('Devices own by my groups')][$itemtype . "_" . $data["id"]] = $output;
+                }
+            }
+        }
+
+        // Get software linked to all owned items
+        $software = self::getLinkedSoftware($already_add, $entity_restrict, $already_add);
+        foreach ($software as $data) {
+            $output = sprintf(__('%1$s - %2$s'), 'Software', $data["name"]);
+            $output = sprintf(
+                __('%1$s (%2$s)'),
+                $output,
+                sprintf(__('%1$s: %2$s'), __('version'), $data["version"])
+            );
+            if ($_SESSION["glpiis_ids_visible"]) {
+                $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
+            }
+            $my_devices[__('Installed software')]["Software_" . $data["id"]] = $output;
+        }
+
+        // Get linked items to computers
+        $linked_items = self::getLinkedItemsToComputers($already_add, $entity_restrict, $already_add);
+        foreach ($linked_items as $itemtype => $items) {
+            foreach ($items as $data) {
+                $output = $data['name'];
+                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                    $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                }
+                $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                if ($itemtype != 'Software') {
+                    $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                }
+                $my_devices[__('Connected devices')][$itemtype . "_" . $data["id"]] = $output;
+            }
+        }
+
+        return $my_devices;
+    }
+
+    /**
+     * Retrieves the devices assigned to a specific user within a restricted entity.
+     *
+     * @param int $userID The ID of the user for whom to retrieve the devices.
+     * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
+     * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
+     *
+     * @return array An associative array of devices assigned to the user, categorized by item type.
+     */
+    private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = [])
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $devices = [];
+
+        foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
+            if (
+                ($item = getItemForItemtype($itemtype))
+                && CommonITILObject::isPossibleToAssignType($itemtype)
+            ) {
+                $itemtable = getTableForItemType($itemtype);
+
+                $criteria = [
+                    'FROM'   => $itemtable,
+                    'WHERE'  => [
+                        'users_id' => $userID
+                    ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
+                    + $itemtype::getSystemSQLCriteria(),
+                    'ORDER'  => $item->getNameField()
+                ];
+
+                if ($item->maybeDeleted()) {
+                    $criteria['WHERE']['is_deleted'] = 0;
+                }
+                if ($item->maybeTemplate()) {
+                    $criteria['WHERE']['is_template'] = 0;
+                }
+                if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
+                    $criteria['WHERE']['is_helpdesk_visible'] = 1;
+                }
+
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    if (!isset($already_add[$itemtype]) || !in_array($data["id"], $already_add[$itemtype])) {
+                        $devices[$itemtype][] = $data;
+                        $already_add[$itemtype][] = $data["id"];
+                    }
+                }
+            }
+        }
+
+        return $devices;
+    }
+
+    /**
+     * Retrieves the devices associated with the groups of a given user.
+     *
+     * @param int $userID The ID of the user whose groups' devices are to be retrieved.
+     * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
+     * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
+     *
+     * @return array An associative array of devices grouped by item type.
+     */
+    private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = [])
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $devices = [];
+        $groups  = [];
+
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_groups_users.groups_id',
+                'glpi_groups.name'
+            ],
+            'FROM'      => 'glpi_groups_users',
+            'LEFT JOIN' => [
+                'glpi_groups'  => [
+                    'ON' => [
+                        'glpi_groups_users'  => 'groups_id',
+                        'glpi_groups'        => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_groups_users.users_id'  => $userID
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
+        ]);
+
+        if (count($iterator)) {
+            foreach ($iterator as $data) {
+                $a_groups                     = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                $a_groups[$data["groups_id"]] = $data["groups_id"];
+                $groups = array_merge($groups, $a_groups);
+            }
+
+            foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
+                if (
+                    ($item = getItemForItemtype($itemtype))
+                    && CommonITILObject::isPossibleToAssignType($itemtype)
+                ) {
+                    $itemtable  = getTableForItemType($itemtype);
+                    $criteria = [
+                        'SELECT'  => [$itemtable . '.*'],
+                        'FROM'    => $itemtable,
+                        'LEFT JOIN' => [
+                            Group_Item::getTable() => [
+                                'ON' => [
+                                    $itemtable => 'id',
+                                    Group_Item::getTable() => 'items_id', [
+                                        'AND' => [
+                                            Group_Item::getTable() . '.itemtype' => $itemtype
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'WHERE'   => [
+                            Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_NORMAL,
+                            Group_Item::getTable() . '.groups_id' => $groups
+                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
+                        + $itemtype::getSystemSQLCriteria(),
+                        'GROUPBY' => $itemtable . '.id',
+                        'ORDER'   => $item->getNameField()
+                    ];
+
+                    if ($item->maybeDeleted()) {
+                        $criteria['WHERE']['is_deleted'] = 0;
+                    }
+                    if ($item->maybeTemplate()) {
+                        $criteria['WHERE']['is_template'] = 0;
+                    }
+
+                    $iterator = $DB->request($criteria);
+                    if (count($iterator)) {
+                        if (!isset($already_add[$itemtype])) {
+                            $already_add[$itemtype] = [];
+                        }
+                        foreach ($iterator as $data) {
+                            if (!in_array($data["id"], $already_add[$itemtype])) {
+                                $devices[$itemtype][] = $data;
+                                $already_add[$itemtype][] = $data["id"];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $devices;
+    }
+
+    /**
+     * Retrieves a list of linked software for a given user.
+     *
+     * @param array $devices The devices to retrieve linked software for.
+     * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
+     * @param array &$already_add Reference to an array that keeps track of already added items to avoid duplicates.
+     *
+     * @return array An array of linked software information, including software name, version, and ID.
+     */
+    private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = [])
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $software = [];
+
+        if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
+            foreach ($software_helpdesk_types as $itemtype) {
+                if (isset($devices[$itemtype]) && count($devices[$itemtype])) {
+                    $iterator = $DB->request([
+                        'SELECT'          => [
+                            'glpi_softwareversions.name AS version',
+                            'glpi_softwares.name AS name',
+                            'glpi_softwares.id'
+                        ],
+                        'DISTINCT'        => true,
+                        'FROM'            => 'glpi_items_softwareversions',
+                        'LEFT JOIN'       => [
+                            'glpi_softwareversions'  => [
+                                'ON' => [
+                                    'glpi_items_softwareversions' => 'softwareversions_id',
+                                    'glpi_softwareversions'       => 'id'
+                                ]
+                            ],
+                            'glpi_softwares'        => [
+                                'ON' => [
+                                    'glpi_softwareversions' => 'softwares_id',
+                                    'glpi_softwares'        => 'id'
+                                ]
+                            ]
+                        ],
+                        'WHERE'        => [
+                            'glpi_items_softwareversions.items_id' => $devices[$itemtype],
+                            'glpi_items_softwareversions.itemtype' => $itemtype,
+                            'glpi_softwares.is_helpdesk_visible'   => 1
+                        ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
+                        'ORDERBY'      => 'glpi_softwares.name'
+                    ]);
+
+                    if (count($iterator)) {
+                        if (!isset($already_add['Software'])) {
+                            $already_add['Software'] = [];
+                        }
+                        foreach ($iterator as $data) {
+                            if (!in_array($data["id"], $already_add['Software'])) {
+                                $software[] = $data;
+                                $already_add['Software'][] = $data["id"];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $software;
+    }
+
+    /**
+     * Retrieves linked items to computers based on the given user ID and entity restriction.
+     *
+     * @param array $devices The computers to retrieve linked items for.
+     * @param int $entity_restrict The entity restriction to apply. Default is -1 (no restriction).
+     * @param array &$already_add Reference to an array that keeps track of already added items.
+     *
+     * @return array An array of linked items categorized by their item types.
+     */
+    private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = [])
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $linked_items = [];
+
+        foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
+            if (isset($devices[$peripheralhost_itemtype]) && count($devices[$peripheralhost_itemtype])) {
+                foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
+                    if (
+                        in_array($peripheral_itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                        && ($item = getItemForItemtype($peripheral_itemtype))
+                    ) {
+                        $itemtable = getTableForItemType($peripheral_itemtype);
+                        if (!isset($already_add[$peripheral_itemtype])) {
+                            $already_add[$peripheral_itemtype] = [];
+                        }
+                        $relation_table = Asset_PeripheralAsset::getTable();
+                        $criteria = [
+                            'SELECT'          => "$itemtable.*",
+                            'DISTINCT'        => true,
+                            'FROM'            => $relation_table,
+                            'LEFT JOIN'       => [
+                                $itemtable  => [
+                                    'ON' => [
+                                        $relation_table => 'items_id_peripheral',
+                                        $itemtable      => 'id'
+                                    ]
+                                ]
+                            ],
+                            'WHERE'           => [
+                                $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
+                                $relation_table . '.itemtype_asset'      => $peripheralhost_itemtype,
+                                $relation_table . '.items_id_asset'      => $devices[$peripheralhost_itemtype]
+                            ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
+                            'ORDERBY'         => "$itemtable.name"
+                        ];
+
+                        if ($item->maybeDeleted()) {
+                            $criteria['WHERE']["$itemtable.is_deleted"] = 0;
+                        }
+                        if ($item->maybeTemplate()) {
+                            $criteria['WHERE']["$itemtable.is_template"] = 0;
+                        }
+
+                        $iterator = $DB->request($criteria);
+                        if (count($iterator)) {
+                            foreach ($iterator as $data) {
+                                if (!in_array($data["id"], $already_add[$peripheral_itemtype])) {
+                                    $linked_items[$peripheral_itemtype][] = $data;
+                                    $already_add[$peripheral_itemtype][] = $data["id"];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $linked_items;
     }
 
     /**
