@@ -269,73 +269,6 @@ JSON;
         }
     }
 
-    /*public function testImprotCDROmVolume(): void
-    {
-        global $DB;
-
-        $json = json_decode($this->json_computer);
-        $json->content->storages = [
-            (object)[
-                'type' => 'DVD Writer'
-            ]
-        ];
-
-        //disable device import
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                'component_drive' => 0
-            ])
-        );
-        $this->logout();
-
-        $inventory = $this->doInventory($json);
-        $computer = $inventory->getItem();
-        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
-
-        //check no device has been created
-        $item_devices = $DB->request([
-            'FROM' => \Item_DeviceDrive::class::getTable(),
-            'WHERE' => [
-                'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
-        ]);
-        $this->assertCount(0, $item_devices);
-
-        //enable device import
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                'component_drive' => 1
-            ])
-        );
-        $this->logout();
-
-        $this->doInventory($json);
-
-        //check device has been created
-        $item_devices = $DB->request([
-            'FROM' => \Item_DeviceDrive::class::getTable(),
-            'WHERE' => [
-                'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
-        ]);
-        $this->assertCount(1, $item_devices);
-
-        $item_disks = $DB->request([
-            'FROM' => \Item_Disk::getTable(),
-            'WHERE' => [
-                'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
-        ]);
-        $this->assertCount(1, $item_disks);
-    }*/
-
     public function testImportVolumes()
     {
         /** @var \DBmysql $DB */
@@ -537,5 +470,68 @@ JSON;
             ]
         ]);
         $this->assertCount(2, $item_devices);
+    }
+    public function testImportPeripherals()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json = json_decode($this->json_computer);
+        $json->content->usbdevices = [
+            (object)[
+                'name' => 'VFS451 Fingerprint Reader',
+                'productid' => '0007',
+                'serial' => '00B0FE47AC85',
+                'vendorid' => '138A',
+            ]
+        ];
+
+        //disable peripherals import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_peripheral' => 0
+            ])
+        );
+        $this->logout();
+
+        $inventory = $this->doInventory($json);
+        $computer = $inventory->getItem();
+        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
+
+        //check no peripheral has been created
+        $item_devices = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID()
+                /*'itemtype' => get_class($computer),
+                'items_id' => $computer->getID()*/
+            ]
+        ]);
+        $this->assertCount(0, $item_devices);
+
+        //enable peripherals import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_peripheral' => 1
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($json);
+
+        //check peripherals has been created
+        $item_devices = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID()
+                /*'itemtype' => get_class($computer),
+                'items_id' => $computer->getID()*/
+            ]
+        ]);
+        $this->assertCount(1, $item_devices);
     }
 }
