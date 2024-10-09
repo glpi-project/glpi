@@ -248,7 +248,7 @@ class GLPIDashboard {
         $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', () => {
             if (!document.webkitIsFullScreen
                 && !document.mozFullScreen
-                && !document.msFullscreenElement !== null) {
+                && !document.msFullscreenElement) {
                 this.disableFullscreenMode();
             }
         });

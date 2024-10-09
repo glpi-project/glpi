@@ -1,24 +1,12 @@
 import mocha from "eslint-plugin-mocha";
 import globals from "globals";
 import vue from "eslint-plugin-vue";
-// import path from "node:path";
-// import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import cypress from "eslint-plugin-cypress/flat";
-// import { FlatCompat } from "@eslint/eslintrc";
-//
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// const compat = new FlatCompat({
-//     baseDirectory: __dirname,
-//     recommendedConfig: js.configs.recommended,
-//     allConfig: js.configs.all,
-//     vueConfig: vue.configs.essential
-// });
 
 export default [
     {
-        // 'ignores' without other keys apparently acts as global ignores...
+        // 'ignores' without other keys apparently acts as global ignores
         ignores: [
             "config/*",
             "files/*",
@@ -49,7 +37,8 @@ export default [
                     _x: true,
                     _nx: true
                 }
-            }
+            },
+            sourceType: "script"
         },
         rules: {
             "eol-last": [
@@ -101,12 +90,15 @@ export default [
     },
     {
         // Modules
-        files: ["js/modules/**"],
+        files: ["js/modules/**", "eslint.config.mjs"],
         languageOptions: {
             sourceType: "module"
         }
     },
-    ...vue.configs["flat/essential"],
+    ...vue.configs["flat/essential"].map(config => ({
+        ...config,
+        files: ["js/src/**", "tests/js/**"]
+    })),
     {
         // Vue
         files: ["js/src/**", "tests/js/**"],
@@ -142,8 +134,12 @@ export default [
         }
     },
     {
-        // Cypress Tests
+        // Cypress Tests - Recommended rules
         ...cypress.configs.recommended,
+        files: ["tests/cypress/**"]
+    },
+    {
+        // Cypress Tests - Custom rules
         files: ["tests/cypress/**"],
         plugins: {mocha},
         languageOptions: {
@@ -157,9 +153,12 @@ export default [
     },
     {
         // Config files
-        "files": [".stylelintrc.js", ".webpack.config.js", "tests/cypress.config.js"],
+        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js", "tests/cypress.config.js"],
         "languageOptions": {
             "globals": {...globals.node}
+        },
+        "rules": {
+            "prefer-template": "off",
         }
     }
 ];

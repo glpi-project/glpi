@@ -1562,7 +1562,7 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     $("#" + item).select();
     try {
         document.execCommand("copy");
-    } catch (e) {
+    } catch {
         alert("Copy to clipboard failed'");
     }
     if (is_password_input) {

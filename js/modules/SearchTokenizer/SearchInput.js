@@ -449,7 +449,7 @@ export default class SearchInput {
             } else {
                 try {
                     node.remove();
-                } catch (e) {
+                } catch {
                     // node is already removed. In some cases, this can be attempted to be removed twice
                 }
             }

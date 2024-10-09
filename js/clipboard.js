@@ -46,7 +46,7 @@ $(() => {
         let succeed;
         try {
             succeed = document.execCommand("copy");
-        } catch (e) {
+        } catch {
             succeed = false;
         }
         target.blur();

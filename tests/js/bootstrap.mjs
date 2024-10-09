@@ -142,7 +142,7 @@ class AjaxMock {
     }
 
     ajax() {
-        let url, settings, method;
+        let url, settings;
 
         if (arguments.length === 2) {
             [url, settings] = arguments;
@@ -150,7 +150,7 @@ class AjaxMock {
             settings = arguments[0];
             url = settings.url;
         }
-        method = (settings.method || settings.type || 'GET').toUpperCase();
+        const method = (settings.method || settings.type || 'GET').toUpperCase();
 
         if (window.AjaxMock.isResponseStackEmpty()) {
             throw new Error('No mock responses in stack');
@@ -175,11 +175,12 @@ class AjaxMock {
             }
             return result;
         } else {
+            /* eslint-disable no-console */
             console.dir({
                 request_data: settings.data,
                 responses: window.AjaxMock.response_stack
-            })
-            throw "No mock response found for " + url;
+            });
+            throw `No mock response found for ${url}`;
         }
     }
 }

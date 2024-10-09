@@ -232,7 +232,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }, () => {
                 handle_search_failure();
             });
-        } catch (error) {
+        } catch {
             handle_search_failure();
         }
     }

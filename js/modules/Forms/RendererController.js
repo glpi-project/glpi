@@ -142,7 +142,7 @@ export class GlpiFormRendererController
                 `)
                 .addClass("d-none");
 
-        } catch (e) {
+        } catch {
             // Failure (TODO)
         }
     }
