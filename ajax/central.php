@@ -34,6 +34,9 @@
  */
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
+
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
 $this->setAjax();
 
 // Send UTF8 Headers
@@ -46,8 +49,7 @@ if (
     (!isset($_REQUEST['params']['_idor_token']) || empty($_REQUEST['params']['_idor_token'])) || !isset($_REQUEST['itemtype'])
     || !isset($_REQUEST['widget'])
 ) {
-    http_response_code(400);
-    die();
+    throw new BadRequestHttpException();
 }
 
 $idor = $_REQUEST['params']['_idor_token'];
@@ -59,8 +61,7 @@ if (
         '_idor_token'  => $idor
     ] + $_REQUEST['params'])
 ) {
-    http_response_code(400);
-    die();
+    throw new BadRequestHttpException();
 }
 
 /** @var class-string<CommonGLPI> $itemtype */

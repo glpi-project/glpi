@@ -38,6 +38,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 include(__DIR__ . '/getAbstractRightDropdownValue.php');
 
@@ -54,8 +55,7 @@ if (Session::getCurrentInterface() !== 'central') {
 
     // Check if the user can view at least one question
     if (array_reduce($questions, fn($acc, $question) => $acc || $question->canViewItem(), false) === false) {
-        http_response_code(403);
-        exit();
+        throw new AccessDeniedHttpException();
     }
 }
 

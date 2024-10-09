@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -76,5 +78,5 @@ switch ($_REQUEST['action']) {
         Search::showList($itemtype, $params);
         return;
 }
-http_response_code(400);
-return;
+
+throw new BadRequestHttpException();

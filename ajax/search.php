@@ -34,6 +34,8 @@
  */
 
 use Glpi\Search\Input\QueryBuilder;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 // Direct access to file
 
@@ -53,15 +55,13 @@ if (!isset($_REQUEST['action'])) {
 switch ($_REQUEST['action']) {
     case 'display_results':
         if (!isset($_REQUEST['itemtype'])) {
-            http_response_code(400);
-            die;
+            throw new BadRequestHttpException();
         }
 
         /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $_REQUEST['itemtype'];
         if (!$itemtype::canView()) {
-            http_response_code(403);
-            die;
+            throw new AccessDeniedHttpException();
         }
 
         // Handle display params

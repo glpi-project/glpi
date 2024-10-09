@@ -34,14 +34,16 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
-    http_response_code(403);
-    die();
+    throw new AccessDeniedHttpException();
 }
 
 \Glpi\Debug\Profiler::getInstance()->disable();
@@ -64,8 +66,7 @@ if (isset($_GET['ajax_id'])) {
             die();
         }
     }
-    http_response_code(404);
-    die();
+    throw new NotFoundHttpException();
 }
 
 if (isset($_GET['action'])) {
@@ -124,5 +125,4 @@ if (isset($_GET['action'])) {
     }
 }
 
-http_response_code(400);
-die();
+throw new BadRequestHttpException();

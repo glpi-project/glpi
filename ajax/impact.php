@@ -276,6 +276,5 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         header('Content-Type: application/javascript');
-        http_response_code(200);
         break;
 }
