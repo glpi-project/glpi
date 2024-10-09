@@ -624,11 +624,11 @@ class Change extends CommonITILObject
 
         $tab[] = [
             'id'                 => 'change',
-            'name'               => __("Changes")
+            'name'               => __('Changes')
         ];
 
         $tab[] = [
-            'id'                 => '200',
+            'id'                 => '210',
             'table'              => 'glpi_changes_tickets',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of change'),
