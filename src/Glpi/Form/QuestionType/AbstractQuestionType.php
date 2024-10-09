@@ -126,7 +126,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function getWeight(): int
     {
-        return 10;
+        return 20;
     }
 
     #[Override]
