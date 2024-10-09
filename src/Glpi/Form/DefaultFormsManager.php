@@ -80,9 +80,9 @@ final class DefaultFormsManager
     {
         // Create form
         $form = $this->createForm(
-            name: __('Incident'),
-            description: __("Declare an incident"),
-            icon: 'ti ti-exclamation-circle',
+            name: __('Report an issue'),
+            description: __("Ask for support from our helpdesk team."),
+            illustration: 'report-issue.svg',
         );
 
         // Get first section
@@ -136,9 +136,9 @@ final class DefaultFormsManager
     private function createRequestForm(): void
     {
         $form = $this->createForm(
-            name: __('Request'),
-            description: __("Request a service"),
-            icon: 'ti ti-devices-up',
+            name: __('Request a service'),
+            description: __("Ask for a service to be provided by our team."),
+            illustration: 'request-service.svg',
         );
 
         // Get first section
@@ -192,14 +192,14 @@ final class DefaultFormsManager
     private function createForm(
         string $name,
         string $description,
-        string $icon,
+        string $illustration,
     ): Form {
         $form = new Form();
         $form_id = $form->add([
             // Specific properties
             'name'         => $name,
             'description'  => $description,
-            'icon'         => $icon,
+            'illustration' => $illustration,
             // Common properties
             'is_active'    => true,
             'is_recursive' => true,

@@ -44,10 +44,10 @@
         action="{{ form.getFormURL() }}"
         data-submit-once
     >
-        {{ fields.dropdownWebIcons(
-            'icon',
-            form.fields.icon,
-            __('Icon'),
+        {{ fields.textField(
+            'illustration',
+            form.fields.illustration,
+            __('Illustration'),
             {
                 'is_horizontal': false,
                 'full_width' : true,

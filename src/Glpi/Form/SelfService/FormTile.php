@@ -60,7 +60,7 @@ final class FormTile implements TileInterface
 
     public function getIllustration(): string
     {
-        return $this->illustration ?: $this->form->fields['icon'];
+        return $this->illustration ?: $this->form->fields['illustration'];
     }
 
     public function getLink(): string
