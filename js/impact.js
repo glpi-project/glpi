@@ -1366,6 +1366,13 @@ var GLPIImpact = {
     getContextMenuItems: function(){
         return [
             {
+                id             : 'info',
+                content        : '<i class="fas fa-info-circle me-2"></i>' + __("Informations"),
+                tooltipText    : _.unescape(__("See informations of this object")),
+                selector       : 'node',
+                onClickFunction: this.menuOnInfo
+            },
+            {
                 id             : 'goTo',
                 content        : '<i class="fas fa-link me-2"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
@@ -1629,14 +1636,98 @@ var GLPIImpact = {
         this.initToolbar();
     },
 
+
+    /**
+     * Clean popper
+     */
+    cleanPopper: function() {
+        var elms = document.querySelectorAll("[id^='popper-target']");
+
+        for (var i = 0; i < elms.length; i++) {
+            elms[i].style.display = 'none';
+        }
+    },
+
+    /**
+     *
+     * @param target node or edge
+     */
+    bindPopper: function(target) {
+
+        let tooltipId = `popper-target-${target.id()}`;
+        let existingTarget = document.getElementById(tooltipId);
+        if (existingTarget && existingTarget.length !== 0) {
+            existingTarget.remove();
+        }
+
+        let popper = target.popper({
+
+            content: () => {
+                // create div container
+                let tooltip = document.createElement('div');
+
+                // adding id for easier JavaScript control
+                tooltip.id = tooltipId;
+
+                if ("itemtype" in target.data()) {
+                    // adding class for easier CSS control
+                    tooltip.classList.add('target-popper');
+
+                    let targetData = target.data();
+                    let fields = ['tooltip'];
+                    // loop through target data
+                    for (let prop in targetData) {
+                        if (!fields.includes(prop) || !Object.hasOwn(targetData, 'itemtype')) {
+                            continue;
+                        }
+                        if (typeof targetData[prop] === "object") {
+                            let targetArray = targetData[prop];
+                            Object.keys(targetArray).forEach(function (key) {
+                                let propname = key;
+                                let targetValue = targetArray[key];
+
+                                if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
+                                    let d = document.createElement("div");
+                                    tooltip.append($("<h2 />").html(_.escape(propname)).text(), d);
+                                    tooltip.append(": ", d);
+                                    tooltip.append($('<textarea />').html(targetValue).text(), d);
+                                }
+                            });
+                        }
+                    }
+                    document.body.appendChild(tooltip);
+                }
+                return tooltip;
+            },
+        });
+
+        target.on('position', () => {
+            popper.update();
+        });
+
+        target.cy().on('pan zoom resize', () => {
+            popper.update();
+        });
+
+        target.on('mouseover', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.add('active');
+            }
+        }).on('mouseout', () => {
+            if (document.getElementById(tooltipId)) {
+                document.getElementById(tooltipId).classList.remove('active');
+            }
+        });
+    },
+
     /**
     * Build the network graph
     *
     * @param {string} data (json)
     */
     buildNetwork: function(data, params, readonly) {
-        var layout;
 
+        var layout;
         // Init workspace status
         GLPIImpact.showDefaultWorkspaceStatus();
 
@@ -2858,6 +2949,7 @@ var GLPIImpact = {
     * @param {JQuery.Event} event
     */
     nodeOnClick: function (event) {
+
         switch (GLPIImpact.editionMode) {
             case GLPIImpact.EDITION_DEFAULT:
                 if (GLPIImpact.eventData.lastClicktimestamp != null) {
@@ -2946,6 +3038,9 @@ var GLPIImpact = {
     * @param {Jquery.event} event
     */
     onGrabOn: function(event) {
+
+        GLPIImpact.cleanPopper();
+
         // Store original position (shallow copy)
         GLPIImpact.eventData.grabNodePosition = {
             x: event.target.position().x,
@@ -3553,6 +3648,19 @@ var GLPIImpact = {
                 }
                 break;
         }
+    },
+
+
+    /**
+     * Handle "Info" menu event
+     *
+     * @param {JQuery.Event} event
+     */
+    menuOnInfo: function(event) {
+
+        GLPIImpact.cleanPopper();
+
+        GLPIImpact.bindPopper(event.target);
     },
 
     /**
