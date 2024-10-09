@@ -1,4 +1,6 @@
-/*
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,14 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-// @TODO Encapsulate all styles inside a common class
-.reservations-planning {
-    a .fc-time,
-    .fc-title {
-        color: initial;
-    }
+if (!defined('GLPI_ROOT')) {
+    include('../inc/includes.php');
+}
 
-    .defaultDate {
-        background: #e3fce8;
-    }
+if (isset($_POST['generate_preview'])) {
+    Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference', 'none', 'print');
+    PrintPreview::showPreview($_POST['items_id'], $_POST);
+    Html::footer();
 }

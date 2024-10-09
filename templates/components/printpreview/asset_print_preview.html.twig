@@ -1,0 +1,55 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+    {% do call(item.showForm(item.getID())) %}
+    {% for key, value in printable_tabs %}
+        {% if value == 1 and call('class_exists', [key]) and key != options.itemtype %}
+            <div class="break"></div>
+            <div class="card my-0 border-0 shadow-none">
+                <div class="card-header">
+                    <h4 class="card-title ps-4">
+
+                        <i class="{{ key|itemtype_icon }}"></i>{{ key == 'Item_Devices' ? _n('Component', 'Components', get_plural_number()) : key|itemtype_name }}
+                    </h4>
+                </div>
+            </div>
+            {% do call(key ~ '::displayTabContentForItem', [item, 0]) %}
+        {% endif %}
+    {% endfor %}
+</div>
+<script>
+    import("{{ js_path('js/PrintPreview/print_generalasset.js') }}")
+    var jsFile = {{ js_file|json_encode|raw }};
+    if (jsFile !== null) {
+        import("{{ js_path(js_file) }}");
+    }
+</script>
