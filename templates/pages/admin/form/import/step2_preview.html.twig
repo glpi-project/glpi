@@ -33,7 +33,7 @@
 
 {% extends "layout/page_without_tabs.html.twig" %}
 
-{% set tabler_container_size = "narrow" %}
+{% set container_size = "narrow" %}
 
 {% block content_title %}
     {{ __('Import forms') }}
@@ -51,30 +51,43 @@
             <table class="table table-card mb-0">
                 <thead>
                     <tr>
-                        <th class="w-70 px-4">{{ __("Form name") }}</th>
-                        <th class="w-30 px-4">{{ __("Status") }}</th>
+                        <th class="w-50 px-4">{{ __("Form name") }}</th>
+                        <th class="w-25 px-4">{{ __("Status") }}</th>
+                        <th class="w-25 px-4">{{ __("Action") }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for forms_name in preview.getValidForms() %}
                         <tr>
-                            <td class="w-70 px-4">{{ forms_name }}</td>
-                            <td class="w-30 px-4">
+                            <td class="w-50 px-4">{{ forms_name }}</td>
+                            <td class="w-50 px-4">
                                 <div class="d-flex align-items-center">
                                     <i class="ti ti-check text-success me-2"></i>
                                     <span>{{ __("Ready to be imported") }}</span>
                                 </div>
                             </td>
+                            <td></td>
                         </tr>
                     {% endfor %}
                     {% for forms_name in preview.getInvalidForms() %}
                         <tr>
-                            <td class="w-70 px-4">{{ forms_name }}</td>
-                            <td class="w-30 px-4">
-                            <div class="d-flex align-items-center">
+                            <td class="w-50 px-4">{{ forms_name }}</td>
+                            <td class="w-25 px-4">
+                                <div class="d-flex align-items-center">
                                     <i class="ti ti-x text-danger me-2"></i>
                                     <span>{{ __("Can't be imported") }}</span>
                                 </div>
+                            </td>
+                            <td class="w-25 px-4">
+                                <button
+                                    type="submit"
+                                    class="btn btn-link p-0"
+                                    name="form_name"
+                                    value="{{ forms_name }}"
+                                    formaction="{{ path('Form/Import/ResolveIssues') }}"
+                                >
+                                    {{ __("Resolve issues") }}
+                                </button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -94,6 +107,12 @@
 
         <input type="hidden" name="json" value="{{ json }}" />
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+        {% for itemtype, replacements_for_itemtype in replacements %}
+			{% for original_name, items_id in replacements_for_itemtype %}
+				<input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
+			{% endfor %}
+		{% endfor %}
     </form>
 {% endblock content_body %}
 

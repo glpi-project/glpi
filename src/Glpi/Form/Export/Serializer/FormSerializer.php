@@ -42,6 +42,7 @@ use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -101,6 +102,31 @@ final class FormSerializer extends AbstractFormSerializer
             } else {
                 $results->addInvalidForm($form_name);
             }
+        }
+
+        return $results;
+    }
+
+    public function resolveIssues(
+        DatabaseMapper $mapper,
+        string $json
+    ): ImportResultIssues {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        $results = new ImportResultIssues();
+        foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($requirements);
+
+            $results->addIssuesForForm(
+                $form_spec->name,
+                $mapper->getInvalidRequirements($requirements)
+            );
         }
 
         return $results;
