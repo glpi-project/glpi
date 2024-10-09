@@ -53,43 +53,74 @@
                     <tr>
                         <th class="w-50 px-4">{{ __("Form name") }}</th>
                         <th class="w-25 px-4">{{ __("Status") }}</th>
-                        <th class="w-25 px-4">{{ __("Action") }}</th>
+                        <th class="w-25 px-4">{{ _n('Action', 'Actions', 2) }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for forms_name in preview.getValidForms() %}
+                    {% macro render_row(forms_name, status_icon, status_text, show_resolve_issues_action, show_remove_action) %}
                         <tr>
-                            <td class="w-50 px-4">{{ forms_name }}</td>
-                            <td class="w-50 px-4">
+                            <td class="w-50 px-4 align-middle">{{ forms_name }}</td>
+                            <td class="w-50 px-4 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    <span>{{ __("Ready to be imported") }}</span>
+                                    <i class="ti {{ status_icon }} me-2"></i>
+                                    <span>{{ status_text }}</span>
                                 </div>
                             </td>
-                            <td></td>
+                            <td class="w-25 px-4 align-middle">
+                                {% if show_resolve_issues_action or show_remove_action %}
+                                    <div class="d-flex flex-row-reverse align-items-center gap-2">
+                                        {% if show_remove_action %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-link p-0 text-danger"
+                                                name="remove_form_name"
+                                                value="{{ forms_name }}"
+                                                formaction="{{ path('Form/Import/Remove') }}"
+                                                title="{{ __('Remove this form from the import list') }}"
+                                                aria-label="{{ __('Remove form') }}"
+                                            >
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        {% endif %}
+
+                                        {% if show_resolve_issues_action and show_remove_action %}
+                                        <span class="vr"></span>
+                                        {% endif %}
+
+                                        {% if show_resolve_issues_action %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-link p-0"
+                                                name="form_name"
+                                                value="{{ forms_name }}"
+                                                formaction="{{ path('Form/Import/ResolveIssues') }}"
+                                            >
+                                                {{ __("Resolve issues") }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
                         </tr>
+                    {% endmacro %}
+
+                    {% for forms_name in preview.getValidForms() %}
+                        {{ _self.render_row(
+                            forms_name,
+                            'ti-check text-success',
+                            __("Ready to be imported"),
+                            false,
+                            true
+                        ) }}
                     {% endfor %}
                     {% for forms_name in preview.getInvalidForms() %}
-                        <tr>
-                            <td class="w-50 px-4">{{ forms_name }}</td>
-                            <td class="w-25 px-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="ti ti-x text-danger me-2"></i>
-                                    <span>{{ __("Can't be imported") }}</span>
-                                </div>
-                            </td>
-                            <td class="w-25 px-4">
-                                <button
-                                    type="submit"
-                                    class="btn btn-link p-0"
-                                    name="form_name"
-                                    value="{{ forms_name }}"
-                                    formaction="{{ path('Form/Import/ResolveIssues') }}"
-                                >
-                                    {{ __("Resolve issues") }}
-                                </button>
-                            </td>
-                        </tr>
+                        {{ _self.render_row(
+                            forms_name,
+                            'ti-x text-danger',
+                            __("Can't be imported"),
+                            true,
+                            true
+                        ) }}
                     {% endfor %}
                 </tbody>
             </table>

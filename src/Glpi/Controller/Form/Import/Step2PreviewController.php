@@ -40,6 +40,7 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -54,10 +55,37 @@ final class Step2PreviewController extends AbstractController
         }
 
         $json = $this->getJsonFormFromRequest($request);
+        $replacements = $request->request->all()["replacements"] ?? [];
+
+        return $this->previewResponse($json, $replacements);
+    }
+
+    #[Route("/Form/Import/Remove", name: "glpi_form_import_remove", methods: "POST")]
+    public function removeForm(Request $request): Response
+    {
+        if (!Form::canCreate()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $json = $this->getJsonFormFromRequest($request);
+        $form_name = $request->request->get('remove_form_name');
+        $replacements = $request->request->all()["replacements"] ?? [];
+
+        $serializer = new FormSerializer();
+        $json = $serializer->removeFormFromJson($json, $form_name);
+
+        // If all forms have been removed, redirect to the first step
+        if (!$serializer->isFormsInJson($json)) {
+            return new RedirectResponse('/Form/Import');
+        }
+
+        return $this->previewResponse($json, $replacements);
+    }
+
+    private function previewResponse(string $json, array $replacements): Response
+    {
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
-
-        $replacements = $request->request->all()["replacements"] ?? [];
         foreach ($replacements as $itemtype => $replacements_for_itemtype) {
             foreach ($replacements_for_itemtype as $original_name => $items_id) {
                 $mapper->addMappedItem($itemtype, $original_name, $items_id);

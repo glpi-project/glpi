@@ -63,6 +63,19 @@ final class FormSerializer extends AbstractFormSerializer
         return 1;
     }
 
+    public function isFormsInJson(string $json): bool
+    {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        // Check if the forms list is empty
+        return !empty($export_specification->forms);
+    }
+
     /** @param array<Form> $forms */
     public function exportFormsToJson(array $forms): ExportResult
     {
@@ -132,6 +145,19 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         return $results;
+    }
+
+    public function removeFormFromJson(string $json, string $form_name): string
+    {
+        $export_specification = $this->deserialize($json);
+
+        // Filter the forms to remove the one that matches the given name
+        $export_specification->forms = array_filter(
+            $export_specification->forms,
+            fn($form_spec) => $form_spec->name !== $form_name
+        );
+
+        return $this->serialize($export_specification);
     }
 
     public function importFormsFromJson(

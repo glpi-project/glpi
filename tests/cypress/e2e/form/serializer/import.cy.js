@@ -51,11 +51,13 @@ describe ('Import forms', () => {
             cy.findByText("My valid form").should('exist');
             cy.findByText("Ready to be imported").should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
         });
         cy.get("@preview").eq(2).within(() => {
             cy.findByText("My invalid form").should('exist');
             cy.findByText("Can't be imported").should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
         });
 
         // Step 4: import
@@ -88,10 +90,12 @@ describe ('Import forms', () => {
             cy.findByText("My valid form").should('exist');
             cy.findByText("Ready to be imported").should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
         });
         cy.get("@preview").eq(2).within(() => {
             cy.findByText("My invalid form").should('exist');
             cy.findByText("Can't be imported").should('exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('exist').click();
         });
 
@@ -111,11 +115,13 @@ describe ('Import forms', () => {
             cy.findByText("My valid form").should('exist');
             cy.findByText("Ready to be imported").should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
         });
         cy.get("@preview").eq(2).within(() => {
             cy.findByText("My invalid form").should('exist');
             cy.findByText("Ready to be imported").should('exist');
             cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
         });
 
         // Step 4: import
@@ -132,6 +138,41 @@ describe ('Import forms', () => {
 
         // Go back to first step
         cy.findByRole('link', {'name': "Import another file"}).click();
+        cy.findByLabelText("Select your file").should('exist');
+    });
+
+    it('can remove forms from the import list', () => {
+        // Step 1: file selection
+        cy.visit('/front/form/form.php');
+        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
+
+        // Step 2: preview
+        cy.findByRole('button', {'name': "Preview import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByText("My valid form").should('exist');
+            cy.findByText("Ready to be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
+        });
+        cy.get("@preview").eq(2).within(() => {
+            cy.findByText("My invalid form").should('exist');
+            cy.findByText("Can't be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
+        });
+
+        // Remove the second form
+        cy.get("@preview").eq(2).findByRole("button", {'name': "Remove form"}).click();
+        cy.get("@preview").eq(1).should('exist');
+        cy.get("@preview").eq(2).should('not.exist');
+
+        // Remove the first form
+        cy.get("@preview").eq(1).findByRole("button", {'name': "Remove form"}).click();
+        cy.get("@preview").should('not.exist');
+
+        // Check if we are back to the first step
         cy.findByLabelText("Select your file").should('exist');
     });
 });
