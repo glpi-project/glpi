@@ -169,6 +169,7 @@ switch ($action) {
     case 'get_monaco_suggestions':
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);
+        return;
 }
 
 throw new BadRequestHttpException();
