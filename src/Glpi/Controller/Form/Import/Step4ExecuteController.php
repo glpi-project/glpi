@@ -44,16 +44,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class Step2PreviewController extends AbstractController
+final class Step4ExecuteController extends AbstractController
 {
-    #[Route("/Form/Import/Preview", name: "glpi_form_import_preview", methods: "POST")]
+    #[Route("/Form/Import/Execute", name: "glpi_form_import_execute", methods: "POST")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {
             throw new AccessDeniedHttpException();
         }
 
-        $json = $this->getJsonFormFromRequest($request);
+        // Get json from hidden input
+        $json = $request->request->get('json');
+
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
 
@@ -64,24 +66,10 @@ final class Step2PreviewController extends AbstractController
             }
         }
 
-        return $this->render("pages/admin/form/import/step2_preview.html.twig", [
-            'title'        => __("Preview import"),
-            'menu'         => ['admin', Form::getType()],
-            'preview'      => $serializer->previewImport($json, $mapper),
-            'json'         => $json,
-            'replacements' => $replacements,
+        return $this->render("pages/admin/form/import/step4_execute.html.twig", [
+            'title'   => __("Import results"),
+            'menu'    => ['admin', Form::getType()],
+            'results' => $serializer->importFormsFromJson($json, $mapper),
         ]);
-    }
-
-    private function getJsonFormFromRequest(Request $request): string
-    {
-        if ($request->request->has('json')) {
-            return $request->request->get('json');
-        }
-
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-        $file = $request->files->get('import_file');
-
-        return $file->getContent();
     }
 }

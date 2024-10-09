@@ -35,47 +35,25 @@
 
 namespace Glpi\Form\Export\Result;
 
-final class ImportResultPreview
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+
+final class ImportResultIssues
 {
-    /** @var string[] $valid_forms */
-    private array $valid_forms = [];
+    /** @var array<string, DataRequirementSpecification[]> $valid_forms */
+    private array $issues = [];
 
-    /** @var string[] $invalid_forms */
-    private array $invalid_forms = [];
-
-    /** @var string[] $fixed_forms */
-    private array $fixed_forms = [];
-
-    public function addValidForm(string $form_name): void
+    /**
+     * @param string $form_name
+     * @param DataRequirementSpecification[] $issues
+     */
+    public function addIssuesForForm(string $form_name, array $issues): void
     {
-        $this->valid_forms[] = $form_name;
+        $this->issues[$form_name] = $issues;
     }
 
-    /** @return string[] */
-    public function getValidForms(): array
+    /** @return array<string, DataRequirementSpecification[]> */
+    public function getIssues(): array
     {
-        return $this->valid_forms;
-    }
-
-    public function addInvalidForm(string $form_name): void
-    {
-        $this->invalid_forms[] = $form_name;
-    }
-
-    /** @return string[] */
-    public function getInvalidForms(): array
-    {
-        return $this->invalid_forms;
-    }
-
-    public function addFixedForm(string $form_name): void
-    {
-        $this->fixed_forms[] = $form_name;
-    }
-
-    /** @return string[] */
-    public function getFixedForms(): array
-    {
-        return $this->fixed_forms;
+        return $this->issues;
     }
 }

@@ -372,6 +372,45 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
     }
 
+    public function testPreviewImportWithFixedForm(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create an invalid form by setting it into a temporary entity
+        // that will be deleted later
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form->fields['entities_id'] = $entity->getID();
+
+        // Act: export the form; delete the temporary entity to make the form
+        // invalid; preview the import
+        $json = $this->exportForm($form);
+        $this->deleteItem(Entity::class, $entity->getID());
+        $preview = self::$serializer->previewImport(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Assert: the form should be invalid
+        $this->assertEquals([], $preview->getValidForms());
+        $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
+
+        // Add mapped item to fix the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+
+        // Act: preview the import again
+        $preview = self::$serializer->previewImport($json, $mapper);
+
+        // Assert: the form should be fixed
+        $this->assertEquals([$form->fields['name']], $preview->getValidForms());
+        $this->assertEquals([], $preview->getInvalidForms());
+    }
+
     public function testImportRequirementsAreCheckedInVisibleEntities(): void
     {
         $test_root_entity_id = $this->getTestRootEntity(only_id: true);
@@ -423,6 +462,45 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: import should have failed
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertCount(1, $import_result->getFailedFormImports());
+    }
+
+    public function testImportRequirementsAreNotCheckedAndFixed(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create a form with a temporary entity that will be deleted
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form->fields['entities_id'] = $entity->getID();
+
+        // Act: export the form; delete the entity to make the form invalid; import the form
+        $json = $this->exportForm($form);
+        $this->deleteItem(Entity::class, $entity->getID());
+        $import_result = self::$serializer->importFormsFromJson(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Assert: the import should fail
+        $this->assertCount(0, $import_result->getImportedForms());
+        $this->assertEquals([
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+        ], $import_result->getFailedFormImports());
+
+        // Add mapped item to fix the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+
+        // Act: import the form again
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertCount(1, $import_result->getImportedForms());
+        $this->assertCount(0, $import_result->getFailedFormImports());
     }
 
     // TODO: add a test later to make sure that requirements for each forms do

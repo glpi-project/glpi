@@ -38,7 +38,7 @@ describe ('Import forms', () => {
         cy.changeProfile('Super-Admin', true);
     });
 
-    it('can import forms', () => {
+    it('can import forms whitout resolve issues', () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
         cy.findByRole('button', {'name': "Import forms"}).click();
@@ -50,13 +50,15 @@ describe ('Import forms', () => {
         cy.get("@preview").eq(1).within(() => {
             cy.findByText("My valid form").should('exist');
             cy.findByText("Ready to be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
         });
         cy.get("@preview").eq(2).within(() => {
             cy.findByText("My invalid form").should('exist');
             cy.findByText("Can't be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('exist');
         });
 
-        // Step 3: import
+        // Step 4: import
         cy.findByRole('button', {'name': "Import"}).click();
         cy.findAllByRole('row').as('preview');
         cy.get("@preview").eq(1).within(() => {
@@ -66,6 +68,66 @@ describe ('Import forms', () => {
         cy.get("@preview").eq(2).within(() => {
             cy.findByText("My invalid form").should('exist');
             cy.findByText("Not imported").should('exist');
+        });
+
+        // Go back to first step
+        cy.findByRole('link', {'name': "Import another file"}).click();
+        cy.findByLabelText("Select your file").should('exist');
+    });
+
+    it('can import forms with resolve issues', () => {
+        // Step 1: file selection
+        cy.visit('/front/form/form.php');
+        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
+
+        // Step 2: preview
+        cy.findByRole('button', {'name': "Preview import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByText("My valid form").should('exist');
+            cy.findByText("Ready to be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+        });
+        cy.get("@preview").eq(2).within(() => {
+            cy.findByText("My invalid form").should('exist');
+            cy.findByText("Can't be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('exist').click();
+        });
+
+        // Step 3: resolve issues
+        cy.findAllByRole('row').as('issues');
+        cy.get("@issues").eq(1).within(() => {
+            cy.findByText("Missing entity").should('exist');
+            cy.document().within(() => {
+                cy.getDropdownByLabelText("Replacement value for 'Missing entity'").selectDropdownValue("»E2ETestEntity");
+            });
+        });
+
+        // Step 2: preview
+        cy.findByRole('button', {'name': "Preview import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByText("My valid form").should('exist');
+            cy.findByText("Ready to be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+        });
+        cy.get("@preview").eq(2).within(() => {
+            cy.findByText("My invalid form").should('exist');
+            cy.findByText("Ready to be imported").should('exist');
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+        });
+
+        // Step 4: import
+        cy.findByRole('button', {'name': "Import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByRole("link", {'name': "My valid form"}).should('exist');
+            cy.findByText("Imported").should('exist');
+        });
+        cy.get("@preview").eq(2).within(() => {
+            cy.findByRole("link", {'name': "My invalid form"}).should('exist');
+            cy.findByText("Imported").should('exist');
         });
 
         // Go back to first step

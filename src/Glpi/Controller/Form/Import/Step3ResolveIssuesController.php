@@ -35,34 +35,46 @@
 namespace Glpi\Controller\Form\Import;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class Step3ExecuteController extends AbstractController
+final class Step3ResolveIssuesController extends AbstractController
 {
-    #[Route("/Form/Import/Execute", name: "glpi_form_import_execute", methods: "POST")]
+    #[Route("/Form/Import/ResolveIssues", name: "glpi_form_import_resolve_issues", methods: "POST")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {
             throw new AccessDeniedHttpException();
         }
 
-        // Get json from hidden input
-        $json = $request->request->get('json');
+        // Get json and form name from the request.
+        $json      = $request->request->get('json');
+        $form_name = $request->request->get('form_name');
 
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
 
-        return $this->render("pages/admin/form/import/step3_execute.html.twig", [
-            'title'   => __("Import results"),
-            'menu'    => ['admin', Form::getType()],
-            'results' => $serializer->importFormsFromJson($json, $mapper),
+        $replacements = $request->request->all()["replacements"] ?? [];
+        foreach ($replacements as $itemtype => $replacements_for_itemtype) {
+            foreach ($replacements_for_itemtype as $original_name => $items_id) {
+                $mapper->addMappedItem($itemtype, $original_name, $items_id);
+            }
+        }
+
+        $issues = $serializer->resolveIssues($mapper, $json)->getIssues()[$form_name];
+        return $this->render("pages/admin/form/import/step3_resolve_issues.html.twig", [
+            'title'        => __("Resolve issues"),
+            'menu'         => ['admin', Form::getType()],
+            'form_name'    => $form_name,
+            'issues'       => $issues,
+            'json'         => $json,
+            'replacements' => $replacements,
         ]);
     }
 }
