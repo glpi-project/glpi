@@ -50,11 +50,11 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         $_POST["field"] = key(Rule::getActionsByType($_POST["sub_type"]));
     }
     if (!($item = getItemForItemtype($_POST["sub_type"]))) {
-        exit();
+        return;
     }
     /** @var Rule $item */
     if (!isset($_POST[$item->getRuleIdField()])) {
-        exit();
+        return;
     }
 
    // Existing action

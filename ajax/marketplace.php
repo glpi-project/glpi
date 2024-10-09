@@ -37,7 +37,7 @@
 // So we get a ajax answer in 5ms instead 100ms
 if (($_GET["action"] ?? null) === "get_dl_progress") {
     echo $_SESSION['marketplace_dl_progress'][$_GET['key']] ?? 0;
-    exit;
+    return;
 }
 
 Session::checkRight("config", UPDATE);
@@ -73,7 +73,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     if ($_POST["action"] == "suspend_plugin") {
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode(['success' => $marketplace_ctrl->suspendPlugin()]);
-        exit();
+        return;
     }
 
     echo MarketplaceView::getButtons($_POST['key']);

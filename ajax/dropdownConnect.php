@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownConnect.php")) {
 }
 
 if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromtype']))) {
-    exit();
+    return;
 }
 
 $fromitem->checkGlobal(UPDATE);

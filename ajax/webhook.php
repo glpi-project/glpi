@@ -52,17 +52,17 @@ switch ($action) {
             $response = Webhook::validateCRAChallenge($webhook->fields['url'], 'validate_cra_challenge', $_POST['secret']);
             header("Content-Type: application/json; charset=UTF-8");
             echo json_encode($response);
+            return;
         } else {
             throw new NotFoundHttpException();
         }
-        die();
     case 'get_events_from_itemtype':
         echo Dropdown::showFromArray(
             "event",
             Webhook::getDefaultEventsList(),
             ['display' => false]
         );
-        die();
+        return;
     case 'get_items_from_itemtype':
         if (array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())) {
             $object = new $_POST['itemtype']();
@@ -100,7 +100,7 @@ switch ($action) {
                 );
             }
         }
-        die();
+        return;
     case 'get_webhook_body':
         $webhook = new Webhook();
         $itemtype = $_POST['itemtype'];
@@ -135,7 +135,7 @@ switch ($action) {
             echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);
         }
 
-        die();
+        return;
     case 'update_payload_template':
         $webhook_id = $_POST['webhook_id'];
         $payload_template = $_POST['payload_template'] ?? '';
@@ -159,13 +159,13 @@ switch ($action) {
         } else {
             throw new NotFoundHttpException();
         }
-        die();
+        return;
     case 'resend':
         $result = QueuedWebhook::sendById($_POST['id']);
         if (!$result) {
             throw new BadRequestHttpException();
         }
-        die();
+        return;
     case 'get_monaco_suggestions':
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);

@@ -55,7 +55,7 @@ if (
 ) {
     // Security
     if (!is_subclass_of($_POST["itemtype"], "CommonDBTM")) {
-        exit();
+        return;
     }
 
     switch ($_POST["itemtype"]) {
@@ -114,7 +114,7 @@ if (
                         '_idor_token' => $_POST['_idor_token'] ?? ""
                     ])
                 ) {
-                    exit();
+                    return;
                 }
 
                 $itemtype = $_POST['itemtype'];

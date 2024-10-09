@@ -39,10 +39,10 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_POST['type'])) {
-    exit();
+    return;
 }
 if (!isset($_POST['parenttype'])) {
-    exit();
+    return;
 }
 
 if (

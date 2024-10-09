@@ -53,7 +53,7 @@ try {
             <div class="text-secondary">{{ text }}</div>
         </div>
 TWIG, $twig_params);
-    exit();
+    return;
 }
 
 $ma->showSubForm();

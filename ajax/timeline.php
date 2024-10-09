@@ -44,7 +44,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     if (
         !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
     ) {
-        exit();
+        return;
     }
 
     $taskClass = $parent::getType() . "Task";
@@ -74,10 +74,10 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
     if (!isset($_REQUEST['type'])) {
-        exit();
+        return;
     }
     if (!isset($_REQUEST['parenttype'])) {
-        exit();
+        return;
     }
 
     $item = getItemForItemtype($_REQUEST['type']);
@@ -88,7 +88,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
             sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
             E_USER_WARNING
         );
-        exit();
+        return;
     }
 
     $twig = TemplateRenderer::getInstance();
@@ -123,11 +123,11 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $foreignKey = $parent->getForeignKeyField();
         $params[$foreignKey] = $_REQUEST[$foreignKey];
         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
-        exit();
+        return;
     }
     if ($template === null) {
         echo __s('Access denied');
-        exit();
+        return;
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 }

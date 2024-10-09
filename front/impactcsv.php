@@ -35,14 +35,14 @@
 
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\ImpactCsvExport;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 $itemtype = $_GET['itemtype'] ?? '';
 $items_id = $_GET['items_id'] ?? '';
 
 // Check for mandatory params
 if (empty($itemtype) || empty($items_id)) {
-    http_response_code(400);
-    die();
+    throw new BadRequestHttpException();
 }
 
 // Check right

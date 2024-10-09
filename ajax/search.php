@@ -48,7 +48,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_REQUEST['action'])) {
-    die;
+    return;
 }
 
 // actions without IDOR
@@ -92,7 +92,7 @@ switch ($_REQUEST['action']) {
 }
 
 if (!Session::validateIDOR($_REQUEST)) {
-    die;
+    return;
 }
 
 // actions with IDOR

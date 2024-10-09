@@ -36,13 +36,13 @@
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
 if (!isset($_REQUEST["action"])) {
-    exit;
+    return;
 }
 
 if ($_REQUEST["action"] == "get_events") {
     header("Content-Type: application/json; charset=UTF-8");
     echo json_encode(Reservation::getEvents($_REQUEST));
-    exit;
+    return;
 }
 
 Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
@@ -50,13 +50,13 @@ Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
 if ($_REQUEST["action"] == "get_resources") {
     header("Content-Type: application/json; charset=UTF-8");
     echo json_encode(Reservation::getResources());
-    exit;
+    return;
 }
 
 if (($_POST['action'] ?? null) === "update_event") {
     $result = Reservation::updateEvent($_REQUEST);
     echo json_encode(['result' => $result]);
-    exit;
+    return;
 }
 
 Html::header_nocache();
