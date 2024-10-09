@@ -172,7 +172,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: foreach.emptyArray
 	'message' => '#^Empty array passed to foreach\\.$#',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
