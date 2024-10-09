@@ -1563,8 +1563,9 @@ class DbUtilsTest extends DbTestCase
     #[dataProvider('fixItemtypeCaseProvider')]
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
+        $name = 'glpi' . mt_rand();
         vfsStream::setup(
-            'glpi',
+            $name,
             null,
             [
                 'src' => [
@@ -1598,7 +1599,7 @@ class DbUtilsTest extends DbTestCase
             ]
         );
         $instance = new \DbUtils();
-        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'), [vfsStream::url('glpi/plugins')]);
+        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins")]);
         $this->assertEquals($expected, $result);
     }
 }

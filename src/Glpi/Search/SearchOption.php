@@ -55,6 +55,7 @@ final class SearchOption implements \ArrayAccess
      * @var array{id: int, name: string, field: string, table: string}
      */
     private array $search_opt_array;
+    private static $search_options_cache = [];
 
     public function __construct(array $search_opt_array)
     {
@@ -133,6 +134,10 @@ final class SearchOption implements \ArrayAccess
 
         $search = [];
 
+        $cache_key = $itemtype . '_' . $withplugins;
+        if (isset(self::$search_options_cache[$cache_key])) {
+            return self::$search_options_cache[$cache_key];
+        }
 
         $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
             // Check duplicate keys between new options and existing options
@@ -373,6 +378,7 @@ final class SearchOption implements \ArrayAccess
             }
         }
 
+        self::$search_options_cache[$cache_key] = $search[$itemtype];
         return $search[$itemtype];
     }
 
@@ -775,5 +781,10 @@ final class SearchOption implements \ArrayAccess
         }
 
         return $generated_id;
+    }
+
+    public static function clearSearchOptionCache(): void
+    {
+        self::$search_options_cache = [];
     }
 }
