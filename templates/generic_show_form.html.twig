@@ -48,7 +48,7 @@
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
-   {% set field_options = {
+   {% set common_field_options = {
        'locked_fields': item.getLockedFields(),
        'rand': rand,
    } %}
@@ -85,6 +85,8 @@
                <div class="row flex-row">
                   {% block form_fields %}
                       {% for field in field_order %}
+                          {% set field_options = common_field_options|merge(additional_field_options[field]|default({})) %}
+
                           {% if field is same as 'name' %}
                               {{ fields.autoNameField('name', item, (item_type == 'Contact' ? __('Surname') : __('Name')), withtemplate, field_options) }}
                           {% elseif field is same as 'firstname' %}
