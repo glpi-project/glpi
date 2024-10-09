@@ -155,7 +155,7 @@ if (($_POST['action'] ?? null) === 'update') {
 
     $item = getItemForItemtype($itemtype);
     if (!$item) {
-        throw new BadRequestHttpException('No item for this type');
+        throw new BadRequestHttpException();
     }
 
     $inputs = $_POST['inputs'];

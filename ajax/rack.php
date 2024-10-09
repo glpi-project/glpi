@@ -36,6 +36,7 @@
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 $this->setAjax();
 
@@ -48,7 +49,7 @@ if (!Session::haveRight('datacenter', UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 if (!isset($_REQUEST['action'])) {
-    exit();
+    throw new BadRequestHttpException();
 }
 
 $answer = [];

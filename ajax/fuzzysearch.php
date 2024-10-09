@@ -35,8 +35,6 @@
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
 $this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -44,8 +42,4 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-try {
-    echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);
-} catch (JsonException $e) {
-    throw new HttpException(500, 'Error encoding JSON.', $e);
-}
+echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);

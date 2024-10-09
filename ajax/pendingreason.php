@@ -49,7 +49,7 @@ if (Session::getCurrentInterface() !== "central") {
 // Read parameter and load pending reason
 $pending_reason = PendingReason::getById($_REQUEST['pendingreasons_id'] ?? null);
 if (!$pending_reason) {
-    throw new BadRequestHttpException('Expected pending reason id');
+    throw new BadRequestHttpException();
 }
 
 echo json_encode([

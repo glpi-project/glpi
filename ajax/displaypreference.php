@@ -55,9 +55,9 @@ if (isset($_POST["activate"])) {
     }
 } else if (isset($_POST['action']) && $_POST['action'] === 'update_order') {
     if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
-        throw new BadRequestHttpException('Missing input keys');
+        throw new BadRequestHttpException();
     }
     $setupdisplay->updateOrder($_POST['itemtype'], $_POST['users_id'], $_POST['opts']);
 } else {
-    throw new BadRequestHttpException('No input data');
+    throw new BadRequestHttpException();
 }

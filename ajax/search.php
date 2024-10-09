@@ -55,7 +55,7 @@ if (!isset($_REQUEST['action'])) {
 switch ($_REQUEST['action']) {
     case 'display_results':
         if (!isset($_REQUEST['itemtype'])) {
-            throw new BadRequestHttpException('Missing item type in input');
+            throw new BadRequestHttpException();
         }
 
         /** @var class-string<CommonDBTM> $itemtype */
