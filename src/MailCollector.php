@@ -726,7 +726,7 @@ class MailCollector extends CommonDBTM
                 $this->update([
                     'id' => $this->getID(),
                     'last_collect_date' => $_SESSION["glpi_currenttime"],
-                ]);
+                ], false);
 
                 return;
             }
@@ -989,7 +989,7 @@ class MailCollector extends CommonDBTM
                 $this->update([
                     'id' => $this->getID(),
                     'last_collect_date' => $_SESSION["glpi_currenttime"],
-                ]);
+                ], false);
 
               //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
                 $msg = sprintf(
