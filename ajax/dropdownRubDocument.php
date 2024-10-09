@@ -82,7 +82,7 @@ if (isset($_POST["rubdoc"])) {
             'entity'    => intval($_POST['entity']),
             'rand'      => intval($_POST['rand']),
             'condition' => ['glpi_documents.documentcategories_id' => (int)$_POST["rubdoc"]],
-            'value'     => $_POST['value'] ?? -1,
+            'value'     => (int)($_POST['value'] ?? -1),
         ]
     );
 }
