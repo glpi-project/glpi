@@ -80,5 +80,13 @@ if ($_GET['action'] === 'get_all_fields') {
     $custom_field->fields['field_options']['disabled'] = true;
     echo $custom_field->getFieldType()->getFormInput('', null);
     exit();
+} else if ($_GET['action'] === 'get_core_field_editor') {
+    header("Content-Type: text/html; charset=UTF-8");
+    $asset_definition = new AssetDefinition();
+    if (!$asset_definition->getFromDB($_GET['assetdefinitions_id'])) {
+        throw new NotFoundHttpException();
+    }
+    $asset_definition->showFieldOptionsForCoreField($_GET['key']);
+    exit();
 }
 http_response_code(400);

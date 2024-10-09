@@ -222,6 +222,44 @@ final class AssetDefinition extends AbstractDefinition
         );
     }
 
+    public function showFieldOptionsForCoreField(string $field_key): void
+    {
+        $all_fields = $this->getAllFields();
+        $field_display = $this->getDecodedFieldsField();
+        $field_match = array_filter($field_display, static fn ($field) => $field['key'] === $field_key);
+        $field_options = [];
+        if (!empty($field_match)) {
+            $field_options = reset($field_match)['field_options'] ?? [];
+        }
+
+        // Fake custom field to represent the core field
+        $custom_field = new CustomFieldDefinition();
+        $custom_field->fields['name'] = $field_key;
+        $custom_field->fields['label'] = $all_fields[$field_key]['text'];
+        $custom_field->fields['type'] = $all_fields[$field_key]['type'];
+        $custom_field->fields['itemtype'] = \Computer::class; // Doesn't matter what it is as long as it's not empty
+        $custom_field->fields['field_options'] = $field_options;
+
+        $twig_params = [
+            'options' => $custom_field->getFieldType()->getOptions(),
+            'key' => $field_key,
+        ];
+
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <form>
+                <input type="hidden" name="key" value="{{ key }}">
+                <div class="d-flex flex-wrap">
+                    {% for option in options %}
+                        {% if option.getKey() != 'disabled'%}
+                            {{ option.getFormInput()|raw }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </form>
+TWIG, $twig_params);
+    }
+
     public function prepareInputForAdd($input)
     {
         foreach (['capacities', 'profiles', 'translations', 'fields_display'] as $json_field) {
@@ -256,9 +294,11 @@ final class AssetDefinition extends AbstractDefinition
         if (array_key_exists('fields_display', $input)) {
             $formatted_fields_display = [];
             foreach ($input['fields_display'] as $field_order => $field_key) {
+                $field_options = $input['field_options'][$field_key] ?? [];
                 $formatted_fields_display[] = [
                     'order' => $field_order,
                     'key'   => $field_key,
+                    'field_options' => $field_options,
                 ];
             }
             $input['fields_display'] = json_encode($formatted_fields_display);
@@ -635,7 +675,7 @@ final class AssetDefinition extends AbstractDefinition
      *
      * @return array
      */
-    private function getDecodedFieldsField(): array
+    public function getDecodedFieldsField(): array
     {
         $fields_display = json_decode($this->fields['fields_display'] ?? '[]', associative: true) ?? [];
         if (!is_array($fields_display) || count($fields_display) === 0) {

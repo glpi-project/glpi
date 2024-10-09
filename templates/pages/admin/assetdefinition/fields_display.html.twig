@@ -46,6 +46,7 @@
     <template id="sortable-field-template">
         <div class="sortable-field d-flex align-items-center p-1 col-12 col-sm-6">
             <input type="hidden" name="fields_display[]" value="" />
+            <slot name="field_options"></slot>
             <div class="form-field row flex-grow-1">
                 <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
                     <slot name="field_label"></slot>
@@ -60,9 +61,6 @@
                     </button>
                     <button type="button" class="btn btn-ghost-danger btn-sm hide-field" title="{{ __("Hide") }}">
                         <i class="ti ti-eye-off"></i>
-                    </button>
-                    <button type="button" class="btn btn-ghost-danger btn-sm delete-field" title="{{ __("Delete") }}">
-                        <i class="ti ti-x"></i>
                     </button>
                 </div>
             </div>
@@ -104,7 +102,7 @@
             }) }}
         </div>
     </div>
-    <div class="card-body d-flex flex-wrap">
+    <div id="sortable-fields-container" class="card-body d-flex flex-wrap">
         <div class="col-12 col-xxl-12 flex-column">
             <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                 <div class="row flex-row align-items-start flex-grow-1">
@@ -144,10 +142,6 @@
                 const clone = template.content.cloneNode(true);
                 clone.querySelector('.sortable-field').setAttribute('data-customfield-id', selected_field.customfields_id ?? -1);
                 clone.querySelector('.sortable-field').setAttribute('data-key', key);
-                if (!is_custom_field) {
-                    clone.querySelector('.edit-field').setAttribute('disabled', 'disabled');
-                    clone.querySelector('.delete-field').setAttribute('disabled', 'disabled');
-                }
                 const fieldLabel = clone.querySelector('slot[name="field_label"]');
                 fieldLabel.textContent = selected_field.text ?? selected_field;
                 const input = clone.querySelector('input[name="fields_display[]"]');
@@ -211,11 +205,52 @@
             });
 
             $('#sortable-fields').on('click', '.edit-field', function() {
-                const field_id = $(this).closest('.sortable-field').attr('data-customfield-id');
-                viewAddEditSubItem{{ rand }}(field_id);
+                const field_el = $(this).closest('.sortable-field');
+                const field_id = field_el.attr('data-customfield-id');
+                if (field_id === undefined || field_id === '-1') {
+                    glpi_ajax_dialog({
+                        id: 'core_field_options_editor',
+                        appendTo: '#sortable-fields-container',
+                        title: field_el.find('label').text(),
+                        url: `{{ path('ajax/asset/assetdefinition.php') }}?action=get_core_field_editor&assetdefinitions_id={{ item.getID() }}&key=${field_el.attr('data-key')}`,
+                        buttons: [
+                            {
+                                id: 'save_core_field_options',
+                                label: '{{ _x('button', 'Save') }}',
+                                class: 'btn-primary',
+                            },
+                            {
+                                id: 'cancel_core_field_options',
+                                label: '{{ __('Cancel') }}',
+                            }
+                        ]
+                    });
+                } else {
+                    viewAddEditSubItem{{ rand }}(field_id);
+                }
             }).on('click', '.hide-field', function() {
                 const field_key = $(this).closest('.sortable-field').attr('data-key');
                 remove_field(field_key);
+            });
+
+            $('#sortable-fields-container').on('click', '#save_core_field_options', () => {
+                const key_field = $('#core_field_options_editor form input[name="key"]');
+                const field_key = key_field.val();
+                key_field.remove();
+                const field_options = $('#core_field_options_editor form').serializeArray();
+
+                const field_options_slot = $(`#sortable-fields .sortable-field[data-key="${field_key}"] slot[name="field_options"]`);
+
+                // Add field options as hidden inputs
+                field_options_slot.empty();
+                field_options.forEach((option) => {
+                    const name = option.name.replace('field_options', `field_options[${field_key}]`);
+                    field_options_slot.append(`<input type="hidden" name="${name}" value="${option.value}" />`);
+                });
+
+                $('#core_field_options_editor').modal('hide');
+            }).on('click', '#cancel_core_field_options', () => {
+                $('#core_field_options_editor').modal('hide');
             });
         });
     </script>
