@@ -3059,7 +3059,7 @@ class TicketTest extends DbTestCase
         $this->assertEquals($expected, $ticket->canTakeIntoAccount());
 
         // Check that computation of "takeintoaccount_delay_stat" can be prevented
-        sleep(1); // be sure to wait at least one second before updating
+        $this->modifyCurrentTime('+1 second'); // be sure to wait at least one second before updating
         $this->assertTrue(
             $ticket->update(
                 [
@@ -3386,7 +3386,7 @@ class TicketTest extends DbTestCase
             // Login with tech to be sure to be have rights to take into account
             $this->login('tech', 'tech');
 
-            sleep(1); // be sure to wait at least one second before updating
+            $this->modifyCurrentTime('+1 second'); // be sure to wait at least one second before updating
             $this->assertTrue(
                 $ticket->update(
                     $input + [

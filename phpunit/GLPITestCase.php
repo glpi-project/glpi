@@ -444,4 +444,18 @@ class GLPITestCase extends TestCase
         AssetDefinitionManager::unsetInstance();
         Dropdown::resetItemtypesStaticCache();
     }
+
+    /**
+     * Apply a DateTime modification using the given string.
+     * Examples:
+     * - $this->modifyCurrentTime('+1 second');
+     * - $this->modifyCurrentTime('+5 hours');
+     * - $this->modifyCurrentTime('-2 years');
+     */
+    protected function modifyCurrentTime(string $modification): void
+    {
+        $date = new DateTime(Session::getCurrentTime());
+        $date->modify($modification);
+        $_SESSION['glpi_currenttime'] = $date->format("Y-m-d H:i:s");
+    }
 }
