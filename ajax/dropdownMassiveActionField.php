@@ -39,7 +39,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype']))) {
-    exit();
+    return;
 }
 
 if (Infocom::canApplyOn($_POST["itemtype"])) {
@@ -66,7 +66,7 @@ if (
 ) {
     $search = SearchOption::getOptionsForItemtype($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {
-        exit();
+        return;
     }
 
     $search            = $search[$_POST["id_field"]];

@@ -56,7 +56,7 @@ if (
 ) {
    // Security
     if (!class_exists($_POST['itemtype'])) {
-        exit();
+        return;
     }
 
     $days   = 3;

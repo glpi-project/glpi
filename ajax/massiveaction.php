@@ -52,7 +52,7 @@ try {
                               __s('Warning') . "'><br><br>";
     echo "<span class='b'>" . $e->getMessage() . "</span><br>";
     echo "</div>";
-    exit();
+    return;
 }
 
 echo "<div class='center massiveactions'>";

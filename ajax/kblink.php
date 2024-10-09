@@ -50,7 +50,7 @@ Session::checkLoginUser();
 if (isset($_POST["table"], $_POST["value"])) {
     // Security
     if (!$DB->tableExists($_POST['table'])) {
-        exit();
+        return;
     }
 
     if (isset($_POST['withlink'])) {
@@ -61,7 +61,7 @@ if (isset($_POST["table"], $_POST["value"])) {
                 '_idor_token' => $_POST['_idor_token'] ?? ""
             ])
         ) {
-            exit();
+            return;
         }
         $item = new $itemtype();
         $item->getFromDB((int)$_POST["value"]);

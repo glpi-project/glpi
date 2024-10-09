@@ -46,7 +46,7 @@ if (
     !$CFG_GLPI["use_public_faq"]
     && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])
 ) {
-    exit;
+    return;
 }
 
 $_SESSION['kb_cat_id'] = $_REQUEST['cat_id'] ?? 0;

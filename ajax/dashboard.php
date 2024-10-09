@@ -38,7 +38,7 @@ use Glpi\Dashboard\Grid;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 if (!isset($_REQUEST["action"])) {
-    exit;
+    return;
 }
 
 // Parse stringified JSON payload (Used to preserve integers)
@@ -71,7 +71,7 @@ switch ($_POST['action'] ?? null) {
             $_POST['title']   ?? "",
             $_POST['context'] ?? ""
         );
-        exit;
+        return;
 
     case 'save_items':
         if (!$dashboard->canUpdateCurrent()) {
@@ -80,7 +80,7 @@ switch ($_POST['action'] ?? null) {
 
         $dashboard->saveitems($_POST['items'] ?? []);
         $dashboard->saveTitle($_POST['title'] ?? "");
-        exit;
+        return;
 
     case 'save_rights':
         if (!$dashboard->canUpdateCurrent()) {
@@ -89,7 +89,7 @@ switch ($_POST['action'] ?? null) {
 
         $dashboard->setPrivate($_POST['is_private'] != '0');
         $dashboard->saveRights($_POST['rights'] ?? []);
-        exit;
+        return;
 
     case 'save_filter_data':
         if (!$dashboard->canViewCurrent()) {
@@ -97,7 +97,7 @@ switch ($_POST['action'] ?? null) {
         }
 
         $dashboard->saveFilter($_POST['filters'] ?? []);
-        exit;
+        return;
 
     case 'delete_dashboard':
         if (!$dashboard->canDeleteCurrent()) {
@@ -105,12 +105,12 @@ switch ($_POST['action'] ?? null) {
         }
 
         echo $dashboard->delete(['key' => $_POST['dashboard']]);
-        exit;
+        return;
 
     case 'set_last_dashboard':
         $grid = new Grid($_POST['dashboard'] ?? "");
         $grid->setLastDashboard($_POST['page'], $_POST['dashboard']);
-        exit;
+        return;
 
     case 'clone_dashboard':
         if (!Session::haveRight('dashboard', CREATE) || !$dashboard->canViewCurrent()) {
@@ -119,14 +119,14 @@ switch ($_POST['action'] ?? null) {
 
         $new_dashboard = $dashboard->cloneCurrent();
         echo json_encode($new_dashboard);
-        exit;
+        return;
 
     case 'disable_placeholders':
         if (!Session::haveRight(Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         Config::setConfigurationValues('core', ['is_demo_dashboards' => 0]);
-        exit();
+        return;
 }
 
 switch ($_GET['action'] ?? null) {
@@ -136,7 +136,7 @@ switch ($_GET['action'] ?? null) {
         }
 
         echo $dashboard->getFilter();
-        exit;
+        return;
 }
 
 \Glpi\Debug\Profiler::getInstance()->start('Grid::construct');

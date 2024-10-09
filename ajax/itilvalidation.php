@@ -56,7 +56,7 @@ if ($validationtemplates_id === null) {
     echo json_encode([
         'content' => ""
     ]);
-    die;
+    return;
 }
 
 // Mandatory parameter: items_id

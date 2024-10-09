@@ -53,7 +53,7 @@ if ($solutiontemplates_id === null) {
     echo json_encode([
         'content' => ""
     ]);
-    die;
+    return;
 }
 
 // We can't render the twig template at this state for some cases (e.g. massive

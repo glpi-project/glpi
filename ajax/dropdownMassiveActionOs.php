@@ -39,7 +39,7 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype']))) {
-    exit();
+    return;
 }
 
 $item::dropdown();
