@@ -573,7 +573,7 @@ class Conf extends CommonGLPI
         echo "<tr class='tab_bg_1'>";
 
         echo "<td>";
-        echo "<label for='dropdown_entities_id_id_default$rand'>";
+        echo "<label for='dropdown_entities_id_default$rand'>";
         echo __s('Default entity');
         echo "</label>";
         echo "</td>";
@@ -889,7 +889,7 @@ class Conf extends CommonGLPI
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan=4 >" . __s('Agent cleanup') . "</th></tr>";
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __s('Update agents who have not contacted the server for (in days)') . "</td>";
+        echo "<td><label for='dropdown_stale_agents_delay$rand'>" . __s('Update agents who have not contacted the server for (in days)') . "</label></td>";
         echo "<td width='20%'>";
         Dropdown::showNumber(
             'stale_agents_delay',
@@ -897,11 +897,12 @@ class Conf extends CommonGLPI
                 'value' => $config['stale_agents_delay'] ?? 0,
                 'min'   => 1,
                 'max'   => 1000,
-                'toadd' => ['0' => __('Disabled')]
+                'toadd' => ['0' => __('Disabled')],
+                'rand'  => $rand
             ]
         );
         echo "</td>";
-        echo "<td>" . _sn('Action', 'Actions', 1) . "</td>";
+        echo "<td><label for='dropdown_stale_agents_action$rand'>" . _sn('Action', 'Actions', 1) . "</label></td>";
         echo "<td width='20%'>";
         //action
         $action = self::getDefaults()['stale_agents_action'];
@@ -914,7 +915,8 @@ class Conf extends CommonGLPI
             [
                 'values' => importArrayFromDB($action),
                 'on_change' => 'changestatus();',
-                'multiple' => true
+                'multiple' => true,
+                'rand' => $rand
             ]
         );
         //if action == action_status => show blocation else hide blocaction
