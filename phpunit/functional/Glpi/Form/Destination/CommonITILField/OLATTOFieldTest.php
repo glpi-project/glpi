@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\OLATTOField;
 use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -165,7 +166,7 @@ final class OLATTOFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['ola_tto' => $config->jsonSerialize()]],
+            ['config' => [OLATTOField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

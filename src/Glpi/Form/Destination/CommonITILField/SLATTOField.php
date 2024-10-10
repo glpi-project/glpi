@@ -42,12 +42,6 @@ use SLM;
 final class SLATTOField extends SLMField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'sla_tto';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("SLA TTO");

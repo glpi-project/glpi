@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\OLATTRField;
 use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -165,7 +166,7 @@ final class OLATTRFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['ola_ttr' => $config->jsonSerialize()]],
+            ['config' => [OLATTRField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

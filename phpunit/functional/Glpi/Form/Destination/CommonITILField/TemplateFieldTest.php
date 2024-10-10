@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -161,6 +162,7 @@ final class TemplateFieldTest extends DbTestCase
         TemplateFieldConfig $config,
         int $expected_tickettemplates_id
     ): Ticket {
+
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -168,7 +170,7 @@ final class TemplateFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['template' => $config->jsonSerialize()]],
+            ['config' => [TemplateField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

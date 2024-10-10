@@ -122,8 +122,6 @@ final class ContentFieldTest extends DbTestCase
         ?SimpleValueConfig $config,
         array $answers,
     ): Ticket {
-        $content_field = new ContentField();
-
         // Insert config
         if ($config !== null) {
             $destinations = $form->getDestinations();
@@ -134,8 +132,8 @@ final class ContentFieldTest extends DbTestCase
                 $destination->getId(),
                 [
                     'config' => [
-                        $content_field->getKey() => $config->jsonSerialize(),
-                        $content_field->getAutoConfigKey() => false,
+                        ContentField::getKey() => $config->jsonSerialize(),
+                        ContentField::getAutoConfigKey() => false,
                     ]
                 ],
                 ["config"],

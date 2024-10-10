@@ -49,12 +49,6 @@ use Ticket;
 class AssociatedItemsField extends AbstractConfigField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'associated_items';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("Associated items");

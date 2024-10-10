@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Entity;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -234,7 +235,7 @@ final class EntityFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['entity' => $config->jsonSerialize()]],
+            ['config' => [EntityField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

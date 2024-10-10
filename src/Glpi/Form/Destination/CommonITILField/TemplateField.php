@@ -58,12 +58,6 @@ class TemplateField extends AbstractConfigField
     }
 
     #[Override]
-    public static function getKey(): string
-    {
-        return 'template';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return _n('Template', 'Templates', 1);

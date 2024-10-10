@@ -92,8 +92,6 @@ final class ITILTaskFieldTest extends DbTestCase
         ITILTaskFieldConfig $config,
         array $expected_itiltasks
     ): void {
-        $field = new ITILTaskField();
-
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -101,7 +99,7 @@ final class ITILTaskFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => [$field->getKey() => $config->jsonSerialize()]],
+            ['config' => [ITILTaskField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

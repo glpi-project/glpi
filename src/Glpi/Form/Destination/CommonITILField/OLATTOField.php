@@ -42,12 +42,6 @@ use SLM;
 final class OLATTOField extends SLMField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'ola_tto';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("OLA TTO");

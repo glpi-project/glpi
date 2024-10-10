@@ -254,8 +254,6 @@ final class UrgencyFieldTest extends DbTestCase
         Form $form,
         UrgencyFieldConfig $config,
     ): void {
-        $field = new UrgencyField();
-
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -263,7 +261,7 @@ final class UrgencyFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => [$field->getKey() => $config->jsonSerialize()]],
+            ['config' => [UrgencyField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
     }

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -258,7 +259,7 @@ final class LocationFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['location' => $config->jsonSerialize()]],
+            ['config' => [LocationField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

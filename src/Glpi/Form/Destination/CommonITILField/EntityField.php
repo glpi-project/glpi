@@ -48,12 +48,6 @@ use Override;
 class EntityField extends AbstractConfigField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'entity';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return _n("Entity", "Entities", 1);
