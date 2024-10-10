@@ -2468,12 +2468,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Inventory/Asset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	// identifier: property.onlyWritten
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\Monitor\\:\\:\\$import_monitor_on_partial_sn is never read, only written\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Monitor.php',
-];
-$ignoreErrors[] = [
 	// identifier: property.notFound
 	'message' => '#^Access to an undefined property object\\:\\:\\$instantiation_type\\.$#',
 	'count' => 1,

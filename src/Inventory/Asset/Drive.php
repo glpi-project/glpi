@@ -41,6 +41,9 @@ use Glpi\Inventory\Conf;
 
 class Drive extends Device
 {
+    /** @var Conf */
+    private Conf $conf;
+
     private $harddrives;
     private $prepared_harddrives = [];
 
@@ -72,10 +75,13 @@ class Drive extends Device
             }
         }
         if (count($hdd)) {
-            $this->harddrives = new HardDrive($this->item, $hdd);
-            $prep_hdds = $this->harddrives->prepare();
-            if (defined('TU_USER')) {
-                $this->prepared_harddrives = $prep_hdds;
+            $this->harddrives = new HardDrive($this->item);
+            if ($this->harddrives->checkConf($this->conf)) {
+                $this->harddrives->setData($hdd);
+                $prep_hdds = $this->harddrives->prepare();
+                if (defined('TU_USER')) {
+                    $this->prepared_harddrives = $prep_hdds;
+                }
             }
         }
 
@@ -124,6 +130,7 @@ class Drive extends Device
 
     public function checkConf(Conf $conf): bool
     {
+        $this->conf = $conf;
         return $conf->component_drive == 1;
     }
 
