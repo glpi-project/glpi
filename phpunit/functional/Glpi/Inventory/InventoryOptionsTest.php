@@ -471,6 +471,7 @@ JSON;
         ]);
         $this->assertCount(2, $item_devices);
     }
+
     public function testImportPeripherals()
     {
         /** @var \DBmysql $DB */
@@ -501,15 +502,22 @@ JSON;
         $this->assertSame('Unit Tests Computer', $computer->fields['name']);
 
         //check no peripheral has been created
-        $item_devices = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+        $peripherals = $DB->request([
+            'FROM' => \Peripheral::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID()
-                /*'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()*/
+                'name' => $json->content->usbdevices[0]->name
             ]
         ]);
-        $this->assertCount(0, $item_devices);
+        var_export(iterator_to_array($peripherals));
+        $this->assertCount(0, $peripherals);
+        $item_peripherals = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Peripheral::class
+            ]
+        ]);
+        $this->assertCount(0, $item_peripherals);
 
         //enable peripherals import
         $this->login();
@@ -524,14 +532,400 @@ JSON;
         $this->doInventory($json);
 
         //check peripherals has been created
+        $peripherals = $DB->request([
+            'FROM' => \Peripheral::getTable(),
+            'WHERE' => [
+                'name' => $json->content->usbdevices[0]->name
+            ]
+        ]);
+        $this->assertCount(1, $peripherals);
+        $item_peripherals = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Peripheral::class
+            ]
+        ]);
+        $this->assertCount(1, $item_peripherals);
+    }
+
+    public function testImportMonitors()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json = json_decode($this->json_computer);
+        $json->content->monitors = [
+            (object)[
+                'caption' => 'DJCP6',
+                'serial' => 'AFGHHDR0'
+            ]
+        ];
+
+        //disable monitors import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_monitor' => 0
+            ])
+        );
+        $this->logout();
+
+        $inventory = $this->doInventory($json);
+        $computer = $inventory->getItem();
+        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
+
+        //check no monitor has been created
+        $monitors = $DB->request([
+            'FROM' => \Monitor::getTable(),
+            'WHERE' => [
+                'name' => $json->content->monitors[0]->caption
+            ]
+        ]);
+        $this->assertCount(0, $monitors);
         $item_devices = $DB->request([
             'FROM' => \Computer_Item::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID()
-                /*'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()*/
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Monitor::class
+            ]
+        ]);
+        $this->assertCount(0, $item_devices);
+
+        //enable monitor import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_monitor' => 1
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($json);
+
+        //check monitors has been created
+        $monitors = $DB->request([
+            'FROM' => \Monitor::getTable(),
+            'WHERE' => [
+                'name' => $json->content->monitors[0]->caption
+            ]
+        ]);
+        $this->assertCount(1, $monitors);
+        $item_devices = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Monitor::class
             ]
         ]);
         $this->assertCount(1, $item_devices);
+    }
+
+    public function testImportPrinters()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json = json_decode($this->json_computer);
+        $json->content->printers = [
+            (object)[
+                'name' => 'HP Color LaserJet Pro MFP M476 PCL 6',
+                'serial' => 'printerserial'
+            ]
+        ];
+
+        //disable printers import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_printer' => 0
+            ])
+        );
+        $this->logout();
+
+        $inventory = $this->doInventory($json);
+        $computer = $inventory->getItem();
+        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
+
+        //check no printer has been created
+        $printers = $DB->request([
+            'FROM' => \Printer::getTable(),
+            'WHERE' => [
+                'name' => $json->content->printers[0]->name
+            ]
+        ]);
+        $this->assertCount(0, $printers);
+        $item_devices = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Printer::class
+            ]
+        ]);
+        $this->assertCount(0, $item_devices);
+
+        //enable printer import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_printer' => 1
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($json);
+
+        //check printers has been created
+        $printers = $DB->request([
+            'FROM' => \Printer::getTable(),
+            'WHERE' => [
+                'name' => $json->content->printers[0]->name
+            ]
+        ]);
+        $this->assertCount(1, $printers);
+        $item_devices = $DB->request([
+            'FROM' => \Computer_Item::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID(),
+                'itemtype' => \Printer::class
+            ]
+        ]);
+        $this->assertCount(1, $item_devices);
+    }
+
+    public function testImportSoftware()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json = json_decode($this->json_computer);
+        $json->content->softwares = [
+            (object)[
+                'arch' => 'x86_64',
+                'name' => 'My Software',
+                'version' => '1.0'
+            ]
+        ];
+
+        //disable software import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_software' => 0
+            ])
+        );
+        $this->logout();
+
+        $inventory = $this->doInventory($json);
+        $computer = $inventory->getItem();
+        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
+
+        //check no software has been created
+        $software = $DB->request([
+            'FROM' => \Software::getTable(),
+            'WHERE' => [
+                'name' => 'My Software'
+            ]
+        ]);
+        $this->assertCount(0, $software);
+        $item_software = $DB->request([
+            'FROM' => \Item_SoftwareVersion::getTable(),
+            'WHERE' => [
+                'items_id' => $computer->getID(),
+                'itemtype' => \Computer::class
+            ]
+        ]);
+        $this->assertCount(0, $item_software);
+
+        //enable software import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_software' => 1
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($json);
+
+        //check software has been created
+        $software = $DB->request([
+            'FROM' => \Software::getTable(),
+            'WHERE' => [
+                'name' => 'My Software'
+            ]
+        ]);
+        $this->assertCount(1, $software);
+        $item_software = $DB->request([
+            'FROM' => \Item_SoftwareVersion::getTable(),
+            'WHERE' => [
+                'items_id' => $computer->getID(),
+                'itemtype' => \Computer::class
+            ]
+        ]);
+        $this->assertCount(1, $item_software);
+    }
+
+    public function testImportAntivirus()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json = json_decode($this->json_computer);
+        $json->content->antivirus = [
+            (object)[
+                'name' => 'Cartapus Antivirus',
+                'version' => '1.2.3.4.5678',
+                'enabled' => true,
+                'guid' => '12345678-1234-1234-1234-123456789012'
+            ]
+        ];
+
+        //disable antivirus import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_antivirus' => 0
+            ])
+        );
+        $this->logout();
+
+        $inventory = $this->doInventory($json);
+        $computer = $inventory->getItem();
+        $this->assertSame('Unit Tests Computer', $computer->fields['name']);
+
+        //check no antivirus has been created
+        $item_av = $DB->request([
+            'FROM' => \ComputerAntivirus::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID()
+            ]
+        ]);
+        $this->assertCount(0, $item_av);
+
+        //enable antivirus import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_antivirus' => 1
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($json);
+
+        //check antivirus has been created
+        $item_av = $DB->request([
+            'FROM' => \ComputerAntivirus::getTable(),
+            'WHERE' => [
+                'computers_id' => $computer->getID()
+            ]
+        ]);
+        $this->assertCount(1, $item_av);
+    }
+
+    public function testImportUnmanageds(): void
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+            <PORTS>
+              <PORT>
+                <CONNECTIONS>
+                  <CDP>1</CDP>
+                  <CONNECTION>
+                    <IFNUMBER>52</IFNUMBER>
+                    <IP>10.100.200.10</IP>
+                    <SYSDESCR>ExtremeXOS (X440G2-48p-10G4) version 31.7.1.4 31.7.1.4-patch1-77 by release-manager on Mon Nov 21 08:43:09 EST 2022</SYSDESCR>
+                    <SYSMAC>00:04:96:f5:82:f5</SYSMAC>
+                    <SYSNAME>SW_BATA-RdJ-vdi-1</SYSNAME>
+                  </CONNECTION>
+                </CONNECTIONS>
+                <IFALIAS>BAT-A</IFALIAS>
+                <IFDESCR>X670G2-48x-4q Port 1</IFDESCR>
+                <IFINERRORS>0</IFINERRORS>
+                <IFINOCTETS>2421130293</IFINOCTETS>
+                <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                <IFLASTCHANGE>0:01:51.00</IFLASTCHANGE>
+                <IFMTU>1500</IFMTU>
+                <IFNAME>1:1</IFNAME>
+                <IFNUMBER>1001</IFNUMBER>
+                <IFOUTERRORS>0</IFOUTERRORS>
+                <IFOUTOCTETS>1619061805</IFOUTOCTETS>
+                <IFPORTDUPLEX>3</IFPORTDUPLEX>
+                <IFSPEED>10000000000</IFSPEED>
+                <IFSTATUS>1</IFSTATUS>
+                <IFTYPE>6</IFTYPE>
+                <MAC>00:04:96:98:db:22</MAC>
+              </PORT>
+            </PORTS>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //disable unmanaged import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_unmanaged' => 0
+            ])
+        );
+        $this->logout();
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $network_device_id);
+
+        $unmanaged = new \Unmanaged();
+        $this->assertFalse($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']));
+
+        //enable unmanaged import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_unmanaged' => 1
+            ])
+        );
+        $this->logout();
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $network_device_id);
+
+        $unmanaged = new \Unmanaged();
+        $this->assertTrue($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']));
     }
 }
