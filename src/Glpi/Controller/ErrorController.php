@@ -36,7 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Access\AbstractHttpException;
+use Glpi\Exception\Http\InvalidCsrfHttpException;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -58,12 +58,6 @@ class ErrorController extends AbstractController
 
         ErrorHandler::getInstance()->handleException($exception, true);
 
-        if ($exception instanceof AbstractHttpException) {
-            $exception->setRequest($request);
-
-            return $exception->asResponse();
-        }
-
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         return new StreamedResponse(fn() => $this->renderErrorPage($exception), $status_code);
@@ -84,6 +78,10 @@ class ErrorController extends AbstractController
                 case ($exception instanceof BadRequestHttpException):
                     $title   = __('Invalid request');
                     $message = __('Invalid request parameters.');
+                    break;
+                case ($exception instanceof InvalidCsrfHttpException):
+                    $title   = __('Access denied');
+                    $message = __('The action you have requested is not allowed.');
                     break;
                 case ($exception instanceof NotFoundHttpException):
                     $title   = __('Item not found');

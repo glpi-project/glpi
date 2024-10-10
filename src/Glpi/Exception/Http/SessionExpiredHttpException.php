@@ -32,24 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+namespace Glpi\Exception\Http;
 
-use Glpi\Application\View\TemplateRenderer;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class RequiresHttpsException extends AbstractHttpException
+class SessionExpiredHttpException extends HttpException
 {
-    public function asResponse(): Response
+    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
-        $request = $this->getRequest();
-
-        $cnt = TemplateRenderer::getInstance()->render(
-            'pages/https_only.html.twig',
-            [
-                'secured_url' => 'https://' . $request->getHost() . $request->getRequestUri(),
-            ]
-        );
-
-        return new Response($cnt, 400);
+        parent::__construct(401, $message, $previous, $headers, $code);
     }
 }
