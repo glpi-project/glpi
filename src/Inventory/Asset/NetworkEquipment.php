@@ -47,9 +47,9 @@ class NetworkEquipment extends MainAsset
     private $management_ports = [];
 
     protected $extra_data = [
-        'network_device' => null,
-        'network_components' => null,
-        \Glpi\Inventory\Asset\NetworkPort::class => null
+        'network_device'                          => null,
+        'network_components'                      => null,
+        '\Glpi\Inventory\Asset\NetworkPort'       => null
     ];
 
     protected function getModelsFieldName(): string
@@ -207,7 +207,7 @@ class NetworkEquipment extends MainAsset
                 $np->setEntityID($this->getEntityID());
                 $np->prepare();
                 $np->handleLinks();
-                $this->assets = [\Glpi\Inventory\Asset\NetworkPort::class => [$np]];
+                $this->assets = ['\Glpi\Inventory\Asset\NetworkPort' => [$np]];
             }
         }
 
@@ -219,11 +219,11 @@ class NetworkEquipment extends MainAsset
                 $np->setEntityID($this->getEntityID());
                 $np->prepare();
                 $np->handleLinks();
-                if (!isset($this->assets[\Glpi\Inventory\Asset\NetworkPort::class])) {
+                if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
                     $np->addNetworkPorts($mports);
-                    $this->assets[\Glpi\Inventory\Asset\NetworkPort::class] = [$np];
+                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
                 } else {
-                    $this->assets[\Glpi\Inventory\Asset\NetworkPort::class][0]->addNetworkPorts($np->getNetworkPorts());
+                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
                 }
             }
         }

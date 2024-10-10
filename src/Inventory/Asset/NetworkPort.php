@@ -67,7 +67,7 @@ class NetworkPort extends InventoryAsset
         $this->aggregates = [];
         $this->vlans = [];
 
-        $this->extra_data['Glpi\Inventory\Asset\\' . $this->item->getType()] = null;
+        $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()] = null;
         $mapping = [
             'ifname'       => 'name',
             'ifnumber'     => 'logical_number',
@@ -614,7 +614,7 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data['Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts();
+        $this->ports += $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts();
         $this->handlePorts();
     }
 
@@ -778,12 +778,12 @@ class NetworkPort extends InventoryAsset
 
     public function handlePorts($itemtype = null, $items_id = null)
     {
-        $mainasset = $this->extra_data['Glpi\Inventory\Asset\\' . $this->item->getType()];
+        $mainasset = $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()];
 
         //remove management port for Printer on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
         if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
-            if (empty($this->extra_data['Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts())) {
+            if (empty($this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
