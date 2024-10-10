@@ -776,4 +776,53 @@ final class SearchOption implements \ArrayAccess
 
         return $generated_id;
     }
+
+    public function getTableField(): string
+    {
+        return "{$this['table']}.{$this['field']}";
+    }
+
+    /**
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param bool $meta
+     * @return string
+     */
+    public function getTableMetaSuffix(string $itemtype, bool $meta = false): string
+    {
+        return ($meta && $itemtype::getTable() !== $this['table']) ? ("_" . $itemtype) : '';
+    }
+
+    /**
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param bool $meta
+     * @return string
+     */
+    public function getTableReference(string $itemtype, bool $meta = false): string
+    {
+        $table = $this['table'];
+        $is_fkey_composite_on_self = getTableNameForForeignKeyField($this["linkfield"]) === $table
+            && $this["linkfield"] !== getForeignKeyFieldForTable($table);
+        $orig_table = SearchEngine::getOrigTableName($itemtype);
+        if (
+            ($table !== 'asset_types')
+            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            && ($this["linkfield"] !== getForeignKeyFieldForTable($table))
+        ) {
+            $table   .= "_" . $this["linkfield"];
+        }
+
+        if (isset($this['joinparams'])) {
+            $complexjoin = \Search::computeComplexJoinID($this['joinparams']);
+
+            if (!empty($complexjoin)) {
+                $table .= "_" . $complexjoin;
+            }
+        }
+
+        if ($meta && $itemtype::getTable() !== $this['table']) {
+            $table .= "_" . $itemtype;
+        }
+
+        return $table;
+    }
 }
