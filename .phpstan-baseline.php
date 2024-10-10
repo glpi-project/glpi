@@ -4396,7 +4396,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [

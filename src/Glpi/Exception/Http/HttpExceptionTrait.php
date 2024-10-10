@@ -36,7 +36,7 @@ namespace Glpi\Exception\Http;
 
 trait HttpExceptionTrait
 {
-    private ?string $message_to_display;
+    private ?string $message_to_display = null;
 
     /**
      * Get the message to display.

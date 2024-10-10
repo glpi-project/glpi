@@ -1095,7 +1095,7 @@ class Session
                 $valid_user = false;
             } elseif (
                 $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > $_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0
+                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
             ) {
                 Session::reloadCurrentProfile();
                 $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
@@ -1267,7 +1267,7 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
-                $info .= $right . "($right_name), ";
+                $info .= $right . " ($right_name), ";
             }
             $info = substr($info, 0, -2);
             $info .= " for $module";
@@ -1311,7 +1311,7 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);
-                $info .= $right . "($right_name) for module $mod, ";
+                $info .= $right . " ($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
             throw new AccessDeniedHttpException($info);

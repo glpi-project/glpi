@@ -36,10 +36,10 @@ namespace Glpi\Controller;
 
 use CommonDropdown;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Html;
 use Search;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,11 +52,11 @@ final class DropdownController extends AbstractController
         $class = $request->attributes->getString('class');
 
         if (!$class) {
-            throw new BadRequestException('The "class" attribute is mandatory for dropdown routes.');
+            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
         }
 
         if (!\is_subclass_of($class, CommonDropdown::class)) {
-            throw new BadRequestException('The "class" attribute is mandatory for dropdown routes.');
+            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
         }
 
         return new HeaderlessStreamedResponse(function () use ($class, $request) {

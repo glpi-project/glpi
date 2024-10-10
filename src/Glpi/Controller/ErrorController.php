@@ -128,7 +128,7 @@ class ErrorController extends AbstractController
 
     private function renderErrorPage(\Throwable $exception): void
     {
-        $title = __('Error');
+        $title = _n('Error', 'Errors', 1);
         $message = __('An unexpected error has occurred.');
 
         if ($exception instanceof HttpExceptionInterface) {
@@ -155,7 +155,7 @@ class ErrorController extends AbstractController
 
             if (
                 $exception instanceof \Glpi\Exception\Http\HttpExceptionInterface
-                && ($custom_message = $exception->getMessage()) !== ''
+                && ($custom_message = $exception->getMessageToDisplay()) !== null
             ) {
                 $message = $custom_message;
             }
