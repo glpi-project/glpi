@@ -42,6 +42,7 @@ use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -58,6 +59,19 @@ final class FormSerializer extends AbstractFormSerializer
     public function getVersion(): int
     {
         return 1;
+    }
+
+    public function isFormsInJson(string $json): bool
+    {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        // Check if the forms list is empty
+        return !empty($export_specification->forms);
     }
 
     /** @param array<Form> $forms */
@@ -104,6 +118,44 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         return $results;
+    }
+
+    public function resolveIssues(
+        DatabaseMapper $mapper,
+        string $json
+    ): ImportResultIssues {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        $results = new ImportResultIssues();
+        foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($requirements);
+
+            $results->addIssuesForForm(
+                $form_spec->name,
+                $mapper->getInvalidRequirements($requirements)
+            );
+        }
+
+        return $results;
+    }
+
+    public function removeFormFromJson(string $json, string $form_name): string
+    {
+        $export_specification = $this->deserialize($json);
+
+        // Filter the forms to remove the one that matches the given name
+        $export_specification->forms = array_filter(
+            $export_specification->forms,
+            fn($form_spec) => $form_spec->name !== $form_name
+        );
+
+        return $this->serialize($export_specification);
     }
 
     public function importFormsFromJson(
