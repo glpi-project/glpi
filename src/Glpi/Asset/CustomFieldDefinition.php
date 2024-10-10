@@ -127,6 +127,8 @@ final class CustomFieldDefinition extends CommonDBChild
 
         // Spaces are replaced with underscores and the name is made lowercase. Only lowercase letters and underscores are kept.
         $input['name'] = preg_replace('/[^a-z_]/', '', strtolower(str_replace(' ', '_', $input['name'])));
+        // The name cannot start with an underscore
+        $input['name'] = ltrim($input['name'], '_');
         if ($input['name'] === '') {
             Session::addMessageAfterRedirect(__s('The system name must not be empty'), false, ERROR);
             return false;

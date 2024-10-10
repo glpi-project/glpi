@@ -9832,6 +9832,7 @@ CREATE TABLE `glpi_assets_assetdefinitions` (
   `capacities` JSON NOT NULL,
   `profiles` JSON NOT NULL,
   `translations` JSON NOT NULL,
+  `fields_display` JSON NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
