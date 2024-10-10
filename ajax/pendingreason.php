@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 // Direct access to file
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 header("Content-Type: application/json; charset=UTF-8");
 

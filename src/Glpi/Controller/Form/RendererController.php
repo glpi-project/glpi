@@ -36,6 +36,9 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
@@ -43,9 +46,6 @@ use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController

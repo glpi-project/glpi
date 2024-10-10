@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkCentralAccess();
 
 $ien = new \Item_Enclosure();
@@ -60,7 +62,7 @@ if (isset($_POST['update'])) {
 }
 
 if (!isset($_REQUEST['enclosure']) && !isset($_REQUEST['id'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 $params = [];

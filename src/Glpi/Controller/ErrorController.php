@@ -36,17 +36,17 @@ namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\InvalidCsrfHttpException;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Toolbox;
 
 class ErrorController extends AbstractController
 {
@@ -56,11 +56,74 @@ class ErrorController extends AbstractController
             return new Response('', 500);
         }
 
-        ErrorHandler::getInstance()->handleException($exception, true);
+        $this->logException($exception, $request);
 
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         return new StreamedResponse(fn() => $this->renderErrorPage($exception), $status_code);
+    }
+
+    private function logException(\Throwable $exception, Request $request): void
+    {
+        if (
+            $exception instanceof HttpExceptionInterface
+            && $exception->getStatusCode() >= 400
+            && $exception->getStatusCode() < 500
+        ) {
+            // 4xx errors are logged in the `access-errors` log
+
+            $requested_uri = $request->getPathInfo();
+            if (($qs = $request->getQueryString()) !== null) {
+                $requested_uri .= '?' . $qs;
+            }
+
+            $user_id = Session::getLoginUserID() ?: 'Anonymous';
+
+            switch ($exception::class) {
+                case AccessDeniedHttpException::class:
+                    $message = sprintf(
+                        'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+                case NotFoundHttpException::class:
+                    $message = sprintf(
+                        'User ID: `%s` tried to access a non-existent item on `%s`.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+                default:
+                    $message = sprintf(
+                        'User ID: `%s` tried to execute an invalid request on `%s`.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+            }
+
+            if (($exception_message = $exception->getMessage()) !== '') {
+                $message .= sprintf('Additional information: %s', $exception_message);
+            }
+
+            $message .= "\n";
+            $message .= "  Backtrace :\n";
+
+            foreach ($exception->getTrace() as $frame) {
+                $script = ($frame['file'] ?? '') . ':' . ($frame['line'] ?? '');
+                $call = ($frame['class'] ?? '') . ($frame['type'] ?? '') . $frame['function'];
+                if (!empty($call)) {
+                    $call .= '()';
+                }
+                $message .= "  $script $call\n";
+            }
+
+            Toolbox::logInFile('access-errors', $message);
+        } else {
+            // Other errors are logged in the `php-errors` log
+            ErrorHandler::getInstance()->handleException($exception, true);
+        }
     }
 
     private function renderErrorPage(\Throwable $exception): void
@@ -79,10 +142,6 @@ class ErrorController extends AbstractController
                     $title   = __('Invalid request');
                     $message = __('Invalid request parameters.');
                     break;
-                case ($exception instanceof InvalidCsrfHttpException):
-                    $title   = __('Access denied');
-                    $message = __('The action you have requested is not allowed.');
-                    break;
                 case ($exception instanceof NotFoundHttpException):
                     $title   = __('Item not found');
                     $message = __('The requested item has not been found.');
@@ -94,9 +153,10 @@ class ErrorController extends AbstractController
                     break;
             }
 
-            if (($custom_message = $exception->getMessage()) !== '') {
-                // When a custom message exists, it means that it has been manually set in the GLPI code
-                // and we expect it to be translated.
+            if (
+                $exception instanceof \Glpi\Exception\Http\HttpExceptionInterface
+                && ($custom_message = $exception->getMessage()) !== ''
+            ) {
                 $message = $custom_message;
             }
         }
@@ -129,7 +189,7 @@ class ErrorController extends AbstractController
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display(
-            'display_and_die.html.twig',
+            'error.html.twig',
             [
                 'message' => $message,
                 'trace'   => $trace,

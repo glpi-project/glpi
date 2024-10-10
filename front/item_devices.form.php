@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
@@ -46,4 +48,5 @@ if (isset($_POST["add"])) {
     Item_Devices::updateAll($_POST);
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

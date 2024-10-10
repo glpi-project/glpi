@@ -38,7 +38,8 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
-use Glpi\Features\AssignableItem;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -3064,7 +3065,7 @@ class CommonDBTM extends CommonGLPI
         if (!$this->checkIfExistOrNew($ID)) {
            // Gestion timeout session
             Session::redirectIfNotLoggedIn();
-            Html::displayNotFoundError();
+            throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
                // Gestion timeout session
@@ -3073,7 +3074,7 @@ class CommonDBTM extends CommonGLPI
                 $itemtype = static::getType();
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
                 $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
-                Html::displayRightError($info);
+                throw new AccessDeniedHttpException($info);
             }
         }
     }
@@ -3119,9 +3120,8 @@ class CommonDBTM extends CommonGLPI
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = static::getType();
             $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-            $itemtype = static::getType();
             $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -6432,53 +6432,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Display an error page (item not found)
-     *
-     * @param array $menus Menu path used to load specific JS file and show
-     *                     breadcumbs, see $CFG_GLPI['javascript'] and
-     *                     Html::includeHeader()
-     *
-     * @return void
-     */
-    public static function displayItemNotFoundPage(array $menus): void
-    {
-        $helpdesk = Session::getCurrentInterface() === "helpdesk";
-        $title = __('Item not found');
-
-        if (!$helpdesk) {
-            static::displayCentralHeader($title, $menus);
-        } else {
-            static::displayHelpdeskHeader($title, $menus);
-        }
-
-        Html::displayNotFoundError('The item could not be found in the database');
-    }
-
-    /**
-     * Display an error page (access denied)
-     *
-     * @param array $menus   Menu path used to load specific JS file and show
-     *                       breadcumbs, see $CFG_GLPI['javascript'] and
-     *                       Html::includeHeader()
-     * @param string $additional_info Additional information about the error for the access log
-     * @return void
-     */
-    public static function displayAccessDeniedPage(array $menus, string $additional_info = ''): void
-    {
-        $helpdesk = Session::getCurrentInterface() === "helpdesk";
-        $title = __('Access denied');
-
-        if (!$helpdesk) {
-            Toolbox::handleProfileChangeRedirect();
-            static::displayCentralHeader($title, $menus);
-        } else {
-            static::displayHelpdeskHeader($title, $menus);
-        }
-
-        Html::displayRightError($additional_info);
-    }
-
-    /**
      * Get the browser tab name for a new item: "{itemtype} - New item"
      * To be overriden by child classes if they want to display something else
      *
@@ -6552,9 +6505,7 @@ TWIG, $twig_params);
         if (static::isNewID($id)) {
             // New item, check create rights
             if (!static::canCreate()) {
-                static::displayAccessDeniedPage($menus, 'Missing CREATE right. Cannot view the new item form.');
-                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
-                return;
+                throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
             }
 
             // Tab name will be generic (item isn't saved yet)
@@ -6562,15 +6513,11 @@ TWIG, $twig_params);
         } else {
             // Existing item, try to load it and check read rights
             if (!$item->getFromDB($id)) {
-                static::displayItemNotFoundPage($menus);
-                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
-                return;
+                throw new NotFoundHttpException();
             }
 
             if (!$item->can($id, READ)) {
-                static::displayAccessDeniedPage($menus, 'Missing READ right. Cannot view the item.');
-                \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayFullPageForItem');
-                return;
+                throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
             }
 
             // Tab name will be specific to the loaded item

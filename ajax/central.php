@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
+use Glpi\Exception\Http\BadRequestHttpException;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
 
 $this->setAjax();
 

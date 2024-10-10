@@ -38,12 +38,12 @@ use CommonDevice;
 use CommonDropdown;
 use Html;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
 

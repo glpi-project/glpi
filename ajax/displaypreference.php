@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Html::header_nocache();
 

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /**
  * @since 0.84
@@ -1254,7 +1255,7 @@ class Item_Devices extends CommonDBRelation
             }
         } else {
             if (!$item = getItemForItemtype($input['itemtype'])) {
-                Html::displayNotFoundError();
+                throw new NotFoundHttpException();
             }
             if ($item instanceof CommonDevice) {
                 if ($link = getItemForItemtype($item->getItem_DeviceType())) {
@@ -1275,13 +1276,13 @@ class Item_Devices extends CommonDBRelation
             !isset($input['itemtype'])
             || !isset($input['items_id'])
         ) {
-            Html::displayNotFoundError();
+            throw new NotFoundHttpException();
         }
 
         $itemtype = $input['itemtype'];
         $items_id = $input['items_id'];
         if (!$item = getItemForItemtype($itemtype)) {
-            Html::displayNotFoundError();
+            throw new NotFoundHttpException();
         }
         $item->check($input['items_id'], UPDATE, $_POST);
 

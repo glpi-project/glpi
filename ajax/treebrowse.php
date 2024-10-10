@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

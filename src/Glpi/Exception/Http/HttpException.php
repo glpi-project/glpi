@@ -34,12 +34,9 @@
 
 namespace Glpi\Exception\Http;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException as BaseException;
 
-class InvalidCsrfHttpException extends HttpException
+class HttpException extends BaseException implements HttpExceptionInterface
 {
-    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
-    {
-        parent::__construct(403, $message, $previous, $headers, $code);
-    }
+    use HttpExceptionTrait;
 }

@@ -3199,23 +3199,6 @@ HTML;
     }
 
     /**
-     * Handle redirect after a profile switch.
-     * Must be called after a right check failure.
-     */
-    public static function handleProfileChangeRedirect(): void
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $redirect = $_SESSION['_redirected_from_profile_selector'] ?? false;
-
-        if ($redirect) {
-            unset($_SESSION['_redirected_from_profile_selector']);
-            Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
-        }
-    }
-
-    /**
      * Check if a mixed value (possibly a string) is an integer or a float
      *
      * @param mixed $value A possible float

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
@@ -61,8 +63,7 @@ switch ($action) {
         $plugin->clean($id);
         break;
     default:
-        Html::displayErrorAndDie('Lost');
-        break;
+        throw new BadRequestHttpException();
 }
 
 Html::back();

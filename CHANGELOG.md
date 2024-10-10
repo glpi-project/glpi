@@ -262,6 +262,9 @@ The present file will list all changes made to the project; according to the
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
+- `Html::displayErrorAndDie()`. Throw a `Symfony\Component\HttpKernel\Exception\BadRequestHttpException` exception instead.
+- `Html::displayNotFoundError()`. Throw a `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` exception instead.
+- `Html::displayRightError()`. Throw a `Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
 - `HookManager::enableCSRF()`
@@ -379,7 +382,9 @@ The present file will list all changes made to the project; according to the
 - `Html::autocompletionTextField()`
 - `Html::clean()`
 - `Html::closeArrowMassives()`
+- `Html::displayAccessDeniedPage()`
 - `Html::displayAjaxMessageAfterRedirect()`. The JS function is already provided by `js/misc.js`.
+- `Html::displayItemNotFoundPage()`
 - `Html::jsConfirmCallback()`
 - `Html::jsHide()`
 - `Html::jsShow()`
@@ -481,6 +486,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::filesizeDirectory()`
 - `Toolbox::getHtmLawedSafeConfig()`
 - `Toolbox::getHtmlToDisplay()`
+- `Toolbox::handleProfileChangeRedirect()`
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
 - `Toolbox::logWarning()`

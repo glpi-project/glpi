@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Search\Input\QueryBuilder;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 // Direct access to file
 

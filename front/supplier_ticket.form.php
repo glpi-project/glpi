@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Event;
 
 $link = new Supplier_Ticket();
 
@@ -64,7 +65,7 @@ if (isset($_POST["update"])) {
     );
     Html::redirect(Ticket::getFormURLWithID($link->fields['tickets_id']));
 } else {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 Html::popFooter();
