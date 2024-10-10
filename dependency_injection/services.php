@@ -49,7 +49,7 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
 
-    $services
+    $services = $services
         ->defaults()
             ->autowire()
             ->autoconfigure()
@@ -59,6 +59,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+    $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
 
     $services->set(Firewall::class)
         ->factory([Firewall::class, 'createDefault'])

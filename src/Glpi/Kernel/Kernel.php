@@ -39,6 +39,7 @@ use Glpi\Application\ConfigurationConstants;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Glpi\Http\PluginsRouterListener;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -63,7 +64,7 @@ final class Kernel extends BaseKernel
         $glpi->initLogger();
         $glpi->initErrorHandler();
 
-        $env = GLPI_ENVIRONMENT_TYPE;
+        $env ??= GLPI_ENVIRONMENT_TYPE;
         parent::__construct(
             $env,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
@@ -152,6 +153,13 @@ final class Kernel extends BaseKernel
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
         }
+
+        // Plugin-specific routes
+        $routes->add(PluginsRouterListener::ROUTE_NAME, '/plugin/{plugin_name}{path_rest}')
+            ->requirements([
+                'plugin_name' => '^[a-zA-Z0-9_-]+$',
+                'path_rest' => '.*',
+            ]);
     }
 
     private function triggerGlobalsDeprecation(): void

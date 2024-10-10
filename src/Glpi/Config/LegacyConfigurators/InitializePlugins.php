@@ -34,13 +34,17 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\DependencyInjection\PluginContainer;
 use Plugin;
 use Update;
 
 final readonly class InitializePlugins implements LegacyConfigProviderInterface
 {
+    public function __construct(private PluginContainer $pluginContainer)
+    {
+    }
+
     public function execute(): void
     {
         /*
@@ -53,5 +57,7 @@ final readonly class InitializePlugins implements LegacyConfigProviderInterface
 
         $plugin = new Plugin();
         $plugin->init(true);
+
+        $this->pluginContainer->initializeContainer();
     }
 }
