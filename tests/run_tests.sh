@@ -361,7 +361,7 @@ cleanup_and_exit () {
   find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
 
   # Stop containers
-  docker compose down --volumes
+  docker compose stop
 
   exit $LAST_EXIT_CODE
 }

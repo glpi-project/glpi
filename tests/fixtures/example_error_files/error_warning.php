@@ -32,13 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+trigger_error('Warning triggered', E_USER_WARNING);
 
-use Glpi\Controller\ErrorController;
+Session::checkRightsOr(Computer::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
-return static function (ContainerConfigurator $container): void {
-    $container->extension('framework', [
-        'error_controller' => ErrorController::class,
-        'test' => $container->env() === \GLPI::ENV_TESTING,
-    ]);
-};
+Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
+
+echo "Example page to trigger a PHP Warning error.";
+
+Html::footer();
