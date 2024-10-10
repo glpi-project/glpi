@@ -71,15 +71,4 @@ return static function (ContainerConfigurator $container): void {
      * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
      */
     $services->set('logger', LegacyGlobalLogger::class);
-
-    // Development-only
-    if ($container->env() === 'development') {
-        $container->extension('web_profiler', [
-            'toolbar' => true,
-            'intercept_redirects' => true,
-        ]);
-        $container->extension('framework', [
-            'profiler' => ['only_exceptions' => false],
-        ]);
-    }
 };
