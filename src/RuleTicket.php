@@ -200,6 +200,12 @@ class RuleTicket extends Rule
                         }
                         break;
 
+                    case "delete":
+                        if ($action->fields["field"]) {
+                            $output[$action->fields["field"]] = null;
+                        }
+                        break;
+
                     case "assign":
                         $output[$action->fields["field"]] = $action->fields["value"];
 
@@ -914,6 +920,10 @@ class RuleTicket extends Rule
         $actions['slas_id_ttr']['type']                       = 'dropdown';
         $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
+        $actions['time_to_resolve']['name']                   = __('Time to resolve');
+        $actions['time_to_resolve']['type']                   = 'yesno';
+        $actions['time_to_resolve']['force_actions']          = ['delete'];
+
         $actions['slas_id_tto']['table']                      = 'glpi_slas';
         $actions['slas_id_tto']['field']                      = 'name';
         $actions['slas_id_tto']['name']                       = sprintf(
@@ -924,6 +934,10 @@ class RuleTicket extends Rule
         $actions['slas_id_tto']['linkfield']                  = 'slas_id_tto';
         $actions['slas_id_tto']['type']                       = 'dropdown';
         $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
+
+        $actions['time_to_own']['name']                       = __('Time to own');
+        $actions['time_to_own']['type']                       = 'yesno';
+        $actions['time_to_own']['force_actions']              = ['delete'];
 
         $actions['olas_id_ttr']['table']                      = 'glpi_olas';
         $actions['olas_id_ttr']['field']                      = 'name';
@@ -936,6 +950,10 @@ class RuleTicket extends Rule
         $actions['olas_id_ttr']['type']                       = 'dropdown';
         $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
 
+        $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
+        $actions['internal_time_to_resolve']['type']          = 'yesno';
+        $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
+
         $actions['olas_id_tto']['table']                      = 'glpi_olas';
         $actions['olas_id_tto']['field']                      = 'name';
         $actions['olas_id_tto']['name']                       = sprintf(
@@ -946,6 +964,10 @@ class RuleTicket extends Rule
         $actions['olas_id_tto']['linkfield']                  = 'olas_id_tto';
         $actions['olas_id_tto']['type']                       = 'dropdown';
         $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
+
+        $actions['internal_time_to_own']['name']              = __('Internal Time to own');
+        $actions['internal_time_to_own']['type']              = 'yesno';
+        $actions['internal_time_to_own']['force_actions']     = ['delete'];
 
         $actions['users_id_validate']['name']                 = sprintf(
             __('%1$s - %2$s'),

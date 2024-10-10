@@ -440,6 +440,7 @@ class RuleAction extends CommonDBChild
             'affectbyfqdn'        => __('Assign: equipment by name + domain'),
             'affectbymac'         => __('Assign: equipment by MAC address'),
             'compute'             => __('Recalculate'),
+            'delete'              => __('Delete'),
             'do_not_compute'      => __('Do not calculate'),
             'send'                => __('Send'),
             'add_validation'      => __('Send'),
