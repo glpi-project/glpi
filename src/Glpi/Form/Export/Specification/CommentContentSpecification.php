@@ -35,38 +35,10 @@
 
 namespace Glpi\Form\Export\Specification;
 
-final class FormContentSpecification
+final class CommentContentSpecification
 {
     public string $name;
-    public string $header;
-    public string $entity_name;
-    public bool $is_recursive;
-
-    /** @var SectionContentSpecification[] $sections */
-    public array $sections = [];
-
-    /** @var CommentContentSpecification[] $comments */
-    public array $comments = [];
-
-    /** @var AccesControlPolicyContentSpecification[] $policies */
-    public array $policies = [];
-
-    /** @var DataRequirementSpecification[] $data_requirements */
-    public array $data_requirements = [];
-
-    /** @return DataRequirementSpecification[] */
-    public function getDataRequirements(): array
-    {
-        return $this->data_requirements;
-    }
-
-    public function addDataRequirement(
-        string $class,
-        string $name,
-    ): void {
-        $requirement = new DataRequirementSpecification();
-        $requirement->itemtype = $class;
-        $requirement->name = $name;
-        $this->data_requirements[] = $requirement;
-    }
+    public string $description;
+    public int $rank;
+    public int $section_rank;
 }
