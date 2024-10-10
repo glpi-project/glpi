@@ -39,13 +39,17 @@ use Glpi\Application\ConfigurationConstants;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 
 final class Kernel extends BaseKernel
 {
@@ -224,6 +228,34 @@ final class Kernel extends BaseKernel
                 'The global `$dont_check_maintenance_mode` variable has no effect anymore.',
                 E_USER_WARNING
             );
+        }
+    }
+
+    /**
+     * Send the response and catch any exception that may occurs to forward it to the request error handling.
+     *
+     * It permits to correctly handle errors that may be thrown during the response sending. This will mainly
+     * occurs when handling the GLPI legacy scripts using a streamed response, but may also rarely occurs
+     * in other contexts.
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function sendResponse(Request $request, Response $response): void
+    {
+        try {
+            $response->send();
+        } catch (\Throwable $exception) {
+            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
+
+            $dispatcher = $this->container->get('event_dispatcher');
+            $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
+
+            if ($event->hasResponse()) {
+                $event->getResponse()->send();
+            } else {
+                throw $exception;
+            }
         }
     }
 }
