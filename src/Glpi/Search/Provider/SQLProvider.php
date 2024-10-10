@@ -45,6 +45,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
 use Glpi\Features\AssignableItem;
 use Glpi\RichText\RichText;
+use Glpi\Search\AdvancedSearchInterface;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -114,7 +115,7 @@ final class SQLProvider implements SearchProviderInterface
         }
         $ret = [];
 
-        if (method_exists($itemtype, 'getSQLDefaultSelectCriteria')) {
+        if (is_subclass_of($itemtype, AdvancedSearchInterface::class)) {
             $criteria = $itemtype::getSQLDefaultSelectCriteria($itemtype);
             if ($criteria !== null) {
                 $ret = array_merge($ret, $criteria);
@@ -1267,7 +1268,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($opt_itemtype === 'UNKNOWN') {
             $opt_itemtype = $itemtype;
         }
-        if (method_exists($opt_itemtype, 'getSQLWhereCriteria')) {
+        if (is_subclass_of($opt_itemtype, AdvancedSearchInterface::class)) {
             $criteria = $opt_itemtype::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $append_criterion_with_search);
             if ($criteria !== null) {
                 return $criteria;
