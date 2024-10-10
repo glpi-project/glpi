@@ -508,7 +508,6 @@ JSON;
                 'name' => $json->content->usbdevices[0]->name
             ]
         ]);
-        var_export(iterator_to_array($peripherals));
         $this->assertCount(0, $peripherals);
         $item_peripherals = $DB->request([
             'FROM' => \Computer_Item::getTable(),
