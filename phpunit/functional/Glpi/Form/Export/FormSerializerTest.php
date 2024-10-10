@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form;
 
 use Entity;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
@@ -277,6 +278,53 @@ final class FormSerializerTest extends \DbTestCase
                 'rank'        => 2,
             ],
         ], $sections_data);
+    }
+
+    public function testExportAndImportComments(): void
+    {
+        // Arrange: create a form with multiple comments in multiple sections
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addComment("My first comment", "My first comment in my first section")
+            ->addComment("My second comment", "My second comment in my first section")
+            ->addSection("My second section")
+            ->addComment("My third comment", "My first comment in my second section");
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate comments fields
+        $comments = array_values($form_copy->getComments());
+        $comments_data = array_map(function (Comment $comment) {
+            return [
+                'name'              => $comment->fields['name'],
+                'description'       => $comment->fields['description'],
+                'rank'              => $comment->fields['rank'],
+                'forms_sections_id' => $comment->fields['forms_sections_id'],
+            ];
+        }, $comments);
+
+        $this->assertEquals([
+            [
+                'name'              => 'My first comment',
+                'description'       => 'My first comment in my first section',
+                'rank'              => 0,
+                'forms_sections_id' => array_values($form_copy->getSections())[0]->fields['id'],
+            ],
+            [
+                'name'              => 'My second comment',
+                'description'       => 'My second comment in my first section',
+                'rank'              => 1,
+                'forms_sections_id' => array_values($form_copy->getSections())[0]->fields['id'],
+            ],
+            [
+                'name'              => 'My third comment',
+                'description'       => 'My first comment in my second section',
+                'rank'              => 0,
+                'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
+            ],
+        ], $comments_data);
     }
 
     public function testPreviewImportWithValidForm(): void

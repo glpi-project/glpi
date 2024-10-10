@@ -103,11 +103,13 @@ trait FormTesterTrait
             }
 
             // Create comments
+            $comment_rank = 0;
             foreach ($section_data['comments'] as $comment_data) {
                 $this->createItem(Comment::class, [
                     'forms_sections_id' => $section->getID(),
                     'name'              => $comment_data['name'],
                     'description'       => $comment_data['description'],
+                    'rank'              => $comment_rank++,
                 ]);
             }
         }

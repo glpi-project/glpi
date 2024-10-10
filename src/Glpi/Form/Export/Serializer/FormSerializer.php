@@ -37,6 +37,7 @@ namespace Glpi\Form\Export\Serializer;
 
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Result\ExportResult;
@@ -44,6 +45,7 @@ use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
+use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
@@ -166,6 +168,7 @@ final class FormSerializer extends AbstractFormSerializer
         // TODO: questions, ...
         $form_spec = $this->exportBasicFormProperties($form);
         $form_spec = $this->exportSections($form, $form_spec);
+        $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
 
         return $form_spec;
@@ -198,6 +201,7 @@ final class FormSerializer extends AbstractFormSerializer
         // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);
         $form = $this->importSections($form, $form_spec);
+        $form = $this->importComments($form, $form_spec);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
 
         return $form;
@@ -312,6 +316,53 @@ final class FormSerializer extends AbstractFormSerializer
                 throw new RuntimeException("Failed to create section");
             }
         };
+
+        // Reload to clear lazy loaded data
+        $form->getFromDB($form->getId());
+        return $form;
+    }
+
+    private function exportComments(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getComments() as $comment) {
+            $comment_spec = new CommentContentSpecification();
+            $comment_spec->name = $comment->fields['name'];
+            $comment_spec->rank = $comment->fields['rank'];
+            $comment_spec->description = $comment->fields['description'];
+            $comment_spec->section_rank = $form->getSections()[$comment->fields['forms_sections_id']]->fields['rank'];
+
+            $form_spec->comments[] = $comment_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importComments(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): Form {
+        /** @var CommentContentSpecification $comment_spec */
+        foreach ($form_spec->comments as $comment_spec) {
+            // Retrieve section from their rank
+            $section = current(array_filter(
+                $form->getSections(),
+                fn (Section $section) => $section->fields['rank'] === $comment_spec->section_rank
+            ));
+
+            $comment = new Comment();
+            $id = $comment->add([
+                'name'               => $comment_spec->name,
+                'description'        => $comment_spec->description,
+                'rank'               => $comment_spec->rank,
+                'forms_sections_id'  => $section->fields['id'],
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create comment");
+            }
+        }
 
         // Reload to clear lazy loaded data
         $form->getFromDB($form->getId());
