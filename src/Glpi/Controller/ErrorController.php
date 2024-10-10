@@ -37,19 +37,23 @@ namespace Glpi\Controller;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Access\AbstractHttpException;
+use Html;
+use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
-use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ErrorController extends AbstractController
 {
     public function __invoke(Request $request, ?\Throwable $exception = null): Response
     {
-        if (!$exception) {
-            return new Response('Error controller was not called properly.', 500);
+        if ($exception === null) {
+            return new Response('', 500);
         }
 
         ErrorHandler::getInstance()->handleException($exception, true);
@@ -67,38 +71,74 @@ class ErrorController extends AbstractController
 
     private function renderErrorPage(\Throwable $exception): void
     {
-        $message = sprintf("%s\nIn %s::%s", $exception->getMessage(), $exception->getFile(), $exception->getLine());
+        $title = __('Error');
+        $message = __('An unexpected error has occurred.');
 
-        if ($exception instanceof OutOfMemoryError) {
-            /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
-            global $TRANSLATE;
-            // Disable translation for error pages because it consumes too much memory
-            $TRANSLATE = null;
+        if ($exception instanceof HttpExceptionInterface) {
+            // Default messages.
+            switch (true) {
+                case ($exception instanceof AccessDeniedHttpException):
+                    $title   = __('Access denied');
+                    $message = __('You don\'t have permission to perform this action.');
+                    break;
+                case ($exception instanceof BadRequestHttpException):
+                    $title   = __('Invalid request');
+                    $message = __('Invalid request parameters.');
+                    break;
+                case ($exception instanceof NotFoundHttpException):
+                    $title   = __('Item not found');
+                    $message = __('The requested item has not been found.');
+                    break;
+                case ($exception->getStatusCode() >= 400 && $exception->getStatusCode() < 500):
+                    // Generic message indicating that the issue is located in the request parameter/context.
+                    $title   = __('Invalid request');
+                    $message = __('The request is invalid and cannot be processed.');
+                    break;
+            }
 
-            \Html::simpleHeader('Error');
-            // Note: FatalError has no stack trace, we can only get filename and line.
-        } else {
-            \Html::header('Error');
-            if (GLPI_ENVIRONMENT_TYPE === 'development') {
-                $message .= "\n" . $this->getTraceAsString($exception);
+            if (($custom_message = $exception->getMessage()) !== '') {
+                // When a custom message exists, it means that it has been manually set in the GLPI code
+                // and we expect it to be translated.
+                $message = $custom_message;
             }
         }
 
-        if ($exception instanceof HttpExceptionInterface) {
-            $message = 'HTTP Error ' . $exception->getStatusCode() . ": " . $message;
+        if (!Session::getCurrentInterface()) {
+            Html::nullHeader($title);
+        } else if ($exception instanceof OutOfMemoryError) {
+            // A minimal page is displayed as we do not have enough memory available to display the full page.
+            Html::simpleHeader($title);
+        } else if (Session::getCurrentInterface() === "central") {
+            Html::header($title);
+        } else if (Session::getCurrentInterface() === "helpdesk") {
+            Html::helpHeader($title);
+        }
+
+        $trace = '';
+        if (
+            (
+                GLPI_ENVIRONMENT_TYPE === 'development'
+                || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+            )
+        ) {
+            $trace = sprintf("%s\nIn %s::%s", $exception->getMessage(), $exception->getFile(), $exception->getLine());
+
+            if (!($exception instanceof OutOfMemoryError)) {
+                // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
+                $trace .= "\n" . $exception->getTraceAsString();
+            }
         }
 
         $renderer = TemplateRenderer::getInstance();
-        $renderer->display('display_and_die.html.twig', [
-            'message' => $message,
-            'link'    => \Html::getBackUrl(),
-        ]);
+        $renderer->display(
+            'display_and_die.html.twig',
+            [
+                'message' => $message,
+                'trace'   => $trace,
+                'link'    => Html::getBackUrl(),
+            ]
+        );
 
         \Html::footer();
-    }
-
-    private function getTraceAsString(\Throwable $exception): string
-    {
-        return FlattenException::createFromThrowable($exception)->getTraceAsString();
     }
 }
