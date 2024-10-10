@@ -32,31 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+namespace Glpi\Exception\Http;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-abstract class AbstractHttpException extends \RuntimeException
+class InvalidCsrfHttpException extends HttpException
 {
-    private ?Request $request = null;
-
-    public function setRequest(Request $request): void
+    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
-        $this->request = $request;
+        parent::__construct(403, $message, $previous, $headers, $code);
     }
-
-    public function getRequest(): Request
-    {
-        if (!$this->request) {
-            throw new \RuntimeException(\sprintf(
-                'Request not set in "%s" exception class. Access error listener might be wrongly configured.',
-                static::class,
-            ));
-        }
-
-        return $this->request;
-    }
-
-    abstract public function asResponse(): Response;
 }

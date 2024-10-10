@@ -36,11 +36,11 @@
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
-use Glpi\Exception\Access\InvalidCsrfException;
-use Glpi\Exception\Access\RequiresHttpsException;
-use Glpi\Exception\Access\SessionExpiredException;
+use Glpi\Exception\Http\InvalidCsrfHttpException;
+use Glpi\Exception\Http\SessionExpiredHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Session Class
@@ -1017,11 +1017,13 @@ class Session
     public static function checkCookieSecureConfig(): void
     {
         // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // display a warning message
+        // throw an exception
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
         if ($is_https_request === false && $cookie_secure === true) {
-            throw new RequiresHttpsException();
+            throw new BadRequestHttpException(
+                __('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.')
+            );
         }
     }
 
@@ -1043,7 +1045,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            throw new SessionExpiredException();
+            throw new SessionExpiredHttpException();
         }
 
         $user_id    = self::getLoginUserID();
@@ -1780,7 +1782,7 @@ class Session
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
-            throw new InvalidCsrfException();
+            throw new InvalidCsrfHttpException();
         }
     }
 
