@@ -44,7 +44,7 @@ use Toolbox;
 abstract class AbstractConfigField implements ConfigFieldInterface
 {
     #[Override]
-    public static function getKey(): string
+    final public static function getKey(): string
     {
         return Toolbox::slugify(static::class);
     }

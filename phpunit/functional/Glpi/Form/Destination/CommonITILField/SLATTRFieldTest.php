@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -165,7 +166,7 @@ final class SLATTRFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['sla_ttr' => $config->jsonSerialize()]],
+            ['config' => [SLATTRField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

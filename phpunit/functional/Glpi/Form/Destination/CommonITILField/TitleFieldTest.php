@@ -72,8 +72,6 @@ final class TitleFieldTest extends DbTestCase
         Form $form,
         ?SimpleValueConfig $config,
     ): void {
-        $title_field = new TitleField();
-
         // Insert config
         if ($config !== null) {
             $destinations = $form->getDestinations();
@@ -82,7 +80,7 @@ final class TitleFieldTest extends DbTestCase
             $this->updateItem(
                 $destination::getType(),
                 $destination->getId(),
-                ['config' => [$title_field->getKey() => $config->jsonSerialize()]],
+                ['config' => [TitleField::getKey() => $config->jsonSerialize()]],
                 ["config"],
             );
         }

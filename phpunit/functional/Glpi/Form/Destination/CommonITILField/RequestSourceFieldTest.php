@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -118,7 +119,7 @@ final class RequestSourceFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['request_source' => $config->jsonSerialize()]],
+            ['config' => [RequestSourceField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

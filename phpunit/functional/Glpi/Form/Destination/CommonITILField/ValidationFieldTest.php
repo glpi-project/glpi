@@ -264,8 +264,6 @@ final class ValidationFieldTest extends DbTestCase
         array $expected_validations,
         array $keys_to_be_considered
     ): void {
-        $field = new ValidationField();
-
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -273,7 +271,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => [$field->getKey() => $config->jsonSerialize()]],
+            ['config' => [ValidationField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 

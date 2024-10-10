@@ -42,12 +42,6 @@ use SLM;
 final class OLATTRField extends SLMField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'ola_ttr';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return __("OLA TTR");

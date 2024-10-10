@@ -48,12 +48,6 @@ use Override;
 class LocationField extends AbstractConfigField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'location';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return _n('Location', 'Locations', 1);

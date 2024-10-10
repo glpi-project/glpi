@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -255,7 +256,7 @@ final class ITILCategoryFieldTest extends DbTestCase
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => ['itilcategory' => $config->jsonSerialize()]],
+            ['config' => [ITILCategoryField::getKey() => $config->jsonSerialize()]],
             ["config"],
         );
 
