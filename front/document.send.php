@@ -34,6 +34,10 @@
  */
 
 use Glpi\Inventory\Conf;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\HttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 $doc = new Document();
 
@@ -45,22 +49,30 @@ if (isset($_GET['docid'])) {
     // Document::canViewFile() will do appropriate checks depending on GLPI configuration.
 
     if (!$doc->getFromDB($_GET['docid'])) {
-        Html::displayErrorAndDie(__('Unknown file'), true);
+        $exception = new NotFoundHttpException();
+        $exception->setMessageToDisplay(__('Unknown file'));
+        throw $exception;
     }
 
     if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
-        Html::displayErrorAndDie(sprintf(__('File %s not found.'), $doc->fields['filename']), true); // Not found
+        $exception = new NotFoundHttpException();
+        $exception->setMessageToDisplay(sprintf(__('File %s not found.'), $doc->fields['filename']));
+        throw $exception;
     } else if ($doc->canViewFile($_GET)) {
         if (
             $doc->fields['sha1sum']
             && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])
         ) {
-            Html::displayErrorAndDie(__('File is altered (bad checksum)'), true); // Doc alterated
+            $exception = new HttpException(500);
+            $exception->setMessageToDisplay(__('File is altered (bad checksum)'));
+            throw $exception;
         } else {
             $doc->send();
         }
     } else {
-        Html::displayErrorAndDie(__('Unauthorized access to this file'), true); // No right
+        $exception = new AccessDeniedHttpException();
+        $exception->setMessageToDisplay(__('Unauthorized access to this file'));
+        throw $exception;
     }
 } else if (isset($_GET["file"])) {
     // Get file corresponding to given path.
@@ -105,9 +117,13 @@ if (isset($_GET['docid'])) {
         if ($send && file_exists($send)) {
             Toolbox::sendFile($send, $splitter[1], $mime, $expires_headers);
         } else {
-            Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('Unauthorized access to this file'));
+            throw $exception;
         }
     } else {
-        Html::displayErrorAndDie(__('Invalid filename'), true);
+        $exception = new BadRequestHttpException();
+        $exception->setMessageToDisplay(__('Invalid filename'));
+        throw $exception;
     }
 }

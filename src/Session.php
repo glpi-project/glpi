@@ -36,11 +36,11 @@
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
-use Glpi\Exception\Http\InvalidCsrfHttpException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\SessionExpiredHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Session Class
@@ -1021,9 +1021,9 @@ class Session
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
         if ($is_https_request === false && $cookie_secure === true) {
-            throw new BadRequestHttpException(
-                __('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.')
-            );
+            $exception = new BadRequestHttpException();
+            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
+            throw $exception;
         }
     }
 
@@ -1122,7 +1122,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the standard interface");
+            throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
 
@@ -1140,7 +1140,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
-                Html::displayRightError("Missing FAQ right");
+                throw new AccessDeniedHttpException("Missing FAQ right");
             }
         }
     }
@@ -1157,7 +1157,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the simplified interface");
+            throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
 
@@ -1172,7 +1172,7 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("User has no valid session but seems to be logged in");
+            throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
 
@@ -1247,7 +1247,7 @@ class Session
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
-            Html::displayRightError("User is missing the $right ($right_name) right for $module");
+            throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -1271,7 +1271,7 @@ class Session
             }
             $info = substr($info, 0, -2);
             $info .= " for $module";
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1314,7 +1314,7 @@ class Session
                 $info .= $right . "($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1782,7 +1782,9 @@ class Session
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
-            throw new InvalidCsrfHttpException();
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
         }
     }
 

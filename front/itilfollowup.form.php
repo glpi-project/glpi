@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var \DBmysql $DB */
 global $DB;
@@ -46,10 +47,12 @@ $redirect = null;
 $handled = false;
 
 if (!isset($_POST['itemtype']) || !class_exists($_POST['itemtype'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 $track = getItemForItemtype($_POST['itemtype']);
-
+if ($track === false) {
+    throw new BadRequestHttpException();
+}
 
 if (isset($_POST["add"])) {
     $fup->check(-1, CREATE, $_POST);

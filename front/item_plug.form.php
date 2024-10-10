@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkCentralAccess();
 
 $item_plug = new \Item_Plug();
@@ -62,7 +64,7 @@ if (isset($_POST['update'], $_POST['itemtype'])) {
 }
 
 if (!isset($_GET['itemtype']) && !isset($_GET['items_id']) && !isset($_GET['plugs_id']) && !isset($_GET['number_plug']) && !isset($_GET['id'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 $params = [];

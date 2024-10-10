@@ -35,13 +35,13 @@
 namespace Glpi\Controller;
 
 use CommonDropdown;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Html;
 use Search;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class DropdownController extends AbstractController

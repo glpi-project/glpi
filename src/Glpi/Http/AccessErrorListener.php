@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\SessionExpiredHttpException;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -41,7 +42,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class SessionErrorListener implements EventSubscriberInterface
+final class AccessErrorListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -60,18 +61,36 @@ final class SessionErrorListener implements EventSubscriberInterface
 
         $throwable = $event->getThrowable();
 
-        if (!($throwable instanceof SessionExpiredHttpException)) {
-            return;
+        $response = null;
+
+        if ($throwable instanceof SessionExpiredHttpException) {
+            Session::destroy(); // destroy the session to prevent pesistence of unexcpected data
+
+            $request = $event->getRequest();
+            $response = new RedirectResponse(
+                sprintf(
+                    '%s/?redirect=%s&error=3',
+                    $request->getBasePath(),
+                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
+                )
+            );
+        } elseif (
+            $throwable instanceof AccessDeniedHttpException
+            && ($_SESSION['_redirected_from_profile_selector'] ?? false)
+        ) {
+            unset($_SESSION['_redirected_from_profile_selector']);
+
+            $request = $event->getRequest();
+            $response = new RedirectResponse(
+                sprintf(
+                    '%s/front/central.php',
+                    $request->getBasePath()
+                )
+            );
         }
 
-        Session::destroy(); // destroy the session to prevent pesistence of unexcpected data
-
-        $request = $event->getRequest();
-        $redirect_url = sprintf(
-            '%s/?redirect=%s&error=3',
-            $request->getBasePath(),
-            \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
-        );
-        $event->setResponse(new RedirectResponse($redirect_url));
+        if ($response !== null) {
+            $event->setResponse($response);
+        }
     }
 }

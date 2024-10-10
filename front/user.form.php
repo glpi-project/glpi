@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -60,7 +61,7 @@ if (empty($_GET["id"]) && isset($_GET["name"])) {
         $user->check($user->fields['id'], READ);
         Html::redirect($user->getFormURLWithID($user->fields['id']));
     }
-    Html::displayNotFoundError();
+    throw new NotFoundHttpException();
 }
 
 if (empty($_GET["name"])) {

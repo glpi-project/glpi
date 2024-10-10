@@ -35,7 +35,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Dashboard\Grid;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!isset($_REQUEST["action"])) {
     return;

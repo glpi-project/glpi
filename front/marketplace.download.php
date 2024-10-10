@@ -33,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-Session::checkRight("config", UPDATE);
-
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Marketplace\Controller as MarketplaceController;
 
+Session::checkRight("config", UPDATE);
+
 if (!MarketplaceController::isWebAllowed()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 if (isset($_REQUEST['key'])) {
     $marketplace_ctrl = new MarketplaceController($_REQUEST['key']);

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 
 $transfer = new Transfer();
@@ -42,7 +44,7 @@ $transfer->checkGlobal(READ);
 if (isset($_POST['transfer'])) {
     if (isset($_SESSION['glpitransfer_list'])) {
         if (!Session::haveAccessToEntity($_POST['to_entity'])) {
-            Html::displayRightError();
+            throw new AccessDeniedHttpException();
         }
         $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
         unset($_SESSION['glpitransfer_list']);

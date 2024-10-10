@@ -35,7 +35,7 @@
 
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\ImpactCsvExport;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $itemtype = $_GET['itemtype'] ?? '';
 $items_id = $_GET['items_id'] ?? '';

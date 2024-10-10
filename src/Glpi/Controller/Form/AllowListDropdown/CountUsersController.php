@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Form\AllowListDropdown;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\AccessControl\ControlType\AllowListDropdown;
 use Glpi\Form\Form;
 use Group;
@@ -42,7 +43,6 @@ use Profile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use User;
 

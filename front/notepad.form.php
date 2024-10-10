@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Event;
 
 $note = new Notepad();
 
@@ -98,5 +99,5 @@ if (isset($_GET['id']) && $note->getFromDB($_GET['id'])) {
     $redirect = $parent_itemtype::getFormURLWithID($note->fields['items_id'], true) . "&forcetab=Notepad$1";
     Html::redirect($redirect);
 } else {
-    Html::displayErrorAndDie("lost");
+    throw new BadRequestHttpException();
 }
