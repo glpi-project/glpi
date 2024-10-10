@@ -165,7 +165,7 @@ export class GlpiFormQuestionTypeSelectable {
         // Update the uuid with a new random value (random number like mt_rand)
         const uuid = getUUID();
         $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
-        $(input).parent().next().find('input[type="text"]').attr('name', 'options[' + uuid + ']');
+        $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
 
         /**
          * Compute the state to update the input names

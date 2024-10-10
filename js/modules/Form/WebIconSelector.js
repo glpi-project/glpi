@@ -66,7 +66,7 @@ export class WebIconSelector {
 
             query(params, callback)
             {
-                var filtered_results = [];
+                let filtered_results = [];
 
                 // filter results based on search term
                 if (params.term && params.term !== '') {
@@ -93,7 +93,7 @@ export class WebIconSelector {
                 }
 
                 // return only the current page
-                var data = {};
+                const data = {};
                 data.results = filtered_results.slice((params.page - 1) * pageSize, params.page * pageSize);
                 data.pagination = {};
                 data.pagination.more = params.page * pageSize < filtered_results.length;
@@ -124,7 +124,7 @@ export class WebIconSelector {
     #fetchAvailableIcons() {
         const icons = [];
 
-        var replacements = {
+        const replacements = {
             "Animals": _x('icons', "Animals"),
             "Arrows": _x('icons', "Arrows"),
             "Badges": _x('icons', "Badges"),
@@ -191,7 +191,7 @@ export class WebIconSelector {
                 icons.push(category_entry);
             }
 
-            category_entry.children.push({"id": "ti-" + icon_id, "text": icon_id});
+            category_entry.children.push({"id": `ti-${icon_id}`, "text": icon_id});
         }
 
         // sort categories
@@ -209,7 +209,7 @@ export class WebIconSelector {
      */
     #renderIcon(option) {
         if (typeof option.id !== 'undefined') {
-            let container = document.createElement('span');
+            const container = document.createElement('span');
             const iconset_prefix = option.id.split('-')[0];
             let style = "";
             if (iconset_prefix === "fa") {

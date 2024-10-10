@@ -221,7 +221,7 @@ Cypress.Commands.overwrite('select', (originalFn, subject, text, options) => {
     options = options || {};
     options.force = true;
 
-    cy.get('#' + select_id).select(text, options);
+    cy.get(`#${select_id}`).select(text, options);
 });
 
 /**
@@ -350,7 +350,7 @@ Cypress.Commands.add("initApi", () => {
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
     return cy.request({
         method: method,
-        url: '/apirest.php/' + encodeURI(endpoint),
+        url: `/apirest.php/${encodeURI(endpoint)}`,
         body: {input: values},
         headers: {
             'Session-Token': token,

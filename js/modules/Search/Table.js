@@ -47,7 +47,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
     };
 
     constructor(result_view_element_id, push_history = true, forced_params = {}) {
-        const element_id = $('#'+result_view_element_id).parent().find('table.search-results').attr('id');
+        const element_id = $(`#${result_view_element_id}`).parent().find('table.search-results').attr('id');
         super(element_id);
 
         this.push_history = push_history;
@@ -65,7 +65,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
     }
 
     getElement() {
-        return $('#'+this.element_id);
+        return $(`#${this.element_id}`);
     }
 
     /**
@@ -102,7 +102,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             );
         target_column.attr('data-sort-order', new_order);
 
-        let sort_num = target_column.attr('data-sort-num');
+        const sort_num = target_column.attr('data-sort-num');
 
         const recalulate_sort_nums = () => {
             let sort_nums = [];
@@ -179,7 +179,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             search_form_values = search_form_values.filter((v) => {
                 return v['name'] !== 'sort[]' && v['name'] !== 'order[]';
             });
-            let search_criteria = {};
+            const search_criteria = {};
             search_form_values.forEach((v) => {
                 search_criteria[v['name']] = v['value'];
             });
@@ -209,11 +209,11 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }
 
             if (this.push_history) {
-                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, this.sort_state, search_overrides)));
+                history.pushState('', '', `?${$.param(Object.assign(search_criteria, this.sort_state, search_overrides))}`);
             }
 
             $.ajax({
-                url: CFG_GLPI.root_doc + '/ajax/search.php',
+                url: `${CFG_GLPI.root_doc}/ajax/search.php`,
                 method: 'GET',
                 data: search_data,
             }).then((content) => {
@@ -232,14 +232,14 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }, () => {
                 handle_search_failure();
             });
-        } catch (error) {
+        } catch {
             handle_search_failure();
         }
     }
 
     // permit to [shift] select checkboxes
     shiftSelectAllCheckbox() {
-        $('#'+this.element_id+' tbody input[type="checkbox"]').shiftSelectable();
+        $(`#${this.element_id} tbody input[type="checkbox"]`).shiftSelectable();
     }
 
     registerListeners() {
@@ -302,7 +302,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             this.setSortStateFromSelects();
             const sort_count = this.sort_state['sort'].length;
             const idor_token = sort_container.find('input[name="_idor_token"]').val();
-            $.post(CFG_GLPI.root_doc + '/ajax/search.php', {
+            $.post(`${CFG_GLPI.root_doc}/ajax/search.php`, {
                 action: 'display_sort_criteria',
                 itemtype: this.getItemtype(),
                 num: sort_count + 1,
@@ -330,7 +330,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             }
 
             const rowID = $(e.currentTarget).data('rowid');
-            $('#' + rowID).remove();
+            $(`#${rowID}`).remove();
 
             this.setSortStateFromSelects();
         });

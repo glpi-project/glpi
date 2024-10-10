@@ -104,7 +104,7 @@ describe('Entity configuration', () => {
     it('can create ticket using default configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('Entity', {
-                name: "E2ETestEntityForFormDestinationField-" + form_id,
+                name: `E2ETestEntityForFormDestinationField-${form_id}`,
                 entities_id: 1, // subentity of E2ETestEntity
             });
         });
@@ -122,14 +122,14 @@ describe('Entity configuration', () => {
 
         // Fill form
         cy.get('@form_id').then((form_id) => {
-            cy.getDropdownByLabelText("Select an item").selectDropdownValue("»E2ETestEntityForFormDestinationField-" + form_id);
+            cy.getDropdownByLabelText("Select an item").selectDropdownValue(`»E2ETestEntityForFormDestinationField-${form_id}`);
         });
         cy.findByRole('button', { 'name': 'Send form' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
         // Check ticket values
         cy.get('@form_id').then((form_id) => {
-            cy.findAllByRole('region', { 'name': 'Ticket' }).eq(0).findAllByRole('link', 'Root entity > E2ETestEntity > E2ETestEntityForFormDestinationField-' + form_id).should('exist');
+            cy.findAllByRole('region', { 'name': 'Ticket' }).eq(0).findAllByRole('link', `Root entity > E2ETestEntity > E2ETestEntityForFormDestinationField-${form_id}`).should('exist');
         });
 
         // Others possibles configurations are tested directly by the backend.

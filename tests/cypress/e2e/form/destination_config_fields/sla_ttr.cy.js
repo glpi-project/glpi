@@ -45,7 +45,7 @@ describe('SLA TTR configuration', () => {
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
+            const sla_name = `SLA TTR - ${slm_id}`;
             cy.createWithAPI('SLA', {
                 'name': sla_name,
                 'type': 0,
@@ -81,7 +81,7 @@ describe('SLA TTR configuration', () => {
         cy.get('@sla_ttr_dropdown').selectDropdownValue('Specific SLA');
         cy.get('@config').getDropdownByLabelText('Select a SLA...').as('specific_sla_ttr_dropdown');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
+            const sla_name = `SLA TTR - ${slm_id}`;
             cy.get('@specific_sla_ttr_dropdown').selectDropdownValue(sla_name);
         });
 
@@ -89,7 +89,7 @@ describe('SLA TTR configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@sla_ttr_dropdown').should('have.text', 'Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
+            const sla_name = `SLA TTR - ${slm_id}`;
             cy.get('@specific_sla_ttr_dropdown').should('have.text', sla_name);
         });
     });
@@ -99,7 +99,7 @@ describe('SLA TTR configuration', () => {
         cy.findByRole('region', { 'name': "SLA TTR configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('SLA TTR').selectDropdownValue('Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
-            const sla_name = 'SLA TTR - ' + slm_id;
+            const sla_name = `SLA TTR - ${slm_id}`;
             cy.get('@config').getDropdownByLabelText('Select a SLA...').selectDropdownValue(sla_name);
         });
         cy.findByRole('button', { 'name': 'Update item' }).click();
@@ -122,7 +122,7 @@ describe('SLA TTR configuration', () => {
         // Check ticket values
         cy.findByRole('region', { 'name': "Service levels" }).as('service_levels');
         cy.get('@slm_id').then((slm_id) => {
-            cy.get('@service_levels').should('contain.text', 'SLA TTR - ' + slm_id);
+            cy.get('@service_levels').should('contain.text', `SLA TTR - ${slm_id}`);
         });
 
         // Others possibles configurations are tested directly by the backend.

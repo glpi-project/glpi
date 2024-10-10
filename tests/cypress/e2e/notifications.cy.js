@@ -35,7 +35,7 @@ describe('Notifications', () => {
         cy.login();
         cy.changeProfile('Super-Admin', true);
     });
-    it('View Templates for a Notification', function() {
+    it('View Templates for a Notification', () => {
         // New Ticket notification
         cy.visit('/front/notification.form.php?id=2');
 

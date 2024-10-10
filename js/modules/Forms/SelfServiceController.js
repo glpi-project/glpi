@@ -48,12 +48,12 @@ export class GlpiFormSelfServiceController
     async #filterForms()
     {
         const input = this.#getFilterInput();
-        const url = CFG_GLPI.root_doc + '/Forms';
-        const response = await fetch(url + "?" + new URLSearchParams({
+        const url = `${CFG_GLPI.root_doc}/Forms`;
+        const url_params = new URLSearchParams({
             filter: input.value,
-        }));
-        const html = await response.text();
-        this.#getFormsArea().innerHTML = html;
+        });
+        const response = await fetch(`${url}?${url_params}`);
+        this.#getFormsArea().innerHTML = await response.text();
     }
 
     #getFilterInput()

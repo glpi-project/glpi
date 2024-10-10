@@ -182,7 +182,7 @@ export class GlpiFormEditorController
             // Reset unsaved changes
             this.#updatePreviewButton();
 
-            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action');
+            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action]');
             if (save_and_preview_button.get(0) === $(document.activeElement).get(0)) {
                 // Open the preview page in a new tab
                 window.open(save_and_preview_button.data('glpi-form-editor-preview-url'), '_blank');
@@ -426,7 +426,7 @@ export class GlpiFormEditorController
      * Must be executed after each actions.
      */
     computeState() {
-        let global_block_indices = { 'question': 0, 'comment': 0 };
+        const global_block_indices = { 'question': 0, 'comment': 0 };
 
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -537,7 +537,7 @@ export class GlpiFormEditorController
 
             $(input).attr(
                 "name",
-                base_input_index + `[${field}]${postfix}`
+                `${base_input_index}[${field}]${postfix}`
             );
         });
     }
@@ -897,7 +897,7 @@ export class GlpiFormEditorController
             // Push config into init queue, needed because we can't init
             // the rich text editor until the template is inserted into
             // its final DOM destination
-            config.selector = "#" + id;
+            config.selector = `#${id}`;
             tiny_mce_to_init.push(config);
 
             // Store config with udpated ID in case we need to re render
@@ -922,7 +922,7 @@ export class GlpiFormEditorController
                 $(this).next(".select2-container").remove();
 
                 // Add the target select to the select2_to_init list
-                target.find('#' + $(this).attr("id")).each(function() {
+                target.find(`#${$(this).attr("id")}`).each(function() {
                     const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
                     const config = { ...window.select2_configs[id] };
 
@@ -934,7 +934,7 @@ export class GlpiFormEditorController
                 });
             }
 
-            let id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
+            const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
             const config = { ...window.select2_configs[id] };
 
             if (id !== undefined && config !== undefined) {

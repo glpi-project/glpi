@@ -33,15 +33,15 @@
 
 /* global tinymce */
 
-var GLPI = GLPI || {};
-GLPI.RichText = GLPI.RichText || {};
+window.GLPI = window.GLPI || {};
+window.GLPI.RichText = window.GLPI.RichText || {};
 
 /**
  * User mention rich text autocompleter.
  *
  * @since 10.0.0
  */
-GLPI.RichText.UserMention = class {
+window.GLPI.RichText.UserMention = class {
 
     /**
     * @param {Editor} editor
@@ -60,19 +60,17 @@ GLPI.RichText.UserMention = class {
     * @returns {void}
     */
     register() {
-        const that = this;
-
         // Register autocompleter
         this.editor.ui.registry.addAutocompleter(
             'user_mention',
             {
                 trigger: '@',
                 minChars: 0,
-                fetch: function (pattern) {
-                    return that.fetchItems(pattern);
+                fetch: (pattern) => {
+                    return this.fetchItems(pattern);
                 },
-                onAction: function (autocompleteApi, range, value) {
-                    that.mentionUser(autocompleteApi, range, value);
+                onAction: (autocompleteApi, range, value) => {
+                    this.mentionUser(autocompleteApi, range, value);
                 }
             }
         );
@@ -88,22 +86,21 @@ GLPI.RichText.UserMention = class {
     * @returns {Promise}
     */
     fetchItems(pattern) {
-        const that = this;
         return new Promise(
-            function (resolve) {
+            (resolve) => {
                 $.post(
-                    CFG_GLPI.root_doc + '/ajax/getDropdownUsers.php',
+                    `${CFG_GLPI.root_doc}/ajax/getDropdownUsers.php`,
                     {
-                        entity_restrict: that.activeEntity,
+                        entity_restrict: this.activeEntity,
                         right: 'all',
                         display_emptychoice: 0,
                         searchText: pattern,
-                        _idor_token: that.idorToken,
+                        _idor_token: this.idorToken,
                     }
                 ).done(
-                    function(data) {
+                    (data) => {
                         const items = data.results.map(
-                            function (user) {
+                            (user) => {
                                 return {
                                     type: 'autocompleteitem',
                                     value: JSON.stringify({id: user.id, name: user.text}),

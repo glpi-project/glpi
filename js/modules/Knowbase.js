@@ -54,7 +54,7 @@ class Knowbase {
                     revid: _this.data('revid')
                 }
             })
-                .done(function(data) {
+                .done((data) => {
                     glpi_html_dialog({
                         title: __('Show revision %d').replace('%d', _this.data('rev')),
                         body: `
@@ -67,7 +67,7 @@ class Knowbase {
                         `,
                     });
                 })
-                .fail(function() {
+                .fail(() => {
                     glpi_alert({
                         title: __('Contact your GLPI admin!'),
                         message: __('Unable to load revision!'),
@@ -78,7 +78,7 @@ class Knowbase {
         $(document).on('click', '.compare', (e) => {
             e.preventDefault();
             const _oldid = $('[name="oldid"]:checked').val();
-            let _diffid = $('[name="diff"]:checked').val();
+            const _diffid = $('[name="diff"]:checked').val();
             const kbitem_id = $(e.currentTarget).data('kbitem_id');
             this.#showRevisionComparison(kbitem_id, _oldid, _diffid);
         });
@@ -89,7 +89,7 @@ class Knowbase {
 
             const _checked_index = $('[name="diff"]:checked').index('[name="diff"]');
             if (_checked_index >= _index) {
-                $('[name="diff"]:eq(' + (_index - 1) +')').prop('checked', true);
+                $(`[name="diff"]:eq(${_index - 1})`).prop('checked', true);
             }
 
             $(`[name="diff"]:gt(${_index}), [name="diff"]:eq(${_index})`).css('visibility', 'hidden');

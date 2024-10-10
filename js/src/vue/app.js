@@ -41,7 +41,7 @@ if (window.Vue !== undefined && window.Vue.components !== undefined) {
 window.Vue = {
     createApp: (...args) => {
         // pass arguments directly to createApp
-        const app = createApp.apply(null, args);
+        const app = createApp(...args);
         // add default global properties so they can be used within the templates
         app.config.globalProperties.__ = __;
         app.config.globalProperties._n = _n;

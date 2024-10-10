@@ -122,7 +122,7 @@ describe('Search Table', () => {
         </div>
     </div>
 `);
-    window.GLPI.Search.Table.prototype.getResultsView = jest.fn(function () {
+    window.GLPI.Search.Table.prototype.getResultsView = jest.fn(() => {
         return {
             setID(id) {
                 return id;
@@ -175,7 +175,7 @@ describe('Search Table', () => {
     });
     test('setSortStateFromColumns', () => {
         const verify_initial_sort_state = () => {
-            let state = real_table.setSortStateFromColumns();
+            const state = real_table.setSortStateFromColumns();
             expect(state['sort'].length).toBe(1);
             expect(state['order'].length).toBe(1);
             expect(state['sort'][0]).toBe('1');
@@ -332,7 +332,7 @@ describe('Search Table', () => {
         // Be sure no overlay exists yet
         el.parent().find('.spinner-overlay').remove();
         real_table.showLoadingSpinner();
-        let overlay = el.parent().find('.spinner-overlay');
+        const overlay = el.parent().find('.spinner-overlay');
         expect(overlay.length).toBe(1);
         expect(overlay.css('visibility')).toBe('visible');
         real_table.hideLoadingSpinner();

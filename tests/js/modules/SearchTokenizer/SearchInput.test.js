@@ -86,7 +86,7 @@ describe('Search Tokenizer Input', () => {
             expect(displayed_input).toHaveAttribute(key, value);
         });
         $.each(input_options.data, (key, value) => {
-            expect(displayed_input).toHaveAttribute('data-' + key, value);
+            expect(displayed_input).toHaveAttribute(`data-${key}`, value);
         });
     });
 
@@ -109,7 +109,7 @@ describe('Search Tokenizer Input', () => {
             test_input.attr(key, value);
         });
         $.each(input_options.data, (key, value) => {
-            test_input.attr('data-' + key, value);
+            test_input.attr(`data-${key}`, value);
         });
         test_input.addClass(input_options.classes);
 
@@ -129,7 +129,7 @@ describe('Search Tokenizer Input', () => {
             expect(displayed_input).toHaveAttribute(key, value);
         });
         $.each(input_options.data, (key, value) => {
-            expect(displayed_input).toHaveAttribute('data-' + key, value);
+            expect(displayed_input).toHaveAttribute(`data-${key}`, value);
         });
     });
 
@@ -150,7 +150,7 @@ describe('Search Tokenizer Input', () => {
             }
         });
 
-        let content = stripExtraWhitespace(search_input.getTagsHelperContent());
+        const content = stripExtraWhitespace(search_input.getTagsHelperContent());
         expect(content).toBe(stripExtraWhitespace(`
       <ul class="list-group tags-list">
          <li class="list-group-item list-group-item-action" style="cursor: pointer" data-tag="name">

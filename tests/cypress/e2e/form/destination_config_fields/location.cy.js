@@ -40,7 +40,7 @@ describe('Location configuration', () => {
 
         // Create a location
         cy.get('@form_id').then((form_id) => {
-            const location_name = 'Test Location - ' + form_id;
+            const location_name = `Test Location - ${form_id}`;
             cy.createWithAPI('Location', {
                 name: location_name,
             });
@@ -51,8 +51,8 @@ describe('Location configuration', () => {
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');
             cy.getDropdownByLabelText("Select a dropdown type").selectDropdownValue('Locations');
             cy.get('@form_id').then((form_id) => {
-                const location_name = 'Test Location - ' + form_id;
-                cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue('»' + location_name);
+                const location_name = `Test Location - ${form_id}`;
+                cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue(`»${  location_name}`);
             });
             cy.findByRole('button', {'name': 'Save'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
@@ -88,15 +88,15 @@ describe('Location configuration', () => {
         cy.get('@location_dropdown').selectDropdownValue('Specific location');
         cy.get('@config').getDropdownByLabelText('Select a location...').as('specific_location_dropdown');
         cy.get('@form_id').then((form_id) => {
-            const location_name = 'Test Location - ' + form_id;
-            cy.get('@specific_location_dropdown').selectDropdownValue('»' + location_name);
+            const location_name = `Test Location - ${form_id}`;
+            cy.get('@specific_location_dropdown').selectDropdownValue(`»${location_name}`);
         });
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@location_dropdown').should('have.text', 'Specific location');
         cy.get('@form_id').then((form_id) => {
-            const location_name = 'Test Location - ' + form_id;
+            const location_name = `Test Location - ${form_id}`;
             cy.get('@specific_location_dropdown').should('have.text', location_name);
         });
 
@@ -124,7 +124,7 @@ describe('Location configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             // Check ticket values
-            cy.getDropdownByLabelText('Location').should('have.text', 'Test Location - ' + form_id);
+            cy.getDropdownByLabelText('Location').should('have.text', `Test Location - ${form_id}`);
         });
 
         // Others possibles configurations are tested directly by the backend.

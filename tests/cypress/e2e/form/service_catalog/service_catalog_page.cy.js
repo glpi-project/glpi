@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-const form_name = "Test form for service_catalog_page.cy.js " + (new Date()).getTime();
+const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
 
 describe('Service catalog page', () => {
     before(() => {

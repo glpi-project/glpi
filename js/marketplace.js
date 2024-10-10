@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-arrow-callback: 0 */
+/* eslint no-var: 0 */
 /* global displayAjaxMessageAfterRedirect, marketplace_total_plugin */
 
 var current_page = 1;
@@ -38,7 +40,7 @@ var ajax_url;
 var ajax_done = false;
 
 $(document).ready(function() {
-    ajax_url = CFG_GLPI.root_doc+"/ajax/marketplace.php";
+    ajax_url = `${CFG_GLPI.root_doc}/ajax/marketplace.php`;
 
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {

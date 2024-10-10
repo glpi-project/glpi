@@ -40,7 +40,7 @@ describe("Custom Assets - Custom Fields", () => {
         // This can be split into multiple tests when the new API supports custom assets and custom fields
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name_chars = 'abcdefghijklmnopqrstuvwxyz';
-        const asset_name = 'customasset' + Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('');
+        const asset_name = `customasset${Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('')}`;
         cy.findByLabelText(/System name/i).type(asset_name);
         cy.findByLabelText("Active").select('1', { force: true });
         cy.findByRole('button', {name: "Add"}).click();
@@ -212,7 +212,7 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('input[type="checkbox"][id^="cb_checkall_table"]').check({ force: true });
         cy.findByRole('button', {name: 'Save'}).click();
 
-        cy.visit('/front/asset/asset.form.php?class=' + asset_name + '&id=-1&withtemplate=2');
+        cy.visit(`/front/asset/asset.form.php?class=${asset_name}&id=-1&withtemplate=2`);
         // Validate the custom fields look OK
         cy.findByLabelText('Test String')
             .should('have.attr', 'type', 'text')
@@ -250,7 +250,7 @@ describe("Custom Assets - Custom Fields", () => {
     it('Custom field update', () => {
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name_chars = 'abcdefghijklmnopqrstuvwxyz';
-        const asset_name = 'customasset' + Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('');
+        const asset_name = `customasset${Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('')}`;
         cy.findByLabelText(/System name/i).type(asset_name);
         cy.findByLabelText("Active").select('1', { force: true });
         cy.findByRole('button', {name: "Add"}).click();
@@ -287,7 +287,7 @@ describe("Custom Assets - Custom Fields", () => {
     it('Custom field delete', () => {
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name_chars = 'abcdefghijklmnopqrstuvwxyz';
-        const asset_name = 'customasset' + Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('');
+        const asset_name = `customasset${Array.from({ length: 10 }, () => asset_name_chars.charAt(Math.floor(Math.random() * asset_name_chars.length))).join('')}`;
         cy.findByLabelText(/System name/i).type(asset_name);
         cy.findByLabelText("Active").select('1', { force: true });
         cy.findByRole('button', {name: "Add"}).click();

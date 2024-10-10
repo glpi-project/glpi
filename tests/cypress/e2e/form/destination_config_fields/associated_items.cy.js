@@ -52,7 +52,7 @@ describe('Associated items configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('Computer', {
-                'name': 'My computer - ' + form_id,
+                'name': `My computer - ${form_id}`,
             }).as('computer_id');
         });
     });
@@ -79,7 +79,7 @@ describe('Associated items configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             cy.get('@config').getDropdownByLabelText('Select the item to associate...').as('specific_associated_items_items_id_dropdown');
-            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue('My computer - ' + form_id);
+            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue(`My computer - ${form_id}`);
         });
 
         cy.findByRole('button', {'name': 'Update item'}).click();
@@ -87,7 +87,7 @@ describe('Associated items configuration', () => {
         cy.get('@associated_items_dropdown').should('have.text', 'Specific items');
         cy.get('@specific_associated_items_itemtype_dropdown').should('have.text', 'Computers');
         cy.get('@form_id').then((form_id) => {
-            cy.get('@specific_associated_items_items_id_dropdown').should('have.text', 'My computer - ' + form_id);
+            cy.get('@specific_associated_items_items_id_dropdown').should('have.text', `My computer - ${form_id}`);
         });
 
         // Switch to "Answer from specific questions"
@@ -112,14 +112,14 @@ describe('Associated items configuration', () => {
         // Fill form
         cy.get('@form_id').then((form_id) => {
             cy.findByRole("region", { name : "My item question" }).as("question");
-            cy.get("@question").getDropdownByLabelText("Select an item").selectDropdownValue('My computer - ' + form_id);
+            cy.get("@question").getDropdownByLabelText("Select an item").selectDropdownValue(`My computer - ${form_id}`);
         });
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket linked items
         cy.get('@form_id').then((form_id) => {
-            cy.findByRole('region', {'name': 'Items'}).findByRole('link', {'name': 'My computer - ' + form_id + ' -'}).should('exist');
+            cy.findByRole('region', {'name': 'Items'}).findByRole('link', {'name': `My computer - ${form_id} -`}).should('exist');
         });
 
         // Others possibles configurations are tested directly by the backend.
@@ -129,10 +129,10 @@ describe('Associated items configuration', () => {
         // Create a second computer and a monitor
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('Computer', {
-                'name': 'My second computer - ' + form_id,
+                'name': `My second computer - ${form_id}`,
             }).as('second_computer_id');
             cy.createWithAPI('Monitor', {
-                'name': 'My monitor - ' + form_id,
+                'name': `My monitor - ${form_id}`,
             }).as('monitor_id');
         });
 
@@ -148,7 +148,7 @@ describe('Associated items configuration', () => {
         cy.get('@specific_associated_items_itemtype_dropdown').selectDropdownValue('Computers');
         cy.get('@form_id').then((form_id) => {
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(0).getDropdownByLabelText('Select the item to associate...').as('specific_associated_items_items_id_dropdown');
-            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue('My computer - ' + form_id);
+            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue(`My computer - ${form_id}`);
         });
 
         // Add second computer
@@ -157,7 +157,7 @@ describe('Associated items configuration', () => {
         cy.get('@specific_associated_items_itemtype_dropdown').selectDropdownValue('Computers');
         cy.get('@form_id').then((form_id) => {
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(1).getDropdownByLabelText('Select the item to associate...').as('specific_associated_items_items_id_dropdown');
-            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue('My second computer - ' + form_id);
+            cy.get('@specific_associated_items_items_id_dropdown').selectDropdownValue(`My second computer - ${form_id}`);
         });
 
         // Add monitor
@@ -170,7 +170,7 @@ describe('Associated items configuration', () => {
         cy.wait('@dropdownAllItems').then(() => {
             cy.get('@form_id').then((form_id) => {
                 cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(2).getDropdownByLabelText('Select the item to associate...').as('specific_associated_items_items_id_dropdown');
-                cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(2).getDropdownByLabelText('Select the item to associate...').selectDropdownValue('My monitor - ' + form_id);
+                cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(2).getDropdownByLabelText('Select the item to associate...').selectDropdownValue(`My monitor - ${form_id}`);
             });
         });
 
@@ -184,19 +184,19 @@ describe('Associated items configuration', () => {
                 .should('have.text', 'Computers');
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(0)
                 .getDropdownByLabelText('Select the item to associate...')
-                .should('have.text', 'My computer - ' + form_id);
+                .should('have.text', `My computer - ${form_id}`);
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(1)
                 .getDropdownByLabelText('Select the itemtype of the item to associate...')
                 .should('have.text', 'Computers');
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(1)
                 .getDropdownByLabelText('Select the item to associate...')
-                .should('have.text', 'My second computer - ' + form_id);
+                .should('have.text', `My second computer - ${form_id}`);
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(2)
                 .getDropdownByLabelText('Select the itemtype of the item to associate...')
                 .should('have.text', 'Monitors');
             cy.get('@config').find('[data-glpi-specific-values-extra-field-item]').eq(2)
                 .getDropdownByLabelText('Select the item to associate...')
-                .should('have.text', 'My monitor - ' + form_id);
+                .should('have.text', `My monitor - ${form_id}`);
         });
     });
 });
