@@ -33,12 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 if (!Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
     Session::redirectIfNotLoggedIn();
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 if (isset($_GET["id"])) {
     Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));

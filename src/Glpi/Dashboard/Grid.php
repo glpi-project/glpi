@@ -36,12 +36,12 @@
 namespace Glpi\Dashboard;
 
 use Config;
-use DateInterval;
 use Dropdown;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
@@ -507,8 +507,7 @@ JAVASCRIPT;
         $params = array_merge($defaults, $params);
 
         if (!self::checkToken($params)) {
-            Html::displayRightError();
-            exit;
+            throw new AccessDeniedHttpException();
         }
 
         self::$embed = true;

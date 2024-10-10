@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -8,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,29 +29,19 @@
  *
  * ---------------------------------------------------------------------
  */
+describe('Error page', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+    });
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Dashboard\Dashboard;
-
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
-
-Session::checkCentralAccess();
-$default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
-
-// Redirect to "/front/ticket.php" if no dashboard found
-if ($default == "") {
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
-}
-
-$dashboard = new Dashboard($default);
-if (!$dashboard->canViewCurrent()) {
-    throw new AccessDeniedHttpException();
-}
-
-Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");
-
-$grid = new Glpi\Dashboard\Grid($default);
-$grid->showDefault();
-
-Html::footer();
+    it('Displays a not found error', () => {
+        cy.visit({
+            url: '/front/computer.form.php?id=999999',
+            failOnStatusCode: false,
+        }).then((response) => {
+            expect(response.performance.getEntriesByType('navigation')[0].responseStatus).to.eq(404);
+            cy.findByRole('alert').should('contain.text', 'The requested item has not been found.');
+        });
+    });
+});

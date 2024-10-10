@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Dashboard\Dashboard;
 
 /** @var array $CFG_GLPI */
@@ -48,8 +49,7 @@ if ($default == "") {
 
 $dashboard = new Dashboard($default);
 if (!$dashboard->canViewCurrent()) {
-    Html::displayRightError();
-    exit();
+    throw new AccessDeniedHttpException();
 }
 
 Html::header(__('Assets Dashboard'), $_SERVER['PHP_SELF'], "assets", "dashboard");

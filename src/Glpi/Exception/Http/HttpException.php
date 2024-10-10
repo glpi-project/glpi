@@ -32,24 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+namespace Glpi\Exception\Http;
 
-use Glpi\Application\View\TemplateRenderer;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException as BaseException;
 
-class RequiresHttpsException extends AbstractHttpException
+class HttpException extends BaseException implements HttpExceptionInterface
 {
-    public function asResponse(): Response
-    {
-        $request = $this->getRequest();
-
-        $cnt = TemplateRenderer::getInstance()->render(
-            'pages/https_only.html.twig',
-            [
-                'secured_url' => 'https://' . $request->getHost() . $request->getRequestUri(),
-            ]
-        );
-
-        return new Response($cnt, 400);
-    }
+    use HttpExceptionTrait;
 }

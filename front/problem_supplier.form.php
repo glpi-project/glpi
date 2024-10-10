@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Event;
 
 $link = new Problem_Supplier();
 
@@ -65,7 +66,7 @@ if (isset($_POST["update"])) {
     );
     Html::redirect(Problem::getFormURLWithID($link->fields['problems_id']));
 } else {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 Html::popFooter();

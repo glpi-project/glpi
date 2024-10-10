@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkRight("software", UPDATE);
 $isl = new Item_SoftwareLicense();
@@ -61,4 +62,5 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

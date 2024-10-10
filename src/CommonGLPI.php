@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\FilterableInterface;
 
@@ -1192,7 +1194,7 @@ class CommonGLPI implements CommonGLPIInterface
                 && !$this->isNewID($options['id'])
             ) {
                 if (!$this->getFromDB($options['id'])) {
-                    Html::displayNotFoundError();
+                    throw new NotFoundHttpException();
                 }
             }
             // in case of lefttab layout, we couldn't see "right error" message
@@ -1202,10 +1204,7 @@ class CommonGLPI implements CommonGLPIInterface
                 && $_GET["id"]
                 && !$this->can($_GET["id"], READ)
             ) {
-                // This triggers from a profile switch.
-                // If we don't have right, redirect instead to central page
-                Toolbox::handleProfileChangeRedirect();
-                Html::displayRightError();
+                throw new AccessDeniedHttpException();
             }
         }
 

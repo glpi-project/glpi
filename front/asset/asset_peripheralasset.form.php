@@ -33,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
-
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Event;
 
 Session::checkCentralAccess();
 
@@ -59,4 +60,4 @@ if (isset($_POST['add'], $_POST['itemtype_asset'], $_POST['items_id_asset'], $_P
     Html::back();
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();
