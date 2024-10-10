@@ -41,10 +41,12 @@ use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use GLPIKey;
 use Migration;
+use Override;
 use Session;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -85,6 +87,15 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
 
     protected $requires_db_up_to_date = false;
+
+    #[Override]
+    public function getSpecificMandatoryRequirements(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        return [new DatabaseTablesEngine($DB)];
+    }
 
     protected function configure()
     {

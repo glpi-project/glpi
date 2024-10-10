@@ -44,6 +44,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 use Plugin;
@@ -298,7 +299,9 @@ class Application extends BaseApplication
 
         if (
             $command instanceof GlpiCommandInterface && $command->mustCheckMandatoryRequirements()
-            && !$this->checkCoreMandatoryRequirements()
+            && !$this->checkCoreMandatoryRequirements(
+                $command->getSpecificMandatoryRequirements()
+            )
         ) {
             return self::ERROR_MISSING_REQUIREMENTS;
         }
@@ -518,10 +521,13 @@ class Application extends BaseApplication
     /**
      * Check if core mandatory requirements are OK.
      *
+     * @param RequirementInterface[] $command_specific_requirements
+     *
      * @return boolean  true if requirements are OK, false otherwise
      */
-    private function checkCoreMandatoryRequirements(): bool
-    {
+    private function checkCoreMandatoryRequirements(
+        array $command_specific_requirements
+    ): bool {
         $db = property_exists($this, 'db') ? $this->db : null;
 
         $requirements_manager = new RequirementsManager();
@@ -529,14 +535,34 @@ class Application extends BaseApplication
             $db instanceof DBmysql && $db->connected ? $db : null
         );
 
+        // Some commands might specify some extra requirements
+        if (count($command_specific_requirements)) {
+            $core_requirements->add(...$command_specific_requirements);
+        }
+
         if ($core_requirements->hasMissingMandatoryRequirements()) {
-            $message = __('Some mandatory system requirements are missing.')
-                . ' '
-                . sprintf(__('Run the "%1$s" command for more details.'), 'php bin/console system:check_requirements');
+            $message = __('Some mandatory system requirements are missing:');
             $this->output->writeln(
                 '<error>' . $message . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
+
+            foreach ($core_requirements->getErrorMessages() as $message) {
+                $this->output->writeln(
+                    '<error> - ' . $message . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+            }
+
+            $message = sprintf(
+                __('Run the "%1$s" command for more details.'),
+                'php bin/console system:check_requirements'
+            );
+            $this->output->writeln(
+                '<info>' . $message . '</info>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+
             return false;
         }
 

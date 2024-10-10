@@ -33,28 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Command;
+namespace Glpi\System\Requirement;
 
-interface GlpiCommandInterface
+final class DatabaseTablesEngine extends AbstractRequirement
 {
     /**
-     * Defines whether or not mandatory requirements must be checked before running command.
+     * DB instance.
      *
-     * @return boolean
+     * @var \DBmysql
      */
-    public function mustCheckMandatoryRequirements(): bool;
+    private $db;
 
-    /**
-     * Defines whether or not mandatory requirements must be checked before running command.
-     *
-     * @return \Glpi\System\Requirement\RequirementInterface[]
-     */
-    public function getSpecificMandatoryRequirements(): array;
+    public function __construct(\DBmysql $db)
+    {
+        parent::__construct(
+            __('Database tables engine')
+        );
 
-    /**
-     * Defines whether or not command requires an up-to-date database to be executed.
-     *
-     * @return boolean
-     */
-    public function requiresUpToDateDb(): bool;
+        $this->db = $db;
+    }
+
+    protected function check(): void
+    {
+        $this->validated = true;
+        $tables_count = count($this->db->getMyIsamTables());
+
+        // Fail if at least one MyIsam table is found
+        if ($tables_count > 0) {
+            $this->validated = false;
+            $this->validation_messages[] = sprintf(
+                __('The database contains %1$d table(s) using the unsupported MyISAM engine. Please run the "%2$s" command to migrate them to the InnoDB engine.'),
+                $tables_count,
+                'php bin/console migration:myisam_to_innodb'
+            );
+        }
+    }
 }
