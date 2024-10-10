@@ -47,12 +47,6 @@ use RequestType;
 class RequestSourceField extends AbstractConfigField
 {
     #[Override]
-    public static function getKey(): string
-    {
-        return 'request_source';
-    }
-
-    #[Override]
     public function getLabel(): string
     {
         return RequestType::getTypeName(1);
