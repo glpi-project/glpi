@@ -34,55 +34,44 @@
 
 namespace test\units\Glpi\UI;
 
-use DirectoryIterator;
 use Glpi\UI\IllustrationManager;
 use GLPITestCase;
+use org\bovigo\vfs\vfsStream;
 
 final class IllustrationManagerTest extends GLPITestCase
 {
-    private function getTestedInstance(): IllustrationManager
+    private function getDefaultManager(): IllustrationManager
     {
+        // Manager with its default configuration
         return new IllustrationManager();
-    }
-
-    private function getAllIllustrationFiles(): array
-    {
-        // List all icons
-        $icons = [];
-        $icons_files = new DirectoryIterator(GLPI_ROOT . "/pics/illustration");
-        foreach ($icons_files as $file) {
-            /** @var \SplFileInfo $file */
-            if ($file->isDir()) {
-                continue;
-            }
-
-            if ($file->getExtension() !== 'svg') {
-                continue;
-            }
-
-            $icons[] = $file->getFilename();
-        }
-
-        return $icons;
     }
 
     public function testIllustrationsAreLoaded(): void
     {
-        // Act: try to load a given illustration
-        $manager = $this->getTestedInstance();
-        $render = $manager->render('report-issue.svg');
+        // Arrange: list all icons
+        $manager = $this->getDefaultManager();
+        $icons = $manager->getAllIllustrationsNames();
+
+        // Act: render all icons
+        $rendered_icons = array_map(
+            fn($filename) => $manager->render($filename),
+            $icons
+        );
 
         // Assert: load sould succeed
-        $this->assertNotEmpty($render);
+        $this->assertNotEmpty($rendered_icons);
+        foreach ($rendered_icons as $rendered_icon) {
+            $this->assertNotEmpty($rendered_icon);
+        }
     }
 
     public function testIllustrationsUseThemeColors(): void
     {
         // Arrange: list all icons
-        $icons = $this->getAllIllustrationFiles();
+        $manager = $this->getDefaultManager();
+        $icons = $manager->getAllIllustrationsNames();
 
         // Act: render all icons
-        $manager = $this->getTestedInstance();
         $rendered_icons = array_map(
             fn($filename) => $manager->render($filename),
             $icons
@@ -102,10 +91,10 @@ final class IllustrationManagerTest extends GLPITestCase
     public function testIllustrationUseTheSpecifiedSize(): void
     {
         // Arrange: list all icons
-        $icons = $this->getAllIllustrationFiles();
+        $manager = $this->getDefaultManager();
+        $icons = $manager->getAllIllustrationsNames();
 
         // Act: render all icons
-        $manager = $this->getTestedInstance();
         $rendered_icons = array_map(
             fn($filename) => $manager->render($filename, 75),
             $icons
@@ -119,5 +108,69 @@ final class IllustrationManagerTest extends GLPITestCase
             $this->assertStringContainsString('height="75px"', $rendered_icon);
             $this->assertStringNotContainsString('height="100%"', $rendered_icon);
         }
+    }
+
+    public function testGetAllIllustrationNames(): void
+    {
+        $virtual_dir = 'glpi' . mt_rand();
+
+        // Arrange: create a virtual file system and use it as our base directory
+        vfsStream::setup($virtual_dir, null, [
+            'valid-file1.svg' => 'fake_content',
+            'not-an-svg.exe'  => 'fake_content',
+            'no-extension'    => 'fake_content',
+            'directory'       => [
+                'nested-icon.svg' => 'fake_content',
+            ],
+            'valid-file2.svg' => 'fake_content',
+        ]);
+        $manager = new IllustrationManager(vfsStream::url($virtual_dir));
+
+        // Act: get all illustrations
+        $names = $manager->getAllIllustrationsNames();
+
+        // Assert: only top level valid svg files should be found
+        $this->assertEquals(['valid-file1.svg', 'valid-file2.svg'], $names);
+    }
+
+    public function testRenderMethodCantBeAbusedToReadFilesOutsideBaseFolder(): void
+    {
+        // We can't use VFS here because the `realpath` function used in
+        // isValidIllustrationName() will always return false with them
+        $glpi_dir          = realpath(FIXTURE_DIR . '/mocked_glpi_dir_for_illustrations');
+        $illustrations_dir = "$glpi_dir/pics/illustration";
+
+        $valid_svg               = "valid_svg.svg"; // Control subject
+        $svg_path_outside_folder = "../../my_svg.svg";
+        $file_outside_folder     = "../../confidential_info.txt";
+
+        // Arrange: make sure our fixtures files are valid, else the test would
+        // be meaningless
+        $to_check = [
+            $valid_svg,
+            $svg_path_outside_folder,
+            $file_outside_folder,
+        ];
+        foreach ($to_check as $path) {
+            $path = "$illustrations_dir/$path";
+            if (
+                !file_exists($path)
+                || !is_readable($path)
+                || !is_file($path)
+            ) {
+                $this->fail("Invalid fixture file: $path");
+            }
+        }
+        $manager = new IllustrationManager($illustrations_dir);
+
+        // Act: try to get one valid file (control) and two external files
+        $valid_svg_content = $manager->render($valid_svg);
+        $svg_outside_folder_content = $manager->render($svg_path_outside_folder);
+        $file_outside_folder_content = $manager->render($file_outside_folder);
+
+        // Assert: only files inside the base folder are rendered
+        $this->assertNotEmpty($valid_svg_content);
+        $this->assertEmpty($svg_outside_folder_content);
+        $this->assertEmpty($file_outside_folder_content);
     }
 }
