@@ -37,7 +37,10 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use Group;
 use Override;
+use Supplier;
+use User;
 
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
@@ -54,11 +57,28 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
-        if (is_array($value)) {
-            return implode(',', $value);
+        if (empty($value)) {
+            return null;
         }
 
-        return $value;
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $actors_ids = [];
+        foreach ($value as $actor) {
+            $actor_parts = explode('-', $actor);
+            $actors_ids[getItemtypeForForeignKeyField($actor_parts[0])][] = (int) $actor_parts[1];
+        }
+
+        // Wrap the array in a config object to serialize it
+        $config = new QuestionTypeActorsDefaultValueConfig(
+            users_ids: $actors_ids['User'] ?? [],
+            groups_ids: $actors_ids['Group'] ?? [],
+            suppliers_ids: $actors_ids['Supplier'] ?? []
+        );
+
+        return json_encode($config->jsonSerialize());
     }
 
     #[Override]
@@ -109,8 +129,12 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      */
     public function isMultipleActors(?Question $question): bool
     {
-        /** @var ?QuestionTypeActorsConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeActorsExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -135,12 +159,14 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             return [];
         }
 
-        $default_values = [];
-        $raw_default_values = explode(',', $question->fields['default_value']);
-        foreach ($raw_default_values as $raw_default_value) {
-            $entry = explode('-', $raw_default_value);
-            $default_values[$entry[0]][] = $entry[1];
-        }
+        $config = new QuestionTypeActorsDefaultValueConfig();
+        $config = $config->jsonDeserialize(json_decode($question->fields['default_value'], true));
+
+        $default_values = [
+            getForeignKeyFieldForItemType(User::class) => $config->getUsersIds(),
+            getForeignKeyFieldForItemType(Group::class) => $config->getGroupsIds(),
+            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds()
+        ];
 
         if ($multiple) {
             return $default_values;
@@ -356,8 +382,13 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeActorsConfig::class;
+        return QuestionTypeActorsExtraDataConfig::class;
+    }
+
+    public function getDefaultValueConfigClass(): ?string
+    {
+        return QuestionTypeActorsDefaultValueConfig::class;
     }
 }

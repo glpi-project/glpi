@@ -148,8 +148,12 @@ TWIG;
      */
     public function getOptions(?Question $question): array
     {
-        /** @var ?QuestionTypeSelectableConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return [];
+        }
+
+        /** @var ?QuestionTypeSelectableExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return [];
         }
@@ -351,8 +355,8 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeSelectableConfig::class;
+        return QuestionTypeSelectableExtraDataConfig::class;
     }
 }
