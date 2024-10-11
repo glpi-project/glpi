@@ -4924,14 +4924,15 @@ class CommonDBTM extends CommonGLPI
                             }
                             return getUserName($value);
                         }
+                        $name = Dropdown::getDropdownName($searchoptions['table'], $value);
                         if ($param['comments']) {
-                            $tmp = Dropdown::getDropdownName($searchoptions['table'], $value, 1);
-                            return $tmp['name'] . '&nbsp;' . Html::showToolTip(
-                                $tmp['comment'],
+                            $comments = Dropdown::getDropdownComments($searchoptions['table'], (int) $value);
+                            return htmlspecialchars($name) . '&nbsp;' . Html::showToolTip(
+                                $comments,
                                 ['display' => false]
                             );
                         }
-                        return Dropdown::getDropdownName($searchoptions['table'], $value);
+                        return htmlspecialchars($name);
 
                     case "itemtypename":
                         if ($obj = getItemForItemtype($value)) {

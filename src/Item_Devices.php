@@ -304,22 +304,18 @@ class Item_Devices extends CommonDBRelation
         switch ($field) {
             case 'items_id':
                 if (isset($values['itemtype'])) {
+                    $table = getTableForItemType($values['itemtype']);
+                    $value = (int) $values[$field];
+                    $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
-                        $valueData = Dropdown::getDropdownName(
-                            getTableForItemType($values['itemtype']),
-                            $values[$field],
-                            1
-                        );
-                        return sprintf(
-                            __('%1$s %2$s'),
-                            $valueData['name'],
-                            Html::showToolTip($valueData['comment'], ['display' => false])
-                        );
+                        $comments = Dropdown::getDropdownComments($table, $value);
+                         return sprintf(
+                             __('%1$s %2$s'),
+                             htmlspecialchars($name),
+                             Html::showToolTip($comments, ['display' => false])
+                         );
                     }
-                    return Dropdown::getDropdownName(
-                        getTableForItemType($values['itemtype']),
-                        $values[$field]
-                    );
+                    return htmlspecialchars($name);
                 }
                 break;
         }

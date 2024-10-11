@@ -286,9 +286,15 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName()
+ *
+ * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
  **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
 {
+    if ($withcomment) {
+        Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
+    }
+
     $dbu = new DbUtils();
     return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip, $default);
 }

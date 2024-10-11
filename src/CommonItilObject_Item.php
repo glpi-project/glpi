@@ -1451,22 +1451,18 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 }
 
                 if (isset($values['itemtype'])) {
+                    $table = getTableForItemType($values['itemtype']);
+                    $value = (int) $values[$field];
+                    $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
-                        $tmp = Dropdown::getDropdownName(
-                            getTableForItemType($values['itemtype']),
-                            $values[$field],
-                            1
-                        );
+                        $comments = Dropdown::getDropdownComments($table, $value);
                          return sprintf(
                              __('%1$s %2$s'),
-                             $tmp['name'],
-                             Html::showToolTip($tmp['comment'], ['display' => false])
+                             htmlspecialchars($name),
+                             Html::showToolTip($comments, ['display' => false])
                          );
                     }
-                    return Dropdown::getDropdownName(
-                        getTableForItemType($values['itemtype']),
-                        $values[$field]
-                    );
+                    return htmlspecialchars($name);
                 }
                 break;
         }

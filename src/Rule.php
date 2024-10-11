@@ -2658,9 +2658,7 @@ JS
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
                 return match ($crit['type']) {
-                    'dropdown' => ($result = Dropdown::getDropdownName($crit["table"], $value, false, false)) === '&nbsp;'
-                        ? ''
-                        : $result,
+                    'dropdown' => Dropdown::getDropdownName($crit["table"], $value, translate: false),
                     'dropdown_assign', 'dropdown_users' => getUserName($value),
                     'yesonly', 'yesno' => Dropdown::getYesNo($value),
                     'dropdown_impact' => CommonITILObject::getImpactName($value),
