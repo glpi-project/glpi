@@ -33,39 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Export\Specification;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Override;
-
-final class QuestionTypeActorsConfig implements JsonFieldInterface
+final class QuestionContentSpecification implements ContentSpecificationInterface
 {
-    // Unique reference to hardcoded name used for serialization
-    public const IS_MULTIPLE_ACTORS = "is_multiple_actors";
-
-    public function __construct(
-        private bool $is_multiple_actors = false,
-    ) {
-    }
-
-    #[Override]
-    public static function jsonDeserialize(array $data): self
-    {
-        return new self(
-            is_multiple_actors: $data[self::IS_MULTIPLE_ACTORS] ?? false,
-        );
-    }
-
-    #[Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            self::IS_MULTIPLE_ACTORS => $this->is_multiple_actors,
-        ];
-    }
-
-    public function isMultipleActors(): bool
-    {
-        return $this->is_multiple_actors;
-    }
+    public string $name;
+    public string $type;
+    public bool $is_mandatory;
+    public int $rank;
+    public ?string $description;
+    public ?string $default_value;
+    public ?string $extra_data;
+    public int $section_rank;
 }

@@ -38,7 +38,7 @@ namespace Glpi\Form\QuestionType;
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-final class QuestionTypeDateTimeConfig implements JsonFieldInterface
+final class QuestionTypeDateTimeExtraDataConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded name used for serialization
     public const IS_DEFAULT_VALUE_CURRENT_TIME = "is_default_value_current_time";
