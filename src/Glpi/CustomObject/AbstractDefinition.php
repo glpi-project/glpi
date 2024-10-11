@@ -211,14 +211,10 @@ abstract class AbstractDefinition extends CommonDBTM
         global $DB;
 
         $possible_rights = $this->getPossibleCustomObjectRights();
-        $profile_fields_to_select = ['id', 'name'];
-        if (static::class === AssetDefinition::class) {
-            $profile_fields_to_select[] = 'helpdesk_item_type';
-        }
 
         $profiles_data = iterator_to_array(
             $DB->request([
-                'SELECT' => $profile_fields_to_select,
+                'SELECT' => ['id', 'name', 'helpdesk_item_type'],
                 'FROM'   => Profile::getTable(),
                 'WHERE'  => [
                     ['NOT' => ['interface' => 'helpdesk']],
@@ -553,7 +549,7 @@ abstract class AbstractDefinition extends CommonDBTM
                     $changes['helpdesk_item_type'] = array_diff($old_values[$profile_id], [$this->getCustomObjectClassName()]);
                 }
                 if (count($changes) > 0) {
-                    $changes = array_map(static fn ($v) => is_array($v) ? json_encode($v) : $v, $changes);
+                    $changes = array_map(static fn ($v) => json_encode($v), $changes);
                     $DB->update(
                         Profile::getTable(),
                         $changes,
@@ -756,10 +752,10 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     private function getExtraProfileFields(array $profile_data): string
     {
-        if (!$this->fields['is_active']) {
+        if (!$this->fields['is_active'] || !($this instanceof AssetDefinition)) {
             return '';
         }
-        $helpdesk_item_types = json_decode($profile_data['helpdesk_item_type'] ?? '[]', associative: true);
+        $helpdesk_item_types = json_decode($profile_data['helpdesk_item_type'], associative: true);
         if (!is_array($helpdesk_item_types)) {
             $helpdesk_item_types = [];
         }

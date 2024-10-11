@@ -39,10 +39,10 @@ describe("Asset Definition", () => {
 
     it('Profiles tab', () => {
         cy.createWithAPI('Glpi\\Asset\\AssetDefinition', {
-            system_name: 'test' + Math.random().toString(36).replace(/[^a-z]+/g, ''),
+            system_name: `test${Math.random().toString(36).replace(/[^a-z]+/g, '')}`,
             is_active: true,
         }).then((definition_id) => {
-            cy.visit('front/asset/assetdefinition.form.php?id=' + definition_id);
+            cy.visit(`front/asset/assetdefinition.form.php?id=${definition_id}`);
             cy.findByRole('tab', { name: 'Profiles' }).click();
             cy.findByLabelText('Show extra fields').should('be.checked');
             cy.findAllByLabelText('Associable items to tickets, changes and problems').should('be.visible');
