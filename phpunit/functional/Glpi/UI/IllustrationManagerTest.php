@@ -80,11 +80,28 @@ final class IllustrationManagerTest extends GLPITestCase
         // Assert: renderered content should not contain harcoded references to
         // colors
         $this->assertNotEmpty($rendered_icons);
-        foreach ($rendered_icons as $rendered_icon) {
-            $this->assertStringNotContainsString("rgb(", $rendered_icon);
-            $this->assertStringContainsString("var(--tblr-primary)", $rendered_icon);
-            $this->assertStringContainsString("var(--glpi-mainmenu-bg)", $rendered_icon);
-            $this->assertStringContainsString("var(--glpi-helpdesk-header)", $rendered_icon);
+        foreach ($rendered_icons as $i => $rendered_icon) {
+            $failed_message = "Failed for $icons[$i]";
+            $this->assertStringNotContainsString(
+                "rgb(",
+                $rendered_icon,
+                $failed_message
+            );
+            $this->assertStringContainsString(
+                "var(--tblr-primary)",
+                $rendered_icon,
+                $failed_message
+            );
+            $this->assertStringContainsString(
+                "var(--glpi-mainmenu-bg)",
+                $rendered_icon,
+                $failed_message
+            );
+            $this->assertStringContainsString(
+                "var(--glpi-helpdesk-header)",
+                $rendered_icon,
+                $failed_message
+            );
         }
     }
 
