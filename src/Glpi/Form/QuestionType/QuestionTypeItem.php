@@ -104,11 +104,13 @@ class QuestionTypeItem extends AbstractQuestionType
      */
     public function getDefaultValueItemtype(?Question $question): ?string
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeItemConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return null;
         }
 
-        return $question->getExtraDatas()['itemtype'] ?? null;
+        return $config->getItemtype();
     }
 
     /**
@@ -280,5 +282,11 @@ TWIG;
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeItemConfig::class;
     }
 }

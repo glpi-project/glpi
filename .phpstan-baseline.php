@@ -2276,12 +2276,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
 ];
 $ignoreErrors[] = [
-	// identifier: nullCoalesce.offset
-	'message' => '#^Offset \'extra_data\' on array on left side of \\?\\? always exists and is not nullable\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.phpDocType
 	'message' => '#^PHPDoc tag @return with type int is incompatible with native type array\\.$#',
 	'count' => 1,

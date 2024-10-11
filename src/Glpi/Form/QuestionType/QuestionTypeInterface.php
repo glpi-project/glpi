@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Question;
 
 /**
@@ -179,4 +180,20 @@ interface QuestionTypeInterface
      * @return bool
      */
     public function isAllowedForUnauthenticatedAccess(): bool;
+
+    /**
+     * Get the configuration class for this question type.
+     *
+     * @return ?string
+     */
+    public function getConfigClass(): ?string;
+
+    /**
+     * Get the configuration for the given question.
+     *
+     * @param Question|null $question The question to get the configuration for.
+     *
+     * @return ?JsonFieldInterface
+     */
+    public function getConfig(?Question $question): ?JsonFieldInterface;
 }

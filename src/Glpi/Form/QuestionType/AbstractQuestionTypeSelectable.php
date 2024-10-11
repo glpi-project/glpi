@@ -148,11 +148,13 @@ TWIG;
      */
     public function getOptions(?Question $question): array
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeSelectableConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return [];
         }
 
-        return $question->getExtraDatas()['options'] ?? [];
+        return $config->getOptions();
     }
 
     /**
@@ -346,5 +348,11 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeSelectableConfig::class;
     }
 }

@@ -104,11 +104,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      */
     public function isMultipleActors(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeActorsConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_multiple_actors'] ?? false;
+        return $config->isMultipleActors();
     }
 
     /**
@@ -346,5 +348,11 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return false;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeActorsConfig::class;
     }
 }

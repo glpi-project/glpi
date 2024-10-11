@@ -115,20 +115,6 @@ final class Question extends CommonDBChild implements BlockInterface
     }
 
     /**
-     * Get the extra datas for the question.
-     *
-     * @return ?array
-     */
-    public function getExtraDatas(): ?array
-    {
-        if (!isset($this->fields['extra_data'])) {
-            return null;
-        }
-
-        return json_decode($this->fields['extra_data'] ?? "[]", true);
-    }
-
-    /**
      * Get the parent form of this question
      *
      * @return Form
