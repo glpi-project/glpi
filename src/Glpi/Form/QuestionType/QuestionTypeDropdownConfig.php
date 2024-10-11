@@ -61,9 +61,12 @@ final class QuestionTypeDropdownConfig extends QuestionTypeSelectableConfig
     #[Override]
     public function jsonSerialize(): array
     {
-        return [
-            self::IS_MULTIPLE_DROPDOWN => $this->is_multiple_dropdown,
-        ];
+        return array_merge(
+            parent::jsonSerialize(),
+            [
+                self::IS_MULTIPLE_DROPDOWN => $this->is_multiple_dropdown,
+            ]
+        );
     }
 
     public function isMultipleDropdown(): bool
