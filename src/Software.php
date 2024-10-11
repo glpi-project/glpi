@@ -223,6 +223,11 @@ class Software extends CommonDBTM
         return true;
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', 'software'];
+    }
+
     public function getSpecificMassiveActions($checkitem = null)
     {
         $isadmin = static::canUpdate();

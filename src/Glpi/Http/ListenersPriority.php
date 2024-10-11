@@ -53,6 +53,10 @@ final class ListenersPriority
         // Also, keep it after the `LegacyRouterListener` to not map to the generic dropdown controller if a
         // legacy script exists for the requested URI.
         LegacyDropdownRouteListener::class => 300,
+
+        // Old /front/{object}.php files can now be redirected to their associated controller
+        // @see \Glpi\Controller\GenericListcontroller
+        LegacySearchRouteListener::class => 250,
     ];
 
     private function __construct()
