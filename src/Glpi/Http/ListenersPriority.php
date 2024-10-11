@@ -54,6 +54,9 @@ final class ListenersPriority
         // legacy script exists for the requested URI.
         LegacyDropdownRouteListener::class => 300,
 
+        // Old /front/{object}.php files can now be redirected to their associated controller
+        LegacySearchRouteListener::class => 250,
+
         // This listener allows matching plugins routes at runtime,
         //   that's why it's executed right after Symfony's Router,
         //   and also after GLPI's config is set.
