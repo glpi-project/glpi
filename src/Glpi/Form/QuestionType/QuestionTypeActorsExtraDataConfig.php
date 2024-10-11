@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,26 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Context;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Glpi\DBAL\JsonFieldInterface;
+use Override;
 
-/**
- * Must be implemented by all JsonFieldInterface objects that contains references
- * foreign keys.
- *
- * The method of this interface will be used by the form serializer to ensure
- * that form exports can be done correctly as an export can't contains hardcoded
- * database foreign keys.
- */
-interface ConfigWithForeignKeysInterface
+final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
 {
-    /**
-     * Must return one JsonConfigForeignKeyHandlerInterface per serialized key that
-     * will contains foreign keys data.
-     *
-     * @param \Glpi\Form\Export\Specification\ContentSpecificationInterface $content_spec
-     * @return \Glpi\Form\Export\Context\ForeignKey\JsonConfigForeignKeyHandlerInterface[]
-     */
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array;
+    // Unique reference to hardcoded name used for serialization
+    public const IS_MULTIPLE_ACTORS = "is_multiple_actors";
+
+    public function __construct(
+        private bool $is_multiple_actors = false,
+    ) {
+    }
+
+    #[Override]
+    public static function jsonDeserialize(array $data): self
+    {
+        return new self(
+            is_multiple_actors: $data[self::IS_MULTIPLE_ACTORS] ?? false,
+        );
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            self::IS_MULTIPLE_ACTORS => $this->is_multiple_actors,
+        ];
+    }
+
+    public function isMultipleActors(): bool
+    {
+        return $this->is_multiple_actors;
+    }
 }

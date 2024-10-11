@@ -126,8 +126,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isDefaultValueCurrentTime(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -137,8 +141,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isDateEnabled(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return true;
         }
@@ -148,8 +156,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isTimeEnabled(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -355,8 +367,8 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeDateTimeConfig::class;
+        return QuestionTypeDateTimeExtraDataConfig::class;
     }
 }

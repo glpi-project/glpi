@@ -33,61 +33,66 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\AccessControl\ControlType;
+namespace Glpi\Form\QuestionType;
 
-use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Group;
+use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Override;
-use Profile;
-use User;
 
-final class AllowListConfig implements
-    JsonFieldInterface,
-    ConfigWithForeignKeysInterface
+final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
-    // Serialized keys names
-    private const KEY_USER_IDS = 'user_ids';
-    private const KEY_GROUP_IDS = 'group_ids';
-    private const KEY_PROFILE_IDS = 'profile_ids';
+    // Unique reference to hardcoded name used for serialization
+    public const KEY_ITEMS_ID = "items_id";
 
+    /**
+     * @param null|int|string $items_id Must accept a string because the foreign key handler
+     *                                  replaces the ID with the item name during serialization.
+     */
     public function __construct(
-        private array $user_ids = [],
-        private array $group_ids = [],
-        private array $profile_ids = [],
+        private null|int|string $items_id = null
     ) {
     }
 
     #[Override]
     public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
-        return [
-            new ForeignKeyArrayHandler(
-                key: self::KEY_USER_IDS,
-                itemtype  : User::class,
-                ignored_values: [AbstractRightsDropdown::ALL_USERS],
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_GROUP_IDS,
-                itemtype  : Group::class,
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_PROFILE_IDS,
-                itemtype  : Profile::class,
-            ),
-        ];
+        if (!($content_spec instanceof QuestionContentSpecification)) {
+            throw new \InvalidArgumentException(
+                "Content specification must be an instance of " . QuestionContentSpecification::class
+            );
+        }
+
+        $extra_data_config = (new QuestionTypeItemExtraDataConfig())->jsonDeserialize(
+            json_decode($content_spec->extra_data, true)
+        );
+
+        $default_value_config = (new self())->jsonDeserialize(
+            json_decode($content_spec->default_value, true)
+        );
+
+        if (
+            $extra_data_config->getItemtype() !== null
+            && !empty($default_value_config->items_id)
+        ) {
+            return [
+                new ForeignKeyHandler(
+                    key: self::KEY_ITEMS_ID,
+                    itemtype: $extra_data_config->getItemtype(),
+                ),
+            ];
+        }
+
+        return [];
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
         return new self(
-            user_ids   : $data[self::KEY_USER_IDS] ?? [],
-            group_ids  : $data[self::KEY_GROUP_IDS] ?? [],
-            profile_ids: $data[self::KEY_PROFILE_IDS] ?? []
+            items_id: $data[self::KEY_ITEMS_ID] ?? null,
         );
     }
 
@@ -95,24 +100,12 @@ final class AllowListConfig implements
     public function jsonSerialize(): array
     {
         return [
-            self::KEY_USER_IDS    => $this->user_ids,
-            self::KEY_GROUP_IDS   => $this->group_ids,
-            self::KEY_PROFILE_IDS => $this->profile_ids,
+            self::KEY_ITEMS_ID => $this->items_id,
         ];
     }
 
-    public function getUserIds(): array
+    public function getItemsId(): ?int
     {
-        return $this->user_ids;
-    }
-
-    public function getGroupIds(): array
-    {
-        return $this->group_ids;
-    }
-
-    public function getProfileIds(): array
-    {
-        return $this->profile_ids;
+        return $this->items_id;
     }
 }
