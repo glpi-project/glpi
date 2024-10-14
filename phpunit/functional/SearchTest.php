@@ -4825,7 +4825,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch('Computer', $search_params);
-        $this->integer($data['data']['totalcount'])->isGreaterThan(8);
+        $this->assertGreaterThan(8, $data['data']['totalcount']);
         $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
 
         $search_params = [
@@ -4846,7 +4846,7 @@ class SearchTest extends DbTestCase
 
         $data = $this->doSearch('Computer', $search_params);
         // Only the valid 'name' criterion should be taken into account
-        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->assertEquals(1, $data['data']['totalcount']);
         $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
     }
 
@@ -4865,7 +4865,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch('Computer', $search_params);
-        $this->integer($data['data']['totalcount'])->isGreaterThan(8);
+        $this->assertGreaterThan(8, $data['data']['totalcount']);
         $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
     }
 
@@ -4878,7 +4878,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch('Computer', $search_params);
-        $this->array($data['search']['sort'])->isEqualTo([0]);
+        $this->assertEquals([0], $data['search']['sort']);
     }
 }
 
