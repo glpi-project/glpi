@@ -71,9 +71,7 @@ class AuthLDAP extends DbTestCase
 
     public function afterTestMethod($method)
     {
-        unset($_SESSION['ldap_import']);
-
-       //make sure bootstrapped ldap is not active and is default
+        //make sure bootstrapped ldap is not active and is default
         $this->boolean(
             $this->ldap->update([
                 'id'           => $this->ldap->getID(),
@@ -376,34 +374,34 @@ class AuthLDAP extends DbTestCase
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)->isIdenticalTo("(& (email=*) )");
 
-        $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
-        $_SESSION['ldap_import']['criterias'] = ['name'        => 'foo',
+        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['criterias'] = ['name'        => 'foo',
             'phone_field' => '+33454968584'
         ];
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)->isIdenticalTo('(& (LDAP3=*foo*)(phonenumber=*+33454968584*) )');
 
-        $_SESSION['ldap_import']['criterias']['name'] = '^foo';
+        $_REQUEST['criterias']['name'] = '^foo';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)->isIdenticalTo('(& (LDAP3=foo*)(phonenumber=*+33454968584*) )');
 
-        $_SESSION['ldap_import']['criterias']['name'] = 'foo$';
+        $_REQUEST['criterias']['name'] = 'foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)->isIdenticalTo('(& (LDAP3=*foo)(phonenumber=*+33454968584*) )');
 
-        $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
+        $_REQUEST['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)->isIdenticalTo('(& (LDAP3=foo)(phonenumber=*+33454968584*) )');
 
-        $_SESSION['ldap_import']['criterias'] = ['name' => '^foo$'];
+        $_REQUEST['criterias'] = ['name' => '^foo$'];
         $ldap->fields['condition'] = '(objectclass=inetOrgPerson)';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $ldap->fields['condition'] = '';
         $this->string($result)->isIdenticalTo('(& (LDAP3=foo) (objectclass=inetOrgPerson))');
 
-        $_SESSION['ldap_import']['begin_date']        = '2017-04-20 00:00:00';
-        $_SESSION['ldap_import']['end_date']          = '2017-04-22 00:00:00';
-        $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
+        $_REQUEST['begin_date']        = '2017-04-20 00:00:00';
+        $_REQUEST['end_date']          = '2017-04-22 00:00:00';
+        $_REQUEST['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->string($result)
          ->isIdenticalTo('(& (LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z) )');
@@ -715,8 +713,8 @@ class AuthLDAP extends DbTestCase
         $this->array($users)->hasSize(912);
         $this->array($results)->hasSize(0);
 
-        $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
-        $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
+        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['criterias'] = ['login_field' => 'brazil2'];
 
         $users = \AuthLDAP::getAllUsers(
             [
@@ -731,7 +729,7 @@ class AuthLDAP extends DbTestCase
         $this->array($users)->hasSize(12);
         $this->array($results)->hasSize(0);
 
-        $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
+        $_REQUEST['criterias'] = ['login_field' => 'remi'];
 
         $users = \AuthLDAP::getAllUsers(
             [
@@ -786,8 +784,8 @@ class AuthLDAP extends DbTestCase
         $limit = false;
 
        //get user to import
-        $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
-        $_SESSION['ldap_import']['criterias'] = ['login_field' => 'ecuador0'];
+        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['criterias'] = ['login_field' => 'ecuador0'];
 
         $users = \AuthLDAP::getAllUsers(
             [
@@ -1438,9 +1436,9 @@ class AuthLDAP extends DbTestCase
         $this->array($users)->hasSize(912);
         $this->array($results)->hasSize(0);
 
-        $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
-        $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
-        $_SESSION['ldap_import']['mode'] = 0;
+        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['criterias'] = ['login_field' => 'brazil2'];
+        $_REQUEST['mode'] = 0;
 
         $users = \AuthLDAP::getUsers(
             [
@@ -1455,7 +1453,7 @@ class AuthLDAP extends DbTestCase
         $this->array($users)->hasSize(12);
         $this->array($results)->hasSize(0);
 
-        $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
+        $_REQUEST['criterias'] = ['login_field' => 'remi'];
 
         $users = \AuthLDAP::getUsers(
             [
