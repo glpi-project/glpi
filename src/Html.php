@@ -1306,8 +1306,6 @@ HTML;
         } else {
             return TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $tpl_vars);
         }
-
-        self::glpi_flush();
     }
 
 
