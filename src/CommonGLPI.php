@@ -601,7 +601,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         return [
             static::getTypeName(\Session::getPluralNumber()),
-            $_SERVER['PHP_SELF'],
+            '',
             ...static::getSectorizedDetails(),
         ];
     }
