@@ -70,7 +70,7 @@ final class ChangeProfileController extends AbstractController
         // Compute redirection URL
         if (Session::getCurrentInterface() == "helpdesk") {
             $go_to_create_ticket = $_SESSION['glpiactiveprofile']['create_ticket_on_login'];
-            $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Home";
+            $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Helpdesk";
             $redirect = $request->getBasePath() . $route;
         } else {
             $_SESSION['_redirected_from_profile_selector'] = true;

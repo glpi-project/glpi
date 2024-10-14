@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\SelfService;
+namespace Glpi\Controller\Helpdesk;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Helpdesk\Tile\TilesManager;
@@ -42,8 +42,10 @@ use Glpi\SelfService\HomePageTabs;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use User;
+use Session;
 
-final class HomeController extends AbstractController
+final class IndexController extends AbstractController
 {
     private TilesManager $tiles_manager;
 
@@ -54,19 +56,28 @@ final class HomeController extends AbstractController
 
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
-        "/Home",
-        name: "glpi_selfservice_home",
+        "/Helpdesk",
+        name: "glpi_helpdesk_index",
+        methods: "GET"
+    )]
+    // Prevent old links from breaking
+    #[Route(
+        '/front/helpdesk.public.php',
+        name: "glpi_legacy_public_helpdesk",
         methods: "GET"
     )]
     public function __invoke(Request $request): Response
     {
+        $user = User::getById(Session::getLoginUserID());
+
         // Will rename the file to "home.html.twig" later, don't want to remove
         // the original file yet.
-        return $this->render('pages/self-service/new_home.html.twig', [
+        return $this->render('pages/helpdesk/index.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
             'tiles' => $this->tiles_manager->getTiles(),
             'tabs'  => new HomePageTabs(),
+            'password_alert' => $user->getPasswordExpirationMessage(),
         ]);
     }
 }

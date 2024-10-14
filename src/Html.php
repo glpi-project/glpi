@@ -1481,7 +1481,7 @@ HTML;
 
         $menu = [
             'home' => [
-                'default' => '/front/helpdesk.public.php',
+                'default' => '/Helpdesk',
                 'title'   => __('Home'),
                 'icon'    => 'fas fa-home',
             ],
