@@ -34,7 +34,6 @@
 
 namespace Glpi\Http;
 
-use Glpi\Controller\DropdownController;
 use Glpi\Controller\GenericListController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
