@@ -628,4 +628,14 @@ JS);
         $task->setVolume($vol);
         return ($vol > 0 ? 1 : 0);
     }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        if (!GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING) {
+            // Block viewing response body if saving is disabled by config
+            unset($this->fields['response_body']);
+        }
+    }
 }
