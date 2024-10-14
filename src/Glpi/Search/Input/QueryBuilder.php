@@ -36,6 +36,7 @@
 namespace Glpi\Search\Input;
 
 use AllAssets;
+use GLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -899,7 +900,7 @@ final class QueryBuilder implements SearchInputInterface
         if (count($invalid_criteria) > 0) {
             // There is probably no need to show more information about the invalid criteria
             Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
-            if (GLPI_ENVIRONMENT_TYPE === 'development') {
+            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT) {
                 trigger_error(
                     'Attempted to use invalid search options from itemtype: "' . $params['itemtype'] . '" with IDs ' . implode(', ', $invalid_criteria),
                     E_USER_WARNING
