@@ -60,6 +60,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return _n('Personal RSS feed', 'Personal RSS feed', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["tools", "rssfeed"];
+    }
+
     public static function canCreate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
