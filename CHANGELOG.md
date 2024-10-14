@@ -204,6 +204,7 @@ The present file will list all changes made to the project; according to the
 - `linkoption` option has been removed from `CommonDBTM::getLink()`.
 - `comments` and `icon` options have been removed from `CommonDBTM::getName()`.
 - `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
+- The `$keepDb` parameter has been removed from `Html::footer()`.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
@@ -300,6 +301,7 @@ The present file will list all changes made to the project; according to the
 - Logging within the `mail-debug.log` log file.
 - `X-GLPI-Sanitized-Content` REST API header support.
 - Handling of encoded/escaped value in `autoName()`.
+- `closeDBConnections`
 - `regenerateTreeCompleteName()`
 - `Cartridge::getNotificationParameters()`
 - `CartridgeItem::showDebug()`
@@ -341,6 +343,7 @@ The present file will list all changes made to the project; according to the
 - `Contract::getContractRenewalIDByName()`
 - `Contract::showDebug()`
 - `Contract::showShort()`
+- `DbUtils::closeDBConnections()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`

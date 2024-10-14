@@ -1737,9 +1737,9 @@ HTML;
     /**
      * Print footer for every page
      *
-     * @param boolean $keepDB closeDBConnections if false (false by default)
-     **/
-    public static function footer($keepDB = false)
+     * @since 11.0.0 The `$keepDB` parameter has been removed.
+     */
+    public static function footer()
     {
         /**
          * @var array $CFG_GLPI
@@ -1860,10 +1860,6 @@ HTML;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
             \Glpi\Debug\Profiler::getInstance()->stopAll();
             (new Glpi\Debug\Toolbar())->show();
-        }
-
-        if (!$keepDB && function_exists('closeDBConnections')) {
-            closeDBConnections();
         }
     }
 
