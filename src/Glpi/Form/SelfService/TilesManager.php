@@ -54,13 +54,6 @@ final class TilesManager
         if ($incident_form !== null) {
             $tiles[] = new FormTile(
                 form: $incident_form,
-                // Overriding the form's title and description to get a more
-                // verbose tile for the home page.
-                title: __("Report an issue"),
-                description: __("Ask for support from our helpdesk team."),
-                // Override illustration as forms are still using tabler icons
-                // instead of the new illustrations.
-                illustration: "report-issue.svg",
             );
         }
 
@@ -102,7 +95,7 @@ final class TilesManager
     {
         // TODO: form will be loaded using its id later once default tiles are
         // created during GLPI's installation
-        $rows = (new Form())->find(['name' => 'Incident']);
+        $rows = (new Form())->find(['name' => 'Report an issue']);
 
         // TODO: once tile are saved to database, deleting a form should also
         // delete the associated tile.
