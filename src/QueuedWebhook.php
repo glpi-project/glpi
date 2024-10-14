@@ -243,8 +243,11 @@ class QueuedWebhook extends CommonDBChild
         ];
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
-            if ($queued_webhook->fields['save_response_body']) {
+            if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
                 $input['response_body'] = (string)$response->getBody();
+            } else {
+                // Save to property that won't be saved in DB, but can still be available to plugins
+                $input['_response_body'] = (string)$response->getBody();
             }
 
             if ($webhook->fields['log_in_item_history']) {
@@ -627,5 +630,15 @@ JS);
 
         $task->setVolume($vol);
         return ($vol > 0 ? 1 : 0);
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        if (!GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING) {
+            // Block viewing response body if saving is disabled by config
+            unset($this->fields['response_body']);
+        }
     }
 }
