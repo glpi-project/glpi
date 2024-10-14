@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\SelfService;
 
 use Glpi\Form\SelfService\TileInterface;
 use Glpi\Form\SelfService\TilesManager;
+use Glpi\UI\IllustrationManager;
 use GLPITestCase;
 
 final class TilesManagerTest extends GLPITestCase
@@ -47,8 +48,10 @@ final class TilesManagerTest extends GLPITestCase
 
     public function testDefaultTiles(): void
     {
-        // Act: get the default configured tiles
+        // Act: get the default configured tiles and load valid illustrations names
         $tiles = $this->getManager()->getTiles();
+        $illustration_manager = new IllustrationManager();
+        $valid_illustrations = $illustration_manager->getAllIllustrationsNames();
 
         // Assert: there should be at least one tile and each tile should have a
         // valid title, description, illustration and link
@@ -57,10 +60,7 @@ final class TilesManagerTest extends GLPITestCase
             $this->assertInstanceOf(TileInterface::class, $tile);
             $this->assertNotEmpty($tile->getTitle());
             $this->assertNotEmpty($tile->getDescription());
-
-            // TODO: we could check that the illustration id is valid, but this
-            // is too early as we don't have our own list of illustrations yet.
-            $this->assertNotEmpty($tile->getIllustration());
+            $this->assertContains($tile->getIllustration(), $valid_illustrations);
 
             // TODO: once all our links are real routes, we could call the router
             // here to check that the link is valid.

@@ -34,15 +34,24 @@
 
 namespace Glpi\UI;
 
+use DirectoryIterator;
+
 final class IllustrationManager
 {
-    public const DEFAULT_ICON = "request-service.svg";
+    public function __construct(
+        private string $illustration_dir = GLPI_ROOT . "/pics/illustration"
+    ) {
+    }
 
     /**
      * @param int $size Height and width (px)
      */
     public function render(string $filename, int $size = 100): string
     {
+        if (!$this->isValidIllustrationName($filename)) {
+            return "";
+        }
+
         $svg_content = $this->getSvgContent($filename);
         $svg_content = $this->replaceColorsByVariables($svg_content);
         $svg_content = $this->adjustSize($svg_content, $size);
@@ -50,17 +59,51 @@ final class IllustrationManager
         return $svg_content;
     }
 
-    private function getSvgContent(string $filename): string
+    /** @return string[] */
+    public function getAllIllustrationsNames(): array
     {
-        $svg_content = file_get_contents(GLPI_ROOT . "/pics/illustration/$filename");
-        if (!$svg_content) {
-            // Can't fallback to default icon if it is already the one being
-            // requeted.
-            if ($filename == self::DEFAULT_ICON) {
-                return "";
+        $illustrations = [];
+        $illustrations_files = new DirectoryIterator($this->getIllustrationDir());
+        foreach ($illustrations_files as $file) {
+            /** @var \SplFileInfo $file */
+            if ($file->isDir()) {
+                continue;
             }
 
-            return $this->getSvgContent(self::DEFAULT_ICON);
+            if ($file->getExtension() !== 'svg') {
+                continue;
+            }
+
+            $illustrations[] = $file->getFilename();
+        }
+
+        return $illustrations;
+    }
+
+    private function isValidIllustrationName(string $filename): bool
+    {
+        $full_path = $this->getIllustrationDir() . "/$filename";
+
+        return
+            file_exists($full_path)
+            && is_file($full_path)
+            && is_readable($full_path)
+            && str_ends_with($full_path, '.svg')
+            // Make sure malicious users are not able to read files outside the illustration directory
+            && realpath($full_path) == $full_path
+        ;
+    }
+
+    private function getIllustrationDir(): string
+    {
+        return $this->illustration_dir;
+    }
+
+    private function getSvgContent(string $filename): string
+    {
+        $svg_content = file_get_contents($this->getIllustrationDir() . "/$filename");
+        if (!$svg_content) {
+            return "";
         }
 
         return $svg_content;
