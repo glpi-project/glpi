@@ -51,6 +51,11 @@ class RefusedEquipment extends CommonDBTM
         return _n('Equipment refused by rules log', 'Equipments refused by rules log', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", \Glpi\Inventory\Inventory::class, "refusedequipment"];
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();

@@ -88,6 +88,11 @@ class CronTask extends CommonDBTM
         return _n('Automatic action', 'Automatic actions', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', 'crontask'];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

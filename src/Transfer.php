@@ -84,6 +84,11 @@ final class Transfer extends CommonDBTM
         return __('Transfer');
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', 'rule', 'transfer'];
+    }
+
     public function maxActionsCount()
     {
         return 0;

@@ -54,6 +54,11 @@ class Database extends CommonDBChild
         return _n('Database', 'Databases', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "database"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

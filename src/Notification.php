@@ -172,6 +172,11 @@ class Notification extends CommonDBTM implements FilterableInterface
         return _n('Notification', 'Notifications', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "notification", "notification"];
+    }
+
     /**
      *  @see CommonGLPI::getMenuContent()
      *

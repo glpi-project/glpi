@@ -70,6 +70,10 @@ class Reminder extends CommonDBVisible implements
         return _n('Personal reminder', 'Personal reminders', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["tools", "reminder"];
+    }
 
     public static function canCreate(): bool
     {

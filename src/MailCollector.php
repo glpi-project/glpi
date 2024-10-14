@@ -112,6 +112,10 @@ class MailCollector extends CommonDBTM
         return _n('Receiver', 'Receivers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "mailcollector"];
+    }
 
     public static function canCreate(): bool
     {

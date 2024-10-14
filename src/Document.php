@@ -61,6 +61,11 @@ class Document extends CommonDBTM
         return _n('Document', 'Documents', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "document"];
+    }
+
     /**
      * Check if given object can have Document
      *

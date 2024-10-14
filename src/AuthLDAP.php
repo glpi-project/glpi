@@ -183,6 +183,11 @@ class AuthLDAP extends CommonDBTM
         return _n('LDAP directory', 'LDAP directories', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', 'auth', 'ldap'];
+    }
+
     public static function canCreate(): bool
     {
         return static::canUpdate();

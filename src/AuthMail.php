@@ -48,6 +48,11 @@ class AuthMail extends CommonDBTM
         return _n('Mail server', 'Mail servers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config", "auth", "imap'];
+    }
+
     public function prepareInputForUpdate($input)
     {
         if (!empty($input['mail_server'])) {

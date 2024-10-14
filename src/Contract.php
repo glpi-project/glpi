@@ -71,6 +71,11 @@ class Contract extends CommonDBTM
         return _n('Contract', 'Contracts', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "contract"];
+    }
+
     public function post_getEmpty()
     {
         if (isset($_SESSION['glpiactive_entity'])) {

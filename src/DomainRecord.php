@@ -56,6 +56,11 @@ class DomainRecord extends CommonDBChild
         return _n('Domain record', 'Domains records', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "domain", "domainrecord"];
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {

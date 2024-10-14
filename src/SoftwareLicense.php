@@ -80,6 +80,11 @@ class SoftwareLicense extends CommonTreeDropdown
         return _n('License', 'Licenses', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "softwarelicense"];
+    }
+
     public function pre_updateInDB()
     {
         // Clean end alert if expire is after old one

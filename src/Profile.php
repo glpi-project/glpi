@@ -134,6 +134,11 @@ class Profile extends CommonDBTM
         return _n('Profile', 'Profiles', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", "profile"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

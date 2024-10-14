@@ -88,6 +88,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Project', 'Projects', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["tools", "project"];
+    }
+
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);

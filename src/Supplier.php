@@ -60,6 +60,11 @@ class Supplier extends CommonDBTM
         return _n('Supplier', 'Suppliers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "supplier"];
+    }
+
     public function post_getEmpty()
     {
         $this->fields['is_active'] = 1;

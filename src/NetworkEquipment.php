@@ -85,6 +85,10 @@ class NetworkEquipment extends CommonDBTM
         return _n('Network device', 'Network devices', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "networkequipment"];
+    }
 
     public static function getAdditionalMenuOptions()
     {

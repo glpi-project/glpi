@@ -53,6 +53,11 @@ class Cable extends CommonDBTM
         return _n('Cable', 'Cables', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "cable"];
+    }
+
     public static function getFieldLabel()
     {
         return self::getTypeName(1);

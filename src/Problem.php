@@ -74,6 +74,10 @@ class Problem extends CommonITILObject
         return _n('Problem', 'Problems', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["helpdesk", "problem"];
+    }
 
     public function canSolve()
     {

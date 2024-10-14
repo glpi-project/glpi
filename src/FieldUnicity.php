@@ -55,6 +55,11 @@ class FieldUnicity extends CommonDropdown
         return __('Fields unicity');
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "fieldunicity"];
+    }
+
     public static function canCreate(): bool
     {
         return static::canUpdate();

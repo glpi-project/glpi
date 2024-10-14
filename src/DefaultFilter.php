@@ -67,6 +67,11 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return _n('Default filter', 'Default filters', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "commondropdown", "DefaultFilter"];
+    }
+
     public static function getIcon()
     {
         return "ti ti-filter";

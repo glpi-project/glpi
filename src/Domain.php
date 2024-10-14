@@ -77,6 +77,11 @@ class Domain extends CommonDBTM
         return _n('Domain', 'Domains', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "domain"];
+    }
+
     public function cleanDBonPurge()
     {
         /** @var \DBmysql $DB */
