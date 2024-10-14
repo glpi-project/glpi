@@ -535,18 +535,6 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
     return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
 }
 
-
-/**
- * Close active DB connections
- *
- * @return void
- **/
-function closeDBConnections()
-{
-    $dbu = new DbUtils();
-    $dbu->closeDBConnections();
-}
-
 /**
  * Add dates for request
  *

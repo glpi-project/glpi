@@ -2041,22 +2041,6 @@ final class DbUtils
     }
 
     /**
-     * Close active DB connections
-     *
-     * @return void
-     */
-    public function closeDBConnections()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       // Case of not init $DB object
-        if ($DB !== null && method_exists($DB, "close")) {
-            $DB->close();
-        }
-    }
-
-    /**
      * Get dates conditions to use in 'WHERE' clause
      *
      * @param string $field table.field to request

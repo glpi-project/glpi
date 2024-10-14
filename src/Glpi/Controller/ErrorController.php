@@ -94,7 +94,7 @@ class ErrorController extends AbstractController
             'link'    => \Html::getBackUrl(),
         ]);
 
-        \Html::footer(true);
+        \Html::footer();
     }
 
     private function getTraceAsString(\Throwable $exception): string

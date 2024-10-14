@@ -142,7 +142,7 @@ if (isset($_POST["action"])) {
                      "$manufacturer");
     }
 
-    Html::footer(true);
+    Html::footer();
     exit();
 }
 
