@@ -35,6 +35,7 @@
 
 {% set is_vertical = get_page_layout() == 'vertical' %}
 {% set is_horizontal = not is_vertical %}
+{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }}">
    {% if call('DBConnection::isDbAvailable') and constant('SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
@@ -92,7 +93,8 @@
       {% endif %}
 
       <header class="navbar d-print-none sticky-lg-top shadow-sm {{ is_vertical ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}">
-         <div class="header-container container-fluid flex-xl-nowrap pe-xl-0">
+         {# On the helpdesk interface, the container will be displayed with a reduced width #}
+         <div class="header-container container-fluid flex-xl-nowrap pe-xl-0 {{ is_helpdesk ? 'container-xl' : '' }}">
             {% if is_vertical %}
                {{ include('layout/parts/breadcrumbs.html.twig') }}
 
@@ -128,7 +130,8 @@
          </div>
       </header>
 
-      {% if is_horizontal %}
+      {# Breadcrumbs are not needed on the helpdesk as we have only a few pages #}
+      {% if is_horizontal and not is_helpdesk %}
       <div class="navbar navbar-expand-md navbar-light secondary-bar sticky-md-top shadow-sm">
          <div class="container-fluid justify-content-start">
             {{ include('layout/parts/breadcrumbs.html.twig') }}

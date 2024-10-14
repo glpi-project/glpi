@@ -30,12 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-// We do not display the navigation menu and the breadcrumbs for this page.
-#navbar-menu,
-.secondary-bar {
-    display: none !important;
-}
-
 // Remove padding as we have a custom illustration as a background that should
 // be displayed in full width.
 .page-body {
@@ -49,15 +43,6 @@ header {
     &.sticky-lg-top {
         // Same as removing 'sticky-lg-top' class.
         position: relative !important;
-    }
-
-    // Limit the width on the header to the same width as the content.
-    .header-container {
-        // Same as adding 'container-xl' class.
-        max-width: 1320px;
-
-        --tblr-gutter-x: calc(var(--tblr-page-padding) * 2) !important;
-        --tblr-gutter-y: 0 !important;
     }
 
     // Disable "right slide" effect on the user info dropdown as it is not on the
