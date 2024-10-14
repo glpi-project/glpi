@@ -49,7 +49,7 @@ class Unmanaged extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Unmanaged device', 'Unmanaged devices', $nb);
+        return _n('Unmanaged asset', 'Unmanaged assets', $nb);
     }
 
     public function defineTabs($options = [])
