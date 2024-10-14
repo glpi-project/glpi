@@ -48,23 +48,6 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     exit;
 }
 
-// Change profile system
-if (isset($_REQUEST['newprofile'])) {
-    if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {
-        Session::changeProfile($_REQUEST['newprofile']);
-        if (Session::getCurrentInterface() == "helpdesk") {
-            if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-                Html::redirect($CFG_GLPI['root_doc'] . "/ServiceCatalog");
-            } else {
-                Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
-            }
-        }
-        $_SESSION['_redirected_from_profile_selector'] = true;
-        Html::back();
-    }
-    Html::redirect(preg_replace("/entities_id.*/", "", Html::getBackUrl()));
-}
-
 // Manage entity change
 if (isset($_GET["active_entity"])) {
     if (!isset($_GET["is_recursive"])) {
