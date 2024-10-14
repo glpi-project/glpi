@@ -72,6 +72,11 @@ class Software extends CommonDBTM
         return _n('Software', 'Software', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', 'software'];
+    }
+
     public static function getMenuShorcut()
     {
         return 's';
@@ -221,11 +226,6 @@ class Software extends CommonDBTM
 
         $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
         return true;
-    }
-
-    public static function getSectorizedDetails(): array
-    {
-        return ['assets', 'software'];
     }
 
     public function getSpecificMassiveActions($checkitem = null)

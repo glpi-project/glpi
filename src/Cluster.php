@@ -60,6 +60,11 @@ class Cluster extends CommonDBTM
         return _n('Cluster', 'Clusters', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "cluster"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

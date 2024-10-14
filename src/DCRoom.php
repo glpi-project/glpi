@@ -52,6 +52,11 @@ class DCRoom extends CommonDBTM
         return _n('Server room', 'Server rooms', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "datacenter", "dcroom"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

@@ -62,6 +62,11 @@ class Group extends CommonTreeDropdown
         return _n('Group', 'Groups', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", "group"];
+    }
+
     public static function getAdditionalMenuOptions()
     {
         if (Session::haveRight('user', User::UPDATEAUTHENT)) {
