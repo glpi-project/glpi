@@ -118,7 +118,8 @@ final class ConfigurationConstants
                 'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
                 'GLPI_DEMO_MODE'              => '0',
                 'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
-                'GLPI_TEXT_MAXSIZE'           => '4000' // character threshold for displaying read more button
+                'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
+                'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
             ],
             'production' => [
             ],
@@ -137,6 +138,7 @@ final class ConfigurationConstants
                 ],
             ],
             'development' => [
+                'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
             ],
         ];
 

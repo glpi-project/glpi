@@ -239,7 +239,7 @@ class QueuedWebhook extends CommonDBChild
         ];
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
-            if ($queued_webhook->fields['save_response_body']) {
+            if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
                 $input['response_body'] = (string)$response->getBody();
             }
 

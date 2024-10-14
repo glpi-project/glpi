@@ -35,6 +35,7 @@
 
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
+// Keep in sync with the dynamicConstantNames config option in the PHPStan config file
 
 // Directories constants
 define('GLPI_CACHE_DIR', null);
@@ -86,3 +87,4 @@ define('GLPI_TELEMETRY_URI', null);
 define('GLPI_TEXT_MAXSIZE', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
 define('PLUGINS_DIRECTORIES', ['/a', '/b', '/c']);
+define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', 0);
