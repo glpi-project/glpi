@@ -146,7 +146,25 @@
                 fieldLabel.textContent = selected_field.text ?? selected_field;
                 const input = clone.querySelector('input[name="fields_display[]"]');
                 input.value = key;
-                document.getElementById('sortable-fields').appendChild(clone);
+
+                const existing_field = $(`.sortable-field[data-key=${key}]`);
+                // Save a copy of the current field_options if they exist for this field
+                const field_option_inputs = existing_field.find(`slot[name="field_options"]`).html();
+                // Get the field option values to use as overrides when getting the preview
+                const field_options = {};
+                if (field_option_inputs) {
+                    $(`<div>${field_option_inputs}</div>`).find('input').each((i, el) => {
+                        const name = el.name.replace(`field_options[${key}]`, 'field_options');
+                        field_options[name] = el.value;
+                    });
+                }
+
+                // if the field is already added, just replace it with the new one instead of appending
+                if (existing_field.length) {
+                    existing_field.replaceWith(clone);
+                } else {
+                    document.getElementById('sortable-fields').appendChild(clone);
+                }
 
                 const preview_params = new URLSearchParams({
                     assetdefinitions_id: '{{ item.getID() }}',
@@ -154,6 +172,7 @@
                     key: key,
                     label: fieldLabel.textContent,
                     type: selected_field.type ?? '',
+                    ...field_options,
                 });
                 $.ajax({
                     method: 'GET',
@@ -182,6 +201,11 @@
                     // If the returned field is readonly, we need to add an icon to the label to indicate it since all preview fields are disabled
                     if (placeholder_el.find('input, textarea, select').attr('readonly')) {
                         sortable_field.find('label slot').after(`<i class="ti ti-pencil-off ms-2" title="${__('Readonly')}"></i>`);
+                    }
+
+                    // Add back the field options if they exist
+                    if (field_option_inputs) {
+                        sortable_field.find('slot[name="field_options"]').html(field_option_inputs);
                     }
                 });
             };
@@ -259,6 +283,9 @@
                     const name = option.name.replace('field_options', `field_options[${field_key}]`);
                     field_options_slot.append(`<input type="hidden" name="${name}" value="${option.value}" />`);
                 });
+
+                // Reload preview
+                append_field(field_key);
 
                 $('#core_field_options_editor').modal('hide');
             }).on('click', '#cancel_core_field_options', () => {
