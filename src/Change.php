@@ -603,7 +603,7 @@ class Change extends CommonITILObject
             'id'                 => '210',
             'table'              => 'glpi_changes_tickets',
             'field'              => 'id',
-            'name'               => _x('quantity', 'Number of change'),
+            'name'               => _x('quantity', 'Number of changes'),
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
