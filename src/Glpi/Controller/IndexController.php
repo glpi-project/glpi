@@ -132,34 +132,33 @@ final class IndexController extends AbstractController
 
         Auth::checkAlternateAuthSystems(true, $redirect);
 
-        $errors = [];
+        $error = null;
         if (isset($_GET['error']) && $redirect !== '') {
             switch ($_GET['error']) {
                 case 1: // cookie error
-                    $errors[] = __('You must accept cookies to reach this application');
+                    $error = __('You must accept cookies to reach this application');
                     break;
 
                 case 2: // GLPI_SESSION_DIR not writable
-                    $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
+                    $error = __('Logins are not possible at this time. Please contact your administrator.');
                     break;
 
                 case 3:
-                    $errors[] = __('Your session has expired. Please log in again.');
+                    $error = __('Your session has expired. Please log in again.');
                     break;
             }
         }
 
-        // redirect to ticket
-        if ($redirect !== '') {
-            Toolbox::manageRedirect($redirect);
-        }
-
-        if (count($errors)) {
+        if ($error !== null) {
             TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
-                'errors'    => $errors,
-                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . str_replace("?", "&", $redirect),
+                'error'     => $error,
+                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode(str_replace("?", "&", $redirect)),
             ]);
         } else {
+            if ($redirect !== '') {
+                Toolbox::manageRedirect($redirect);
+            }
+
             if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
                 Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
             }

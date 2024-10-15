@@ -37,7 +37,7 @@
  * @since 0.85
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AuthenticationFailedHttpException;
 
 /**
  * @var array $CFG_GLPI
@@ -77,14 +77,6 @@ if (isset($_POST['auth'])) {
 
 $remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
 
-// Redirect management
-$REDIRECT = "";
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-    $REDIRECT = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
-    $REDIRECT = "?redirect=" . rawurlencode($_GET['redirect']);
-}
-
 $auth = new Auth();
 
 
@@ -102,10 +94,7 @@ if (!empty($_POST['totp_code'])) {
 if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
-    http_response_code(401);
-    TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
-        'errors'    => $auth->getErrors(),
-        'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),
-    ]);
-    exit();
+    $exception = new AuthenticationFailedHttpException();
+    $exception->setMessageToDisplay(implode(' ', $auth->getErrors()));
+    throw $exception;
 }

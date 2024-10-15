@@ -44,9 +44,7 @@
                 {{ _n('Error', 'Errors', 1) }}
             </h4>
             <div>
-                {% for error in errors %}
-                    {{ error }}<br />
-                {% endfor %}
+                {{ error }}
             </div>
 
             <a href="{{ login_url }}" class="btn btn-primary mt-3">
