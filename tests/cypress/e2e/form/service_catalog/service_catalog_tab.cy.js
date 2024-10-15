@@ -34,7 +34,7 @@
 describe('Service catalog tab', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.createFormWithAPI({
             'name': "Test form for service_catalog_tab.cy.js"

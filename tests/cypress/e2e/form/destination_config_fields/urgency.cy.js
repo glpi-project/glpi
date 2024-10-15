@@ -34,7 +34,7 @@
 describe('Urgency configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Create form with a single "urgency" question
         cy.createFormWithAPI().visitFormTab('Form');

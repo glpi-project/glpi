@@ -34,7 +34,7 @@
 describe('Helpdesk home page', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Self-Service', true);
+        cy.changeProfile('Self-Service');
     });
     it('can use tiles', () => {
         cy.visit('/Home');

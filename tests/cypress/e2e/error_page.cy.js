@@ -35,7 +35,7 @@ describe('Error page', () => {
     });
 
     it('Displays a bad request error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
             '/front/impactcsv.php',       // streamed response
@@ -73,7 +73,7 @@ describe('Error page', () => {
     });
 
     it('Displays an access denied error', () => {
-        cy.changeProfile('Self-Service', true);
+        cy.changeProfile('Self-Service');
 
         const urls = [
             '/front/computer.php', // streamed response
@@ -99,7 +99,7 @@ describe('Error page', () => {
     });
 
     it('Displays a not found error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
             '/front/computer.form.php?id=999999', // streamed response

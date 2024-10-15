@@ -35,7 +35,7 @@
 describe ('Import forms', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('can import forms', () => {

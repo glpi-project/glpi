@@ -34,7 +34,7 @@
 describe('Access Control', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': '[Tests] Access Control',

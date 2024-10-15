@@ -34,7 +34,7 @@
 describe('Filterable', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('preview results are only loaded when explicitly requester', () => {

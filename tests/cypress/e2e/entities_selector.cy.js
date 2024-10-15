@@ -33,14 +33,16 @@
 describe('Entities selector', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Go to any page; force the entity to be E2ETestEntity
+        cy.blockGLPIDashboards();
         cy.visit('/front/central.php?active_entity=1');
         cy.get('header').findByTitle('Root entity > E2ETestEntity').should('exist');
     });
 
     after(() => {
+        cy.blockGLPIDashboards();
         cy.visit('/front/central.php?active_entity=1&is_recursive=1');
     });
 

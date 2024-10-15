@@ -46,7 +46,7 @@ describe('Form preview', config, () => {
         }).as('form_id');
 
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Form$1';

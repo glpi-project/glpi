@@ -33,7 +33,7 @@
 describe('Tabs', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
     it('can use the "forcetab" URL parameter to land on a specific tab', () => {
         cy.visit("/front/user.form.php?id=2&forcetab=Change_Item$1");

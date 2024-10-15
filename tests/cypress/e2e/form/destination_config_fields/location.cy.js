@@ -34,7 +34,7 @@
 describe('Location configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
 

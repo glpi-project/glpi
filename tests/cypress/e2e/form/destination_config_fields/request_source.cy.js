@@ -34,7 +34,7 @@
 describe('Request source configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Create form
         cy.createFormWithAPI().visitFormTab('Form');
