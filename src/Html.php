@@ -456,6 +456,20 @@ class Html
         exit();
     }
 
+    public static function getCurrentUrlForRedirect(): string
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return preg_replace(
+            '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
+            '',
+            $_SERVER['REQUEST_URI']
+        );
+    }
+
     /**
      * Redirection to Login page
      *
@@ -474,11 +488,7 @@ class Html
         $dest = $CFG_GLPI["root_doc"] . "/index.php";
 
         if (!self::$is_ajax_request) {
-            $url_dest = preg_replace(
-                '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
-                '',
-                $_SERVER['REQUEST_URI']
-            );
+            $url_dest = self::getCurrentUrlForRedirect();
             $dest .= "?redirect=" . rawurlencode($url_dest);
         }
 

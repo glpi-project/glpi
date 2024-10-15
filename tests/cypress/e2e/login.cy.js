@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,20 +30,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+describe("Login", () => {
+    it("redirect to requested page after login", () => {
+        // Must visit twice because glpi doens't support redirect on the first
+        // ever visit due to some cookies checks...
+        cy.visit('/front/ticket.form.php');
+        cy.visit('/front/ticket.form.php', {
+            failOnStatusCode: false
+        });
+        cy.findByRole('link', {'name': "Log in again"}).click();
 
-use Html;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+        // Login as e2e_tests
+        cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
+        cy.findByLabelText("Password").type('glpi');
+        cy.findByRole('button', {name: "Sign in"}).click();
 
-/**
- * Used when there is no session, or session cookies have expired.
- */
-class SessionExpiredException extends AbstractHttpException
-{
-    public function asResponse(): Response
-    {
-        $redirect = Html::getCurrentUrlForRedirect();
-        return new RedirectResponse("/front/login.php?redirect=$redirect");
-    }
-}
+        // Should be redirected to requested page
+        cy.url().should('contains', "/front/ticket.form.php");
+    });
+});
+
