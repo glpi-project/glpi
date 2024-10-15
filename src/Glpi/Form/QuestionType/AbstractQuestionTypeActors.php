@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Override;
@@ -81,8 +80,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         }
 
         $actors = [];
-        if (is_array($answer) && count($answer) >= 1 && current($answer) !== "0") {
+        if (is_array($answer)) {
             foreach ($answer as $actor) {
+                // The "0" value can occur when the empty label is selected.
+                if ($actor == "0") {
+                    continue;
+                }
+
                 $actor_parts = explode('-', $actor);
                 $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
                 $item_id = $actor_parts[1];

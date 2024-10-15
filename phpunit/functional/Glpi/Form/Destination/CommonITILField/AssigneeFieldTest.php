@@ -64,7 +64,7 @@ final class AssigneeFieldTest extends DbTestCase
             ITILActorFieldStrategy::FROM_TEMPLATE
         );
 
-        // The default GLPI's template doesn't have a predefined location
+        // The default GLPI's template doesn't have a predefined value
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: $from_template_config,
@@ -126,7 +126,7 @@ final class AssigneeFieldTest extends DbTestCase
             ITILActorFieldStrategy::FORM_FILLER
         );
 
-        // The default GLPI's template doesn't have a predefined location
+        // The default GLPI's template doesn't have a predefined value
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: $form_filler_config,
