@@ -97,8 +97,7 @@
                 add_field_html: btns,
                 inline_add_field_html: true,
                 full_width: true,
-                flex_class: 'd-flex',
-                helper: __('Fields not added below will be appended at the end of the form rather than be hidden')
+                flex_class: 'd-flex'
             }) }}
         </div>
     </div>
@@ -222,6 +221,7 @@
                 if (field_id === undefined || field_id === '-1') {
                     glpi_ajax_dialog({
                         id: 'core_field_options_editor',
+                        modalclass: 'modal-lg',
                         appendTo: '#sortable-fields-container',
                         title: field_el.find('label').text(),
                         url: `{{ path('ajax/asset/assetdefinition.php') }}?action=get_core_field_editor&assetdefinitions_id={{ item.getID() }}&key=${field_el.attr('data-key')}`,
