@@ -107,7 +107,7 @@ if ($item !== null) {
     }
     if (in_array($action, ['delete_item'])) {
         $maybe_deleted = $item->maybeDeleted();
-        if (($maybe_deleted && !$item::canDelete()) && (!$maybe_deleted && $item::canPurge())) {
+        if (($maybe_deleted && !$item::canDelete()) || (!$maybe_deleted && $item::canPurge())) {
            // Missing rights
             http_response_code(403);
             return;
@@ -282,7 +282,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $item->getFromDB($_POST['items_id']);
    // Check if the item can be trashed and if the request isn't forcing deletion (purge)
     $maybe_deleted = $item->maybeDeleted() && !($_REQUEST['force'] ?? false);
-    if (($maybe_deleted && $item->canDeleteItem()) || (!$maybe_deleted && $item->canPurgeItem())) {
+    if (($maybe_deleted && $item->can($_POST['items_id'], DELETE)) || (!$maybe_deleted && $item->can($_POST['items_id'], PURGE))) {
         $item->delete(['id' => $_POST['items_id']], !$maybe_deleted);
     } else {
         http_response_code(403);
@@ -293,7 +293,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $item->getFromDB($_POST['items_id']);
     // Check if the item can be restored
     $maybe_deleted = $item->maybeDeleted();
-    if (($maybe_deleted && $item->canDeleteItem())) {
+    if (($maybe_deleted && $item->can($_POST['items_id'], DELETE))) {
         $item->restore(['id' => $_POST['items_id']]);
     } else {
         http_response_code(403);
