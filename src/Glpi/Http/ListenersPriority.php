@@ -53,17 +53,6 @@ final class ListenersPriority
         // Also, keep it after the `LegacyRouterListener` to not map to the generic dropdown controller if a
         // legacy script exists for the requested URI.
         LegacyDropdownRouteListener::class => 300,
-
-        // Old /front/{object}.php files can now be redirected to their associated controller
-        LegacySearchRouteListener::class => 250,
-
-        // This listener allows matching plugins routes at runtime,
-        //   that's why it's executed right after Symfony's Router,
-        //   and also after GLPI's config is set.
-        //
-        // Symfony's Router priority is 32.
-        // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        PluginsRouterListener::class => 31,
     ];
 
     private function __construct()
