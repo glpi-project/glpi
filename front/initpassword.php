@@ -54,7 +54,7 @@ if (
         'title'         => __('Forgotten initialization'),
         'messages_only' => true,
     ]);
-    exit();
+    return;
 }
 
 $user = new User();
@@ -74,5 +74,3 @@ if (isset($_REQUEST['password_forget_token'])) {
         User::showPasswordInitRequestForm();
     }
 }
-
-exit();

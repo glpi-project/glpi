@@ -53,7 +53,7 @@ try {
     echo "</div>";
 
     Html::popFooter();
-    exit();
+    return;
 }
 Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 

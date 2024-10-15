@@ -83,7 +83,8 @@ try {
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
    // No TextDomain found means that there is no translations for given domain.
    // It is mostly related to plugins that does not provide any translations.
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 
 // Extract headers from main po file
@@ -98,7 +99,8 @@ $po_file_handle = fopen(
 );
 if (false === $po_file_handle) {
     trigger_error(sprintf('Unable to extract locales data from "%s".', $po_file), E_USER_WARNING);
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 $in_headers = false;
 $headers = [];
@@ -122,7 +124,8 @@ while (false !== ($line = fgets($po_file_handle))) {
 }
 if (count(array_diff($header_keys, array_keys($headers))) > 0) {
     trigger_error(sprintf('Missing mandatory locale headers in "%s".', $po_file), E_USER_WARNING);
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 
 // Output messages and headers

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Graph\StatDataSatisfaction;
 use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
 use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
@@ -50,7 +51,7 @@ Session::checkRight("statistic", READ);
 
 /** @var CommonITILObject $item */
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
-    exit;
+    throw new BadRequestHttpException();
 }
 
 //sanitize dates

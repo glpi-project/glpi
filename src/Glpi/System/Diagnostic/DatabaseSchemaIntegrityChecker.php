@@ -674,7 +674,6 @@ class DatabaseSchemaIntegrityChecker
                 $is_quoted = !$is_quoted;
                 continue;
             } else if ($is_quoted) {
-                //exit();
                 continue;
             }
 

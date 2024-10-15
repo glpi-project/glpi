@@ -95,7 +95,7 @@ if (isset($_POST["action"])) {
         && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])
     ) {
         Html::footer();
-        exit();
+        return;
     }
 
     echo "<table class='tab_cadrehov'>";
@@ -143,7 +143,7 @@ if (isset($_POST["action"])) {
     }
 
     Html::footer();
-    exit();
+    return;
 }
 
 Html::header(

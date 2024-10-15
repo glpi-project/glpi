@@ -116,7 +116,7 @@ if (
 ) {
    // Do nothing
     Html::footer();
-    exit();
+    return;
 }
 
 

@@ -104,15 +104,15 @@ final class IndexController extends AbstractController
                 echo '</div>';
                 echo '</div>';
                 Html::nullFooter();
+                return;
             }
-            die();
         }
 
         //Try to detect GLPI agent calls
         $rawdata = file_get_contents("php://input");
         if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             include_once(GLPI_ROOT . '/front/inventory.php');
-            die();
+            return;
         }
 
         Session::checkCookieSecureConfig();
