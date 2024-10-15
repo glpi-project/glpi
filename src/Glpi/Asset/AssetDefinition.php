@@ -240,8 +240,10 @@ final class AssetDefinition extends AbstractDefinition
         $custom_field->fields['itemtype'] = \Computer::class; // Doesn't matter what it is as long as it's not empty
         $custom_field->fields['field_options'] = $field_options;
 
+        $options_allowlist = ['required', 'readonly', 'full_width'];
+
         $twig_params = [
-            'options' => $custom_field->getFieldType()->getOptions(),
+            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn ($option) => in_array($option->getKey(), $options_allowlist, true)),
             'key' => $field_key,
         ];
 
@@ -251,9 +253,7 @@ final class AssetDefinition extends AbstractDefinition
                 <input type="hidden" name="key" value="{{ key }}">
                 <div class="d-flex flex-wrap">
                     {% for option in options %}
-                        {% if option.getKey() != 'disabled'%}
-                            {{ option.getFormInput()|raw }}
-                        {% endif %}
+                        {{ option.getFormInput()|raw }}
                     {% endfor %}
                 </div>
             </form>
