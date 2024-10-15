@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Question;
 use Override;
 
@@ -133,5 +134,27 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return false;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return null;
+    }
+
+    #[Override]
+    public function getConfig(?Question $question): ?JsonFieldInterface
+    {
+        $config_class = $this->getConfigClass();
+        if ($config_class === null || $question === null) {
+            return null;
+        }
+
+        $extra_data = $question->fields['extra_data'];
+        if (empty($extra_data)) {
+            return null;
+        }
+
+        return $config_class::jsonDeserialize(json_decode($extra_data, true));
     }
 }

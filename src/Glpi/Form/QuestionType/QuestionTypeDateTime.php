@@ -126,29 +126,35 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isDefaultValueCurrentTime(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeDateTimeConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_default_value_current_time'] ?? false;
+        return $config->isDefaultValueCurrentTime();
     }
 
     public function isDateEnabled(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeDateTimeConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return true;
         }
 
-        return $question->getExtraDatas()['is_date_enabled'] ?? true;
+        return $config->isDateEnabled();
     }
 
     public function isTimeEnabled(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeDateTimeConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_time_enabled'] ?? false;
+        return $config->isTimeEnabled();
     }
 
     #[Override]
@@ -346,5 +352,11 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeDateTimeConfig::class;
     }
 }

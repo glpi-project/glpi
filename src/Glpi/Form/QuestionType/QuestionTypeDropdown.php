@@ -61,11 +61,13 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
      */
     public function isMultipleDropdown(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeDropdownConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_multiple_dropdown'] ?? false;
+        return $config->isMultipleDropdown();
     }
 
     #[Override]
@@ -233,5 +235,11 @@ TWIG;
             'checked_values' => $checked_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeDropdownConfig::class;
     }
 }
