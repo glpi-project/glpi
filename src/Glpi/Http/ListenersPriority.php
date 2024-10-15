@@ -56,7 +56,7 @@ final class ListenersPriority
 
         // Old /front/{object}.php files can now be redirected to their associated controller
         // @see \Glpi\Controller\GenericListcontroller
-        LegacySearchRouteListener::class => 250,
+        LegacyGenericListRouteListener::class => 250,
     ];
 
     private function __construct()
