@@ -618,32 +618,6 @@ class Change extends CommonITILObject
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd()
-    {
-        $tab = [];
-
-        $tab[] = [
-            'id'                 => 'change',
-            'name'               => __('Changes')
-        ];
-
-        $tab[] = [
-            'id'                 => '210',
-            'table'              => 'glpi_changes_tickets',
-            'field'              => 'id',
-            'name'               => _x('quantity', 'Number of changes'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
-
-        return $tab;
-    }
-
 
     /**
      * get the change status list
