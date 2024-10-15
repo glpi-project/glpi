@@ -3611,7 +3611,7 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight('change', READ)) {
-            $tab = array_merge($tab, Change::rawSearchOptionsToAdd(Ticket::getTypeName()));
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Ticket'));
         }
 
         $tab[] = [
