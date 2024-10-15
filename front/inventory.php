@@ -48,6 +48,10 @@ if ($conf->enabled_inventory != 1) {
 }
 
 $inventory_request = new Request();
+if ($inventory_request->inError() && $inventory_request->getHttpResponseCode() == 415) {
+    http_response_code($inventory_request->getHttpResponseCode());
+    die("Unsupported compression");
+}
 $inventory_request->handleHeaders();
 
 $refused = new RefusedEquipment();
