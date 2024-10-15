@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacySearchRouteListener implements EventSubscriberInterface
+final readonly class LegacyGenericListRouteListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -67,9 +67,8 @@ final readonly class LegacySearchRouteListener implements EventSubscriberInterfa
         if ($class = $this->findDbClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
-            // @TODO: handle forms too.
-            $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
-            $request->attributes->set('class', $class);
+            $request->attributes->set('_controller', $is_form ? GenericFormController::class : GenericListController::class);
+            $request->attributes->set('type', $class);
         }
     }
 
