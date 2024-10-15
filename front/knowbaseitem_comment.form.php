@@ -34,6 +34,8 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkLoginUser();
 
@@ -45,7 +47,7 @@ if (!isset($_POST['knowbaseitems_id'])) {
 $kbitem = new KnowbaseItem();
 $kbitem->getFromDB($_POST['knowbaseitems_id']);
 if (!$kbitem->canComment()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (isset($_POST["add"])) {
@@ -96,4 +98,4 @@ if (isset($_POST["edit"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

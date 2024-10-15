@@ -33,13 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @var CommonDBTM $obj
  * @var CommonItilObject_Item $item_obj
  */
-
-use Glpi\Event;
-use Glpi\Http\Response;
 
 Session::checkLoginUser();
 
@@ -89,4 +90,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

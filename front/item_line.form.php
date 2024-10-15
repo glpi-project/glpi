@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkCentralAccess();
 
 $item_line = new Item_Line();
@@ -68,7 +70,7 @@ if (isset($_POST['update'])) {
 }
 
 if (!isset($_REQUEST['line']) && !isset($_REQUEST['id']) && !isset($_REQUEST['items_id'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 $params = [];
@@ -87,4 +89,4 @@ if (isset($_REQUEST['id'])) {
     ];
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();

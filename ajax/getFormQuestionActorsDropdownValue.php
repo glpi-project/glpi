@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Dropdown\FormActorsDropdown;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 include(__DIR__ . '/getAbstractRightDropdownValue.php');
 

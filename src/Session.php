@@ -36,9 +36,9 @@
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
-use Glpi\Exception\Access\InvalidCsrfException;
-use Glpi\Exception\Access\RequiresHttpsException;
-use Glpi\Exception\Access\SessionExpiredException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\SessionExpiredHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 
@@ -1017,11 +1017,13 @@ class Session
     public static function checkCookieSecureConfig(): void
     {
         // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // display a warning message
+        // throw an exception
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
         if ($is_https_request === false && $cookie_secure === true) {
-            throw new RequiresHttpsException();
+            $exception = new BadRequestHttpException();
+            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
+            throw $exception;
         }
     }
 
@@ -1043,7 +1045,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            throw new SessionExpiredException();
+            throw new SessionExpiredHttpException();
         }
 
         $user_id    = self::getLoginUserID();
@@ -1093,7 +1095,7 @@ class Session
                 $valid_user = false;
             } elseif (
                 $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > $_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0
+                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
             ) {
                 Session::reloadCurrentProfile();
                 $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
@@ -1120,7 +1122,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the standard interface");
+            throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
 
@@ -1138,7 +1140,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
-                Html::displayRightError("Missing FAQ right");
+                throw new AccessDeniedHttpException("Missing FAQ right");
             }
         }
     }
@@ -1155,7 +1157,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the simplified interface");
+            throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
 
@@ -1170,7 +1172,7 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("User has no valid session but seems to be logged in");
+            throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
 
@@ -1245,7 +1247,7 @@ class Session
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
-            Html::displayRightError("User is missing the $right ($right_name) right for $module");
+            throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -1265,11 +1267,11 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
-                $info .= $right . "($right_name), ";
+                $info .= $right . " ($right_name), ";
             }
             $info = substr($info, 0, -2);
             $info .= " for $module";
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1309,10 +1311,10 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);
-                $info .= $right . "($right_name) for module $mod, ";
+                $info .= $right . " ($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1780,7 +1782,9 @@ class Session
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
-            throw new InvalidCsrfException();
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
         }
     }
 

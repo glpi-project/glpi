@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkCentralAccess();
 
 $icl = new \Item_Cluster();
@@ -45,4 +47,4 @@ if (isset($_POST['add'])) {
     Html::back();
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();

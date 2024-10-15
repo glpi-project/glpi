@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /**
  * @var array $CFG_GLPI
@@ -83,7 +84,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else if (isset($_POST['update'])) {
     if (!$track::canUpdate()) {
-        Html::displayRightError();
+        throw new AccessDeniedHttpException();
     }
     $track->update($_POST);
 

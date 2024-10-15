@@ -2990,12 +2990,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	// identifier: nullCoalesce.expr
-	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method Html\\:\\:getMenuFuzzySearchList\\(\\) should return array\\{url\\: string, title\\: string\\} but returns array\\<int\\<0, max\\>, array\\{url\\: mixed, title\\: mixed\\}\\>\\.$#',
 	'count' => 1,
@@ -4396,7 +4390,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [

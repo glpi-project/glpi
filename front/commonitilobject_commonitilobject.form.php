@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 11.0.0
  */
-
-use Glpi\Event;
 
 Session ::checkCentralAccess();
 
@@ -60,4 +61,5 @@ if (isset($_POST['purge'], $_POST['id'])) {
     );
     Html::redirect($_POST['itemtype']::getFormURLWithID($_POST['items_id']));
 }
-Html::displayErrorAndDie("lost");
+
+throw new BadRequestHttpException();

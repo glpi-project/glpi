@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkCentralAccess();
 
 $iapp = new \Appliance_Item();
@@ -58,4 +60,4 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

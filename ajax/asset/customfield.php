@@ -33,7 +33,7 @@
  */
 
 use Glpi\Asset\CustomFieldDefinition;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();

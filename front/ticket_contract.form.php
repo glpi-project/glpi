@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkLoginUser();
 
 $item = new Ticket_Contract();
@@ -60,4 +62,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 Session::checkLoginUser();
 

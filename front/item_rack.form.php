@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 Session::checkCentralAccess();
 
 $ira = new \Item_Rack();
@@ -60,7 +63,7 @@ if (isset($_POST['update'])) {
 }
 
 if (!isset($_GET['unit']) && !isset($_GET['orientation']) && !isset($_GET['rack']) && !isset($_GET['id'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 $params = [];
@@ -82,8 +85,7 @@ if ($ajax) {
     $item = new Item_Rack();
     $id = $params['id'] ?? 0;
     if ($id > 0 && !$item->getFromDB($params['id'])) {
-        Html::displayNotFoundError();
-        return;
+        throw new NotFoundHttpException();
     }
     $item->showForm($id, $params);
 } else {

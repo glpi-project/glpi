@@ -32,27 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+namespace Glpi\Exception\Http;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException as BaseException;
 
-class InvalidCsrfException extends AbstractHttpException
+class BadRequestHttpException extends BaseException implements HttpExceptionInterface
 {
-    public function asResponse(): Response
-    {
-        $message = __("The action you have requested is not allowed.");
-
-        $request = $this->getRequest();
-
-        // Output JSON if requested by client
-        if (\in_array('application/json', $request->getAcceptableContentTypes(), true)) {
-            return new JsonResponse(['message' => $this->message], 403);
-        }
-
-        return new StreamedResponse(function () use ($message) {
-            \Html::displayError($message, true);
-        }, 403);
-    }
+    use HttpExceptionTrait;
 }

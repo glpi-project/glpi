@@ -36,6 +36,8 @@
 namespace tests\units;
 
 use Computer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\SessionExpiredHttpException;
 use ReflectionClass;
 
 /* Test for inc/session.class.php */
@@ -1228,5 +1230,343 @@ class Session extends \DbTestCase
         \Session::changeActiveEntities("all");
         $this->string($_SESSION["glpiactive_entity_name"])->isEqualTo("Root entity (full structure)");
         $this->string($_SESSION["glpiactive_entity_shortname"])->isEqualTo("Root entity (full structure)");
+    }
+
+    public function testCheckValidSessionIdWithSessionExpiration(): void
+    {
+        $this->login();
+
+        unset($_SESSION);
+
+        $this->exception(
+            function () {
+                \Session::checkValidSessionId();
+            }
+        )->isInstanceOf(SessionExpiredHttpException::class);
+    }
+
+    protected function checkCentralAccessProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'exception'   => new AccessDeniedHttpException(
+                'The current profile does not use the standard interface'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkCentralAccessProvider
+     */
+    public function testCheckCentralAccess(array $credentials, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkCentralAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkHelpdeskAccessProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'exception'   => new AccessDeniedHttpException(
+                'The current profile does not use the simplified interface'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'exception'   => null,
+        ];
+    }
+
+    /**
+     * @dataProvider checkHelpdeskAccessProvider
+     */
+    public function testCheckHelpdeskAccess(array $credentials, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkHelpdeskAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkFaqAccessProvider(): iterable
+    {
+        yield [
+            'rights'         => 0,
+            'use_public_faq' => false,
+            'exception'      => new AccessDeniedHttpException(
+                'Missing FAQ right'
+            ),
+        ];
+
+        yield [
+            'rights'         => \KnowbaseItem::READFAQ,
+            'use_public_faq' => false,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => READ,
+            'use_public_faq' => false,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => 0,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => \KnowbaseItem::READFAQ,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => READ,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+    }
+
+    /**
+     * @dataProvider checkFaqAccessProvider
+     */
+    public function testFaqAccessAccess(int $rights, bool $use_public_faq, ?\Throwable $exception): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_public_faq'] = $use_public_faq;
+        $_SESSION["glpiactiveprofile"]['knowbase'] = $rights;
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkFaqAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    public function testCheckLoginUser(): void
+    {
+        $this->login();
+
+        \Session::checkLoginUser(); // no exception thrown, as expected
+
+        unset($_SESSION['glpiname']);
+
+        $this->exception(
+            function () {
+                \Session::checkLoginUser();
+            }
+        )->isInstanceOf(AccessDeniedHttpException::class)
+         ->hasMessage('User has no valid session but seems to be logged in');
+    }
+
+    protected function checkRightProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'right'       => READ,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'right'       => UPDATE,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['normal', 'normal'],
+            'module'      => 'config',
+            'right'       => DELETE,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 8 (DELETE) right for config'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'right'       => READ,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 1 (READ) right for computer'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'right'       => UPDATE,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 2 (UPDATE) right for computer'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkRightProvider
+     */
+    public function testCheckRight(array $credentials, string $module, int $right, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($module, $right) {
+                    \Session::checkRight($module, $right);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkRightsOrProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'rights'      => [READ, CREATE, UPDATE],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'rights'      => [READ, CREATE, UPDATE],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ), 4 (CREATE), 2 (UPDATE) for computer'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkRightsOrProvider
+     */
+    public function testCheckRightsOr(array $credentials, string $module, array $rights, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($module, $rights) {
+                    \Session::checkRightsOr($module, $rights);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkSeveralRightsOrProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ) for module notification, 2 (UPDATE) for module config'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkSeveralRightsOrProvider
+     */
+    public function testCheckSeveralRightsOr(array $credentials, array $rights, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($rights) {
+                    \Session::checkSeveralRightsOr($rights);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkCSRFProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ) for module notification, 2 (UPDATE) for module config'
+            ),
+        ];
+    }
+
+    public function testCheckCSRF(): void
+    {
+        $token = \Session::getNewCSRFToken();
+        \Session::checkCSRF(['_glpi_csrf_token' => $token]); // No exception thrown
+
+
+        $this->exception(
+            function () {
+                \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
+            }
+        )->isInstanceOf(AccessDeniedHttpException::class);
     }
 }

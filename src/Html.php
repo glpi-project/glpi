@@ -34,12 +34,14 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
-use donatj\UserAgent\Platforms;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -498,36 +500,14 @@ class Html
      * Display common message for item not found
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayNotFoundError(string $additional_info = '')
     {
-        /** @var bool $HEADER_LOADED */
-        global $HEADER_LOADED;
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException` exception instead.');
 
-        if (!$HEADER_LOADED) {
-            if (!Session::getCurrentInterface()) {
-                self::nullHeader(__('Access denied'));
-            } else if (Session::getCurrentInterface() === "central") {
-                self::header(__('Access denied'));
-            } else if (Session::getCurrentInterface() === "helpdesk") {
-                self::helpHeader(__('Access denied'));
-            }
-        }
-        TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
-            'message' => __('Item not found'),
-            'link'    => self::getBackUrl()
-        ]);
-        $requested_url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
-        $user_id = Session::getLoginUserID() ?? 'Anonymous';
-        $internal_message = "User ID: $user_id tried to access a non-existent item $requested_url. Additional information: $additional_info\n";
-        $internal_message .= "\tStack Trace:\n";
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        foreach ($backtrace as $frame) {
-            $internal_message .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
-        }
-        Toolbox::logInFile('access-errors', $internal_message);
-        self::nullFooter();
-        exit();
+        throw new NotFoundHttpException();
     }
 
 
@@ -535,25 +515,14 @@ class Html
      * Display common message for privileges errors
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayRightError(string $additional_info = '')
     {
-        Toolbox::handleProfileChangeRedirect();
-        $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
-        $user_id = Session::getLoginUserID() ?? 'Anonymous';
-        if (empty($additional_info)) {
-            $additional_info = __('No additional information given');
-        }
-        $internal_message = "User ID: $user_id tried to access or perform an action on $requested_url with insufficient rights. Additional information: $additional_info\n";
-        $internal_message .= "\tStack Trace:\n";
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $trace_string = '';
-        foreach ($backtrace as $frame) {
-            $trace_string .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
-        }
-        $internal_message .= $trace_string;
-        Toolbox::logInFile('access-errors', $internal_message);
-        self::displayErrorAndDie(__("You don't have permission to perform this action."));
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException` exception instead.');
+
+        throw new AccessDeniedHttpException();
     }
 
 
@@ -731,35 +700,14 @@ class Html
      * @param boolean $minimal  set to true do not display app menu (false by default)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayErrorAndDie($message, $minimal = false): void
     {
-        self::displayError($message, $minimal);
-        exit();
-    }
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\BadRequestHttpException` exception instead.');
 
-    public static function displayError($message, $minimal = false): void
-    {
-        /** @var bool $HEADER_LOADED */
-        global $HEADER_LOADED;
-
-        if (!$HEADER_LOADED) {
-            if ($minimal || !Session::getCurrentInterface()) {
-                self::nullHeader(__('Access denied'), '');
-            } else if (Session::getCurrentInterface() == "central") {
-                self::header(__('Access denied'), '');
-            } else if (Session::getCurrentInterface() == "helpdesk") {
-                self::helpHeader(__('Access denied'), '');
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
-            'title'   => __('Access denied'),
-            'message' => $message,
-            'link'    => Html::getBackUrl(),
-        ]);
-
-        self::nullFooter();
+        throw new BadRequestHttpException();
     }
 
     /**

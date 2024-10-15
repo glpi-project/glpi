@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkRight('software', UPDATE);
 $inst = new Item_SoftwareVersion();
@@ -72,4 +73,5 @@ if (isset($_POST['add'])) {
     }
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

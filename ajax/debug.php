@@ -34,9 +34,9 @@
  */
 
 use Glpi\Application\ErrorHandler;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 Html::header_nocache();
 

@@ -40,6 +40,8 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
@@ -219,7 +221,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return void
      */
-    #[dataProvider('getTableProvider')]
+    #[DataProvider('getTableProvider')]
     public function testGetTable($classname, $tablename)
     {
         $this->assertSame($tablename, $classname::getTable());
@@ -1041,7 +1043,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('relationConfigProvider')]
+    #[DataProvider('relationConfigProvider')]
     public function testCleanRelationTableBasedOnConfiguredTypes(
         $relation_itemtype,
         $config_name,
@@ -1283,7 +1285,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('testCheckTemplateEntityProvider')]
+    #[DataProvider('testCheckTemplateEntityProvider')]
     public function testCheckTemplateEntity(
         array $data,
         $parent_id,
@@ -1386,7 +1388,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('textValueProvider')]
+    #[DataProvider('textValueProvider')]
     public function testTextValueTuncation(string $value, string $truncated, int $length)
     {
         $computer = new \Computer();
@@ -1755,7 +1757,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('updatedInputProvider')]
+    #[DataProvider('updatedInputProvider')]
     public function testUpdatedFields(string $itemtype, array $add_input, array $update_input, array $expected_updates): void
     {
         $item = new $itemtype();
@@ -1779,7 +1781,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('assignableItemsProvider')]
+    #[DataProvider('assignableItemsProvider')]
     public function testCanViewAssignableItems($itemtype)
     {
         $this->login();
@@ -1793,7 +1795,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($itemtype::canView());
     }
 
-    #[dataProvider('assignableItemsProvider')]
+    #[DataProvider('assignableItemsProvider')]
     public function testCanViewItemAssignableItems($itemtype)
     {
         $this->login();
@@ -1879,7 +1881,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($item->canViewItem());
     }
 
-    #[dataProvider('assignableItemsProvider')]
+    #[DataProvider('assignableItemsProvider')]
     public function testCanUpdateAssignableItems($itemtype)
     {
         $this->login();
@@ -1893,7 +1895,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($itemtype::canUpdate());
     }
 
-    #[dataProvider('assignableItemsProvider')]
+    #[DataProvider('assignableItemsProvider')]
     public function testCanUpdateItemAssignableItems($itemtype)
     {
         $this->login();
@@ -1974,5 +1976,161 @@ class CommonDBTMTest extends DbTestCase
             'groups_id' => $groups_id,
         ]));
         $this->assertTrue($item->canUpdateItem());
+    }
+
+    public static function checkProvider(): iterable
+    {
+        $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => new AccessDeniedHttpException(
+                sprintf(
+                    'User failed a can* method check for right 4 (CREATE) on item Type: Computer ID: %d',
+                    $computer_id
+                )
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+    }
+
+    #[DataProvider('checkProvider')]
+    public function testCheck(array $credentials, string $itemtype, int $items_id, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // no return value to check, we just ensure that there is no exception thrown
+        }
+
+        $item = new $itemtype();
+        $item->check($items_id, CREATE);
+    }
+
+    public static function checkGlobalProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'exception'   => new AccessDeniedHttpException(
+                'User failed a global can* method check for right 4 (CREATE) on item Type: Computer'
+            ),
+        ];
+    }
+
+    #[DataProvider('checkGlobalProvider')]
+    public function testCheckGlobal(array $credentials, string $itemtype, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // no return value to check, we just ensure that there is no exception thrown
+        }
+
+        $item = new $itemtype();
+        $item->checkGlobal(CREATE);
+    }
+
+
+    public static function displayFullPageForItemProvider(): iterable
+    {
+        $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => -1,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => -1,
+            'exception'   => new AccessDeniedHttpException(
+                'Missing CREATE right. Cannot view the new item form.'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => new AccessDeniedHttpException(
+                'Missing READ right. Cannot view the item.'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+    }
+
+    #[DataProvider('displayFullPageForItemProvider')]
+    public function testDisplayFullPageForItem(array $credentials, string $itemtype, int $items_id, ?\Throwable $exception): void
+    {
+        $_SERVER['REQUEST_URI'] = $itemtype::getFormURLWithID($items_id);
+        $_GET["id"]             = $items_id;
+
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // Tests that something is sent to output
+            $this->expectOutputRegex('/.+/');
+        }
+
+        $item = new $itemtype();
+        $item->displayFullPageForItem($items_id);
     }
 }

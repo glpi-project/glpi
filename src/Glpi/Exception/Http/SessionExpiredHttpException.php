@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,28 +32,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Dashboard\Dashboard;
+namespace Glpi\Exception\Http;
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-Session::checkCentralAccess();
-$default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
+class SessionExpiredHttpException extends HttpException
+{
+    use HttpExceptionTrait;
 
-// Redirect to "/front/ticket.php" if no dashboard found
-if ($default == "") {
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
+    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
+    {
+        parent::__construct(401, $message, $previous, $headers, $code);
+    }
 }
-
-$dashboard = new Dashboard($default);
-if (!$dashboard->canViewCurrent()) {
-    throw new AccessDeniedHttpException();
-}
-
-Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");
-
-$grid = new Glpi\Dashboard\Grid($default);
-$grid->showDefault();
-
-Html::footer();

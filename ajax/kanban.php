@@ -34,12 +34,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();

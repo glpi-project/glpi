@@ -33,23 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
+/** @var \DBmysql $DB */
+global $DB;
+
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var CommonITILTask $task
  */
 
-use Glpi\Event;
-
-/** @var \DBmysql $DB */
-global $DB;
-
 Session::checkCentralAccess();
 
 if (!($task instanceof CommonITILTask)) {
-    Html::displayErrorAndDie('');
+    throw new BadRequestHttpException();
 }
 if (!$task->canView()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 $itemtype = $task::getItilObjectItemType();

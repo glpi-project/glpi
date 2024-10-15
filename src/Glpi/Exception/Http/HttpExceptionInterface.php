@@ -32,18 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Access;
+namespace Glpi\Exception\Http;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-
-/**
- * Used when there is no session, or session cookies have expired.
- */
-class SessionExpiredException extends AbstractHttpException
+interface HttpExceptionInterface extends \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface
 {
-    public function asResponse(): Response
-    {
-        return new RedirectResponse('/front/login.php');
-    }
+    /**
+     * Get the message to display.
+     */
+    public function getMessageToDisplay(): ?string;
 }
