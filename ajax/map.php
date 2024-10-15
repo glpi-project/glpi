@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -40,11 +42,7 @@ Session::checkLoginUser();
 
 $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
-    http_response_code(500);
-    $result = [
-        'success'   => false,
-        'message'   => __('Required argument missing!')
-    ];
+    throw new BadRequestHttpException();
 } else {
     $itemtype = $_POST['itemtype'];
     $params   = $_POST['params'];
