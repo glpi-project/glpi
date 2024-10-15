@@ -40,7 +40,7 @@ describe('Observer configuration', () => {
 
         // Create a Observer
         cy.get('@form_id').then((form_id) => {
-            const observer_name = 'Test Observer - ' + form_id;
+            const observer_name = `Test Observer - ${form_id}`;
             cy.createWithAPI('User', {
                 name: observer_name,
             }).as('observer_id');
@@ -90,7 +90,7 @@ describe('Observer configuration', () => {
         cy.get('@observers_dropdown').selectDropdownValue('Specific actors');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_observers_dropdown');
         cy.get('@form_id').then((form_id) => {
-            const observer_name = 'Test Observer - ' + form_id;
+            const observer_name = `Test Observer - ${form_id}`;
             cy.get('@specific_observers_dropdown').selectDropdownValue(observer_name);
         });
 
@@ -98,8 +98,8 @@ describe('Observer configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@observers_dropdown').should('have.text', 'Specific actors');
         cy.get('@form_id').then((form_id) => {
-            const observer_name = 'Test Observer - ' + form_id;
-            cy.get('@specific_observers_dropdown').should('have.text', '×' + observer_name);
+            const observer_name = `Test Observer - ${form_id}`;
+            cy.get('@specific_observers_dropdown').should('have.text', `×${observer_name}`);
         });
 
         // Switch to "Answer from specific questions"

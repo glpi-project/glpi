@@ -40,7 +40,7 @@ describe('Assignee configuration', () => {
 
         // Create a Assignee
         cy.get('@form_id').then((form_id) => {
-            const assignee_name = 'Test Assignee - ' + form_id;
+            const assignee_name = `Test Assignee - ${form_id}`;
             cy.createWithAPI('User', {
                 name: assignee_name,
             }).as('assignee_id');
@@ -90,7 +90,7 @@ describe('Assignee configuration', () => {
         cy.get('@assignees_dropdown').selectDropdownValue('Specific actors');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_assignees_dropdown');
         cy.get('@form_id').then((form_id) => {
-            const assignee_name = 'Test Assignee - ' + form_id;
+            const assignee_name = `Test Assignee - ${form_id}`;
             cy.get('@specific_assignees_dropdown').selectDropdownValue(assignee_name);
         });
 
@@ -98,8 +98,8 @@ describe('Assignee configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@assignees_dropdown').should('have.text', 'Specific actors');
         cy.get('@form_id').then((form_id) => {
-            const assignee_name = 'Test Assignee - ' + form_id;
-            cy.get('@specific_assignees_dropdown').should('have.text', '×' + assignee_name);
+            const assignee_name = `Test Assignee - ${form_id}`;
+            cy.get('@specific_assignees_dropdown').should('have.text', `×${assignee_name}`);
         });
 
         // Switch to "Answer from specific questions"

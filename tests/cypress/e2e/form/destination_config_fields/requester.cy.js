@@ -40,7 +40,7 @@ describe('Requester configuration', () => {
 
         // Create a Requester
         cy.get('@form_id').then((form_id) => {
-            const requester_name = 'Test Requester - ' + form_id;
+            const requester_name = `Test Requester - ${form_id}`;
             cy.createWithAPI('User', {
                 name: requester_name,
             }).as('requester_id');
@@ -90,7 +90,7 @@ describe('Requester configuration', () => {
         cy.get('@requesters_dropdown').selectDropdownValue('Specific actors');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_requesters_dropdown');
         cy.get('@form_id').then((form_id) => {
-            const requester_name = 'Test Requester - ' + form_id;
+            const requester_name = `Test Requester - ${form_id}`;
             cy.get('@specific_requesters_dropdown').selectDropdownValue(requester_name);
         });
 
@@ -98,8 +98,8 @@ describe('Requester configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@requesters_dropdown').should('have.text', 'Specific actors');
         cy.get('@form_id').then((form_id) => {
-            const requester_name = 'Test Requester - ' + form_id;
-            cy.get('@specific_requesters_dropdown').should('have.text', '×' + requester_name);
+            const requester_name = `Test Requester - ${form_id}`;
+            cy.get('@specific_requesters_dropdown').should('have.text', `×${requester_name}`);
         });
 
         // Switch to "Answer from specific questions"
