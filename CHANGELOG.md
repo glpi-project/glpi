@@ -263,9 +263,9 @@ The present file will list all changes made to the project; according to the
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
-- `Html::displayErrorAndDie()`. Throw a `Symfony\Component\HttpKernel\Exception\BadRequestHttpException` exception instead.
-- `Html::displayNotFoundError()`. Throw a `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` exception instead.
-- `Html::displayRightError()`. Throw a `Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException` exception instead.
+- `Html::displayErrorAndDie()`. Throw a `Glpi\Exception\Http\BadRequestHttpException` exception instead.
+- `Html::displayNotFoundError()`. Throw a `Glpi\Exception\Http\NotFoundHttpException` exception instead.
+- `Html::displayRightError()`. Throw a `Glpi\Exception\Http\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
 - `HookManager::enableCSRF()`

@@ -2024,7 +2024,7 @@ class CommonDBTMTest extends DbTestCase
         if ($exception !== null) {
             $this->expectExceptionObject($exception);
         } else {
-            // no return value to check, we just ensure that there is no exception throwned
+            // no return value to check, we just ensure that there is no exception thrown
         }
 
         $item = new $itemtype();
@@ -2056,7 +2056,7 @@ class CommonDBTMTest extends DbTestCase
         if ($exception !== null) {
             $this->expectExceptionObject($exception);
         } else {
-            // no return value to check, we just ensure that there is no exception throwned
+            // no return value to check, we just ensure that there is no exception thrown
         }
 
         $item = new $itemtype();
