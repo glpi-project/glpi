@@ -6434,7 +6434,7 @@ JAVASCRIPT;
             $input['global_validation'] = $this->fields['global_validation'];
         }
 
-        if (!isset($input['priority'])) {
+        if (!$this->isNewItem() && !isset($input['priority'])) {
             $input['priority'] = $this->fields['priority'];
         }
     }
