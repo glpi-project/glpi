@@ -63,7 +63,7 @@ final class GenericListController extends AbstractController
     }
 
     /**
-     * @return class-string<\CommonDBTM>|null
+     * @return class-string<\CommonGLPI>|null
      */
     private function getClassFromType(string $type): ?string
     {
@@ -72,7 +72,7 @@ final class GenericListController extends AbstractController
         if (
             $class
             && \class_exists($class)
-            && \is_subclass_of($class, \CommonDBTM::class)
+            && \is_subclass_of($class, \CommonGLPI::class)
         ) {
             return $this->normalizeClass($class);
         }
@@ -82,7 +82,7 @@ final class GenericListController extends AbstractController
         if (
             $namespacedClass
             && \class_exists($namespacedClass)
-            && \is_subclass_of($namespacedClass, \CommonDBTM::class)
+            && \is_subclass_of($namespacedClass, \CommonGLPI::class)
         ) {
             return $this->normalizeClass($namespacedClass);
         }
