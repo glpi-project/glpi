@@ -3610,6 +3610,10 @@ JAVASCRIPT;
             $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
         }
 
+        if (Session::haveRight('change', READ)) {
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Ticket'));
+        }
+
         $tab[] = [
             'id'                 => 'tools',
             'name'               => __('Tools')
