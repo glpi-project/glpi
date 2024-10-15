@@ -441,7 +441,7 @@ final class FormSerializer extends AbstractFormSerializer
             ]);
 
             if (!$id) {
-                throw new RunTimeException("Failed to create access control");
+                throw new RuntimeException("Failed to create access control");
             }
         }
 
