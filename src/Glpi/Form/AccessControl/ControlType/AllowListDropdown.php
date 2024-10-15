@@ -148,6 +148,9 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): string {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $criteria = [];
         $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
 
@@ -180,16 +183,13 @@ final class AllowListDropdown extends AbstractRightsDropdown
             }
         }
 
-        if (empty($criteria)) {
-            // We must provide a criteria that will return all users, otherwise
-            // the request will default to the last search made by the user.
-            $criteria[] = [
-                'link'       => 'OR',
-                'searchtype' => 'contains',
-                'field'      => 'view',
-                'value'      => '',
-            ];
-        }
+        // Exclude system user
+        $criteria[] = [
+            'link'       => 'AND',
+            'searchtype' => 'notequals',
+            'field'      => '1',
+            'value'      => $CFG_GLPI['system_user'],
+        ];
 
         $params = ['criteria' => $criteria];
         return User::getSearchURL() . "?" . http_build_query($params);
