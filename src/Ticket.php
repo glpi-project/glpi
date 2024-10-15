@@ -1127,6 +1127,10 @@ class Ticket extends CommonITILObject
             $entid = $this->fields['entities_id'];
         }
 
+        if (!isset($input['priority'])) {
+            $input['priority'] = $this->fields['priority'];
+        }
+
         $cat_id = $input['itilcategories_id'] ?? 0;
         if ($cat_id) {
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
