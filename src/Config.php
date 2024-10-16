@@ -1194,6 +1194,14 @@ class Config extends CommonDBTM
                 'name' => 'symfony/serializer',
                 'check' => 'Symfony\Component\Serializer\Serializer'
             ],
+            [
+                'name' => 'symfony/property-info',
+                'check' => 'Symfony\Component\PropertyInfo\Type'
+            ],
+            [
+                'name' => 'symfony/error-handler',
+                'check' => 'Symfony\Component\ErrorHandler\ErrorHandler'
+            ],
         ];
         return $deps;
     }

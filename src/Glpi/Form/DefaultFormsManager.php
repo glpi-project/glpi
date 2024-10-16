@@ -301,7 +301,7 @@ final class DefaultFormsManager
         ]);
 
         if (!$id) {
-            throw new \RunTimeException("Failed to create destination");
+            throw new \RuntimeException("Failed to create destination");
         }
     }
 
@@ -318,7 +318,7 @@ final class DefaultFormsManager
         ]);
 
         if (!$id) {
-            throw new \RunTimeException("Failed to create access policy");
+            throw new \RuntimeException("Failed to create access policy");
         }
     }
 }
