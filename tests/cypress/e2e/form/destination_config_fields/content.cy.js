@@ -34,7 +34,7 @@
 describe('Content configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Create form with a single "request type" question
         cy.createFormWithAPI({"name": "My form name"}).visitFormTab('Form');

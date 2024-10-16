@@ -33,7 +33,7 @@
 describe('Notifications', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('Change devices in menu', () => {

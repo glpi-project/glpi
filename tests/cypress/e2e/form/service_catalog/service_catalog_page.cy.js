@@ -44,7 +44,7 @@ describe('Service catalog page', () => {
 
         // Allow form to be displayed in the service catalog.
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
         cy.get('@form_id').visitFormTab('Policies');
         cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
         cy.findByRole('link', {'name': /There are \d+ user\(s\) matching these criteria\./}).should('exist');

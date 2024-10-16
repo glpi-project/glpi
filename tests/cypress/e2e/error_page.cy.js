@@ -35,7 +35,7 @@ describe('Error page', () => {
     });
 
     it('Displays a bad request error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
             '/front/impactcsv.php',       // streamed response
@@ -57,6 +57,9 @@ describe('Error page', () => {
                 cy.findByTestId('stack-trace').should('exist');
             });
         }
+
+        // eslint-disable-next-line
+        cy.wait(100); // The debug bar throw an error if we disable it immediately after loading a page...
         cy.disableDebugMode();
 
         // Check without debug mode (stack trace should NOT be displayed)
@@ -73,7 +76,7 @@ describe('Error page', () => {
     });
 
     it('Displays an access denied error', () => {
-        cy.changeProfile('Self-Service', true);
+        cy.changeProfile('Self-Service');
 
         const urls = [
             '/front/computer.php', // streamed response
@@ -99,7 +102,7 @@ describe('Error page', () => {
     });
 
     it('Displays a not found error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
             '/front/computer.form.php?id=999999', // streamed response

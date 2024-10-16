@@ -33,7 +33,7 @@
 describe('Notifications', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
     it('View Templates for a Notification', () => {
         // New Ticket notification
