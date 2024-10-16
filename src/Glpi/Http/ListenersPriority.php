@@ -52,11 +52,7 @@ final class ListenersPriority
         // Plugins dropdowns requires plugins to be initialized, therefore config must be already set.
         // Also, keep it after the `LegacyRouterListener` to not map to the generic dropdown controller if a
         // legacy script exists for the requested URI.
-        LegacyDropdownRouteListener::class => 300,
-
-        // Old /front/{object}.php files can now be redirected to their associated controller
-        // @see \Glpi\Controller\GenericListcontroller
-        LegacyGenericListRouteListener::class => 250,
+        LegacyDbObjectRouteListener::class => 300,
     ];
 
     private function __construct()
