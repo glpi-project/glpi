@@ -152,7 +152,7 @@ final class IndexController extends AbstractController
         if ($error !== null) {
             TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
                 'error'     => $error,
-                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode(str_replace("?", "&", $redirect)),
+                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
             ]);
         } else {
             if ($redirect !== '') {
