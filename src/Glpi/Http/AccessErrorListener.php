@@ -36,8 +36,8 @@ namespace Glpi\Http;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\AuthenticationFailedHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\AuthenticationFailedException;
+use Glpi\Exception\SessionExpiredException;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -67,7 +67,7 @@ final class AccessErrorListener implements EventSubscriberInterface
 
         $response = null;
 
-        if ($throwable instanceof SessionExpiredHttpException) {
+        if ($throwable instanceof SessionExpiredException) {
             Session::destroy(); // destroy the session to prevent pesistence of unexcpected data
 
             $response = new RedirectResponse(
@@ -90,7 +90,7 @@ final class AccessErrorListener implements EventSubscriberInterface
                     $request->getBasePath()
                 )
             );
-        } elseif ($throwable instanceof AuthenticationFailedHttpException) {
+        } elseif ($throwable instanceof AuthenticationFailedException) {
             $login_url = sprintf(
                 '%s/front/logout.php?noAUTO=1',
                 $request->getBasePath()
@@ -103,11 +103,10 @@ final class AccessErrorListener implements EventSubscriberInterface
                 content: TemplateRenderer::getInstance()->render(
                     'pages/login_error.html.twig',
                     [
-                        'error'     => $throwable->getMessageToDisplay(),
+                        'errors'    => $throwable->getAuthenticationErrors(),
                         'login_url' => $login_url,
                     ]
-                ),
-                status: 401
+                )
             );
         }
 

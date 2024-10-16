@@ -32,16 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Http;
+namespace Glpi\Exception;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
-class AuthenticationFailedHttpException extends HttpException
+class AuthenticationFailedException extends \Exception
 {
-    use HttpExceptionTrait;
+    public function __construct(
+        string $message = '""',
+        int $code = null,
+        ?\Throwable $previous = null,
+        private array $authentication_errors = []
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 
-    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
+    public function getAuthenticationErrors(): array
     {
-        parent::__construct(401, $message, $previous, $headers, $code);
+        return $this->authentication_errors;
     }
 }

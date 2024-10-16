@@ -32,16 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Http;
+namespace Glpi\Exception;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
-class SessionExpiredHttpException extends HttpException
+class SessionExpiredException extends \Exception
 {
-    use HttpExceptionTrait;
-
-    public function __construct(string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
-    {
-        parent::__construct(401, $message, $previous, $headers, $code);
-    }
 }

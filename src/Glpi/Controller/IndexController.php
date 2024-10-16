@@ -132,26 +132,26 @@ final class IndexController extends AbstractController
 
         Auth::checkAlternateAuthSystems(true, $redirect);
 
-        $error = null;
+        $errors = [];
         if (isset($_GET['error']) && $redirect !== '') {
             switch ($_GET['error']) {
                 case 1: // cookie error
-                    $error = __('You must accept cookies to reach this application');
+                    $errors[] = __('You must accept cookies to reach this application');
                     break;
 
                 case 2: // GLPI_SESSION_DIR not writable
-                    $error = __('Logins are not possible at this time. Please contact your administrator.');
+                    $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
                     break;
 
                 case 3:
-                    $error = __('Your session has expired. Please log in again.');
+                    $errors[] = __('Your session has expired. Please log in again.');
                     break;
             }
         }
 
-        if ($error !== null) {
+        if (count($errors) > 0) {
             TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
-                'error'     => $error,
+                'errors'    => $errors,
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
             ]);
         } else {

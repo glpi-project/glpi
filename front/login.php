@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\AuthenticationFailedException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Exception\Http\AuthenticationFailedHttpException;
 
 /**
  * @var array $CFG_GLPI
@@ -94,7 +94,5 @@ if (!empty($_POST['totp_code'])) {
 if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
-    $exception = new AuthenticationFailedHttpException();
-    $exception->setMessageToDisplay(implode(' ', $auth->getErrors()));
-    throw $exception;
+    throw new AuthenticationFailedException(authentication_errors: $auth->getErrors());
 }
