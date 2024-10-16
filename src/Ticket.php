@@ -5511,7 +5511,7 @@ JAVASCRIPT;
                 'long'  => __('Steal a ticket')
             ];
                                                //TRANS: short for : To be in charge of a ticket
-            $values[self::OWN]            = ['short' => __('Beeing in charge'),
+            $values[self::OWN]            = ['short' => __('Be in charge'),
                 'long'  => __('To be in charge of a ticket')
             ];
             $values[self::CHANGEPRIORITY] = __('Change the priority');
