@@ -51,7 +51,7 @@
 
 {% set target = path("front/central.php") %}
 {% if get_current_interface() == "helpdesk" %}
-    {% set target = path("front/helpdesk.public.php") %}
+    {% set target = path("home") %}
 {% endif %}
 
 {% set current_entity = session('glpiactive_entity_name') %}

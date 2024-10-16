@@ -71,7 +71,7 @@ class RoutingExtension extends AbstractExtension
         $index = '/index.php';
         if (Session::getLoginUserID() !== false) {
             $index = Session::getCurrentInterface() == 'helpdesk'
-            ? 'front/helpdesk.public.php'
+            ? 'Home'
             : 'front/central.php';
         }
         return Html::getPrefixedUrl($index);

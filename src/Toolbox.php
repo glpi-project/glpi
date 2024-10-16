@@ -1502,7 +1502,7 @@ class Toolbox
                     if ($matches[1] !== $CFG_GLPI['url_base']) {
                         Session::addMessageAfterRedirect(__s('Redirection failed'));
                         if (Session::getCurrentInterface() === "helpdesk") {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                            Html::redirect($CFG_GLPI["root_doc"] . "/Home");
                         } else {
                             Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
                         }
@@ -1566,7 +1566,7 @@ class Toolbox
                                     }
                                 }
 
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                Html::redirect($CFG_GLPI["root_doc"] . "/Home");
                                 // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "preference":
@@ -1578,7 +1578,7 @@ class Toolbox
                                 // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             default:
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                Html::redirect($CFG_GLPI["root_doc"] . "Home");
                         }
                         // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;

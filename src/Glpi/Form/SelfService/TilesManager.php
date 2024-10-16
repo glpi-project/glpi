@@ -83,9 +83,9 @@ final class TilesManager
             title: __("View RSS feeds"),
             description: __("Checkout new data from your saved RSS feeds."),
             illustration: "view-feed.svg",
-            // TODO: create dedicated RSS page, the only place they are
-            // visible is on the dashboard of the legacy home page.
-            link: "/front/helpdesk.public.php"
+            // TODO: replace this default tile by something more useful, rss
+            // feeds are already displayed on the home page using a tab
+            link: "/Home"
         );
 
         return $tiles;

@@ -42,6 +42,8 @@ use Glpi\SelfService\HomePageTabs;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use User;
+use Session;
 
 final class HomeController extends AbstractController
 {
@@ -58,15 +60,24 @@ final class HomeController extends AbstractController
         name: "glpi_selfservice_home",
         methods: "GET"
     )]
+    // Prevent old links from breaking
+    #[Route(
+        '/front/helpdesk.public.php',
+        name: "glpi_selfservice_home_deprecated",
+        methods: "GET"
+    )]
     public function __invoke(Request $request): Response
     {
+        $user = User::getById(Session::getLoginUserID());
+
         // Will rename the file to "home.html.twig" later, don't want to remove
         // the original file yet.
-        return $this->render('pages/self-service/new_home.html.twig', [
+        return $this->render('pages/self-service/home.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
             'tiles' => $this->tiles_manager->getTiles(),
             'tabs'  => new HomePageTabs(),
+            'password_alert' => $user->getPasswordExpirationMessage(),
         ]);
     }
 }

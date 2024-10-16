@@ -31,45 +31,86 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if password_alert|length %}
-   <div class="alert alert-warning alert-dismissible" role="alert">
-      <div class="d-flex mb-2">
-         <div>
-            <i class="fas fa-exclamation-triangle me-1"></i>
-         </div>
-         <div>
-            {{ password_alert }}
-         </div>
-      </div>
+{% extends "layout/page_skeleton.html.twig" %}
 
-      <div class="btn-list">
-         <a class="btn btn-outline-warning" href="{{ path('/front/updatepassword.php') }} ">
-            {{ __('Update my password') }}
-         </a>
-      </div>
-   </div>
-{% endif %}
+{% block content %}
+    <div class="d-flex flex-column helpdesk-home-container">
+        <div class="search-banner">
+            <div class="container-narrow">
+                <h1 class="text-dark text-center">
+                    {{ __("How can we help you?") }}
+                </h1>
 
-<table class="central">
-   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
-</table>
+                <div class="input-icon search-bar-container">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        value=""
+                        class="form-control home-search"
+                        placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                    >
+                </div>
+            </div>
+        </div>
+        <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
+            <div class="container-xl">
+                {# Display password alerts #}
+                {% if password_alert|length %}
+                    <div class="alert alert-warning alert-dismissible bg-white" role="alert">
+                        <div class="d-flex mb-2">
+                            <div>
+                                <i class="ti ti-alert-triangle me-1"></i>
+                            </div>
+                            <div>
+                                {{ password_alert }}
+                            </div>
+                        </div>
 
-{% set optional_grid_item_keys = [
-   'survey_list', 'reminder_list', 'rss_feed', 'kb_popular', 'kb_recent', 'kb_lastupdate'
-] %}
-{% set grid_items = [
-   ticket_summary
-] %}
+                        <div class="btn-list">
+                            <a class="btn btn-outline-warning" href="{{ path('/front/updatepassword.php') }} ">
+                                {{ __('Update my password') }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
 
-{% for optional_grid_item_key in optional_grid_item_keys %}
-   {% set item_content = _context[optional_grid_item_key] %}
-   {% if item_content is not empty %}
-      {% set grid_items = grid_items|merge([
-         '<div class="card">' ~ item_content ~ '</div>'
-      ]) %}
-   {% endif %}
-{% endfor %}
+                {# TODO: deprecate this hook and make a new one that doesn't expect a table as a container #}
+                <table class="central">
+                    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
+                </table>
 
-{{ include('components/masonry_grid.html.twig', {
-   'grid_items': grid_items,
-}, with_context = false) }}
+                <div class="row">
+                    {% for tile in tiles %}
+                        <div class="col-12 col-sm-6 col-md-4 d-flex">
+                            <a
+                                class="card mx-1 my-2 flex-grow-1"
+                                href="{{ path(tile.getLink()) }}"
+                            >
+                                <section class="card-body">
+                                    <div class="d-flex">
+                                        {{ render_illustration(tile.getIllustration(), 100) }}
+                                        <div class="ms-4">
+                                            <h2 class="card-title mb-2">
+                                                {{ tile.getTitle() }}
+                                            </h2>
+                                            <div class="text-secondary">
+                                                {{ tile.getDescription() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <div class="tickets-banner">
+            <div class="container-xl">
+                {{ tabs.showTabsContent() }}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
