@@ -39,6 +39,7 @@ use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
 use Glpi\Controller\DropdownController;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\GenericListController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -46,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacyDropdownRouteListener implements EventSubscriberInterface
+final readonly class LegacyDbObjectRouteListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -70,15 +71,20 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
             return;
         }
 
-        if ($class = $this->findDropdownClass($request)) {
+        if ($class = $this->findClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
-            $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
-            $request->attributes->set('class', $class);
+            if (\is_a($class, \CommonDropdown::class)) {
+                $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
+                $request->attributes->set('class', $class);
+            } else {
+                $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
+                $request->attributes->set('type', $class);
+            }
         }
     }
 
-    public function findDropdownClass(Request $request): ?string
+    public function findClass(Request $request): ?string
     {
         $path_info = $request->getPathInfo();
 
@@ -146,7 +152,7 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         }
 
         if (!$matches['basename']) {
-            throw new \RuntimeException('Could not extract basename from URL to match legacy dropdowns.');
+            throw new \RuntimeException('Could not extract basename from URL to match legacy DB objects.');
         }
 
         $basename = $matches['basename'];
@@ -156,7 +162,7 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         if (
             $class
             && \class_exists($class)
-            && \is_subclass_of($class, \CommonDropdown::class)
+            && \is_subclass_of($class, \CommonDBTM::class)
         ) {
             return $class;
         }
@@ -166,7 +172,7 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         if (
             $namespacedClass
             && \class_exists($namespacedClass)
-            && \is_subclass_of($namespacedClass, \CommonDropdown::class)
+            && \is_subclass_of($namespacedClass, \CommonDBTM::class)
         ) {
             return $namespacedClass;
         }
@@ -285,13 +291,13 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
 
         // PluginMyPluginDropdown -> /plugins/myplugin/front/dropdown.php
         $legacy_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($basename)));
-        if (is_a($legacy_classname, \CommonDropdown::class, true)) {
+        if (is_a($legacy_classname, \CommonDBTM::class, true)) {
             return $legacy_classname;
         }
 
         // GlpiPlugin\MyPlugin\Dropdown -> /plugins/myplugin/front/dropdown.php
         $namespaced_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('GlpiPlugin\%s\%s', ucfirst($plugin), ucfirst($basename)));
-        if (is_a($namespaced_classname, \CommonDropdown::class, true)) {
+        if (is_a($namespaced_classname, \CommonDBTM::class, true)) {
             return $namespaced_classname;
         }
 
