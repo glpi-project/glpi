@@ -916,7 +916,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
                 ]
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isEntityAssign() && $this->getTable() != 'glpi_entities') {
                 $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
