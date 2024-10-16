@@ -94,12 +94,14 @@ describe("Session", () => {
         cy.login();
         cy.visit('/front/computer.form.php');
         cy.findByRole('link', {'name': 'User menu'}).should('contain.text', 'Super-Admin');
+        cy.findByRole('listitem', {'name': 'Administration'}).should('exist');
 
         // Change profile
         cy.findByRole('link', {'name': 'User menu'}).click();
         cy.findByRole('button', {'name': 'Change profile'}).click();
-        cy.findByRole('link', {'name': 'Observer'}).click();
-        cy.findByRole('link', {'name': 'User menu'}).should('contain.text', 'Observer');
+        cy.findByRole('link', {'name': 'Self-Service'}).click();
+        cy.findByRole('link', {'name': 'User menu'}).should('contain.text', 'Self-Service');
+        cy.findByRole('listitem', {'name': 'Administration'}).should('not.exist');
     });
 
     // Note: testing that the current entity can be changed is done in the
