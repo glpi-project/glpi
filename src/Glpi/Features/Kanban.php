@@ -35,7 +35,7 @@
 
 namespace Glpi\Features;
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Plugin\Hooks;
 
 /**
@@ -178,7 +178,7 @@ trait Kanban
             }
         }
         if (false === $tab_id || is_null($tab_id)) {
-            Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
+            throw new BadRequestHttpException("Itemtype does not have a Kanban tab!");
         }
         return static::getFormURLWithID($items_id, $full) . "&forcetab={$tab_id}";
     }

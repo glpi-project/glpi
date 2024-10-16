@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -45,7 +45,7 @@ Session::checkLoginUser();
 $obj = $obj ?? null;
 $item_obj = $item_obj ?? null;
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException('Bad request');
 }
 
 switch ($_GET['action']) {

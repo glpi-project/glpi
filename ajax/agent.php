@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
@@ -45,8 +46,11 @@ Session::checkLoginUser();
 
 if (isset($_POST['action']) && isset($_POST['id'])) {
     $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
-        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
+    if (!$agent->getFromDB($_POST['id'])) {
+        throw new NotFoundHttpException('Unable to load agent #' . $_POST['id']);
+    }
+    if (!$agent::canView()) {
+        throw new AccessDeniedHttpException('Unable to load agent #' . $_POST['id']);
     }
     $answer = [];
 

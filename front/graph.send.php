@@ -35,7 +35,7 @@
 
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\StatCsvExport;
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\StatData;
 
 // Check rights
@@ -46,7 +46,7 @@ $statdata_itemtype = $_GET['statdata_itemtype'] ?? null;
 
 // Validate stats itemtype
 if (!is_a($statdata_itemtype, StatData::class, true)) {
-    Response::sendError(400, "Invalid stats itemtype", Response::CONTENT_TYPE_TEXT_PLAIN);
+    throw new BadRequestHttpException("Invalid stats itemtype");
 }
 
 // Get data and output csv

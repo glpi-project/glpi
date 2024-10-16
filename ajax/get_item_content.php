@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 
 /*
@@ -48,12 +49,12 @@ $items_id = $_GET['items_id'] ?? null;
 
 // Validate mandatory parameters
 if (is_null($itemtype) || is_null($items_id)) {
-    Response::sendError(400, "Missing required parameters");
+    throw new BadRequestHttpException("Missing required parameters");
 }
 
 // Validate itemtype (only CommonITILObject allowed for now)
 if (!is_a($itemtype, CommonITILObject::class, true)) {
-    Response::sendError(400, "Invalid itemtype");
+    throw new BadRequestHttpException("Invalid itemtype");
 }
 $item = new $itemtype();
 
@@ -63,7 +64,7 @@ if (
     || !$item->canViewItem()
     || !$item->isField('content')
 ) {
-    Response::sendError(404, "Item not found");
+    throw new NotFoundHttpException(404, "Item not found");
 }
 
 // Display content
