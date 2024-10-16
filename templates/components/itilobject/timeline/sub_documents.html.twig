@@ -60,14 +60,50 @@
                         <input type="hidden" name="documents_id" value="{{ document['item']['id'] }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                         <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
-                                title="{{ _x('button', 'Delete permanently') }}"
-                                data-bs-toggle="tooltip" data-bs-placement="top">
+                              title="{{ _x('button', 'Delete permanently') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top">
                            <i class="ti ti-trash"></i>
                         </button>
                      </form>
                   {% endif %}
+                  <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path(document['item']['id']) }}" id="blacklist_form">
+                     <input type="hidden" name="id" value="{{ document['item']['id'] }}">
+                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                     <input type="hidden" name="is_blacklisted" id="blacklist_input_{{ document['item']['id'] }}" value="{{ document['item']['is_blacklisted'] }}">
+                     <button type="submit" name="update" id="blaclist_submit_{{ document['item']['id'] }}" style="display: none;"></button>
+                     <div
+                        class="btn btn-sm btn-ghost-secondary"
+                        title="{{ _x('button', 'Blacklisted for import') }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        name="blacklisted_document"
+                        id="blacklist_icon_{{ document['item']['id'] }}"
+                     >
+                        <i
+                           class="ti ti-ban {{ document['item']['is_blacklisted'] == 0 ? '' : 'text-danger' }}"
+                        ></i>
+                     </div>
+                  </form>
                </div>
             </div>
+
+            <script>
+               document.querySelectorAll("[id^='blacklist_icon_']").forEach(blacklist_icon => {
+
+                  const docID = blacklist_icon.id.split('_').pop();
+                  const blacklist_input = document.getElementById(`blacklist_input_${docID}`);
+                  const blaclist_submit = document.getElementById(`blaclist_submit_${docID}`);
+
+                  blacklist_icon.addEventListener('click', () => {
+                     if (blacklist_input.value === '1') {
+                        blacklist_input.value = 0;
+                     } else {
+                        blacklist_input.value = 1;
+                     }
+                     blaclist_submit.click();
+                  });
+               })
+            </script>
          {% endset %}
 
          {% if document['_is_image'] %}
