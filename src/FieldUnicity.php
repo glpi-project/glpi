@@ -34,11 +34,13 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\AdvancedSearchInterface;
+use Glpi\Search\SearchOption;
 
 /**
  * FieldUnicity Class
  **/
-class FieldUnicity extends CommonDropdown
+class FieldUnicity extends CommonDropdown implements AdvancedSearchInterface
 {
    // From CommonDBTM
     public $dohistory          = true;
@@ -588,5 +590,22 @@ class FieldUnicity extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-fingerprint";
+    }
+
+    public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
+    {
+        return [
+            'glpi_fieldunicities.itemtype AS ITEMTYPE'
+        ];
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        return null;
     }
 }

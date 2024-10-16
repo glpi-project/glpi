@@ -41,9 +41,12 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\AdvancedSearchInterface;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchOption;
 use Sabre\VObject;
 
-class User extends CommonDBTM
+class User extends CommonDBTM implements AdvancedSearchInterface
 {
     use Glpi\Features\Clonable {
         Glpi\Features\Clonable::computeCloneName as baseComputeCloneName;
@@ -7324,14 +7327,159 @@ JAVASCRIPT;
             return false;
         }
 
-        $all_pinned     = importArrayFromDB($this->fields['savedsearches_pinned']);
+        $all_pinned = importArrayFromDB($this->fields['savedsearches_pinned']);
         $already_pinned = $all_pinned[$itemtype] ?? 0;
 
         $all_pinned[$itemtype] = $already_pinned ? 0 : 1;
 
         return $this->update([
-            'id'                   => $this->fields['id'],
+            'id' => $this->fields['id'],
             'savedsearches_pinned' => exportArrayToDB($all_pinned),
         ]);
+    }
+
+    public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'name') {
+            if ($val === 'myself') {
+                switch ($searchtype) {
+                    case 'equals':
+                        return [
+                            "$table.id" => $_SESSION['glpiID']
+                        ];
+
+                    case 'notequals':
+                        return [
+                            "$table.id" => ['<>', $_SESSION['glpiID']]
+                        ];
+                }
+            }
+
+            if ($itemtype === self::class) {
+                $criteria = ['OR' => []];
+                if (in_array($searchtype, ['equals', 'notequals'])) {
+                    $fn_append_with_search($criteria['OR'], "$table.id");
+
+                    if ($searchtype === 'notequals') {
+                        $nott = !$nott;
+                    }
+
+                    // Add NULL if $val = 0 and not negative search
+                    // Or negative search on real value
+                    if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
+                        $criteria['OR'][] = ["$table.id" => null];
+                    }
+
+                    return $criteria;
+                }
+                return [new QueryExpression(SQLProvider::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+            }
+
+            if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
+                $name1 = 'firstname';
+                $name2 = 'realname';
+            } else {
+                $name1 = 'realname';
+                $name2 = 'firstname';
+            }
+
+            if (in_array($searchtype, ['equals', 'notequals'])) {
+                $criteria = [
+                    'OR' => []
+                ];
+                $fn_append_with_search($criteria['OR'], "$table.id");
+                if ($val == 0) {
+                    if ($searchtype === 'notequals') {
+                        $criteria['OR'][] = [
+                            'NOT' => ["$table.id" => null]
+                        ];
+                    } else {
+                        $criteria['OR'][] = [
+                            "$table.id" => null
+                        ];
+                    }
+                }
+                return $criteria;
+            } else if ($searchtype === 'empty') {
+                $criteria = [];
+                $fn_append_with_search($criteria, "$table.id");
+                return $criteria;
+            }
+            $toadd   = '';
+
+            $tmplink = 'OR';
+            if ($nott) {
+                $tmplink = 'AND';
+            }
+
+            if (is_a($itemtype, \CommonITILObject::class, true)) {
+                $itil_user_tables = ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'];
+                $has_join         = isset($opt["joinparams"]["beforejoin"]["table"], $opt["joinparams"]["beforejoin"]["joinparams"]);
+                if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
+                    $bj        = $opt["joinparams"]["beforejoin"];
+                    $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $opt->getTableMetaSuffix($itemtype, $meta);
+                    //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
+                    $toadd     = SQLProvider::makeTextCriteria(
+                        "`$linktable`.`alternative_email`",
+                        $val,
+                        $nott,
+                        $tmplink
+                    );
+                    // Remove $tmplink (may have spaces around it) from front of $toadd
+                    $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
+                    if ($val === '^$') {
+                        return [
+                            'OR' => [
+                                "$linktable.users_id" => null,
+                                "$linktable.alternative_email" => null
+                            ]
+                        ];
+                    }
+                }
+            }
+            $criteria = [
+                $tmplink => []
+            ];
+            $fn_append_with_search($criteria[$tmplink], "$table.$name1");
+            $fn_append_with_search($criteria[$tmplink], "$table.$name2");
+            $fn_append_with_search($criteria[$tmplink], "$table.$field");
+            $fn_append_with_search(
+                $criteria[$tmplink],
+                QueryFunction::concat([
+                    "$table.$name1",
+                    new QueryExpression($DB::quoteValue(' ')),
+                    "$table.$name2"
+                ])
+            );
+            if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
+                $criteria = [
+                    $tmplink => [
+                        'OR' => [
+                            $criteria,
+                            "$table.$field" => null
+                        ],
+                        new QueryExpression($toadd)
+                    ]
+                ];
+            }
+            return $criteria;
+        }
+        return null;
     }
 }
