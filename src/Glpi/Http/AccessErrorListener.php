@@ -106,7 +106,8 @@ final class AccessErrorListener implements EventSubscriberInterface
                         'errors'    => $throwable->getAuthenticationErrors(),
                         'login_url' => $login_url,
                     ]
-                )
+                ),
+                400
             );
         }
 
