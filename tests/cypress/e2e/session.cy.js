@@ -75,9 +75,6 @@ describe("Session", () => {
     });
 
     it("redirect to requested page after login", () => {
-        // Must visit twice because glpi doens't support redirect on the first
-        // ever visit due to some cookies checks...
-        cy.visit('/front/ticket.form.php');
         cy.visit('/front/ticket.form.php', {
             failOnStatusCode: false
         });
