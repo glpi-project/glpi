@@ -45,8 +45,12 @@ use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
+use IPAddress;
+use NetworkPort;
+use NetworkPortInstantiation;
 use NetworkEquipment;
 use Printer;
+use Unmanaged;
 use RefusedEquipment;
 use RuleImportAsset;
 use RuleImportAssetCollection;
@@ -485,6 +489,58 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
+        // Check if MAC address is associated to a managed device from inventory.
+        if($this->item->getType() == Unmanaged::getType()) {
+            if (property_exists($val, 'mac')) {
+                $macs_with_items = NetworkPortInstantiation::getItemsByMac($val->mac);
+            
+                if (count($macs_with_items)) {
+                    foreach ($macs_with_items as $key => $tab) {
+                        if (
+                            isset($tab[0])
+                            && ($tab[0]->getEntityID() != $this->entities_id
+                            || $tab[0]->isDeleted()
+                            || $tab[0]->isTemplate())
+                        ) {
+                            unset($macs_with_items[$key]);
+                        }
+                    }
+                }
+            
+                $need_to_add = true;
+                if (count($macs_with_items)) {
+                    // Unmanaged devices netports are inventoried as 'NetworkPortAggregate' by default.
+                    foreach ($macs_with_items as $items) {
+                        for ($i=0; $i <= count($items); $i++) {
+                            $asset = $items[0];
+                            $item = $items[$i];
+                            
+                            // Manage converted object.
+                            $this->item = $asset;
+                            $this->itemtype = $val->type = $item->fields['itemtype'];
+                            // Keep current device name if new device name is an
+                            // IP address, except if current device name is an IP address.
+                            $new_device_name = new IPAddress($input['name']);
+                            $current_device_name = new IPAddress($asset->fields['name']);
+                            if (
+                                $new_device_name->is_valid()
+                                && !$current_device_name->is_valid()
+                            ) {
+                                $input['name'] = $val->name = $asset->fields['name'];
+                            }
+                            // Update the Unmanaged device only if it's the only one asset available.
+                            if ($asset->getType() != Unmanaged::getType()) {
+                                $need_to_add = false;
+                                break;
+                            }
+                        }
+                        
+                        if (!$need_to_add) break;
+                    }
+                }
+            }
+        }
+        
         $input['itemtype'] = $this->item->getType();
 
         if (property_exists($val, 'comment')) {
