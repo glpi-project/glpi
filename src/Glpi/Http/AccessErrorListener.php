@@ -107,7 +107,7 @@ final class AccessErrorListener implements EventSubscriberInterface
                         'login_url' => $login_url,
                     ]
                 ),
-                400
+                status: 400
             );
         }
 
