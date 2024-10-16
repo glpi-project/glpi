@@ -57,6 +57,9 @@ describe('Error page', () => {
                 cy.findByTestId('stack-trace').should('exist');
             });
         }
+
+        // eslint-disable-next-line
+        cy.wait(100); // The debug bar throw an error if we disable it immediately after loading a page...
         cy.disableDebugMode();
 
         // Check without debug mode (stack trace should NOT be displayed)
