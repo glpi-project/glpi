@@ -289,7 +289,7 @@ class Controller extends CommonGLPI
         $dest     = GLPI_TMP_DIR . '/' . mt_rand() . '.' . $filename;
 
         if (!$api->downloadArchive($url, $dest, $this->plugin_key, false)) {
-            $exception = new HttpException(502);
+            $exception = new HttpException(500);
             $exception->setMessageToDisplay(__('Unable to download plugin archive.'));
             throw $exception;
         }
