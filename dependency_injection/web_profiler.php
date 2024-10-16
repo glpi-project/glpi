@@ -42,7 +42,6 @@ return static function (ContainerConfigurator $container): void {
 
     $container->extension('web_profiler', [
         'toolbar' => true,
-        'intercept_redirects' => true,
     ]);
     $container->extension('framework', [
         'profiler' => ['only_exceptions' => false],
