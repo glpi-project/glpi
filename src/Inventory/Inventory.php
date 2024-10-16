@@ -257,7 +257,15 @@ class Inventory
         }
 
         $main_start = microtime(true); //bench
+        if (extension_loaded('sysvsem')) {
+            $key = ftok(GLPI_CACHE_DIR, 'a');
+            $semaphore = sem_get($key, 1);
+        }
         try {
+            if (extension_loaded('sysvsem') && sem_acquire($semaphore, 1) === false) {
+                throw new \LogicException('Another inventory is already running');
+            }
+
             if (!$DB->inTransaction()) {
                 $DB->beginTransaction();
             }
@@ -370,6 +378,9 @@ class Inventory
             $DB->rollback();
             throw $e;
         } finally {
+            if (extension_loaded('sysvsem')) {
+                @sem_release($semaphore);
+            }
             unset($_SESSION['glpiinventoryuserrunning']);
             $this->handleInventoryFile();
             if (isset($this->mainasset)) {
