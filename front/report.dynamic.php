@@ -112,7 +112,7 @@ if (isset($_GET["display_type"])) {
            // Plugin case
             if ($plug = isPluginItemType($itemtype)) {
                 if (Plugin::doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
-                    exit();
+                    return;
                 }
             }
             $params = Search::manageParams($itemtype, $_GET);

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,45 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+namespace Glpi\Exception;
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
-
-if (
-    !$CFG_GLPI['notifications_mailing']
-    || !countElementsInTable(
-        'glpi_notifications',
-        ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
-    )
-) {
-    Session::addMessageAfterRedirect(
-        __s('Sending password forget notification is not enabled.'),
-        true,
-        ERROR
-    );
-    TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
-        'messages_only' => true,
-    ]);
-    return;
-}
-
-$user = new User();
-
-// Manage lost password
-// REQUEST needed : GET on first access / POST on submit form
-if (isset($_REQUEST['password_forget_token'])) {
-    if (isset($_POST['password'])) {
-        $user->showUpdateForgottenPassword($_REQUEST);
-    } else {
-        User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
+class AuthenticationFailedException extends \Exception
+{
+    public function __construct(
+        string $message = '""',
+        int $code = null,
+        ?\Throwable $previous = null,
+        private array $authentication_errors = []
+    ) {
+        parent::__construct($message, $code, $previous);
     }
-} else {
-    if (isset($_POST['email'])) {
-        $user->showForgetPassword($_POST['email']);
-    } else {
-        User::showPasswordForgetRequestForm();
+
+    public function getAuthenticationErrors(): array
+    {
+        return $this->authentication_errors;
     }
 }

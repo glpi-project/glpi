@@ -141,11 +141,7 @@
                       }
                   );
               }).fail((response) => {
-                  const _data = response.responseJSON;
                   let _message = escapeMarkupText(__('An error occurred loading data :('));
-                  if (_data.message) {
-                      _message = _data.message;
-                  }
                   const fail_info = L.control();
                   fail_info.onAdd = function (map) {
                       this._div = L.DomUtil.create('div', 'fail_info');

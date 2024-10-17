@@ -38,7 +38,7 @@ use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 
@@ -1060,7 +1060,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            throw new SessionExpiredHttpException();
+            throw new SessionExpiredException();
         }
 
         $user_id    = self::getLoginUserID();

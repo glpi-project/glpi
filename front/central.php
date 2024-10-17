@@ -45,7 +45,7 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     Html::zeroSecurityIframedHeader($grid->getDashboard()->getTitle(), 'central', 'central');
     $grid->embed($_REQUEST);
     Html::popFooter();
-    exit;
+    return;
 }
 
 // Manage entity change

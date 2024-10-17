@@ -38,6 +38,7 @@ namespace Glpi\Marketplace;
 use CommonGLPI;
 use Config;
 use CronTask;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use NotificationEvent;
@@ -288,9 +289,9 @@ class Controller extends CommonGLPI
         $dest     = GLPI_TMP_DIR . '/' . mt_rand() . '.' . $filename;
 
         if (!$api->downloadArchive($url, $dest, $this->plugin_key, false)) {
-            http_response_code(500);
-            echo(__('Unable to download plugin archive.'));
-            return;
+            $exception = new HttpException(500);
+            $exception->setMessageToDisplay(__('Unable to download plugin archive.'));
+            throw $exception;
         }
 
         Toolbox::sendFile($dest, $filename);

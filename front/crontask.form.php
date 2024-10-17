@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * Form to edit Cron Task
  */
@@ -79,7 +81,7 @@ if (isset($_POST['execute'])) {
     Html::back();
 } else {
     if (!isset($_GET["id"]) || empty($_GET["id"])) {
-        exit();
+        throw new BadRequestHttpException();
     }
     $menus = ['config', 'crontask'];
     CronTask::displayFullPageForItem($_GET['id'], $menus);

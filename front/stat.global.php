@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Sglobal\StatDataAverageSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataTicketAverageTime;
@@ -67,7 +68,7 @@ if (
 Stat::title();
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
-    exit;
+    throw new BadRequestHttpException();
 }
 
 $stat = new Stat();
