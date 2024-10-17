@@ -70,7 +70,7 @@ final class ChangeProfileController extends AbstractController
         if (Session::getCurrentInterface() == "helpdesk") {
             $go_to_create_ticket = $_SESSION['glpiactiveprofile']['create_ticket_on_login'];
             $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Home";
-            $redirect = $CFG_GLPI['root_doc'] . $route;
+            $redirect = $request->getBasePath() . $route;
         } else {
             $_SESSION['_redirected_from_profile_selector'] = true;
             $redirect = Html::getBackUrl();
