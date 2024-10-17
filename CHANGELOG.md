@@ -245,6 +245,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Http\Response::sendError()`. Throw a `Glpi\Exception\Http\*HttpException` exception instead.
 - `Glpi\Toolbox\Sanitizer::dbEscape()`
 - `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
 - `Glpi\Toolbox\Sanitizer::dbUnescape()`

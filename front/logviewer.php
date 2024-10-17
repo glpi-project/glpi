@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
 
@@ -49,7 +49,7 @@ if ($filepath === null) {
 }
 
 if (!file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
-    Response::sendError(404, 'Not found', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new NotFoundHttpException('Not found');
 }
 
 if (($_GET['action'] ?? '') === 'download') {

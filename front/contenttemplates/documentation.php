@@ -34,13 +34,13 @@
  */
 
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Toolbox\MarkdownRenderer;
 
 // Check mandatory parameter
 $preset = $_GET['preset'] ?? null;
 if (is_null($preset)) {
-    Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException("Missing mandatory 'preset' parameter");
 }
 
 Html::includeHeader(__("Template variables documentation"));

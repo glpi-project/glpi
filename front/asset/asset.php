@@ -34,7 +34,7 @@
  */
 
 use Glpi\Asset\AssetDefinition;
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Search\SearchEngine;
 
 $definition = new AssetDefinition();
@@ -43,7 +43,7 @@ $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystem
     : null;
 
 if ($classname === null || !class_exists($classname)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException('Bad request');
 }
 
 Session::checkRightsOr($classname::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);

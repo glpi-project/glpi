@@ -37,7 +37,7 @@
  * @since 9.1
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
@@ -50,7 +50,7 @@ Session::checkLoginUser();
 // Mandatory parameter: validationtemplates_id
 $validationtemplates_id = $_POST['validationtemplates_id'] ?? null;
 if ($validationtemplates_id === null) {
-    Response::sendError(400, "Missing or invalid parameter: 'validationtemplates_id'");
+    throw new BadRequestHttpException("Missing or invalid parameter: 'validationtemplates_id'");
 } else if ($validationtemplates_id == 0) {
     // Reset form
     echo json_encode([
@@ -62,25 +62,25 @@ if ($validationtemplates_id === null) {
 // Mandatory parameter: items_id
 $parents_id = $_POST['items_id'] ?? 0;
 if (!$parents_id) {
-    Response::sendError(400, "Missing or invalid parameter: 'items_id'");
+    throw new BadRequestHttpException("Missing or invalid parameter: 'items_id'");
 }
 
 // Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
 if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
-    Response::sendError(400, "Missing or invalid parameter: 'itemtype'");
+    throw new BadRequestHttpException("Missing or invalid parameter: 'itemtype'");
 }
 
 // Load validation template
 $template = new ITILValidationTemplate();
 if (!$template->getFromDB($validationtemplates_id)) {
-    Response::sendError(400, "Unable to load template: $validationtemplates_id");
+    throw new BadRequestHttpException("Unable to load template: $validationtemplates_id");
 }
 
 // Load parent item
 $parent = new $parents_itemtype();
 if (!$parent->getFromDB($parents_id)) {
-    Response::sendError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+    throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
 }
 
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());

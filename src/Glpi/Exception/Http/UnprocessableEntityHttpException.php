@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,23 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
+namespace Glpi\Exception\Http;
 
-$impact_item = new ImpactItem();
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException as BaseException;
 
-if (isset($_POST["update"])) {
-    $id = $_POST["id"] ?? 0;
-
-   // Can't update, id is missing
-    if ($id === 0) {
-        throw new BadRequestHttpException("Can't update the target impact item, id is missing");
-    }
-
-   // Load item and check rights
-    $impact_item->getFromDB($id);
-    Session::checkRight($impact_item->fields['itemtype']::$rightname, UPDATE);
-
-   // Update item and back
-    $impact_item->update($_POST);
-    Html::redirect(Html::getBackUrl() . "#list");
+class UnprocessableEntityHttpException extends BaseException implements HttpExceptionInterface
+{
+    use HttpExceptionTrait;
 }
