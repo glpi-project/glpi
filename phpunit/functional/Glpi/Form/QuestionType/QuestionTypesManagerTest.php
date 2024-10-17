@@ -181,6 +181,7 @@ final class QuestionTypesManagerTest extends DbTestCase
             QuestionTypeCategory::ITEM,
             [
                 new \Glpi\Form\QuestionType\QuestionTypeItem(),
+                new \Glpi\Form\QuestionType\QuestionTypeUserDevice(),
                 new \Glpi\Form\QuestionType\QuestionTypeItemDropdown(),
             ]
         ];
