@@ -380,7 +380,6 @@ class DBmysql
         $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
-        $this->checkForForbiddenTableOptions($query);
 
         $res = $this->dbh->query($query);
         if (!$res) {
@@ -2129,6 +2128,11 @@ class DBmysql
             );
         }
 
+        // Usage of MyISAM
+        if (preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
+            trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
+        }
+
         // Usage of datetime
         if (!$this->allow_datetime && preg_match('/ datetime /i', $query)) {
             trigger_error('Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.', E_USER_WARNING);
@@ -2150,16 +2154,6 @@ class DBmysql
                     $field_matches['field']
                 ),
                 E_USER_WARNING
-            );
-        }
-    }
-
-    private function checkForForbiddenTableOptions(string $query): void
-    {
-        // Usage of MyISAM
-        if (preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
-            throw new InvalidArgumentException(
-                'Usage of "MyISAM" engine is forbidden, please use "InnoDB" engine.'
             );
         }
     }

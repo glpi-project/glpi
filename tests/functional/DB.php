@@ -494,6 +494,30 @@ SQL,
             'warning' => null
         ];
 
+        // Warnings related to MyISAM usage
+        $myisam_declarations = [
+            'engine=MyISAM', // without ending `;`
+            'engine=MyISAM;', // with ending `;`
+            ' Engine =  myisam ', // mixed case
+            '   ENGINE  =    MYISAM  ', // uppercase with lots of spaces
+            " ENGINE = 'MyISAM'", // surrounded by quotes
+            "ROW_FORMAT=DYNAMIC ENGINE=MyISAM", // preceded by another option
+            "ENGINE=MyISAM ROW_FORMAT=DYNAMIC" // followed by another option
+        ];
+
+        foreach ($myisam_declarations as $table_options) {
+            yield [
+                'sql' => <<<SQL
+                    CREATE TABLE `%s` (
+                        `nameid` varchar(100) NOT NULL,
+                        UNIQUE KEY (`nameid`)
+                    ){$table_options}
+SQL,
+                'db_properties' => [],
+                'warning' => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.'
+            ];
+        }
+
         // Warnings related to datetime fields
         yield [
             'sql' => <<<SQL
