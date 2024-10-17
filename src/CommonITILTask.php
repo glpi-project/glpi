@@ -616,6 +616,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 if (!$this->input['_job']->getFromDB($this->fields[$this->input['_job']->getForeignKeyField()])) {
                     return false;
                 }
+
                 $this->updateParentStatus($this->input['_job'], $this->input);
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -2102,5 +2103,25 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'end'        => 'NULL',
             'actiontime' => 0,
         ]);
+    }
+
+    /**
+     * Get the number of planned tasks for the parent item of this task
+     *
+     * @return int
+     */
+    public function countPlannedTasks(): int
+    {
+        $parent_item = getItemForItemtype($this->getItilObjectItemType());
+        if (!$parent_item) {
+            return 0;
+        }
+        $parent_fkey = $parent_item->getForeignKeyField();
+        $planned = $this->find([
+            $parent_fkey => $this->fields[$parent_fkey],
+            'state' => \Planning::TODO,
+            'NOT' => ['begin' => null],
+        ]);
+        return count($planned);
     }
 }

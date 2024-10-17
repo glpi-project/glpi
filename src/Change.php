@@ -587,6 +587,80 @@ class Change extends CommonITILObject
 
         $tab = array_merge($tab, ChangeCost::rawSearchOptionsToAdd());
 
+        $tab[] = [
+            'id'                 => 'ticket',
+            'name'               => Ticket::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '164',
+            'table'              => 'glpi_changes_tickets',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of tickets'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        return $tab;
+    }
+
+    public static function rawSearchOptionsToAdd(string $itemtype)
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        $tab = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $tab[] = [
+                'id'            => 141,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of changes'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+
+        if ($itemtype == "Ticket") {
+            $tab[] = [
+                'id'                 => 'change',
+                'name'               => __('Changes')
+            ];
+
+            $tab[] = [
+                'id'                 => '210',
+                'table'              => 'glpi_changes_tickets',
+                'field'              => 'id',
+                'name'               => _x('quantity', 'Number of changes'),
+                'forcegroupby'       => true,
+                'usehaving'          => true,
+                'datatype'           => 'count',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'child'
+                ]
+            ];
+        }
+
         return $tab;
     }
 
@@ -859,7 +933,7 @@ class Change extends CommonITILObject
             'name'                       => '',
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
-            'date'                      => 'NULL',
+            'date'                       => 'NULL',
             '_add_validation'            => 0,
             '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
@@ -869,7 +943,11 @@ class Change extends CommonITILObject
             'backoutplancontent'         => '',
             'checklistcontent'           => '',
             'items_id'                   => 0,
-            '_actors'                     => [],
+            '_actors'                    => [],
+            'status'                     => self::INCOMING,
+            'time_to_resolve'            => 'NULL',
+            'itemtype'                   => '',
+            'locations_id'               => 0,
         ];
     }
 
@@ -1514,37 +1592,5 @@ class Change extends CommonITILObject
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='6' ><i>" . __s('No change found.') . "</i></td></tr>";
         }
-    }
-
-    public static function rawSearchOptionsToAdd(string $itemtype)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $tab = [];
-
-        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
-            $tab[] = [
-                'id'            => 141,
-                'table'         => self::getTable(),
-                'field'         => "id",
-                'datatype'      => "count",
-                'name'          => _x('quantity', 'Number of changes'),
-                'forcegroupby'  => true,
-                'usehaving'     => true,
-                'massiveaction' => false,
-                'joinparams'    => [
-                    'beforejoin' => [
-                        'table' => self::getItemLinkClass()::getTable(),
-                        'joinparams' => [
-                            'jointype' => 'itemtype_item'
-                        ]
-                    ],
-                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
-                ],
-            ];
-        }
-
-        return $tab;
     }
 }

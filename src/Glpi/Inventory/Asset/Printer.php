@@ -70,6 +70,10 @@ class Printer extends NetworkEquipment
 
     public function prepare(): array
     {
+        if ($this->item->getType() != GPrinter::getType() && $this->conf->import_printer == 0) {
+            return [];
+        }
+
         parent::prepare();
 
         if (!property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {

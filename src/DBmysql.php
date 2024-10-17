@@ -408,6 +408,7 @@ class DBmysql
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->affectedRows();
 
+        // Ensure that we collect warning after affected rows
         $this->last_query_warnings = $this->fetchQueryWarnings();
 
         $warnings_string = implode(

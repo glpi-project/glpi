@@ -1400,6 +1400,12 @@ class Document extends CommonDBTM
             }
         }
 
+        if (isset($p['value']) && ($p['value'] > 0)) {
+            $document = new Document();
+            $document->getFromDB($p['value']);
+            $p['rubdoc'] = $document->fields['documentcategories_id'];
+        }
+
         $subwhere = [
             'glpi_documents.is_deleted'   => 0,
         ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
@@ -1434,7 +1440,8 @@ class Document extends CommonDBTM
         $out  = Dropdown::showFromArray('_rubdoc', $values, ['width'               => '30%',
             'rand'                => $rand,
             'display'             => false,
-            'display_emptychoice' => true
+            'display_emptychoice' => true,
+            'value'               => $p['rubdoc'] ?? 0,
         ]);
         $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
@@ -1455,7 +1462,8 @@ class Document extends CommonDBTM
         $out .= "<span id='show_" . $p['name'] . "$rand'>";
         $out .= "</span>\n";
 
-        $params['rubdoc'] = 0;
+        $params['rubdoc'] = $p['rubdoc'] ?? 0;
+        $params['value'] = $p['value'] ?? 0;
         $out .= Ajax::updateItem(
             "show_" . $p['name'] . $rand,
             $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",

@@ -101,6 +101,7 @@ class DriveTest extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
         $asset->setExtraData((array)$json->content);
+        $this->assertTrue($asset->checkConf(new \Glpi\Inventory\Conf()));
         $result = $asset->prepare();
 
         if (!$asset->isDrive($json->content->storages[0])) {
@@ -138,6 +139,7 @@ class DriveTest extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
         $asset->setExtraData((array)$json->content);
+        $this->assertTrue($asset->checkConf(new \Glpi\Inventory\Conf()));
         $result = $asset->prepare();
         //is a harddrive
         $this->assertIsArray($result);

@@ -3,7 +3,7 @@ includes:
 
 parameters:
     parallel:
-        maximumNumberOfProcesses: 2
+        maximumNumberOfProcesses: 4
     level: 4
     bootstrapFiles:
         - stubs/glpi_constants.php

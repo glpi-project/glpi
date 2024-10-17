@@ -304,7 +304,7 @@ class CommonITILTask extends DbTestCase
             yield 'ADD_AS_GROUP' => [
                 'task_class'  => $test_case['task_class'],
                 'actor_field' => '_groups_id_requester',
-                'right'       => \CommonITILTask::ADD_AS_GROUP,
+                'right'       => \CommonITILTask::ADD_AS_GROUP + \CommonITILTask::ADDMY,
             ];
             yield 'ADD_AS_TECHNICIAN' => [
                 'task_class'  => $test_case['task_class'],

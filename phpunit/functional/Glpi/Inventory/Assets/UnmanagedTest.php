@@ -690,8 +690,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         $this->assertSame($inv_states_id, $computer->fields['states_id']);
 
         //run discovery
-        $xml_source = '
-        <?xml version="1.0" encoding="UTF-8" ?>
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
 <REQUEST>
   <CONTENT>
     <DEVICE>

@@ -989,7 +989,7 @@ class Plugin extends CommonDBTM
 
                     $this->resetHookableCacheEntries($this->fields['directory']);
 
-                    self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
+                    self::doHook(Hooks::POST_PLUGIN_INSTALL, $this->fields['directory']);
 
                     Event::log(
                         '',

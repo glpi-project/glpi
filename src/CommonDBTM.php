@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\CacheableListInterface;
+use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -4063,6 +4064,13 @@ class CommonDBTM extends CommonGLPI
             if ($ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
                 $excluded[] = 'Infocom:activate';
             }
+        }
+
+        if (
+            Toolbox::hasTrait(static::class, Clonable::class)
+            && $this->isTemplate()
+        ) {
+            $excluded[] = '*:clone';
         }
 
         return $excluded;
