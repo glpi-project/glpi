@@ -486,6 +486,8 @@ class Group extends CommonTreeDropdown
             'datatype'           => 'string'
         ];
 
+        $tab = array_merge($tab, Group_User::rawSearchOptionsToAdd());
+
         return $tab;
     }
 
