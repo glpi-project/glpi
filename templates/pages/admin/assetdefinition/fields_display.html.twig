@@ -1,0 +1,296 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set all_fields = all_fields ?? {} %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+{% set rand = rand|default(random()) %}
+
+{% block form_fields %}
+    <template id="sortable-field-template">
+        <div class="sortable-field d-flex align-items-center p-1 col-12 col-sm-6">
+            <input type="hidden" name="fields_display[]" value="" />
+            <slot name="field_options"></slot>
+            <div class="form-field row flex-grow-1">
+                <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
+                    <slot name="field_label"></slot>
+                    <i class="ti ti-grip-vertical sort-handle"></i>
+                </label>
+                <div class="col-xxl-7 field-container btn-group shadow-none">
+                    <slot name="field_preview">
+                        <input type="text" disabled class="form-control" />
+                    </slot>
+                    <button type="button" class="btn btn-ghost-secondary btn-sm edit-field" title="{{ __("Edit") }}">
+                        <i class="ti ti-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-ghost-danger btn-sm hide-field" title="{{ __("Hide") }}">
+                        <i class="ti ti-eye-off"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+    <input type="hidden" name="_update_fields_display" value="1" />
+
+    <div class="row mt-3">
+        <div class="col-12">
+            {% set btns %}
+                <button type="button" class="btn btn-outline-secondary ms-3" id="add-field">
+                    {{ __("Add") }}
+                </button>
+                {{ include('components/form/viewsubitem.html.twig', custom_field_form_params|merge({
+                    add_new_btn_class: 'btn-outline-secondary ms-2',
+                    add_new_inline: true,
+                    rand: rand,
+                }), with_context = false) }}
+            {% endset %}
+            <script>
+                function formatAllFields(field) {
+                    if ($(`.sortable-field[data-key="${field.id}"]`).length) {
+                        return null
+                    }
+                    $(field.element).attr('data-customfield-id', field.customfields_id);
+                    return $(`<span data-customfield-id="${field.customfields_id}">${field.text}</span>`);
+                }
+            </script>
+            {% set get_fields_url = path('ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=' ~ item.getID()) %}
+            {{ fields.dropdownAjaxField(get_fields_url, 'new_field', '', _n('Field', 'Fields', 1), {
+                rand: rand,
+                templateSelection: 'formatAllFields',
+                templateResult: 'formatAllFields',
+                add_field_html: btns,
+                inline_add_field_html: true,
+                full_width: true,
+                flex_class: 'd-flex'
+            }) }}
+        </div>
+    </div>
+    <div id="sortable-fields-container" class="card-body d-flex flex-wrap">
+        <div class="col-12 col-xxl-12 flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                <div class="row flex-row align-items-start flex-grow-1">
+                    <div class="user-select-none row flex-row" id="sortable-fields"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .sortable-field .btn-group .select2-container {
+            flex-basis: auto;
+            width: 100% !important;
+        }
+    </style>
+    <script>
+        $(() => {
+            const initial_all_fields = {{ all_fields|json_encode()|raw }};
+            const fields_display = {{ fields_display|default({})|json_encode()|raw }};
+
+            const append_field = (key) => {
+                $('select[name="new_field"]').val(key).trigger('change');
+                let selected_field = initial_all_fields[key];
+                if (selected_field === undefined) {
+                    const opt = $(`select[name="new_field"] option[value="${key}"]`);
+                    if (opt.length > 0) {
+                        selected_field = {
+                            text: opt.text(),
+                            customfields_id: opt.attr('data-customfield-id') ?? -1,
+                        };
+                    } else {
+                        return;
+                    }
+                }
+
+                const is_custom_field = key.startsWith('custom_');
+                const template = document.getElementById('sortable-field-template');
+                const clone = template.content.cloneNode(true);
+                clone.querySelector('.sortable-field').setAttribute('data-customfield-id', selected_field.customfields_id ?? -1);
+                clone.querySelector('.sortable-field').setAttribute('data-key', key);
+                const fieldLabel = clone.querySelector('slot[name="field_label"]');
+                fieldLabel.textContent = selected_field.text ?? selected_field;
+                const input = clone.querySelector('input[name="fields_display[]"]');
+                input.value = key;
+
+                const existing_field = $(`.sortable-field[data-key=${key}]`);
+                // Save a copy of the current field_options if they exist for this field
+                const field_option_inputs = existing_field.find(`slot[name="field_options"]`).html();
+                // Get the field option values to use as overrides when getting the preview
+                const field_options = {};
+                if (field_option_inputs) {
+                    $(`<div>${field_option_inputs}</div>`).find('input').each((i, el) => {
+                        const name = el.name.replace(`field_options[${key}]`, 'field_options');
+                        field_options[name] = el.value;
+                    });
+                }
+
+                // if the field is already added, just replace it with the new one instead of appending
+                if (existing_field.length) {
+                    existing_field.replaceWith(clone);
+                } else {
+                    document.getElementById('sortable-fields').appendChild(clone);
+                }
+
+                const preview_params = new URLSearchParams({
+                    assetdefinitions_id: '{{ item.getID() }}',
+                    customfields_id: selected_field.customfields_id ?? -1,
+                    key: key,
+                    label: fieldLabel.textContent,
+                    type: selected_field.type ?? '',
+                    ...field_options,
+                });
+                $.ajax({
+                    method: 'GET',
+                    url: `{{ path('ajax/asset/assetdefinition.php?action=get_field_placeholder') }}&${preview_params}`,
+                }).then((data) => {
+                    const placeholder_el = $(`<div>${data}</div>`);
+                    const field = placeholder_el.find('.field-container').html();
+                    const label_classes = `${placeholder_el.find('label').attr('class')} cursor-grab`;
+                    const field_classes = `${placeholder_el.find('.field-container').attr('class')} btn-group shadow-none`;
+                    const wrapper = placeholder_el.find('.form-field');
+                    const wrapper_classes = `${wrapper.attr('class')} flex-grow-1`;
+                    const sortable_classes = wrapper_classes.split(' ').filter((cls) => cls.startsWith('col-')).join(' ');
+
+                    const sortable_field = $(`.sortable-field[data-key=${key}]`);
+                    sortable_field.find(`slot[name="field_preview"]`).html(field);
+                    sortable_field.find('label').attr('class', label_classes);
+                    sortable_field.find('.field-container').attr('class', field_classes);
+                    sortable_field.find('.form-field').attr('class', wrapper_classes);
+                    sortable_field.removeClass('col-12 col-sm-6');
+                    sortable_field.attr('class', `${sortable_field.attr('class')} ${sortable_classes}`);
+
+                    // If the returned label has a .required span, it needs added to the label in the preview
+                    if (placeholder_el.find('label span.required').length) {
+                        sortable_field.find('label slot').after('<span class="required">*</span>');
+                    }
+                    // If the returned field is readonly, we need to add an icon to the label to indicate it since all preview fields are disabled
+                    if (placeholder_el.find('input, textarea, select').attr('readonly')) {
+                        sortable_field.find('label slot').after(`<i class="ti ti-pencil-off ms-2" title="${__('Readonly')}"></i>`);
+                    }
+
+                    // Add back the field options if they exist
+                    if (field_option_inputs) {
+                        sortable_field.find('slot[name="field_options"]').html(field_option_inputs);
+                    }
+                });
+            };
+
+            const remove_field = (key) => {
+                // remove the field from sortable list
+                $(`input[name="fields_display[]"][value="${key}"]`).closest('.sortable-field').remove();
+            };
+
+            //for each field in fields_display, add it to the list using the template and slot
+            fields_display.forEach(field => {
+                append_field(field.key);
+            });
+
+            // init sortable lib on fields
+            const sortable_container = sortable('#sortable-fields', {
+                items: '.sortable-field',
+                forcePlaceholderSize: false,
+            });
+            $(sortable_container).on('dragenter', () => {
+                const sort_el = $('.sortable-field.sortable-dragging')
+                $(sortable_container).find('.sortable-placeholder').attr('class', `sortable-placeholder ${sort_el.attr('class')}`);
+            });
+
+            // add field action
+            $('#add-field').on('click', () => {
+                //get select2 value
+                const field_key = $('#dropdown_new_field{{ rand }}').val();
+                if (field_key && field_key != 0 ) {
+                    append_field(field_key);
+                }
+            });
+
+            $('#sortable-fields').on('click', '.edit-field', function() {
+                const field_el = $(this).closest('.sortable-field');
+                const field_id = field_el.attr('data-customfield-id');
+                if (field_id === undefined || field_id === '-1') {
+                    glpi_ajax_dialog({
+                        id: 'core_field_options_editor',
+                        modalclass: 'modal-lg',
+                        appendTo: '#sortable-fields-container',
+                        title: field_el.find('label').text(),
+                        url: `{{ path('ajax/asset/assetdefinition.php') }}?action=get_core_field_editor&assetdefinitions_id={{ item.getID() }}&key=${field_el.attr('data-key')}`,
+                        buttons: [
+                            {
+                                id: 'save_core_field_options',
+                                label: '{{ _x('button', 'Save') }}',
+                                class: 'btn-primary',
+                            },
+                            {
+                                id: 'cancel_core_field_options',
+                                label: '{{ __('Cancel') }}',
+                            }
+                        ]
+                    });
+                } else {
+                    viewAddEditSubItem{{ rand }}(field_id);
+                }
+            }).on('click', '.hide-field', function() {
+                const field_key = $(this).closest('.sortable-field').attr('data-key');
+                remove_field(field_key);
+            });
+
+            $('#sortable-fields-container').on('click', '#save_core_field_options', () => {
+                const key_field = $('#core_field_options_editor form input[name="key"]');
+                const field_key = key_field.val();
+                key_field.remove();
+                const field_options = $('#core_field_options_editor form').serializeArray();
+
+                const field_options_slot = $(`#sortable-fields .sortable-field[data-key="${field_key}"] slot[name="field_options"]`);
+
+                // Add field options as hidden inputs
+                field_options_slot.empty();
+                field_options.forEach((option) => {
+                    const name = option.name.replace('field_options', `field_options[${field_key}]`);
+                    field_options_slot.append(`<input type="hidden" name="${name}" value="${option.value}" />`);
+                });
+
+                // Reload preview
+                append_field(field_key);
+
+                $('#core_field_options_editor').modal('hide');
+            }).on('click', '#cancel_core_field_options', () => {
+                $('#core_field_options_editor').modal('hide');
+            });
+        });
+    </script>
+{% endblock %}
