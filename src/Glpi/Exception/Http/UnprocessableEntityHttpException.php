@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\RichText\RichText;
+namespace Glpi\Exception\Http;
 
-/*
- * Ajax tooltip endpoint for CommonITILObjects
- */
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException as BaseException;
 
-Session::checkLoginUser();
-
-// Read parameters
-$itemtype = $_GET['itemtype'] ?? null;
-$items_id = $_GET['items_id'] ?? null;
-
-// Validate mandatory parameters
-if (is_null($itemtype) || is_null($items_id)) {
-    throw new BadRequestHttpException("Missing required parameters");
+class UnprocessableEntityHttpException extends BaseException implements HttpExceptionInterface
+{
+    use HttpExceptionTrait;
 }
-
-// Validate itemtype (only CommonITILObject allowed for now)
-if (!is_a($itemtype, CommonITILObject::class, true)) {
-    throw new BadRequestHttpException("Invalid itemtype");
-}
-$item = new $itemtype();
-
-// Validate item
-if (
-    !$item->getFromDB($items_id)
-    || !$item->canViewItem()
-    || !$item->isField('content')
-) {
-    throw new NotFoundHttpException("Item not found");
-}
-
-// Display content
-header('Content-type: text/html');
-echo RichText::getEnhancedHtml($item->fields['content'], [
-    'images_gallery' => false, // Don't show photoswipe gallery
-]);

@@ -50,7 +50,7 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
         throw new NotFoundHttpException('Unable to load agent #' . $_POST['id']);
     }
     if (!$agent::canView()) {
-        throw new AccessDeniedHttpException('Unable to load agent #' . $_POST['id']);
+        throw new AccessDeniedHttpException();
     }
     $answer = [];
 

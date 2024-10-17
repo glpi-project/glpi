@@ -45,7 +45,7 @@ Session::checkLoginUser();
 $obj = $obj ?? null;
 $item_obj = $item_obj ?? null;
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
-    throw new BadRequestHttpException('Bad request');
+    throw new BadRequestHttpException();
 }
 
 switch ($_GET['action']) {

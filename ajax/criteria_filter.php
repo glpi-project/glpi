@@ -34,10 +34,11 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\Http\UnprocessableEntityHttpException;
 use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 Session::checkLoginUser();
 
@@ -46,7 +47,7 @@ $action = $_POST['action'] ?? false;
 switch ($action) {
     default:
         // Invalid action
-        throw new NotFoundHttpException("Invalid or missing value: action");
+        throw new BadRequestHttpException("Invalid or missing value: action");
 
     case "save_filter":
         // Default values for this endpoint
@@ -59,11 +60,11 @@ switch ($action) {
             !is_a($itemtype, CommonDBTM::class, true)
             || !is_a($itemtype, FilterableInterface::class, true)
         ) {
-            throw new NotFoundHttpException('Invalid or missing value: item_itemtype');
+            throw new BadRequestHttpException('Invalid or missing value: item_itemtype');
         }
-        /** @var CommonDBTM&FilterableInterface $item */
 
         // Validate items_id
+        /** @var (CommonDBTM&FilterableInterface)|false $item */
         $item = $itemtype::getById($items_id);
         if (!$item) {
             throw new NotFoundHttpException('Invalid or missing value: item_items_id');
@@ -71,7 +72,7 @@ switch ($action) {
 
         // Validate search criteria
         if (!is_array($search_criteria)) {
-            throw new NotFoundHttpException('Invalid value: criteria');
+            throw new BadRequestHttpException('Invalid value: criteria');
         }
 
         // Check rights, must be able to update parent item
@@ -98,11 +99,11 @@ switch ($action) {
             !is_a($itemtype, CommonDBTM::class, true)
             || !is_a($itemtype, FilterableInterface::class, true)
         ) {
-            throw new NotFoundHttpException('Invalid or missing value: itemtype');
+            throw new BadRequestHttpException('Invalid or missing value: itemtype');
         }
-        /** @var CommonDBTM&FilterableInterface $item */
 
         // Validate items_id
+        /** @var (CommonDBTM&FilterableInterface)|false $item */
         $item = $itemtype::getById($items_id);
         if (!$item) {
             throw new NotFoundHttpException('Invalid or missing value: items_id');
