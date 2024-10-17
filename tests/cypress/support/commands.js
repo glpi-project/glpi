@@ -103,7 +103,7 @@ Cypress.Commands.add('changeProfile', (profile) => {
         // Send change profile request
         cy.request({
             method: 'POST',
-            url: '/ChangeProfile',
+            url: '/Session/ChangeProfile',
             form: true,
             body: {
                 id: profile_id,

@@ -32,8 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Controller\Session;
 
+use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -47,7 +48,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ChangeProfileController extends AbstractController
 {
     #[Route(
-        "/ChangeProfile",
+        "/Session/ChangeProfile",
         name: "glpi_change_profile",
         methods: "POST",
     )]
