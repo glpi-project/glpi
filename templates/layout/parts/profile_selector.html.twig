@@ -48,10 +48,18 @@
     <div class="dropdown-menu" data-bs-popper="none">
         <span class="dropdown-header">{{ __('Profiles') }}</span>
         {% for profile_id, profile in session('glpiprofiles') %}
-            <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}" href="{{ index_path() }}?newprofile={{ profile_id }}">
-                <i class="ti ti-user-check"></i>
-                {{ profile['name'] }}
-            </a>
+            {% set is_active = profile_id == (session('glpiactiveprofile')['id'] ?? 0) %}
+            <form action="{{ path('/Session/ChangeProfile') }}" method="POST">
+                <button
+                    class="dropdown-item {{ is_active ? 'active' : '' }}"
+                    type="submit"
+                >
+                    <i class="ti ti-user-check"></i>
+                    {{ profile['name'] }}
+                </button>
+                <input type="hidden" name="id" value="{{ profile_id }}" />
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
         {% endfor %}
     </div>
 </div>

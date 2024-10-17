@@ -94,7 +94,23 @@ Cypress.Commands.add('changeProfile', (profile) => {
     ]);
     const profile_id = profiles.get(profile);
 
-    cy.request(`/front/central.php?newprofile=${profile_id}`);
+    // Load any page to steal a CSRF token
+    cy.request('/front/computer.php').its('body').then((body) => {
+        // Parse page
+        const $html = Cypress.$(body);
+        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+
+        // Send change profile request
+        cy.request({
+            method: 'POST',
+            url: '/Session/ChangeProfile',
+            form: true,
+            body: {
+                id: profile_id,
+                _glpi_csrf_token: csrf,
+            }
+        });
+    });
 });
 
 /**

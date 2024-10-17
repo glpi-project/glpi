@@ -99,7 +99,7 @@ describe("Session", () => {
         // Change profile
         cy.findByRole('link', {'name': 'User menu'}).click();
         cy.findByRole('button', {'name': 'Change profile'}).click();
-        cy.findByRole('link', {'name': 'Self-Service'}).click();
+        cy.findByRole('button', {'name': 'Self-Service'}).click();
         cy.findByRole('link', {'name': 'User menu'}).should('contain.text', 'Self-Service');
         cy.findByRole('listitem', {'name': 'Administration'}).should('not.exist');
     });

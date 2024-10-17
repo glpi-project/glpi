@@ -38,21 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-// Change profile system
-if (isset($_REQUEST['newprofile'])) {
-    if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {
-        Session::changeProfile($_REQUEST['newprofile']);
-
-        if (Session::getCurrentInterface() == "central") {
-            Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
-        } else {
-            Html::redirect($_SERVER['PHP_SELF']);
-        }
-    } else {
-        Html::redirect(preg_replace("/entities_id=.*/", "", Html::getBackUrl()));
-    }
-}
-
 // Manage entity change
 if (isset($_GET["active_entity"])) {
     if (!isset($_GET["is_recursive"])) {
