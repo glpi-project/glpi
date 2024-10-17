@@ -153,7 +153,7 @@ export default [
     },
     {
         // Config files
-        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js", "tests/cypress.config.js"],
+        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js", "cypress.config.js"],
         "languageOptions": {
             "globals": {...globals.node}
         },

@@ -49,3 +49,4 @@ phpstan.neon
 /phpunit/config
 *.phar
 .env
+/runner-results/

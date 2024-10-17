@@ -77,7 +77,8 @@
         "test:vue": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --verbose --forceExit --config tests/js/jest.config.js ./tests/js/** --selectProjects vue",
         "watch:vue": "webpack --config .vue.webpack.config.js --watch",
         "watch": "npm run watch:vue",
-        "test:e2e": "cypress open --project tests"
+        "test:e2e": "cypress open",
+        "test:e2e:ci": "cypress run"
     },
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.22.15",
@@ -95,7 +96,9 @@
         "csso-cli": "^4.0.2",
         "cypress": "^13.8.1",
         "cypress-axe": "^1.5.0",
+        "cypress-multi-reporters": "^1.6.4",
         "cypress-network-idle": "^1.14.2",
+        "cypress-parallel": "^0.14.0",
         "eslint": "^9.12.0",
         "eslint-plugin-cypress": "^3.5.0",
         "eslint-plugin-mocha": "^10.5.0",

@@ -30,7 +30,7 @@
  *
  * ---------------------------------------------------------------------
  */
-describe('Entities selector', () => {
+describe('Entities selector', { testIsolation: true }, () => {
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin');

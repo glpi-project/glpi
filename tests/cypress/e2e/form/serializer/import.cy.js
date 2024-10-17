@@ -42,7 +42,7 @@ describe ('Import forms', () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
         cy.findByRole('button', {'name': "Import forms"}).click();
-        cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
+        cy.findByLabelText("Select your file").selectFile("tests/fixtures/export-of-2-forms.json");
 
         // Step 2: preview
         cy.findByRole('button', {'name': "Preview import"}).click();

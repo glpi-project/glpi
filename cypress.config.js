@@ -37,7 +37,14 @@ module.exports = defineConfig({
     viewportWidth: 1920,
     viewportHeight: 1080,
     experimentalStudio: true,
+    fixturesFolder: "tests/cypress/fixtures",
+    downloadsFolder: "tests/cypress/downloads",
+    supportFolder: "tests/cypress/support",
+    videosFolder: "tests/cypress/videos",
+    screenshotsFolder: "tests/cypress/screenshots",
     e2e: {
+        specPattern: "tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
+        supportFile: "tests/cypress/support/e2e.js",
         baseUrl: "http://localhost:80",
         experimentalMemoryManagement: true,
         setupNodeEvents(on) {
