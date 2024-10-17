@@ -622,12 +622,12 @@ class Html
     /**
      * Return an URL for getting back to previous page.
      * Remove `forcetab` parameter if exists to prevent bad tab display.
-     * If the referer does not match an URL inside GLPI, return value will be the GLPI index page.
+     * If the referer does not match a valid URL, return value will be the GLPI index page.
      *
      * @since 9.2.2
      * @since 11.0.0 The `$url_in` parameter has been removed.
      *
-     * @return string|false Referer URL or false if referer URL is outside the GLPI path.
+     * @return string|false Referer URL or false if referer URL is invalid.
      */
     public static function getBackUrl()
     {
@@ -637,19 +637,6 @@ class Html
         $referer_url  = self::getRefererUrl();
 
         if ($referer_url === null) {
-            return $CFG_GLPI['url_base'];
-        }
-
-        $referer_host = parse_url($referer_url, PHP_URL_HOST);
-        $referer_path = parse_url($referer_url, PHP_URL_PATH);
-
-        $glpi_host      = parse_url($CFG_GLPI['url_base'], PHP_URL_HOST);
-        $glpi_base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '/';
-
-        if (
-            $referer_host !== $glpi_host
-            || !str_starts_with($referer_path, $glpi_base_path)
-        ) {
             return $CFG_GLPI['url_base'];
         }
 
