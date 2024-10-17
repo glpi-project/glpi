@@ -3969,6 +3969,26 @@ JAVASCRIPT;
             $item_ticket = new Item_Ticket();
         }
 
+        if (isset($options['_preview'])) {
+            TemplateRenderer::getInstance()->display('components/itilobject/timeline/timeline.html.twig', [
+                'item'                      => $this,
+                'timeline_itemtypes'        => $this->getTimelineItemtypes(),
+                'legacy_timeline_actions'   => $this->getLegacyTimelineActionsHTML(),
+                'params'                    => $options,
+                'entities_id'               => $ID ? $this->fields['entities_id'] : $options['entities_id'],
+                'timeline'                  => $this->getTimelineItems(),
+                'itiltemplate_key'          => self::getTemplateFormFieldName(),
+                'itiltemplate'              => $tt,
+                'item_commonitilobject'     => $item_ticket,
+                'load_kb_sol'               => $options['load_kb_sol'] ?? 0,
+                'userentities'              => $userentities,
+                'canreadnote'               => Session::haveRight('entity', READNOTE),
+                'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
+            ]);
+
+            return true;
+        }
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                      => $this,
             'timeline_itemtypes'        => $this->getTimelineItemtypes(),
