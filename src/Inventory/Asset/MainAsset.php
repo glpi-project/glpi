@@ -877,7 +877,9 @@ abstract class MainAsset extends InventoryAsset
             $this->item->getType() != 'NetworkEquipment'
             && $this->item->getType() != 'Printer'
         ) {
-            $this->handlePorts();
+            if (!$this->isPartial() || count($this->ports)) {
+                $this->handlePorts();
+            }
         }
 
         if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
