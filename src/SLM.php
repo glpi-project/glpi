@@ -58,6 +58,11 @@ class SLM extends CommonDBTM
         return _n('Service level', 'Service levels', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "slm"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

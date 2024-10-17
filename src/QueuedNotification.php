@@ -51,6 +51,11 @@ class QueuedNotification extends CommonDBTM
         return __('Notification queue');
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", "queuednotification"];
+    }
+
     public static function canCreate(): bool
     {
         // Everybody can create : human and cron

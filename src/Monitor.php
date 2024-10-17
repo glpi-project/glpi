@@ -81,6 +81,10 @@ class Monitor extends CommonDBTM
         return _n('Monitor', 'Monitors', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "monitor"];
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

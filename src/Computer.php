@@ -92,6 +92,10 @@ class Computer extends CommonDBTM
         return _n('Computer', 'Computers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "computer"];
+    }
 
     public function useDeletedToLockIfDynamic()
     {

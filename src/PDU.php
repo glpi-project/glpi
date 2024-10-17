@@ -63,6 +63,11 @@ class PDU extends CommonDBTM
         return _n('PDU', 'PDUs', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "pdu"];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
