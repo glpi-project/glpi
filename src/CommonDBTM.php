@@ -5754,7 +5754,11 @@ TWIG, $twig_params);
                 $groups_user = $group_user->find(['users_id' => $input["users_id"]]);
                 $input['_groups_id_of_user'] = [];
                 foreach ($groups_user as $group) {
-                    $input['_groups_id_of_user'][] = $group['groups_id'];
+                    $item = new Group();
+                    if ($item->getFromDB($group['groups_id'])
+                        && $item->fields['is_itemgroup'] == 1) {
+                        $input['_groups_id_of_user'][] = $group['groups_id'];
+                    }
                 }
                 $input['_locations_id_of_user']      = $user->fields['locations_id'];
                 $input['_default_groups_id_of_user'] = $user->fields['groups_id'];
