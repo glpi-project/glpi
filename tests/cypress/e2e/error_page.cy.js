@@ -32,6 +32,9 @@
 describe('Error page', () => {
     beforeEach(() => {
         cy.login();
+
+        // prevent race conditions with ajax callbacks and speed up execution
+        cy.intercept({path: '/ajax/debug.php**'}, { statusCode: 404, body: '' });
     });
 
     it('Displays a bad request error', () => {
@@ -58,11 +61,8 @@ describe('Error page', () => {
             });
         }
 
-        // eslint-disable-next-line
-        cy.wait(100); // The debug bar throw an error if we disable it immediately after loading a page...
-        cy.disableDebugMode();
-
         // Check without debug mode (stack trace should NOT be displayed)
+        cy.disableDebugMode();
         for (const url of urls) {
             cy.visit({
                 url: url,
