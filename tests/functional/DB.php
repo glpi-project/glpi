@@ -513,22 +513,7 @@ SQL,
                         UNIQUE KEY (`nameid`)
                     ){$table_options}
 SQL,
-                'db_properties' => [
-                    'allow_myisam' => true
-                ],
-                'warning' => null
-            ];
-
-            yield [
-                'sql' => <<<SQL
-                    CREATE TABLE `%s` (
-                        `nameid` varchar(100) NOT NULL,
-                        UNIQUE KEY (`nameid`)
-                    ){$table_options}
-SQL,
-                'db_properties' => [
-                    'allow_myisam' => false
-                ],
+                'db_properties' => [],
                 'warning' => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.'
             ];
         }

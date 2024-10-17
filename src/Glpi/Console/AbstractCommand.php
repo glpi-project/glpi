@@ -38,6 +38,7 @@ namespace Glpi\Console;
 use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
+use Override;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -82,6 +83,12 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * @var ProgressBar
      */
     protected $progress_bar;
+
+    #[Override]
+    public function getSpecificMandatoryRequirements(): array
+    {
+        return [];
+    }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {

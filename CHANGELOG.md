@@ -205,6 +205,9 @@ The present file will list all changes made to the project; according to the
 - `comments` and `icon` options have been removed from `CommonDBTM::getName()`.
 - `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
 - The `$keepDb` parameter has been removed from `Html::footer()`.
+- `DBConnection::createMainConfig()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBConnection::createSlaveConnectionFile()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBmysql::$allow_myisam` property has been removed.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

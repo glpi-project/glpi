@@ -80,7 +80,7 @@ function update91xto920()
         KEY `unicity` (`businesscriticities_id`,`name`),
         KEY `date_mod` (`date_mod`),
         KEY `date_creation` (`date_creation`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "Add business criticity table");
     }
 
@@ -138,7 +138,7 @@ function update91xto920()
                  KEY `itemtype` (`itemtype`),
                  KEY `item_id` (`items_id`),
                  KEY `item` (`itemtype`,`items_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_knowbaseitems_items");
     }
 
@@ -156,7 +156,7 @@ function update91xto920()
                  PRIMARY KEY (`id`),
                  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
                  KEY `revision` (`revision`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_knowbaseitems_revisions");
     }
 
@@ -201,7 +201,7 @@ function update91xto920()
                  `date_creation` datetime DEFAULT NULL,
                  `date_mod` datetime DEFAULT NULL,
                  PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_knowbaseitems_comments");
     }
 
@@ -323,7 +323,7 @@ function update91xto920()
                       PRIMARY KEY (`id`),
                       INDEX `name` (`name`),
                       INDEX `product_number` (`product_number`)
-                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
             $DB->doQueryOrDie($query, "9.2 add model tables for devices");
         }
     }
@@ -374,7 +374,7 @@ function update91xto920()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`),
                   KEY `devicegenericmodels_id` (`devicegenericmodels_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->doQueryOrDie($query, "9.2 add table glpi_devicegenerics");
     }
 
@@ -402,7 +402,7 @@ function update91xto920()
                    INDEX `serial` (`serial`),
                    INDEX `item` (`itemtype`, `items_id`),
                    INDEX `otherserial` (`otherserial`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_devicegenerics");
     }
 
@@ -413,7 +413,7 @@ function update91xto920()
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
                    PRIMARY KEY (`id`),
                    INDEX `name` (`name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicegenerictypes");
     }
 
@@ -440,7 +440,7 @@ function update91xto920()
                   KEY `date_creation` (`date_creation`),
                   KEY `devicebatterymodels_id` (`devicebatterymodels_id`),
                   KEY `devicebatterytypes_id` (`devicebatterytypes_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicebatteries");
     }
 
@@ -469,7 +469,7 @@ function update91xto920()
                   KEY `serial` (`serial`),
                   KEY `item` (`itemtype`,`items_id`),
                   KEY `otherserial` (`otherserial`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_devicebatteries");
     }
 
@@ -484,7 +484,7 @@ function update91xto920()
                   KEY `name` (`name`),
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicebatterytypes");
     }
 
@@ -511,7 +511,7 @@ function update91xto920()
                   KEY `date_creation` (`date_creation`),
                   KEY `devicefirmwaremodels_id` (`devicefirmwaremodels_id`),
                   KEY `devicefirmwaretypes_id` (`devicefirmwaretypes_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicefirmwares");
     }
     if (!$DB->tableExists('glpi_items_devicefirmwares')) {
@@ -538,7 +538,7 @@ function update91xto920()
                   KEY `serial` (`serial`),
                   KEY `item` (`itemtype`,`items_id`),
                   KEY `otherserial` (`otherserial`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_devicefirmwares");
     }
     if (!$DB->tableExists('glpi_devicefirmwaretypes')) {
@@ -552,7 +552,7 @@ function update91xto920()
                   KEY `name` (`name`),
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicefirmwaretypes");
 
         $DB->insertOrDie("glpi_devicefirmwaretypes", [
@@ -605,7 +605,7 @@ function update91xto920()
                   KEY `states_id` (`states_id`),
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->doQueryOrDie($query, "9.2 add table glpi_devicesensors");
     }
 
@@ -635,7 +635,7 @@ function update91xto920()
                    INDEX `otherserial` (`otherserial`)
                 )
                 COLLATE='utf8_unicode_ci'
-                ENGINE=MyISAM;";
+                ENGINE=InnoDB;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_devicesensors");
     }
 
@@ -647,7 +647,7 @@ function update91xto920()
                    PRIMARY KEY (`id`),
                    INDEX `name` (`name`)
                 )
-                COLLATE='utf8_unicode_ci' ENGINE=MyISAM;";
+                COLLATE='utf8_unicode_ci' ENGINE=InnoDB;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicesensortypes");
     }
 
@@ -768,7 +768,7 @@ function update91xto920()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`),
                   KEY `slms_id` (`slms_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_olas");
     }
 
@@ -781,7 +781,7 @@ function update91xto920()
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelactions");
     }
 
@@ -795,7 +795,7 @@ function update91xto920()
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelcriterias");
     }
 
@@ -814,7 +814,7 @@ function update91xto920()
                KEY `name` (`name`),
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels");
     }
 
@@ -828,7 +828,7 @@ function update91xto920()
                   KEY `tickets_id` (`tickets_id`),
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
         $DB->updateOrInsert("glpi_crontasks", [
@@ -1133,7 +1133,7 @@ function update91xto920()
                   KEY `notifications_id` (`notifications_id`),
                   KEY `notificationtemplates_id` (`notificationtemplates_id`),
                   KEY `mode` (`mode`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_notifications_notificationtemplates");
     }
 
@@ -1205,7 +1205,7 @@ function update91xto920()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`),
                   UNIQUE KEY `unicity` (`savedsearches_id`,`operator`, `value`)
-                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_savedsearches_alerts");
     }
 
@@ -1418,7 +1418,7 @@ Regards,',
                   KEY `operatingsystemeditions_id` (`operatingsystemeditions_id`),
                   UNIQUE KEY `unicity`(`items_id`,`itemtype`, `operatingsystems_id`,
                                        `operatingsystemarchitectures_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_operatingsystems");
     }
 
@@ -1431,7 +1431,7 @@ Regards,',
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_operatingsystemkernels");
     }
 
@@ -1446,7 +1446,7 @@ Regards,',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `operatingsystemkernels_id` (`operatingsystemkernels_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_operatingsystemversions");
     }
 
@@ -1459,7 +1459,7 @@ Regards,',
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_operatingsystemeditions");
     }
 
@@ -1600,7 +1600,7 @@ Regards,',
         KEY `states_id` (`states_id`),
         KEY `date_creation` (`date_creation`),
         KEY `date_mod` (`date_mod`)
-      ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
+      ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 copy add certificate table");
     }
 
@@ -1618,7 +1618,7 @@ Regards,',
            KEY `item` (`itemtype`, `items_id`),
            KEY `date_creation` (`date_creation`),
            KEY `date_mod` (`date_mod`)
-        ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 copy add certificate items table");
     }
 
@@ -1637,7 +1637,7 @@ Regards,',
            KEY `name` (`name`),
            KEY `date_creation` (`date_creation`),
            KEY `date_mod` (`date_mod`)
-        ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 copy add certificate type table");
     }
 
@@ -1804,7 +1804,7 @@ Regards,',
                    KEY `date_mod` (`date_mod`),
                    KEY `date_creation` (`date_creation`),
                    UNIQUE KEY `unicity` (`mcc`,`mnc`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_lineoperators");
     }
 
@@ -1819,7 +1819,7 @@ Regards,',
          KEY `name` (`name`),
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
-         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_linetypes");
     }
 
@@ -1846,7 +1846,7 @@ Regards,',
             KEY `is_recursive`     (`is_recursive`),
             KEY `users_id`         (`users_id`),
             KEY `lineoperators_id` (`lineoperators_id`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_lines");
     }
 
@@ -1861,7 +1861,7 @@ Regards,',
                   KEY `name` (`name`),
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicesimcardtypes");
     }
 
@@ -1923,7 +1923,7 @@ Regards,',
                KEY `date_mod` (`date_mod`),
                KEY `date_creation` (`date_creation`),
                KEY `manufacturers_id` (`manufacturers_id`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_devicesimcards");
     }
 
@@ -1956,7 +1956,7 @@ Regards,',
                   KEY `states_id` (`states_id`),
                   KEY `locations_id` (`locations_id`),
                   KEY `lines_id` (`lines_id`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->doQueryOrDie($query, "9.2 add table glpi_items_devicesimcards");
     }
 
@@ -2153,7 +2153,7 @@ Regards,',
                        KEY `projectstates_id` (`projectstates_id`),
                        KEY `projecttasktypes_id` (`projecttasktypes_id`),
                        KEY `is_milestone` (`is_milestone`)
-                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
         $DB->doQueryOrDie($query, "9.2 add table glpi_projecttasktemplates");
     }
 

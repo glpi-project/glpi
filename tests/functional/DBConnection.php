@@ -87,7 +87,6 @@ class DBConnection extends \GLPITestCase
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => false,
-                'allow_myisam'             => true,
                 'allow_datetime'           => true,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
@@ -109,7 +108,6 @@ PHP
                 'use_timezones'            => true,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => true,
-                'allow_myisam'             => false,
                 'allow_datetime'           => false,
                 'allow_signed_keys'        => false,
                 'expected'                 => <<<'PHP'
@@ -121,7 +119,6 @@ class DB extends DBmysql {
    public $dbdefault = 'db';
    public $use_timezones = true;
    public $use_utf8mb4 = true;
-   public $allow_myisam = false;
    public $allow_datetime = false;
    public $allow_signed_keys = false;
 }
@@ -136,7 +133,6 @@ PHP
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => true,
                 'use_utf8mb4'              => false,
-                'allow_myisam'             => true,
                 'allow_datetime'           => true,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
@@ -165,7 +161,6 @@ PHP
         bool $use_timezones,
         bool $log_deprecation_warnings,
         bool $use_utf8mb4,
-        bool $allow_myisam,
         bool $allow_datetime,
         bool $allow_signed_keys,
         string $expected
@@ -180,7 +175,6 @@ PHP
             $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
-            $allow_myisam,
             $allow_datetime,
             $allow_signed_keys,
             vfsStream::url('config-dir')
@@ -203,7 +197,6 @@ PHP
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => false,
-                'allow_myisam'             => true,
                 'allow_datetime'           => true,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
@@ -226,7 +219,6 @@ PHP
                 'use_timezones'            => true,
                 'log_deprecation_warnings' => false,
                 'use_utf8mb4'              => true,
-                'allow_myisam'             => false,
                 'allow_datetime'           => false,
                 'allow_signed_keys'        => false,
                 'expected'                 => <<<'PHP'
@@ -243,7 +235,6 @@ class DBSlave extends DBmysql {
    public $dbdefault = 'db';
    public $use_timezones = true;
    public $use_utf8mb4 = true;
-   public $allow_myisam = false;
    public $allow_datetime = false;
    public $allow_signed_keys = false;
 }
@@ -258,7 +249,6 @@ PHP
                 'use_timezones'            => false,
                 'log_deprecation_warnings' => true,
                 'use_utf8mb4'              => false,
-                'allow_myisam'             => true,
                 'allow_datetime'           => true,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
@@ -288,7 +278,6 @@ PHP
         bool $use_timezones,
         bool $log_deprecation_warnings,
         bool $use_utf8mb4,
-        bool $allow_myisam,
         bool $allow_datetime,
         bool $allow_signed_keys,
         string $expected
@@ -303,7 +292,6 @@ PHP
             $use_timezones,
             $log_deprecation_warnings,
             $use_utf8mb4,
-            $allow_myisam,
             $allow_datetime,
             $allow_signed_keys,
             vfsStream::url('config-dir')

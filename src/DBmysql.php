@@ -151,14 +151,6 @@ class DBmysql
     public $use_utf8mb4 = false;
 
     /**
-     * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
-     * Defaults to true to keep backward compatibility with old DB.
-     *
-     * @var bool
-     */
-    public $allow_myisam = true;
-
-    /**
      * Determine if datetime fields usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
@@ -2137,7 +2129,7 @@ class DBmysql
         }
 
         // Usage of MyISAM
-        if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
+        if (preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
             trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
         }
 
@@ -2189,11 +2181,6 @@ class DBmysql
         if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
            // Use utf8mb4 charset for update process if there all core table are using this charset.
             $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
-        }
-
-        if ($this->getMyIsamTables(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
-            $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
         }
 
         if ($this->getSignedKeysColumns(true)->count() === 0) {
