@@ -53,13 +53,17 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 
         $request_ip = $_SERVER['REMOTE_ADDR'];
 
-        $allowed_ips = $DB->request([
+        $ips = $DB->request([
             'SELECT' => ['allowed_ips'],
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
                 'identifier' => $client['client_id']
             ]
         ])->current()['allowed_ips'];
+        $allowed_ips = [];
+        if (count($ips)) {
+            $allowed_ips = $ips->current()['allowed_ips'];
+        }
 
         if (empty($allowed_ips)) {
             // No IP restriction

@@ -58,12 +58,10 @@ final class ApiController extends AbstractController
     #[SecurityStrategy('no_check')]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
-        $_SERVER['PATH_INFO'] = $request->get('request_parameters');
-
-        return new HeaderlessStreamedResponse($this->call(...));
+        return new HeaderlessStreamedResponse(fn () => $this->call($request));
     }
 
-    private function call(): void
+    private function call(SymfonyRequest $symfonyRequest): void
     {
         /**
          * High-level API entrypoint
@@ -72,8 +70,8 @@ final class ApiController extends AbstractController
         // Ensure errors will not break API output.
         ErrorHandler::getInstance()->disableOutput();
 
-        $method = $_SERVER['REQUEST_METHOD'];
-        $relative_uri = $_SERVER['PATH_INFO'] ?? '';
+        $method = $symfonyRequest->getMethod();
+        $relative_uri = $symfonyRequest->get('request_parameters') . '?' . \http_build_query($symfonyRequest->query->all());
         // Ensure uri starts with slash but does not end with a slash
         $relative_uri = '/' . trim($relative_uri, '/');
 
@@ -98,7 +96,10 @@ final class ApiController extends AbstractController
 
         $headers = getallheaders() ?? [];
         $headers['GLPI-API-Version'] = $version;
-        $request = new Request($method, $relative_uri, $headers, $body);
+        $request = (new Request($method, $relative_uri, $headers, $body))
+            ->withQueryParams($symfonyRequest->query->all())
+            ->withCookieParams($symfonyRequest->cookies->all())
+        ;
 
         $router = Router::getInstance();
 
