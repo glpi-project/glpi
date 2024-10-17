@@ -640,6 +640,33 @@ class Group_User extends CommonDBRelation
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+        $name = _n('User', 'Users', Session::getPluralNumber());
+
+        $tab[] = [
+            'id'                 => 'user',
+            'name'               => $name
+        ];
+
+        $tab[] = [
+            'id'                 => '150',
+            'table'              => 'glpi_groups_users',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of users'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+            ]
+        ];
+
+        return $tab;
+    }
+
     /**
      * @param $user_ID
      * @param $only_dynamic (false by default
