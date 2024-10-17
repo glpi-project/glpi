@@ -5977,7 +5977,11 @@ JAVASCRIPT;
                 $info = AuthLDAP::getUserByDn(
                     $ds,
                     $this->fields['user_dn'],
-                    ['*', 'createTimeStamp', 'modifyTimestamp']
+                    [
+                        // see https://docs.ldap.com/ldap-sdk/docs/tool-usages/ldapsearch.html
+                        '*', // all user attributes
+                        '+', // all operational attributes
+                    ]
                 );
                 if (is_array($info)) {
                     foreach ($info as $key => $values) {
