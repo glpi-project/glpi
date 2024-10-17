@@ -5904,7 +5904,7 @@ JAVASCRIPT;
                 $info = AuthLDAP::getUserByDn(
                     $ds,
                     $this->fields['user_dn'],
-                    ['*', 'createTimeStamp', 'modifyTimestamp']
+                    ['*', '+', 'createTimeStamp', 'modifyTimestamp']
                 );
                 if (is_array($info)) {
                     foreach ($info as $key => $values) {
